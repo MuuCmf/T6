@@ -1,7 +1,6 @@
 <?php
 namespace app\admin\controller;
 
-use app\admin\controller\Admin;
 use think\facade\Db;
 use think\facade\View;
 

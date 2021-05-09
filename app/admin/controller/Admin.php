@@ -1,23 +1,74 @@
 <?php
+
 namespace app\admin\controller;
 
-use app\common\controller\Base;
+use think\App;
+use think\exception\HttpResponseException;
+use think\exception\ValidateException;
+use think\facade\Config;
+use think\facade\Request;
+use think\facade\View;
 use think\facade\Session;
 use think\facade\Db;
-use think\facade\View;
+use think\Response;
+use think\Validate;
 use app\admin\model\AuthRule;
 use app\admin\model\AuthGroup;
 
-class Admin extends Base
+/**
+ * 控制器基础类
+ */
+abstract class Admin
 {
+    /**
+     * Request实例
+     * @var \think\Request
+     */
+    protected $request;
+
+    /**
+     * 应用实例
+     * @var \think\App
+     */
+    protected $app;
+
+    /**
+     * 是否批量验证
+     * @var bool
+     */
+    protected $batchValidate = false;
+
+    /**
+     * 系统设置
+     * @var array
+     */
+    protected $system = [];
     /**
      * 后台基类 控制器
      */
     public $_seo;
     public $is_root;
 
-    public function _initialize()
+    /**
+     * 构造方法
+     * @access public
+     * @param  App  $app  应用对象
+     */
+    public function __construct(App $app)
     {
+        $this->app     = $app;
+        $this->request = $this->app->request;
+
+        // 控制器初始化
+        $this->initialize();
+
+    }
+
+    public function initialize()
+    {
+        dump(App('http')->getName());
+        $this->moduleInit();
+
         $this->_seo = ['title' => 'MuuCmf T5','Keywords' => '', 'Description' => ''];
         View::assign(['seo' => $this->_seo]);
         
@@ -29,7 +80,7 @@ class Admin extends Base
         if (!$this->is_root && config('ADMIN_ALLOW_IP')) {
             // 检查IP地址访问
             if (!in_array(request()->ip(), explode(',', config('ADMIN_ALLOW_IP')))) {
-                $this->error(lang('_FORBID_403_'));
+                $this->error('发生错误');
             }
         }
 
@@ -59,48 +110,78 @@ class Admin extends Base
         $this->assign('this_action',strtolower(request()->action()));
         // 当前应用模块信息
         $module = model('common/Module')->getModule(request()->module());
-        $this->assign('__MODULE__', $module);
+        View::assign(['__MODULE__', $module]);
         // 当前模块菜单
-        $this->assign('__MODULE_MENU__', $this->getMenus()); 
+        View::assign(['__MODULE_MENU__', $this->getMenus()]);
         // 模块入口
         $all_module_list = model('common/Module')->getAll(['is_setup'=>1,'name'=>['neq','ucenter']]);
         $this->assign('all_module_list', $all_module_list); 
+        View::assign(['all_module_list', $all_module_list]);
         // 插件菜单
         $addons_menu = model('admin/Addons')->getAdminList();
-        $this->assign('__ADDONS_MENU__', $addons_menu );
+        View::assign(['__ADDONS_MENU__', $addons_menu]);
         // 是否插件后台
         if(isset($this->addon)){
-            $this->assign('addons_admin',$this->addon);
+            View::assign(['addons_admin', $this->addon]);
         }
         // 本地版本
-        $this->assign('version',$this->localVersion());
+        View::assign(['version', $this->localVersion()]);
         $this->checkUpdate();
     }
 
-    public function needLogin(){
-
-        $uid = is_login();
-        if (!$uid) {// 还没登录 跳转到登录页面
-            $uid = $this->w7login();
-            if($uid) return $uid;
-
-            $this->redirect('admin/common/login');
-        }
-        return $uid;
-    }
-
-    protected function w7login()
+    protected function moduleInit()
     {
-        $res = false;
-        if (!session_id()) session_start();
-        if (isset($_SESSION['w7_uid'])){
-            $uid = intval($_SESSION['w7_uid']);
-            if(!empty($uid) && $uid == 1){
-                //判断是否有这个UID
-                $res = model('common/Member')->login($uid);
+        if(strtolower(App('http')->getName())!='install'){
+            //动态添加系统配置,非模块配置
+            $config = Cache::get('DB_CONFIG_DATA');
+            if (!$config) {
+                $map['status'] = 1;
+                $map['group']=['>',0];
+                $data = Db::name('Config')->where($map)->field('type,name,value')->select();
+                
+                foreach ($data as $value) {
+                    $config[$value['name']] = self::parse($value['type'], $value['value']);
+                }
+                Cache::set('DB_CONFIG_DATA', $config);
+            }
+            Config::set($config); //动态添加配置
+        }
+        // 判断站点是否关闭
+        if (strtolower(App('http')->getName()) != 'install' && strtolower(App('http')->getName()) != 'admin') {
+            if (!Config::get('WEB_SITE_CLOSE')) {
+                header("Content-Type: text/html; charset=utf-8");
+                echo Config::get('WEB_SITE_CLOSE_HINT');exit;
             }
         }
-        return $res;
+
+        // app_trace 调试模式后台设置
+        if (Config::get('show_page_trace'))
+        {
+            Config::set('app_trace', true);
+        }
+        // app_debug 开发者调试模式
+        if (Config::get('develop_mode'))
+        {
+            Config::set('app_debug', true);
+        }
+        // 如果是开发模式那么将异常模板修改成官方的
+        if (Config::get('app_debug'))
+        {
+            Config::set('exception_tmpl', THINK_PATH . 'tpl' . DS . 'think_exception.tpl');
+        }
+        // 如果是trace模式且Ajax的情况下关闭trace
+        if (Config::get('app_trace') && $request->isAjax())
+        {
+            Config::set('app_trace', false);
+        }
+    }
+
+    public function needLogin(){
+        $uid = is_login();
+        if (!$uid) {// 还没登录 跳转到登录页面
+            redirect('admin/common/login');
+        }
+        return $uid;
     }
 
     public function setTitle($title)
@@ -185,92 +266,6 @@ class Admin extends Base
             return true;
         }
         return null;//需要检测节点权限
-    }
-
-    /**
-     * 对数据表中的单行或多行记录执行修改 GET参数id为数字或逗号分隔的数字
-     *
-     * @param string $model 模型名称,供M函数使用的参数
-     * @param array  $data 修改的数据
-     * @param array  $where 查询时的where()方法的参数
-     * @param array  $msg 执行正确和错误的消息 array('success'=>'','error'=>'', 'url'=>'','ajax'=>false)
-     *                     url为跳转页面,ajax是否ajax方式(数字则为倒数计时秒数)
-     */
-    final protected function editRow($model, $data, $where, $msg)
-    {
-        $id = array_unique((array)input('id/a', 0));
-        $id = is_array($id) ? implode(',', $id) : $id;
-
-        if($where) {
-            $where = $where;
-        }else{
-            $where = ['id' => array('in', $id)];
-        }
-
-        $msg = array_merge(array('success' => lang('_OPERATION_SUCCESS_'), 'error' => lang('_OPERATION_FAILED_'), 'url' => '', 'ajax' => request()->isAjax()), (array)$msg);
-
-        if (Db::name($model)->where($where)->update($data) !== false) {
-            $this->success($msg['success'], $msg['url'], $msg['ajax']);
-        } else {
-            $this->error($msg['error'], $msg['url'], $msg['ajax']);
-        }
-    }
-
-    /**
-     * 禁用条目
-     * @param string $model 模型名称
-     * @param array  $where 查询时的 where()方法的参数
-     * @param array  $msg 执行正确和错误的消息,可以设置四个元素 array('success'=>'','error'=>'', 'url'=>'','ajax'=>false)
-     *                     url为跳转页面,ajax是否ajax方式(数字则为倒数计时秒数)
-     *
-     * @author 朱亚杰  <zhuyajie@topthink.net>
-     */
-    protected function forbid($model, $where = [], $msg = ['success' => '状态禁用成功', 'error' => '状态禁用失败'])
-    {
-        $data = array('status' => 0);
-        $this->editRow($model, $data, $where, $msg);
-    }
-
-    /**
-     * 恢复条目
-     * @param string $model 模型名称
-     * @param array  $where 查询时的where()方法的参数
-     * @param array  $msg 执行正确和错误的消息 array('success'=>'','error'=>'', 'url'=>'','ajax'=>false)
-     *                     url为跳转页面,ajax是否ajax方式(数字则为倒数计时秒数)
-     *
-     */
-    protected function resume($model, $where = [], $msg = ['success' => '启用成功', 'error' => '启用失败'])
-    {
-        $data = ['status' => 1];
-        $this->editRow($model, $data, $where, $msg);
-    }
-
-    /**
-     * 还原条目
-     * @param string $model 模型名称
-     * @param array  $where 查询时的where()方法的参数
-     * @param array  $msg 执行正确和错误的消息 array('success'=>'','error'=>'', 'url'=>'','ajax'=>false)
-     *                     url为跳转页面,ajax是否ajax方式(数字则为倒数计时秒数)
-     */
-    protected function restore($model, $where = [], $msg = ['success' => '状态还原成功！', 'error' => '状态还原失败！'])
-    {
-        $data = ['status' => 1];
-        $where = array_merge(array('status' => -1), $where);
-        $this->editRow($model, $data, $where, $msg);
-    }
-
-    /**
-     * 条目假删除
-     * @param string $model 模型名称
-     * @param array  $where 查询时的where()方法的参数
-     * @param array  $msg 执行正确和错误的消息 array('success'=>'','error'=>'', 'url'=>'','ajax'=>false)
-     *                     url为跳转页面,ajax是否ajax方式(数字则为倒数计时秒数)
-     */
-    protected function delete($model, $where = [], $msg =['success' => '删除成功', 'error' => '删除失败'])
-    {
-        $data['status'] = -1;
-        //$data['update_time'] = time();
-        $this->editRow($model, $data, $where, $msg);
     }
 
     /**
@@ -389,80 +384,6 @@ class Admin extends Base
         }
 
         return $menus;
-    }
-
-    /**
-     * 通用分页列表数据集获取方法
-     *
-     *  可以通过url参数传递where条件,例如:  userList.html?name=asdfasdfasdfddds
-     *  可以通过url空值排序字段和方式,例如: userList.html?_field=id&_order=asc
-     *  可以通过url参数r指定每页数据条数,例如: userList.html?r=5
-     *
-     * @param sting|Model  $model 模型名或模型实例
-     * @param array        $where where查询条件(优先级: $where>$_REQUEST>模型设定)
-     * @param array|string $order 排序条件,传入null时使用sql默认排序或模型属性(优先级最高);
-     *                              请求参数中如果指定了_order和_field则据此排序(优先级第二);
-     *                              否则使用$order参数(如果$order参数,且模型也没有设定过order,则取主键降序);
-     *
-     * @param array        $base 基本的查询条件
-     * @param boolean      $field 单表模型用不到该参数,要用在多表join时为field()方法指定参数
-     *
-     * @return array|false
-     * 返回数据集
-     */
-    public function commonLists($model, $where = [], $order = '', $base = ['status' => ['egt', 0]], $field = true)
-    {
-        $options = [];
-        $REQUEST = (array)input('request.');
-        if (is_string($model)) {
-            $model = Db::name($model);
-        }
-
-        $pk = $model->getPk();
-        if ($order === null) {
-            //order置空
-        } else if (isset($REQUEST['_order']) && isset($REQUEST['_field']) && in_array(strtolower($REQUEST['_order']), ['desc', 'asc'])) {
-            $options['order'] = '`' . $REQUEST['_field'] . '` ' . $REQUEST['_order'];
-        } elseif ($order === '' && empty($options['order']) && !empty($pk)) {
-            $options['order'] = $pk . ' desc';
-        } elseif ($order) {
-            $options['order'] = $order;
-        }
-        unset($REQUEST['_order'], $REQUEST['_field']);
-
-        $options['where'] = array_filter(array_merge((array)$base, /*$REQUEST,*/
-            (array)$where), function ($val) {
-            
-            if ( $val === null) {
-                return false;
-            } else {
-                return true;
-            }
-        });
-        if (empty($options['where'])) {
-            unset($options['where']);
-        }
-
-        //$total = $model->where($options['where'])->count();
-
-        if (input('r')!==null) {
-            $listRows = (int)input('r');
-        } else {
-            $listRows = 20;
-        }
-
-        //获取列表
-        $list = $model->where($options['where'])->order($options['order'])->paginate($listRows);
-        // 获取分页显示
-        $page = $list->render();
-        // 模板变量赋值
-        $this->assign('list', $list);
-        $this->assign('page', $page);
-        return [$list,$page];
-    }
-    
-    public function  _empty(){
-        $this->error(lang('_ERROR_404_2_'));
     }
 
     protected function checkUpdate()
