@@ -6,7 +6,7 @@
     'aliases' => 
     array (
     ),
-    'reference' => '80317b4e94e4231546b928514ac8034acc975e68',
+    'reference' => '7624792dfa04b52fea5434d537866196a04e96ee',
     'name' => 'topthink/think',
   ),
   'versions' => 
@@ -37,6 +37,15 @@
       array (
       ),
       'reference' => '3b9dff8aaf7323590c1d2e443db701eb1f9aa0d3',
+    ),
+    'liliuwei/thinkphp-jump' => 
+    array (
+      'pretty_version' => 'v1.5',
+      'version' => '1.5.0.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => '481d41b922095f08230609919be5d19354c50540',
     ),
     'psr/cache' => 
     array (
@@ -126,7 +135,7 @@
       'aliases' => 
       array (
       ),
-      'reference' => '80317b4e94e4231546b928514ac8034acc975e68',
+      'reference' => '7624792dfa04b52fea5434d537866196a04e96ee',
     ),
     'topthink/think-helper' => 
     array (

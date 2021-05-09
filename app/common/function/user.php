@@ -1,6 +1,7 @@
 <?php
 use app\admin\model\AuthRule;
-use think\Db;
+use think\facade\Cache;
+use think\facade\Db;
 use muucmf\Auth;
 use think\captcha\Captcha;
 /**
@@ -133,24 +134,6 @@ function check_auth($rule = '', $except_uid = -1, $type = AuthRule::RULE_URL)
         return false;
     }
     return true;
-}
-
-
-/**
- * 检测当前用户是否为管理员
- * @return boolean true-管理员，false-非管理员
- */
-function is_administrator($uid = null)
-{
-    $uid = is_null($uid) ? is_login() : $uid;
-    $admin_uids = explode(',', config('user_administrator'));//调整验证机制，支持多管理员，用,分隔
-    
-    return $uid && (in_array(intval($uid), $admin_uids));//调整验证机制，支持多管理员，用,分隔
-}
-function get_administrator()
-{
-    $admin_uids = explode(',', Config('user_administrator')); //调整验证机制，支持多管理员，用,分隔
-    return $admin_uids;
 }
 
 /**获得具有某个权限节点的全部用户UID数组

@@ -10,6 +10,7 @@ use think\facade\Request;
 use think\facade\View;
 use think\facade\Session;
 use think\facade\Db;
+use think\facade\Cache;
 use think\Response;
 use think\Validate;
 use app\admin\model\AuthRule;
@@ -24,7 +25,7 @@ abstract class Admin
      * 控制器中间件
      * @var array
      */
-    protected $middleware = ['app\common\middleware\Config'];
+    protected $middleware = ['app\common\middleware\GlobleConfig'];
 
     /**
      * Request实例
@@ -64,7 +65,7 @@ abstract class Admin
     {
         $this->app     = $app;
         $this->request = $this->app->request;
-
+        $this->system = Cache::get('DB_CONFIG_DATA');
         // 控制器初始化
         $this->initialize();
 
@@ -76,26 +77,16 @@ abstract class Admin
         View::assign(['seo' => $this->_seo]);
         
         // 判断登陆
-        $this->needLogin();
-        // 是否是超级管理员
-        $this->is_root = is_administrator();
-        
-        if (!$this->is_root && config('ADMIN_ALLOW_IP')) {
-            // 检查IP地址访问
-            if (!in_array(request()->ip(), explode(',', config('ADMIN_ALLOW_IP')))) {
-                $this->error('发生错误');
-            }
-        }
-
+        $uid = $this->needLogin();
         // 检测访问权限
         $access = $this->accessControl();
         if ($access === false) {
-            $this->error(lang('_FORBID_403_'));
+            $this->error('ERROR');
         } elseif ($access === null) {
             $dynamic = $this->checkDynamic();//检测分类栏目有关的各项动态权限
             if ($dynamic === null) {
                 //检测非动态权限
-                $rule = strtolower(request()->module() . '/' . request()->controller() . '/' . request()->action());
+                $rule = strtolower(App('http')->getName() . '/' . Request()->controller() . '/' . Request()->action());
                 if (!$this->checkRule($rule, array('in', '1,2'))) {
                     $this->error(lang('_VISIT_NOT_AUTH_'));
                 }
@@ -134,8 +125,9 @@ abstract class Admin
 
     public function needLogin(){
         $uid = is_login();
-        if (!$uid) {// 还没登录 跳转到登录页面
-            redirect('admin/common/login');
+        
+        if (empty($uid)) {// 还没登录 跳转到登录页面
+            return redirect('admin/common/login')->send();
         }
         return $uid;
     }
@@ -208,19 +200,12 @@ abstract class Admin
      */
     final protected function accessControl()
     {
-        if ($this->is_root) {
+        if (Config::get('administrator_uid' == 1)) {
             return true;//管理员允许访问任何页面
         }
-        $allow = config('ALLOW_VISIT');
 
-        $deny = config('DENY_VISIT');
         $check = strtolower(request()->controller() . '/' . request()->action());
-        if (!empty($deny) && in_array($check, $deny)) {
-            return false;//非超管禁止访问deny中的方法
-        }
-        if (!empty($allow) && in_array($check, $allow)) {
-            return true;
-        }
+ 
         return null;//需要检测节点权限
     }
 
@@ -238,7 +223,7 @@ abstract class Admin
             // 获取主菜单
             $where['pid'] = '0';
             //$where['hide'] = 0;
-            if (!config('DEVELOP_MODE')) { // 是否开发者模式
+            if (!$this->system('DEVELOP_MODE')) { // 是否开发者模式
                 $where['is_dev'] = 0;
             }
             $menus['main'] = model('admin/Menu')->getLists($where);
@@ -294,7 +279,7 @@ abstract class Admin
                         $where = [];
                         $where['pid'] = $item['id'];
                         $where['hide'] = 0;
-                        if (!config('DEVELOP_MODE')) { // 是否开发者模式
+                        if (!$this->system('DEVELOP_MODE')) { // 是否开发者模式
                             $where['is_dev'] = 0;
                         }
                         $second_urls = model('admin/Menu')->getLists($where);
@@ -326,7 +311,7 @@ abstract class Admin
                             }
                             $map['pid'] = $item['id'];
                             $map['hide'] = 0;
-                            if (!config('DEVELOP_MODE')) { // 是否开发者模式
+                            if (!$this->system('DEVELOP_MODE')) { // 是否开发者模式
                                 $map['is_dev'] = 0;
                             }
                             
@@ -344,7 +329,7 @@ abstract class Admin
 
     protected function checkUpdate()
     {
-        if (config('AUTO_UPDATE')) {
+        if ($this->system('AUTO_UPDATE')) {
             $can_update = 1;
         } else {
             $can_update = 0;
