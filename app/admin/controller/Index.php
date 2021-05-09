@@ -16,51 +16,22 @@ class Index extends Admin
         if(request()->isPost()){
             $count_day=input('post.count_day', config('COUNT_DAY'),'intval',7);
             if(Db::name('Config')->where(['name'=>'COUNT_DAY'])->setField('value',$count_day)===false){
-                $this->error('发生错误');
+                return $this->error('发生错误');
             }else{
                cache('DB_CONFIG_DATA',null);
-                $this->success('设置成功');
+               return $this->success('设置成功');
             }
 
         }else{
-            $this->setTitle(lang('管理后台'));
+            $this->setTitle('管理后台');
             $this->getRegUser();
             $this->getActionLog();
             $this->getUserCount();
-            $this->getOtherCount();
 
-            return View::fetch();
+            return View::fetch('');
         }
     }
 
-    private function getOtherCount(){
-        
-        //用户流失
-        $lostList = model('CountLost')->getListByPage([],'create_time desc','*',$r=20);
-        $this->assign('lostList',$lostList);
-        //日活跃
-        $today = date('Y-m-d 00:00',time());
-        $startTime = strtotime($today." - 10 day");
-        $endTime = strtotime($today);
-        $startTime = strtotime(date('Y-m-d').' - 9 day');
-        $activeList = model('CountActive')->getActiveList($startTime,time(),'day');
-        $this->assign('activeList',json_encode($activeList));
-        //周活跃
-        $startTime = strtotime(date('Y-m-d').' - '.date('w').' day - 49 day');
-        $weekActiveList = model('CountActive')->getActiveList($startTime,time(),'week');
-        $this->assign('weekActiveList',json_encode($weekActiveList));
-        //月活跃
-        $startTime = strtotime(date('Y-m-01').' - 9 month');
-        $monthActiveList = model('CountActive')->getActiveList($startTime,time(),'month');
-        $this->assign('monthActiveList',json_encode($monthActiveList));
-        //前8日留存率
-        $startTime = strtotime($today." - 9 day");
-        $endTime = strtotime($today." - 2 day");
-        $remainList = model('CountRemain')->getRemainList($startTime,$endTime);
-        $this->assign('remainList',$remainList);
-        
-        return true;
-    }
     /**
      * 获取顶部块统计数据
      * @return [type] [description]
@@ -71,14 +42,20 @@ class Index extends Admin
         $start = mktime(0,0,0,date("m",$t),date("d",$t),date("Y",$t));
         $end = mktime(23,59,59,date("m",$t),date("d",$t),date("Y",$t));
 
-        $map['status']=1;
-        $map['reg_time']=[['>=',$start],['<=',$end],'and'];
-        $reg_users = Db::name('UcenterMember')->where($map)->count();
-
-        unset($map['reg_time']);
-        $map['last_login_time'] = [['>=',$start],['<=',$end],'and'];
-        $login_users = Db::name('UcenterMember')->where($map)->count();
+        //进入注册
+        $reg_users_map[] = ['status', '=', 1];
+        $reg_users_map[] = ['reg_time','>=',$start];
+        $reg_users_map[] = ['reg_time','<=',$end];
+        $reg_users = Db::name('UcenterMember')->where($reg_users_map)->count();
+        
+        //进入登录用户
+        $login_users_map[] = ['status', '=', 1];
+        $login_users_map[] = ['last_login_time','>=',$start];
+        $login_users_map[] = ['last_login_time','<=',$end];
+        $login_users = Db::name('UcenterMember')->where($login_users_map)->count();
+        //总用户数
         $total_user = Db::name('UcenterMember')->count();
+        //今日用户行为
         $today_action_log = Db::name('ActionLog')->where('status=1 and create_time>=' . $start)->count();
 
         $count['today_user'] = $reg_users;
@@ -86,7 +63,7 @@ class Index extends Admin
         $count['total_user'] = $total_user;
         $count['today_action_log'] = $today_action_log;
         
-        $this->assign('count', $count);
+        View::assign(['count' => $count]);
     }
     /**
      * 最近N日用户增长
@@ -142,6 +119,7 @@ class Index extends Admin
 
         $week = [];
         $actionLogData = [];
+        
         //每日用户行为数量
         for ($i = $count_day; $i--; $i >= 0) {
             $day = $today - $i * 86400;
@@ -156,17 +134,19 @@ class Index extends Admin
                 'Sun' => lang('_SUN_')
             ];
             $week[] = date('m月d日 ', $day) . $week_map[date('D', $day)];
-
-            $map['status']=1;
-            $map['create_time']=[['>=',$day],['<=',$day_after],'and'];
+            
+            $map[] = ['status','=',1];
+            $map[] = ['create_time','>=',$day];
+            $map[] = ['create_time','<=',$day_after];
             $user = Db::name('action_log')->where($map)->count() * 1;
+            //dump($user);exit;
             $actionLogData[] = $user;
         }
-
+        
         $actionLog['days'] = $week;
         $actionLog['data'] = $actionLogData;
         $actionLog = json_encode($actionLog);
 
-        $this->assign('actionLog', $actionLog);
+        View::assign(['actionLog' => $actionLog]);
     }
 }
