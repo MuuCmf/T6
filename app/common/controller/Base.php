@@ -17,6 +17,8 @@ use think\Validate;
  */
 abstract class Base
 {
+    protected $middleware = [Auth::class];
+    
     /**
      * Request实例
      * @var \think\Request
