@@ -87,9 +87,9 @@ abstract class Admin
         } elseif ($access === null) {
             //检测非动态权限
             $rule = strtolower(App('http')->getName() . '/' . Request()->controller() . '/' . Request()->action());
-            
-            if (!$this->checkRule($rule, array('in', '1,2'))) {
-                $this->error(lang('_VISIT_NOT_AUTH_'));
+            dump(AuthRule::RULE_URL);exit;
+            if (!$this->checkRule($rule, ['in', '1,2'])) {
+                return $this->error('无权限');
             }
         }
         
@@ -129,25 +129,6 @@ abstract class Admin
         }
         return $uid;
     }
-
-    public function setTitle($title)
-    {
-        $this->_seo['title'] = $title;
-        View::assign(['seo' => $this->_seo]);
-    }
-
-    public function setKeywords($keywords)
-    {
-        $this->_seo['keywords'] = $keywords;
-        View::assign(['seo' => $this->_seo]);
-    }
-
-    public function setDescription($description)
-    {
-        $this->_seo['description'] = $description;
-        View::assign(['seo' => $this->_seo]);
-    }
-
     /**
      * 权限检测
      * @param string $rule 检测的规则
@@ -324,6 +305,134 @@ abstract class Admin
 
         return $menus;
     }
+
+    /** 
+    * 操作成功跳转的快捷方法
+    * @access protected
+    * @param  mixed $msg 提示信息
+    * @param  string $url 跳转的URL地址
+    * @param  mixed $data 返回的数据
+    * @param  integer $wait 跳转等待时间
+    * @param  array $header 发送的Header信息
+    * @return void
+    */
+   protected function success($msg = '', string $url = null, $data = '', int $wait = 3, array $header = [])
+   {
+       if (is_null($url) && isset($_SERVER["HTTP_REFERER"])) {
+           $url = $_SERVER["HTTP_REFERER"];
+       } elseif ($url) {
+           $url = (strpos($url, '://') || 0 === strpos($url, '/')) ? $url : (string)$this->app->route->buildUrl($url);
+       }
+
+       $result = [
+           'code' => 1,
+           'msg' => $msg,
+           'data' => $data,
+           'url' => $url,
+           'wait' => $wait,
+       ];
+
+       $type = $this->getResponseType();
+       // 把跳转模板的渲染下沉，这样在 response_send 行为里通过getData()获得的数据是一致性的格式
+       if ('html' == strtolower($type)) {
+           $type = 'view';
+           $response = Response::create($this->app->config->get('jump.dispatch_success_tmpl'), $type)->assign($result)->header($header);
+       } else {
+           $response = Response::create($result, $type)->header($header);
+       }
+
+       throw new HttpResponseException($response);
+   }
+
+   /**
+    * 操作错误跳转的快捷方法
+    * @access protected
+    * @param  mixed $msg 提示信息
+    * @param  string $url 跳转的URL地址
+    * @param  mixed $data 返回的数据
+    * @param  integer $wait 跳转等待时间
+    * @param  array $header 发送的Header信息
+    * @return void
+    */
+   protected function error($msg = '', string $url = null, $data = '', int $wait = 3, array $header = [])
+   {
+       if (is_null($url)) {
+           $url = $this->request->isAjax() ? '' : 'javascript:history.back(-1);';
+       } elseif ($url) {
+           $url = (strpos($url, '://') || 0 === strpos($url, '/')) ? $url : (string)$this->app->route->buildUrl($url);
+       }
+
+       $result = [
+           'code' => 0,
+           'msg' => $msg,
+           'data' => $data,
+           'url' => $url,
+           'wait' => $wait,
+       ];
+
+       $type = $this->getResponseType();
+
+       if ('html' == strtolower($type)) {
+           $type = 'view';
+           $response = Response::create($this->app->config->get('jump.dispatch_error_tmpl'), $type)->assign($result)->header($header);
+       } else {
+           $response = Response::create($result, $type)->header($header);
+       }
+
+       throw new HttpResponseException($response);
+   }
+
+   /**
+    * 返回封装后的API数据到客户端
+    * @access protected
+    * @param  mixed $data 要返回的数据
+    * @param  integer $code 返回的code
+    * @param  mixed $msg 提示信息
+    * @param  string $type 返回数据格式
+    * @param  array $header 发送的Header信息
+    * @return void
+    */
+   protected function result($data, $code = 0, $msg = '', $type = '', array $header = [])
+   {
+       $result = [
+           'code' => $code,
+           'msg' => $msg,
+           'time' => time(),
+           'data' => $data,
+       ];
+
+       $type = $type ?: $this->getResponseType();
+       $response = Response::create($result, $type)->header($header);
+
+       throw new HttpResponseException($response);
+   }
+
+   /**
+    * URL重定向
+    * @access protected
+    * @param  string $url 跳转的URL表达式
+    * @param  integer $code http code
+    * @param  array $with 隐式传参
+    * @return void
+    */
+   protected function redirect($url, $code = 302, $with = [])
+   {
+       $response = Response::create($url, 'redirect');
+
+       $response->code($code)->with($with);
+
+       throw new HttpResponseException($response);
+   }
+
+   /**
+    * 获取当前的response 输出类型
+    * @access protected
+    * @return string
+    */
+   protected function getResponseType()
+   {
+       return $this->request->isJson() || $this->request->isAjax() ? 'json' : 'html';
+   }
 
     protected function checkUpdate()
     {
