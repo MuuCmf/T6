@@ -74,23 +74,21 @@ abstract class Admin
     public function initialize()
     {
         $this->_seo = ['title' => 'MuuCmf T5','Keywords' => '', 'Description' => ''];
-        View::assign(['seo' => $this->_seo]);
-        
+        //View::assign(['seo' => $this->_seo]);
+        dump(config());
         // 判断登陆
-        $uid = $this->needLogin();
+        //$uid = $this->needLogin();
+        //dump($uid);
         // 检测访问权限
-        $access = $this->accessControl();
+        //$access = $this->accessControl();
+        $access = null;
         if ($access === false) {
             $this->error('ERROR');
         } elseif ($access === null) {
-            $dynamic = $this->checkDynamic();//检测分类栏目有关的各项动态权限
-            if ($dynamic === null) {
-                //检测非动态权限
-                $rule = strtolower(App('http')->getName() . '/' . Request()->controller() . '/' . Request()->action());
-                if (!$this->checkRule($rule, array('in', '1,2'))) {
-                    $this->error(lang('_VISIT_NOT_AUTH_'));
-                }
-            } elseif ($dynamic === false) {
+            //检测非动态权限
+            $rule = strtolower(App('http')->getName() . '/' . Request()->controller() . '/' . Request()->action());
+            
+            if (!$this->checkRule($rule, array('in', '1,2'))) {
                 $this->error(lang('_VISIT_NOT_AUTH_'));
             }
         }

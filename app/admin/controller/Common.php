@@ -20,7 +20,7 @@ class Common
                 $this->error($result['msg']);
             }
         } else { //显示登录页面
-            return $this->fetch();
+            return '登录界面';
         }
     }
 

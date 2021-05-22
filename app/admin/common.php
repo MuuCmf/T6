@@ -3,7 +3,7 @@
  * 后台公共文件
  * 主要定义后台公共函数库
  */
-function guid(){
+function create_uuid(){
     
     mt_srand((double)microtime()*10000);//optional for php 4.2.0 and up.
     $charid = strtoupper(md5(uniqid(rand(), true)));
@@ -16,7 +16,6 @@ function guid(){
             .substr($charid,20,12)
             .chr(125);// "}"
     return $uuid;
-    
 }
 
 function create_guid($namespace = '') {     
