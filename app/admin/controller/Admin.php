@@ -74,48 +74,23 @@ abstract class Admin
     public function initialize()
     {
         $this->_seo = ['title' => 'MuuCmf T5','Keywords' => '', 'Description' => ''];
-        //View::assign(['seo' => $this->_seo]);
         dump(config());
         // 判断登陆
         //$uid = $this->needLogin();
-        //dump($uid);
+        dump($uid);
         // 检测访问权限
-        //$access = $this->accessControl();
-        $access = null;
-        if ($access === false) {
-            $this->error('ERROR');
-        } elseif ($access === null) {
-            //检测非动态权限
-            $rule = strtolower(App('http')->getName() . '/' . Request()->controller() . '/' . Request()->action());
-            dump(AuthRule::RULE_URL);exit;
-            if (!$this->checkRule($rule, ['in', '1,2'])) {
-                return $this->error('无权限');
-            }
+        $rule = strtolower(app('http')->getName() . '/' . Request()->controller() . '/' . Request()->action());
+        //dump(AuthRule::RULE_URL);exit;
+        if (!$this->checkRule($rule, ['in', '1,2'])) {
+            return $this->error('无权限');
         }
         
-        //获取管理员数据
-        $auth_user = query_user(['nickname','username','sex','avatar32','title','fans', 'following','signature'],is_login());
-        View::assign(['__AUTH_USER__' => $auth_user]);
-        // 当前模块、控制器及方法名
-        $this->assign('this_module',strtolower(request()->module()));
-        $this->assign('this_controller',strtolower(request()->controller()));
-        $this->assign('this_action',strtolower(request()->action()));
         // 当前应用模块信息
-        $module = model('common/Module')->getModule(request()->module());
-        View::assign(['__MODULE__', $module]);
-        // 当前模块菜单
-        View::assign(['__MODULE_MENU__', $this->getMenus()]);
+        $module = model('common/Module')->getModule(app('http')->getName());
+        // 当前模块管理菜单
+        $menu = $this->getMenus();
         // 模块入口
         $all_module_list = model('common/Module')->getAll(['is_setup'=>1,'name'=>['neq','ucenter']]);
-        $this->assign('all_module_list', $all_module_list); 
-        View::assign(['all_module_list', $all_module_list]);
-        // 插件菜单
-        $addons_menu = model('admin/Addons')->getAdminList();
-        View::assign(['__ADDONS_MENU__', $addons_menu]);
-        // 是否插件后台
-        if(isset($this->addon)){
-            View::assign(['addons_admin', $this->addon]);
-        }
         // 本地版本
         View::assign(['version', $this->localVersion()]);
         $this->checkUpdate();
