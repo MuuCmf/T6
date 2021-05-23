@@ -180,8 +180,8 @@ class Config extends Admin
         }
     }
 
-    /**网站信息设置
-     * @auth 陈一枭
+    /**
+     * 网站信息设置
      */
     public function website()
     {

@@ -2,26 +2,26 @@
 
 namespace app\common\middleware;
 
-use think\facade\Session;
+use think\App;
 use think\facade\Request;
 use think\facade\Config;
 use think\facade\Cache;
 use think\facade\Db;
 use think\Response;
-use think\exception\HttpResponseException;
 
 class GlobleConfig
 {
     public function handle($request, \Closure $next)
     {
+        //获取数据库内配置数据
         if(strtolower(App('http')->getName())!='install'){
             //动态添加系统配置,非模块配置
             $config = Cache::get('DB_CONFIG_DATA');
+            //dump($config);exit;
             if (!$config) {
                 $map[] = ['status','=',1];
                 $map[] = ['group','>',0];
                 $data = Db::name('Config')->where($map)->field('type,name,value')->select();
-                
                 foreach ($data as $value) {
                     $config[$value['name']] = self::parse($value['type'], $value['value']);
                 }

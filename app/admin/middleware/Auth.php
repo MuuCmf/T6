@@ -18,7 +18,6 @@ class Auth extends Base
         $uid = is_login();
         if (empty($uid)) {// 还没登录 跳转到登录页面
             return $this->result(0,'需要登录');
-            //return '需要登录';
         }
         // 检测访问权限
         $rule = strtolower(app('http')->getName() . '/' . Request()->controller() . '/' . Request()->action());
@@ -26,6 +25,8 @@ class Auth extends Base
         if (!$this->checkRule($rule, ['in', '1,2'])) {
             return $this->result(0,'无权限');
         }
+
+        return $next($request);
     }
 
     /**
@@ -36,9 +37,10 @@ class Auth extends Base
      */
     final protected function checkRule($rule, $type = AuthRule::RULE_URL, $mode = 'url')
     {
+        /*
         if ($this->is_root) {
             return true;//管理员允许访问任何页面
-        }
+        }*/
         static $Auth = null;
         if (!$Auth) {
             $Auth = new \muucmf\Auth();

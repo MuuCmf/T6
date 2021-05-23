@@ -1,5 +1,5 @@
 <?php
-// 这是系统自动生成的middleware定义文件
+// admin模块鉴权中间件
 return [
     app\common\middleware\GlobleConfig::class,
     app\admin\middleware\Auth::class,

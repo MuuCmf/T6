@@ -17,11 +17,9 @@ use \think\Helper;
 /**
  * 控制器基础类
  */
-abstract class Base
+class Base
 {
     private $debug = [];
-    protected $middleware = [Auth::class];
-
     /**
      * Request实例
      * @var \think\Request
@@ -203,10 +201,10 @@ abstract class Base
         'time' => time(),
       ];
 
-      /*
+      
       if (Env::get('APP_DEBUG') && $this->debug) {
         $result['debug'] = $this->debug;
-      }*/
+      }
 
       return json($result);
    }

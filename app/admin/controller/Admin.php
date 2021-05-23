@@ -18,15 +18,6 @@ use app\common\controller\Base;
 class Admin extends Base
 {
     /**
-     * 控制器中间件
-     * @var array
-     */
-    protected $middleware = [
-        'app\common\middleware\GlobleConfig',
-        'app\admin\middleware\Auth'
-    ];
-
-    /**
      * Request实例
      * @var \think\Request
      */
