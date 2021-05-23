@@ -32,11 +32,20 @@ private static $installed = array (
     'aliases' => 
     array (
     ),
-    'reference' => '8c5c47c12dcb401268bf11e31ff6ddf75d153128',
+    'reference' => '20937602e253d7240090eb67e336b2ffe1aa991e',
     'name' => 'topthink/think',
   ),
   'versions' => 
   array (
+    'lcobucci/jwt' => 
+    array (
+      'pretty_version' => '3.3.3',
+      'version' => '3.3.3.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => 'c1123697f6a2ec29162b82f170dd4a491f524773',
+    ),
     'league/flysystem' => 
     array (
       'pretty_version' => '1.1.3',
@@ -136,6 +145,15 @@ private static $installed = array (
       ),
       'reference' => 'c194bcedde6295f3ec3e9eba1f5d484ea97c41a7',
     ),
+    'thans/tp-jwt-auth' => 
+    array (
+      'pretty_version' => 'v1.1.3',
+      'version' => '1.1.3.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => '9d7919c591e8c288320ccac1e9df8ae3b8a71c38',
+    ),
     'topthink/framework' => 
     array (
       'pretty_version' => 'v6.0.8',
@@ -152,7 +170,7 @@ private static $installed = array (
       'aliases' => 
       array (
       ),
-      'reference' => '8c5c47c12dcb401268bf11e31ff6ddf75d153128',
+      'reference' => '20937602e253d7240090eb67e336b2ffe1aa991e',
     ),
     'topthink/think-helper' => 
     array (

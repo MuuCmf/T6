@@ -5,25 +5,6 @@ use think\Controller;
 
 class Common
 {
-
-    /**
-     * 后台用户登录
-     */
-    public function login($username = null, $password = null, $verify = null)
-    {
-        if (request()->isPost()) {
-            $result = controller('ucenter/Login', 'widget')->doLogin();
-
-            if ($result['code']==1) {
-                $this->success($result['msg'], input('post.from', url('admin/index/index'), 'text'));
-            } else {
-                $this->error($result['msg']);
-            }
-        } else { //显示登录页面
-            return '登录界面';
-        }
-    }
-
     /* 退出登录 */
     public function logout(){
 

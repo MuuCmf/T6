@@ -1,5 +1,5 @@
 <?php
 // admin模块鉴权中间件
 return [
-    app\admin\middleware\Auth::class
+    'app\common\middleware\CheckAuth'
 ];

@@ -13,6 +13,7 @@ class ComposerStaticInit81e7ad7153957ae8357939987fe1173a
         '25072dd6e2470089de65ae7bf11d3109' => __DIR__ . '/..' . '/symfony/polyfill-php72/bootstrap.php',
         'a4a119a56e50fbb293281d9a48007e0e' => __DIR__ . '/..' . '/symfony/polyfill-php80/bootstrap.php',
         '667aeda72477189d0494fecd327c3641' => __DIR__ . '/..' . '/symfony/var-dumper/Resources/functions/dump.php',
+        'cc25fa796cd7d2989f16cf9daf45371d' => __DIR__ . '/..' . '/thans/tp-jwt-auth/src/helper.php',
     );
 
     public static $prefixLengthsPsr4 = array (
@@ -21,6 +22,7 @@ class ComposerStaticInit81e7ad7153957ae8357939987fe1173a
             'think\\view\\driver\\' => 18,
             'think\\app\\' => 10,
             'think\\' => 6,
+            'thans\\jwt\\' => 10,
         ),
         'a' => 
         array (
@@ -45,6 +47,7 @@ class ComposerStaticInit81e7ad7153957ae8357939987fe1173a
             'League\\MimeTypeDetection\\' => 25,
             'League\\Flysystem\\Cached\\' => 24,
             'League\\Flysystem\\' => 17,
+            'Lcobucci\\JWT\\' => 13,
         ),
     );
 
@@ -63,6 +66,10 @@ class ComposerStaticInit81e7ad7153957ae8357939987fe1173a
             1 => __DIR__ . '/..' . '/topthink/think-helper/src',
             2 => __DIR__ . '/..' . '/topthink/think-orm/src',
             3 => __DIR__ . '/..' . '/topthink/think-template/src',
+        ),
+        'thans\\jwt\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/thans/tp-jwt-auth/src',
         ),
         'app\\' => 
         array (
@@ -111,6 +118,10 @@ class ComposerStaticInit81e7ad7153957ae8357939987fe1173a
         'League\\Flysystem\\' => 
         array (
             0 => __DIR__ . '/..' . '/league/flysystem/src',
+        ),
+        'Lcobucci\\JWT\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/lcobucci/jwt/src',
         ),
     );
 
