@@ -19,13 +19,8 @@ class ComposerStaticInit81e7ad7153957ae8357939987fe1173a
         't' => 
         array (
             'think\\view\\driver\\' => 18,
-            'think\\trace\\' => 12,
             'think\\app\\' => 10,
             'think\\' => 6,
-        ),
-        'l' => 
-        array (
-            'liliuwei\\think\\' => 15,
         ),
         'a' => 
         array (
@@ -58,10 +53,6 @@ class ComposerStaticInit81e7ad7153957ae8357939987fe1173a
         array (
             0 => __DIR__ . '/..' . '/topthink/think-view/src',
         ),
-        'think\\trace\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/topthink/think-trace/src',
-        ),
         'think\\app\\' => 
         array (
             0 => __DIR__ . '/..' . '/topthink/think-multi-app/src',
@@ -72,10 +63,6 @@ class ComposerStaticInit81e7ad7153957ae8357939987fe1173a
             1 => __DIR__ . '/..' . '/topthink/think-helper/src',
             2 => __DIR__ . '/..' . '/topthink/think-orm/src',
             3 => __DIR__ . '/..' . '/topthink/think-template/src',
-        ),
-        'liliuwei\\think\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/liliuwei/thinkphp-jump/src',
         ),
         'app\\' => 
         array (

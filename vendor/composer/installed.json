@@ -212,66 +212,6 @@
             "install-path": "../league/mime-type-detection"
         },
         {
-            "name": "liliuwei/thinkphp-jump",
-            "version": "v1.5",
-            "version_normalized": "1.5.0.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/liliuwei/thinkphp-jump.git",
-                "reference": "481d41b922095f08230609919be5d19354c50540"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/liliuwei/thinkphp-jump/zipball/481d41b922095f08230609919be5d19354c50540",
-                "reference": "481d41b922095f08230609919be5d19354c50540",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=7.1.0",
-                "topthink/framework": "^6.0",
-                "topthink/think-view": "^1.0"
-            },
-            "time": "2020-03-20T15:11:56+00:00",
-            "type": "think-extend",
-            "extra": {
-                "think": {
-                    "config": {
-                        "jump": "src/config/jump.php"
-                    }
-                }
-            },
-            "installation-source": "dist",
-            "autoload": {
-                "psr-4": {
-                    "liliuwei\\think\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "Apache-2.0"
-            ],
-            "authors": [
-                {
-                    "name": "liliuwei",
-                    "email": "974829947@qq.com"
-                }
-            ],
-            "description": "适用于thinkphp6.0的跳转扩展",
-            "keywords": [
-                "error",
-                "redirect",
-                "result",
-                "success",
-                "think-jump",
-                "thinkphp"
-            ],
-            "support": {
-                "issues": "https://github.com/liliuwei/thinkphp-jump/issues",
-                "source": "https://github.com/liliuwei/thinkphp-jump/tree/v1.5"
-            },
-            "install-path": "../liliuwei/thinkphp-jump"
-        },
-        {
             "name": "psr/cache",
             "version": "1.0.1",
             "version_normalized": "1.0.1.0",
@@ -1089,60 +1029,6 @@
             "install-path": "../topthink/think-template"
         },
         {
-            "name": "topthink/think-trace",
-            "version": "v1.4",
-            "version_normalized": "1.4.0.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/top-think/think-trace.git",
-                "reference": "9a9fa8f767b6c66c5a133ad21ca1bc96ad329444"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/top-think/think-trace/zipball/9a9fa8f767b6c66c5a133ad21ca1bc96ad329444",
-                "reference": "9a9fa8f767b6c66c5a133ad21ca1bc96ad329444",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=7.1.0",
-                "topthink/framework": "^6.0.0"
-            },
-            "time": "2020-06-29T05:27:28+00:00",
-            "type": "library",
-            "extra": {
-                "think": {
-                    "services": [
-                        "think\\trace\\Service"
-                    ],
-                    "config": {
-                        "trace": "src/config.php"
-                    }
-                }
-            },
-            "installation-source": "dist",
-            "autoload": {
-                "psr-4": {
-                    "think\\trace\\": "src"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "Apache-2.0"
-            ],
-            "authors": [
-                {
-                    "name": "liu21st",
-                    "email": "liu21st@gmail.com"
-                }
-            ],
-            "description": "thinkphp debug trace",
-            "support": {
-                "issues": "https://github.com/top-think/think-trace/issues",
-                "source": "https://github.com/top-think/think-trace/tree/v1.4"
-            },
-            "install-path": "../topthink/think-trace"
-        },
-        {
             "name": "topthink/think-view",
             "version": "v1.0.14",
             "version_normalized": "1.0.14.0",
@@ -1192,7 +1078,6 @@
         "symfony/polyfill-mbstring",
         "symfony/polyfill-php72",
         "symfony/polyfill-php80",
-        "symfony/var-dumper",
-        "topthink/think-trace"
+        "symfony/var-dumper"
     ]
 }

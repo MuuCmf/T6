@@ -25,11 +25,10 @@
         "topthink/think-orm": "^2.0",
         "topthink/think-multi-app": "^1.0",
         "topthink/think-view": "^1.0",
-        "liliuwei/thinkphp-jump": "^1.5"
+        "topthink/think-helper": "^3.1"
     },
     "require-dev": {
-        "symfony/var-dumper": "^4.2",
-        "topthink/think-trace":"^1.0"
+        "symfony/var-dumper": "^4.2"
     },
     "autoload": {
         "psr-4": {

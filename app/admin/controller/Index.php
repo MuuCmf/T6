@@ -21,13 +21,6 @@ class Index extends Admin
                return $this->success('设置成功');
             }
 
-        }else{
-            $this->setTitle('管理后台');
-            $this->getRegUser();
-            $this->getActionLog();
-            $this->getUserCount();
-
-            return View::fetch('');
         }
     }
 

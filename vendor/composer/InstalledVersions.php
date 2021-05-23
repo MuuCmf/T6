@@ -32,7 +32,7 @@ private static $installed = array (
     'aliases' => 
     array (
     ),
-    'reference' => '7624792dfa04b52fea5434d537866196a04e96ee',
+    'reference' => '8c5c47c12dcb401268bf11e31ff6ddf75d153128',
     'name' => 'topthink/think',
   ),
   'versions' => 
@@ -63,15 +63,6 @@ private static $installed = array (
       array (
       ),
       'reference' => '3b9dff8aaf7323590c1d2e443db701eb1f9aa0d3',
-    ),
-    'liliuwei/thinkphp-jump' => 
-    array (
-      'pretty_version' => 'v1.5',
-      'version' => '1.5.0.0',
-      'aliases' => 
-      array (
-      ),
-      'reference' => '481d41b922095f08230609919be5d19354c50540',
     ),
     'psr/cache' => 
     array (
@@ -161,7 +152,7 @@ private static $installed = array (
       'aliases' => 
       array (
       ),
-      'reference' => '7624792dfa04b52fea5434d537866196a04e96ee',
+      'reference' => '8c5c47c12dcb401268bf11e31ff6ddf75d153128',
     ),
     'topthink/think-helper' => 
     array (
@@ -198,15 +189,6 @@ private static $installed = array (
       array (
       ),
       'reference' => 'abfc293f74f9ef5127b5c416310a01fe42e59368',
-    ),
-    'topthink/think-trace' => 
-    array (
-      'pretty_version' => 'v1.4',
-      'version' => '1.4.0.0',
-      'aliases' => 
-      array (
-      ),
-      'reference' => '9a9fa8f767b6c66c5a133ad21ca1bc96ad329444',
     ),
     'topthink/think-view' => 
     array (
