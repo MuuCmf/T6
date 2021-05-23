@@ -31,9 +31,10 @@ class GlobleConfig
         
         // 判断站点是否关闭
         if (strtolower(App('http')->getName()) != 'install' && strtolower(App('http')->getName()) != 'admin') {
-            if (!$config('WEB_SITE_CLOSE')) {
+            
+            if (!$config['WEB_SITE_CLOSE']) {
                 header("Content-Type: text/html; charset=utf-8");
-                echo $config('WEB_SITE_CLOSE_HINT');exit;
+                return $config['WEB_SITE_CLOSE_HINT'];exit;
             }
         }
 
