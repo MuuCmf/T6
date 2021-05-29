@@ -18,7 +18,7 @@
  * 淘宝IP接口
  * @Return: array
  */
-use think\Db;
+use think\facade\Db;
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
@@ -266,7 +266,7 @@ function muucmf_hash($message, $salt = "MuuCmf")
  */
 function modC($key, $default = '', $module = '')
 {
-    $module_name=request()->module();
+    $module_name = app('http')->getName();
     $mod = $module ? $module : $module_name;
     
     if($mod=="install"){

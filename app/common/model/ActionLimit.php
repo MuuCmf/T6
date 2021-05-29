@@ -2,7 +2,9 @@
 namespace app\common\model;
 
 use think\Model;
-use think\Db;
+// 引入框架内置类
+use think\facade\Request;
+use think\facade\Db;
 
 class ActionLimit extends Model
 {
@@ -11,12 +13,12 @@ class ActionLimit extends Model
     var $code = 1;
     var $url;
     var $msg = '';
-    var $punish = array(
-        array('warning','警告并禁止'),
-        array('logout_account', '强制退出登陆'),
-        array('ban_account', '封停账户'),
-        array('ban_ip', '封IP'),
-    );
+    var $punish = [
+        ['warning','警告并禁止'],
+        ['logout_account', '强制退出登陆'],
+        ['ban_account', '封停账户'],
+        ['ban_ip', '封IP'],
+    ];
 
     public function _initialize()
     {
@@ -122,20 +124,18 @@ class ActionLimit extends Model
      */
     public function checkActionLimit($action = null, $model = null, $record_id = null, $user_id = null, $ip = false)
     {
-        $obj = model('ActionLimit');
-
         $item = array('action' => $action, 'model' => $model, 'record_id' => $record_id, 'user_id' => $user_id, 'action_ip' => $ip);
         if(empty($record_id)){
             unset($item['record_id']);
         }
 
-        $obj->checkOne($item);
+        $this->checkOne($item);
 
         $return = [];
-        if (!$obj->code) {
-            $return['code'] = $obj->code;
-            $return['msg'] = $obj->msg;
-            $return['url'] = $obj->url;
+        if (!$this->code) {
+            $return['code'] = $this->code;
+            $return['msg'] = $this->msg;
+            $return['url'] = $this->url;
         }else{
             $return['code'] = 1;
         }

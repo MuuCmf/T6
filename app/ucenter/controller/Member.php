@@ -1,39 +1,47 @@
 <?php
 namespace app\ucenter\controller;
 
-use think\Controller;
-use think\Db;
-use app\ucenter\model\UcenterMember;
-use app\common\Model\FollowModel;
+use think\App;
+use think\facade\Request;
+use think\facade\Session;
+use think\facade\Db;
+use think\facade\Cache;
+use think\Response;
+use think\Validate;
+use app\common\model\Member as CommonMember;
+use app\common\model\ActionLimit;
 
+use app\common\controller\Base;
 /**
  * 用户控制器
  * 包括用户中心，用户登录及注册
  */
-class Member extends Controller
+class Member extends Base
 {
+    
     /**
      * register  注册页面
      */
     public function register()
     {
-        //获取参数
-        $aUsername = $username = input('post.username', '', 'text');
-        $aPassword = input('post.password', '', 'text');
-        $cPassword = input('post.confirm_password', '', 'text');
-        $aVerify = input('post.verify', '', 'text');
-        $aRegVerify = input('post.reg_verify', '', 'text');
-        $aRegType = input('post.reg_type', '', 'text');
-        $aStep = input('get.step', 'start', 'text');
-
-        if (!modC('REG_SWITCH', '', 'USERCONFIG')) {
-            $this->error(lang('_ERROR_REGISTER_CLOSED_'));
-        }
         //提交注册
         if (request()->isPost()) {
             
-            $return = model('ActionLimit')->checkActionLimit('reg', 'ucenter_member', 1, 1, true);
+            //获取参数
+            $aUsername = input('post.username', '', 'text');
+            $aPassword = input('post.password', '', 'text');
+            $cPassword = input('post.confirm_password', '', 'text');
+            $aVerify = input('post.verify', '', 'text');
+            $aRegVerify = input('post.reg_verify', '', 'text');
+            $aRegType = input('post.reg_type', 'username', 'text');
             
+            
+            if (!modC('REG_SWITCH', '', 'USERCONFIG')) {
+                $this->error('注册功能临时关闭，请稍后访问！');
+            }
+            $ActionLimit = new ActionLimit();
+            $return = $ActionLimit->checkActionLimit('reg', 'member', 1, 1, true);
+           
             if ($return && !$return['code']) {
                 $this->error($return['msg'], $return['url']);
             }
@@ -49,24 +57,29 @@ class Member extends Controller
             if($aPassword != $cPassword){
                 $this->error('两次输入密码不一致');
             }
+            
 
             /* 检测验证码 */
+            /*
             if (check_verify_open('reg')) {
                 if (!check_verify($aVerify,1)) {
                     $this->error(lang('_ERROR_VERIFY_CODE_').lang('_PERIOD_'));
                 }
             }
-
+            */
+            dump(modC('MOBILE_VERIFY_TYPE', 0, 'USERCONFIG'));
+            dump(modC('EMAIL_VERIFY_TYPE', 0, 'USERCONFIG'));
             if (($aRegType == 'mobile' && modC('MOBILE_VERIFY_TYPE', 0, 'USERCONFIG') == 1) || 
-                (modC('EMAIL_VERIFY_TYPE', 0, 'USERCONFIG') == 2 && $aRegType == 'email')) 
-            {
+                (modC('EMAIL_VERIFY_TYPE', 0, 'USERCONFIG') == 2 && $aRegType == 'email')) {
                 if (!model('Verify')->checkVerify($aUsername, $aRegType, $aRegVerify, 0)) 
                 {
                     $str = $aRegType == 'mobile' ? lang('_PHONE_') : lang('_EMAIL_');
                     $this->error($str . lang('_FAIL_VERIFY_'));
                 }
             }
+
             $aUnType = 0;
+            
             //获取注册类型
             check_username($aUsername, $email, $mobile, $aUnType);
             if ($aRegType == 'email' && $aUnType != 2) {
@@ -78,14 +91,9 @@ class Member extends Controller
             if (!check_reg_type($aUnType)) {
                 $this->error(lang('_ERROR_REGISTER_NOT_OPENED_').lang('_PERIOD_'));
             }
-            //获取和判断邀请码
-            $aCode = input('post.code', '', 'text');
-            if (!$this->checkInviteCode($aCode)) {
-                $this->error(lang('_ERROR_INV_ILLEGAL_').lang('_EXCLAMATION_'));
-            }
-
+           
             /* 注册用户 */
-            $ucenterMemberModel = new UcenterMember;
+            $commonMemberModel = new CommonMember;
             // 验证注册
             switch ($aRegType) {
                 case 'username':
@@ -95,7 +103,7 @@ class Member extends Controller
                         $this->error(lang('_ERROR_USERNAME_LENGTH_1_').modC('USERNAME_MIN_LENGTH',2,'USERCONFIG').'-'.modC('USERNAME_MAX_LENGTH',32,'USERCONFIG').lang('_ERROR_USERNAME_LENGTH_2_'));
                     }
 
-                    $id = $ucenterMemberModel->where(['username' => $aUsername])->value('id');
+                    $id = $commonMemberModel->where(['username' => $aUsername])->value('uid');
                     if ($id) {
                         $this->error(lang('_ERROR_USERNAME_EXIST_2_'));
                     }
@@ -110,21 +118,21 @@ class Member extends Controller
                     if ($length < 4 || $length > 32) {
                         $this->error(lang('_ERROR_EMAIL_EXIST_'));
                     }
-                    $id = $ucenterMemberModel->where(['email' => $email])->value('id');
+                    $id = $commonMemberModel->where(['email' => $email])->value('id');
                     if ($id) {
                         $this->error(lang('_ERROR_EMAIL_EXIST_'));
                     }
                     break;
                 case 'mobile':
                     empty($mobile) && $this->error(lang('_ERROR_PHONE_FORMAT_'));
-                    $id = $ucenterMemberModel->where(['mobile' => $mobile])->value('id');
+                    $id = $commonMemberModel->where(['mobile' => $mobile])->value('id');
                     if ($id) {
                         $this->error(lang('_ERROR_PHONE_EXIST_'));
                     }
                     break;
             }
-
-            $code_id = $uid = $ucenterMemberModel->register($aUsername, $aNickname, $aPassword, $email, $mobile, $aUnType);
+             dump($aRegType);exit;
+            $code_id = $uid = $commonMemberModel->register($aUsername, $aNickname, $aPassword, $email, $mobile, $aUnType);
             if (0 < $code_id) { //注册成功
 
                 //邮箱激活验证
@@ -135,102 +143,27 @@ class Member extends Controller
                     // $this->success('注册成功，请登录邮箱进行激活');
                 }
 
-                $uid = $ucenterMemberModel->login($username, $aPassword, $aUnType); //通过账号密码取到uid
+                $uid = $commonMemberModel->login($username, $aPassword, $aUnType); //通过账号密码取到uid
 
-                $res = model('Member')->login($uid, false); //登陆
+                $res = $commonMemberModel->login($uid, false); //登陆
                 //未设置启用任何注册后步骤操作就跳过
-                $step_config = modC('REG_STEP','','USERCONFIG');
+                //$step_config = modC('REG_STEP','','USERCONFIG');
 
-                if($step_config){
-                   $step_config = json_decode($step_config,true); 
-                }
+                //if($step_config){
+                //   $step_config = json_decode($step_config,true); 
+                //}
                 
-                if(empty($step_config[1]['items']) || $step_config[1]['items']=0){
-                    $step_url = modC('REG_USER_URL','index/Index/index','USERCONFIG');
-                }else{
+                //if(empty($step_config[1]['items']) || $step_config[1]['items']=0){
+                //    $step_url = modC('REG_USER_URL','index/Index/index','USERCONFIG');
+                //}else{
                     //构建注册步骤URL
-                    $step_url = url('ucenter/member/step', ['step' => get_next_step('start')]);
-                }
+                //    $step_url = url('ucenter/member/step', ['step' => get_next_step('start')]);
+                //}
                 $this->success('注册成功', $step_url);
             } else { //注册失败，显示错误信息
                 $this->error(model('Member')->showRegError($code_id));
             }
-        } else {
-            //显示注册表单
-            if (is_login()) {
-                $this->redirect(url('index/Index/index'));
-            }
-            $regType = $this->checkRegisterType();
-            $aType = input('get.type', '', 'text');
-            $regSwitch = modC('REG_SWITCH', '', 'USERCONFIG');
-            $regSwitch = explode(',', $regSwitch);
-            $nicknameSwitch = modC('NICKNAME_SWITCH', 0, 'USERCONFIG');
-            
-            $this->assign('regSwitch', $regSwitch);//注册开关
-            $this->assign('nicknameSwitch', $nicknameSwitch);//昵称开关
-            $this->assign('step', $aStep);
-            $this->assign('type', $aType == '' ? 'username' : $aType);
-            //自定义注册模板
-            $template = modC('REG_USER_TEMPLATE','register','USERCONFIG');
-
-            return $this->fetch($template);
-        }
-    }
-    /**
-     * 注册步骤
-     * @return [type] [description]
-     */
-    public function step()
-    {
-        $user = session('user_auth');
-        $aStep = input('step', '', 'text');
-        $aUid = $user['uid'];
-
-        if (empty($aUid)) {
-            $this->error(lang('_ERROR_PARAM_'));
-        }
-        
-        //取得站点LOGO
-        $logo = get_cover(modC('LOGO',0,'Config'),'path');
-        $logo = $logo?$logo:'/common/images/logo.png';
-        //取得用户资料
-        $user_info =  query_user(array('uid', 'nickname', 'email','avatar64'), $aUid);
-
-        $this->assign('user_info',$user_info);
-        $this->assign('logo',$logo);
-        $this->assign('step', $aStep);
-
-        return $this->fetch('register');
-    }
-    /**
-     * 邀请码
-     * @return [type] [description]
-     */
-    public function inCode()
-    {
-        if (request()->isPost()) {
-            $aType = input('get.type', '', 'text');
-            $aCode = input('post.code', '', 'text');
-            $result['code'] = 0;
-            if (!mb_strlen($aCode)) {
-                $result['msg'] = lang('_INFO_PLEASE_INPUT_').lang('_EXCLAMATION_');
-                return json($result);
-            }
-            $invite = model('ucenter/Invite')->getByCode($aCode);
-            if ($invite) {
-                if ($invite['end_time'] > time()) {
-                    $result['code'] = 1;
-                    $result['url'] = Url('ucenter/Member/register', ['code' => $aCode, 'type' => $aType]);
-                } else {
-                    $result['msg'] = lang('_INFO_INV_CODE_EXPIRED_');
-                }
-            } else {
-                $result['msg'] = lang('_INFO_NOT_EXIST_');
-            }
-            return json($result);
-        } else {
-           return $this->fetch();
-        }
+        } 
     }
 
     /* 登录页面 */
@@ -252,26 +185,7 @@ class Member extends Controller
             } else {
                 $this->error($result['msg']);
             }
-        } else { //显示登录页面
-            $template = modC('LOGIN_USER_TEMPLATE','login','USERCONFIG');
-
-            return $this->fetch($template);
-        }
-    }
-
-    /**
-     * 快捷登录页面
-     * @return [type] [description]
-     */
-    public function quickLogin()
-    {
-        if (request()->isPost()) {
-            $result = controller('ucenter/Login', 'Widget')->doLogin();
-            $this->ajaxReturn($result);
-        } else { 
-            //显示登录弹出框
-            return $this->fetch();
-        }
+        } 
     }
 
     /* 退出登录 */
@@ -545,7 +459,7 @@ class Member extends Controller
         $aNickname = input('post.nickname', '', 'text');
 
         if (empty($aNickname)) {
-            $this->error(lang('_EMPTY_CANNOT_').lang('_EXCLAMATION_'));
+            $this->error('昵称不能为空！');
         }
 
         $length = mb_strlen($aNickname, 'utf-8'); // 当前数据长度
@@ -564,20 +478,6 @@ class Member extends Controller
         }
 
         $this->success(lang('_SUCCESS_VERIFY_'));
-    }
-
-    /**
-     * 修改用户扩展信息
-     */
-    public function edit_expandinfo()
-    {
-        $result = controller('ucenter/RegStep', 'widget')->edit_expandinfo();
-        if ($result['status']) {
-            $this->success(lang('_SUCCESS_SAVE_'), session('temp_login_uid') ? Url('ucenter/member/step', array('step' => get_next_step('expand_info'))) : 'refresh');
-        } else {
-            !isset($result['info']) && $result['info'] = lang('_ERROR_INFO_SAVE_NONE_');
-            $this->error($result['info']);
-        }
     }
 
 }

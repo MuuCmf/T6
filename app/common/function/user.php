@@ -381,7 +381,7 @@ function user_md5($str, $key = '')
  */
 function check_verify_open($open)
 {
-    $config = Config('VERIFY_OPEN');
+    $config = config('VERIFY_OPEN');
 
     if ($config) {
         $config = explode(',', $config);

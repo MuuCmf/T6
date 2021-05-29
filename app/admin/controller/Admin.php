@@ -10,8 +10,6 @@ use think\facade\Db;
 use think\facade\Cache;
 use think\Response;
 use think\Validate;
-use thans\jwt\facade\JWTAuth;
-use app\common\middleware\CheckAuth;
 
 /**
  * 控制器基础类

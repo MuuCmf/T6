@@ -15,7 +15,7 @@ class CheckAuth extends Base
      * Auth鉴权
      */
     public function handle($request, \Closure $next): Response {
-
+        
         //可以获取请求中的完整token字符串
         $token = JWTAuth::token();
         //判断登陆
@@ -24,17 +24,20 @@ class CheckAuth extends Base
             $payload = JWTAuth::auth(); 
             //可以继而获取payload里自定义的字段，比如uid
             $uid = $payload['uid']->getValue(); 
+
+
+            // 检测访问权限
+            $rule = strtolower(app('http')->getName() . '/' . Request()->controller() . '/' . Request()->action());
+            
+            if (!$this->checkRule($rule, $uid, ['in', '1,2'])) {
+                return $this->result(0,'无权限');
+            }
         }
         // 还没登录 提示登录
         if (empty($uid)) {
             return $this->result(0,'需要登录');
         }
-        // 检测访问权限
-        $rule = strtolower(app('http')->getName() . '/' . Request()->controller() . '/' . Request()->action());
-        //dump(AuthRule::RULE_URL);exit;
-        if (!$this->checkRule($rule, ['in', '1,2'])) {
-            return $this->result(0,'无权限');
-        }
+        
 
         return $next($request);
     }
@@ -45,7 +48,7 @@ class CheckAuth extends Base
      * @param string $mode check模式
      * @return boolean
      */
-    final protected function checkRule($rule, $type = AuthRule::RULE_URL, $mode = 'url')
+    final protected function checkRule($rule, $uid, $type = AuthRule::RULE_URL, $mode = 'url')
     {
         /*
         if ($this->is_root) {
@@ -55,7 +58,7 @@ class CheckAuth extends Base
         if (!$Auth) {
             $Auth = new \muucmf\Auth();
         }
-        if (!$Auth->check($rule, is_login(), $type, $mode)) {
+        if (!$Auth->check($rule, $uid, $type, $mode)) {
             return false;
         }
         return true;
