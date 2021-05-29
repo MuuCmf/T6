@@ -54,30 +54,45 @@ class Member extends Model
         }
 
         /* 添加用户 */
-        if ($uid = model('Member')->registerMember($nickname)) {//返回UID
-            
-            if ($uid > 0) {
-                $usercenter_member = $data;
-                $usercenter_member['password'] = user_md5($usercenter_member['password'],config('database.auth_key'));
-                $usercenter_member['id'] = $uid;
-                $usercenter_member['status'] = 1;
-                //写ucenter_member表
-                $result = $this->save($usercenter_member);
-                
-                $ucenter_id = $this->id;
-                
-                if ($ucenter_id === false) {
-                    //如果注册失败，则回去Memeber表删除掉错误的记录
-                    model('common/Member')->where(['uid' => $uid])->delete();
-                }
-                action_log('reg','ucenter_member',1,$uid);
-                return $uid ? $uid : 0; //0-未知错误，大于0-注册成功
-            } else {
-                return 0;
+        /* 在当前应用中注册用户 */
+        $user = [
+            'nickname' => $nickname,
+            'status' => 1
+        ];
+        $this->nickname = $nickname;
+        $this->status   = 1;
+        if ($res = $this->save()) {
+            // $this->uid;主键ID;
+            if (!$res) {
+                $this->error = lang('_THE_FOREGROUND_USER_REGISTRATION_FAILED_PLEASE_TRY_AGAIN_WITH_EXCLAMATION_');
+                return false;
             }
+            $res_follow = $this->initFollow($this->uid);
+            return $this->uid;
         } else {
             return $this->getError(); //错误详情见自动验证注释
         }
+
+        if ($uid > 0) {
+            $usercenter_member = $data;
+            $usercenter_member['password'] = user_md5($usercenter_member['password'],config('database.auth_key'));
+            $usercenter_member['id'] = $uid;
+            $usercenter_member['status'] = 1;
+            //写ucenter_member表
+            $result = $this->save($usercenter_member);
+            
+            $ucenter_id = $this->id;
+            
+            if ($ucenter_id === false) {
+                //如果注册失败，则回去Memeber表删除掉错误的记录
+                $this->where(['uid' => $uid])->delete();
+            }
+            action_log('reg','ucenter_member',1,$uid);
+            return $uid ? $uid : 0; //0-未知错误，大于0-注册成功
+        } else {
+            return 0;
+        }
+        
     }
 
     /**
