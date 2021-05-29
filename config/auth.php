@@ -1,10 +1,5 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: liliuwei
- * Date: 2019/5/23
- * Time: 22:50
- */
+
 return[
     // 权限设置
     'auth_config'            => [
@@ -13,6 +8,6 @@ return[
         'auth_group'         => 'muucmf_auth_group',        // 用户组数据表名
         'auth_group_access'  => 'muucmf_auth_group_access', // 用户-用户组关系表
         'auth_rule'          => 'muucmf_auth_rule',         // 权限规则表
-        'auth_user'          => 'muucmf_admin'             // 用户信息表
+        'auth_user'          => 'muucmf_admin',             // 用户信息表
     ],
 ];

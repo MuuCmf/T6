@@ -2,7 +2,6 @@
 
 use think\facade\Db;
 
-require_once(__DIR__ . '/common/function/addons.php');
 require_once(__DIR__ . '/common/function/builder.php');
 require_once(__DIR__ . '/common/function/file.php');
 require_once(__DIR__ . '/common/function/message.php');

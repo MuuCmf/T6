@@ -8,6 +8,7 @@ use think\facade\Db;
 use think\facade\Cache;
 use think\Response;
 use think\Validate;
+use think\exception\ValidateException;
 use app\common\model\Member as CommonMember;
 use app\common\model\ActionLimit;
 
@@ -39,6 +40,7 @@ class Member extends Base
             if (!modC('REG_SWITCH', '', 'USERCONFIG')) {
                 $this->error('注册功能临时关闭，请稍后访问！');
             }
+
             $ActionLimit = new ActionLimit();
             $return = $ActionLimit->checkActionLimit('reg', 'member', 1, 1, true);
            
@@ -55,20 +57,9 @@ class Member extends Base
 
             /*检测密码*/
             if($aPassword != $cPassword){
-                $this->error('两次输入密码不一致');
+                $this->result(0,'两次输入密码不一致');
             }
             
-
-            /* 检测验证码 */
-            /*
-            if (check_verify_open('reg')) {
-                if (!check_verify($aVerify,1)) {
-                    $this->error(lang('_ERROR_VERIFY_CODE_').lang('_PERIOD_'));
-                }
-            }
-            */
-            dump(modC('MOBILE_VERIFY_TYPE', 0, 'USERCONFIG'));
-            dump(modC('EMAIL_VERIFY_TYPE', 0, 'USERCONFIG'));
             if (($aRegType == 'mobile' && modC('MOBILE_VERIFY_TYPE', 0, 'USERCONFIG') == 1) || 
                 (modC('EMAIL_VERIFY_TYPE', 0, 'USERCONFIG') == 2 && $aRegType == 'email')) {
                 if (!model('Verify')->checkVerify($aUsername, $aRegType, $aRegVerify, 0)) 
@@ -97,71 +88,48 @@ class Member extends Base
             // 验证注册
             switch ($aRegType) {
                 case 'username':
-                    empty($aUsername) && $this->error(lang('_ERROR_USERNAME_FORMAT_').lang('_EXCLAMATION_'));
+                    empty($aUsername) && $this->error('用户名不能为空');
                     $length = mb_strlen($aUsername, 'utf-8'); // 当前数据长度
                     if ($length < modC('USERNAME_MIN_LENGTH',2,'USERCONFIG') || $length > modC('USERNAME_MAX_LENGTH',32,'USERCONFIG')) {
                         $this->error(lang('_ERROR_USERNAME_LENGTH_1_').modC('USERNAME_MIN_LENGTH',2,'USERCONFIG').'-'.modC('USERNAME_MAX_LENGTH',32,'USERCONFIG').lang('_ERROR_USERNAME_LENGTH_2_'));
                     }
 
-                    $id = $commonMemberModel->where(['username' => $aUsername])->value('uid');
-                    if ($id) {
+                    $have_uid = $commonMemberModel->where(['username' => $aUsername])->value('uid');
+                    if ($have_uid) {
                         $this->error(lang('_ERROR_USERNAME_EXIST_2_'));
                     }
                     preg_match("/^[a-zA-Z0-9_]{".modC('USERNAME_MIN_LENGTH',2,'USERCONFIG').",".modC('USERNAME_MAX_LENGTH',32,'USERCONFIG')."}$/", $aUsername, $result);
                     if (!$result) {
                         $this->error(lang('_ERROR_USERNAME_ONLY_PERMISSION_'));
                     }
-                    break;
+                break;
                 case 'email':
-                    empty($email) && $this->error(lang('_ERROR_EMAIL_FORMAT_').lang('_EXCLAMATION_'));
+                    empty($email) && $this->error('邮箱地址不能为空');
                     $length = mb_strlen($email, 'utf-8'); // 当前数据长度
                     if ($length < 4 || $length > 32) {
-                        $this->error(lang('_ERROR_EMAIL_EXIST_'));
+                        $this->result(0,'邮箱格式错误');
                     }
-                    $id = $commonMemberModel->where(['email' => $email])->value('id');
-                    if ($id) {
-                        $this->error(lang('_ERROR_EMAIL_EXIST_'));
+                    $have_uid = $commonMemberModel->where(['email' => $email])->value('uid');
+                    if ($have_uid) {
+                        $this->result(0,'邮箱已存在');
                     }
-                    break;
+                break;
                 case 'mobile':
                     empty($mobile) && $this->error(lang('_ERROR_PHONE_FORMAT_'));
-                    $id = $commonMemberModel->where(['mobile' => $mobile])->value('id');
-                    if ($id) {
-                        $this->error(lang('_ERROR_PHONE_EXIST_'));
+                    $have_uid = $commonMemberModel->where(['mobile' => $mobile])->value('uid');
+                    if ($have_uid) {
+                        $this->result(0,'手机号码已存在');
                     }
-                    break;
+                break;
             }
-             dump($aRegType);exit;
-            $code_id = $uid = $commonMemberModel->register($aUsername, $aNickname, $aPassword, $email, $mobile, $aUnType);
-            if (0 < $code_id) { //注册成功
-
-                //邮箱激活验证
-                if (modC('EMAIL_VERIFY_TYPE', 0, 'USERCONFIG') == 1 && $aUnType == 2) {
-                    set_user_status($uid, 3);
-                    $verify = model('Verify')->addVerify($email, 'email', $uid);
-                    $res = $this->sendActivateEmail($email, $verify, $uid); //发送激活邮件
-                    // $this->success('注册成功，请登录邮箱进行激活');
-                }
-
-                $uid = $commonMemberModel->login($username, $aPassword, $aUnType); //通过账号密码取到uid
-
-                $res = $commonMemberModel->login($uid, false); //登陆
-                //未设置启用任何注册后步骤操作就跳过
-                //$step_config = modC('REG_STEP','','USERCONFIG');
-
-                //if($step_config){
-                //   $step_config = json_decode($step_config,true); 
-                //}
-                
-                //if(empty($step_config[1]['items']) || $step_config[1]['items']=0){
-                //    $step_url = modC('REG_USER_URL','index/Index/index','USERCONFIG');
-                //}else{
-                    //构建注册步骤URL
-                //    $step_url = url('ucenter/member/step', ['step' => get_next_step('start')]);
-                //}
+            
+            $uid = $commonMemberModel->register($aUsername, $aNickname, $aPassword, $email, $mobile, $aUnType);
+            //dump($uid);exit;
+            if (0 < $uid) {
+                $res = $commonMemberModel->login($uid); //登陆
                 $this->success('注册成功', $step_url);
             } else { //注册失败，显示错误信息
-                $this->error(model('Member')->showRegError($code_id));
+                $this->error($commonMemberModel->getError());
             }
         } 
     }

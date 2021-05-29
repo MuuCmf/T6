@@ -3,7 +3,7 @@ namespace app\common\model;
 
 use think\Model;
 use think\Db;
-use app\common\model\Member;
+use app\common\model\ActionLog;
 
 /**
  * 会员模型
@@ -11,17 +11,11 @@ use app\common\model\Member;
 class Member extends Model
 {
     protected $autoWriteTimestamp = true;
-    // 定义时间戳字段名
-    protected $createTime = 'reg_time';
-    protected $updateTime = 'update_time';
+
     //自动完成
     protected $insert = ['reg_ip'];
     protected $update = ['update_time'];
 
-    protected function setRegIpAttr()
-    {
-        return request()->ip(1);
-    }
     /**
      * 注册一个新用户
      * @param  string $username 用户名
@@ -31,68 +25,40 @@ class Member extends Model
      * @param  string $mobile 用户手机号码
      * @return integer          注册成功-用户信息，注册失败-错误编号
      */
-    public function register($username, $nickname, $password, $email='', $mobile='', $type=1)
+    public function register($username='', $nickname, $password, $email='', $mobile='', $type=1)
     {
-        $data = array(
+        $data = [
             'username' => $username,
-            'password' => $password,
+            'password' => user_md5($password,config('database.auth_key')),
             'email' => $email,
             'mobile' => $mobile,
+            'nickname' => $nickname,
             'type' => $type,
-        );
+            'status' => 1,
+        ];
 
-        //验证
-        if (empty($data['mobile'])) unset($data['mobile']);
-        if (empty($data['username'])) unset($data['username']);
-        if (empty($data['email'])) unset($data['email']);
-
+        /*
         //验证器验证数据
-        $validate = new \app\ucenter\validate\UcenterMember;
+        $validate = new \app\ucenter\validate\Member;
         //测试数据时可暂时禁用验证
-        if(!$validate->scene('reg')->check($data)){
+        if(!$validate->check($data)){
             return $validate->getError();
-        }
+        }*/
 
         /* 添加用户 */
-        /* 在当前应用中注册用户 */
-        $user = [
-            'nickname' => $nickname,
-            'status' => 1
-        ];
-        $this->nickname = $nickname;
-        $this->status   = 1;
-        if ($res = $this->save()) {
-            // $this->uid;主键ID;
+        if ($res = $this->save($data)) {
             if (!$res) {
-                $this->error = lang('_THE_FOREGROUND_USER_REGISTRATION_FAILED_PLEASE_TRY_AGAIN_WITH_EXCLAMATION_');
                 return false;
+            }else{
+                $uid = $this->id;
+                $actionLog = new ActionLog();
+                $actionLog->actionLog('reg','member',1,$uid);
+                return $uid;
             }
-            $res_follow = $this->initFollow($this->uid);
-            return $this->uid;
-        } else {
-            return $this->getError(); //错误详情见自动验证注释
-        }
-
-        if ($uid > 0) {
-            $usercenter_member = $data;
-            $usercenter_member['password'] = user_md5($usercenter_member['password'],config('database.auth_key'));
-            $usercenter_member['id'] = $uid;
-            $usercenter_member['status'] = 1;
-            //写ucenter_member表
-            $result = $this->save($usercenter_member);
             
-            $ucenter_id = $this->id;
-            
-            if ($ucenter_id === false) {
-                //如果注册失败，则回去Memeber表删除掉错误的记录
-                $this->where(['uid' => $uid])->delete();
-            }
-            action_log('reg','ucenter_member',1,$uid);
-            return $uid ? $uid : 0; //0-未知错误，大于0-注册成功
         } else {
-            return 0;
+            return -1; //错误详情见自动验证注释
         }
-        
     }
 
     /**
@@ -102,7 +68,7 @@ class Member extends Model
      * @param  integer $type 用户名类型 （1-用户名，2-邮箱，3-手机，4-UID）
      * @return integer           登录成功-用户ID，登录失败-错误编号
      */
-    public function login($username, $password, $type = 1)
+    public function getUid($username, $password, $type = 1)
     {
 
         $map = [];
@@ -133,16 +99,65 @@ class Member extends Model
 
         if ($user['id'] && $user['status']) {
             /* 验证用户密码 */
-            if (user_md5($password, Config('database.auth_key')) === $user['password']) {
-                $this->updateLogin($user['id']); //更新用户登录信息
-                return $user['id']; //登录成功，返回用户ID
+            if (user_md5($password, config('database.auth_key')) === $user['password']) {
+                return $user['id']; //返回用户ID
             } else {
-                action_log('input_password','ucenter_member',$user['id'],$user['id']);
+                action_log('input_password','member',$user['id'],$user['id']);
                 return -2; //密码错误
             }
         } else {
             return -1; //用户不存在或被禁用
         }
+    }
+
+    /**
+     * 登录指定用户
+     * @param  integer $uid 用户ID
+     * @return boolean      ture-登录成功，false-登录失败
+     */
+    public function login($uid)
+    {
+        
+        /* 检测是否在当前应用注册 */
+        $user = $this->where('uid',$uid)->find();
+        if (1 != $user['status']) {
+            $this->error = '用户已禁用'; //应用级别禁用
+            return false;
+        }
+        
+        /* 登录用户 */
+        $this->autoLogin($user);
+        //记录行为
+        $actionLog = new ActionLog();
+        $actionLog->actionLog('user_login', 'member', $uid, $uid);
+       
+        return true;
+    }
+
+
+    /**
+     * 自动登录用户
+     * @param  integer $user 用户信息数组
+     */
+    public function autoLogin($user)
+    {
+        /* 更新登录信息 */
+        $data = [
+            'last_login_time' => time(),
+            'last_login_ip' => request()->ip(1),
+        ];
+
+        $this->save($data,$user['uid']);
+        $this->where(['uid'=>$user['uid']])->setInc('login');
+        
+        /* 记录登录SESSION和COOKIES */
+        $auth = [
+            'uid' => $user['uid'],
+            'last_login_time' => $user['last_login_time'],
+        ];
+
+        session('user_auth', $auth);
+        session('user_auth_sign', data_auth_sign($auth));
     }
 
     /**

@@ -386,18 +386,6 @@ function tree_to_list($tree, $child = '_child', $order = 'id', &$list = array())
     return $list;
 }
 
-/**
- * 记录行为日志，并执行该行为的规则
- * @param string $action 行为标识
- * @param string $model 触发行为的模型名
- * @param int $record_id 触发行为的记录id
- * @param int $user_id 执行行为的用户id
- * @return boolean
- */
-function action_log($action = null, $model = null, $record_id = null, $user_id = null)
-{
-    return model('action')->action_log($action, $model, $record_id, $user_id);
-}
 
 //基于数组创建目录和文件
 function create_dir_or_files($files)
@@ -436,88 +424,6 @@ if (!function_exists('array_column')) {
         }
         return $result;
     }
-}
-
-
-
-/**
- * 获取数据的所有子孙数据的id值
- * @author 朱亚杰 <xcoolcc@gmail.com>
- */
-
-function get_stemma($pids, Model &$model, $field = 'id')
-{
-    $collection = array();
-
-    //非空判断
-    if (empty($pids)) {
-        return $collection;
-    }
-
-    if (is_array($pids)) {
-        $pids = trim(implode(',', $pids), ',');
-    }
-    $result = $model->field($field)->where(array('pid' => array('IN', (string)$pids)))->select();
-    $child_ids = array_column((array)$result, 'id');
-
-    while (!empty($child_ids)) {
-        $collection = array_merge($collection, $result);
-        $result = $model->field($field)->where(array('pid' => array('IN', $child_ids)))->select();
-        $child_ids = array_column((array)$result, 'id');
-    }
-    return $collection;
-}
-
-/**
- * 获取导航URL
- * @param  string $url 导航URL
- * @return string      解析或的url
- * @author 麦当苗儿 <zuojiazi@vip.qq.com>
- */
-function get_nav_url($url)
-{
-    switch ($url) {
-        case 'http://' === substr($url, 0, 7):
-        case '#' === substr($url, 0, 1):
-            break;
-        default:
-            $url = Url($url);
-            break;
-    }
-    return $url;
-}
-
-/**
- * @param $url 检测当前url是否被选中
- * @return bool|string
- * @auth 陈一枭
- */
-function get_nav_active($url)
-{
-    $request= Request()->instance();
-    switch ($url) {
-        case 'http://' === substr($url, 0, 7):
-            if (strtolower($url) === strtolower($_SERVER['HTTP_REFERER'])) {
-                return 1;
-            }
-        case '#' === substr($url, 0, 1):
-            return 0;
-            break;
-        default:
-            $url_array = explode('/', $url);
-            if ($url_array[0] == '') {
-                $MODULE_NAME = $url_array[1];
-            } else {
-                $MODULE_NAME = $url_array[0]; //发现模块就是当前模块即选中。
-
-            }
-            if (strtolower($MODULE_NAME) === strtolower($request->module())) {
-                return 1;
-            };
-            break;
-
-    }
-    return 0;
 }
 
 /**
@@ -573,12 +479,6 @@ function html($text,$type = 'html')
     return $text;
 }
 
-function real_strip_tags($str, $allowable_tags = "")
-{
-   // $str = html_entity_decode($str, ENT_QUOTES, 'UTF-8');
-    return strip_tags($str, $allowable_tags);
-}
-
 /**获取当前的积分
  * @param string $score_name
  * @return mixed
@@ -588,17 +488,6 @@ function getMyScore($score_name = 'score1')
     $user = query_user(array($score_name), is_login());
     $score = $user[$score_name];
     return $score;
-}
-
-function is_ie()
-{
-    $userAgent = $_SERVER['HTTP_USER_AGENT'];
-    $pos = strpos($userAgent, ' MSIE ');
-    if ($pos === false) {
-        return false;
-    } else {
-        return true;
-    }
 }
 
 function array_subtract($a, $b)
@@ -758,60 +647,6 @@ function cut_str($search,$str,$place=''){
 }
 
 /**
- * get_upload_config  获取上传驱动配置
- * @param $driver
- * @return mixed
- * @author:dameng
- */
-function get_upload_config($driver){
-    if($driver == 'local'){
-        $uploadConfig =     config("UPLOAD_{$driver}_CONFIG");
-    }else{
-        $name = get_addon_class($driver);
-        $class = new $name();
-        $uploadConfig = $class->uploadConfig();
-    }
-    return $uploadConfig;
-}
-
-/**
- * check_driver_is_exist 判断上传驱动插件是否存在
- * @param $driver
- * @return string
- * @author:xjw129xjt(肖骏涛) xjt@ourstu.com
- */
-function check_driver_is_exist($driver){
-    if($driver == 'local'){
-        return $driver;
-    }else{
-        $name = get_addon_class($driver);
-        if (class_exists($name)) {
-            return $driver;
-        }else{
-            return 'local';
-        }
-    }
-}
-
-/**
- * check_sms_hook_is_exist  判断短信服务插件是否存在，不存在则返回none
- * @param $driver
- * @return string
- * @author:xjw129xjt(肖骏涛) xjt@ourstu.com
- */
-function check_sms_hook_is_exist($driver){
-    if($driver == 'none'){
-        return $driver;
-    }else{
-        $name = get_addon_class($driver);
-        if (class_exists($name)) {
-            return $driver;
-        }else{
-            return 'none';
-        }
-    }
-}
-/**
  * 根据ID获取区域名称
  * @param  [type] $id [description]
  * @return [type]     [description]
@@ -821,40 +656,6 @@ function get_area_name($id)
     return Db::name('district')->where(['id' => $id])->field('name')->find();
 }
 
-/**
- * 获取当前完整URL
- * @return [type] [description]
- */
-function get_url() {
-    $url = 'http://';
-    if (isset ( $_SERVER ['HTTPS'] ) && $_SERVER ['HTTPS'] == 'on') {
-        $url = 'https://';
-    }
-    if ($_SERVER ['SERVER_PORT'] != '80') {
-        $url .= $_SERVER ['HTTP_HOST'] . ':' . $_SERVER ['SERVER_PORT'] . $_SERVER ['REQUEST_URI'];
-    } else {
-        $url .= $_SERVER ['HTTP_HOST'] . $_SERVER ['REQUEST_URI'];
-    }
-    // 兼容后面的参数组装
-    if (stripos ( $url, '?' ) === false) {
-        $url .= '?t=' . time ();
-    }
-    return $url;
-}
-/**
- * 判断网址是否包含参数,有参数返回后缀&，无返回后缀？
- * @param  [type] $url [description]
- * @return [type]      [description]
- */
-function url_query($url){
-    $array = parse_url($url);
-    if(!isset($array['query'])){
-        $url = $url.'?';
-    }else{
-        $url = $url.'&';
-    }
-    return $url;
-}
 /**
  * 多维数组中查询是否包含值
  * @param  [type] $value [description]

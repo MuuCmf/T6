@@ -38,7 +38,7 @@ class ActionLimit extends Model
      */
     public function ban_account($item)
     {
-        set_user_status($item['user_id'], 0);
+        set_user_status($item['uid'], 0);
     }
 
     public function ban_ip($item,$val)
@@ -57,9 +57,9 @@ class ActionLimit extends Model
         return $list;
     }
 
-    public function addCheckItem($action = null, $model = null, $record_id = null, $user_id = null, $ip = false)
+    public function addCheckItem($action = null, $model = null, $record_id = null, $uid = null, $ip = false)
     {
-        $this->item[] = array('action' => $action, 'model' => $model, 'record_id' => $record_id, 'user_id' => $user_id, 'action_ip' => $ip);
+        $this->item[] = array('action' => $action, 'model' => $model, 'record_id' => $record_id, 'uid' => $uid, 'action_ip' => $ip);
         return $this;
     }
 
@@ -105,7 +105,7 @@ class ActionLimit extends Model
                 }
                 unset($punish);
                 if ($val['if_message']) {
-                    model('Message')->sendMessageWithoutCheckSelf($item['user_id'], lang('_SYSTEM_MESSAGE_'),$val['message_content'],'');
+                    model('Message')->sendMessageWithoutCheckSelf($item['uid'], lang('_SYSTEM_MESSAGE_'),$val['message_content'],'');
                     
                 }
             }
@@ -118,13 +118,13 @@ class ActionLimit extends Model
      * @param  [type]  $action    [description]
      * @param  [type]  $model     [description]
      * @param  [type]  $record_id [description]
-     * @param  [type]  $user_id   [description]
+     * @param  [type]  $uid   [description]
      * @param  boolean $ip        [description]
      * @return [type]             [description]
      */
-    public function checkActionLimit($action = null, $model = null, $record_id = null, $user_id = null, $ip = false)
+    public function checkActionLimit($action = null, $model = null, $record_id = null, $uid = null, $ip = false)
     {
-        $item = array('action' => $action, 'model' => $model, 'record_id' => $record_id, 'user_id' => $user_id, 'action_ip' => $ip);
+        $item = array('action' => $action, 'model' => $model, 'record_id' => $record_id, 'uid' => $uid, 'action_ip' => $ip);
         if(empty($record_id)){
             unset($item['record_id']);
         }
