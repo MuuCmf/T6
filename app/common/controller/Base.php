@@ -201,7 +201,6 @@ class Base
         'code' => $code,
         'msg' => $msg,
         'data' => $data,
-        'token' => $this->request,
         'time' => time(),
       ];
 

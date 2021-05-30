@@ -64,14 +64,10 @@ class CheckAuth extends Base
                 return $this->setAuthentication($response, $token);
 
             } catch (\Exception $e) { // 捕获黑名单宽限期
-                //$payload = $this->auth->auth(false);
-                //$request->uid = $payload['uid']->getValue();
-                //return json($e->getError());
-                //return $next($request);
+                return $this->result(0,'需要登录');
             }
-        } catch (TokenBlacklistGracePeriodException $e) { // 捕获黑名单宽限期
-            // $payload = $this->auth->auth(false);
-            // $request->uid = $payload['uid']->getValue();
+        } catch (\Exception $e) { // 捕获黑名单宽限期
+            return $this->result(0,'验证失败');
         }
 
         return $next($request);
