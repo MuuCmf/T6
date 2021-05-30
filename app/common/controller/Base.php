@@ -44,6 +44,9 @@ class Base
      */
     protected $system = [];
 
+    protected $uid = 0;
+
+    protected $token = '';
     /**
      * 构造方法
      * @access public
@@ -198,6 +201,7 @@ class Base
         'code' => $code,
         'msg' => $msg,
         'data' => $data,
+        'token' => $this->request,
         'time' => time(),
       ];
 

@@ -39,11 +39,6 @@ class Admin
      * @var array
      */
     protected $system = [];
-    /**
-     * 后台基类 控制器
-     */
-    public $_seo;
-    public $is_root;
 
     /**
      * 构造方法
@@ -68,6 +63,35 @@ class Admin
         $menu = $this->getMenus();
         // 模块入口
         $all_module_list = model('common/Module')->getAll(['is_setup'=>1,'name'=>['neq','ucenter']]);
+
+        // 检测访问权限
+        $rule = strtolower(app('http')->getName() . '/' . Request()->controller() . '/' . Request()->action());
+        
+        if (!$this->checkRule($rule, $this->request->uid, ['in', '1,2'])) {
+            return $this->result(0,'无权限');
+        }
+    }
+
+    /**
+     * 权限检测
+     * @param string $rule 检测的规则
+     * @param string $mode check模式
+     * @return boolean
+     */
+    final protected function checkRule($rule, $uid, $type = AuthRule::RULE_URL, $mode = 'url')
+    {
+        /*
+        if ($this->is_root) {
+            return true;//管理员允许访问任何页面
+        }*/
+        static $Auth = null;
+        if (!$Auth) {
+            $Auth = new \muucmf\Auth();
+        }
+        if (!$Auth->check($rule, $uid, $type, $mode)) {
+            return false;
+        }
+        return true;
     }
 
     /**

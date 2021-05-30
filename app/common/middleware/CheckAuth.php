@@ -7,60 +7,75 @@ use think\App;
 use think\Response;
 use think\facade\Request;
 use app\common\controller\Base;
-use thans\jwt\facade\JWTAuth;
+use thans\jwt\JWTAuth as Auth;
+use think\facade\Config;
+use thans\jwt\exception\TokenExpiredException;
+use thans\jwt\exception\TokenBlacklistGracePeriodException;
 
 class CheckAuth extends Base
 {
+    protected $auth;
+
+    public function __construct(Auth $auth)
+    {
+        $this->auth = $auth;
+    }
+
+    protected function setAuthentication($response, $token = null)
+    {
+        $token = $token ?: $this->auth->refresh();
+        $this->auth->setToken($token);
+
+        if (in_array('cookie', Config::get('jwt.token_mode'))) {
+            Cookie::set('token', $token);
+        }
+        
+        if (in_array('header', Config::get('jwt.token_mode'))) {
+            $response = $response->header(['Authorization' => 'Bearer '.$token]);
+        }
+
+        return $response;
+    }
+
     /**
      * Auth鉴权
      */
     public function handle($request, \Closure $next): Response {
         
-        //可以获取请求中的完整token字符串
-        $token = JWTAuth::token();
-        //判断登陆
-        if($token){
-            //可验证token, 并获取token中的payload部分
-            $payload = JWTAuth::auth(); 
-            //可以继而获取payload里自定义的字段，比如uid
-            $uid = $payload['uid']->getValue(); 
+        // 验证token
+        try {
+            //$this->auth->auth();
+            $payload = $this->auth->auth();
+            $request->uid = $payload['uid']->getValue();
 
-
-            // 检测访问权限
-            $rule = strtolower(app('http')->getName() . '/' . Request()->controller() . '/' . Request()->action());
+            return $next($request);
             
-            if (!$this->checkRule($rule, $uid, ['in', '1,2'])) {
-                return $this->result(0,'无权限');
+        } catch (TokenExpiredException $e) { // 捕获token过期
+            // 尝试刷新token
+            try {
+                $this->auth->setRefresh();
+                $token = $this->auth->refresh();
+
+                $payload = $this->auth->auth(false);
+                $request->uid = $payload['uid']->getValue();
+
+                $response = $next($request);
+                //通过header返回新token
+                return $this->setAuthentication($response, $token);
+
+            } catch (\Exception $e) { // 捕获黑名单宽限期
+                //$payload = $this->auth->auth(false);
+                //$request->uid = $payload['uid']->getValue();
+                //return json($e->getError());
+                //return $next($request);
             }
+        } catch (TokenBlacklistGracePeriodException $e) { // 捕获黑名单宽限期
+            // $payload = $this->auth->auth(false);
+            // $request->uid = $payload['uid']->getValue();
         }
-        // 还没登录 提示登录
-        if (empty($uid)) {
-            return $this->result(0,'需要登录');
-        }
-        
 
         return $next($request);
     }
 
-    /**
-     * 权限检测
-     * @param string $rule 检测的规则
-     * @param string $mode check模式
-     * @return boolean
-     */
-    final protected function checkRule($rule, $uid, $type = AuthRule::RULE_URL, $mode = 'url')
-    {
-        /*
-        if ($this->is_root) {
-            return true;//管理员允许访问任何页面
-        }*/
-        static $Auth = null;
-        if (!$Auth) {
-            $Auth = new \muucmf\Auth();
-        }
-        if (!$Auth->check($rule, $uid, $type, $mode)) {
-            return false;
-        }
-        return true;
-    }
+    
 }
