@@ -106,7 +106,7 @@ class Base
         }
     }
 
-        /** 
+    /** 
     * 操作成功跳转的快捷方法
     * @access protected
     * @param  mixed $msg 提示信息

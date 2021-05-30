@@ -19,7 +19,6 @@ use app\common\controller\Base;
  */
 class Member extends Base
 {
-    
     /**
      * register  注册页面
      */
@@ -105,11 +104,11 @@ class Member extends Base
             // 验证账号和密码
             $commonMemberModel = new CommonMember;
             $uid = $commonMemberModel->verifyUserPassword($account, $password);
-            
-            if ($uid) {
-                $this->result(200,'登录成功');
+
+            if ($uid > 0) {
+                return $this->result(200,'登录成功');
             } else {
-                $this->result(0,'账号密码错误');
+                return $this->result(0,'账号密码错误');
             }
         } 
     }
@@ -139,47 +138,41 @@ class Member extends Base
             }
             check_username($username, $email, $mobile, $aUnType);
             //检查验证码是否正确
-                $ret = model('Verify')->checkVerify($account,$type,$verify,0);
-                if(!$ret){//验证码错误
-                    $this->error(lang('_ERROR_VERIFY_CODE_'));
-                }
-                $resend_time =  modC('SMS_RESEND','60','USERCONFIG');
-                if(time() > session('verify_time')+$resend_time ){//验证超时
-                    $this->error(lang('_ERROR_VERIFY_OUTIME_'));
-                }
-                //获取用户UID
-                switch ($type) {
-                    case 'mobile':
-                    $uid = Db::name('UcenterMember')->where(['mobile' => $account])->value('id');
-                    break;
-                    case 'email':
-                    $uid = Db::name('UcenterMember')->where(['email' => $account])->value('id');
-                    break;
-                }
-                if (!$uid) {
-                    $this->error(lang('_ERROR_USED_1_') . lang('_USER_') . lang('_ERROR_USED_3_'));
-                }
-                //设置新密码
-                $password = user_md5($password, config('database.user_auth'));
-                $data['id'] = $uid;
-                $data['password'] = $password;
-
-                $ret = Db::name('UcenterMember')->update($data,['id'=>$uid]);
-                if($ret){
-                    //返回成功信息前处理
-                    clean_query_user_cache($uid, 'password');//删除缓存
-                    Db::name('user_token')->where('uid=' . $uid)->delete();
-                    //返回数据
-                    $this->success(lang('_SUCCESS_SETTINGS_'), Url('Member/login'));
-                }else{
-                    $this->error();
-                }
-        } else {
-            if (is_login()) {
-                redirect(Url('index/Index/index'));
+            $ret = model('Verify')->checkVerify($account,$type,$verify,0);
+            if(!$ret){//验证码错误
+                $this->error(lang('_ERROR_VERIFY_CODE_'));
             }
+            $resend_time =  modC('SMS_RESEND','60','USERCONFIG');
+            if(time() > session('verify_time')+$resend_time ){//验证超时
+                $this->error(lang('_ERROR_VERIFY_OUTIME_'));
+            }
+            //获取用户UID
+            switch ($type) {
+                case 'mobile':
+                $uid = Db::name('UcenterMember')->where(['mobile' => $account])->value('id');
+                break;
+                case 'email':
+                $uid = Db::name('UcenterMember')->where(['email' => $account])->value('id');
+                break;
+            }
+            if (!$uid) {
+                $this->error(lang('_ERROR_USED_1_') . lang('_USER_') . lang('_ERROR_USED_3_'));
+            }
+            //设置新密码
+            $password = user_md5($password, config('database.user_auth'));
+            $data['id'] = $uid;
+            $data['password'] = $password;
 
-            return $this->fetch();
+            $ret = Db::name('UcenterMember')->update($data,['id'=>$uid]);
+            if($ret){
+                //返回成功信息前处理
+                clean_query_user_cache($uid, 'password');//删除缓存
+                Db::name('user_token')->where('uid=' . $uid)->delete();
+                //返回数据
+                $this->success(lang('_SUCCESS_SETTINGS_'), Url('Member/login'));
+            }else{
+                $this->error();
+            }
         }
     }
 

@@ -87,19 +87,20 @@ class Member extends Model
             default:
                 return 0; //参数错误
         }
-        /* 获取用户数据 */
+        // 获取用户数据
         $user = $this->where($map)->find();
-        
-        $return = model('ActionLimit')->checkActionLimit('input_password','member',$user['uid'],$user['uid']);
+        // 行为限制
+        $actionLimit = new ActionLimit();
+        $return =$actionLimit->checkActionLimit('input_password','member',$user['uid'],$user['uid']);
 
         if($return && !$return['code']){
             return $return['msg'];
         }
 
-        if ($user['id'] && $user['status']) {
+        if ($user['uid'] && $user['status']) {
             /* 验证用户密码 */
             if (user_md5($password, config('database.auth_key')) === $user['password']) {
-                return $user['id']; //返回用户ID
+                return $user['uid']; //返回用户ID
             } else {
                 $actionLog = new ActionLog();
                 $actionLog->actionLog('input_password','member',$user['uid'],$user['uid']);
