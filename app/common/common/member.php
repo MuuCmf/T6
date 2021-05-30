@@ -4,39 +4,8 @@ use think\facade\Cache;
 use think\facade\Db;
 use muucmf\Auth;
 use think\captcha\Captcha;
-/**
- * 用户相关公共函数库
- */
+use app\common\model\Member;
 
-/**
- * 检测用户是否登录
- * @return integer 0-未登录，大于0-当前登录用户ID
- * @author 麦当苗儿 <zuojiazi@vip.qq.com>
- */
-function is_login()
-{   
-    $user = session('user_auth');
-    if (empty($user)) {
-        return 0;
-    } else {
-        return session('user_auth_sign') == data_auth_sign($user) ? $user['uid'] : 0;
-    }
-}
-/**
- * 通用需要用户授权判断 登陆状态返回用户uid，未登陆返回false，如果安装了微信模块可调起微信网页授权
- * @return [type] [description]
- */
-function _need_login(){
-    return model('common/Member')->need_login();
-}
-/**
- * 获取登陆用户uid;
- * @return [type] [description]
- */
-function get_uid()
-{
-    return is_login();
-}
 /**
  * 根据用户ID获取用户名
  * @param  integer $uid 用户ID
@@ -44,7 +13,8 @@ function get_uid()
  */
 function get_username($uid = 0)
 {
-    return model('common/Member')->get_username($uid);
+    $member = new Member();
+    return $member->getUsername($uid);
 }
 
 /**
@@ -54,57 +24,8 @@ function get_username($uid = 0)
  */
 function get_nickname($uid = 0)
 {
-    return model('common/Member')->get_nickname($uid);
-}
-
-/**
- * 用户扩展资料可添加关联字段
- * @param string $id 关联数据表ID
- * @param string $field 需要返回的字段内容
- * @param string $table 关联数据表
- * @return array string
- * @author MingYang <xint5288@126.com>
- */
-function get_userdata_join($id = null, $field = null, $table = null)
-{
-    if (empty($table) || empty($field)) {
-        return false;
-    }
-    if (empty($id)) {
-        $data = model($table)->select();
-        foreach ($data as $key => $val) {
-            $list[$key] = $val;
-        }
-        return $list;
-    } else {
-        if (is_array($id)) {
-            $map['id'] = array('in', $id);
-            $data = D($table)->where($map)->getField($field, true);
-            return implode(',', $data);
-        } else {
-            $map['id'] = $id;
-            $data = D($table)->where($map)->getField($field);
-            return $data;
-        }
-    }
-}
-
-/**
- * 构造用户配置表查询条件
- * @param string $name 表中name字段的值(配置标识)
- * @param string $model 表中model字段的值(模块标识)
- * @param int $uid 用户uid
- * @return array 查询条件 $map
- */
-function getUserConfigMap($name = '', $model = '', $uid = 0)
-{
-    $uid = $uid ? $uid : is_login();
-    $map = array();
-    //构造查询条件
-    $map['uid'] = $uid;
-    $map['name'] = $name;
-    $map['model'] = $model;
-    return $map;
+    $member = new Member();
+    return $member->getNickname($uid);
 }
 
 function check_auth($rule = '', $except_uid = -1, $type = AuthRule::RULE_URL)
@@ -274,14 +195,14 @@ function check_verify($code, $id = 1)
 }
 
 /**
- * 生成验证码
+ * 生成图片验证码
  * @return [type] [description]
  */
 function get_verify()
 {
     captcha_src();
-    
 }
+
 /**随机生成一个用户名
  * @param $prefix 前缀
  * @return string
@@ -289,7 +210,7 @@ function get_verify()
 function rand_username($prefix = 'muu')
 {
     $username = $prefix.'_'.create_rand(10);
-    if (Db::name('ucenter_member')->where(['username' => $username])->select()) {
+    if (Db::name('member')->where(['username' => $username])->select()) {
         rand_username($prefix);
     } else {
         return $username;
@@ -298,9 +219,7 @@ function rand_username($prefix = 'muu')
 
 /**
  * 随机生成一个用户昵称
- *
  * @param      string  $prefix  The prefix
- *
  * @return     <type>  ( description_of_the_return_value )
  */
 function rand_nickname($prefix = 'muu')

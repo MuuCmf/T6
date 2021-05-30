@@ -83,12 +83,16 @@ class Common extends Base
             /* 注册用户 */
             $commonMemberModel = new CommonMember;
             $uid = $commonMemberModel->register($username, $nickname, $password, $email, $mobile, $type);
-            //dump($uid);exit;
+
             if (0 < $uid) {
-                $res = $commonMemberModel->login($uid); //登陆
-                $this->success('注册成功', $step_url);
-            } else { //注册失败，显示错误信息
-                $this->error($commonMemberModel->getError());
+                $token = JWTAuth::builder(['uid' => $uid]); //参数为用户认证的信息，请自行添加
+                // 登录账号
+                $res = $commonMemberModel->login($uid);
+
+                return $this->result(200,'注册成功',$token);
+            } else {
+                //注册失败，显示错误信息
+                 return $this->result(0,$commonMemberModel->getError());
             }
         }
     }
@@ -105,23 +109,15 @@ class Common extends Base
             $commonMemberModel = new CommonMember;
             $uid = $commonMemberModel->verifyUserPassword($account, $password);
 
-            if ($uid > 0) {
-                $token = JWTAuth::builder(['uid' => $uid]);//参数为用户认证的信息，请自行添加
+            //登录
+            $res = $commonMemberModel->login($uid);
+
+            if ($res) {
+                $token = JWTAuth::builder(['uid' => $uid]); //参数为用户认证的信息，请自行添加
                 return $this->result(200,'登录成功',$token);
             } else {
-                return $this->result(0,'账号密码错误');
+                return $this->result(0,$commonMemberModel->getError());
             }
-        } 
-    }
-
-    /* 退出登录 */
-    public function logout()
-    {
-        if (is_login()) {
-            model('Member')->logout();
-            $this->success(lang('_SUCCESS_LOGOUT_').lang('_EXCLAMATION_'), Url('index/Index/index'));
-        } else {
-            $this->redirect('member/login');
         }
     }
 

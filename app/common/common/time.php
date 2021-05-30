@@ -12,6 +12,7 @@ if (!function_exists('time_format')) {
         return date($format, $time);
     }
 }
+
 /**
  * 友好的时间显示
  *

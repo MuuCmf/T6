@@ -52,7 +52,7 @@ class Member extends Model
             }else{
                 $uid = $this->id;
                 $actionLog = new ActionLog();
-                $actionLog->actionLog('reg','member',1,$uid);
+                $actionLog->add('reg','member',1,$uid);
                 return $uid;
             }
             
@@ -103,7 +103,7 @@ class Member extends Model
                 return $user['uid']; //返回用户ID
             } else {
                 $actionLog = new ActionLog();
-                $actionLog->actionLog('input_password','member',$user['uid'],$user['uid']);
+                $actionLog->add('input_password','member',$user['uid'],$user['uid']);
                 return -2; //密码错误
             }
         } else {
@@ -118,47 +118,21 @@ class Member extends Model
      */
     public function login(int $uid)
     {
-        
         /* 检测是否在当前应用注册 */
         $user = $this->where('uid',$uid)->find();
         if (1 != $user['status']) {
             $this->error = '用户已禁用'; //应用级别禁用
             return false;
         }
+
+        //更新登录信息
+        $this->updateLogin($uid);
         
-        /* 登录用户 */
-        $this->autoLogin($user);
         //记录行为
         $actionLog = new ActionLog();
-        $actionLog->actionLog('user_login', 'member', $uid, $uid);
-       
+        $actionLog->add('user_login', 'member', $uid, $uid);
+
         return true;
-    }
-
-
-    /**
-     * 自动登录用户
-     * @param  integer $user 用户信息数组
-     */
-    public function autoLogin($user)
-    {
-        /* 更新登录信息 */
-        $data = [
-            'last_login_time' => time(),
-            'last_login_ip' => request()->ip(1),
-        ];
-
-        $this->save($data,$user['uid']);
-        $this->where(['uid'=>$user['uid']])->setInc('login');
-        
-        /* 记录登录SESSION和COOKIES */
-        $auth = [
-            'uid' => $user['uid'],
-            'last_login_time' => $user['last_login_time'],
-        ];
-
-        session('user_auth', $auth);
-        session('user_auth_sign', data_auth_sign($auth));
     }
 
     /**
@@ -211,23 +185,6 @@ class Member extends Model
     }
 
     /**
-     * 根据IP获取用户最后注册时间
-     * @param  string  $uid 用户ID或用户名
-     * @param  boolean $is_username 是否使用用户名查询
-     * @return array                用户信息
-     */
-    public function infos($regip)
-    {
-        $map['reg_ip'] = $regip;
-        $user = $this->where($map)->max('reg_time');
-        if ($user) {
-            return $user;
-        } else {
-            return -1; //用户不存在或被禁用
-        }
-    }
-
-    /**
      * 获取用户信息
      * @param  string  $uid 用户ID或用户名
      * @param  boolean $is_username 是否使用用户名查询
@@ -239,12 +196,12 @@ class Member extends Model
         if ($is_username) { //通过用户名获取
             $map['username'] = $uid;
         } else {
-            $map['id'] = $uid;
+            $map['uid'] = $uid;
         }
 
-        $user = $this->where($map)->field('id,username,email,mobile,status')->find();
+        $user = $this->where($map)->field('uid,username,email,mobile,status')->find();
         if (is_array($user) && $user['status'] = 1) {
-            return array($user['id'], $user['username'], $user['email'], $user['mobile']);
+            return [$user['id'], $user['username'], $user['email'], $user['mobile']];
         } else {
             return -1; //用户不存在或被禁用
         }
@@ -254,14 +211,13 @@ class Member extends Model
      * 更新用户登录信息
      * @param  integer $uid 用户ID
      */
-    protected function updateLogin($uid)
+    public function updateLogin(int $uid)
     {
         $data = array(
-            'id' => $uid,
             'last_login_time' => time(),
             'last_login_ip' => request()->ip(1),
         );
-        $this->update($data);
+        $this->where('uid',$uid)->save($data);
     }
 
     /**修改密码
@@ -304,10 +260,9 @@ class Member extends Model
         }else{
             return false;
         }
-        
     }
     
-    protected  function rand_email()
+    public function randEmail()
     {
         $email = create_rand(10) . '@muucmf.cn';
         if ($this->where(['email' => $email])->select()) {
@@ -315,5 +270,13 @@ class Member extends Model
         } else {
             return $email;
         }
+    }
+
+    public function getNickname(int $uid)
+    {
+        //调用接口获取用户信息
+        $nickname = $this->where('uid',$uid)->value('nickname');
+
+        return $nickname;
     }
 }

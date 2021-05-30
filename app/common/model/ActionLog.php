@@ -14,11 +14,11 @@ class ActionLog extends Model
 	 * @param int $uid 执行行为的用户id
 	 * @return boolean
 	 */
-	public function actionLog($action = null, $model = null, $record_id = null, $uid = null)
+	public function add($action = null, $model = null, $record_id = null, $uid = null)
 	{	
 	    //参数检查
 	    if (empty($action) || empty($model) || empty($record_id)) {
-	        return lang('_PARAMETERS_CANT_BE_EMPTY_');
+	        return '参数不能为空';
 	    }
 	    if (empty($uid)) {
 	        return false;
@@ -52,6 +52,7 @@ class ActionLog extends Model
 	            if(isset($match[1])){
 	            	foreach ($match[1] as $value) {
 		                $param = explode('|', $value);
+		                
 		                if (isset($param[1])) {
 		                    $replace[] = call_user_func($param[1], $log[$param[0]]);
 		                } else {

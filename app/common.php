@@ -2,16 +2,15 @@
 
 use think\facade\Db;
 
-require_once(__DIR__ . '/common/function/builder.php');
-require_once(__DIR__ . '/common/function/file.php');
-require_once(__DIR__ . '/common/function/message.php');
-require_once(__DIR__ . '/common/function/parse.php');
-require_once(__DIR__ . '/common/function/query_user.php');
-require_once(__DIR__ . '/common/function/thumb.php');
-require_once(__DIR__ . '/common/function/time.php');
-require_once(__DIR__ . '/common/function/user.php');
-require_once(__DIR__ . '/common/function/vendors.php');
-require_once(__DIR__ . '/common/function/wechat.php');
+require_once(__DIR__ . '/common/common/builder.php');
+require_once(__DIR__ . '/common/common/file.php');
+require_once(__DIR__ . '/common/common/member.php');
+require_once(__DIR__ . '/common/common/message.php');
+require_once(__DIR__ . '/common/common/parse.php');
+require_once(__DIR__ . '/common/common/thumb.php');
+require_once(__DIR__ . '/common/common/time.php');
+require_once(__DIR__ . '/common/common/vendors.php');
+require_once(__DIR__ . '/common/common/wechat.php');
 
 /**
  * 系统公共库文件
