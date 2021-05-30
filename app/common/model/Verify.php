@@ -48,8 +48,8 @@ class Verify extends Model
      * @return     boolean  ( description_of_the_return_value )
      */
     public function checkVerify($account,$type,$verify,$uid = 0){
-        $verify = $this->where(['account'=>$account,'type'=>$type,'verify'=>$verify])->find();
-        if(!$verify){
+        $data = $this->where(['account'=>$account,'type'=>$type,'verify'=>$verify])->find();
+        if(!$data){
             return false;
         }
         $this->where(['account'=>$account,'type'=>$type])->delete();

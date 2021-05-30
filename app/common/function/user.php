@@ -158,58 +158,26 @@ function get_auth_user($rule = '')
     $uids = array_unique($uids);
     return $uids;
 }
-/**
- * check_username  根据type或用户名来判断注册使用的是用户名、邮箱或者手机
- * @param $username
- * @param $email
- * @param $mobile
- * @param int $type
- * @return bool
- * @author:xjw129xjt(肖骏涛) xjt@ourstu.com
- */
-function check_username(&$username, &$email, &$mobile, &$type = 0)
-{
 
-    if ($type) {
-        switch ($type) {
-            case 2:
-                $email = $username;
-                $username = '';
-                $mobile = '';
-                $type = 2;
-                break;
-            case 3:
-                $mobile = $username;
-                $username = '';
-                $email = '';
-                $type = 3;
-                break;
-            default :
-                $mobile = '';
-                $email = '';
-                $type = 1;
-                break;
-        }
+/**
+ * 检测账号类型
+ * @param  [type] $account [description]
+ * @return [type]          [description]
+ */
+function check_account_type($account)
+{
+    $check_email = preg_match("/[a-z0-9_\-\.]+@([a-z0-9_\-]+?\.)+[a-z]{2,3}/i", $account, $match_email);
+    $check_mobile = preg_match("/^(1[0-9])[0-9]{9}$/", $account, $match_mobile);
+    if ($check_email) {
+        $type = 'email';
+    } elseif ($check_mobile) {
+        $type = 'mobile';
     } else {
-        $check_email = preg_match("/[a-z0-9_\-\.]+@([a-z0-9_\-]+?\.)+[a-z]{2,3}/i", $username, $match_email);
-        $check_mobile = preg_match("/^(1[0-9])[0-9]{9}$/", $username, $match_mobile);
-        if ($check_email) {
-            $email = $username;
-            $username = '';
-            $mobile = '';
-            $type = 2;
-        } elseif ($check_mobile) {
-            $mobile = $username;
-            $username = '';
-            $email = '';
-            $type = 3;
-        } else {
-            $mobile = '';
-            $email = '';
-            $type = 1;
-        }
+        $username = $account;
+        $type = 'username';
     }
-    return true;
+
+    return $type;
 }
 
 /**
@@ -231,9 +199,7 @@ function check_reg_type($type){
         }
     }
     return false;
-
 }
-
 
 /**
  * check_login_type  验证登录提示信息是否开启
@@ -255,102 +221,6 @@ function check_login_type($type){
     }
     return false;
 
-}
-
-/**
- * get_next_step  获取注册流程下一步
- * @param string $now_step
- * @return string
- */
-function get_next_step($now_step =''){
-
-    $step = get_kanban_config('REG_STEP', 'enable','', 'USERCONFIG');
-    if(empty($now_step) || $now_step == 'start'){
-        $return = $step[0];
-    }else{
-        $count = count($step);
-
-        $now_key = array_search($now_step,$step);
-        if(empty($step[$now_key+1])){
-            $return = 'finish';
-        }else{
-            $return = $step[$now_key+1];
-        }
-    }
-
-    if(!in_array($return,array_keys(controller('ucenter/RegStep','widget')->mStep)) || empty($return)){
-        $return = 'finish';
-    }
-    return $return;
-}
-
-/**
- * check_step
- * @param string $now_step
- * @return string
- * @author:xjw129xjt(肖骏涛) xjt@ourstu.com
- */
-function check_step($now_step=''){
-    $step = get_kanban_config('REG_STEP', 'enable','', 'USERCONFIG');
-    if(array_search($now_step,$step)){
-        $return = $now_step;
-    }
-    else{
-        $return = $step[0];
-    }
-    return $return;
-}
-
-
-/**
- * set_user_status   设置用户状态
- * @param $uid
- * @param $status
- * @return bool
- */
-function set_user_status($uid,$status){
-    Db::name('Member')->where(['uid'=>$uid])->setField('status',$status);
-    Db::name('UCenterMember')->where(['id'=>$uid])->setField('status',$status);
-
-    return true;
-}
-
-/**
- * set_users_status   批量设置用户状态
- * @param $map
- * @param $status
- * @return bool
- */
-function set_users_status($map,$status){
-    Db::name('Member')->where($map)->setField('status',$status);
-    Db::name('UCenterMember')->where($map)->setField('status',$status);
-    return true;
-}
-
-/**
- * check_step_can_skip  判断注册步骤是否可跳过
- * @author:xjw129xjt(肖骏涛) xjt@ourstu.com
- */
-function check_step_can_skip($step){
-    $skip = modC('REG_CAN_SKIP','', 'USERCONFIG');
-    $skip = explode(',',$skip);
-    if(in_array($step,$skip)){
-        return true;
-    }
-    return false;
-}
-
-
-function check_and_add($args){
-    $Member = Db::name('Member');
-    $uid = $args['uid'];
-
-    $check = $Member->find($uid);
-    if(!$check){
-        $args['status'] =1;
-        $Member-> insert($args);
-    }
-    return true;
 }
 
 /**
@@ -402,6 +272,7 @@ function check_verify($code, $id = 1)
     $captcha = new Captcha();
     return $captcha->check($code, $id);
 }
+
 /**
  * 生成验证码
  * @return [type] [description]
@@ -424,6 +295,7 @@ function rand_username($prefix = 'muu')
         return $username;
     }
 }
+
 /**
  * 随机生成一个用户昵称
  *

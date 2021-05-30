@@ -29,14 +29,12 @@ class Member extends Base
         if (request()->isPost()) {
             
             //获取参数
-            $aUsername = input('post.username', '', 'text');
-            $aPassword = input('post.password', '', 'text');
-            $cPassword = input('post.confirm_password', '', 'text');
-            $aVerify = input('post.verify', '', 'text');
-            $aRegVerify = input('post.reg_verify', '', 'text');
-            $aRegType = input('post.reg_type', 'username', 'text');
-            
-            
+            $account = input('post.account', '', 'text');
+            $password = input('post.password', '', 'text');
+            $confirm_password = input('post.confirm_password', '', 'text');
+            $verify = input('post.verify', '', 'text');
+
+            //注册开关设置
             if (!modC('REG_SWITCH', '', 'USERCONFIG')) {
                 $this->error('注册功能临时关闭，请稍后访问！');
             }
@@ -50,80 +48,42 @@ class Member extends Base
 
             //昵称注册开关
             if (modC('NICKNAME_SWITCH', 0, 'USERCONFIG') == 0) {
-                $aNickname = modC('NICKNAME_PREFIX','','USERCONFIG').create_rand(8, 'all');
+                $nickname = modC('NICKNAME_PREFIX','','USERCONFIG').$account;
             }else{
-                $aNickname = input('post.nickname', '', 'text');
+                $nickname = input('post.nickname', '', 'text');
             }
 
-            /*检测密码*/
-            if($aPassword != $cPassword){
-                $this->result(0,'两次输入密码不一致');
+            //判断注册类型
+            $check_email = preg_match("/[a-z0-9_\-\.]+@([a-z0-9_\-]+?\.)+[a-z]{2,3}/i", $account, $match_email);
+            $check_mobile = preg_match("/^(1[0-9])[0-9]{9}$/", $account, $match_mobile);
+            if ($check_email) {
+                $email = $account;
+                $username = '';
+                $mobile = '';
+            } elseif ($check_mobile) {
+                $mobile = $account;
+                $username = '';
+                $email = '';
+            } else {
+                $username = $account;
+                $mobile = '';
+                $email = '';
             }
-            
-            if (($aRegType == 'mobile' && modC('MOBILE_VERIFY_TYPE', 0, 'USERCONFIG') == 1) || 
-                (modC('EMAIL_VERIFY_TYPE', 0, 'USERCONFIG') == 2 && $aRegType == 'email')) {
-                if (!model('Verify')->checkVerify($aUsername, $aRegType, $aRegVerify, 0)) 
+
+            $type = check_account_type($account);
+
+            // 验证验证码
+            if (($type == 'mobile' && modC('MOBILE_VERIFY_TYPE', 0, 'USERCONFIG') == 1) || 
+                (modC('EMAIL_VERIFY_TYPE', 0, 'USERCONFIG') == 1 && $type == 'email')) {
+                if (!model('Verify')->checkVerify($account, $type, $verify, 0)) 
                 {
-                    $str = $aRegType == 'mobile' ? lang('_PHONE_') : lang('_EMAIL_');
-                    $this->error($str . lang('_FAIL_VERIFY_'));
+                    $this->result(0,'验证码错误');
                 }
             }
 
-            $aUnType = 0;
-            
-            //获取注册类型
-            check_username($aUsername, $email, $mobile, $aUnType);
-            if ($aRegType == 'email' && $aUnType != 2) {
-                $this->error(lang('_ERROR_EMAIL_FORMAT_'));
-            }
-            if ($aRegType == 'mobile' && $aUnType != 3) {
-                $this->error(lang('_ERROR_PHONE_FORMAT_'));
-            }
-            if (!check_reg_type($aUnType)) {
-                $this->error(lang('_ERROR_REGISTER_NOT_OPENED_').lang('_PERIOD_'));
-            }
-           
             /* 注册用户 */
             $commonMemberModel = new CommonMember;
-            // 验证注册
-            switch ($aRegType) {
-                case 'username':
-                    empty($aUsername) && $this->error('用户名不能为空');
-                    $length = mb_strlen($aUsername, 'utf-8'); // 当前数据长度
-                    if ($length < modC('USERNAME_MIN_LENGTH',2,'USERCONFIG') || $length > modC('USERNAME_MAX_LENGTH',32,'USERCONFIG')) {
-                        $this->error(lang('_ERROR_USERNAME_LENGTH_1_').modC('USERNAME_MIN_LENGTH',2,'USERCONFIG').'-'.modC('USERNAME_MAX_LENGTH',32,'USERCONFIG').lang('_ERROR_USERNAME_LENGTH_2_'));
-                    }
-
-                    $have_uid = $commonMemberModel->where(['username' => $aUsername])->value('uid');
-                    if ($have_uid) {
-                        $this->error(lang('_ERROR_USERNAME_EXIST_2_'));
-                    }
-                    preg_match("/^[a-zA-Z0-9_]{".modC('USERNAME_MIN_LENGTH',2,'USERCONFIG').",".modC('USERNAME_MAX_LENGTH',32,'USERCONFIG')."}$/", $aUsername, $result);
-                    if (!$result) {
-                        $this->error(lang('_ERROR_USERNAME_ONLY_PERMISSION_'));
-                    }
-                break;
-                case 'email':
-                    empty($email) && $this->error('邮箱地址不能为空');
-                    $length = mb_strlen($email, 'utf-8'); // 当前数据长度
-                    if ($length < 4 || $length > 32) {
-                        $this->result(0,'邮箱格式错误');
-                    }
-                    $have_uid = $commonMemberModel->where(['email' => $email])->value('uid');
-                    if ($have_uid) {
-                        $this->result(0,'邮箱已存在');
-                    }
-                break;
-                case 'mobile':
-                    empty($mobile) && $this->error(lang('_ERROR_PHONE_FORMAT_'));
-                    $have_uid = $commonMemberModel->where(['mobile' => $mobile])->value('uid');
-                    if ($have_uid) {
-                        $this->result(0,'手机号码已存在');
-                    }
-                break;
-            }
-            
-            $uid = $commonMemberModel->register($aUsername, $aNickname, $aPassword, $email, $mobile, $aUnType);
+            $uid = $commonMemberModel->register($username, $nickname, $password, $email, $mobile, $type);
             //dump($uid);exit;
             if (0 < $uid) {
                 $res = $commonMemberModel->login($uid); //登陆
@@ -131,27 +91,25 @@ class Member extends Base
             } else { //注册失败，显示错误信息
                 $this->error($commonMemberModel->getError());
             }
-        } 
+        }
     }
 
     /* 登录页面 */
     public function login()
     {
         if (request()->isPost()) {
-            $result = controller('ucenter/Login', 'widget')->doLogin();
-            //登陆成功后返回路径
-            $config_return_url = modC('LOGIN_RETURN_URL','','USERCONFIG');
+             //获取参数
+            $account = input('post.account', '', 'text');
+            $password = input('post.password', '', 'text');
 
-            if(!empty($config_return_url)){
-                $return_url = url($config_return_url);
-            }else{
-                $return_url = input('post.from', url('index/index/index'));
-            }
+            // 验证账号和密码
+            $commonMemberModel = new CommonMember;
+            $uid = $commonMemberModel->verifyUserPassword($account, $password);
             
-            if ($result['code'] == 1) {
-                $this->success($result['msg'], $return_url, 'text');
+            if ($uid) {
+                $this->result(200,'登录成功');
             } else {
-                $this->error($result['msg']);
+                $this->result(0,'账号密码错误');
             }
         } 
     }

@@ -25,7 +25,7 @@ class Member extends Model
      * @param  string $mobile 用户手机号码
      * @return integer          注册成功-用户信息，注册失败-错误编号
      */
-    public function register($username='', $nickname, $password, $email='', $mobile='', $type=1)
+    public function register($username='', $nickname, $password, $email='', $mobile='', $type='username')
     {
         $data = [
             'username' => $username,
@@ -57,41 +57,40 @@ class Member extends Model
             }
             
         } else {
-            return -1; //错误详情见自动验证注释
+            return -1;
         }
     }
 
     /**
-     * 用户登录认证
-     * @param  string  $username 用户名
+     * 验证账号和密码是否正确
+     * @param  string  $account 账号
      * @param  string  $password 用户密码
-     * @param  integer $type 用户名类型 （1-用户名，2-邮箱，3-手机，4-UID）
      * @return integer           登录成功-用户ID，登录失败-错误编号
      */
-    public function getUid($username, $password, $type = 1)
+    public function verifyUserPassword($account, $password)
     {
-
+        $type = check_account_type($account);
         $map = [];
         switch ($type) {
-            case 1:
-                $map['username'] = $username;
+            case 'username':
+                $map['username'] = $account;
                 break;
-            case 2:
-                $map['email'] = $username;
+            case 'email':
+                $map['email'] = $account;
                 break;
-            case 3:
-                $map['mobile'] = $username;
+            case 'mobile':
+                $map['mobile'] = $account;
                 break;
-            case 4:
-                $map['id'] = $username;
+            case 'uid':
+                $map['uid'] = $account;
                 break;
             default:
                 return 0; //参数错误
         }
         /* 获取用户数据 */
-        $user = $this->get($map);
-
-        $return = model('ActionLimit')->checkActionLimit('input_password','ucenter_member',$user['id'],$user['id']);
+        $user = $this->where($map)->find();
+        
+        $return = model('ActionLimit')->checkActionLimit('input_password','member',$user['uid'],$user['uid']);
 
         if($return && !$return['code']){
             return $return['msg'];
@@ -102,7 +101,8 @@ class Member extends Model
             if (user_md5($password, config('database.auth_key')) === $user['password']) {
                 return $user['id']; //返回用户ID
             } else {
-                action_log('input_password','member',$user['id'],$user['id']);
+                $actionLog = new ActionLog();
+                $actionLog->actionLog('input_password','member',$user['uid'],$user['uid']);
                 return -2; //密码错误
             }
         } else {
@@ -115,7 +115,7 @@ class Member extends Model
      * @param  integer $uid 用户ID
      * @return boolean      ture-登录成功，false-登录失败
      */
-    public function login($uid)
+    public function login(int $uid)
     {
         
         /* 检测是否在当前应用注册 */
@@ -306,37 +306,6 @@ class Member extends Model
         
     }
     
-    /**
-     * 验证用户密码
-     * @param int    $uid 用户id
-     * @param string $password_in 密码
-     * @return true 验证成功，false 验证失败
-     * @author huajie <banhuajie@163.com>
-     */
-    public function verifyUser($uid, $password_in)
-    {
-        $password = $this->getFieldById($uid, 'password');
-        if (user_md5($password_in, config('database.auth_key')) === $password) {
-            return true;
-        }
-        return false;
-    }
-
-    /**向ucenter_member表中写入数据并返回uid
-     * @param string $prefix 数据前缀
-     * @return mixed
-     */
-    public function addSyncData($prefix='')
-    {
-        $data['username'] = rand_username($prefix);
-        $data['password'] = create_rand(10);
-        $data['status'] = 1; //用户状态默认启用
-        $data['type'] = 1;  // 视作用用户名注册
-        $res = $this->save($data);
-        $uid = $this->id; //获取自增ID
-        return $uid;
-    }
-
     protected  function rand_email()
     {
         $email = create_rand(10) . '@muucmf.cn';
@@ -346,5 +315,4 @@ class Member extends Model
             return $email;
         }
     }
-
 }

@@ -118,7 +118,7 @@ class ActionLimit extends Model
      * @param  [type]  $action    [description]
      * @param  [type]  $model     [description]
      * @param  [type]  $record_id [description]
-     * @param  [type]  $uid   [description]
+     * @param  [type]  $uid       [description]
      * @param  boolean $ip        [description]
      * @return [type]             [description]
      */
