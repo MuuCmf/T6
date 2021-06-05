@@ -3,9 +3,7 @@
 namespace app\admin\middleware;
 
 use think\App;
-use think\facade\Config;
 use think\facade\Request;
-use think\facade\Db;
 use think\Response;
 use app\common\controller\Base;
 
@@ -15,7 +13,7 @@ class CheckRule extends Base
     {
         // 检测访问权限 
         $rule = strtolower(app('http')->getName() . '/' . Request()->controller() . '/' . Request()->action());
-        
+
         if (!$this->checkRule($rule, $this->request->uid)) {
             return $this->result(0,'无权限');
         }
