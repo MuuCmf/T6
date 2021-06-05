@@ -14,6 +14,11 @@ namespace think;
 
 require __DIR__ . '/../vendor/autoload.php';
 
+//模块目录
+define('APP_PATH', __DIR__ . '/../app/');
+//public目录
+define('PUBLIC_PATH', __DIR__);
+
 // 执行HTTP应用并响应
 $http = (new App())->http;
 

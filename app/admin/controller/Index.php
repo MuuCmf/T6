@@ -1,8 +1,6 @@
 <?php
 namespace app\admin\controller;
 
-use think\facade\Db;
-use think\facade\View;
 
 class Index extends Admin
 {
@@ -12,16 +10,7 @@ class Index extends Admin
      */
     public function index()
     {
-        if(request()->isPost()){
-            $count_day=input('post.count_day', config('COUNT_DAY'),'intval',7);
-            if(Db::name('Config')->where(['name'=>'COUNT_DAY'])->setField('value',$count_day)===false){
-                return $this->error('发生错误');
-            }else{
-               cache('DB_CONFIG_DATA',null);
-               return $this->success('设置成功');
-            }
-
-        }
+        return '后台首页';
     }
 
     /**

@@ -10,12 +10,21 @@ use think\facade\Db;
 use think\facade\Cache;
 use think\Response;
 use think\Validate;
+use app\common\controller\Base;
 
 /**
  * 控制器基础类
  */
-class Admin
+class Admin extends Base
 {
+    /**
+     * 鉴权中间件，只能放在基类内，避免获取不到控制器和方法名
+     * @var array
+     */
+    protected $middleware = [
+        \app\admin\middleware\CheckRule::class
+    ];
+    
     /**
      * Request实例
      * @var \think\Request
@@ -41,6 +50,12 @@ class Admin
     protected $system = [];
 
     /**
+     * 当前模块管理菜单
+     * @var array
+     */
+    protected $menu = [];
+
+    /**
      * 构造方法
      * @access public
      * @param  App  $app  应用对象
@@ -49,6 +64,9 @@ class Admin
     {
         $this->app     = $app;
         $this->request = $this->app->request;
+
+        // 当前模块管理菜单
+        //$this->menu = $this->getMenus();
         //$this->system = Cache::get('DB_CONFIG_DATA');
         // 控制器初始化
         $this->initialize();
@@ -57,41 +75,7 @@ class Admin
 
     public function initialize()
     {
-        // 当前应用模块信息
-        $module = model('common/Module')->getModule(app('http')->getName());
-        // 当前模块管理菜单
-        $menu = $this->getMenus();
-        // 模块入口
-        $all_module_list = model('common/Module')->getAll(['is_setup'=>1,'name'=>['neq','ucenter']]);
-
-        // 检测访问权限
-        $rule = strtolower(app('http')->getName() . '/' . Request()->controller() . '/' . Request()->action());
         
-        if (!$this->checkRule($rule, $this->request->uid, ['in', '1,2'])) {
-            return $this->result(0,'无权限');
-        }
-    }
-
-    /**
-     * 权限检测
-     * @param string $rule 检测的规则
-     * @param string $mode check模式
-     * @return boolean
-     */
-    final protected function checkRule($rule, $uid, $type = AuthRule::RULE_URL, $mode = 'url')
-    {
-        /*
-        if ($this->is_root) {
-            return true;//管理员允许访问任何页面
-        }*/
-        static $Auth = null;
-        if (!$Auth) {
-            $Auth = new \muucmf\Auth();
-        }
-        if (!$Auth->check($rule, $uid, $type, $mode)) {
-            return false;
-        }
-        return true;
     }
 
     /**
@@ -99,54 +83,52 @@ class Admin
      */
     final public function getMenus()
     {   
-        $module = request()->module();
+        $module = app('http')->getName();
         $controller = request()->controller();
         $action = request()->action();
+        $menuModel = new \app\admin\model\Menu();
+        $moduleModel = new \app\common\model\Module();
 
         $menus  =   session('ADMIN_MENU_LIST'.$controller);
         if (empty($menus)) {
             // 获取主菜单
             $where['pid'] = '0';
             //$where['hide'] = 0;
-            if (!$this->system('DEVELOP_MODE')) { // 是否开发者模式
-                $where['is_dev'] = 0;
-            }
-            $menus['main'] = model('admin/Menu')->getLists($where);
-            $menus['main'] = collection($menus['main'])->toArray();
+            
+            $menus['main'] = $menuModel->getLists($where);
+            
+            $menus['main'] = $menus['main']->toArray();
             
             $menus['child'] = []; //设置子节点
 
             //当前菜单
-            $current_map['url'] = [
-                ['=', $module .'/'. $controller .'/'. $action],
-                ['=', $controller .'/'. $action],
-                'OR'
-            ];
-            $current = model('admin/Menu')->getDataByMap($current_map);
-
+            $current = $menuModel->whereRaw('`url` = "'.$module .'/'. $controller .'/'. $action .'"')->find();
+            
             if ($current) {
                 //获取顶级菜单数据
-                $nav = model('admin/Menu')->getPath($current['id']);
+                $nav = $menuModel->getPath($current['id']);
                 $nav_current_id = $nav[0]['id'];
-                //echo $nav_first_title;
+                
+                
                 foreach ($menus['main'] as $key => $item) {
 
                     //如果是模块菜单获取模块信息
                     if($item['module'] != '' || !empty($item['module'])){
-                        $module = model('common/Module')->getModule($item['module']);
+                        $module_info = $moduleModel->getModule($item['module']);
                     }
                     
                     if (!is_array($item) || empty($item['title']) || empty($item['url'])) {
                         $this->error(lang('_CLASS_CONTROLLER_ERROR_PARAM_',array('menus'=>$menus)));
                     }
-                    if (stripos($item['url'], request()->module()) !== 0) {
-                        $item['url'] = request()->module() . '/' . $item['url'];
+                    if (stripos($item['url'], $module) !== 0) {
+                        $item['url'] = $module . '/' . $item['url'];
                     }
                     // 判断主菜单权限
-                    if (!$this->is_root && !$this->checkRule($item['url'], AuthRuleModel::RULE_MAIN, null)) {
+                    /*
+                    if (!$this->checkRule($item['url'], 2, null)) {
                         unset($menus['main'][$key]);
                         continue;//继续循环
-                    }
+                    }*/
 
                     // 获取当前主菜单的子菜单项
                     if ($item['id'] == $nav_current_id) {
@@ -164,17 +146,15 @@ class Admin
                         $where = [];
                         $where['pid'] = $item['id'];
                         $where['hide'] = 0;
-                        if (!$this->system('DEVELOP_MODE')) { // 是否开发者模式
-                            $where['is_dev'] = 0;
-                        }
-                        $second_urls = model('admin/Menu')->getLists($where);
+                        
+                        $second_urls = $menuModel->getLists($where);
 
                         if (!$this->is_root) {
                             // 检测菜单权限
                             $to_check_urls = array();
                             foreach ($second_urls as $key => $to_check_url) {
-                                if (stripos($to_check_url, request()->module()) !== 0) {
-                                    $rule = request()->module() . '/' . $to_check_url;
+                                if (stripos($to_check_url, $module) !== 0) {
+                                    $rule = $module . '/' . $to_check_url;
                                 } else {
                                     $rule = $to_check_url;
                                 }
@@ -196,9 +176,6 @@ class Admin
                             }
                             $map['pid'] = $item['id'];
                             $map['hide'] = 0;
-                            if (!$this->system('DEVELOP_MODE')) { // 是否开发者模式
-                                $map['is_dev'] = 0;
-                            }
                             
                             $menuList = Db::name('Menu')->where($map)->field('id,pid,title,url,icon,tip')->order('sort asc')->select();
 

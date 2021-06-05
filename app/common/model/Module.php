@@ -447,11 +447,11 @@ class Module extends Model
     {
         //图标所在位置为模块静态目录跟下（推荐）
         if(file_exists(PUBLIC_PATH . '/static/' . $name . '/images/icon.png')){
-            $icon = STATIC_URL . '/'. $name .'/images/icon.png';
+            $icon = PUBLIC_PATH . '/app/'. $name .'/images/icon.png';
         }elseif(file_exists(PUBLIC_PATH . '/static/' . $name . '/icon.png')){
-            $icon = STATIC_URL . '/'. $info['name'] .'/icon.png';
+            $icon = PUBLIC_PATH . '/app/'. $name .'/icon.png';
         }else{
-            $icon = STATIC_URL . '/admin/images/module_default_icon.png';
+            $icon = PUBLIC_PATH . '/app/admin/images/module_default_icon.png';
         }
 
         return $icon;

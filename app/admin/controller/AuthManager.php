@@ -1,10 +1,14 @@
 <?php
 namespace app\admin\controller;
 
+use think\App;
+use think\facade\Config;
+use think\facade\Request;
+use think\facade\Session;
+use think\facade\Db;
 use app\admin\controller\Admin;
 use app\admin\model\AuthRule;
 use app\admin\model\AuthGroup;
-use think\Db;
 
 /**
  * 权限管理控制器

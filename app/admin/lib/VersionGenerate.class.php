@@ -5,8 +5,8 @@ class VersionGenerate
     public $appFolder = "";
     public $ignoreFilePaths = array(
         './.git',
-        './Runtime',
-        './Uploads',
+        './runtime',
+        './uploads',
         './.idea',
         '.gitignore'
     );
