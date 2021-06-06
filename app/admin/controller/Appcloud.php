@@ -1,12 +1,6 @@
 <?php
 namespace app\admin\controller;
 
-use app\admin\controller\Admin;
-use app\admin\builder\AdminListBuilder;
-use app\admin\builder\AdminSortBuilder;
-use app\admin\builder\AdminConfigBuilder;
-
-
 class Appcloud extends Admin
 {
 

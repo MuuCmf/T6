@@ -129,14 +129,18 @@ class Menu extends Admin {
     public function list(){
         $title = input('title','','text');
         $pid  = input('pid','0','text');
+        $module = input('module','','text');
         
         if($title){
             $map['title'] = ['like','%'.$title.'%'];
         }
+        if($module){
+            $map['module'] = $module;
+        }
         $map['pid'] =   $pid;
         $list       =   Db::name("Menu")->where($map)->order('sort asc,id asc')->select();
-        //dump($list);exit;
 
+        //输出
         return $this->result(200,'SUCCESS',$list);
     }
 

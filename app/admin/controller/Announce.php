@@ -1,7 +1,6 @@
 <?php
 namespace app\admin\controller;
 
-use app\admin\controller\Admin;
 
 class Announce extends Admin{
 
@@ -22,20 +21,20 @@ class Announce extends Admin{
         switch($aStatus){
             case 1:
             case 2:
-                $map['status']=$aStatus-1;
+                $map['status'] = $aStatus-1;
                 break;
             case 3:
-                $map['end_time']=array('gt',time());
-                $map['status']=array('in','0,1');
+                $map['end_time'] = array('gt',time());
+                $map['status'] = array('in','0,1');
                 break;
             case 4:
-                $map['end_time']=array('elt',time());
-                $map['status']=array('in','0,1');
+                $map['end_time'] = array('elt',time());
+                $map['status'] = array('in','0,1');
                 break;
             default:
-                $map['status']=array('in','0,1');
+                $map['status'] = array('in','0,1');
         }
-        list($list,$totalCount)=$this->announceModel->getListPage($map,$aOrder,$r);
+        list($list,$totalCount) = $this->announceModel->getListPage($map,$aOrder,$r);
         // 获取分页显示
         $page = $list->render();
         $list = $list->toArray()['data'];
