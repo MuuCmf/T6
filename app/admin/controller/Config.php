@@ -1,10 +1,6 @@
 <?php
 namespace app\admin\controller;
 
-use app\admin\controller\Admin;
-use think\Db;
-use app\admin\builder\AdminConfigBuilder;
-
 /**
  * 后台配置控制器
  */
@@ -225,6 +221,7 @@ class Config extends Admin
         $builder->buttonSubmit();
         $builder->display();
     }
+    
     /**
      * 扩展配置
      * @return [type] [description]

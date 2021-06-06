@@ -3,8 +3,6 @@ namespace app\admin\controller;
 
 use app\admin\controller\Admin;
 use think\Db;
-use app\admin\builder\AdminConfigBuilder;
-use app\admin\builder\AdminListBuilder;
 
 /**
  * 后台行为限制控制器

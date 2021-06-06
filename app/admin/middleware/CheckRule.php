@@ -11,6 +11,8 @@ class CheckRule extends Base
 {
     public function handle($request, \Closure $next)
     {
+        // 调试阶段放行
+        return $next($request);
         // 检测访问权限 
         $rule = strtolower(app('http')->getName() . '/' . Request()->controller() . '/' . Request()->action());
 
@@ -21,26 +23,6 @@ class CheckRule extends Base
         return $next($request);
     }
 
-    /**
-     * 权限检测
-     * @param string $rule 检测的规则
-     * @param string $mode check模式
-     * @return boolean
-     */
-    final protected function checkRule($rule, $uid, $type = 1, $mode = 'url')
-    {
-        /*
-        if ($this->is_root) {
-            return true;//管理员允许访问任何页面
-        }*/
-        static $Auth = null;
-        if (!$Auth) {
-            $Auth = new \muucmf\Auth();
-        }
-        if (!$Auth->check($rule, $uid, $type, $mode)) {
-            return false;
-        }
-        return true;
-    }
+    
  
 }

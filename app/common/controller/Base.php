@@ -109,6 +109,28 @@ class Base
         }
     }
 
+    /**
+     * 权限检测
+     * @param string $rule 检测的规则
+     * @param string $mode check模式
+     * @return boolean
+     */
+    final protected function checkRule($rule, $uid, $type = 1, $mode = 'url')
+    {
+        /*
+        if ($this->is_root) {
+            return true;//管理员允许访问任何页面
+        }*/
+        static $Auth = null;
+        if (!$Auth) {
+            $Auth = new \muucmf\Auth();
+        }
+        if (!$Auth->check($rule, $uid, $type, $mode)) {
+            return false;
+        }
+        return true;
+    }
+
     /** 
     * 操作成功跳转的快捷方法
     * @access protected

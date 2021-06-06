@@ -2,7 +2,6 @@
 namespace app\admin\controller;
 
 use app\admin\controller\Admin;
-use app\admin\builder\AdminListBuilder;
 use think\Db;
 
 /**
@@ -12,14 +11,13 @@ class Action extends Admin {
 
     /**
      * 行为日志列表
-     * @author huajie <banhuajie@163.com>
      */
     public function actionLog(){
         //获取列表数据
         $aUid=input('get.uid',0,'intval');
         if($aUid) $map['user_id']=$aUid;
 
-        //按时间和行为筛选   路飞
+        //按时间和行为筛选
         $sTime=input('post.sTime',0,'text');
         $eTime=input('post.eTime',0,'text');
         $aSelect=input('post.select',0,'intval');
