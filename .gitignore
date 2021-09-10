@@ -2,3 +2,7 @@
 /.vscode
 *.log
 .env
+
+# gulp
+node_modules/
+package-lock.json

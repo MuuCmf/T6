@@ -2,14 +2,10 @@
 namespace app\ucenter\controller;
 
 use think\App;
-use think\facade\Request;
-use think\facade\Session;
 use think\facade\Db;
-use think\facade\Cache;
-use think\Response;
 use think\Validate;
 use think\exception\ValidateException;
-use app\common\model\Member as CommonMember;
+use app\common\model\Member as MemberModel;
 use app\common\controller\Base;
 
 /**
@@ -22,6 +18,14 @@ class Member extends Base
     public function user()
     {
         dump($this->request->uid);
+    }
+
+    /**
+     * 用户资料设置首页
+     */
+    public function config()
+    {
+        dump(is_login());
     }
 
     /**

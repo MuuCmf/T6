@@ -2,14 +2,12 @@
 namespace app\admin\model;
 
 use think\Model;
-/**
- * 配置模型
- */
 
+/**
+ * 系统配置模型
+ */
 class Config extends Model {
 
-    //自动写入创建和更新的时间戳字段
-    protected $autoWriteTimestamp = true; 
     /**
      * 新增或编辑数据
      *
@@ -17,16 +15,16 @@ class Config extends Model {
      *
      * @return     <type>  ( description_of_the_return_value )
      */
-    public function editData($data)
+    public function edit($data)
     {
         if(!empty($data['id'])){
-            
-            $res = $this->allowField(true)->save($data,$data['id']);
+            $res = $this->update($data);
         }else{
-            $res = $this->allowField(true)->save($data);
+            $res = $this->insert($data);
         }
+
         if($res){
-            return $this->id;
+            return $res;
         }else{
             return false;
         }
@@ -40,13 +38,11 @@ class Config extends Model {
      *
      * @return     <type>   The data by identifier.
      */
-    public function getDataById($id)
+    public function getDataById(int $id)
     {
-        if($id>0){
-            $data = $this->find($id);
-            if(!empty($data)){
-                return $data;
-            }
+        if($id > 0){
+            $data = $this->find($id)->toArray();
+            return $data;
         }
         return null;
     }

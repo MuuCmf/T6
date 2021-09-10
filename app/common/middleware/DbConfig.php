@@ -3,11 +3,11 @@
 namespace app\common\middleware;
 
 use think\App;
+use think\Response;
 use think\facade\Request;
 use think\facade\Config;
 use think\facade\Cache;
 use think\facade\Db;
-use think\Response;
 
 class DbConfig
 {
@@ -16,26 +16,42 @@ class DbConfig
         //获取数据库内配置数据
         if(strtolower(App('http')->getName())!='install'){
             //动态添加系统配置,非模块配置
-            $config = Cache::get('DB_CONFIG_DATA');
-            //dump($config);exit;
-            if (!$config) {
+            $sys_config = Cache::get('MUUCMF_SYS_CONFIG_DATA');
+            if (empty($sys_config)) {
                 $map[] = ['status','=',1];
-                $map[] = ['group','>',0];
-                $data = Db::name('Config')->where($map)->field('type,name,value')->select();
+                //$map[] = ['group','>',0];
+                $data = Db::name('Config')->where($map)->field('type,name,value')->select()->toArray();
                 foreach ($data as $value) {
-                    $config[$value['name']] = self::parse($value['type'], $value['value']);
+                    $sys_config[$value['name']] = self::parse($value['type'], $value['value']);
                 }
-                Cache::set('DB_CONFIG_DATA', $config);
+                Cache::set('MUUCMF_SYS_CONFIG_DATA', $sys_config);
             }
-            Config::set($config);
+            if (!empty($sys_config)) {
+                Config::set($sys_config,'system');
+            }
+            
+            //动态添加扩展配置,非模块配置
+            $ext_config = Cache::get('MUUCMF_EXT_CONFIG_DATA');
+            if (empty($ext_config)) {
+                $map[] = ['status','=',1];
+                //$map[] = ['group','>',0];
+                $data = Db::name('ExtendConfig')->where($map)->field('type,name,value')->select()->toArray();
+                foreach ($data as $value) {
+                    $ext_config[$value['name']] = self::parse($value['type'], $value['value']);
+                }
+                Cache::set('MUUCMF_EXT_CONFIG_DATA', $ext_config);
+            }
+            if (!empty($ext_config)) {
+                Config::set($ext_config,'extend');
+            }
         }
         
         // 判断站点是否关闭
         if (strtolower(App('http')->getName()) != 'install' && strtolower(App('http')->getName()) != 'admin') {
             
-            if (!$config['WEB_SITE_CLOSE']) {
+            if (!Config::get('system.WEB_SITE_CLOSE')) {
                 header("Content-Type: text/html; charset=utf-8");
-                return $config['WEB_SITE_CLOSE_HINT'];exit;
+                return Config::get('system.WEB_SITE_CLOSE_HINT');
             }
         }
 
@@ -49,7 +65,7 @@ class DbConfig
      */
     private static function parse($type, $value){
         switch ($type) {
-            case 3: //解析数组
+            case 'entity': //解析成数组
                 $array = preg_split('/[,;\r\n]+/', trim($value, ",;\r\n"));
                 if(strpos($value,':')){
                     $value  = array();
@@ -60,7 +76,7 @@ class DbConfig
                 }else{
                     $value =    $array;
                 }
-                break;
+            break;
         }
         return $value;
     }   

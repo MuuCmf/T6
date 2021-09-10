@@ -2,7 +2,6 @@
 namespace app\common\model;
 
 use think\Model;
-use think\Db;
 
 class Action extends Model
 {
@@ -64,7 +63,7 @@ class Action extends Model
 
 
     public function getAction($map){
-        $result = collection($this->where($map)->select())->toArray();
+        $result = $this->where($map)->select()->toArray();
         foreach ($result as &$v) {
         	if($v['module']=='' || empty($v['module'])) {
         		//默认系统行为模块名
@@ -76,7 +75,7 @@ class Action extends Model
     }
 
     public function getActionOpt(){
-        $result = collection($this->where(['status'=>1])->field('name,title')->select())->toArray();
+        $result = $this->where(['status'=>1])->field('name,title')->select()->toArray();
         return $result;
     }
 

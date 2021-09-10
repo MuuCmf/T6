@@ -9,14 +9,26 @@ use think\Model;
 
 class Menu extends Model {
 
+    public $hide = [
+        0 => '否',
+        1 => '是'
+    ];
+
+    public $type = [
+        0 => '系统',
+        1 => '应用'
+    ];
+
 	//获取树的根到子节点的路径
 	public function getPath($id){
-		$path = array();
-		$nav = $this->where("id='{$id}'")->field('id,pid,title')->find();
+		$path = [];
+		$nav = $this->where('id',$id)->field('id,pid,title')->find();
+
 		$path[] = $nav;
 		if($nav['pid'] !='0'){
 			$path = array_merge($this->getPath($nav['pid']),$path);
 		}
+
 		return $path;
 	}
 
@@ -25,20 +37,21 @@ class Menu extends Model {
      * @param  Array 写入数据的数组
      * @return 写入数据库中的主键ID
      */
-	public function editData($data)
+	public function edit($data)
     {
         if($data['id']){
-            $res=$this->allowField(true)->save($data,['id' => $data['id']]);
+            $res=$this->update($data);
         }else{
             $data['id'] = create_guid();
-            $res=$this->allowField(true)->save($data);
+            $res=$this->save($data);
         }
+
         return $res;
     }
 
     public function getDataByMap($map=[],$fields= '*'){
         
-        $data=$this->where($map)->field($fields)->find();
+        $data = $this->where($map)->field($fields)->find();
         
         return $data;
     }
@@ -64,16 +77,30 @@ class Menu extends Model {
     {
         $pid = '0';
         $res =  $this->where(array('pid'=>(string)$pid))->select();
+
         return $res;
     }
+    
     /**
      * 判断、读取下级菜单
      * @param  [type] $pid [description]
      * @return [type]      [description]
      */
     public function subMenu($pid){
-        $res =  $this->where(array('pid'=>$pid))->select();
+        $res =  $this->where(['pid'=>$pid])->select();
+
         return $res;
+    }
+
+    /**
+     * 数据格式化
+     */
+    public function handle($data)
+    {
+        $data['hide_str'] = $this->hide[$data['hide']];
+        $data['type_str'] = $this->type[$data['type']];
+
+        return $data;
     }
 }
 

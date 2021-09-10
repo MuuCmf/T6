@@ -1,8 +1,13 @@
 <?php
 namespace app\admin\controller;
 
-use app\admin\controller\Admin;
-use think\Db;
+use think\App;
+use think\facade\Db;
+use think\facade\View;
+
+use app\common\model\Action as ActionModel;
+use app\common\model\ActionLimit as ActionLimitModel;
+use app\common\model\Module as ModuleModel;
 
 /**
  * 行为控制器
@@ -12,119 +17,68 @@ class Action extends Admin {
     /**
      * 行为日志列表
      */
-    public function actionLog(){
+    public function log(){
         //获取列表数据
         $aUid=input('get.uid',0,'intval');
-        if($aUid) $map['user_id']=$aUid;
+        if($aUid) $map[] = ['uid', '=', $aUid];
 
         //按时间和行为筛选
-        $sTime=input('post.sTime',0,'text');
-        $eTime=input('post.eTime',0,'text');
-        $aSelect=input('post.select',0,'intval');
+        $sTime = input('post.sTime',0,'text');
+        $eTime = input('post.eTime',0,'text');
+        $aSelect = input('post.select',0,'intval');
         if($sTime && $eTime) {
-            $map['create_time']=array('between',array(strtotime($sTime),strtotime($eTime)));
+            $map[] = ['create_time','between',[strtotime($sTime),strtotime($eTime)]];
         }
         if($aSelect) {
-            $map['action_id'] = $aSelect;
+            $map[] = ['action_id','=',$aSelect];
         }
 
-        $map['status']    =   array('gt', -1);
-        list($list,$page)   =   $this->commonLists('ActionLog', $map);
+        $map[]    =   ['status','>', -1];
+
+        list($list,$page)   =   $this->commonLists('action_log', $map);
         
         $list = $list->toArray()['data'];
         int_to_string($list);
-        //dump($list);
-        foreach ($list as $key=>$value){
+        
+        foreach ($list as $key => &$value){
             //$model_id                  =   get_document_field($value['model'],"name","id");
             //$list[$key]['model_id']    =   $model_id ? $model_id : 0;
-            $list[$key]['ip']=long2ip($value['action_ip']);
+            $list[$key]['ip'] = long2ip($value['action_ip']);
         }
-
+        unset($value);
 
         $actionList = Db::name('Action')->select();
-        $this->assign('action_list', $actionList);
+        View::assign('action_list', $actionList);
 
-        $this->assign('_list', $list);
-        $this->setTitle(lang('_BEHAVIOR_LOG_'));
-        return $this->fetch();
-    }
+        View::assign('_list', $list);
+        View::assign('page', $page);
+        $this->setTitle('日志列表');
 
-    /**
-     * 积分日志
-     * @param  integer $r [description]
-     * @param  integer $p [description]
-     * @return [type]     [description]
-     */
-    public function scoreLog($r=20){
-
-        if(input('type') == 'clear'){
-            Db::name('ScoreLog')->where(['id'=>['>',0]])->delete();
-            $this->success('清空成功。',url('scoreLog'));
-            exit;
-        }else{
-            $aUid=input('uid',0,'');
-            $map=[];
-            if($aUid){
-                $map['uid']=$aUid;
-            }
-            
-            $scoreLog=Db::name('ScoreLog')->where($map)->order('create_time desc')->paginate($r);
-            $totalCount=Db::name('ScoreLog')->count();
-            //分页HTML
-            $page = $scoreLog->render();
-            //转数组处理
-            $scoreLog = $scoreLog->toArray()['data'];
-
-            $scoreTypes=model('ucenter/Score')->getTypeListByIndex();
-
-            foreach ($scoreLog as &$v) {
-                if(empty($v['uid'])) $v['uid'] = 0;
-                $v['adjustType']=$v['action']=='inc'?'增加':'减少';
-                $v['scoreType']=$scoreTypes[$v['type']]['title'];
-                $class=$v['action']=='inc'?'text-success':'text-danger';
-                $v['value']='<span class="'.$class.'">' .  ($v['action']=='inc'?'+':'-'). $v['value']. $scoreTypes[$v['type']]['unit'].'</span>';
-                $v['finally_value']= $v['finally_value']. $scoreTypes[$v['type']]['unit'];
-            }
-            unset($v);
-            //dump($scoreLog);
-            $listBuilder=new AdminListBuilder();
-
-            $listBuilder->title('积分日志');
-
-            $listBuilder->data($scoreLog);
-
-            $listBuilder->page($page);
-
-            $listBuilder->keyId()->keyUid('uid','用户')->keyText('scoreType','积分类型')->keyText('adjustType','调整类型')->keyHtml('value','积分变动')->keyText('finally_value','积分最终值')->keyText('remark','变动描述')->keyCreateTime();
-
-            $listBuilder->search(lang('_SEARCH_'),'uid','text','输入UID');
-
-            $listBuilder->button('清空日志',['url'=>Url('scoreLog',['type'=>'clear']),'class'=>'btn btn-danger ajax-get confirm']);
-            $listBuilder->display();
-        }
+        return View::fetch();
     }
 
     /**
      * 查看行为日志
-     * @author huajie <banhuajie@163.com>
      */
     public function detail($id = 0){
-        empty($id) && $this->error(lang('_PARAMETER_ERROR_'));
 
-        $info = Db::name('ActionLog')->field(true)->find($id);
+        empty($id) && $this->error('参数错误');
+        $info = Db::name('ActionLog')->find($id);
+        View::assign('info', $info);
 
-        $this->assign('info', $info);
-        $this->setTitle(lang('_CHECK_THE_BEHAVIOR_LOG_'));
-        return $this->fetch();
+        $this->setTitle('行为日志详情');
+
+        return View::fetch();
     }
 
     /**
      * 删除日志
      * @param mixed $ids
-     * @author huajie <banhuajie@163.com>
      */
     public function remove($ids = 0){
-        empty($ids) && $this->error(lang('_PARAMETER_ERROR_'));
+        if(empty($ids)){
+            return $this->error('参数错误');
+        }
         if(is_array($ids)){
             $map['id'] = array('in', $ids);
         }elseif (is_numeric($ids)){
@@ -132,9 +86,9 @@ class Action extends Admin {
         }
         $res = Db::name('ActionLog')->where($map)->delete();
         if($res !== false){
-            $this->success(lang('_DELETE_SUCCESS_'));
+            return $this->success('删除成功');
         }else {
-            $this->error(lang('_DELETE_FAILED_'));
+            return $this->error('删除失败');
         }
     }
 
@@ -144,9 +98,9 @@ class Action extends Admin {
     public function clear(){
         $res = Db::name('ActionLog')->where('1=1')->delete();
         if($res !== false){
-            $this->success(lang('_LOG_EMPTY_SUCCESSFULLY_'));
+            return $this->success('日志清理成功');
         }else {
-            $this->error(lang('_LOG_EMPTY_'));
+            return $this->error('清理失败');
         }
     }
 
@@ -166,10 +120,10 @@ class Action extends Admin {
             $map['status'] = 1;
         }
 
-        $list = collection(Db::name('ActionLog')->where($map)->order('create_time asc')->select())->toArray();
+        $list = Db::name('ActionLog')->where($map)->order('create_time asc')->select()->toArray();
         //dump($list);exit;
         
-        $data = lang('_DATA_MORE_')."\n";
+        $data = 'id,行为名称,执行者,执行者IP,日志内容,执行时间'."\n";
         foreach ($list as $val) {
             $val['create_time'] = time_format($val['create_time']);
             $data.=$val['id'].",".get_action($val['action_id'], 'title').",".get_nickname($val['user_id']).",".long2ip($val['action_ip']).",".$val['remark'].",".$val['create_time']."\n";
@@ -197,50 +151,50 @@ class Action extends Admin {
     public function action()
     {
         $aModule = $this->parseSearchKey('module');
+        $ModuleModel = new ModuleModel();
 
         is_null($aModule) && $aModule = -1;
         if ($aModule != -1) {
             $map['module'] = $aModule;
         }
         unset($_REQUEST['module']);
-        $this->assign('current_module', $aModule);
-        $map['status'] = array('gt', -1);
-        //获取列表数据
-        $Action = Db::name('Action')->where(['status' => ['gt', -1]]);
+        View::assign('current_module', $aModule);
 
-        $list = model('action')->getListByPage($map,'update_time desc','*',20);
+        //获取列表数据
+        $map[] = ['status','>', -1];
+        $ActionModel = new ActionModel();
+        $list = $ActionModel->getListByPage($map,'update_time desc','*',20);
         $page = $list->render();
-        $this->assign('page',$page);
+
+        View::assign('page',$page);
 
         $list = $list->toArray()['data'];
-
         lists_plus($list);
-
         int_to_string($list);
 
         // 记录当前列表页的cookie
         Cookie('__forward__', $_SERVER['REQUEST_URI']);
 
-        $this->assign('_list', $list);
+        View::assign('_list', $list);
 
-        $module = model('common/Module')->getAll();
+        $module = $ModuleModel->getAll();
         foreach ($module as $key => $v) {
             if ($v['is_setup'] == 0) {
                 unset($module[$key]);
             }
         }
-        $module = array_merge([array('name' => '', 'alias' => lang('_SYSTEM_'))], $module);
+        $module = array_merge([array('name' => '', 'alias' => '系统')], $module);
 
-        $this->assign('module', $module);
+        View::assign('module', $module);
 
-        $this->setTitle(lang('_USER_BEHAVIOR_'));
+        $this->setTitle('行为日志');
 
-        return $this->fetch();
+        return View::fetch();
     }
 
     protected function parseSearchKey($key = null)
     {
-        $action = request()->module() . '_' . request()->controller() . '_' . request()->action();
+        $action = app('http')->getName() . '_' . request()->controller() . '_' . request()->action();
         $post = input('post.');
         if (empty($post)) {
             $keywords = cookie($action);
@@ -261,22 +215,25 @@ class Action extends Admin {
      * 新增、编辑行为
      * @author dameng <59262424@qq.com>
      */
-    public function editAction()
+    public function edit()
     {
+        $ActionModel = new ActionModel();
+        $ModuleModel = new ModuleModel();
         if(request()->isPost()){
             /* 获取数据对象 */
             $data = input('');
-            $res = model('common/Action')->editAction($data);
+            
+            $res = $ActionModel->editAction($data);
             if (!$res) {
-                $this->error(model('common/Action')->getError());
+                $this->error($ActionModel->getError());
             } else {
-                $this->success($res['id'] ? lang('_UPDATE_SUCCESS_') : lang('_NEW_SUCCESS_'), Cookie('__forward__'));
+                $this->success($res['id'] ? '更新成功！' : '新增成功', Cookie('__forward__'));
             }
         }else{
             $id = input('id');
-            //empty($id) && $this->error(lang('_PARAMETERS_CANT_BE_EMPTY_'));
+
             if($id){
-                $data = Db::name('Action')->field(true)->find($id);
+                $data = $ActionModel->find($id);
 
             }else{
                 //初始默认数据
@@ -291,15 +248,160 @@ class Action extends Admin {
                 ];
             }
 
-            $this->assign('data', $data);
-            $module = model('common/Module')->getAll();
-            $this->assign('module', $module);
+            View::assign('data', $data);
+            // 获取所有应用模型列表
+            $module = $ModuleModel->getAll();
+            View::assign('module', $module);
 
-            $this->setTitle(lang('_EDITING_BEHAVIOR_'));
+            $this->setTitle('编辑行为规则');
 
-            return $this->fetch();
+            return View::fetch();
         }
+    }
+
+    /**
+     * 行为限制列表
+     */
+    public function limit()
+    {
+        $this->setTitle('行为限制');
+        $action_name = input('get.action','','text') ;
+        !empty($action_name) && $map['action_list'] = ['like', '%[' . $action_name . ']%','','or'];
         
+        $ActionModel = new ActionModel();
+        $ActionLimitModel = new ActionLimitModel();
+
+        //读取规则列表
+        $map[] = ['status', '>=',  0];
+        $list = $ActionLimitModel->getListByPage($map);
+        // 获取分页显示
+        $page = $list->render();
+
+        $timeUnit = get_time_unit();
+        // 处理数据
+        foreach($list as &$val){
+            $val['time'] = $val['time_number']. $timeUnit[$val['time_unit']];
+            $val['action_list'] = $ActionModel->getActionName($val['action_list']);
+            empty( $val['action_list']) &&  $val['action_list'] = '所有行为';
+
+            $val['punish'] = $ActionLimitModel->getPunishName($val['punish']);
+        }
+        unset($val);
+
+        //显示页面
+        View::assign('list', $list);
+        View::assign('page', $page);
+        
+        return View::fetch();
+    }
+
+    /**
+     * [editLimit description]
+     * @return [type] [description]
+     */
+    public function editLimit()
+    {
+        $aId = input('id', 0, 'intval');
+        $ActionModel = new ActionModel();
+        $ActionLimitModel = new ActionLimitModel();
+        $ModuleModel = new ModuleModel();
+
+        if (request()->isPost()) {
+
+            $data['title'] = input('post.title', '', 'text');
+            $data['name'] = input('post.name', '', 'text');
+            $data['frequency'] = input('post.frequency', 1, 'intval');
+            $data['time_number'] = input('post.time_number', 1, 'intval');
+            $data['time_unit'] = input('post.time_unit', '', 'text');
+            $data['punish'] = input('post.punish/a', array());
+            $data['if_message'] = input('post.if_message', '', 'text');
+            $data['message_content'] = input('post.message_content', '', 'text');
+            $data['action_list'] = input('post.action_list/a');
+            $data['status'] = input('post.status', 1, 'intval');
+            $data['module'] = input('post.module', '', 'text');
+            $data['id'] = $aId;
+            
+            $data['punish'] = implode(',', $data['punish']);
+            if($data['action_list']){
+                foreach($data['action_list'] as &$v){
+                    $v = '['.$v.']';
+                }
+                unset($v);
+                $data['action_list'] = implode(',', $data['action_list']);
+            }
+
+            $res = $ActionLimitModel->edit($data);
+            
+            if($res){
+                return $this->success(($aId == 0 ? '新增' : '编辑') . '成功', '', url('limit'));
+            }else{
+                return $this->error('提交失败');
+            }
+        } else {
+
+            // 获取所有模块
+            $modules = $ModuleModel->getAll();
+            foreach($modules as $k=>$v){
+                $module[$v['name']] = $v['alias'];
+            }
+            View::assign('modules', $modules);
+
+            // 获取数据
+            if ($aId != 0) {
+                $limit = $ActionLimitModel->where(['id' => $aId])->find();
+                $limit['punish'] = explode(',', $limit['punish']);
+                $limit['action_list'] = str_replace('[','',$limit['action_list']);
+                $limit['action_list'] = str_replace(']','',$limit['action_list']);
+                $limit['action_list'] = explode(',', $limit['action_list']);
+
+            } else {
+                $limit = [
+                    'status' => 1,
+                    'time_number' => 1,
+                    'time_unit' => [],
+                ];
+            }
+            //dump($limit);
+            // 处罚方式数组
+            $opt_punish = $ActionLimitModel->punish;
+            // 行为数组
+            $opt_action = $ActionModel->getActionOpt();
+
+            View::assign('opt_punish',$opt_punish);
+            View::assign('opt_action',$opt_action);
+            View::assign('limit', $limit);
+
+            return View::fetch();
+        }
+    }
+
+    /**
+     * 行为限制状态
+     */
+    public function limitStatus(int $status = 0)
+    {
+        $ids = array_unique((array)input('ids/a', 0));
+        $ids = is_array($ids) ? implode(',', $ids) : $ids;
+
+        if (empty($ids)) {
+            $this->error('请选择要操作的数据');
+        }
+
+        $map = ['id' => ['in', $ids]];
+        
+        switch (strtolower($status)) {
+            case 0:
+                return $this->forbid('action_limit', $map);
+                break;
+            case 1:
+                return $this->resume('action_limit', $map);
+                break;
+            case -1:
+                return $this->delete('action_limit', $map);
+                break;
+            default:
+                return $this->error('参数错误');
+        }
     }
 
 }

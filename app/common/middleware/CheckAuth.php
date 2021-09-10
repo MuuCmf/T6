@@ -3,14 +3,12 @@ declare (strict_types=1);
 
 namespace app\common\middleware;
 
-use think\App;
 use think\Response;
-use think\facade\Request;
 use app\common\controller\Base;
 use thans\jwt\JWTAuth as Auth;
 use think\facade\Config;
+use think\facade\Cookie;
 use thans\jwt\exception\TokenExpiredException;
-use thans\jwt\exception\TokenBlacklistGracePeriodException;
 
 class CheckAuth extends Base
 {
@@ -40,8 +38,8 @@ class CheckAuth extends Base
     /**
      * Auth鉴权
      */
-    public function handle($request, \Closure $next): Response {
-        
+    public function handle($request, \Closure $next): Response 
+    {
         // 验证token
         try {
             //$this->auth->auth();

@@ -18,6 +18,8 @@ require __DIR__ . '/../vendor/autoload.php';
 define('APP_PATH', __DIR__ . '/../app/');
 //public目录
 define('PUBLIC_PATH', __DIR__);
+//static目录
+define('STATIC_URL', './static');
 
 // 执行HTTP应用并响应
 $http = (new App())->http;

@@ -1,16 +1,18 @@
 <?php
 
 use think\facade\Db;
+use app\common\model\ActionLog;
 
-require_once(__DIR__ . '/common/common/builder.php');
-require_once(__DIR__ . '/common/common/file.php');
-require_once(__DIR__ . '/common/common/member.php');
-require_once(__DIR__ . '/common/common/message.php');
-require_once(__DIR__ . '/common/common/parse.php');
-require_once(__DIR__ . '/common/common/thumb.php');
-require_once(__DIR__ . '/common/common/time.php');
-require_once(__DIR__ . '/common/common/vendors.php');
-require_once(__DIR__ . '/common/common/wechat.php');
+require_once(__DIR__ . '/common/function/attachment.php');
+require_once(__DIR__ . '/common/function/builder.php');
+require_once(__DIR__ . '/common/function/editor.php');
+require_once(__DIR__ . '/common/function/file.php');
+require_once(__DIR__ . '/common/function/member.php');
+require_once(__DIR__ . '/common/function/message.php');
+require_once(__DIR__ . '/common/function/parse.php');
+require_once(__DIR__ . '/common/function/time.php');
+require_once(__DIR__ . '/common/function/vendors.php');
+require_once(__DIR__ . '/common/function/wechat.php');
 
 /**
  * 系统公共库文件
@@ -140,7 +142,7 @@ if (!function_exists('var_export_short')) {
      * @param string $indent 缩进字符
      * @return string
      */
-    function var_export_short($var, $indent = "")
+    function var_export_short($var = [], $indent = "")
     {
         switch (gettype($var)) {
             case "string":
@@ -160,8 +162,8 @@ if (!function_exists('var_export_short')) {
                 return var_export($var, TRUE);
         }
     }
-
 }
+
 /**
  * 字符串截取，支持中文和其他编码
  * @static
@@ -225,7 +227,6 @@ if (!function_exists('think_encrypt')) {
         return str_replace(array('+', '/', '='), array('-', '_', ''), base64_encode($str));
     }
 }
-
 
 if (!function_exists('think_decrypt')) {
     /**
@@ -389,12 +390,14 @@ function tree_to_list($tree, $child = '_child', $order = 'id', &$list = array())
  * @param string $action 行为标识
  * @param string $model 触发行为的模型名
  * @param int $record_id 触发行为的记录id
- * @param int $user_id 执行行为的用户id
+ * @param int $uid 执行行为的用户id
  * @return boolean
  */
-function action_log($action = null, $model = null, $record_id = null, $user_id = null)
-{
-    return model('action')->action_log($action, $model, $record_id, $user_id);
+function action_log($action = null, $model = null, $record_id = null, $uid = null)
+{   
+    $actionLogModel = new ActionLog();
+
+    return $actionLogModel->add($action, $model, $record_id, $uid);
 }
 
 //基于数组创建目录和文件
@@ -438,9 +441,7 @@ if (!function_exists('array_column')) {
 
 /**
  * 获取数据的所有子孙数据的id值
- * @author 朱亚杰 <xcoolcc@gmail.com>
  */
-
 function get_stemma($pids, Model &$model, $field = 'id')
 {
     $collection = array();
@@ -477,10 +478,44 @@ function get_nav_url($url)
         case '#' === substr($url, 0, 1):
             break;
         default:
-            $url = Url($url);
+            $url = url($url);
             break;
     }
     return $url;
+}
+
+/**
+ * @param $url 检测当前自定义导航url是否被选中
+ * @return bool|string
+ */
+function get_nav_active($url)
+{
+    switch ($url) {
+        case 'http://' === substr($url, 0, 7):
+            if (strtolower($url) === strtolower($_SERVER['HTTP_REFERER'])) {
+                return 1;
+            }
+        case 'https://' === substr($url, 0, 7):
+            if (strtolower($url) === strtolower($_SERVER['HTTP_REFERER'])) {
+                return 1;
+            }
+        case '#' === substr($url, 0, 1):
+            return 0;
+            break;
+        default:
+            $url_array = explode('/', $url);
+            if ($url_array[0] == '') {
+                $MODULE_NAME = $url_array[1];
+            } else {
+                $MODULE_NAME = $url_array[0]; //发现模块就是当前模块即选中。
+            }
+            if (strtolower($MODULE_NAME) === strtolower(app('http')->getName())) {
+                return 1;
+            };
+            break;
+
+    }
+    return 0;
 }
 
 /**
@@ -548,7 +583,7 @@ function real_strip_tags($str, $allowable_tags = "")
  */
 function getMyScore($score_name = 'score1')
 {
-    $user = query_user(array($score_name), is_login());
+    $user = query_user(is_login(),array($score_name));
     $score = $user[$score_name];
     return $score;
 }
@@ -621,12 +656,10 @@ function create_rand($length = 8, $type = 'all')
 
 }
 
-
 /**
  * curl_get_headers 获取链接header
  * @param $url
  * @return array
- * @author:xjw129xjt(肖骏涛) xjt@ourstu.com
  */
 function curl_get_headers($url)
 {
@@ -680,7 +713,6 @@ function get_some_day($some = 30, $day = null)
  * convert_url_query  转换url参数为数组
  * @param $query
  * @return array|string
- * @author:xjw129xjt(肖骏涛) xjt@ourstu.com
  */
 function convert_url_query($query)
 {
@@ -704,7 +736,6 @@ function convert_url_query($query)
  * @param $str
  * @param string $place
  * @return mixed
- * @author:xjw129xjt(肖骏涛) xjt@ourstu.com
  */
 function cut_str($search,$str,$place=''){
     switch($place){
@@ -721,60 +752,6 @@ function cut_str($search,$str,$place=''){
 }
 
 /**
- * get_upload_config  获取上传驱动配置
- * @param $driver
- * @return mixed
- * @author:dameng
- */
-function get_upload_config($driver){
-    if($driver == 'local'){
-        $uploadConfig =     config("UPLOAD_{$driver}_CONFIG");
-    }else{
-        $name = get_addon_class($driver);
-        $class = new $name();
-        $uploadConfig = $class->uploadConfig();
-    }
-    return $uploadConfig;
-}
-
-/**
- * check_driver_is_exist 判断上传驱动插件是否存在
- * @param $driver
- * @return string
- * @author:xjw129xjt(肖骏涛) xjt@ourstu.com
- */
-function check_driver_is_exist($driver){
-    if($driver == 'local'){
-        return $driver;
-    }else{
-        $name = get_addon_class($driver);
-        if (class_exists($name)) {
-            return $driver;
-        }else{
-            return 'local';
-        }
-    }
-}
-
-/**
- * check_sms_hook_is_exist  判断短信服务插件是否存在，不存在则返回none
- * @param $driver
- * @return string
- * @author:xjw129xjt(肖骏涛) xjt@ourstu.com
- */
-function check_sms_hook_is_exist($driver){
-    if($driver == 'none'){
-        return $driver;
-    }else{
-        $name = get_addon_class($driver);
-        if (class_exists($name)) {
-            return $driver;
-        }else{
-            return 'none';
-        }
-    }
-}
-/**
  * 根据ID获取区域名称
  * @param  [type] $id [description]
  * @return [type]     [description]
@@ -782,6 +759,17 @@ function check_sms_hook_is_exist($driver){
 function get_area_name($id)
 {
     return Db::name('district')->where(['id' => $id])->field('name')->find();
+}
+
+//判断是http or https
+function get_http_https(){
+    $url = 'http://';
+       if (isset ( $_SERVER ['HTTPS'] ) && $_SERVER ['HTTPS'] == 'on') {
+       $url = 'https://';
+       }else{
+        $url = 'http://';
+       }
+    return $url;
 }
 
 /**
@@ -818,6 +806,7 @@ function url_query($url){
     }
     return $url;
 }
+
 /**
  * 多维数组中查询是否包含值
  * @param  [type] $value [description]
@@ -841,6 +830,15 @@ function deep_in_array($value, $array) {
         }  
     }
     return false;   
+}
+
+/**
+ * 获取网站的根Url
+ * @return string
+ */
+function get_root_url()
+{
+    return get_http_https().$_SERVER['SERVER_NAME'] . '/attachment/';
 }
 
 

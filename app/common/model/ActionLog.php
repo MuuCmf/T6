@@ -28,7 +28,7 @@ class ActionLog extends Model
 	    $action_info = Db::name('action')->where(['name'=>$action])->find();
 
 	    if ($action_info['status'] != 1) {
-	        return lang('_THE_ACT_IS_DISABLED_OR_DELETED_');
+	        return '该行为被禁用或删除';
 	    }
 
 	    //插入行为日志

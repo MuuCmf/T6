@@ -2,21 +2,17 @@
 namespace app\admin\Model;
 
 use think\Model;
-use think\Db;
+use think\facade\Db;
+use think\facade\Config;
 
 class CountActive extends Model
 {
-    public function _initialize()
-    {
-        parent::_initialize();
-    }
-
-/**
+    /**
      * 每日执行活跃用户统计
      */
     public function activeCount()
     {
-        $activeAction = config('COUNT_ACTIVE_ACTION');
+        $activeAction = Config::get('system.COUNT_ACTIVE_ACTION');
         if(!$activeAction){
             $activeAction = 3;
         }
@@ -131,9 +127,13 @@ class CountActive extends Model
         }
         $map['type'] = $type;
         $map['date'] = ['between',$startTime.','.$endTime];
-        $list = $this->where($map)->select();
-        $list = collection($list)->toArray();
-        $list = $this->_initActiveList($list,$startTime,$endTime,$type);
+        
+        $list = $this->where($map)->select()->toArray();
+        
+        if(!empty($list)){
+            $list = $this->_initActiveList($list,$startTime,$endTime,$type);
+        }
+        
         return $list;
     }
 
@@ -175,17 +175,17 @@ class CountActive extends Model
             default:;
         }
         if($next){
-            $activeAction = config('COUNT_ACTIVE_ACTION',null,3);
+            $activeAction = Config::get('system.COUNT_ACTIVE_ACTION');
             $function = '_'.$type.'ActiveCount';
-            $list['now']=$this->$function($activeAction,$next);
+            $list['now'] = $this->$function($activeAction,$next);
         }
-        $lost = array();
+        $lost = [];
 
         $hasDate = array_column($list,'date');
         $date = $startTime+$away;
         do{
             if(!in_array($date,$hasDate)){
-                $lost[] = array('type'=>$type,'date'=>$date,'num'=>0,'total'=>'0');
+                $lost[] = ['type'=>$type,'date'=>$date,'num'=>0,'total'=>'0'];
             }
             $date = strtotime(time_format($date,'Y-m-d').$range)+$away;
         }while($date<=$endTime);
@@ -201,12 +201,13 @@ class CountActive extends Model
             $num[] = $val['num'];
         }
         unset($val);
-        $resultList = array(
+        $resultList = [
             'labels' => $labels,
             'datas' => array(
                 'num' => $num
             )
-        );
+        ];
+
         return $resultList;
     }
 

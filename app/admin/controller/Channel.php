@@ -1,27 +1,37 @@
 <?php
-namespace app\admin\Controller;
+namespace app\admin\controller;
 
-use app\admin\controller\Admin;
-use think\Db;
+use think\facade\Db;
+use think\facade\View;
+use app\common\model\Module as ModuleModel;
+use app\common\model\Channel as ChannelModel;
 /**
  * 后台频道控制器
  */
-
 class Channel extends Admin
 {
-
+    protected $channel;
     /**
-     * 频道列表
-     * @author 麦当苗儿 <zuojiazi@vip.qq.com>
+     * 构造方法
+     * @access public
      */
-    public function index()
+    public function __construct()
     {
-        $Channel = Db::name('Channel');
+        parent::__construct();
+
+        $this->channel = new ChannelModel();
+    }
+    /**
+     * 前台公共导航
+     */
+    public function common()
+    {
+        
         if (request()->isPost()) {
 
             $one = $_POST['nav'][1];
             if (count($one) > 0) {
-                Db::execute('TRUNCATE TABLE ' . config('database.prefix') . 'channel');
+                Db::execute('TRUNCATE TABLE ' . config('database.connections.mysql.prefix') . 'channel');
 
                 for ($i = 0; $i < count(reset($one)); $i++) {
                     $data[$i] = array(
@@ -31,10 +41,9 @@ class Channel extends Admin
                         'sort' => intval($one['sort'][$i]),
                         'target' => empty($one['target'][$i]) ? 0:intval($one['target'][$i]),
                         'band_text' => text($one['band_text'][$i]),
-                        'band_color' => text($one['band_color'][$i]),
                         'status' => 1
                     );
-                    $pid[$i] = $Channel->insert($data[$i]);
+                    $pid[$i] = $this->channel->insert($data[$i]);
                 }
 
                 if(!empty($_POST['nav'][2])){
@@ -48,44 +57,38 @@ class Channel extends Admin
                             'sort' => intval($two['sort'][$j]),
                             'target' => intval($two['target'][$j]),
                             'band_text' => text($two['band_text'][$j]),
-                            'band_color' => text($two['band_color'][$j]),
                             'status' => 1
                         );
-                        $res[$j] = $Channel->insert($data_two[$j]);
+                        $res[$j] = $this->channel->insert($data_two[$j]);
                     }
                 }
                 
                 cache('common_nav',null);
-                $this->success(lang('_CHANGE_'));
+                $this->success('修改成功');
             }
-            $this->error(lang('_NAVIGATION_AT_LEAST_ONE_'));
-
+            $this->error('导航至少存在一个。');
 
         } else {
             /* 获取频道列表 */
-            $map = array('status' => array('gt', -1), 'pid' => 0);
-            $list = $Channel->where($map)->order('sort asc,id asc')->select();
+            $map[] = ['status', '>', -1];
+            $map[] = ['pid', '=', 0];
+            $list = $this->channel->where($map)->order('sort asc,id asc')->select();
             foreach ($list as $k => &$v) {
-                $module = Db::name('Module')->where(array('entry' => $v['url']))->find();
-
+                $module = Db::name('Module')->where(['entry' => $v['url']])->find();
                 $v['module_name'] = $module['name'];
-                $child = $Channel->where(array('status' => array('gt', -1), 'pid' => $v['id']))->order('sort asc,id asc')->select();
-                foreach ($child as $key => &$val) {
-                    $module = Db::name('Module')->where(array('entry' => $val['url']))->find();
-                    $val['module_name'] = $module['name'];
-                }
-                unset($key, $val);
-                $child && $v['child'] = $child;
             }
             unset($k, $v);
 
-            $this->assign('module', $this->getModules());
-            $this->assign('list', $list);
+            // 获取应用模块列表
+            $moduleModel = new ModuleModel();
+            $module = $moduleModel->getAll(['is_setup' => 1]);
+            View::assign('module', $module);
+            View::assign('list', $list);
 
-            $this->setTitle(lang('_NAVIGATION_MANAGEMENT_'));
-            return $this->fetch();
+            $this->setTitle('导航管理');
+
+            return View::fetch();
         }
-
     }
 
     /**
@@ -97,7 +100,7 @@ class Channel extends Admin
         if (request()->isPost()) {
             $one = $_POST['nav'][1];
             if (count($one) > 0) {
-                Db::execute('TRUNCATE TABLE ' . config('database.prefix') . 'user_nav');
+                Db::execute('TRUNCATE TABLE ' . config('database.connections.mysql.prefix') . 'user_nav');
 
                 for ($i = 0; $i < count(reset($one)); $i++) {
                     $data[$i] = array(
@@ -107,41 +110,33 @@ class Channel extends Admin
                         'target' => intval($one['target'][$i]),
                         //'color' => text($one['color'][$i]),
                         'band_text' => text($one['band_text'][$i]),
-                        'band_color' => text($one['band_color'][$i]),
                         'status' => 1
                     );
                     $pid[$i] = $Channel->insert($data[$i]);
                 }
                 cache('common_user_nav',null);
-                $this->success(lang('_CHANGE_'));
+                $this->success('修改成功');
             }
-            $this->error(lang('_NAVIGATION_AT_LEAST_ONE_'));
-
-
+            $this->error('导航至少存在一个');
         } else {
+            $this->setTitle('导航管理');
             /* 获取频道列表 */
-            $map = array('status' => array('gt', -1));
-            $list = $Channel->where($map)->order('sort asc,id asc')->select();
+            $map[] = ['status','>', -1];
+            $list = $Channel->where($map)->order('sort asc,id asc')->select()->toArray();
             foreach ($list as $k => &$v) {
-                $module = Db::name('Module')->where(array('entry' => $v['url']))->find();
+                $module = Db::name('Module')->where(['entry' => $v['url']])->find();
                 $v['module_name'] = $module['name'];
                 unset($key, $val);
             }
-
             unset($k, $v);
-            $this->assign('module', $this->getModules());
-            $this->assign('list', $list);
 
-            $this->setTitle(lang('_NAVIGATION_MANAGEMENT_'));
-            return $this->fetch();
+            // 获取应用模块列表
+            $moduleModel = new ModuleModel();
+            $module = $moduleModel->getAll(['is_setup' => 1]);
+            View::assign('module', $module);
+            View::assign('list', $list);
+
+            return View::fetch();
         }
     }
-
-    private function getModules()
-    {
-        $result = model('common/Module')->getAll(['is_setup' => 1]);
-        return $result;
-    }
-
-
 }

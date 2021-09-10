@@ -2,7 +2,7 @@
 namespace app\admin\model;
 
 use think\Model;
-use think\Db;
+use think\facade\Db;
 
 /**
  * 用户组模型类
@@ -18,14 +18,6 @@ class AuthGroup extends Model {
 
 
     public $error;
-    //自定义初始化
-    public function initialize()
-    {
-        //需要调用`Model`的`initialize`方法
-        parent::initialize();
-        //TODO:自定义的初始化
-        $this->error = '发生错误';
-    }
 
     /**
      * 编辑/新增数据
@@ -37,9 +29,9 @@ class AuthGroup extends Model {
     public function editData($data)
     {
         if(!empty($data['id'])){
-            $res = $this->allowField(true)->save($data,$data['id']);
+            $res = $this->update($data);
         }else{
-            $res = $this->allowField(true)->save($data);
+            $res = $this->insert($data);
         }
 
         return $res;
@@ -156,16 +148,11 @@ class AuthGroup extends Model {
      * 
      * @param int     $uid  用户id
      * @return array
-     *  
      *  array(2,4,8,13) 
-     *
-     * @author 朱亚杰 <zhuyajie@topthink.net>
      */
     static public function getAuthCategories($uid){
         return self::getAuthExtend($uid,self::AUTH_EXTEND_CATEGORY_TYPE,'AUTH_CATEGORY');
     }
-
-
 
     /**
      * 获取用户组授权的扩展信息数据
@@ -230,8 +217,6 @@ class AuthGroup extends Model {
      *
      * @param int|string|array $gid   用户组id
      * @param int|string|array $cid   分类id
-     * 
-     * @author 朱亚杰 <zhuyajie@topthink.net>
      */
     static public function addToCategory($gid,$cid){
         return self::addToExtend($gid,$cid,self::AUTH_EXTEND_CATEGORY_TYPE);
@@ -242,7 +227,6 @@ class AuthGroup extends Model {
      * 将用户从用户组中移除
      * @param int|string|array $gid   用户组id
      * @param int|string|array $cid   分类id
-     * @author 朱亚杰 <xcoolcc@gmail.com>
      */
     public function removeFromGroup($uid,$gid){
         return Db::name(self::AUTH_GROUP_ACCESS)->where( array( 'uid'=>$uid,'group_id'=>$gid) )->delete();
@@ -295,7 +279,6 @@ class AuthGroup extends Model {
     /**
      * 检查用户组是否全部存在
      * @param array|string $gid  用户组id列表
-     * @author 朱亚杰 <zhuyajie@topthink.net>
      */
     public function checkGroupId($gid){
         return $this->checkId('AuthGroup',$gid, '以下用户组id不存在:');

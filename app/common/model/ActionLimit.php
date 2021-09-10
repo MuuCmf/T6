@@ -10,9 +10,13 @@ class ActionLimit extends Model
 {
 
     var $item = [];
+
     var $code = 1;
+
     var $url;
+
     var $msg = '';
+    
     var $punish = [
         ['warning','警告并禁止'],
         ['logout_account', '强制退出登陆'],
@@ -20,14 +24,6 @@ class ActionLimit extends Model
         ['ban_ip', '封IP'],
     ];
 
-    public function _initialize()
-    {
-        $this->url = '';
-        $this->msg = '';
-        $this->code = 1;
-
-        parent::_initialize();
-    }
     protected $autoWriteTimestamp = true;
     
 
@@ -53,7 +49,7 @@ class ActionLimit extends Model
     }
 
     public function getList($where){
-        $list = collection($this->where($where)->select())->toArray();
+        $list = $this->where($where)->select()->toArray();
         return $list;
     }
 
@@ -148,12 +144,12 @@ class ActionLimit extends Model
      * @param  [type] $data [description]
      * @return [type]       [description]
      */
-    public function editData($data)
+    public function edit($data)
     {
         if($data['id']){
-            $res = $this->allowField(true)->save($data,$data['id']);
+            $res = $this->update($data);
         }else{
-            $res = $this->allowField(true)->save($data);
+            $res = $this->insert($data);
         }
         
         return $res;

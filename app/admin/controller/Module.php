@@ -1,22 +1,24 @@
 <?php
-namespace app\admin\Controller;
 
-use app\admin\controller\Admin;
+namespace app\admin\controller;
+
 use think\Db;
-use app\admin\builder\AdminConfigBuilder;
-use app\admin\builder\AdminListBuilder;
-use app\common\model\ModuleModel;
+use think\facade\View;
+use app\common\model\Module as ModuleModel;
 
 class Module extends Admin
 {
     protected $moduleModel;
-    //protected $cloudModel;
 
-    function _initialize()
+    /**
+     * 构造方法
+     * @access public
+     */
+    public function __construct()
     {
-        $this->moduleModel = model('Module');
+        parent::__construct();
 
-        parent::_initialize();
+        $this->moduleModel = new ModuleModel();
     }
 
     /**
@@ -26,15 +28,16 @@ class Module extends Admin
      */
     public function index()
     {
-        $this->setTitle(lang('_MODULE_MANAGEMENT_'));
+        $this->setTitle('应用管理');
+
         $aType = input('type', 'installed', 'text');
-        $this->assign('type', $aType);
+        View::assign('type', $aType);
 
         /*刷新模块列表时清空缓存*/
         $aRefresh = input('refresh', 0, 'intval');
         if ($aRefresh == 1) {
             cache('admin_modules', null);
-            model('Module')->reload();
+            $this->moduleModel->reload();
         }
         /*刷新模块列表时清空缓存 end*/
         switch($aType){
@@ -44,25 +47,25 @@ class Module extends Admin
             break;
 
             case 'installed':
-                $map['is_setup'] = 1;
+                $map[] = ['is_setup','=',1];
             break;
 
             case 'uninstalled':
-                $map['is_setup'] = 0;
+                $map[] = ['is_setup','=',0];
             break;
 
             case 'core':
-                $map['can_uninstall'] = 0;
+                $map[] = ['can_uninstall','=',0];
             break;
         };
 
-        $modules = model('Module')->getListByPage($map,'sort desc,id desc','*',20);
+        $modules = $this->moduleModel->getListByPage($map,'sort desc,id desc','*',20);
         $page = $modules->render();
         
-        $this->assign('page', $page);
-        $this->assign('modules', $modules);
+        View::assign('page', $page);
+        View::assign('modules', $modules);
 
-        return $this->fetch();
+        return View::fetch();
     }
 
     /**
@@ -75,10 +78,10 @@ class Module extends Admin
         $modules = model('Module')->getListByPage($map,'sort desc,id desc','*',20);
         $page = $modules->render();
 
-        $this->assign('page', $page);
-        $this->assign('modules', $modules);
+        View::assign('page', $page);
+        View::assign('modules', $modules);
 
-        return $this->fetch();
+        return View::fetch();
     }
 
     /**
@@ -103,19 +106,19 @@ class Module extends Admin
                 cache('admin_modules', null);
                 //删除module表中记录
                 $this->moduleModel->where(['id' => $aId])->delete();
-                $this->success(lang('_THE_SUCCESS_OF_THE_UNLOADING_MODULE_'), Url('index'));
+                return $this->success('卸载模块成功。', url('index'));
             } else {
-                $this->error(lang('_FAILURE_OF_THE_UNLOADING_MODULE_') . $this->moduleModel->getError());
+                $this->error('卸载模块失败。' . $this->moduleModel->getError());
             }
 
         }else{
             $builder = new AdminConfigBuilder();
-            $builder->title($module['alias'] . lang('_DASH_').lang('_UNLOADING_MODULE_'));
+            $builder->title($module['alias'] . '——'.'卸载模块');
             $module['remove_nav'] = 1;
-            $builder->keyReadOnly('id', lang('_MODULE_NUMBER_'));
-            $builder->suggest('<span class="text-danger">'.lang('_OPERATE_CAUTION_').'</span>');
-            $builder->keyReadOnly('alias', lang('_UNINSTALL_MODULE_'));
-            $builder->keyBool('withoutData', lang('_KEEP_DATA_MODULE_').'?', lang('_DEFAULT_RESERVATION_MODULE_DATA_'))->keyBool('remove_nav', lang('_REMOVE_NAVIGATION_'), lang('_UNINSTALL_AUTO_UNINSTALL_MENU_',array('link'=>url('channel/index'))));
+            $builder->keyReadOnly('id', '模块编号');
+            $builder->suggest('<span class="text-danger">'.'请谨慎操作，此操作无法还原'.'</span>');
+            $builder->keyReadOnly('alias', '卸载的模块');
+            $builder->keyBool('withoutData', '是否保留模块数据'.'?', '默认保留模块数据')->keyBool('remove_nav', '移除导航', '卸载后自动卸载掉对应的菜单，或者<a target="_blank" href="/index.php?s=/admin/channel/index.html">手动设置</a>');
 
             $module['withoutData'] = 1;
             $builder->data($module);
@@ -150,32 +153,31 @@ class Module extends Admin
                     cache('common_nav', null);
                 }
                 cache('ADMIN_MODULES_' . is_login(), null);
-                $this->success(lang('_INSTALLATION_MODULE_SUCCESS_'), Url('index'));
+                $this->success('安装模块成功。', url('index'));
             } else {
-                $this->error(lang('_SETUP_MODULE_FAILED_') . $this->moduleModel->getError());
+                $this->error('安装模块失败。' . $this->moduleModel->getError());
             }
 
         } else {
             $builder = new AdminConfigBuilder();
-            $builder->title($module['alias'] . lang('_DASH_') . lang('_GUIDE_MODULE_INSTALL_'));
+            $builder->title($module['alias'] . '-' . '模块安装向导');
             $builder
                 ->keyId()
-                ->keyReadOnly('name', lang('_MODULE_NAME_'))
-                ->keyText('alias', lang('_MODULE_CHINESE_NAME_'))
-                ->keyReadOnly('version', lang('_VERSION_'))
-                ->keyText('icon', lang('_ICON_'))
-                ->keyTextArea('summary', lang('_MODULE_INTRODUCTION_'))
-                ->keyReadOnly('developer', lang('_DEVELOPER_'))
-                ->keyText('entry', lang('_FRONT_ENTRANCE_'))
-                ->keyText('admin_entry', lang('_BACKGROUND_ENTRY_'))
-                ->keyRadio('mode', lang('_INSTALLATION_MODE_'), '', array('install' => lang('_COVER_INSTALLATION_MODE_')));
-                //, 'repair' => lang('_FIX_MODE_')修复模式不会导入模块专用数据表，只导入菜单、权限、行为、行为限制
+                ->keyReadOnly('name', '模块目录（唯一标识）')
+                ->keyText('alias', '模块中文名不能为空。')
+                ->keyReadOnly('version', '版本')
+                ->keyText('icon', '图标')
+                ->keyTextArea('summary', '模块介绍')
+                ->keyReadOnly('developer', '开发者')
+                ->keyText('entry', '前台入口')
+                ->keyText('admin_entry', '后台入口')
+                ->keyRadio('mode', '安装模式', '', ['install' => '覆盖安装模式']);
             if ($module['entry']) {
                 $_Link_ = url('channel/index');
-                $builder->keyBool('add_nav', lang('_ADD_NAVIGATION_'), lang('_INSTALL_AUTO_ADD_MENU_'));
+                $builder->keyBool('add_nav', '添加导航', '安装后自动在导航栏中加入菜单，或者<a target="_blank" href="/index.php?s=/admin/channel/index.html">手动设置</a>');
             }
 
-            $builder->group(lang('_INSTALL_OPTION_'), 'name,alias,version,mode,add_nav');
+            $builder->group('安装选项', 'name,alias,version,mode,add_nav');
             
             $module['mode'] = 'install';
             $builder->data($module);

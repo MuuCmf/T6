@@ -2,7 +2,8 @@
 namespace app\common\model;
 
 use think\Model;
-use think\Db;
+use think\facade\Db;
+use think\facade\Config;
 use app\common\model\ActionLog;
 
 /**
@@ -10,6 +11,7 @@ use app\common\model\ActionLog;
  */
 class Member extends Model
 {
+    public $error;
     protected $autoWriteTimestamp = true;
 
     //自动完成
@@ -23,13 +25,13 @@ class Member extends Model
      * @param  string $password 用户密码
      * @param  string $email 用户邮箱
      * @param  string $mobile 用户手机号码
-     * @return integer          注册成功-用户信息，注册失败-错误编号
+     * @return integer 注册成功-用户信息，注册失败-错误编号
      */
     public function register($username='', $nickname, $password, $email='', $mobile='', $type='username')
     {
         $data = [
             'username' => $username,
-            'password' => user_md5($password,config('database.auth_key')),
+            'password' => user_md5($password,Config::get('auth.auth_key')),
             'email' => $email,
             'mobile' => $mobile,
             'nickname' => $nickname,
@@ -91,7 +93,7 @@ class Member extends Model
         $user = $this->where($map)->find();
         // 行为限制
         $actionLimit = new ActionLimit();
-        $return =$actionLimit->checkActionLimit('input_password','member',$user['uid'],$user['uid']);
+        $return = $actionLimit->checkActionLimit('input_password','member',$user['uid'],$user['uid']);
 
         if($return && !$return['code']){
             return $return['msg'];
@@ -99,14 +101,16 @@ class Member extends Model
 
         if ($user['uid'] && $user['status']) {
             /* 验证用户密码 */
-            if (user_md5($password, config('database.auth_key')) === $user['password']) {
+            if (user_md5($password, Config::get('auth.auth_key')) === $user['password']) {
                 return $user['uid']; //返回用户ID
             } else {
                 $actionLog = new ActionLog();
                 $actionLog->add('input_password','member',$user['uid'],$user['uid']);
+                $this->error = '密码错误';
                 return -2; //密码错误
             }
         } else {
+            $this->error = '用户不存在或被禁用';
             return -1; //用户不存在或被禁用
         }
     }
@@ -118,19 +122,41 @@ class Member extends Model
      */
     public function login(int $uid)
     {
+        if($uid )
         /* 检测是否在当前应用注册 */
-        $user = $this->where('uid',$uid)->find();
-        if (1 != $user['status']) {
+        $user = $this->where('uid','=',$uid)->find();
+
+        if ($user['status'] !== 1) {
             $this->error = '用户已禁用'; //应用级别禁用
             return false;
         }
 
         //更新登录信息
         $this->updateLogin($uid);
+
+        /* 记录登录SESSION和COOKIES */
+        $auth = array(
+            'uid' => $user['uid'],
+            'username' => $user['username'],
+            'last_login_time' => $user['last_login_time'],
+        );
+
+        session('user_auth', $auth);
+        session('user_auth_sign', data_auth_sign($auth));
         
         //记录行为
         $actionLog = new ActionLog();
         $actionLog->add('user_login', 'member', $uid, $uid);
+
+        return true;
+    }
+
+    /**
+     * 退出登录
+     */
+    public function logout(int $uid)
+    {
+        session(null);
 
         return true;
     }
@@ -190,18 +216,13 @@ class Member extends Model
      * @param  boolean $is_username 是否使用用户名查询
      * @return array                用户信息
      */
-    public function info($uid, $is_username = false)
+    public function info($uid, $fields = 'uid,username,nickname,email,mobile,avatar,status')
     {
-        $map = array();
-        if ($is_username) { //通过用户名获取
-            $map['username'] = $uid;
-        } else {
-            $map['uid'] = $uid;
-        }
-
-        $user = $this->where($map)->field('uid,username,email,mobile,status')->find();
+        $map['uid'] = $uid;
+        
+        $user = $this->where($map)->field($fields)->find()->toArray();
         if (is_array($user) && $user['status'] = 1) {
-            return [$user['id'], $user['username'], $user['email'], $user['mobile']];
+            return $user;
         } else {
             return -1; //用户不存在或被禁用
         }
@@ -213,10 +234,14 @@ class Member extends Model
      */
     public function updateLogin(int $uid)
     {
-        $data = array(
+        $user = $this->where('uid','=',$uid)->find()->toArray();
+
+        $data = [
+            'login' => $user['login'] + 1,
             'last_login_time' => time(),
-            'last_login_ip' => request()->ip(1),
-        );
+            'last_login_ip' => request()->ip(),
+        ];
+
         $this->where('uid',$uid)->save($data);
     }
 
@@ -248,7 +273,7 @@ class Member extends Model
         unset($data['confirm_password']);
         //$data = array_values($data);
         //密码数据加密
-        $password = user_md5($new_password, Config('database.auth_key'));
+        $password = user_md5($new_password, Config::get('auth.auth_key'));
         $data['password'] = $password;
         //更新用户信息
         $res = $this->save($data,['id' => get_uid()]);
@@ -262,6 +287,9 @@ class Member extends Model
         }
     }
     
+    /**
+     * 随机生成一个邮箱地址
+     */
     public function randEmail()
     {
         $email = create_rand(10) . '@muucmf.cn';
@@ -272,11 +300,43 @@ class Member extends Model
         }
     }
 
+    /**
+     * 获取用户名
+     */
+    public function getUsername(int $uid)
+    {
+        //调用接口获取用户信息
+        $username = $this->where('uid',$uid)->value('username');
+
+        return $username;
+    }
+
+    /**
+     * 获取昵称
+     */
     public function getNickname(int $uid)
     {
         //调用接口获取用户信息
         $nickname = $this->where('uid',$uid)->value('nickname');
 
         return $nickname;
+    }
+
+    /**
+     * 清除用户缓存
+     * @param  [type] $uid  [description]
+     * @param  [type] $type [description]
+     * @return [type]       [description]
+     */
+    public function cleanUserCache($uid,$type){
+
+        $uid = is_array($uid) ? $uid : explode(',',$uid);
+        $type = is_array($type)?$type:explode(',',$type);
+        foreach($uid as $val){
+            foreach($type as $v){
+                clean_query_user_cache($val, 'score' . $v);
+            }
+            clean_query_user_cache($val, 'title');
+        }
     }
 }

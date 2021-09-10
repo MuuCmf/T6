@@ -1,6 +1,6 @@
 <?php
 /**
- * 所属项目 MuuCmf T5
+ * 所属项目 MuuCmf T6
  * 开发者: 大蒙
  */
 namespace app\common\model;
@@ -22,7 +22,7 @@ class Module extends Model
         $list = $this->where($map)->order($order)->field($field)->paginate($r,false,['query'=>request()->param()]);
 
         foreach ($list as &$val) {
-            $val['icon_image'] = $this->getIcon($val['name']);
+            $val['icon'] = $this->getIcon($val['name']);
         }
         unset($val);
 
@@ -35,7 +35,7 @@ class Module extends Model
      */
     public function getAll($where = [])
     {
-        $list = $this->where($where)->order('sort desc')->select();
+        $list = $this->where($where)->order('sort desc')->select()->toArray();
         foreach ($list as &$val) {
             $val['icon_image'] = $this->getIcon($val['name']);
         }
@@ -82,6 +82,7 @@ class Module extends Model
             }
         }
 
+        $module = [];
         foreach ($dir as $subdir) {
             if (file_exists(APP_PATH . '/' . $subdir . '/info/info.php') && $subdir != '.' && $subdir != '..')
             {
@@ -99,9 +100,12 @@ class Module extends Model
                 $module[] = $info;
             }
         }
-        //写入数据库
-        $this->allowField(true)->saveAll($module);
 
+        if(!empty($module)){
+            //写入数据库
+            $this->saveAll($module);
+        }
+        
         //移除已删除的模块目录
         $db_list = $this->getAll();
         foreach($db_list as $val){
@@ -447,11 +451,9 @@ class Module extends Model
     {
         //图标所在位置为模块静态目录跟下（推荐）
         if(file_exists(PUBLIC_PATH . '/static/' . $name . '/images/icon.png')){
-            $icon = PUBLIC_PATH . '/app/'. $name .'/images/icon.png';
-        }elseif(file_exists(PUBLIC_PATH . '/static/' . $name . '/icon.png')){
-            $icon = PUBLIC_PATH . '/app/'. $name .'/icon.png';
+            $icon = '/static/'. $name .'/images/icon.png';
         }else{
-            $icon = PUBLIC_PATH . '/app/admin/images/module_default_icon.png';
+            $icon = '/static/admin/images/module_default_icon.png';
         }
 
         return $icon;

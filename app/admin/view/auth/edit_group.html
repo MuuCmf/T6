@@ -1,0 +1,34 @@
+{extend name="common/main" /}
+<!-- 管理员{:lang("_USER_GROUP_")}新增和编辑页面 -->
+{block name="body"}
+	<div class="main-title">
+		<h2>{$title}</h2>
+	</div>
+
+    <div class="with-padding">
+        <form class="form-horizontal ajax-form" action="{:url('admin/Auth/writeGroup')}" method="post">
+            <div class="form-item builder_item">
+                <label for="auth-title" class="item-label">用户组</label>
+                <div class="controls">
+                    <input id="auth-title" type="text" name="title" class="text input-large form-control form-input-width" value="{$auth_group.title}"/>
+                </div>
+            </div>
+            <div class="form-item builder_item">
+                <label for="auth-description" class="item-label">简短描述</label>
+                <div class="controls">
+                    <label class="textarea input-large">
+                        <textarea id="auth-description" class="form-control form-text-area-size" type="text" name="description">{$auth_group.description}</textarea>
+                    </label>
+                </div>
+            </div>
+            <div class="form-item builder_item">
+                <input type="hidden" name="id" value="{$auth_group.id}" />
+
+                <button type="submit" class="btn submit-btn" target-form="form-horizontal">确 认</button>
+                <button class="btn btn-return" onclick="javascript:history.back(-1);return false;">返 回</button>
+            </div>
+        </form>
+    </div>
+{/block}
+{block name="script"}
+{/block}

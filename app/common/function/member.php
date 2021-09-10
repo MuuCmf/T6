@@ -1,0 +1,314 @@
+<?php
+use app\admin\model\AuthRule;
+use think\facade\Db;
+use muucmf\Auth;
+use think\captcha\Captcha;
+use app\common\model\Member;
+
+
+/**
+ * 检测用户是否登录
+ * @return integer 0-未登录，大于0-当前登录用户ID
+ * @author 麦当苗儿 <zuojiazi@vip.qq.com>
+ */
+function is_login()
+{   
+    $user = session('user_auth');
+    if (empty($user)) {
+        return 0;
+    } else {
+        return session('user_auth_sign') == data_auth_sign($user) ? $user['uid'] : 0;
+    }
+}
+
+/**
+ * 获取用户UID（语义化）
+ */
+function get_uid()
+{
+    return is_login();
+}
+
+/**
+ * 获取用户数据
+ */
+function query_user($uid = 0, $field_arr = [])
+{
+    $memberModel = new Member;
+    if(empty($field_arr)){
+        $field = "'uid','nickname', 'username', 'sex', 'avatar', 'signature'";
+    }
+    if(is_array($field_arr)){
+        $field = implode(',' ,$field_arr);
+    }
+    $auth_user = $memberModel->info($uid, $field);
+
+    return $auth_user;
+}
+
+/**
+ * 根据用户ID获取用户名
+ * @param  integer $uid 用户ID
+ * @return string       用户名
+ */
+function get_username($uid = 0)
+{
+    $member = new Member();
+    return $member->getUsername($uid);
+}
+
+/**
+ * 根据用户ID获取用户昵称
+ * @param  integer $uid 用户ID
+ * @return string       用户昵称
+ */
+function get_nickname($uid = 0)
+{
+    $member = new Member();
+    return $member->getNickname($uid);
+}
+
+/**获得具有某个权限节点的全部用户UID数组
+ * @param string $rule
+ */
+function get_auth_user($rule = '')
+{
+    $rule = Db::name('AuthRule')->where(array('name' => $rule))->find();
+    $groups = Db::name('AuthGroup')->select();
+    $uids = array();
+    foreach ($groups as $v) {
+        $auth_rule = explode(',', $v['rules']);
+        if (in_array($rule['id'], $auth_rule)) {
+            $gid = $v['id'];
+            $temp_uids =(array) Db::name('AuthGroupAccess')->where(['group_id' => $gid])->getField('uid');
+            if ($temp_uids !== null) {
+                $uids = array_merge($uids, $temp_uids);
+            }
+        }
+    }
+    $uids = array_merge($uids, 1);
+    $uids = array_unique($uids);
+
+    return $uids;
+}
+
+/**
+ * 检测账号类型
+ * @param  [type] $account [description]
+ * @return [type]          [description]
+ */
+function check_account_type($account = '')
+{
+    $check_email = preg_match("/[a-z0-9_\-\.]+@([a-z0-9_\-]+?\.)+[a-z]{2,3}/i", $account, $match_email);
+    $check_mobile = preg_match("/^(1[0-9])[0-9]{9}$/", $account, $match_mobile);
+    if ($check_email) {
+        $type = 'email';
+    } elseif ($check_mobile) {
+        $type = 'mobile';
+    } else {
+        $username = $account;
+        $type = 'username';
+    }
+
+    return $type;
+}
+
+/**
+ * check_username  根据type或用户名来判断注册使用的是用户名、邮箱或者手机
+ * @param $username
+ * @param $email
+ * @param $mobile
+ * @param int $type
+ * @return bool
+ */
+function check_username(&$username, &$email, &$mobile, &$type = 0)
+{
+
+    if ($type) {
+        switch ($type) {
+            case 2:
+                $email = $username;
+                $username = '';
+                $mobile = '';
+                $type = 2;
+                break;
+            case 3:
+                $mobile = $username;
+                $username = '';
+                $email = '';
+                $type = 3;
+                break;
+            default :
+                $mobile = '';
+                $email = '';
+                $type = 1;
+                break;
+        }
+    } else {
+        $check_email = preg_match("/[a-z0-9_\-\.]+@([a-z0-9_\-]+?\.)+[a-z]{2,3}/i", $username, $match_email);
+        $check_mobile = preg_match("/^(1[0-9])[0-9]{9}$/", $username, $match_mobile);
+        if ($check_email) {
+            $email = $username;
+            $username = '';
+            $mobile = '';
+            $type = 2;
+        } elseif ($check_mobile) {
+            $mobile = $username;
+            $username = '';
+            $email = '';
+            $type = 3;
+        } else {
+            $mobile = '';
+            $email = '';
+            $type = 1;
+        }
+    }
+    return true;
+}
+
+/**
+ * 验证注册格式是否开启
+ * @param $type
+ * @return bool
+ */
+function check_reg_type($type){
+    $t[1] = $t['username'] ='username';
+    $t[2] = $t['email'] ='email';
+    $t[3] = $t['mobile'] ='mobile';
+
+    $switch = config('system.USER_REG_SWITCH');
+    if($switch){
+        $switch = explode(',',$switch);
+        if(in_array($t[$type],$switch)){
+           return true;
+        }
+    }
+    return false;
+}
+
+/**
+ * 验证登录提示信息是否开启
+ * @param $type
+ * @return bool
+ */
+function check_login_type($type){
+    $t[1] = $t['username'] ='username';
+    $t[2] = $t['email'] ='email';
+    $t[3] = $t['mobile'] ='mobile';
+
+    $switch = config('system.LOGIN_SWITCH');
+    if($switch){
+        $switch = explode(',',$switch);
+        if(in_array($t[$type],$switch)){
+            return true;
+        }
+    }
+    return false;
+}
+
+/**
+ * 系统用户非常规MD5加密方法
+ * @param  string $str 要加密的字符串
+ * @return string
+ */
+function user_md5($str, $key = '')
+{
+    return '' === $str ? '' : md5(sha1($str) . $key);
+}
+
+/**
+ * 验证码开关
+ * @param  [type] $open [description]
+ * @return [type]       [description]
+ */
+function check_verify_open($open)
+{
+    $config = config('system.VERIFY_OPEN');
+
+    if ($config) {
+        $config = explode(',', $config);
+        if (in_array($open, $config)) {
+            return true;
+        }
+    }
+    return false;
+}
+
+/**
+ * 检测页面验证码
+ * @param  integer $id 验证码ID
+ * @return boolean     检测结果
+ */
+function check_verify($code, $id = 1)
+{
+    $captcha = new Captcha();
+    return $captcha->check($code, $id);
+}
+
+/**
+ * 生成图片验证码
+ * @return [type] [description]
+ */
+function get_verify()
+{
+    captcha_src();
+}
+
+/**随机生成一个用户名
+ * @param $prefix 前缀
+ * @return string
+ */
+function rand_username($prefix = 'muu')
+{
+    $username = $prefix.'_'.create_rand(10);
+    if (Db::name('member')->where(['username' => $username])->select()) {
+        rand_username($prefix);
+    } else {
+        return $username;
+    }
+}
+
+/**
+ * 随机生成一个用户昵称
+ * @param      string  $prefix  The prefix
+ * @return     <type>  ( description_of_the_return_value )
+ */
+function rand_nickname($prefix = 'muu')
+{
+    $nickname = $prefix.'_'.create_rand(8);
+    if (Db::name('member')->where(['nickname' => $nickname])->select()) {
+        rand_nickname($prefix);
+    } else {
+        return $nickname;
+    }
+}
+
+
+function check_auth($rule = '', $except_uid = -1, $type = AuthRule::RULE_URL)
+{
+    if (is_login() == 1) {
+        return true;//管理员允许访问任何页面
+    }
+    if ($except_uid != -1) {
+        if (!is_array($except_uid)) {
+            $except_uid = explode(',', $except_uid);
+        }
+        if (in_array(is_login(), $except_uid)) {
+            return true;
+        }
+    }
+    $rule = empty($rule) ? strtolower(app('http')->getName()) . '/' . strtolower(request()->controller()) . '/' . strtolower(request()->action()) : $rule;
+    // 检测是否有该权限
+    if (!Db::name('auth_rule')->where(['name' => $rule, 'status' => 1])->find()) {
+        return false;
+    }
+   static $Auth = null;
+    if (!$Auth) {
+        $Auth = new Auth();
+    }
+
+    if (!$Auth->check($rule, is_login(), $type)) {
+        return false;
+    }
+    return true;
+}

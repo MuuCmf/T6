@@ -53,7 +53,7 @@ class Verify extends Model
             return false;
         }
         $this->where(['account'=>$account,'type'=>$type])->delete();
-        $this->where(['create_time'=>['<=',get_some_day(1)]])->delete();
+        $this->where('create_time','<=',get_some_day(1))->delete();
 
         return true;
     }

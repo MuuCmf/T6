@@ -3,12 +3,18 @@
 namespace app\common\model;
 
 use think\Model;
+use think\facade\Filesystem;
+use think\Image;
+use OSS\OssClient;
+use OSS\Core\OssException;
+use Qcloud\Cos\Client as CosClient;
+use Qcloud\Cos\Exception\ServiceResponseException;
 
 class Attachment extends Model
 {
 
     // 开启自动写入时间戳字段
-    protected $autoWriteTimestamp = 'int';
+    protected $autoWriteTimestamp = true;
     // 定义时间戳字段名
     protected $createTime = 'createtime';
     protected $updateTime = 'updatetime';
@@ -20,5 +26,505 @@ class Attachment extends Model
     {
         return strtotime($value);
     }
+
+    /**
+     * 通用上传
+     *
+     * @param      <type>  $files   The files
+     * @param      string  $type    The type
+     * @param      array   $params  The parameters
+     *
+     * @return     <type>  ( description_of_the_return_value )
+     */
+    public function upload($files, $type = "pic", $dirname = '', $uid = 0)
+    {
+        if($type=='pic'){
+            $result = $this->picture($files, $dirname);
+        }
+        if($type=='file'){
+            $result = $this->file($files, $dirname);
+        }
+        if($type=='avatar'){
+            $result = $this->avatar($files, $dirname, $uid);
+        }
+        if($type=='base64'){
+            $result = $this->base64($files, $dirname);
+        }
+
+        return $result;
+
+    }
+
+    /**
+     * 图片上传
+     *
+     * @param      <type>         $files  The files
+     *
+     * @return     array|boolean  ( description_of_the_return_value )
+     */
+    private function picture($files, $dirname)
+    {
+        if (empty($files)) {
+            return false;
+        }
+        foreach($files as $file){
+            //判断是否已经存在
+            $sha1 = $file->hash('sha1');
+            //处理已存在图片
+            $pic_info = $this->where(['sha1'=>$sha1])->find();
+            if(!empty($pic_info)){
+                $img = [];
+                $data = $pic_info->toArray();
+                $img['filename'] = $data['filename'];
+                $img['size'] = $data['size'];
+                $img['attachment'] = $data['attachment'];
+                $img['url'] = get_attachment_src($data['attachment']);
+            }else{
+                //构建返回数据
+                $data['filename'] = $file->getOriginalName();
+                $data['ext'] = $file->getOriginalExtension();
+                $data['md5'] = $file->hash('md5');
+                $data['sha1'] = $file->hash('sha1');
+                $data['size'] = $file->getSize();
+                $data['mime'] = $file->getMime();
+                $data['type'] = 'image';  // 类型用字符串 pic file audio video
+                $savename = Filesystem::disk('public')->putFile( 'image', $file);
+                // 成功上传后 获取上传信息
+                $data['attachment'] = $savename;
+                $data['attachment'] = str_replace("\\","/",$data['attachment']);
+                //dump($data);exit;
+                
+                //获取上传驱动
+                $driver = config('extend.PICTURE_UPLOAD_DRIVER');
+                if($driver == 'local'){
+                    // 本地无需处理
+                }
+                // 阿里云OSS
+                if($driver == 'aliyun') {
+                    $oss_res = $this->ossUpload($data['attachment'], $file->getPathname());
+                    // 上传成功
+                    if($oss_res === true){
+                        // 删除本地文件
+                        $attachment_path = app()->getRootPath() . 'public/attachment';
+                        $file_path = $attachment_path . '/' . $data['attachment'];
+                        if(file_exists($file_path)){
+                            unlink($file_path);
+                        }
+                    }
+                }
+                // 腾讯云COS
+                if($driver == 'tencent') {
+                    $cos_res = $this->cosUpload($data['attachment'], $file->getPathname());
+                    // 上传成功
+                    if($cos_res === true){
+                        // 删除本地文件
+                        $attachment_path = app()->getRootPath() . 'public/attachment';
+                        $file_path = $attachment_path . '/' . $data['attachment'];
+                        if(file_exists($file_path)){
+                            unlink($file_path);
+                        }
+                    }
+                }
+
+                // 写入数据库
+                $this->save($data);
+                // 返回数据
+                $img = [];
+                $img['filename'] = $data['filename'];
+                $img['size'] = $data['size'];
+                $img['attachment'] = $data['attachment'];
+                $img['url'] = get_attachment_src($data['attachment']);
+                
+            }
+        }
+        return $img;
+    }
+
+    /**
+     * 阿里云OSS上传
+     * $object 文件名
+     * $filepath 文件路径
+     */
+    public function ossUpload($object, $filePath)
+    {
+        // 阿里云主账号AccessKey拥有所有API的访问权限，风险很高。强烈建议您创建并使用RAM账号进行API访问或日常运维，请登录RAM控制台创建RAM账号。
+        $accessKeyId = config('extend.OSS_ALIYUN_ACCESSKEYID');
+        $accessKeySecret = config('extend.OSS_ALIYUN_ACCESSKEYSECRET');
+        // Endpoint以杭州为例，其它Region请按实际情况填写。
+        $endpoint = config('extend.OSS_ALIYUN_ENDPOINT');
+        // 设置存储空间名称。
+        $bucket= config('extend.OSS_ALIYUN_BUCKET');
+        // 设置文件名称。
+        //$object = $file->getOriginalName();
+        // <yourLocalFile>由本地文件路径加文件名包括后缀组成，例如/users/local/myfile.txt。
+        //$filePath = $file->getPathname();
+
+        try{
+            $ossClient = new OssClient($accessKeyId, $accessKeySecret, $endpoint);
+
+            $ossClient->uploadFile($bucket, $object, $filePath);
+
+
+        } catch(OssException $e) {
+            //printf(__FUNCTION__ . ": FAILED\n");
+            //printf($e->getMessage() . "\n");
+            return $e->getMessage();
+        }
+
+        return true;
+    }
+
+    /**
+     * 腾讯云COS上传
+     */
+    protected function cosUpload($object, $filePath)
+    {
+        // SECRETID和SECRETKEY请登录访问管理控制台进行查看和管理
+        $appid = '';
+        $secretId = config('extend.COS_TENCENT_SECRETID'); //"云 API 密钥 SecretId";
+        $secretKey = config('extend.COS_TENCENT_SECRETKEY'); //"云 API 密钥 SecretKey";
+        $region = config('extend.COS_TENCENT_REGION'); //设置一个默认的存储桶地域
+        $cosClient = new CosClient([
+                'region' => $region,
+                'schema' => 'http', //协议头部，默认为http
+                'credentials'=> [
+                    'secretId'  => $secretId ,
+                    'secretKey' => $secretKey
+                ]
+        ]);
+        
+        try {
+            $bucket = config('extend.COS_TENCENT_BUCKET'); //存储桶名称 格式：BucketName-APPID
+            $key = $object; //此处的 key 为对象键，对象键是对象在存储桶中的唯一标识
+            $srcPath = $filePath;//本地文件绝对路径
+            $file = fopen($srcPath, "rb");
+            if ($file) {
+                $result = $cosClient->putObject(array(
+                    'Bucket' => $bucket,
+                    'Key' => $key,
+                    'Body' => $file));
+                //print_r($result);exit;
+                return true;
+            }
+        } catch (\Exception $e) {
+            echo "$e\n";
+        }
+    }
+
+    /**
+     * 文件上传
+     * @param      <type>         $files  The files
+     * @return     array|boolean  ( description_of_the_return_value )
+     */
+    public function file($files, $dirname)
+    {   
+        $config = config('upload.file');
+        
+        foreach($files as $file){
+            if (empty($files)) {
+                $this->error = $file->getError();
+                return false;
+            }
+            //判断是否已经存在附件
+            $sha1 = $file->hash();
+            //处理已存在文件
+            if($sha1){
+                $file_info = Db::name('File')->where(['sha1'=>$sha1])->find();
+
+                if($file_info){
+                    $return['data'][] = $file_info;
+                    continue;
+                }
+            }
+            
+            //获取上传驱动
+            $driver = modC('DOWNLOAD_UPLOAD_DRIVER','local','config');
+            $driver = check_driver_is_exist($driver);
+            
+            if($driver == 'local'){
+                $info = $file->validate(['size'=>$config['maxsize'],'ext'=>$config['mimetype']])->move($config['savepath']);
+                if($info){
+                    // 成功上传后 获取上传信息
+                    $data['savepath'] = DS . 'uploads'  . DS . 'file'  . DS . $info->getSaveName();
+                    $data['savepath'] = str_replace("\\","/",$data['savepath']);
+                    $data['savename'] = str_replace("\\","/",$info->getSaveName());
+                    $data['name'] = $info->getInfo()['name'];
+                    $data['mime'] = $info->getMime();
+                    $data['size'] = $info->getInfo()['size'];
+                    $data['md5'] = $info->md5();
+                    $data['sha1'] = $info->sha1();
+                    $data['ext'] = substr(strrchr($data['savename'], '.'), 1);
+
+                }else{
+                    $this->error = $file->getError();
+                    return false;
+                }
+            }else{
+                //构建返回数据
+                $data['driver'] = $driver;
+                $data['name'] = $file->getInfo()['name'];
+                $data['mime'] = $file->getInfo()['type'];
+                $data['size'] = $file->getInfo()['size'];
+                $data['md5'] = $file->hash('md5');
+                $data['sha1'] = $file->hash('sha1');
+
+                //调用驱动上传数据
+                $res = $this->uploadDriver($driver, $file, $dirname);
+
+                $data['savepath'] = $res['savepath'];
+                $data['savename'] = $res['savename'];
+                $data['ext'] = substr(strrchr($data['savename'], '.'), 1);
+            }
+
+            //写入数据库
+            $data['create_time'] = time();
+            $id = Db::name('file')->insertGetId($data);
+            cache('file_path'.$id, NULL);
+            cache('file_name'.$id, NULL);
+            cache('file_all'.$id, NULL);
+            if($id){
+                $data['id'] = $id;
+                $data['savepath'] = get_file_by_id($id);
+                $return['data'][] = $data;
+            }
+        }
+        return $return['data'];
+    }
+
+    /**
+     * 图片上传
+     *
+     * @param      <type>         $files  The files
+     *
+     * @return     array|boolean  ( description_of_the_return_value )
+     */
+    private function Avatar($files, $dirname, $uid)
+    {
+        $config = config('upload.avatar');
+
+        $return = [];
+        foreach($files as $file){
+            if (empty($files)) {
+                $this->error = $file->getError();
+                return false;
+            }
+            //判断是否已经存在暂不做处理 TODO
+            
+
+            //获取上传驱动
+            $driver = modC('PICTURE_UPLOAD_DRIVER','local','config');
+            $driver = check_driver_is_exist($driver);
+            //构建返回数据
+            
+            if($driver == 'local'){
+                $info = $file->validate(['size'=>$config['maxsize'],'ext'=>$config['mimetype']])->move($config['savepath'] . DS . $uid);
+                
+                if($info){
+                    // 成功上传后 获取上传信息
+                    $data['path'] = DS . 'uploads'  . DS . 'avatar' . DS . $uid . DS . $info->getSaveName();
+                    $data['path'] = str_replace("\\","/",$data['path']);
+                    //$data['md5'] = $info->md5();
+                    //$data['sha1'] = $info->sha1();
+                }else{
+                    $this->error = $file->getError();
+                    return false;
+                }
+
+            }else{
+                //驱动上传
+                //调用驱动上传数据
+                $res = $this->uploadDriver($driver, $file, $dirname);
+
+                if(isset($res['savepath'])){
+                    $data['path'] = $res['savepath']; 
+               }else{
+                    $this->error = $res;
+                    return false;
+               }
+            }
+
+            //写入数据库
+            $data['create_time'] = time();
+            $data['driver'] = $driver;
+            $data['status'] = 1;
+            $have = Db::name('Avatar')->where(['uid'=>$uid])->find();
+
+            if($have){
+                $updateAvatar = Db::name('Avatar')->where(['uid'=>$uid])->update($data);
+                if($updateAvatar){
+                    $id = $have['id'];
+                }
+
+            }else{
+                $data['uid'] = $uid;
+                $id = Db::name('Avatar')->insertGetId($data);
+            }
+
+            if($id){
+                $data['id'] = $id;
+                $return[] = $data;  
+            }
+        }
+
+        return $return;
+    }
+
+    /**
+     * [base64 description]
+     * @param  [type] $files [description]
+     * @return [type]        [description]
+     */
+    public function base64($files)
+    {
+
+        $aData = $files;
+
+        if ($aData == '' || $aData == 'undefined') {
+            return false;
+        }
+
+        $result = [];
+        if (preg_match('/^(data:\s*image\/(\w+);base64,)/', $aData, $result)) {
+            $base64_body = substr(strstr($aData, ','), 1);
+
+            empty($aExt) && $aExt = $result[2];
+        } else {
+            $base64_body = $aData;
+        }
+
+        empty($aExt) && $aExt = 'jpg';
+
+        $md5 = md5($base64_body);
+        $sha1 = sha1($base64_body);
+
+        $check = Db::name('Picture')->where(['md5' => $md5, 'sha1' => $sha1])->find();
+
+        if ($check) {
+            //已存在则直接返回信息
+            $return['id'] = $check['id'];
+            $return['path'] = $check['path'];
+
+            return $return;
+
+        } else {
+            //不存在则上传并返回信息
+            $driver = modC('FILE_UPLOAD_DRIVER','local','config');
+            $driver = check_driver_is_exist($driver);
+            $date = date('Y-m-d');
+            $saveName = uniqid();
+            $savePath = '/attachment/picture/' . $date . '/';
+
+            $path = $savePath . $saveName . '.' . $aExt;
+            if($driver == 'local'){
+                //本地上传
+                if(!file_exists('.' . $savePath)){
+                    mkdir('.' . $savePath, 0777, true);
+                }
+                
+                $data = base64_decode($base64_body);
+                $rs = file_put_contents('.' . $path, $data);
+            }
+            else{
+                $rs = false;
+                //使用云存储
+                $name = get_addon_class($driver);
+                if (class_exists($name)) {
+                    $class = new $name();
+                    if (method_exists($class, 'uploadBase64')) {
+                        $path = $class->uploadBase64($base64_body,$path);
+                        $rs = true;
+                    }
+                }
+            }
+            if ($rs) {
+                
+                $pic['path'] = $path;
+                $pic['driver'] = $driver;
+                $pic['md5'] = $md5;
+                $pic['sha1'] = $sha1;
+                $pic['status'] = 1;
+                $pic['create_time'] = time();
+                $id = Db::name('attachment')->insertGetId($pic);
+
+                return ['id' => $id, 'path' => get_pic_src($path)];
+            } else {
+                return false;
+            }
+        }
+    }
+
+
+    /** 
+     * 获取缩微图
+     * @param $filename
+     * @param int $width
+     * @param string $height
+     * @param int $type
+     * @param bool $replace
+     * @return mixed|string
+     */
+    public function getThumbImage($attachment, $width = 100, $height = 'auto', $type = 0, $replace = false)
+    {
+        $UPLOAD_URL = '';
+        $UPLOAD_PATH = PUBLIC_PATH . '/attachment/';
+        $attachment = str_ireplace($UPLOAD_URL, '', $attachment); //将URL转化为本地地址
+        $info = pathinfo($attachment);
+        
+        $oldFile = $info['dirname'] . DIRECTORY_SEPARATOR . $info['filename'] . '.' . $info['extension'];
+        $thumbFile = $info['dirname'] . DIRECTORY_SEPARATOR . $info['filename'] . '_' . $width . '_' . $height . '.' . $info['extension'];
+
+        $oldFile = str_replace('\\', '/', $oldFile);
+        $thumbFile = str_replace('\\', '/', $thumbFile);
+
+        $filename = ltrim($attachment, '/');
+        $oldFile = ltrim($oldFile, '/');
+        $thumbFile = ltrim($thumbFile, '/');
+
+        if (!file_exists($UPLOAD_PATH . $oldFile)) {
+            //原图不存在直接返回
+            @unlink($UPLOAD_PATH . $thumbFile);
+            $info['src'] = $oldFile;
+            $info['width'] = intval($width);
+            $info['height'] = intval($height);
+            return $info;
+        } elseif (file_exists($UPLOAD_PATH . $thumbFile) && !$replace) {
+            //缩图已存在并且  replace替换为false
+            $imageinfo = getimagesize($UPLOAD_PATH . $thumbFile);
+            $info['src'] = $thumbFile;
+            $info['width'] = intval($imageinfo[0]);
+            $info['height'] = intval($imageinfo[1]);
+            return $info;
+        } else {
+            //执行缩图操作
+            $oldimageinfo = getimagesize($UPLOAD_PATH . $oldFile);
+            $old_image_width = intval($oldimageinfo[0]);
+            $old_image_height = intval($oldimageinfo[1]);
+            if ($old_image_width <= $width && $old_image_height <= $height) {
+                @unlink($UPLOAD_PATH . $thumbFile);
+                @copy($UPLOAD_PATH . $oldFile, $UPLOAD_PATH . $thumbFile);
+                $info['src'] = $thumbFile;
+                $info['width'] = $old_image_width;
+                $info['height'] = $old_image_height;
+                return $info;
+            } else {
+                if ($height == "auto") $height = $old_image_height * $width / $old_image_width;
+                if ($width == "auto") $width = $old_image_width * $width / $old_image_height;
+                if (intval($height) == 0 || intval($width) == 0) {
+                    return 0;
+                }
+                // 打开图片并处理
+                $thumb = Image::open($UPLOAD_PATH . $filename);
+                //默认裁切类型标识缩略图居中裁剪类型，先写死，后续版本增加后台设置
+                $thumb->thumb($width, $height, Image::THUMB_CENTER);
+                $thumb->save($UPLOAD_PATH . $thumbFile);
+
+                $info['src'] = $UPLOAD_PATH . $thumbFile;
+                $info['width'] = $old_image_width;
+                $info['height'] = $old_image_height;
+                return $info;
+            }
+        }
+    }
+
 
 }

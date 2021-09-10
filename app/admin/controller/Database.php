@@ -1,7 +1,8 @@
 <?php
 namespace app\admin\controller;
 
-use think\Db;
+use think\facade\Db;
+use think\facade\View;
 use muucmf\Database as MuucmfDb;
 /**
  * 数据库备份还原控制器
@@ -11,7 +12,6 @@ class Database extends Admin{
     /**
      * 数据库备份/还原列表
      * @param  String $type import-还原，export-备份
-     * @author 麦当苗儿 <zuojiazi@vip.qq.com>
      */
     public function index($type = null){
 
@@ -19,7 +19,7 @@ class Database extends Admin{
             /* 数据还原 */
             case 'import':
                 //列出备份文件列表
-                $path = realpath(config('data_backup_path'));
+                $path = realpath(config('system.DATA_BACKUP_PATH'));
                 $flag = \FilesystemIterator::KEY_AS_FILENAME;
                 $glob = new \FilesystemIterator($path,  $flag);
 
@@ -47,23 +47,24 @@ class Database extends Admin{
                         $list["{$date} {$time}"] = $info;
                     }
                 }
-                $title = lang('_DATA_REDUCTION_');
+                $title = '数据还原';
                 break;
 
             /* 数据备份 */
             case 'export':
                 $list  = Db::query('SHOW TABLE STATUS');
                 $list  = array_map('array_change_key_case', $list);
-                $title = lang('_DATA_BACKUP_');
+                $title = '数据备份';
                 break;
 
             default:
-                $this->error(lang('_PARAMETER_ERROR_'));
+                $this->error('参数错误！');
         }
         //渲染模板
         $this->setTitle($title);
-        $this->assign('list', $list);
-        return $this->fetch($type);
+        View::assign('list', $list);
+
+        return View::fetch($type);
     }
 
     /**
@@ -74,12 +75,13 @@ class Database extends Admin{
     {
         $list  = Db::query('SHOW TABLE STATUS');
         $list  = array_map('array_change_key_case', $list);
-        $title = lang('_DATA_BACKUP_');
+        $title = '备份数据库';
 
         //渲染模板
         $this->setTitle($title);
-        $this->assign('list', $list);
-        return $this->fetch('export');
+        View::assign('list', $list);
+        
+        return View::fetch('export');
     }
 
     /**
@@ -89,7 +91,7 @@ class Database extends Admin{
     public function dataImport()
     {
         //列出备份文件列表
-        $path = realpath(config('data_backup_path'));
+        $path = realpath(config('system.DATA_BACKUP_PATH'));
         $flag = \FilesystemIterator::KEY_AS_FILENAME;
         $glob = new \FilesystemIterator($path,  $flag);
 
@@ -117,12 +119,13 @@ class Database extends Admin{
                 $list["{$date} {$time}"] = $info;
             }
         }
-        $title = lang('_DATA_REDUCTION_');
+        $title = '数据还原';
         
         //渲染模板
         $this->setTitle($title);
-        $this->assign('list', $list);
-        return $this->fetch('import');
+        View::assign('list', $list);
+
+        return View::fetch('import');
     }
 
     /**
@@ -137,69 +140,68 @@ class Database extends Admin{
                 $list = Db::query("OPTIMIZE TABLE `{$tables}`");
 
                 if($list){
-                    $this->success(lang('_REPAIR_COMPLETE_PARAM_',array('name'=>'')).lang('_EXCLAMATION_'));
+                    $this->success('数据表修复完成');
                 } else {
-                    $this->error(lang('_REPAIR_ERROR_PARAM_',array('name'=>'')).lang('_EXCLAMATION_'));
+                    $this->error('数据表修复出错请重试');
                 }
             } else {
                 $list = Db::query("OPTIMIZE TABLE `{$tables}`");
                 if($list){
-                    $this->success(lang('_REPAIR_COMPLETE_PARAM_',array('name'=>$tables)).lang('_EXCLAMATION_'));
+                    $this->success('数据表' .$tables. '修复完成');
                 } else {
-                    $this->error(lang('_REPAIR_ERROR_PARAM_',array('name'=>$tables)).lang('_EXCLAMATION_'));
+                    $this->error('数据表' .$tables. '修复出错');
                 }
             }
         } else {
-            $this->error(lang('_REPAIR_ASSIGN_').lang('_EXCLAMATION_'));
+            $this->error('请指定要修复的表');
         }
     }
 
     /**
      * 修复表
      * @param  String $tables 表名
-     * @author 麦当苗儿 <zuojiazi@vip.qq.com>
      */
     public function repair($tables = null){
         if($tables) {
+            
             if(is_array($tables)){
                 $tables = implode('`,`', $tables);
                 $list = Db::query("REPAIR TABLE `{$tables}`");
 
                 if($list){
-                    $this->success(lang('_REPAIR_COMPLETE_PARAM_',array('name'=>'')).lang('_EXCLAMATION_'));
+                    return $this->success('数据表{$tables}修复完成');
                 } else {
-                    $this->error(lang('_REPAIR_ERROR_PARAM_',array('name'=>'')).lang('_EXCLAMATION_'));
+                    return $this->error('数据表{$tables}修复出错请重试');
                 }
             } else {
                 $list = Db::query("REPAIR TABLE `{$tables}`");
                 if($list){
-                    $this->success(lang('_REPAIR_COMPLETE_PARAM_',array('name'=>$tables)).lang('_EXCLAMATION_'));
+                    return $this->success('数据表{$tables}修复完成');
                 } else {
-                    $this->error(lang('_REPAIR_ERROR_PARAM_',array('name'=>$tables)).lang('_EXCLAMATION_'));
+                    return $this->error('数据表{$tables}修复出错请重试');
                 }
             }
         } else {
-            $this->error(lang('_REPAIR_ASSIGN_').lang('_EXCLAMATION_'));
+            $this->error('请指定要修复的表');
         }
     }
 
     /**
      * 删除备份文件
      * @param  Integer $time 备份时间
-     * @author 麦当苗儿 <zuojiazi@vip.qq.com>
      */
     public function del($time = 0){
         if($time){
             $name  = date('Ymd-His', $time) . '-*.sql*';
-            $path  = realpath(config('DATA_BACKUP_PATH')) . DIRECTORY_SEPARATOR . $name;
+            $path  = realpath(config('system.DATA_BACKUP_PATH')) . DIRECTORY_SEPARATOR . $name;
             array_map("unlink", glob($path));
             if(count(glob($path))){
-                $this->success(lang('_BACKUP_FILE_TO_DELETE_FAILED_'));
+                $this->error('备份文件删除失败，请检查权限！');
             } else {
-                $this->success(lang('_BACKUP_FILES_TO_DELETE_SUCCESSFULLY_'));
+                $this->success('备份文件删除成功！');
             }
         } else {
-            $this->error(lang('_PARAMETER_ERROR_'));
+            $this->error('参数错误！');
         }
     }
 
@@ -208,37 +210,37 @@ class Database extends Admin{
      * @param  String  $tables 表名
      * @param  Integer $id     表ID
      * @param  Integer $start  起始行数
-     * @author 麦当苗儿 <zuojiazi@vip.qq.com>
      */
     public function export($tables = null){
         if(request()->isPost() && !empty($tables) && is_array($tables)){ //初始化
             //读取备份配置
-            $config = array(
-                'path'     => realpath(config('DATA_BACKUP_PATH')) . DIRECTORY_SEPARATOR,
-                'part'     => config('DATA_BACKUP_PART_SIZE'),
-                'compress' => config('DATA_BACKUP_COMPRESS'),
-                'level'    => config('DATA_BACKUP_COMPRESS_LEVEL'),
-            );
+            $config = [
+                'path'     => realpath(config('system.DATA_BACKUP_PATH')) . DIRECTORY_SEPARATOR,
+                'part'     => config('system.DATA_BACKUP_PART_SIZE'),
+                'compress' => config('system.DATA_BACKUP_COMPRESS'),
+                'level'    => config('system.DATA_BACKUP_COMPRESS_LEVEL'),
+            ];
+
+            //检查备份目录是否可写
+            is_writeable($config['path']) || $this->error('备份目录不存在或不可写，请检查后重试！');
             
             //检查是否有正在执行的任务
             $lock = "{$config['path']}backup.lock";
             
             if(is_file($lock)){
-                $this->error(lang('_DETECTED_THAT_THERE_IS_A_BACKUP_TASK_BEING_PERFORMED_'));
+                $this->error('检测到有一个备份任务正在执行，请稍后再试！');
             } else {
                 //创建锁文件
                 file_put_contents($lock, time());
             }
 
-            //检查备份目录是否可写
-            is_writeable($config['path']) || $this->error(lang('_BACKUP_DIRECTORY_IS_NOT_AVAILABLE_OR_NOT_TO_BE_WRITTEN_'));
             session('backup_config', $config);
 
             //生成备份文件信息
-            $file = array(
+            $file = [
                 'name' => date('Ymd-His', time()),
                 'part' => 1,
-            );
+            ];
             session('backup_file', $file);
 
             //缓存要备份的表
@@ -248,9 +250,9 @@ class Database extends Admin{
             $Database = new MuucmfDb($file, $config);
             if(false !== $Database->create()){
                 $tab = array('id' => 0, 'start' => 0);
-                $this->success(lang('_INITIAL_SUCCESS_'), '', array('tables' => $tables, 'tab' => $tab));
+                return $this->success('初始化成功！', ['tables' => $tables, 'tab' => $tab]);
             } else {
-                $this->error(lang('_INITIALIZATION_FAILED_'));
+                return $this->error('初始化失败，备份文件创建失败！');
             }
             
         } elseif (request()->isGet()) { //备份数据
@@ -263,38 +265,37 @@ class Database extends Admin{
             $Database = new MuucmfDb(session('backup_file'), session('backup_config'));
             $start  = $Database->backup($tables[$id], $start);
             if(false === $start){ //出错
-                $this->error(lang('_BACKUP_ERROR_'));
+                return $this->error('备份出错！');
             } elseif (0 === $start) { //下一表
                 if(isset($tables[++$id])){
                     $tab = array('id' => $id, 'start' => 0);
-                    $this->success(lang('_BACKUP_COMPLETE_'), '', array('tab' => $tab));
+                    return $this->success('备份完成', ['tab' => $tab]);
                 } else { //备份完成，清空缓存
                     unlink(session('backup_config.path') . 'backup.lock');
                     session('backup_tables', null);
                     session('backup_file', null);
                     session('backup_config', null);
-                    $this->success(lang('_BACKUP_COMPLETE_'));
+                    return $this->success('文件全部备份完成');
                 }
             } else {
                 $tab  = array('id' => $id, 'start' => $start[0]);
                 $rate = floor(100 * ($start[0] / $start[1]));
-                $this->success(lang('_BACKUP_ING_')."...({$rate}%)", '', array('tab' => $tab));
+                return $this->success("正在备份"."...({$rate}%)", ['tab' => $tab]);
             }
 
         } else { //出错
-            $this->error(lang('_PARAMETER_ERROR_'));
+            return $this->error('参数错误！');
         }
     }
 
     /**
      * 还原数据库
-     * @author 麦当苗儿 <zuojiazi@vip.qq.com>
      */
     public function import($time = 0, $part = null, $start = null){
         if(is_numeric($time) && is_null($part) && is_null($start)){ //初始化
             //获取备份文件信息
             $name  = date('Ymd-His', $time) . '-*.sql*';
-            $path  = realpath(config('DATA_BACKUP_PATH')) . DIRECTORY_SEPARATOR . $name;
+            $path  = realpath(config('system.DATA_BACKUP_PATH')) . DIRECTORY_SEPARATOR . $name;
             $files = glob($path);
             $list  = array();
             foreach($files as $name){
@@ -309,41 +310,42 @@ class Database extends Admin{
             $last = end($list);
             if(count($list) === $last[0]){
                 session('backup_list', $list); //缓存备份列表
-                $this->success(lang('_INITIALIZATION_COMPLETE_'), '', array('part' => 1, 'start' => 0));
+                return $this->success('初始化完成！', ['part' => 1, 'start' => 0]);
             } else {
-                $this->error(lang('_BACKUP_FILE_MAY_BE_CORRUPT_'));
+                return $this->error('备份文件可能已经损坏，请检查！');
             }
         } elseif(is_numeric($part) && is_numeric($start)) {
             $list  = session('backup_list');
             $db = new MuucmfDb($list[$part], array(
-                'path'     => realpath(config('DATA_BACKUP_PATH')) . DIRECTORY_SEPARATOR,
-                'compress' => $list[$part][2]));
+                'path'     => realpath(config('system.DATA_BACKUP_PATH')) . DIRECTORY_SEPARATOR,
+                'compress' => $list[$part][2])
+            );
 
             $start = $db->import($start);
 
             if(false === $start){
-                $this->error(lang('_ERROR_REDUCING_DATA_'));
+                return $this->error('还原数据出错！');
             } elseif(0 === $start) { //下一卷
                 if(isset($list[++$part])){
                     $data = array('part' => $part, 'start' => 0);
-                    $this->success(lang('_RECOVER_ING_')."...#{$part}", '', $data);
+                    return $this->success("正在还原"."...#{$part}", $data);
                 } else {
                     session('backup_list', null);
-                    $this->success(lang('_RESTORE_COMPLETE_'));
+                    return $this->success('还原完成！');
                 }
             } else {
                 $data = array('part' => $part, 'start' => $start[0]);
                 if($start[1]){
                     $rate = floor(100 * ($start[0] / $start[1]));
-                    $this->success(lang('_RECOVER_ING_')."#{$part} ({$rate}%)", '', $data);
+                    return $this->success("正在还原"."#{$part} ({$rate}%)", $data);
                 } else {
                     $data['gz'] = 1;
-                    $this->success(lang('_RECOVER_ING_')."...#{$part}", '', $data);
+                    return $this->success("正在还原" . "...#{$part}", $data);
                 }
             }
 
         } else {
-            $this->error(lang('_PARAMETER_ERROR_'));
+            $this->error('参数错误！');
         }
     }
 

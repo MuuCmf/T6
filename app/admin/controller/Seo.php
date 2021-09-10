@@ -2,113 +2,141 @@
 namespace app\admin\controller;
 
 use app\admin\controller\Admin;
-use think\Db;
 use app\admin\builder\AdminListBuilder;
 use app\admin\builder\AdminConfigBuilder;
 use app\admin\builder\AdminSortBuilder;
+use app\common\model\Module as ModuleModel;
+use app\common\model\SeoRule as SeoRuleModel;
+use app\admin\validate\Seo as SeoValidate;
 
 class Seo extends Admin
-{
+{   
+    protected $moduleModel;
+    protected $seoRuleModel;
+
+    /**
+     * 构造方法
+     * @access public
+     */
+    public function __construct()
+    {
+        parent::__construct();
+
+        $this->moduleModel = new ModuleModel();
+        $this->seoRuleModel = new seoRuleModel();
+        $this->seoValidate = new SeoValidate();
+    }
+
+    /**
+     * seo规则
+     */
     public function index($page = 1, $r = 20)
     {
         //读取规则列表
-        $aApp=input('get.app','','text');
-        $map = array('status' => array('EGT', 0));
-        if($aApp!=''){
-            $map['app']=$aApp;
+        $app = input('get.app','','text');
+        $map[] = ['status','>=', 0];
+        if($app!=''){
+            $map[] = ['app', '=' ,$app];
         }
-        //$model = Db::name('SeoRule');
-        //$ruleList = $model->where($map)->order('sort asc')->select();
+
+        // 获取分页列表
         list($ruleList,$page) = $this->commonLists('SeoRule', $map, 'sort asc');
         $page = $ruleList->render();
-
-        $module = model('common/Module')->getAll();
-        $app = array();
+        // 获取应用模块列表
+        $module = $this->moduleModel->getAll();
+        $app = [];
         foreach ($module as $m) {
             if ($m['is_setup'])
-                $app[] =array('id'=>$m['name'],'value'=>$m['alias']) ;
+                $app[] = ['id'=> $m['name'],'value'=>$m['alias']];
         }
         $ruleList = $ruleList->toArray()['data'];
         //显示页面
         $builder = new AdminListBuilder();
-        $builder->setSelectPostUrl(Url('index'));
+        $builder->setSelectPostUrl(url('index'));
         $builder
-            ->title(lang('_SEO_RULE_CONFIGURATION_'))
-            ->setStatusUrl(Url('setRuleStatus'))
+            ->title(lang('seo.Seo rule'))
+            ->setStatusUrl(url('status'))
+            ->buttonNew(url('edit'))
             ->buttonEnable()
             ->buttonDisable()
             ->buttonDelete()
-            ->buttonNew(Url('editRule'))
-            ->buttonSort(Url('sortRule'))
+            ->buttonSort(url('sort'))
             ->keyId()
             ->keyTitle()
-            ->keyText('app', lang('_MODULE_PLAIN_'))
-            ->keyText('controller', lang('_CONTROLLER_'))
-            ->keyText('action', lang('_METHOD_'))
-            ->keyText('seo_title', lang('_SEO_TITLE_'))
-            ->keyText('seo_keywords', lang('_SEO_KEYWORD_'))
-            ->keyText('seo_description', lang('_SEO_DESCRIPTION_'))
-            ->select(lang('_MODULE_BELONGED_').lang('_COLON_'), 'app', 'select', '', '', '', array_merge(array(array('id' => '', 'value' => lang('_ALL_'))), $app))
+            ->keyText('app', lang('App'))
+            ->keyText('controller', lang('seo.Controller'))
+            ->keyText('action', lang('seo.Action'))
+            ->keyText('seo_title', lang('seo.Seo title'))
+            ->keyText('seo_keywords', lang('seo.Seo keywords'))
+            ->keyText('seo_description', lang('seo.Seo description'))
+            ->select('所属应用', 'app', 'select', '', '', '', array_merge([['id' => '', 'value' => lang('all')]], $app))
             ->keyStatus()
-            ->keyDoActionEdit('editRule?id=###')
+            ->keyDoActionEdit('edit?id=###')
             ->data($ruleList)
             ->page($page)
             ->display();
     }
 
-    public function ruleTrash()
+    /**
+     * 规则回收站
+     */
+    public function trash()
     {
         //读取规则列表
-        $map = array('status' => -1);
-        //$model = Db::name('SeoRule');
-        //$ruleList = Db::name('SeoRule')->where($map)->order('sort asc')->select();
+        $map[] = array('status' ,'=', -1);
         list($ruleList,$page) = $this->commonLists('SeoRule', $map, 'sort asc');
         $page = $ruleList->render();
-
 
         //显示页面
         $builder = new AdminListBuilder();
         $builder
-        ->title(lang('_SEO_RULE_RECYCLING_STATION_'))
-            ->setStatusUrl(Url('setRuleStatus'))
-            ->setDeleteTrueUrl(Url('doClear'))
+        ->title(lang('seo.Seo rule recycling station'))
+            ->setStatusUrl(url('status'))
+            ->setDeleteTrueUrl(url('clear'))
             ->buttonRestore()
             ->buttonDeleteTrue()
             ->keyId()
             ->keyTitle()
-            ->keyText('app', lang('_MODULE_PLAIN_'))
-            ->keyText('controller', lang('_CONTROLLER_'))
-            ->keyText('action', lang('_METHOD_'))
-            ->keyText('seo_title', lang('_SEO_TITLE_'))
-            ->keyText('seo_keywords', lang('_SEO_KEYWORD_'))
-            ->keyText('seo_description', lang('_SEO_DESCRIPTION_'))
+            ->keyText('app', lang('App'))
+            ->keyText('controller', lang('seo.Controller'))
+            ->keyText('action', lang('seo.Action'))
+            ->keyText('seo_title', lang('seo.Seo title'))
+            ->keyText('seo_keywords', lang('seo.Seo keywords'))
+            ->keyText('seo_description', lang('seo.Seo description'))
             ->data($ruleList)
             ->page($page)
             ->display();
     }
 
-    public function setRuleStatus($ids, $status)
+    /**
+     * 设置状态
+     */
+    public function status($ids, $status)
     {
         $builder = new AdminListBuilder();
         $builder->doSetStatus('SeoRule', $ids, $status);
     }
 
-    public function doClear($ids)
+    public function clear($ids)
     {
         $builder = new AdminListBuilder();
         $builder->doDeleteTrue('SeoRule', $ids);
     }
 
-    public function sortRule()
+    /**
+     * 规则排序
+     */
+    public function sort()
     {
         //读取规则列表
-        $list = Db::name('SeoRule')->where(array('status' => array('EGT', 0)))->order('sort asc')->select();
+        $list = $this->seoRuleModel->where('status','>=', 0)->order('sort asc')->select();
 
         //显示页面
         $builder = new AdminSortBuilder();
-        $builder->title(lang('_SORT_SEO_RULE_'))
+        $builder
+            ->title(lang('seo.Sort Seo rule'))
             ->data($list)
-            ->buttonSubmit(Url('doSortRule'))
+            ->buttonSubmit(url('sort'))
             ->buttonBack()
             ->display();
     }
@@ -119,82 +147,94 @@ class Seo extends Admin
         $builder->doSort('SeoRule', $ids);
     }
 
-    public function editRule($id = null)
+    /**
+     * 编辑、新增规则
+     */
+    public function edit($id = null)
     {
-        //判断是否为编辑模式
-        $isEdit = $id ? true : false;
+        if(request()->isPost()) {
+            $input = input();
+            // 判断是否为编辑模式
+            $isEdit = $id ? true : false;
 
-        //读取规则内容
-        if ($isEdit) {
-            $rule = Db::name('SeoRule')->where(['id' => $id])->find();
-        } else {
-            $rule = [
-                'status' => 1,
-                'action' => '',
-                'summary'=> ''
+            $app = input('app', '', 'text');
+            $controller = input('controller', '', 'text');
+            $action = input('action', '', 'text');
+
+            // 写入数据库
+            $data = [
+                'title' => input('title', '', 'text'), 
+                'app' => $app, 
+                'controller' => $controller, 
+                'action' => $action, 
+                'seo_title' => input('seo_title', '', 'text'), 
+                'seo_keywords' => input('seo_keywords', '', 'text'),
+                'seo_description' => input('seo_description', '', 'text'), 
+                'status' => input('status',0 ,'intval')
             ];
-        }
-        $rule['action2'] = $rule['action'];
-        $rule['summary']=nl2br($rule['summary']);
-
-        //显示页面
-        $builder = new AdminConfigBuilder();
-        $modules = model('Module')->getAll();
-
-        $app = ['' => lang('_MODULE_ALL_')];
-        foreach ($modules as $m) {
-            if ($m['is_setup']) {
-                $app[$m['name']] = lcfirst($m['alias']);//首字母改小写，兼容V1
+            // 验证
+            $result = $this->seoValidate->check($data);
+            if(!$result){
+                $this->error($this->seoValidate->getError());
             }
+            if ($isEdit) {
+                $result = $this->seoRuleModel->where(['id' => $id])->update($data);
+            } else {
+                $result = $this->seoRuleModel->insert($data);
+            }
+            $cacheKey = "seo_meta_{$app}_{$controller}_{$action}";
+            cache($cacheKey,null);
+            //如果失败的话，显示失败消息
+            if (!$result) {
+                $this->error($isEdit ? lang('Edit failed') : lang('Create failed'));
+            }
+
+            //显示成功信息，并返回规则列表
+            $this->success($isEdit ? lang('Edit success') : lang('Create success'), url('index'));
+        }else{
+            //判断是否为编辑模式
+            $isEdit = $id ? true : false;
+
+            //读取规则内容
+            if ($isEdit) {
+                $rule = $this->seoRuleModel->where(['id' => $id])->find();
+            } else {
+                $rule = [
+                    'status' => 1,
+                    'action' => '',
+                    'summary'=> ''
+                ];
+            }
+            $rule['action'] = $rule['action'];
+            $rule['summary'] = nl2br($rule['summary']);
+
+            //显示页面
+            $builder = new AdminConfigBuilder();
+            $modules = $this->moduleModel->getAll();
+
+            $app = ['' => lang('All app')];
+            foreach ($modules as $m) {
+                if ($m['is_setup']) {
+                    $app[$m['name']] = lcfirst($m['alias']);//首字母改小写，兼容V1
+                }
+            }
+
+            $builder
+                ->title($isEdit ? lang('seo.Edit rule') : lang('seo.Add rule'))
+                ->keyId()
+                ->keyText('title', lang('seo.Name'), lang('seo.Name'))
+                ->keySelect('app', lang('App'), lang('seo.Do not filled in all app'), $app)
+                ->keyText('controller', lang('seo.Controller'), lang('seo.Do not fill in all controllers'))
+                ->keyText('action2', lang('seo.Action'), lang('seo.Do not fill out all the actions'))
+                ->keyText('seo_title', lang('seo.Seo title'), lang('seo.Do not fill in the use of the next rule,Support Variable'))
+                ->keyText('seo_keywords', lang('seo.Seo keywords'), lang('seo.Do not fill in the use of the next rule,Support Variable'))
+                ->keyTextArea('seo_description', lang('seo.Seo description'), lang('seo.Do not fill in the use of the next rule,Support Variable'))
+                ->keyReadOnly('summary',lang('seo.Variable description'),lang('seo.Variable description vice'))
+                ->keyStatus()
+                ->data($rule)
+                ->buttonSubmit(url('edit'))
+                ->buttonBack()
+                ->display();
         }
-
-        $builder
-            ->title($isEdit ? lang('_EDIT_RULES_') : lang('_ADD_RULE_'))
-            ->keyId()
-            ->keyText('title', lang('_NAME_'), lang('_RULE_NAME,_CONVENIENT_MEMORY_'))
-            ->keySelect('app', lang('_MODULE_NAME_'), lang('_NOT_FILLED_IN_ALL_MODULES_'), $app)
-            ->keyText('controller', lang('_CONTROLLER_'), lang('_DO_NOT_FILL_IN_ALL_CONTROLLERS_'))
-            ->keyText('action2', lang('_METHOD_'), lang('_DO_NOT_FILL_OUT_ALL_THE_METHODS_'))
-            ->keyText('seo_title', lang('_SEO_TITLE_'), lang('_DO_NOT_FILL_IN_THE_USE_OF_THE_NEXT_RULE,_SUPPORT_VARIABLE_'))
-            ->keyText('seo_keywords', lang('_SEO_KEYWORD_'), lang('_DO_NOT_FILL_IN_THE_USE_OF_THE_NEXT_RULE,_SUPPORT_VARIABLE_'))
-            ->keyTextArea('seo_description', lang('_SEO_DESCRIPTION_'), lang('_DO_NOT_FILL_IN_THE_USE_OF_THE_NEXT_RULE,_SUPPORT_VARIABLE_'))
-            ->keyReadOnly('summary',lang('_VARIABLE_DESCRIPTION_'),lang('_VARIABLE_DESCRIPTION_VICE_'))
-            ->keyStatus()
-            ->data($rule)
-            ->buttonSubmit(url('doEditRule'))
-            ->buttonBack()
-            ->display();
-    }
-
-    public function doEditRule($id = null, $title, $app, $controller, $action2, $seo_title, $seo_keywords, $seo_description, $status)
-    {
-        //判断是否为编辑模式
-        $isEdit = $id ? true : false;
-        //写入数据库
-        $data = [
-            'title' => $title, 
-            'app' => $app, 
-            'controller' => $controller, 
-            'action' => $action2, 
-            'seo_title' => $seo_title, 
-            'seo_keywords' => $seo_keywords,
-            'seo_description' => $seo_description, 
-            'status' => $status
-        ];
-
-        if ($isEdit) {
-            $result = Db::name('SeoRule')->where(['id' => $id])->update($data);
-        } else {
-            $result = Db::name('SeoRule')->insert($data);
-        }
-        $cacheKey = "seo_meta_{$app}_{$controller}_{$action2}";
-        cache($cacheKey,null);
-        //如果失败的话，显示失败消息
-        if (!$result) {
-            $this->error($isEdit ? lang('_EDIT_FAILED_') : lang('_CREATE_FAILURE_'));
-        }
-
-        //显示成功信息，并返回规则列表
-        $this->success($isEdit ? lang('_EDIT_SUCCESS_') : lang('_CREATE_SUCCESS_'), Url('index'));
     }
 }

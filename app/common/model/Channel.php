@@ -17,7 +17,7 @@ class Channel extends Model
     public function lists($field = true, $tree = false)
     {
         $map = array('status' => 1);
-        $list = collection($this->field($field)->where($map)->order('sort')->select())->toArray();
+        $list = $this->field($field)->where($map)->order('sort')->select()->toArray();
         foreach($list as &$v){
             $v['_'] = '';
         }

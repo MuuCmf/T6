@@ -1,0 +1,45 @@
+<li class="clearfix pLi" >
+    <input name="nav[1][sort][]" class="sort" type="hidden">
+    <div class="pull-left nav_list">
+
+        <select name="nav[1][type][]" class="form-control nav-type" style="width: 100px;">
+            <option value="module" {if condition="$nav['module_name']"}selected{/if}>系统模块</option>
+            <option value="custom" {if condition="!$nav['module_name']"}selected{/if}>自定义</option>
+        </select>
+
+        <select name="nav[1][modul][]" class="form-control module" style="width: 100px;{php}if(!$nav['module_name']){{/php}display:none{php}}{/php}">
+            {php}foreach($module as $k=>$v){{/php}
+            <option value="{$v.entry}" data-icon="{$v.icon}" {if condition="strtolower($nav['url']) eq strtolower($v['entry'])"}selected{/if}>{$v.alias}</option>
+            {php}}unset($k,$v){/php}
+        </select>
+
+        <input name="nav[1][title][]" placeholder="请输入标题" class="form-control title" style="width: 100px;" value="{$nav.title}">
+
+        <input name="nav[1][url][]" placeholder="请输入链接" class="form-control url" style="width: 300px;{php}if($nav['module_name']){{/php}display:none{php}}{/php}" value=" {$nav.url}">
+
+    </div>
+    
+    <div class='pull-left new-blank ' >
+        <input name="nav[1][target][]" class="target_input" value="{$nav['target']}">
+        <input class="target" {if condition="$nav['target'] eq 1"}checked{/if}  type="checkbox" value="1">
+        <label class="target-blank">
+            新窗口
+        </label>
+    </div>
+
+    <div class='pull-left band-text'>
+        <input name="nav[1][band_text][]" class="form-control" placeholder="标志点文字" style="width: 100px;" value="{$nav['band_text']}">
+    </div>
+
+    <div class='pull-right i-list'>
+        <a href="javascript:" title="添加一级导航" class="add-one">
+            <i class="fa fa-plus"></i>
+        </a>
+        <a href="javascript:"  title="移除此导航" class="remove-li">
+            <i class="fa fa-remove"></i>
+        </a>
+        <a href="javascript:" title="移动导航排序">
+            <i class="fa fa-arrows-alt sort-handle-1"></i>
+        </a>
+    </div>
+</li>

@@ -1,0 +1,114 @@
+<aside class="main-sidebar">
+    <!-- sidebar: style can be found in sidebar.less -->
+    <section class="sidebar">
+      {notempty name="MODULE"}
+      <div class="expand-info">
+        <div class="expand-icon">
+          <img src="{$__MODULE__.icon_image}" />
+        </div>
+        <h3 class="title">{$MODULE.alias}</h3>
+        <p class="version">版本：{$MODULE.version}</p>
+      </div>
+        {notempty name="ALL_MODULE_LIST"}
+        <!--常用应用-->
+        <ul class="sidebar-menu menu-open" data-widget="tree">
+          <li class="treeview">
+            <a>
+                <i class="fa fa-circle-o"></i>
+                <span>切换应用</span>
+                
+                <span class="pull-right-container">
+                  <i class="fa fa-angle-left pull-right"></i>
+                </span>
+            </a>
+            <ul class="treeview-menu">
+              {volist name="ALL_MODULE_LIST" id="vo"}
+              <li>
+                  <a href="{:url($vo.admin_entry)}">  
+                    <i class="fa fa-circle-o"></i>
+                    <span>{$vo.alias}</span>
+                </a>
+              </li>
+              {/volist}
+              <!--更多应用-->
+              <li>
+                <a href="{:url('admin/module/index')}">  
+                    <i class="fa fa-circle-o"></i>
+                    <span>更多应用...</span>
+                </a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+        {/notempty}
+      {/notempty}
+      <!-- sidebar menu: : style can be found in sidebar.less -->
+      {notempty name="ADMIN_MENU.child"}
+      {volist name="ADMIN_MENU.child" id="sub_menu"}
+      <ul class="sidebar-menu" data-widget="tree">
+        
+        <li class="treeview menu-open">
+          <a>
+              {notempty name="sub_menu.icon"}
+                  <i class="fa fa-{$menu.icon}"></i>
+              {else /}
+                  <i class="fa fa-circle-o"></i>
+              {/notempty}
+              
+              {notempty name="sub_menu.group"}
+                <span>{$sub_menu.group}</span>
+              {/notempty}
+              <span class="pull-right-container">
+                <i class="fa fa-angle-left pull-right"></i>
+              </span>
+          </a>
+          <ul class="treeview-menu menu-open">
+              {volist name="sub_menu.child" id="c_menu"}
+              <li data-id="{$c_menu.id}" data-url="{$c_menu.url|url}">
+                  <a href="{$c_menu.url|url}">
+                    {notempty name="c_menu.icon"}
+                        <i class="fa fa-{$c_menu.icon}"></i>
+                    {else /}
+                        <i class="fa fa-circle-o"></i>
+                    {/notempty}
+                    {$c_menu.title}
+                </a>
+              </li>
+              {/volist}
+          </ul>
+        </li>
+        
+      </ul>
+      {/volist}
+      {/notempty}
+
+      {notempty name="ALL_MODULE_LIST"}
+      {if($this_controller == 'index')}
+      <!--常用应用-->
+      <ul class="sidebar-menu" data-widget="tree">
+        <li class="treeview menu-open">
+          <a>
+              <i class="fa fa-circle-o"></i>
+              <span>应用入口</span>
+              
+              <span class="pull-right-container">
+                <i class="fa fa-angle-left pull-right"></i>
+              </span>
+          </a>
+          <ul class="treeview-menu menu-open">
+            {volist name="ALL_MODULE_LIST" id="vo"}
+            <li>
+                <a href="{:url($vo.admin_entry)}">  
+                  <i class="fa fa-circle-o"></i>
+                  <span>{$vo.alias}</span>
+              </a>
+            </li>
+            {/volist}
+          </ul>
+        </li>
+      </ul>
+      {/if}
+      {/notempty}
+    </section>
+    <!-- /.sidebar -->
+  </aside>
