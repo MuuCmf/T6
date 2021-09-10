@@ -10,6 +10,9 @@ class Index extends Common
 {
     public function index()
     {
+        $this->setTitle('首页');
+        $this->setKeywords('首页,MuuCmf T6');
+        $this->setDescription('首页,MuuCmf T6');
         return View::fetch();
     }
 

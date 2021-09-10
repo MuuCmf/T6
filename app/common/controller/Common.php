@@ -3,15 +3,18 @@ namespace app\common\controller;
 
 use think\facade\Db;
 use think\facade\View;
-use app\common\controller\Base;
 use app\common\model\Channel;
-use app\common\model\SeoRule;
+use app\common\controller\Base;
+
 
 /**
  * 前台控制器基类
  */
 class Common extends Base
 {
+    public $title;
+    public $keywords;
+    public $description;
     /**
      * 构造方法
      * @access public
@@ -19,13 +22,13 @@ class Common extends Base
     public function __construct()
     {
         // 控制器初始化
-        $this->_initialize();
+        $this->initialize();
     }
 
     /**
      * 初始化
      */
-	public function _initialize()
+	public function initialize()
     {
  		//获取站点LOGO
  		$this->initLogo();
@@ -91,32 +94,21 @@ class Common extends Base
         View::assign('login_url', $login_url);
     }
 
-    /**
-     * 手动设置SEO部分
-     *
-     * @param      <type>  $title  The title
-     */
-    public $_seo = [
-        'title' => '',
-        'setKeywords' => '', 
-        'description' => ''
-    ];
-
     public function setTitle($title)
     {
-        $this->_seo['title'] = $title;
-        View::assign('set_meta', $this->_seo);
+        $this->title = $title;
+        View::assign('title', $this->title);
     }
 
     public function setKeywords($keywords)
     {
-        $this->_seo['keywords'] = $keywords;
-        View::assign('set_meta', $this->_seo);
+        $this->keywords = $keywords;
+        View::assign('keywords', $this->keywords);
     }
 
     public function setDescription($description)
     {
-        $this->_seo['description'] = $description;
-        View::assign('set_meta', $this->_seo);
+        $this->description = $description;
+        View::assign('description', $this->description);
     }
 }
