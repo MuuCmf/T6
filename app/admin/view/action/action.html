@@ -29,11 +29,7 @@
                         <select name="module" data-role="select_text" class="form-control" onchange="$('#filter').submit()">
                             <option value="-1">全部</option>
                             {volist name="module" id="vo"}
-                            {if condition="$vo['name'] eq  $current_module"}
-                                <option value="{$vo.name|default=''}" selected>{$vo.alias}</option>
-                            {else/}
                                 <option value="{$vo.name|default=''}">{$vo.alias}</option>
-                            {/if}
                             {/volist}
                         </select>
                     </div>

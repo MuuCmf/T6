@@ -8,6 +8,7 @@ use think\facade\View;
 use app\common\model\Action as ActionModel;
 use app\common\model\ActionLimit as ActionLimitModel;
 use app\common\model\Module as ModuleModel;
+use app\common\model\ScoreType as ScoreTypeModel;
 
 /**
  * 行为控制器
@@ -150,16 +151,16 @@ class Action extends Admin {
      */
     public function action()
     {
-        $aModule = $this->parseSearchKey('module');
+        // $aModule = $this->parseSearchKey('module');
+
+        // is_null($aModule) && $aModule = -1;
+        // if ($aModule != -1) {
+        //     $map['module'] = $aModule;
+        // }
+        // unset($_REQUEST['module']);
+        // View::assign('current_module', $aModule);
+
         $ModuleModel = new ModuleModel();
-
-        is_null($aModule) && $aModule = -1;
-        if ($aModule != -1) {
-            $map['module'] = $aModule;
-        }
-        unset($_REQUEST['module']);
-        View::assign('current_module', $aModule);
-
         //获取列表数据
         $map[] = ['status','>', -1];
         $ActionModel = new ActionModel();
@@ -192,25 +193,6 @@ class Action extends Admin {
         return View::fetch();
     }
 
-    protected function parseSearchKey($key = null)
-    {
-        $action = app('http')->getName() . '_' . request()->controller() . '_' . request()->action();
-        $post = input('post.');
-        if (empty($post)) {
-            $keywords = cookie($action);
-        } else {
-            $keywords = $post;
-            cookie($action, $post);
-            $_GET['page'] = 1;
-        }
-
-        if (empty($_GET['page'])) {
-            cookie($action, null);
-            $keywords = null;
-        }
-        return $key ? $keywords[$key] : $keywords;
-    }
-
     /**
      * 新增、编辑行为
      * @author dameng <59262424@qq.com>
@@ -225,15 +207,16 @@ class Action extends Admin {
             
             $res = $ActionModel->editAction($data);
             if (!$res) {
-                $this->error($ActionModel->getError());
+                return $this->error($ActionModel->getError());
             } else {
-                $this->success($res['id'] ? '更新成功！' : '新增成功', Cookie('__forward__'));
+                return $this->success($res['id'] ? '更新成功！' : '新增成功', 'res',Cookie('__forward__'));
             }
         }else{
             $id = input('id');
 
             if($id){
                 $data = $ActionModel->find($id);
+                $data['rule'] = unserialize( $data['rule']);
 
             }else{
                 //初始默认数据
@@ -249,6 +232,9 @@ class Action extends Admin {
             }
 
             View::assign('data', $data);
+            $scoreTypeModel = new ScoreTypeModel();
+            $score = $scoreTypeModel->getTypeList(array('status'=>1));
+            View::assign('score', $score);
             // 获取所有应用模型列表
             $module = $ModuleModel->getAll();
             View::assign('module', $module);

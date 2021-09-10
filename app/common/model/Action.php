@@ -31,7 +31,6 @@ class Action extends Model
 	        }
         }
         
-        
         if(empty($data['rule'])){
             $data['rule'] ='';
         }else{
@@ -42,13 +41,13 @@ class Action extends Model
         /* 添加或新增行为 */
         if(empty($data['id'])){ //新增数据
             
-            $res = $this->allowField(true)->save($data); //添加行为
+            $res = $this->insert($data); //添加行为
             if(!$res){
                 $this->error = lang('_NEW_BEHAVIOR_WITH_EXCLAMATION_');
                 return false;
             }
         } else { //更新数据
-            $res = $this->allowField(true)->save($data,['id'=>$data['id']]); //更新基础内容
+            $res = $this->update($data); //更新基础内容
             if(!$res){
                 $this->error = lang('_UPDATE_BEHAVIOR_WITH_EXCLAMATION_');
                 return false;

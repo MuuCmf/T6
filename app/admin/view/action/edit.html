@@ -65,10 +65,6 @@
                 <label class="item-label">积分规则<span class="check-tips">（输入积分规则，不写则只记录日志）</span></label>
 
                 <div class="controls action_rule">
-                    {php}
-                        $score = model('ucenter/Score')->getTypeList(array('status'=>1));
-                        $data['rule'] = unserialize( $data['rule']);
-                    {/php}
 
                     {php}if(empty($data['rule'])){{/php}
                         暂无规则
@@ -150,7 +146,7 @@
         <div style="margin-bottom: 10px">
             <input class="form-control" name="action_rule[table][]" value="member" title="所执行的表，默认是member" style="width: 100px;display: inline-block">
             <select class="form-control" name="action_rule[field][]" title="执行的积分" style="width: 100px;display: inline-block">
-                <option value="0">{:lang("_PLEASE_CHOOSE_")}</option>
+                <option value="0">请选择</option>
                 {volist name="score" id="s"}
                     <option value="{$s.id}">{$s.title}</option>
                 {/volist}
