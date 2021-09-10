@@ -34,13 +34,13 @@ function get_uid()
  */
 function query_user($uid = 0, $field_arr = [])
 {
-    $memberModel = new Member;
     if(empty($field_arr)){
-        $field = "'uid','nickname', 'username', 'sex', 'avatar', 'signature'";
+        $field = "'uid','nickname', 'email', 'mobule', username', 'sex', 'avatar', 'signature'";
     }
     if(is_array($field_arr)){
         $field = implode(',' ,$field_arr);
     }
+    $memberModel = new Member;
     $auth_user = $memberModel->info($uid, $field);
 
     return $auth_user;

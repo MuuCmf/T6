@@ -87,6 +87,9 @@ class Admin extends Base
         return $uid;
     }
 
+    /**
+     * 已安装应用模块列表
+     */
     protected function allModuleList()
     {
         $all_module_list = $this->moduleModel->getAll(['is_setup' => 1,'name' => ['!=','ucenter']]);

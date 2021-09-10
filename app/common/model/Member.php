@@ -218,13 +218,21 @@ class Member extends Model
      */
     public function info($uid, $fields = 'uid,username,nickname,email,mobile,avatar,status')
     {
-        $map['uid'] = $uid;
-        
-        $user = $this->where($map)->field($fields)->find()->toArray();
-        if (is_array($user) && $user['status'] = 1) {
-            return $user;
-        } else {
-            return -1; //用户不存在或被禁用
+        if(!empty($uid)){
+            $map['uid'] = $uid;
+            $user = $this->where($map)->field($fields)->find()->toArray();
+            if (is_array($user) && $user['status'] = 1) {
+                if(empty($user['avatar'])){
+                    $user['avatar'] = '/static/common/images/default_avatar.jpg';
+                }else{
+                    $user['avatar'] = get_attachment_src($user['avatar']);
+                }
+                return $user;
+            } else {
+                return -1; //用户不存在或被禁用
+            }
+        }else{
+            return false;
         }
     }
 

@@ -214,6 +214,9 @@ EOF;
     return $html;
 }
 
+/**
+ * 通过ID获取附件路径
+ */
 function pic($id)
 {
     if (empty($id)) {
@@ -251,7 +254,7 @@ function get_thumb_image($attachment, $width = 100, $height = 'auto', $type = 0,
         return get_attachment_url($attach['src']);
     } else {
         $new_img = $picture['attachment'];
-        //$name = get_addon_class($picture['driver']);
+        
         if (class_exists($name)) {
             $class = new $name();
             if (method_exists($class, 'thumb')) {

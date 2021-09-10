@@ -34,16 +34,14 @@
       <div class="navbar-custom-menu">
         <ul class="nav navbar-nav">
           <!--clear cache-->
-          <li><a href="javascript:;" title="{:lang('_CACHE_CLEAR_')}" data-id="clear_cache" data-msg="{:lang('_CACHE_CLEAR_SUCCESS_')}{:lang('_PERIOD_')}" data-url="{:url('admin/common/clear_cache')}">
+          <li><a href="javascript:;" title="清理缓存" data-id="clear_cache" data-msg="清理缓存成功" data-url="{:url('admin/common/clear_cache')}">
                 <i class="fa fa-trash"></i> 
               </a>
           </li>
-
           <li><a target="_blank" title="{:lang('_FORESTAGE_OPEN_')}" href="{:url('index/Index/index')}">
                 <i class="fa fa-copy"></i> 
               </a>
           </li>
-          <!-- User Account: style can be found in dropdown.less -->
           <li class="dropdown user user-menu">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
               <img src="{$AUTH_USER.avatar}" class="user-image" alt="User Image">
