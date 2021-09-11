@@ -52,7 +52,7 @@
                         <td>{$vo.required}</td>
                         <td>{$vo.sort}</td>
                         <td>{$vo.form_type}</td>
-                        <td>{$vo.create_time}</td>
+                        <td>{$vo.create_time|time_format}</td>
                         <td>{$vo.status}</td>
                         <td>
                             <a href="{:url('admin/field/editField',['id'=>$vo['id']])}" >编辑</a>
