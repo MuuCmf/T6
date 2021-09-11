@@ -162,9 +162,10 @@ class Member extends Admin
             //基础设置
             $map['uid'] = $uid;
             $aNickname = $data['nickname'];
-            $this->memberModel->checkNickname($aNickname, $uid);
+            $this->checkNickname($aNickname, $uid);
 
             //用户名、邮箱、手机变成可编辑内容
+            $avatar = $data['avatar'];
             $aUsername = $data['username'];
             $aEmail = $data['email'];
             $aMobile = $data['mobile'];
@@ -181,12 +182,17 @@ class Member extends Admin
                     return $this->error('请正确填写手机号！');
                 }
             }
+            $aRealname = $data['realname'];
+            $aSex = $data['sex'];
             $memberData = [
                 'uid' => $uid,
+                'avatar' => $avatar,
                 'username' => $aUsername,
                 'email' => $aEmail,
                 'mobile' => $aMobile,
                 'nickname' => $aNickname,
+                'realname' => $aRealname,
+                'sex' => $aSex,
             ];
             $rs_member = $this->memberModel->where(['uid' => $uid])->update($memberData);
             // 用户名、邮箱、手机变成可编辑内容end
@@ -208,7 +214,7 @@ class Member extends Admin
             //扩展信息查询
             $field_group = Db::name('field_group')->where('status', '=', 1)->select()->toArray();
             $field_group_ids = array_column($field_group, 'id');
-            $map_profile[] = ['profile_group_id', 'in', $field_group_ids];
+            $map_profile[] = ['group_id', 'in', $field_group_ids];
             $map_profile[] = ['status', '=', 1];
             $fields_list = Db::name('field_setting')->where($map_profile)->field('id,field_name,form_type')->select()->toArray();
             $fields_list = array_combine(array_column($fields_list, 'field_name'), $fields_list);
@@ -236,12 +242,15 @@ class Member extends Admin
             $builder = new AdminConfigBuilder();
             $builder->title('用户扩展资料详情');
             $builder->keyUid()
+                    ->keySingleImage('avatar','头像','')
                     ->keyText('email','邮箱')
                     ->keyText('mobile','手机号')
                     ->keyText('username', '用户名')
-                    ->keyText('nickname', '昵称');
+                    ->keyText('nickname', '昵称')
+                    ->keyText('realname', '真实姓名')
+                    ->keyRadio('sex','性别','',[0 => '不详',1 => '男', 2 => '女']);
 
-            $field_key = ['uid', 'username','email','mobile', 'nickname'];
+            $field_key = ['uid','avatar', 'username','email','mobile', 'nickname', 'realname', 'sex'];
             foreach ($fields_list as $vt) {
                 $field_key[] = $vt['field_name'];
             }
@@ -325,6 +334,43 @@ class Member extends Admin
             return null;
         }
 
+    }
+
+    /**
+     * 验证用户名
+     * @param $nickname
+     */
+    private function checkNickname($nickname, $uid)
+    {
+        $length = mb_strlen($nickname, 'utf8');
+        if ($length == 0) {
+            return $this->error('请输入昵称');
+        } else if ($length > config('system.NICKNAME_MAX_LENGTH',32)) {
+            return $this->error('昵称不能超过'. config('system.NICKNAME_MAX_LENGTH',32).'个字');
+        } else if ($length < config('system.NICKNAME_MIN_LENGTH',2)) {
+            return $this->error('昵称不能少于' . config('system.NICKNAME_MIN_LENGTH',2) . '个字');
+        }
+        $match = preg_match('/^(?!_|\s\')[A-Za-z0-9_\x80-\xff\s\']+$/', $nickname);
+        if (!$match) {
+            return $this->error('昵称只允许中文、字母、下划线和数字');
+        }
+        //验证唯一性
+        $map_nickname[] = ['nickname', '=', $nickname];
+        $map_nickname[] = ['uid','<>', $uid];
+        $had_nickname = Db::name('Member')->where($map_nickname)->count();
+
+        if ($had_nickname) {
+            return $this->error('昵称已被人使用');
+        }
+        $denyName = Db::name("config")->where(['name' => 'USER_NAME_BAOLIU'])->value('value');
+        if ($denyName != '') {
+            $denyName = explode(',', $denyName);
+            foreach ($denyName as $val) {
+                if (!is_bool(strpos($nickname, $val))) {
+                    return $this->error('该昵称已被禁用');
+                }
+            }
+        }
     }
 
 }

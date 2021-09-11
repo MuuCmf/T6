@@ -300,7 +300,7 @@ class AdminConfigBuilder extends AdminBuilder
     }
 
     /**
-     * 依赖OSS插件单视频web直传
+     * 单视频web直传
      *
      * @param      <type>  $name      The name
      * @param      <type>  $title     The title
@@ -325,7 +325,8 @@ class AdminConfigBuilder extends AdminBuilder
         return $this->keyCheckBox($name, $title, $subtitle, $options);
     }
 
-    /** 添加城市选择（需安装城市联动插件）
+    /** 
+     * 添加城市选择
      * @param array $name
      * @param $title
      * @param $subtitle
@@ -351,12 +352,18 @@ class AdminConfigBuilder extends AdminBuilder
         return $this->key($name, $title, $subtitle, 'dataselect', $urls);
     }
 
+    /**
+     * 按钮
+     */
     public function button($title, $attr = array())
     {
         $this->_buttonList[] = array('title' => $title, 'attr' => $attr);
         return $this;
     }
 
+    /**
+     * 确认按钮
+     */
     public function buttonSubmit($url = '', $title = '确定')
     {
         if ($url == '') {
@@ -372,6 +379,9 @@ class AdminConfigBuilder extends AdminBuilder
         return $this->button($title, $attr);
     }
 
+    /**
+     * 返回按钮
+     */
     public function buttonBack($title = '返回')
     {
         $attr = array();
