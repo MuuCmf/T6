@@ -128,10 +128,10 @@ class Menu extends Admin {
         if(request()->isPost()){
             $data = input('');
             if($data['title'] == '') {
-                $this->error('菜单标题不能为空');
+                return $this->error('菜单标题不能为空');
             }
             if($data['url'] == '') {
-                $this->error('菜单链接不能为空');
+                return $this->error('菜单链接不能为空');
             }
 
             $menuModel = new MenuModel();
@@ -184,13 +184,13 @@ class Menu extends Admin {
         $id = array_unique((array)input('id/a',[]));
 
         if (empty($id) ) {
-            $this->error('参数错误');
+            return $this->error('参数错误');
         }
         //判断是否有下级菜单
         $res =  Db::name('Menu')->where('pid', 'in', $id)->select()->toArray();
         
         if(!empty($res)){
-            $this->error('下级菜单不为空');
+            return $this->error('下级菜单不为空');
         }
         //开始移除菜单
         if(Db::name('Menu')->where('id', 'in', $id)->delete()){
@@ -211,7 +211,7 @@ class Menu extends Admin {
             $lists = explode(PHP_EOL, $tree);
 
             if($lists == array()){
-                $this->error(lang('_PLEASE_FILL_IN_THE_FORM_OF_A_BATCH_IMPORT_MENU,_AT_LEAST_ONE_MENU_'));
+                return $this->error('请按格式填写批量导入的菜单，至少一个菜单');
             }else{
                 $pid = input('post.pid');
                 foreach ($lists as $key => $value) {
@@ -230,7 +230,7 @@ class Menu extends Admin {
                         ]);
                     }
                 }
-                $this->success('导入成功',url('index',['pid' => $pid]));
+                return $this->success('导入成功','',url('index',['pid' => $pid]));
             }
         }else{
             $this->setTitle('菜单导入');
@@ -274,12 +274,12 @@ class Menu extends Admin {
                 $res = Db::name('Menu')->where(['id'=>$value])->setField('sort', $key+1);
             }
             if($res !== false){
-                $this->success('排序成功');
+                return $this->success('排序成功');
             }else{
-                $this->eorror('排序失败');
+                return $this->error('排序失败');
             }
         }else{
-            $this->error(lang('_ILLEGAL_REQUEST_'));
+            return $this->error('非法请求');
         }
     }
 }

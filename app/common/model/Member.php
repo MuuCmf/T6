@@ -331,6 +331,43 @@ class Member extends Model
     }
 
     /**
+     * 验证用户名
+     * @param $nickname
+     */
+    private function checkNickname($nickname, $uid)
+    {
+        $length = mb_strlen($nickname, 'utf8');
+        if ($length == 0) {
+            $this->error('请输入昵称');
+        } else if ($length > config('system.NICKNAME_MAX_LENGTH',32)) {
+            $this->error('昵称不能超过'. config('system.NICKNAME_MAX_LENGTH',32).'个字');
+        } else if ($length < config('system.NICKNAME_MIN_LENGTH',2)) {
+            $this->error('昵称不能少于' . config('system.NICKNAME_MIN_LENGTH',2) . '个字');
+        }
+        $match = preg_match('/^(?!_|\s\')[A-Za-z0-9_\x80-\xff\s\']+$/', $nickname);
+        if (!$match) {
+            $this->error('昵称只允许中文、字母、下划线和数字');
+        }
+        //验证唯一性
+        $map_nickname[] = ['nickname', '=', $nickname];
+        $map_nickname[] = ['uid','<>', $uid];
+        $had_nickname = Db::name('Member')->where($map_nickname)->count();
+
+        if ($had_nickname) {
+            $this->error('昵称已被人使用');
+        }
+        $denyName = Db::name("config")->where(['name' => 'USER_NAME_BAOLIU'])->value('value');
+        if ($denyName != '') {
+            $denyName = explode(',', $denyName);
+            foreach ($denyName as $val) {
+                if (!is_bool(strpos($nickname, $val))) {
+                    $this->error('该昵称已被禁用');
+                }
+            }
+        }
+    }
+
+    /**
      * 清除用户缓存
      * @param  [type] $uid  [description]
      * @param  [type] $type [description]

@@ -3,19 +3,20 @@
 {block name="body"}
     <!-- 标题栏 -->
     <div class="main-title">
-        <h2>管理字段</h2>
+        <h2>扩展资料管理</h2>
     </div>
     <div class="button-box clearfix">
 
         <div class="col-md-6">
-            <button class="btn btn-success ajax-post confirm" url="{:url('status',array('method'=>'resumeUser'))}" target-form="ids">
-                新增
+            <a type="button" class="btn btn-info" href="{:url('editGroup')}">新增</a>
+            <button class="btn btn-success ajax-post" url="{:url('setGroupStatus', ['status' => 1])}" target-form="ids">
+                启用
             </button>
-            <button class="btn btn-danger ajax-post confirm" url="{:url('status',array('method'=>'deleteUser'))}" target-form="ids">
+            <button class="btn btn-warning ajax-post confirm" url="{:url('setGroupStatus',['status' => 0])}" target-form="ids">
+                禁用
+            </button>
+            <button class="btn btn-danger ajax-post confirm" url="{:url('setGroupStatus',['status' => -1])}" target-form="ids">
                 删除
-            </button>
-            <button class="btn btn-warning ajax-post confirm" url="{:url('status',array('method'=>'forbidUser'))}" target-form="ids">
-                排序
             </button>
         </div>
     </div>
@@ -28,13 +29,10 @@
                     <input type="checkbox" class="check-all" id="check-all">
                     <label for="check-all"></label>
                 </th>
-                <th>字段名称</th>
-                <th>是否公开</th>
-                <th>是否必填</th>
-                <th>排序</th>
-                <th>表单类型</th>
-                <th>创建时间</th>
-                <th>状态</th>
+                <th class="">扩展类型</th>
+                <th class="">排序</th>
+                <th class="">是否公开</th>
+                <th class="">状态</th>
                 <th class="">操作</th>
 
             </tr>
@@ -44,18 +42,16 @@
                 {volist name="list" id="vo"}
                     <tr>
                         <td>
-                            <input class="ids" id="field-{$vo.id}" type="checkbox" name="id[]" value="{$vo.id}"/>
-                            <label for="field-{$vo.id}"></label>
+                            <input class="ids" id="profile-{$vo.id}" type="checkbox" name="id[]" value="{$vo.id}"/>
+                            <label for="profile-{$vo.id}"></label>
                         </td>
-                        <td>{$vo.field_name}</td>
-                        <td>{$vo.visiable}</td>
-                        <td>{$vo.required}</td>
+                        <td>{$vo.profile_name}</td>
                         <td>{$vo.sort}</td>
-                        <td>{$vo.form_type}</td>
-                        <td>{$vo.create_time}</td>
-                        <td>{$vo.status}</td>
+                        <td>{$vo.visiable}</td>
+                        <td>{$vo.status_text}</td>
                         <td>
-                            <a href="{:url('admin/member/editField',['id'=>$vo['id']])}" >编辑</a>
+                            <a href="{:url('admin/field/list',['group_id'=>$vo['id']])}" >管理字段</a>
+                            <a href="{:url('admin/field/editGroup',['id'=>$vo['id']])}" >编辑</a>
                         </td>
                     </tr>
                 {/volist}
@@ -67,6 +63,11 @@
             </tbody>
         </table>
 
+        <!-- 分页 -->
+        <div class="page">
+            {:htmlspecialchars_decode($page)}
+        </div>
+        <!-- /分页-->
     </div>
 {/block}
 
