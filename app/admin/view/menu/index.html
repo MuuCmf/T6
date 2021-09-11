@@ -87,83 +87,84 @@
                                 {$menu.type_str}
                             </a>
                         </td>
-                        <td width="120">
+                        <td width="160" class="text-right">
+                            <a title="新增" class="btn btn-sm btn-info" href="{:url('edit',['pid' => $menu['id']])}"> + </a>
                             <a title="编辑" class="btn btn-sm btn-info" href="{:url('edit',['id' => $menu['id']])}">编辑</a>
                             <a title="删除" class="btn btn-sm btn-danger confirm ajax-get" title="删除" href="{:url('del',['id' => $menu['id']])}">删除</a>
                         </td>
                     </tr>
                     {notempty name="menu._child"}
-                    {volist name="menu._child" id="cmenu"}
+                    {volist name="menu._child" id="cmenu2"}
                     <tr>
                         <td> 
-                            <input class="ids" id="cmenu-{$menu.id}" type="checkbox" name="id[]" value="{$cmenu.id}">
-                            <label for="cmenu-{$cmenu.id}"></label>
+                            <input class="ids" id="cmenu2-{$menu.id}" type="checkbox" name="id[]" value="{$cmenu2.id}">
+                            <label for="cmenu2-{$cmenu2.id}"></label>
                         </td>
                         <td class="hidden">
-                            {$cmenu.id}
+                            {$cmenu2.id}
                         </td>
                         <td class="top-chile-title">
-                            -- <span style="font-weight: 600;">{$cmenu.title}</span>
+                            -- <span style="font-weight: 600;">{$cmenu2.title}</span>
                         </td>
                         <td>
-                            {$cmenu.group}
+                            {$cmenu2.group}
                         </td>
                         <td>
-                            {$cmenu.url}
+                            {$cmenu2.url}
                         </td>
                         <td>
-                            {$cmenu.sort}
+                            {$cmenu2.sort}
                         </td>
                         <td>
-                            <a href="{:url('toogleHide',['id'=>$cmenu['id'],'value'=>abs($cmenu['hide']-1)])}" class="ajax-get">
-                                {$cmenu.hide_str}
+                            <a href="{:url('toogleHide',['id'=>$cmenu2['id'],'value'=>abs($cmenu2['hide']-1)])}" class="ajax-get">
+                                {$cmenu2.hide_str}
                             </a>
                         </td>
                         <td>
                             <a href="#" class="ajax-get">
-                                {$cmenu.type_str}
+                                {$cmenu2.type_str}
                             </a>
                         </td>
-                        <td>
-                            <a title="编辑" class="btn btn-sm btn-info" href="{:url('edit',['id' => $cmenu['id']])}">编辑</a>
-                            <a title="删除" class="btn btn-sm btn-danger confirm ajax-get" title="删除" href="{:url('del',['id' => $cmenu['id']])}">删除</a>
+                        <td class="text-right">
+                            <a title="编辑" class="btn btn-sm btn-info" href="{:url('edit',['id' => $cmenu2['id']])}">编辑</a>
+                            <a title="删除" class="btn btn-sm btn-danger confirm ajax-get" title="删除" href="{:url('del',['id' => $cmenu2['id']])}">删除</a>
                         </td>
                     </tr>
-                    {notempty name="cmenu._child"}
-                    {volist name="cmenu._child" id="cmenu"}
+                    {notempty name="cmenu2._child"}
+                    {volist name="cmenu2._child" id="cmenu3"}
                     <tr>
                         <td>
-                            <input class="ids" id="cmenu-{$menu.id}" type="checkbox" name="id[]" value="{$cmenu.id}">
-                            <label for="cmenu-{$cmenu.id}"></label>
+                            <input class="ids" id="cmenu3-{$cmenu3.id}" type="checkbox" name="id[]" value="{$cmenu3.id}">
+                            <label for="cmenu3-{$cmenu3.id}"></label>
                         </td>
                         <td class="hidden">
-                            {$cmenu.id}
+                            {$cmenu3.id}
                         </td>
                         <td>
-                            -------- {$cmenu.title}
+                            -------- {$cmenu3.title}
                         </td>
                         <td>
-                            {$cmenu.group}
+                            {$cmenu3.group}
                         </td>
                         <td>
-                            {$cmenu.url}
+                            {$cmenu3.url}
                         </td>
                         <td>
-                            {$cmenu.sort}
+                            {$cmenu3.sort}
                         </td>
                         <td>
-                            <a href="{:url('toogleHide',['id'=>$cmenu['id'],'value'=>abs($cmenu['hide']-1)])}" class="ajax-get">
-                                {$cmenu.hide_str}
+                            <a href="{:url('toogleHide',['id'=>$cmenu3['id'],'value'=>abs($cmenu3['hide']-1)])}" class="ajax-get">
+                                {$cmenu3.hide_str}
                             </a>
                         </td>
                         <td>
                             <a href="#" class="ajax-get">
-                                {$cmenu.type_str}
+                                {$cmenu3.type_str}
                             </a>
                         </td>
-                        <td>
-                            <a title="编辑" class="btn btn-sm btn-info" href="{:url('edit',['id' => $cmenu['id']])}">编辑</a>
-                            <a title="删除" data-role="delete" class="btn btn-sm btn-danger confirm ajax-get" title="删除" href="{:url('del',['id' => $cmenu['id']])}">删除</a>
+                        <td class="text-right">
+                            <a title="编辑" class="btn btn-sm btn-info" href="{:url('edit',['id' => $cmenu3['id']])}">编辑</a>
+                            <a title="删除" data-role="delete" class="btn btn-sm btn-danger confirm ajax-get" title="删除" href="{:url('del',['id' => $cmenu3['id']])}">删除</a>
                         </td>
                     </tr>
                     {/volist}

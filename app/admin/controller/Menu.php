@@ -64,6 +64,39 @@ class Menu extends Admin {
         return View::fetch();
     }
 
+    public function index2(){
+        $title = input('title','','text');
+        $pid  = input('pid','0','text');
+        //获取上级数据
+        if($pid){
+            $where['id'] = $pid;
+            $data = $this->menuModel->where($where)->find();
+            View::assign('data',$data);
+        }
+        View::assign('pid',$pid);
+        
+        if($title){
+            $map['title'] = ['like','%'.$title.'%'];
+        }
+        
+        $map = [];
+        //$map['pid'] =   $pid;
+        $list = $this->menuModel->where($map)->order('sort asc')->select()->toArray();
+        foreach($list as &$val){
+            $val = $this->menuModel->handle($val);
+        }
+        unset($val);
+        // 转树结构
+        $list = list_to_tree($list, 'id', 'pid', '_child', '0');
+        
+        dump($list);
+        View::assign('list',$list);
+
+        $this->setTitle('后台菜单管理');
+
+        return View::fetch();
+    }
+
 
     /**
      * 后台菜单列表
@@ -113,6 +146,8 @@ class Menu extends Admin {
             
         } else {
             $id = input('id','0','text');
+            $pid = input('pid','0','text');
+            View::assign('pid', $pid);
             $info = [];
             /* 获取数据 */
             $menuModel = new MenuModel();

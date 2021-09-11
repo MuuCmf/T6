@@ -46,7 +46,7 @@
                 <div class="controls">
                     <select name="pid" class="form-select-size form-control">
                         {volist name="Menus" id="menu"}
-                        <option value="{$menu.id}">{:htmlspecialchars_decode($menu.title_show)}</option>
+                        <option value="{$menu.id}" selected="{if $pid == $menu.id}selected{else}false{/if}">{:htmlspecialchars_decode($menu.title_show)}</option>
                         {/volist}
                     </select>
                 </div>
