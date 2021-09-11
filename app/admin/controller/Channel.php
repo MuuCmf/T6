@@ -64,18 +64,22 @@ class Channel extends Admin
                 }
                 
                 cache('common_nav',null);
-                $this->success('修改成功');
+                return $this->success('修改成功');
             }
-            $this->error('导航至少存在一个。');
+            return $this->error('导航至少存在一个。');
 
         } else {
             /* 获取频道列表 */
             $map[] = ['status', '>', -1];
             $map[] = ['pid', '=', 0];
-            $list = $this->channel->where($map)->order('sort asc,id asc')->select();
+            $list = $this->channel->where($map)->order('sort asc,id asc')->select()->toArray();
             foreach ($list as $k => &$v) {
                 $module = Db::name('Module')->where(['entry' => $v['url']])->find();
-                $v['module_name'] = $module['name'];
+                if(!empty($module)){
+                    $v['module_name'] = $module['name'];
+                }else{
+                    $v['module_name'] = '';
+                }
             }
             unset($k, $v);
 
@@ -115,9 +119,9 @@ class Channel extends Admin
                     $pid[$i] = $Channel->insert($data[$i]);
                 }
                 cache('common_user_nav',null);
-                $this->success('修改成功');
+                return $this->success('修改成功');
             }
-            $this->error('导航至少存在一个');
+            return $this->error('导航至少存在一个');
         } else {
             $this->setTitle('导航管理');
             /* 获取频道列表 */

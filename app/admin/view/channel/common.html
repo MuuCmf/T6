@@ -1,10 +1,6 @@
 {extend name="common/main"/}
 {block name="style"}
-<style>
-.nav_list select {
-    margin-right: 10px;
-}
-</style>
+
 {/block}
 {block name="body"}
 <div class="main-title">
@@ -17,9 +13,58 @@
     </div>
     <form action="{:url()}" method="post" class="form-horizontal" >
     <ul class="channel-ul">
-    {volist name="list" id="nav"}
-        {include file="channel/_li"/}
-    {/volist}
+        {volist name="list" id="nav"}
+        <li class="clearfix pLi" >
+            <input name="nav[1][sort][]" class="sort" type="hidden">
+            <div class="pull-left nav_list">
+        
+                <select name="nav[1][type][]" class="form-control nav-type margin-right" style="width: 100px;">
+                    {if $nav['module_name']}
+                    <option value="module" selected>系统模块</option>
+                    <option value="custom" >自定义链接</option>
+                    {else}
+                    <option value="module">系统模块</option>
+                    <option value="custom" selected>自定义链接</option>
+                    {/if}
+                </select>
+        
+                <select name="nav[1][modul][]" class="form-control module margin-right" style="width: 100px;{if !$nav['module_name']}display:none{/if}">
+                    {php}foreach($module as $k=>$v){{/php}
+                    <option value="{$v.entry}" data-icon="{$v.icon}" selected="{if strtolower($nav['url']) == strtolower($v['entry'])}selected{else}false{/if}">{$v.alias}</option>
+                    {php}}unset($k,$v){/php}
+                </select>
+        
+                <input name="nav[1][title][]" placeholder="请输入标题" class="form-control title margin-right" style="width: 100px;" value="{$nav.title}">
+        
+                <input name="nav[1][url][]" placeholder="请输入链接" class="form-control url margin-right" style="width: 300px;{if $nav['module_name']}display:none{/if}" value=" {$nav.url}">
+        
+            </div>
+        
+            <div class='pull-left new-blank margin-right'>
+                <input type="hidden" name="nav[1][target][]" class="target_input" value="{$nav.target}">
+                <input type="checkbox" value="1" class="target" {if condition="$nav['target'] eq 1"}checked{/if}>
+                <label class="target-blank">
+                    新窗口
+                </label>
+            </div>
+        
+            <div class='pull-left band-text margin-right'>
+                <input name="nav[1][band_text][]" class="form-control" placeholder="标志点文字" style="width: 100px;" value="{$nav['band_text']}">
+            </div>
+        
+            <div class='pull-right i-list'>
+                <a href="javascript:" title="添加一级导航" class="add-one">
+                    <i class="fa fa-plus"></i>
+                </a>
+                <a href="javascript:"  title="移除此导航" class="remove-li">
+                    <i class="fa fa-remove"></i>
+                </a>
+                <a href="javascript:" title="导航排序">
+                    <i class="fa fa-arrows-alt sort-handle-1"></i>
+                </a>
+            </div>
+        </li>
+        {/volist}
     </ul>
     <div class="form-item">
         <button class="btn btn-success submit-btn ajax-post no-refresh" id="submit" type="submit" target-form="form-horizontal">保 存</button>
