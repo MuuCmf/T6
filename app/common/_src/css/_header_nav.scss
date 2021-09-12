@@ -44,6 +44,7 @@ nav.navbar.bootsnav {
       height: 58px;
 
       img{
+        max-height: 50px;
         width:auto;
         display: inline-block;
         width:auto;
@@ -58,7 +59,7 @@ nav.navbar.bootsnav {
         margin: 0!important;
 
         img{
-          width:120px;
+          width:auto;
           display: inline-block;
         }
       }

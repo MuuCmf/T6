@@ -47,8 +47,9 @@ class Common extends Base
      */
     private function initLogo()
     {
-        $logo = get_attachment_url(config('system.LOGO'));
-        $logo = $logo ? $logo: STATIC_URL . '/common/images/logo.png';
+        $logo = config('system.WEB_SITE_LOGO');
+        $logo = $logo ? get_attachment_src($logo) : STATIC_URL . '/common/images/logo.png';
+
         View::assign('logo', $logo);
     }
 
