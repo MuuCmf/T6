@@ -200,11 +200,10 @@
                                         $checked = in_array($key,$config['value_array']) ? 'checked' : '';
                                         $inputId = "id_$config[name]_$key";
                                     {/php}
-                                    <input type="radio" value="{$key}" id="{$inputId}" class="oneplus-radio" data-field-name="{$config.name}" {$checked}/>
+                                    <input type="radio" name="config[{$config.name}]" value="{$key}" id="{$inputId}" class="oneplus-radio" data-field-name="{$config.name}" {$checked}/>
                                     <label for="{$inputId}">{$option|htmlspecialchars}</label>
                                 {/volist}
-                                <input type="hidden" name="config[{$config.name}]" class="oneplus-radio-hidden"
-                                       data-field-name="{$config.name}" value="{$config.value}"/>
+                                    <input type="hidden" name="config[{$config.name}]" class="oneplus-radio-hidden" data-field-name="{$config.name}" value="{$config.value}"/>
 
                                     <script>
                                         $(function () {

@@ -124,6 +124,11 @@ class Common extends Base
         }
     }
 
+    public function quickLogin()
+    {
+        return View::fetch();
+    }
+
     /**
      * 用户密码找回
      */
