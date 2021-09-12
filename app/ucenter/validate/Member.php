@@ -2,7 +2,7 @@
 namespace app\ucenter\validate;
 
 use think\Validate;
-use think\Db;
+use think\facade\Db;
 
 class Member extends Validate
 {
@@ -68,7 +68,7 @@ class Member extends Validate
      */
     protected function checkDenyMember($value)
     {
-        $denyName=Db::name("Config")->where(['name' => 'USER_NAME_BAOLIU'])->value('value');
+        $denyName = Db::name("Config")->where(['name' => 'USER_NAME_BAOLIU'])->value('value');
         if($denyName!=''){
             $denyName=explode(',',$denyName);
             foreach($denyName as $val){

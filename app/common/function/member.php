@@ -196,7 +196,7 @@ function check_login_type($type){
     $t[2] = $t['email'] ='email';
     $t[3] = $t['mobile'] ='mobile';
 
-    $switch = config('system.LOGIN_SWITCH');
+    $switch = config('system.USER_LOGIN_SWITCH');
     if($switch){
         $switch = explode(',',$switch);
         if(in_array($t[$type],$switch)){

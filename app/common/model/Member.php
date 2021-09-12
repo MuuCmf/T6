@@ -91,28 +91,29 @@ class Member extends Model
         }
         // 获取用户数据
         $user = $this->where($map)->find();
-        // 行为限制
-        $actionLimit = new ActionLimit();
-        $return = $actionLimit->checkActionLimit('input_password','member',$user['uid'],$user['uid']);
+        if($user){
+            // 行为限制
+            $actionLimit = new ActionLimit();
+            $return = $actionLimit->checkActionLimit('input_password','member',$user['uid'],$user['uid']);
 
-        if($return && !$return['code']){
-            return $return['msg'];
-        }
-
-        if ($user['uid'] && $user['status']) {
-            /* 验证用户密码 */
-            if (user_md5($password, Config::get('auth.auth_key')) === $user['password']) {
-                return $user['uid']; //返回用户ID
-            } else {
-                $actionLog = new ActionLog();
-                $actionLog->add('input_password','member',$user['uid'],$user['uid']);
-                $this->error = '密码错误';
-                return -2; //密码错误
+            if($return && !$return['code']){
+                return $return['msg'];
             }
-        } else {
-            $this->error = '用户不存在或被禁用';
-            return -1; //用户不存在或被禁用
+
+            if ($user['uid'] && $user['status']) {
+                /* 验证用户密码 */
+                if (user_md5($password, Config::get('auth.auth_key')) === $user['password']) {
+                    return $user['uid']; //返回用户ID
+                } else {
+                    $actionLog = new ActionLog();
+                    $actionLog->add('input_password','member',$user['uid'],$user['uid']);
+                    $this->error = '密码错误';
+                    return -2; //密码错误
+                }
+            }
         }
+        $this->error = '用户不存在或被禁用';
+        return -1; //用户不存在或被禁用
     }
 
     /**

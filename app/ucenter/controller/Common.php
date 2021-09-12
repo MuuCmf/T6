@@ -104,11 +104,14 @@ class Common extends Base
              //获取参数
             $account = input('post.account', '', 'text');
             $password = input('post.password', '', 'text');
+            if(empty($account)) return $this->error('账号不能为空');
+            if(empty($password)) return $this->error('密码不能为空');
 
             // 验证账号和密码
             $commonMemberModel = new CommonMember;
             $uid = $commonMemberModel->verifyUserPassword($account, $password);
-
+            if($uid == -1) return $this->error('用户不存在或被禁用');
+            if($uid == -2) return $this->error('密码错误');
             //登录
             $res = $commonMemberModel->login($uid);
 
@@ -124,9 +127,34 @@ class Common extends Base
         }
     }
 
+    /**
+     * 快捷登陆
+     */
     public function quickLogin()
     {
+        // 允许的登录类型
+        $ph = [];
+        check_login_type('username') && $ph[] = '用户名';
+        check_login_type('email') && $ph[] = '邮箱';
+        check_login_type('mobile') && $ph[] = '手机';
+        View::assign('ph', implode('/', $ph));
+
+        // 输出页面
         return View::fetch();
+    }
+
+    /**
+     * 退出登录
+     */
+    public function logout()
+    {
+        if(is_login()){
+            $commonMemberModel = new CommonMember;
+            $commonMemberModel->logout(is_login());
+            return $this->success('退出成功','', url('index/index/index'));
+        } else {
+            return $this->error('error');
+        }
     }
 
     /**

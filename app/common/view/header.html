@@ -74,34 +74,13 @@
         <div class="collapse navbar-collapse" id="navbar-menu" aria-expanded="false">
             <ul class="nav navbar-nav navbar-left" data-in="fadeIn" data-out="fadeOut">
                 {volist name="nav" id="nav"}
-                    {neq name="nav['_']" value=""}
-                        <li class="dropdown">
-                            <a title="{$nav.title}" class="dropdown-toggle" data-toggle="dropdown" href="#">
-                                {$nav.title} 
-                               <i class="icon-caret-down"></i>
-                            </a>
-                            <ul class="dropdown-menu animated">
-                                {volist name="nav._" id="subnav"}
-                                    <li>
-                                    <a role="menuitem" tabindex="-1"
-                                       style="color:{$subnav.color}"
-                                       href="{$subnav.url|get_nav_url}"
-                                       target="{eq name='subnav.target' value='1'}_blank{else/}_self{/eq}">
-                                       <i class="icon-{$subnav.icon}"></i> {$subnav.title}
-                                    </a>
-                                    </li>
-                                {/volist}
-                            </ul>
-                        </li>
-                        {else/}
-                        <li class="{eq name='nav.url|get_nav_active' value='1'}active{else/}{/eq}">
-                            <a title="{$nav.title}" href="{$nav.url|get_nav_url}"
-                               target="{eq name='nav.target' value='1'}_blank{else/}_self{/eq}">
-                                <span>{$nav.title}</span>
-                                <span class="label label-badge rank-label" title="{$nav.band_text}">{$nav.band_text}</span>
-                            </a>
-                        </li>
-                    {/neq}
+                    <li class="{eq name='nav.url|get_nav_active' value='1'}active{else/}{/eq}">
+                        <a title="{$nav.title}" href="{$nav.url|get_nav_url}"
+                            target="{eq name='nav.target' value='1'}_blank{else/}_self{/eq}">
+                            <span>{$nav.title}</span>
+                            <span class="label label-badge rank-label" title="{$nav.band_text}">{$nav.band_text}</span>
+                        </a>
+                    </li>
                 {/volist}
             </ul>
         </div>

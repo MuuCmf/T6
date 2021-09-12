@@ -30,7 +30,6 @@ class ActionLimit extends Model
     /**
      * ban_account  封停帐号
      * @param $item
-     * @author:xjw129xjt(肖骏涛) xjt@ourstu.com
      */
     public function ban_account($item)
     {
@@ -100,10 +99,6 @@ class ActionLimit extends Model
                     }
                 }
                 unset($punish);
-                if ($val['if_message']) {
-                    model('Message')->sendMessageWithoutCheckSelf($item['uid'], lang('_SYSTEM_MESSAGE_'),$val['message_content'],'');
-                    
-                }
             }
         }
         unset($val);

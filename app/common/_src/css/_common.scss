@@ -180,206 +180,8 @@ ul {
 #main-container {
   margin-top:10px;
 }
-.adv-wrap {
-  position: relative;
-  overflow: visible;
 
-  .adv-content {
-    line-height: 18px;
-    text-align: center;
-    padding-top: 5px;
-    background: url('../images/adv_line.jpg');
-    padding-left: 10px;
 
-    .text {
-      background: white;
-      padding: 5px 10px;
-    }
-  }
-
-  .adv-tool {
-    display: none;
-    position: absolute;
-    width: 165px;
-    right: 0;
-    top: -24px;
-    background: #fcfcfc;
-    border: 1px solid #ddd;
-    box-shadow: 2px 2px #eee;
-    line-height: 12px;
-    z-index: 999999;
-
-    a {
-      line-height: 24px !important;
-      padding: 10px 5px;
-    }
-  }
-
-  .adv-size {
-    display: none;
-    left: 50%;
-    margin-left: -150px;
-    width: 300px;
-    position: absolute;
-    z-index: 999;
-    background: #fcfcfc;
-    border: 1px solid #ddd;
-    box-shadow: 2px 2px #eee;
-    line-height: 16px;
-    padding-left: 5px;
-    padding-right: 5px;
-  }
-}
-
-.tool {
-  position: fixed;
-  bottom: 60px;
-  right: 50px;
-  width: 46px;
-  z-index: 999;
-  >a {
-    display: block;
-    width: 48px;
-    height: 46px;
-    margin-bottom: 10px;
-    background-image: url(../images/tools.png);
-    border: 1px solid #dddddd;
-  }
-  a:last-child {
-    margin-bottom: 0;
-  }
-
-  .go-top {
-    background-position: 0 0;
-    display: none;
-
-    &:hover {
-      background-position: 0 -46px;
-    }
-  }
-
-  .admin-view {
-    background-position: 0 -92px;
-
-    &:hover {
-      background-position: 0 -137px;
-    }
-  }
-}
-
-/*用户注册*/
-.register_header {
-  border-radius: 8px 8px 0 0;
-}
-.register {
-  position:relative;
-  margin:20px auto;
-  -webkit-transition: all 0.4s ease;
-  transition: all 0.4s ease;
-
-  .register_body {
-    padding:20px;
-    max-width:468px;
-    margin:0 auto;
-
-    #reg_nav li a{
-      font-size:18px;
-    }
-    .tab-content {
-      background:#fff;
-      padding:20px;
-      border:1px solid #ddd;
-      border-top:0;
-
-      input{
-        border:1px solid #ddd;
-      }
-    }
-  }
-
-  .form-group {
-    position:relative;
-    margin-bottom:10px;
-  }
-
-  .new-input {
-    display: inline-block;
-  }
-
-  .existing-account {
-    text-align:center;
-    line-height: 36px;
-    margin-top:10px;
-    border-top:1px solid #f6f6f6;
-  }
-
-  .register-finish {
-    display: flex;
-    padding-left: calc(100vw - 100%);
-    min-height: calc(100vh - 140px); 
-    margin:0 auto;
-    padding:20px;
-
-    .intro {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      margin: 0 auto;
-
-      .avatar {
-        text-align:center;
-        padding:15px 0;
-
-        span{
-          display:block;
-          text-align:center;
-        }
-      }
-    }
-
-    .font{
-      font-size:14px;
-      text-align:center;
-      padding:15px 0;
-      color:#666;
-    }
-  }
-} 
-/*用户登录*/
-.login{
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  width:50%;
-  height: 50%;
-  -webkit-transform: translateX(-50%) translateY(-50%);
-  max-width:468px;
-  .login-tit {
-    text-align:center;
-    font-size:22px;
-    margin:10px auto;
-  }
-  .lg_lf_top {
-      letter-spacing:10px;
-      color:#333;
-      font-weight: 300;
-    }
-}
-@media screen and (max-width:768px){
-  .login{
-    position:relative;
-    width:100%;
-    left:0;
-    top:0;
-    -webkit-transform: translateX(0) translateY(0);
-  }
-}
-/*找回密码*/
-.mi_form_box {
-   #mi_tab li a {
-    font-size: 18px;
-  }
-}
 /*悬浮样式end*/
 .user-card {
   height: 230px;
@@ -409,18 +211,7 @@ ul {
     padding-top: 10px;
   }
 }
-/*头衔*/
-.rank-icon {
-  width: 18px;
-  height: 18px;
-  vertical-align: text-bottom;
-  margin-right: 3px;
-}
-.rank-label {
-  display: inline-block;
-  padding: 3px 7px;
-  margin-right: 3px;
-}
+
 .tb_rank {
   border: 1px solid #ccc;
   border-collapse: collapse;
@@ -436,7 +227,6 @@ ul {
   }
 }
 
-/*头衔end*/
 /*编辑器修复*/
 .edui-btn-toolbar {
   background: white;

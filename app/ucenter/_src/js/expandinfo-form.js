@@ -1,7 +1,4 @@
-/**
- * Created by Administrator on 14-6-14.
- * @author 郑钟良<zzl@ourstu.com>
- */
+
 /**
  * 用户扩展信息验证
  * @param args
