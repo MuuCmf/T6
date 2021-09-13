@@ -120,17 +120,22 @@
 
             function success(data) {
                 if (data.code) {
+                    toast.success(data.msg);
                     if (data.url == undefined && quickLogin == "quickLogin") {
                         $('[data-role="login_info"]').append(data.msg);
-                        toast.success("登陆成功");
                         setTimeout(function () {
                             window.location.reload();
                         }, 1500);
                     } else {
-                        toast.success(data.msg);
-                        setTimeout(function () {
-                            window.location.href = data.url;
-                        }, 1500);
+                        if (data.url == "refresh") {
+                            setTimeout(function () {
+                                location.href = location.href;
+                            }, 1500);
+                        } else {
+                            setTimeout(function () {
+                                location.href = data.url;
+                            }, 1500);
+                        }
                     }
                 } else {
                     toast.error(data.msg);

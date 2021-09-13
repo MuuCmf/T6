@@ -2,15 +2,11 @@
 <html>
 <head>
     {include file="../../common/view/head"/}
-    <link href="__CSS__/ucenter.min.css" type="text/css" rel="stylesheet">
 </head>
 <body>
 <div id="main-container" class="container">
     <div class="register">
-    
-        {if condition="$step eq 'start'"}
         <div class="register_body clearfix">
-       
             <div class="col-xs-12">
                 <form action="{:url('register')}" method="post">
                     <ul id="reg_nav" class="nav nav-tabs nav-justified">
@@ -32,32 +28,14 @@
                     </ul>
 
                     <div class="tab-content">
-                        {notempty name="invite_user"}
-                            <div class="alert alert-info" style="padding: 5px;margin-bottom: 10px;letter-spacing: 2px;">{:lang('_USER_')} {$invite_user['nickname']} {:lang('_REGISTER_INVITE_')}{:config('WEB_SITE')}，{:lang('_REGISTER_INFORMATION_FILL_OUT_')}~</div>
-                            <input type="hidden" name="code" value="{$code}">
-                        {else /}
-                            {if condition="$open_invite_register"}
-                                <div class="alert alert-info" style="padding: 5px;margin-bottom: 10px;letter-spacing: 2px;">    {:lang('_USER_INVITE_FIRST_')}
-                                    <strong>
-                                        <a data-type="ajax" data-url="{:url('ucenter/Member/inCode')}" data-title="{:lang('_INVITE_CODE_INPUT_')}" data-toggle="modal">
-                                            {:lang('_INVITE_CODE_INPUT_')}
-                                        </a>
-                                    </strong>，{:lang('_REGISTER_INFORMATION_FILL_OUT_')}~
-                                </div>
-                            {/if}
-                        {/notempty}
-
                         {volist name="regSwitch" id="vo"}
-
                             {switch name="vo"}
-
                                 {case value="username"}
                                     <!--用户名注册-->
                                     <div class="tab-pane {if condition='$key eq 0'}active in{/if}" id="username_reg">
                                         <div class="form-group">
                                             
-                                            <input type="text" id="username" class="form-control form_check new-input" check-type="Username" check-url="{:url('ucenter/member/checkAccount')}"
-                                                   placeholder="{:lang('_PLACEHOLDER_USERNAME_INPUT_')}"  value="" name="username">
+                                            <input type="text" id="username" class="form-control form_check new-input" check-type="Username" check-url="{:url('ucenter/member/checkAccount')}" placeholder="请输入用户名"  value="" name="username">
                                             <input type="hidden" name="reg_type" value="username">
                                             
                                             <div class="clearfix"></div>
@@ -69,60 +47,47 @@
                                 {case value="email"}
                                     <!--邮箱注册-->
                                     <div class="tab-pane {if condition='$key eq 0'}active in{/if}" id="email_reg">
-
                                         <div class="form-group">
-                                            <input type="text" id="email" class="form-control form_check new-input" check-type="UserEmail" check-url="{:url('ucenter/member/checkAccount')}" {if condition='$key neq 0'}disabled="disabled"{/if}
-                                                   placeholder="{:lang('_PLACEHOLDER_EMAIL_INPUT_')}" name="username">
-                                            <input type="hidden" name="reg_type" value="email" 
-                                            {if condition='$key neq 0'}disabled="disabled"{/if}>
+                                            <input type="text" id="email" class="form-control form_check new-input" check-type="UserEmail" check-url="{:url('ucenter/common/checkAccount')}" disabled="{if condition='$key neq 0'}disabled{else}false{/if}"
+                                                   placeholder="邮箱" name="username">
+                                            <input type="hidden" name="reg_type" value="email" disabled="{if condition='$key neq 0'}disabled{else}false{/if}">
                                             
                                             <div class="clearfix"></div>
                                         </div>
 
-                                        {php}if(modC('EMAIL_VERIFY_TYPE', 0, 'USERCONFIG') == 2){{/php}
                                         <div class="form-group row">
                                             <div class="col-xs-8">
-                                                <input type="text" class="form-control new-input pull-left" placeholder="{:lang('_VERIFY_CODE_')}" {if condition='$key neq 0'}disabled="disabled"{/if} name="reg_verify">
+                                                <input type="text" class="form-control new-input pull-left" placeholder="请输入邮箱验证码" disabled="{if condition='$key neq 0'}disabled{else}false{/if}" name="reg_verify">
                                             </div>
                                             <div class="col-xs-4">
                                                 <a class="btn btn-block btn-danger" data-role="getVerify">
-                                                    {:lang('_EMAIL_VERIFY_')}
+                                                    获取验证码
                                                 </a>
                                            </div> 
                                             <div class="clearfix"></div>
                                         </div>
-                                        {php}}{/php}
-
                                     </div>
                                     <!--邮箱注册end-->
                                 {/case}
                                 {case value="mobile"}
                                     <!--手机注册-->
                                     <div class="tab-pane {if condition='$key eq 0'}active in{/if}" id="mobile_reg">
-
                                         <div class="form-group">
-                                            
-                                            <input type="text" id="mobile" class="form-control form_check new-input" check-type="UserMobile" check-url="{:url('ucenter/member/checkAccount')}" {if condition='$key neq 0'}disabled="disabled"{/if} 
-                                                   placeholder="{:lang('_PLACEHOLDER_PHONE_')}" .
-                                            errormsg="{:lang('_ERROR_PHONE_INPUT_')}" name="username">
-
-                                            <input type="hidden" name="reg_type" value="mobile" {if condition='$key neq 0'}disabled="disabled"{/if}>
-                                            
+                                            <input type="text" id="mobile" class="form-control form_check new-input" check-type="UserMobile" check-url="{:url('ucenter/member/checkAccount')}" disabled="{if $key != 0}disabled{else}false{/if}" placeholder="请输入手机号" name="username">
+                                            <input type="hidden" name="reg_type" value="mobile" disabled="{if $key != 0}disabled{else}false{/if}">
                                             <div class="clearfix"></div>
                                         </div>
-
-                                        {php}if(modC('MOBILE_VERIFY_TYPE', 0, 'USERCONFIG') == 1){{/php}
 
                                         <div class="form-group row">
                                             <div class="col-xs-8">
-                                                <input type="text" class="form-control new-input pull-left" placeholder="{:lang('_VERIFY_CODE_')}" name="reg_verify" {if condition='$key neq 0'}disabled="disabled"{/if}>
+                                                <input type="text" class="form-control new-input pull-left" placeholder="请输入手机验证码" name="reg_verify" disabled="{if $key != 0}disabled{else}false{/if}">
                                             </div>
                                             <div class="col-xs-4">
-                                                <a class="btn btn-block btn-danger" data-role="getVerify">{:lang('_PHONE_VERIFY_')}</a>
+                                                <a class="btn btn-block btn-danger" data-role="getVerify">获取验证码</a>
                                             </div>
                                             <div class="clearfix"></div>
                                         </div>
-                                        {php}}{/php}
+                                        
                                     </div>
                                     <!--手机注册end-->
                                 {/case}
@@ -155,8 +120,7 @@
                         {if condition="check_verify_open('reg')"}
                             <div class="form-group row">
                                 <div class="col-xs-8">
-                                    <input type="text" id="verifyCode" class="form-control new-input" placeholder="验证码"
-                                           errormsg="请填写正确的验证码" nullmsg="请填写验证码" datatype="*5-5" name="verify">
+                                    <input type="text" id="verifyCode" class="form-control new-input" placeholder="验证码" nullmsg="请填写验证码" datatype="*5-5" name="verify">
                                 </div>
                                 <div class="col-xs-4 lg_lf_fm_verify">
                                     <img class="verifyimg reloadverify img-responsive" alt="点击切换"
@@ -175,31 +139,6 @@
                 </form>
             </div>
         </div>
-        {/if}
-        {if condition="$step neq 'start' and $step neq 'finish'"}
-        <div class="register_step">
-             {:widget('RegStep/view')}
-        </div>
-        {/if}
-        {if condition="$step eq 'finish'"}
-            <div class="register-finish">
-                <div class="intro">
-                    <div class="avatar">
-                    <span>
-                        <img class="img-circle" src="{$user_info.avatar64}" />
-                    </span>
-                    <span style="font-size:18px;">
-                        {$user_info.nickname}
-                    </span>
-                    </div>
-                    <div class="font">
-                        <span>感谢您注册 {:modC('WEB_SITE_NAME','MuuCmf开源管理框架','Config')} ，希望你玩的愉快！</span> 
-                    </div>
-                        <a class="btn btn-block btn-warning btn-lg" href="{:url('ucenter/Config/index')}" title="">完善个人资料</a> 
-                        <a class="btn btn-block btn-warning btn-lg" href="{:url('index/Index/index')}" title="">前往首页</a></span>
-                </div>
-            </div>
-        {/if}
     </div>
 </div>
 {include file="../../common/view/js"/}
@@ -236,7 +175,6 @@
             });
 
             $('#change_show').click(function(){
-
                 var obj = $(this);
                 if ($(obj).html().trim() == '<i class="icon icon-eye-open"></i>') {
                     $(obj).html('<i class="icon icon-eye-close"></i>');
@@ -297,7 +235,7 @@
                     this.obj.text(this.time--+'S')
                     setTimeout("DecTime.dec_time()",1000)
                 }else{
-                    this.obj.text("{:lang('_PHONE_VERIFY_')}")
+                    this.obj.text("获取验证码")
                     this.obj.attr('disabled',false)
                 }
             }

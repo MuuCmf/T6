@@ -12,9 +12,9 @@ use app\common\controller\Base;
  */
 class Common extends Base
 {
-    public $title;
-    public $keywords;
-    public $description;
+    public $title = '';
+    public $keywords = '';
+    public $description = '';
     /**
      * 构造方法
      * @access public

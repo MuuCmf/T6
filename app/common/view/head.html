@@ -1,8 +1,15 @@
 
-
+    {if !empty($title)}
     <title>{$title} - {:config('system.WEB_SITE_NAME')}</title>
+    {else /}
+    <title>{:config('system.WEB_SITE_NAME')}</title>
+    {/if}
+    {if !empty($keywords)}
     <meta name="keywords" content="{$keywords}" />
+    {/if}
+    {if !empty($description)}
     <meta name="description" content="{$description}" />
+    {/if}
     <!-- zui -->
     <link href="__STATIC__/common/lib/zui/css/zui.min.css" rel="stylesheet">
     <link href="__STATIC__/common/css/main.min.css" rel="stylesheet"/>

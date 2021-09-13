@@ -8,12 +8,12 @@ use app\common\model\Member as CommonMember;
 use app\common\model\ActionLimit;
 use thans\jwt\facade\JWTAuth;
 use app\ucenter\model\Verify;
-use app\common\controller\Base;
+use app\common\controller\Common as CommonCommon;
 
 /**
  * 用户登录及注册
  */
-class Common extends Base
+class Common extends CommonCommon
 {
     /**
      * register  注册页面
@@ -30,7 +30,7 @@ class Common extends Base
             $verify = input('post.verify', '', 'text');
 
             //注册开关设置
-            if (!config('system.REG_SWITCH')) {
+            if (!config('system.USER_REG_SWITCH')) {
                 return $this->error('注册功能临时关闭，请稍后访问！');
             }
 
@@ -42,8 +42,8 @@ class Common extends Base
             }
 
             //昵称注册开关
-            if (config('system.NICKNAME_SWITCH', 0, 'USERCONFIG') == 0) {
-                $nickname = config('system.NICKNAME_PREFIX').$account;
+            if (config('system.USER_NICKNAME_SWITCH') == 0) {
+                $nickname = config('system.USER_NICKNAME_PREFIX').$account;
             }else{
                 $nickname = input('post.nickname', '', 'text');
             }
@@ -66,7 +66,7 @@ class Common extends Base
             }
 
             $type = check_account_type($account);
-
+            dump($type);exit;
             // 验证验证码
             if (($type == 'mobile') || $type == 'email') {
                 $verifyModel = new Verify();
@@ -91,8 +91,17 @@ class Common extends Base
                  return $this->error($commonMemberModel->getError());
             }
         }else{
-            // dump(check_auth('admin/Index/index'));
 
+            // 注册类型开关
+            $regSwitch = config('system.USER_REG_SWITCH');
+            $regSwitch = explode(',',$regSwitch);
+            View::assign('regSwitch', $regSwitch);
+            // 昵称开关
+            $nicknameSwitch = config('system.USER_NICKNAME_SWITCH');
+            View::assign('nicknameSwitch', $nicknameSwitch);
+
+            // dump(check_auth('admin/Index/index'));
+            $this->setTitle('注册');
             return View::fetch();
         }
     }
