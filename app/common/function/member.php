@@ -245,15 +245,6 @@ function check_verify($code, $id = 1)
     return $captcha->check($code, $id);
 }
 
-/**
- * 生成图片验证码
- * @return [type] [description]
- */
-function get_verify()
-{
-    captcha_src();
-}
-
 /**随机生成一个用户名
  * @param $prefix 前缀
  * @return string

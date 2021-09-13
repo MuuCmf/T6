@@ -27,7 +27,8 @@ class Common extends CommonCommon
             $account = input('post.account', '', 'text');
             $password = input('post.password', '', 'text');
             $confirm_password = input('post.confirm_password', '', 'text');
-            $verify = input('post.verify', '', 'text');
+            $verify = input('post.reg_verify', '', 'text'); // 邮件或手机验证码
+            $captcha = input('post.verify', '', 'text'); // 图形验证码
 
             //注册开关设置
             if (!config('system.USER_REG_SWITCH')) {
@@ -66,16 +67,23 @@ class Common extends CommonCommon
             }
 
             $type = check_account_type($account);
-            dump($type);exit;
+            
             // 验证验证码
             if (($type == 'mobile') || $type == 'email') {
                 $verifyModel = new Verify();
-                if (!$verifyModel->checkVerify($account, $type, $verify)) 
-                {
+                if (!$verifyModel->checkVerify($account, $type, $verify)) {
                     return $this->error('验证码错误');
                 }
             }
 
+            // 检测图形验证码
+            if (check_verify_open('reg')) {
+                if (!captcha_check($captcha)) {
+                    return $this->error('图形验证码错误');
+                }
+            }
+
+            dump($type);exit;
             /* 注册用户 */
             $commonMemberModel = new CommonMember;
             $uid = $commonMemberModel->register($username, $nickname, $password, $email, $mobile, $type);

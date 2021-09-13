@@ -47,24 +47,20 @@
                                 {case value="email"}
                                     <!--邮箱注册-->
                                     <div class="tab-pane {if condition='$key eq 0'}active in{/if}" id="email_reg">
-                                        <div class="form-group">
-                                            <input type="text" id="email" class="form-control form_check new-input" check-type="UserEmail" check-url="{:url('ucenter/common/checkAccount')}" disabled="{if condition='$key neq 0'}disabled{else}false{/if}"
-                                                   placeholder="邮箱" name="username">
+                                        <div class="form-group clearfix">
+                                            <input type="text" id="email" class="form-control form_check new-input" check-type="UserEmail" check-url="{:url('ucenter/common/checkAccount')}" disabled="{if condition='$key neq 0'}disabled{else}false{/if}" placeholder="请输入邮箱地址" name="username">
                                             <input type="hidden" name="reg_type" value="email" disabled="{if condition='$key neq 0'}disabled{else}false{/if}">
-                                            
-                                            <div class="clearfix"></div>
                                         </div>
 
-                                        <div class="form-group row">
+                                        <div class="form-group row clearfix">
                                             <div class="col-xs-8">
-                                                <input type="text" class="form-control new-input pull-left" placeholder="请输入邮箱验证码" disabled="{if condition='$key neq 0'}disabled{else}false{/if}" name="reg_verify">
+                                                <input type="text" class="form-control new-input pull-left" placeholder="请输入邮箱验证码" disabled="{if condition='$key neq 0'}disabled{else}false{/if}" name="verify">
                                             </div>
                                             <div class="col-xs-4">
                                                 <a class="btn btn-block btn-danger" data-role="getVerify">
                                                     获取验证码
                                                 </a>
                                            </div> 
-                                            <div class="clearfix"></div>
                                         </div>
                                     </div>
                                     <!--邮箱注册end-->
@@ -80,7 +76,7 @@
 
                                         <div class="form-group row">
                                             <div class="col-xs-8">
-                                                <input type="text" class="form-control new-input pull-left" placeholder="请输入手机验证码" name="reg_verify" disabled="{if $key != 0}disabled{else}false{/if}">
+                                                <input type="text" class="form-control new-input pull-left" placeholder="请输入手机验证码" name="verify" disabled="{if $key != 0}disabled{else}false{/if}">
                                             </div>
                                             <div class="col-xs-4">
                                                 <a class="btn btn-block btn-danger" data-role="getVerify">获取验证码</a>
@@ -120,13 +116,12 @@
                         {if condition="check_verify_open('reg')"}
                             <div class="form-group row">
                                 <div class="col-xs-8">
-                                    <input type="text" id="verifyCode" class="form-control new-input" placeholder="验证码" nullmsg="请填写验证码" datatype="*5-5" name="verify">
+                                    <input type="text" id="verifyCode" class="form-control new-input" placeholder="验证码" nullmsg="请填写验证码" datatype="*5-5" name="captcha">
                                 </div>
                                 <div class="col-xs-4 lg_lf_fm_verify">
-                                    <img class="verifyimg reloadverify img-responsive" alt="点击切换"
-                                         src="{:captcha_src(1)}"
-                                         style="cursor:pointer; height:32px">
+                                    <img class="verifyimg reloadverify img-responsive" alt="点击切换" src="{:captcha_src()}" style="cursor:pointer; height:32px">
                                 </div>
+                                
                                 <div class="col-xs-12 Validform_checktip text-warning lg_lf_fm_tip"></div>
                                 <div class="clearfix"></div>
                             </div>

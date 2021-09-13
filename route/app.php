@@ -15,3 +15,4 @@ Route::get('think', function () {
 });
 
 Route::get('hello/:name', 'index/hello');
+Route::get('captcha/[:id]', "\\think\\captcha\\CaptchaController@index");
