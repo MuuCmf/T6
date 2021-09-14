@@ -10,9 +10,10 @@
             注册{:config('system.WEB_SITE_NAME')}账号
         </div>
         <div class="register-body clearfix">
-            
+            {if !empty($regSwitch)}
+
             <div class="register-type-tab">
-                <ul id="reg_nav" class="nav nav-secondary nav-justified">
+                <ul id="regNav" class="nav nav-secondary nav-justified">
                     {if check_reg_type('username')}
                     <li class="{if $regSwitch[0] == 'username'}active{/if}">
                         <a href="#username_reg" data-toggle="tab">用户名</a>
@@ -37,30 +38,28 @@
                             {switch name="vo"}
                                 {case value="username"}
                                 <!--用户名注册-->
-                                <div class="tab-pane {if condition='$key eq 0'}active in{/if}" id="username_reg">
+                                <div class="tab-pane {if $key == 0}active in{/if}" id="username_reg">
                                     <div class="form-group clearfix">
                                         <input type="text" id="username" class="form-control form_check new-input" check-type="Username" check-url="{:url('ucenter/common/checkAccount')}" placeholder="请输入用户名"  value="" name="account">
-                                        
                                     </div>
                                 </div>
                                 <!--用户名注册end-->
                                 {/case}
                                 {case value="email"}
                                 <!--邮箱注册-->
-                                <div class="tab-pane {if condition='$key eq 0'}active in{/if}" id="email_reg">
+                                <div class="tab-pane {if $key == 0}active in{/if}" id="email_reg">
                                     <div class="form-group clearfix">
-                                        <input type="text" id="email" class="form-control form_check new-input" check-type="UserEmail" check-url="{:url('ucenter/common/checkAccount')}" disabled="{if $key != 0}disabled{else}false{/if}" placeholder="请输入邮箱地址" name="account">
-                                        
+                                        <input type="text" id="email" class="form-control form_check new-input" check-type="UserEmail" check-url="{:url('ucenter/common/checkAccount')}" placeholder="请输入邮箱地址" name="account" {if $key != 0}disabled{/if}>
                                     </div>
 
                                     <div class="form-group row clearfix">
                                         <div class="col-xs-8">
-                                            <input type="text" class="form-control new-input pull-left" placeholder="请输入邮箱验证码" disabled="{if $key != 0}disabled{else}false{/if}" name="verify">
+                                            <input type="text" class="form-control new-input pull-left" placeholder="请输入邮箱验证码" name="verify" {if $key != 0}disabled{/if}>
                                         </div>
                                         <div class="col-xs-4">
-                                            <a class="btn btn-block get-verify" data-role="getVerify">
+                                            <button class="btn btn-block get-verify" data-role="getVerify">
                                                 获取验证码
-                                            </a>
+                                            </button>
                                         </div> 
                                     </div>
                                 </div>
@@ -68,17 +67,19 @@
                                 {/case}
                                 {case value="mobile"}
                                 <!--手机注册-->
-                                <div class="tab-pane {if condition='$key eq 0'}active in{/if}" id="mobile_reg">
+                                <div class="tab-pane {if $key == 0}active in{/if}" id="mobile_reg">
                                     <div class="form-group clearfix">
-                                        <input type="text" id="mobile" class="form-control form_check new-input" check-type="UserMobile" check-url="{:url('ucenter/common/checkAccount')}" disabled="{if $key != 0}disabled{else}false{/if}" placeholder="请输入手机号" name="account">
+                                        <input type="text" id="mobile" class="form-control form_check new-input" check-type="UserMobile" check-url="{:url('ucenter/common/checkAccount')}" placeholder="请输入手机号" name="account" {if $key != 0}disabled{/if}>
                                     </div>
 
                                     <div class="form-group row clearfix">
                                         <div class="col-xs-8">
-                                            <input type="text" class="form-control new-input pull-left" placeholder="请输入手机验证码" name="verify" disabled="{if $key != 0}disabled{else}false{/if}">
+                                            <input type="text" class="form-control new-input pull-left" placeholder="请输入手机验证码" name="verify" {if $key != 0}disabled{/if}>
                                         </div>
                                         <div class="col-xs-4">
-                                            <a class="btn btn-block get-verify" data-role="getVerify">获取验证码</a>
+                                            <button class="btn btn-block get-verify" data-role="getVerify">
+                                                获取验证码
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
@@ -129,11 +130,17 @@
                         </div>
                         <button type="button" data-type="submit" class="btn btn-submit btn-block btn-lg">同意协议并提交</button>
                         <div class="existing-account">
-                            已有账户， <a href="{:url('ucenter/common/login')}" title="" style="color: #607D8B;">点此登录</a>
+                            已有账户， <a href="{:url('ucenter/common/login')}" title="">点此登录</a>
                         </div>
                     </div>
                 </form>
             </div>
+            {else}
+            <div class="register-close-section">
+                用户注册关闭，请稍后访问！
+            </div>
+
+            {/if}
         </div>
     </div>
 </div>
@@ -211,6 +218,13 @@
                 }
                 toast.hideLoading();
             })
+        })
+    })
+
+    $(function(){
+        $('#regNav li a').click(function(){
+            $('.tab-pane').find('input').attr('disabled',true);
+            $('.tab-pane').eq($("#regNav li a").index(this)).find('input').attr('disabled',false);
         })
     })
 

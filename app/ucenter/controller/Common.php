@@ -129,7 +129,9 @@ class Common extends CommonCommon
 
             // 注册类型开关
             $regSwitch = config('system.USER_REG_SWITCH');
-            $regSwitch = explode(',',$regSwitch);
+            if(!empty($regSwitch)){
+                $regSwitch = explode(',',$regSwitch);
+            }
             View::assign('regSwitch', $regSwitch);
             // 昵称开关
             $nicknameSwitch = config('system.USER_NICKNAME_SWITCH');

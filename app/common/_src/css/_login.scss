@@ -38,7 +38,6 @@
             border-bottom-color: #03b8cf;
           }
         }
-
       }
       .register-form-section {
         width: 500px;
@@ -110,6 +109,18 @@
         .existing-account {
           margin-top: 30px;
           text-align: center;
+        }
+      }
+
+      .register-close-section {
+        text-align: center;
+        color: #666;
+        font-size: 16px;
+      }
+
+      .existing-account {
+        a {
+          color: #03b8cf;
         }
       }
     }
