@@ -1,29 +1,85 @@
 /*用户注册*/
-.register_header {
-    border-radius: 8px 8px 0 0;
-  }
+
   .register {
     position:relative;
     margin:20px auto;
     -webkit-transition: all 0.4s ease;
     transition: all 0.4s ease;
-  
-    .register_body {
+    .register-header {
+      border-radius: 8px 8px 0 0;
+      text-align: center;
+      font-size: 32px;
+      font-weight: 500;
+      margin-bottom: 30px;
+    }
+    .register-body {
       padding:20px;
-      max-width:468px;
+      max-width:868px;
       margin:0 auto;
+      background: #fff;
+      .register-type-tab {
+        width: 500px;
+        margin: 10px auto;
+
+        li {
+          a {
+            color: #333;
+            border-bottom-color: #f2f2f2;
+          }
+        }
+        li.active {
+          a {
+            color: #03b8cf;
+            border-bottom-color: #03b8cf;
+          }
+        }
+
+      }
+      .register-form-section {
+        width: 500px;
+        margin: 10px auto;
+      }
   
       #reg_nav li a{
         font-size:18px;
       }
       .tab-content {
         background:#fff;
-        padding:20px;
-        border:1px solid #ddd;
+        padding:20px 0;
+        border: 0;
         border-top:0;
   
-        input{
-          border:1px solid #ddd;
+        .form-control {
+          box-shadow: none;
+          height: 45px;
+          width: 100%;
+          display: inline-block;
+          border: 1px solid #e5e5e5;
+          color: #333;
+          vertical-align: middle;
+          padding: 13px 10px 12px;
+          box-sizing: border-box;
+          -webkit-appearance: none;
+          -moz-appearance: none;
+          appearance: none;
+          border-radius: 0;
+        }
+
+        .get-verify {
+          height: 45px;
+          padding: 13px 10px 12px;
+          border: 1px solid #03b8cf;
+          box-sizing: border-box;
+          box-shadow: none;
+          color: #03b8cf;
+          background-color: #fff;
+          border-radius: 0;
+        }
+
+        .btn-submit {
+          background-color: #03b8cf;
+          color: #fff;
+          border: 0;
         }
       }
     }
@@ -31,49 +87,6 @@
     .form-group {
       position:relative;
       margin-bottom:10px;
-    }
-  
-    .new-input {
-      display: inline-block;
-    }
-  
-    .existing-account {
-      text-align:center;
-      line-height: 36px;
-      margin-top:10px;
-      border-top:1px solid #f6f6f6;
-    }
-  
-    .register-finish {
-      display: flex;
-      padding-left: calc(100vw - 100%);
-      min-height: calc(100vh - 140px); 
-      margin:0 auto;
-      padding:20px;
-  
-      .intro {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        margin: 0 auto;
-  
-        .avatar {
-          text-align:center;
-          padding:15px 0;
-  
-          span{
-            display:block;
-            text-align:center;
-          }
-        }
-      }
-  
-      .font{
-        font-size:14px;
-        text-align:center;
-        padding:15px 0;
-        color:#666;
-      }
     }
   } 
   

@@ -216,7 +216,7 @@ class Common extends CommonCommon
             $data['id'] = $uid;
             $data['password'] = $password;
 
-            $ret = Db::name('UcenterMember')->update($data,['id'=>$uid]);
+            $ret = Db::name('Member')->update($data,['id'=>$uid]);
             if($ret){
                 //返回成功信息前处理
                 // clean_query_user_cache($uid, 'password');//删除缓存
@@ -239,33 +239,42 @@ class Common extends CommonCommon
         if (empty($aAccount)) {
             $this->error('账号不能为空');
         }
-        check_username($aAccount, $email, $mobile, $aUnType);
-        $mUcenter = new CommonMember;
+        check_username($aAccount, $email, $mobile, $aType);
+        
+        $commonModel = new CommonMember;
         switch ($aType) {
             case 'username':
                 $length = mb_strlen($aAccount, 'utf-8'); // 当前数据长度
-                if ($length < config('system.USERNAME_MIN_LENGTH') || $length > config('system.USERNAME_MAX_LENGTH')) {
-                    return $this->error('用户名长度不在'.config('system.USERNAME_MIN_LENGTH').'-'.config('system.USERNAME_MAX_LENGTH'). '之间');
+                if ($length < config('system.USER_USERNAME_MIN_LENGTH') || $length > config('system.USER_USERNAME_MAX_LENGTH')) {
+                    return $this->error('用户名长度不在'.config('system.USER_USERNAME_MIN_LENGTH').'-'.config('system.USER_USERNAME_MAX_LENGTH'). '之间');
                 }
-                $id = $mUcenter->where(['username' => $aAccount])->value('id');
+                $id = $commonModel->where(['username' => $aAccount])->value('uid');
                 if ($id) {
                     return $this->error('用户名已存在');
                 }
-                preg_match("/^[a-zA-Z0-9_]{".config('system.USERNAME_MIN_LENGTH').",".config('system.USERNAME_MAX_LENGTH')."}$/", $aAccount, $result);
+                preg_match("/^[a-zA-Z0-9_]{".config('system.USER_USERNAME_MIN_LENGTH').",".config('system.USER-USERNAME_MAX_LENGTH')."}$/", $aAccount, $result);
                 if (!$result) {
                     return $this->error('用户名仅允许字母、数字和下划线');
                 }
                 break;
             case 'email':
                 $length = mb_strlen($email, 'utf-8'); // 当前数据长度
-                $id = $mUcenter->where(array('email' => $email))->value('id');
-                if ($id) {
+                preg_match("/[a-z0-9_\-\.]+@([a-z0-9_\-]+?\.)+[a-z]{2,3}/i", $email, $match_email);
+                if(!$match_email){
+                    return $this->error('邮箱格式错误');
+                }
+                $res = $commonModel->where('email', '=', $email)->value('uid');
+                if ($res) {
                     return $this->error('邮箱已存在');
                 }
                 break;
             case 'mobile':
-                $id = $mUcenter->where(['mobile' => $mobile])->value('id');
-                if ($id) {
+                preg_match("/^(1[0-9])[0-9]{9}$/", $mobile, $match_mobile);
+                if(!$match_mobile){
+                    return $this->error('手机格式错误');
+                }
+                $res = $commonModel->where('mobile', '=', $mobile)->value('uid');
+                if ($res) {
                     return $this->error('手机号已存在');
                 }
                 break;
@@ -285,8 +294,8 @@ class Common extends CommonCommon
         }
 
         $length = mb_strlen($aNickname, 'utf-8'); // 当前数据长度
-        if ($length < modC('NICKNAME_MIN_LENGTH',2,'USERCONFIG') || $length > modC('NICKNAME_MAX_LENGTH',32,'USERCONFIG')) {
-            $this->error(lang('_ERROR_NICKNAME_LENGTH_11_').modC('NICKNAME_MIN_LENGTH',2,'USERCONFIG').'-'.modC('NICKNAME_MAX_LENGTH',32,'USERCONFIG').lang('_ERROR_USERNAME_LENGTH_2_'));
+        if ($length < config('system.USER_NICKNAME_MIN_LENGTH') || $length > config('system.USER_NICKNAME_MAX_LENGTH')) {
+            $this->error('昵称长度在' .config('system.USER_NICKNAME_MIN_LENGTH').'-'.config('system.USER_NICKNAME_MAX_LENGTH'). '之间');
         }
 
         $memberModel = model('member');
@@ -295,11 +304,12 @@ class Common extends CommonCommon
             $this->error(lang('_ERROR_NICKNAME_EXIST_'));
         }
         preg_match('/^(?!_|\s\')[A-Za-z0-9_\x80-\xff\s\']+$/', $aNickname, $result);
+
         if (!$result) {
             $this->error(lang('_ERROR_NICKNAME_ONLY_PERMISSION_'));
         }
 
-        $this->success(lang('_SUCCESS_VERIFY_'));
+        $this->success('验证成功');
     }
 
 }

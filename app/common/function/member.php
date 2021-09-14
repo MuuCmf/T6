@@ -121,27 +121,27 @@ function check_account_type($account = '')
  * @param int $type
  * @return bool
  */
-function check_username(&$username, &$email, &$mobile, &$type = 0)
+function check_username(&$username, &$email, &$mobile, &$type = 'username')
 {
 
     if ($type) {
         switch ($type) {
-            case 2:
+            case 'email':
                 $email = $username;
                 $username = '';
                 $mobile = '';
-                $type = 2;
+                $type = 'email';
                 break;
-            case 3:
+            case 'mobile':
                 $mobile = $username;
                 $username = '';
                 $email = '';
-                $type = 3;
+                $type = 'mobile';
                 break;
             default :
                 $mobile = '';
                 $email = '';
-                $type = 1;
+                $type = 'username';
                 break;
         }
     } else {
@@ -151,16 +151,16 @@ function check_username(&$username, &$email, &$mobile, &$type = 0)
             $email = $username;
             $username = '';
             $mobile = '';
-            $type = 2;
+            $type = 'email';
         } elseif ($check_mobile) {
             $mobile = $username;
             $username = '';
             $email = '';
-            $type = 3;
+            $type = 'mobile';
         } else {
             $mobile = '';
             $email = '';
-            $type = 1;
+            $type = 'username';
         }
     }
     return true;
