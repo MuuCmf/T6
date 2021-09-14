@@ -2,14 +2,12 @@
 namespace app\ucenter\controller;
 
 use think\App;
-use think\facade\Request;
 use think\facade\Session;
 use think\facade\Db;
 use think\facade\Cache;
-use think\Response;
-use app\common\controller\Base;
+use app\common\controller\Common;
 
-class Verify extends Base
+class Verify extends Common
 {
     /**
      * sendVerify 发送验证码
