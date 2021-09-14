@@ -5,6 +5,8 @@ use think\App;
 use think\facade\Db;
 use think\facade\View;
 use app\common\model\Member as CommonMember;
+use app\ucenter\validate\Member;
+use think\exception\ValidateException;
 use app\common\model\ActionLimit;
 use thans\jwt\facade\JWTAuth;
 use app\ucenter\model\Verify;
@@ -24,27 +26,39 @@ class Common extends CommonCommon
         if (request()->isPost()) {
             
             //获取参数
-            $account = input('post.account', '', 'text');
-            $password = input('post.password', '', 'text');
-            $confirm_password = input('post.confirm_password', '', 'text');
+            $account = input('post.account', '', 'text'); // 账号
+            $password = input('post.password', '', 'text'); // 密码
+            $confirm_password = input('post.confirm_password', '', 'text'); // 确认密码
             $verify = input('post.reg_verify', '', 'text'); // 邮件或手机验证码
-            $captcha = input('post.verify', '', 'text'); // 图形验证码
-
+            $captcha = input('post.captcha', '', 'text'); // 图形验证码
+            $agreement = input('post.agreement', 0, 'intval'); // 用户服务协议勾选状态
+            $forward = input('forward', '/index/index/index', 'text'); // 来源页面
+            
             //注册开关设置
             if (!config('system.USER_REG_SWITCH')) {
                 return $this->error('注册功能临时关闭，请稍后访问！');
             }
 
-            $ActionLimit = new ActionLimit();
-            $return = $ActionLimit->checkActionLimit('reg', 'member', 1, 1, true);
-           
-            if ($return && !$return['code']) {
-                return $this->error($return['msg'], $return['url']);
+            // 账号为空验证
+            if(empty($account)){
+                return $this->error('账号不能为空');
             }
+
+            // 验证是否勾选了协议
+            if(empty($agreement)){
+                return $this->error('请勾选用户服务协议');
+            }
+
+            // 行为限制验证
+            // $ActionLimit = new ActionLimit();
+            // $return = $ActionLimit->checkActionLimit('reg', 'member', 1, 1, true);
+            // if ($return && !$return['code']) {
+            //     return $this->error($return['msg'], $return['url']);
+            // }
 
             //昵称注册开关
             if (config('system.USER_NICKNAME_SWITCH') == 0) {
-                $nickname = config('system.USER_NICKNAME_PREFIX').$account;
+                $nickname = rand_nickname(config('system.USER_NICKNAME_PREFIX'));
             }else{
                 $nickname = input('post.nickname', '', 'text');
             }
@@ -65,9 +79,24 @@ class Common extends CommonCommon
                 $mobile = '';
                 $email = '';
             }
-
+            // 自动获取注册类型
             $type = check_account_type($account);
-            
+
+            // 验证
+            try {
+                validate(Member::class)->check([
+                    'username'  => $username,
+                    'email' => $email,
+                    'mobile' => $mobile,
+                    'password' => $password,
+                    'confirm_password' => $confirm_password,
+                ]);
+            } catch (ValidateException $e) {
+                // 验证失败 输出错误信息
+                // dump($e->getError());exit;
+                return $this->error($e->getError());
+            }
+
             // 验证验证码
             if (($type == 'mobile') || $type == 'email') {
                 $verifyModel = new Verify();
@@ -75,7 +104,6 @@ class Common extends CommonCommon
                     return $this->error('验证码错误');
                 }
             }
-
             // 检测图形验证码
             if (check_verify_open('reg')) {
                 if (!captcha_check($captcha)) {
@@ -83,8 +111,7 @@ class Common extends CommonCommon
                 }
             }
 
-            dump($type);exit;
-            /* 注册用户 */
+            /* 注册用户并写入数据 */
             $commonMemberModel = new CommonMember;
             $uid = $commonMemberModel->register($username, $nickname, $password, $email, $mobile, $type);
 
@@ -93,7 +120,7 @@ class Common extends CommonCommon
                 // 登录账号
                 $commonMemberModel->login($uid);
                 // 返回成功
-                return $this->success('注册成功',$token);
+                return $this->success('恭喜您！注册成功。',$token, $forward);
             } else {
                 //注册失败，显示错误信息
                  return $this->error($commonMemberModel->getError());

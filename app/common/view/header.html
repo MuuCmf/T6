@@ -65,7 +65,7 @@
                     {/if}
                 </li>
                 <li class="">
-                    <a data-role="do_register" href="{:url('ucenter/Common/register')}">注册</a>
+                    <a data-role="do_register" href="{:url('ucenter/Common/register',['forward'=> $_SERVER['REQUEST_URI']])}">注册</a>
                 </li>
                 {/if}
             </ul>

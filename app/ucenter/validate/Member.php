@@ -23,8 +23,9 @@ class Member extends Validate
         'mobile.unique'             => '手机号已存在',
         'mobile.regex'              => '手机格式错误',
         'password.require'          => '密码不能为空',
+        'password.length'           => '密码长度应在6 - 32位之间',
         'confirm_password.require'  => '确认密码不能为空',
-        'confirm_password.confirm'  => '密码不匹配',  
+        'confirm_password.confirm'  => '两次输入的密码不匹配',  
     ];
 
     // 自定义验证规则
@@ -36,11 +37,12 @@ class Member extends Validate
     protected function checkUsernameLength($value)
     {
         $length = mb_strlen($value, 'utf-8'); // 当前数据长度
-        if ($length < modC('USERNAME_MIN_LENGTH',2,'USERCONFIG') || $length > modC('USERNAME_MAX_LENGTH',32,'USERCONFIG')) {
-            return -1;
+        if ($length < config('system.USER_USERNAME_MIN_LENGTH') || $length > config('system.USER_USERNAME_MAX_LENGTH')) {
+            return '用户名长度应该在'. config('system.USER_USERNAME_MIN_LENGTH') . '~' . config('system.USER_USERNAME_MAX_LENGTH') . '之间';
         }
         return true;
     }
+
     /**
      * 检查用户名格式
      * @param  [type] $value [description]
@@ -48,7 +50,6 @@ class Member extends Validate
      */
     protected function checkUsername($value)
     {
-
         //如果用户名中有空格，不允许注册
         if (strpos($value, ' ') !== false) {
             return false;
@@ -70,15 +71,16 @@ class Member extends Validate
     {
         $denyName = Db::name("Config")->where(['name' => 'USER_NAME_BAOLIU'])->value('value');
         if($denyName!=''){
-            $denyName=explode(',',$denyName);
+            $denyName = explode(',',$denyName);
             foreach($denyName as $val){
                 if(!is_bool(strpos($value,$val))){
-                    return -2;
+                    return '用户名已被系统禁止注册';
                 }
             }
         }
         return true;
     }
+
     /**
      * 检测邮箱是不是被禁止注册
      * @param  string $email 邮箱

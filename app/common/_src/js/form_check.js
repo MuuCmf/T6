@@ -44,22 +44,13 @@
         $('.form_check').blur(function () {
             obj = $(this);
             var type = obj.attr('check-type');
-            //验证内容的长度是否正确
-            var checkLength = checkInputLength();
-            if(checkLength.status==0){
-                showInfo(checkLength.info,checkLength.status);
-                return;
-            }
             //正则匹配
             var check = eval('check' + type + '()');
-            //alert(obj.attr('check-url'));
-            if(!obj.attr('check-url')){
-                showInfo(check['info'],check['status']);
-            }
         })
         $('.form_check').change(function () {
             $(this).blur();
         })
+        
         /**
          * 提交时检测数据
          */

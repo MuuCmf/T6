@@ -25,11 +25,16 @@
           a {
             color: #333;
             border-bottom-color: #f2f2f2;
+            font-size: 18px;
+            &:hover {
+              background-color: #fff;
+            }
           }
         }
         li.active {
           a {
             color: #03b8cf;
+            background-color: #fff;
             border-bottom-color: #03b8cf;
           }
         }
@@ -38,55 +43,75 @@
       .register-form-section {
         width: 500px;
         margin: 10px auto;
-      }
-  
-      #reg_nav li a{
-        font-size:18px;
-      }
-      .tab-content {
-        background:#fff;
-        padding:20px 0;
-        border: 0;
-        border-top:0;
-  
-        .form-control {
-          box-shadow: none;
-          height: 45px;
-          width: 100%;
-          display: inline-block;
-          border: 1px solid #e5e5e5;
-          color: #333;
-          vertical-align: middle;
-          padding: 13px 10px 12px;
-          box-sizing: border-box;
-          -webkit-appearance: none;
-          -moz-appearance: none;
-          appearance: none;
-          border-radius: 0;
+        .form-group {
+          position:relative;
+          margin-bottom:10px;
         }
-
-        .get-verify {
-          height: 45px;
-          padding: 13px 10px 12px;
-          border: 1px solid #03b8cf;
-          box-sizing: border-box;
-          box-shadow: none;
-          color: #03b8cf;
-          background-color: #fff;
-          border-radius: 0;
-        }
-
-        .btn-submit {
-          background-color: #03b8cf;
-          color: #fff;
+        .tab-content {
+          background:#fff;
+          padding:20px 0;
           border: 0;
+          border-top:0;
+    
+          .form-control {
+            box-shadow: none;
+            height: 45px;
+            width: 100%;
+            display: inline-block;
+            border: 1px solid #e5e5e5;
+            color: #333;
+            vertical-align: middle;
+            padding: 13px 10px 12px;
+            box-sizing: border-box;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            border-radius: 0;
+          }
+
+          .password-block {
+            .input-group-addon {
+              border: 1px solid #e5e5e5;
+              a {
+                color: #666;
+              }
+            }
+          }
+  
+          .get-verify {
+            height: 45px;
+            padding: 13px 10px;
+            border: 1px solid #03b8cf;
+            box-sizing: border-box;
+            box-shadow: none;
+            color: #03b8cf;
+            background-color: #fff;
+            border-radius: 0;
+            line-height: 17px;
+          }
+
+          .register-agreement {
+            color: #666;
+            a {
+              color: #03b8cf;
+              &:hover {
+                text-decoration: underline;
+              }
+            }
+          }
+  
+          .btn-submit {
+            background-color: #03b8cf;
+            color: #fff;
+            border: 0;
+          }
+        }
+      
+        .existing-account {
+          margin-top: 30px;
+          text-align: center;
         }
       }
-    }
-  
-    .form-group {
-      position:relative;
-      margin-bottom:10px;
     }
   } 
   

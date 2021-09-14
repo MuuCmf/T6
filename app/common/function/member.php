@@ -249,10 +249,15 @@ function check_verify($code, $id = 1)
  * @param $prefix 前缀
  * @return string
  */
-function rand_username($prefix = 'muu')
+function rand_username($prefix)
 {
-    $username = $prefix.'_'.create_rand(10);
-    if (Db::name('member')->where(['username' => $username])->select()) {
+    if(empty($prefix)){
+        $username = create_rand(10);
+    }else{
+        $username = $prefix.'_'.create_rand(10);
+    }
+    
+    if (Db::name('member')->where(['username' => $username])->find()) {
         rand_username($prefix);
     } else {
         return $username;
@@ -264,10 +269,15 @@ function rand_username($prefix = 'muu')
  * @param      string  $prefix  The prefix
  * @return     <type>  ( description_of_the_return_value )
  */
-function rand_nickname($prefix = 'muu')
-{
-    $nickname = $prefix.'_'.create_rand(8);
-    if (Db::name('member')->where(['nickname' => $nickname])->select()) {
+function rand_nickname($prefix)
+{   
+    if(empty($prefix)){
+        $nickname = create_rand(8);
+    }else{
+        $nickname = $prefix.'_'.create_rand(8);
+    }
+    
+    if (Db::name('member')->where(['nickname' => $nickname])->find()) {
         rand_nickname($prefix);
     } else {
         return $nickname;
