@@ -10,10 +10,13 @@ class Verify extends Model
     // 关闭自动写入update_time字段
     protected $updateTime = false;
 
-    public function addVerify($account,$type,$uid=0)
+    /**
+     * 写入验证码随机数
+     */
+    public function addVerify($account, $type, $uid = 0)
     {
         $uid = $uid?$uid:is_login();
-        if ($type == 'mobile' || (modC('EMAIL_VERIFY_TYPE', 0, 'USERCONFIG') == 2 && $type == 'email')) {
+        if ($type == 'mobile' || $type == 'email') {
             $verify = create_rand(6, 'num');
         } else {
             $verify = create_rand(32);
@@ -32,6 +35,7 @@ class Verify extends Model
         return $verify;
     }
 
+    
     public function getVerify($id){
         $verify = $this->where(['id'=>$id])->value('verify');
         return $verify;
@@ -47,13 +51,13 @@ class Verify extends Model
      *
      * @return     boolean  ( description_of_the_return_value )
      */
-    public function checkVerify($account,$type,$verify,$uid = 0){
+    public function checkVerify($account, $type, $verify){
         $data = $this->where(['account'=>$account,'type'=>$type,'verify'=>$verify])->find();
         if(!$data){
             return false;
         }
-        $this->where(['account'=>$account,'type'=>$type])->delete();
-        $this->where('create_time','<=',get_some_day(1))->delete();
+        $this->where(['account'=>$account, 'type'=>$type])->delete();
+        $this->where('create_time', '<=', get_some_day(1))->delete();
 
         return true;
     }

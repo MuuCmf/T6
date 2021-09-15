@@ -35,25 +35,48 @@ class Extend extends Admin
             
 
         }else{
+
+            $list = Db::name("ExtendConfig")->where(['status' => 1])->field('id,name,title,extra,value,group,remark,type')->order('sort asc')->select()->toArray();
+            $list = $this->extendConfigModel->lists();
+
             $builder = new AdminConfigBuilder();
-            $data = [];
             $builder->title('短信配置')->suggest('基于第三方短信发送各项参数配置');
     
-            $opt = ['local' => '阿里云'];
+            // 基础配置
+            $opt = ['aliyun' => '阿里云', 'tencent' => '腾讯云'];
+            $builder->keySelect('SMS_SEND_DRIVER', '选择平台', '请选择短信发送第三方平台' , $opt);
+            $builder->keyInteger('SMS_RESEND', '验证码有效期', '单位：秒');
+            $builder->group('基础配置', ['SMS_SEND_DRIVER', 'SMS_RESEND']);
             
-            $builder->keySelect('PICTURE_UPLOAD_DRIVER', '图片', lang('_PICTURE_UPLOAD_DRIVER_'), $opt);
-            $builder->keySelect('DOWNLOAD_UPLOAD_DRIVER', '文件', lang('_ATTACHMENT_UPLOAD_DRIVER_'), $opt);
-            $builder->group('存储', ['PICTURE_UPLOAD_DRIVER', 'DOWNLOAD_UPLOAD_DRIVER']);
-            
-            $opt = array('none' => '无');
+            // 阿里云短信参数配置
             $builder
-                ->keySelect('SMS_HOOK', '短信平台', lang('_SMS_SEND_SERVICE_PROVIDERS_NEED_TO_INSTALL_THE_PLUG-IN_'), $opt)
-                ->keyText('SMS_SIGN', 'appid', lang('_SMS_PLATFORM_SIGN_CONT_'))
-                ->keyDefault('SMS_SIGN','【MuuCmf】');
-    
-            $builder->group('短信', ['SMS_HOOK', 'SMS_SIGN']);
-    
-            $builder->data($data);
+                ->keyText('SMS_ALIYUN_ACCESSKEYID', 'AccessKeyID', 'Access Key ID是您访问阿里云API的密钥，具有该账户完全的权限，请您妥善保管.')
+                ->keyText('SMS_ALIYUN_ACCESSKEYSECRET', 'AccessKeySecret', 'Access Key Secret是您访问阿里云API的密钥，具有该账户完全的权限，请您妥善保管.')
+                ->keyText('SMS_ALIYUN_ENDPOINT', 'Endpoint', '如：oss-cn-beijing.aliyuncs.com.')
+                ->keyText('SMS_ALIYUN_BUCKET', 'Bucket', 'Bucket.')
+                ->keyText('SMS_ALIYUN_BUCKET_DOMAIN', 'Bucket域名', 'Bucket域名.')
+                ->group('阿里云短信', [
+                    'SMS_ALIYUN_ACCESSKEYID', 
+                    'SMS_ALIYUN_ACCESSKEYSECRET',
+                    'SMS_ALIYUN_ENDPOINT',
+                    'SMS_ALIYUN_BUCKET',
+                    'SMS_ALIYUN_BUCKET_DOMAIN'
+                ]);
+
+            // 腾讯云短信参数配置
+            $builder
+                ->keyText('SMS_TENCENT_APPID', 'AppID', 'SDK AppID是短信应用的唯一标识，调用短信API接口时，需要提供该参数.')
+                ->keyText('SMS_TENCENT_APPKEY', 'App KEY', 'App Key是用来校验短信发送合法性的密码，与SDK AppID对应，需要业务方高度保密，切勿把密码存储在客户端.')
+                ->keyText('SMS_TENCENT_SIGN', '短信签名', '请使用真实的已申请的签名，签名参数使用的是`签名内容`，而不是`签名ID`.')
+                ->keyText('SMS_TENCENT_TEMPLATEID', '短信模板', '短信模板ID，应严格按"模板ID"填写')
+                ->group('腾讯云短信', [
+                    'SMS_TENCENT_APPID', 
+                    'SMS_TENCENT_APPKEY',
+                    'SMS_TENCENT_SIGN',
+                    'SMS_TENCENT_TEMPLATEID'
+                ]);
+
+            $builder->data($list);
             $builder->buttonSubmit();
             $builder->display();
         }

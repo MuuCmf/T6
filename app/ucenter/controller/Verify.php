@@ -5,105 +5,80 @@ use think\App;
 use think\facade\Session;
 use think\facade\Db;
 use think\facade\Cache;
+use app\common\model\Verify as VerifyModel;
 use app\common\controller\Common;
 
 class Verify extends Common
 {
+    protected $verifyModel;
+    
+    /**
+     * 构造方法
+     * @access public
+     */
+    public function __construct()
+    {
+        parent::__construct();
+
+        $this->verifyModel = new VerifyModel();
+    }
+
     /**
      * sendVerify 发送验证码
      */
     public function send()
     {
-        $aAccount = $cUsername = input('post.account', '', 'text');
-        $aType = input('post.type', '', 'text');
-        $aType = $aType == 'mobile' ? 'mobile' : 'email';
-        $aAction = input('post.action', 'config', 'text');//member或config或find:找回密码操作
-        $sendType = input('post.sendtype','verify','text'); //发送的短信类型，如：验证码类、通知类，推广类
-        /*
-        if (!check_reg_type($aType)) {
-            $str = $aType == 'mobile' ? lang('_PHONE_') : lang('_EMAIL_');
-            $this->error($str . lang('_ERROR_OPTIONS_CLOSED_').lang('_EXCLAMATION_'));
-        }*/
-
-        if (empty($aAccount)) {
-            $this->error(lang('_ERROR_ACCOUNT_CANNOT_EMPTY_'));
+        $account = $username = input('post.account', '', 'text');
+        $type = input('post.type', 'mobile', 'text');
+        $type = $type == 'mobile' ? 'mobile' : 'email';
+        if (empty($account)) {
+            return $this->error('账号不能为空');
         }
-        check_username($cUsername, $cEmail, $cMobile);
+        // 自动判断发送类型
+        check_username($username, $email, $mobile, $type);
         $time = time();
-        if($aType == 'mobile'){
+        if($type == 'mobile'){
             //短信验证码的有效期，默认60秒
-            $resend_time =  modC('SMS_RESEND','60','USERCONFIG');
-            if($time <= session('verify_time')+$resend_time ){
-                $this->error(lang('_ERROR_WAIT_1_').($resend_time-($time-session('verify_time'))).lang('_ERROR_WAIT_2_'));
+            $resend_time =  config('extend.SMS_RESEND');
+            if($time <= session('verify_time') + $resend_time ){
+                return $this->error('请' . ($resend_time-($time-session('verify_time'))). '秒后再发');
             }
         }
 
-        if ($aType == 'email' && empty($cEmail)) {
-            $this->error(lang('_ERROR__EMAIL_'));
+        if ($type == 'email' && empty($email)) {
+            return $this->error('邮箱不能为空');
         }
-        if ($aType == 'mobile' && empty($cMobile)) {
-            $this->error(lang('_ERROR_PHONE_'));
-        }
-        
-        $checkIsExist = Db::name('UcenterMember')->where([$aType => $aAccount])->find();
-        //判断是否是已存在用户，由于部分操作需要向存在的用户发送验证，在这里做判断
-        if($aAction==='find' || $aAction==='config'){
-            if (!$checkIsExist) {
-                $str = $aType == 'mobile' ? lang('_PHONE_') : lang('_EMAIL_');
-                //dump(lang('_ERROR_USED_1_') . $str . lang('_ERROR_USED_3_').lang('_EXCLAMATION_'));exit;
-                //$this->error(lang('_ERROR_USED_1_') . $str . lang('_ERROR_USED_3_').lang('_EXCLAMATION_'));//还未注册的数据返回错误
-            }
-        }else{
-            if ($checkIsExist) {
-                $str = $aType == 'mobile' ? lang('_PHONE_') : lang('_EMAIL_');
-                $this->error(lang('_ERROR_USED_1_') . $str . lang('_ERROR_USED_2_').lang('_EXCLAMATION_'));//已被占用的数据返回错误
-            }
+        if ($type == 'mobile' && empty($mobile)) {
+            return $this->error('手机号不能为空');
         }
 
-        $verify = model('Verify')->addVerify($aAccount, $aType);
+        // 写入验证码
+        $verify = $this->verifyModel->addVerify($account, $type);
         if (!$verify) {
-            $this->error(lang('_ERROR_FAIL_SEND_').lang('_EXCLAMATION_'));
+            return $this->error('验证码写入失败');
         }
-
-        switch ($aType) {
+        dump($verify);exit;
+        // 发送验证码
+        switch ($type) {
             case 'mobile':
                 //发送手机短信验证
-                $content = modC('SMS_CONTENT', '{$verify}', 'USERCONFIG');
                 $content = str_replace('{$verify}', $verify, $content);
-                $content = str_replace('{$account}', $aAccount, $content);
-
-                //发送类型，暂只处理验证类
-                if($sendType == 'verify'){
-                    $param = [
-                        'code'=>$verify,
-                    ];
-                    $param = json_encode($param);
-                }
+                $content = str_replace('{$account}', $account, $content);
                 //TODO:其它类型该版本暂不写，这里留个记号
-                $res = sendSMS($aAccount, $content, $sendType, $param);
+                $res = $this->verifyModel->sendSMS($account, $verify);
             break;
             case 'email':
                 //发送验证邮箱
-                $content = modC('REG_EMAIL_VERIFY', '{$verify}', 'USERCONFIG');
-                $content = str_replace('{$verify}', $verify, $content);
-                $content = str_replace('{$account}', $aAccount, $content);
-                $res = send_mail($aAccount, modC('WEB_SITE_NAME', lang('_MUUCMF_'), 'Config') . lang('_EMAIL_VERIFY_2_'), $content);
+                $res = $this->verifyModel->sendMail($account, $verify);
                 //return $res;
             break;
         }
-        /*
-        if($aAction==='find'){//找回密码
-            $res =  doSendVerify($aAccount, $verify, $aType);
-        }
-        if($aAction==='member'){//注册会员
-            $res =  doSendVerify($aAccount, $verify, $aType);
-        }*/
         
         if ($res === true) {
-            if($aType == 'mobile'){
+            if($type == 'mobile'){
                 session('verify_time',$time);
             }
-            $this->success(lang('_ERROR_SUCCESS_SEND_'));
+            $this->success('验证码发送成功');
         } else {
             $this->error($res);
         }

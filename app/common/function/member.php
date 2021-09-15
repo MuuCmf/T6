@@ -141,6 +141,7 @@ function check_username(&$username, &$email, &$mobile, &$type = 'username')
             default :
                 $mobile = '';
                 $email = '';
+                $username = $username;
                 $type = 'username';
                 break;
         }
