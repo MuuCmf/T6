@@ -6,6 +6,17 @@ use AlibabaCloud\Client\AlibabaCloud;
 use AlibabaCloud\Client\Exception\ClientException;
 use AlibabaCloud\Client\Exception\ServerException;
 
+use TencentCloud\Sms\V20210111\SmsClient;
+// 导入要请求接口对应的Request类
+use TencentCloud\Sms\V20210111\Models\SendSmsRequest;
+use TencentCloud\Common\Exception\TencentCloudSDKException;
+use TencentCloud\Common\Credential;
+// 导入可选配置类
+use TencentCloud\Common\Profile\ClientProfile;
+use TencentCloud\Common\Profile\HttpProfile;
+
+use function GuzzleHttp\json_decode;
+
 class Verify extends Model
 {
     protected $tableName = 'verify';
@@ -72,10 +83,15 @@ class Verify extends Model
     {
         $smsDriver = config('extend.SMS_SEND_DRIVER');
 
+        // 通过阿里云发送短信
         if($smsDriver == 'aliyun'){
-    
             $result = $this->aliyun($PhoneNumbers, $code);
+            return $result;
+        }
 
+        // 通过腾讯云发送短信
+        if($smsDriver == 'tencent'){
+            $result = $this->tencent($PhoneNumbers, $code);
             return $result;
         }
 
@@ -91,7 +107,6 @@ class Verify extends Model
         $access_key_secret = config('extend.SMS_ALIYUN_ACCESSKEYSECRET');
         AlibabaCloud::accessKeyClient($access_key_id, $access_key_secret)->regionId('cn-beijing')->asDefaultClient();
         
-
         $params = [
             'code' => $code
         ];
@@ -109,21 +124,70 @@ class Verify extends Model
                 ->method('POST')
                 ->host('dysmsapi.aliyuncs.com')
                 ->options([
-                            'query' => [
-                                'PhoneNumbers' => $PhoneNumbers,
-                                'SignName' => $smsSign,
-                                'TemplateParam' => $params,
-                                'TemplateCode' => $smsTemplateId,
-                            ],
-                        ])
+                    'query' => [
+                        'PhoneNumbers' => $PhoneNumbers,
+                        'SignName' => $smsSign,
+                        'TemplateParam' => $params,
+                        'TemplateCode' => $smsTemplateId,
+                    ],
+                ])
                 ->request();
             // print_r($result->toArray());
             $result = $result->toArray();
             return $result;
         } catch (ClientException $e) {
-            echo $e->getErrorMessage() . PHP_EOL;
+            // echo $e->getErrorMessage() . PHP_EOL;
+            return $e->getErrorMessage() . PHP_EOL;
         } catch (ServerException $e) {
-            echo $e->getErrorMessage() . PHP_EOL;
+            // echo $e->getErrorMessage() . PHP_EOL;
+            return $e->getErrorMessage() . PHP_EOL;
+        }
+    }
+
+    /**
+     * 通过腾讯云发送短信
+     */
+    private function tencent($PhoneNumbers, $code)
+    {
+        $SecretId = config('extend.SMS_TENCENT_SECRETID');
+        $SecretKey = config('extend.SMS_TENCENT_SECRETKEY');
+        $SdkAppId = config('extend.SMS_TENCENT_APPID');
+        $Sign = config('extend.SMS_TENCENT_SIGN');
+        // 短信模板
+        $TemplateId = config('extend.SMS_TENCENT_TEMPLATEID');
+        // 区域参数
+        $region = config('extend.SMS_TENCENT_REGION');
+        try {
+            $cred = new Credential($SecretId, $SecretKey);
+            $httpProfile = new HttpProfile();
+            $httpProfile->setEndpoint("sms.tencentcloudapi.com");
+            
+            $clientProfile = new ClientProfile();
+            $clientProfile->setHttpProfile($httpProfile);
+            $client = new SmsClient($cred, $region, $clientProfile);
+
+            $req = new SendSmsRequest();
+            
+            $params = array(
+                "PhoneNumberSet" => array( $PhoneNumbers ),
+                "SmsSdkAppId" => $SdkAppId,
+                "SignName" => $Sign,
+                "TemplateId" => $TemplateId,
+                "TemplateParamSet" => array( $code )
+            );
+            $req->fromJsonString(json_encode($params));
+
+            $resp = $client->SendSms($req);
+
+            //print_r($resp->toJsonString());
+            //dump($resp);exit;
+            $resp = $resp->toJsonString();
+            $resp = json_decode($resp, true);
+            return $resp;
+        }
+        catch(TencentCloudSDKException $e) {
+            // echo $e;
+            return $e->getErrorCode();
         }
     }
 

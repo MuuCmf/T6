@@ -61,6 +61,35 @@ class Verify extends Common
         switch ($type) {
             case 'mobile':
                 $res = $this->verifyModel->sendSMS($account, $verify);
+                $smsDriver = config('extend.SMS_SEND_DRIVER');
+                // 通过阿里云发送短信
+                if($smsDriver == 'aliyun'){
+                    if(is_array($res) && $res['Message'] == 'OK'){
+                        session('verify_time', $time);
+                        return $this->success('验证码发送成功');
+                    }
+                }
+                // 通过腾讯云发送短信
+                // array:2 [
+                //     "SendStatusSet" => array:1 [
+                //       0 => array:7 [
+                //         "SerialNo" => "2433:204780860416317002348678043"
+                //         "PhoneNumber" => "+8618618380435"
+                //         "Fee" => 1
+                //         "SessionContext" => ""
+                //         "Code" => "Ok"
+                //         "Message" => "send success"
+                //         "IsoCode" => "CN"
+                //       ]
+                //     ]
+                //     "RequestId" => "750b9dcf-0a96-4251-84f8-c554a1cd4760"
+                //   ]
+                if($smsDriver == 'tencent'){
+                    if(is_array($res) && $res['SendStatusSet'][0]['Code'] == 'Ok'){
+                        session('verify_time', $time);
+                        return $this->success('验证码发送成功');
+                    }
+                }
             break;
             case 'email':
                 //发送验证邮箱
@@ -69,14 +98,6 @@ class Verify extends Common
             break;
         }
         
-        if ($res === true) {
-            if($type == 'mobile'){
-                session('verify_time',$time);
-            }
-            $this->success('验证码发送成功');
-        } else {
-            $this->error($res);
-        }
-
+        return $this->error($res);
     }
 }
