@@ -31,8 +31,18 @@ class Extend extends Admin
     public function sms() {
 
         if (request()->isPost()) {
-            $data = input('');
-            
+            $config = input('post.');
+            //dump($config);exit;
+            if ($config && is_array($config)) {
+                foreach ($config as $name => $value) {
+                    $map = ['name' => $name];
+                    Db::name('ExtendConfig')->where($map)->save(['value' => $value]);
+                }
+            }
+            // 清理缓存
+            cache('MUUCMF_EXT_CONFIG_DATA', null);
+
+            return $this->success('保存成功',$config, 'refresh');
 
         }else{
 
@@ -52,15 +62,13 @@ class Extend extends Admin
             $builder
                 ->keyText('SMS_ALIYUN_ACCESSKEYID', 'AccessKeyID', 'Access Key ID是您访问阿里云API的密钥，具有该账户完全的权限，请您妥善保管.')
                 ->keyText('SMS_ALIYUN_ACCESSKEYSECRET', 'AccessKeySecret', 'Access Key Secret是您访问阿里云API的密钥，具有该账户完全的权限，请您妥善保管.')
-                ->keyText('SMS_ALIYUN_ENDPOINT', 'Endpoint', '如：oss-cn-beijing.aliyuncs.com.')
-                ->keyText('SMS_ALIYUN_BUCKET', 'Bucket', 'Bucket.')
-                ->keyText('SMS_ALIYUN_BUCKET_DOMAIN', 'Bucket域名', 'Bucket域名.')
-                ->group('阿里云短信', [
+                ->keyText('SMS_ALIYUN_SIGN', '短信签名', '短信签名，应严格按"签名名称"填写，请参考: https://dysms.console.aliyun.com/dysms.htm#/develop/sign.')
+                ->keyText('SMS_ALIYUN_TEMPLATEID', '短信模板', '短信模板Code，应严格按"模板CODE"填写, 请参考: https://dysms.console.aliyun.com/dysms.htm#/develop/template.')
+                ->group('阿里云OSS', [
                     'SMS_ALIYUN_ACCESSKEYID', 
                     'SMS_ALIYUN_ACCESSKEYSECRET',
-                    'SMS_ALIYUN_ENDPOINT',
-                    'SMS_ALIYUN_BUCKET',
-                    'SMS_ALIYUN_BUCKET_DOMAIN'
+                    'SMS_ALIYUN_SIGN',
+                    'SMS_ALIYUN_TEMPLATEID'
                 ]);
 
             // 腾讯云短信参数配置
@@ -97,6 +105,7 @@ class Extend extends Admin
                     Db::name('ExtendConfig')->where($map)->save(['value' => $value]);
                 }
             }
+            // 清理缓存
             cache('MUUCMF_EXT_CONFIG_DATA', null);
     
             return $this->success('保存成功',$config, 'refresh');
