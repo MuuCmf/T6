@@ -5,12 +5,11 @@ use think\facade\Db;
 use think\facade\View;
 use app\common\controller\Base;
 
-class Index extends Base
+class Index
 {
     //安装首页
     public function index(){
-
-        if (is_file(ROOT_PATH . 'install.lock'))
+        if (is_file(root_path() . 'data/install.lock'))
         {
             // 已经安装过了 执行更新程序
             $msg = '请删除install.lock文件后再运行安装程序!';
@@ -25,13 +24,14 @@ class Index extends Base
         clearstatcache();
         
         // 写入安装锁定文件
-        $lockFile = ROOT_PATH .'install.lock';
+        $lockFile = root_path() .'data/install.lock';
         $result = @file_put_contents($lockFile, 'lock');
         //创建配置文件
         View::assign('info', session('config_file'));
         session('step', null);
         session('error', null);
         session('update',null);
+        
         return View::fetch();
     }
 }

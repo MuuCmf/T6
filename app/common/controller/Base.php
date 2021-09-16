@@ -6,6 +6,7 @@ namespace app\common\controller;
 use think\exception\HttpResponseException;
 use think\exception\ValidateException;
 use think\facade\Env;
+use think\facade\Request;
 use think\Response;
 use think\Validate;
 
@@ -99,13 +100,37 @@ class Base
     * @param  array $header 发送的Header信息
     * @return void
     */
-    protected function success($msg = '', $data = '', string $url = '', array $header = [])
+    // protected function success($msg = '', $data = '', string $url = '', array $header = [])
+    // {
+    //     if (empty($url)) {
+    //         $url = 'refresh';
+    //     }
+
+    //    return $this->result(200, $msg, $data, $url);
+    // }
+    protected function success($msg = '',  $data = '', string $url = null, int $wait = 3, array $header = []): Response
     {
-        if (empty($url)) {
-            $url = 'refresh';
+        if (is_null($url) && isset($_SERVER["HTTP_REFERER"])) {
+            $url = $_SERVER["HTTP_REFERER"];
+        } elseif ($url) {
+            $url = (strpos($url, '://') || 0 === strpos($url, '/')) ? $url : app('route')->buildUrl($url);
         }
 
-       return $this->result(200, $msg, $data, $url);
+        $result = [
+            'code' => 200,
+            'msg'  => $msg,
+            'data' => $data,
+            'url'  => $url,
+            'wait' => $wait,
+        ];
+
+        $type = (request()->isJson() || request()->isAjax()) ? 'json' : 'html';
+        if ($type == 'html') {
+            $response = view(app('config')->get('app.dispatch_success_tmpl'), $result);
+        } else if ($type == 'json') {
+            $response = json($result);
+        }
+        throw new HttpResponseException($response);
     }
 
     /**
@@ -118,10 +143,35 @@ class Base
     * @param  array $header 发送的Header信息
     * @return void
     */
-    protected function error($msg = '', $data = '', string $url = '', array $header = [])
+    // protected function error($msg = '', $data = '', string $url = '', array $header = [])
+    // {
+    //     return $this->result(0, $msg, $data, $url);
+    // }
+    protected function error($msg = '', $data = '', string $url = null, int $wait = 3, array $header = []): Response
     {
-        return $this->result(0, $msg, $data, $url);
+        if (is_null($url)) {
+            $url = request()->isAjax() ? '' : 'javascript:history.back(-1);';
+        } elseif ($url) {
+            $url = (strpos($url, '://') || 0 === strpos($url, '/')) ? $url : app('route')->buildUrl($url);
+        }
+
+        $result = [
+            'code' => 0,
+            'msg'  => $msg,
+            'data' => $data,
+            'url'  => $url,
+            'wait' => $wait,
+        ];
+
+        $type = (request()->isJson() || request()->isAjax()) ? 'json' : 'html';
+        if ($type == 'html') {
+            $response = view(app('config')->get('app.dispatch_error_tmpl'), $result);
+        } else if ($type == 'json') {
+            $response = json($result);
+        }
+        throw new HttpResponseException($response);
     }
+
 
    /**
     * 返回封装后的API数据到客户端

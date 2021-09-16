@@ -34,26 +34,26 @@ class Install extends Base
         //目录文件读写检测
         if(is_really_writable($dbConfigFile)){
             $dirfile = check_dirfile();
-            $this->assign('dirfile', $dirfile);
+            View::assign('dirfile', $dirfile);
         }
         session('step', 1);
         if(isset($muu_env)){
-        	$this->assign('muu_env', $muu_env);
+        	View::assign('muu_env', $muu_env);
         }
-        $this->assign('func', $func);
-        return $this->fetch();
+        View::assign('func', $func);
+        return View::fetch();
     }
 
     //安装第二步，创建数据库
     public function step2($db = null, $admin = null){
         
-        if($this->request->isPost()){
+        if(request()->isPost()){
 
             //检测管理员信息
             if(!is_array($admin) || empty($admin[0]) || empty($admin[1]) || empty($admin[3])){
-                $this->error('请填写完整管理员信息');
+                return $this->error('请填写完整管理员信息');
             } else if($admin[1] != $admin[2]){
-                $this->error('确认密码和密码不一致');
+                return $this->error('确认密码和密码不一致');
             } else {
                 $info = array();
                 list($info['username'], $info['password'], $info['repassword'], $info['email']) = $admin;
@@ -63,7 +63,7 @@ class Install extends Base
 
             //检测数据库配置
             if(!is_array($db) || empty($db[0]) ||  empty($db[1]) || empty($db[2]) || empty($db[3])){
-                $this->error('请填写完整的数据库配置');
+                return $this->error('请填写完整的数据库配置');
             } else {
 
                 $dbname = $db[2];
@@ -99,7 +99,7 @@ class Install extends Base
         } else {
                 session('error') && $this->error('环境检测没有通过，请调整环境后重试！');
                 session('step', 2);
-                return $this->fetch();
+                return View::fetch();
 
         }
     }
@@ -110,14 +110,15 @@ class Install extends Base
             $this->redirect('step2');
         }
 
-        echo $this->fetch();
+        echo View::fetch();
 
         //连接数据库
         $dbconfig = session('db_config');
         $db_instance = Db::connect($dbconfig);
-        //创建数据表
 
+        //创建数据表
         create_tables($db_instance, $dbconfig['prefix']);
+        
         //注册创始人帐号
         $auth  = build_auth_key();
         $admin = session('admin_info');
@@ -131,13 +132,13 @@ class Install extends Base
             error_btn('很遗憾，安装失败，请检测后重新安装！','btn btn-warning btn-large btn-block');
         } else {
             session('step', 3);
-            echo "<script type=\"text/javascript\">setTimeout(function(){location.href='".Url('Index/complete')."'},5000)</script>";
+            echo "<script type=\"text/javascript\">setTimeout(function(){location.href='".url('Index/complete')."'},5000)</script>";
         }
     }
 
     public function tip($info,$title='很遗憾，安装失败，失败原因'){
-        $this->assign('info',$info);// 提示信息
-        $this->assign('title',$title);
-        return view('error');exit;
+        View::assign('info',$info);// 提示信息
+        View::assign('title',$title);
+        return View::fetch('error');
     }
 }

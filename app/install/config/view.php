@@ -26,5 +26,11 @@ return [
     'tpl_replace_string' => [
         '__STATIC__' => '/static',
         '__ZUI__' => '/static/common/lib/zui',
+        '__CSS__' => '/static/install/css',
+        '__IMG__' => '/static/install/images',
+        '__NAME__'=>'MuuCmf T5开源开发框架',
+        '__COMPANY__'=>'北京火木科技有限公司',
+        '__WEBSITE__'=>'www.muucmf.cn',
+        '__COMPANY_WEBSITE__'=>'www.hoomuu.cn'
     ],
 ];

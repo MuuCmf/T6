@@ -1,6 +1,6 @@
 <?php
 return [
-    'MuuCmf T5'      =>'MuuCmf T5开源开发框架',
+    'MuuCmf'      =>'MuuCmf T6开源开发框架',
     'Install'     =>'安装',
     'Protocols'   =>'安装协议',
     'Detection'   =>'环境检测',

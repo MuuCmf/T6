@@ -1,4 +1,6 @@
 <?php
+define('INSTALL_APP_PATH', dirname(dirname(__DIR__)));
+
 /**
  * T6 系统环境检测
  * @return array 系统环境数据
