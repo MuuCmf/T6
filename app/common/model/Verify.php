@@ -2,10 +2,10 @@
 namespace app\common\model;
 
 use think\Model;
+
 use AlibabaCloud\Client\AlibabaCloud;
 use AlibabaCloud\Client\Exception\ClientException;
 use AlibabaCloud\Client\Exception\ServerException;
-
 use TencentCloud\Sms\V20210111\SmsClient;
 // 导入要请求接口对应的Request类
 use TencentCloud\Sms\V20210111\Models\SendSmsRequest;
@@ -14,7 +14,6 @@ use TencentCloud\Common\Credential;
 // 导入可选配置类
 use TencentCloud\Common\Profile\ClientProfile;
 use TencentCloud\Common\Profile\HttpProfile;
-
 use function GuzzleHttp\json_decode;
 
 class Verify extends Model
@@ -101,7 +100,7 @@ class Verify extends Model
     /**
      * 通过阿里云发送短信
      */
-    private function aliyun($PhoneNumbers, $code)
+    public function aliyun($PhoneNumbers, $code)
     {
         $access_key_id = config('extend.SMS_ALIYUN_ACCESSKEYID');
         $access_key_secret = config('extend.SMS_ALIYUN_ACCESSKEYSECRET');
@@ -147,7 +146,7 @@ class Verify extends Model
     /**
      * 通过腾讯云发送短信
      */
-    private function tencent($PhoneNumbers, $code)
+    public function tencent($PhoneNumbers, $code)
     {
         $SecretId = config('extend.SMS_TENCENT_SECRETID');
         $SecretKey = config('extend.SMS_TENCENT_SECRETKEY');
@@ -190,5 +189,7 @@ class Verify extends Model
             return $e->getErrorCode();
         }
     }
+
+
 
 }

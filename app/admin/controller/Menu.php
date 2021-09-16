@@ -5,7 +5,7 @@ use think\facade\Db;
 use think\facade\View;
 use app\admin\model\Menu as MenuModel;
 use app\common\model\Module as ModuleModel;
-use app\common\model\Tree;
+use app\common\service\Tree;
 
 /**
  * 后台管理菜单控制器

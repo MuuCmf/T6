@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "a6539e3c98e9c41f80732370bcd8c853",
+    "content-hash": "8506b65497c92b97826e0a3e043a4a6c",
     "packages": [
         {
             "name": "adbario/php-dot-notation",
@@ -958,6 +958,84 @@
             "time": "2021-06-14T00:11:39+00:00"
         },
         {
+            "name": "phpmailer/phpmailer",
+            "version": "v6.5.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/PHPMailer/PHPMailer.git",
+                "reference": "dd803df5ad7492e1b40637f7ebd258fee5ca7355"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/PHPMailer/PHPMailer/zipball/dd803df5ad7492e1b40637f7ebd258fee5ca7355",
+                "reference": "dd803df5ad7492e1b40637f7ebd258fee5ca7355",
+                "shasum": ""
+            },
+            "require": {
+                "ext-ctype": "*",
+                "ext-filter": "*",
+                "ext-hash": "*",
+                "php": ">=5.5.0"
+            },
+            "require-dev": {
+                "dealerdirect/phpcodesniffer-composer-installer": "^0.7.0",
+                "doctrine/annotations": "^1.2",
+                "php-parallel-lint/php-console-highlighter": "^0.5.0",
+                "php-parallel-lint/php-parallel-lint": "^1.3",
+                "phpcompatibility/php-compatibility": "^9.3.5",
+                "roave/security-advisories": "dev-latest",
+                "squizlabs/php_codesniffer": "^3.6.0",
+                "yoast/phpunit-polyfills": "^1.0.0"
+            },
+            "suggest": {
+                "ext-mbstring": "Needed to send email in multibyte encoding charset or decode encoded addresses",
+                "hayageek/oauth2-yahoo": "Needed for Yahoo XOAUTH2 authentication",
+                "league/oauth2-google": "Needed for Google XOAUTH2 authentication",
+                "psr/log": "For optional PSR-3 debug logging",
+                "stevenmaguire/oauth2-microsoft": "Needed for Microsoft XOAUTH2 authentication",
+                "symfony/polyfill-mbstring": "To support UTF-8 if the Mbstring PHP extension is not enabled (^1.2)"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "PHPMailer\\PHPMailer\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "LGPL-2.1-only"
+            ],
+            "authors": [
+                {
+                    "name": "Marcus Bointon",
+                    "email": "phpmailer@synchromedia.co.uk"
+                },
+                {
+                    "name": "Jim Jagielski",
+                    "email": "jimjag@gmail.com"
+                },
+                {
+                    "name": "Andy Prevost",
+                    "email": "codeworxtech@users.sourceforge.net"
+                },
+                {
+                    "name": "Brent R. Matzelle"
+                }
+            ],
+            "description": "PHPMailer is a full-featured email creation and transfer class for PHP",
+            "support": {
+                "issues": "https://github.com/PHPMailer/PHPMailer/issues",
+                "source": "https://github.com/PHPMailer/PHPMailer/tree/v6.5.1"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/Synchro",
+                    "type": "github"
+                }
+            ],
+            "time": "2021-08-18T09:14:16+00:00"
+        },
+        {
             "name": "psr/cache",
             "version": "1.0.1",
             "source": {
@@ -1771,16 +1849,16 @@
         },
         {
             "name": "tencentcloud/common",
-            "version": "3.0.480",
+            "version": "3.0.481",
             "source": {
                 "type": "git",
                 "url": "https://github.com/tencentcloud-sdk-php/common.git",
-                "reference": "a89ba0ef0fd2a588f41229841fda129473b2ac20"
+                "reference": "f80db520a7014d4b77ed6759e2e92dae22ee7d9d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tencentcloud-sdk-php/common/zipball/a89ba0ef0fd2a588f41229841fda129473b2ac20",
-                "reference": "a89ba0ef0fd2a588f41229841fda129473b2ac20",
+                "url": "https://api.github.com/repos/tencentcloud-sdk-php/common/zipball/f80db520a7014d4b77ed6759e2e92dae22ee7d9d",
+                "reference": "f80db520a7014d4b77ed6759e2e92dae22ee7d9d",
                 "shasum": ""
             },
             "require": {
@@ -1809,26 +1887,26 @@
             "homepage": "https://github.com/tencentcloud-sdk-php/common",
             "support": {
                 "issues": "https://github.com/tencentcloud-sdk-php/common/issues",
-                "source": "https://github.com/tencentcloud-sdk-php/common/tree/3.0.480"
+                "source": "https://github.com/tencentcloud-sdk-php/common/tree/3.0.481"
             },
-            "time": "2021-09-15T04:25:17+00:00"
+            "time": "2021-09-16T00:43:09+00:00"
         },
         {
             "name": "tencentcloud/sms",
-            "version": "3.0.480",
+            "version": "3.0.481",
             "source": {
                 "type": "git",
                 "url": "https://github.com/tencentcloud-sdk-php/sms.git",
-                "reference": "844157c49e8b78c1d536092d28040205498f0c3c"
+                "reference": "8c507e5cfc6f8d0111346a1ba807c9e9aaac6e7c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tencentcloud-sdk-php/sms/zipball/844157c49e8b78c1d536092d28040205498f0c3c",
-                "reference": "844157c49e8b78c1d536092d28040205498f0c3c",
+                "url": "https://api.github.com/repos/tencentcloud-sdk-php/sms/zipball/8c507e5cfc6f8d0111346a1ba807c9e9aaac6e7c",
+                "reference": "8c507e5cfc6f8d0111346a1ba807c9e9aaac6e7c",
                 "shasum": ""
             },
             "require": {
-                "tencentcloud/common": "3.0.480"
+                "tencentcloud/common": "3.0.481"
             },
             "type": "library",
             "autoload": {
@@ -1852,9 +1930,9 @@
             "homepage": "https://github.com/tencentcloud-sdk-php/sms",
             "support": {
                 "issues": "https://github.com/tencentcloud-sdk-php/sms/issues",
-                "source": "https://github.com/tencentcloud-sdk-php/sms/tree/3.0.480"
+                "source": "https://github.com/tencentcloud-sdk-php/sms/tree/3.0.481"
             },
-            "time": "2021-09-15T04:39:15+00:00"
+            "time": "2021-09-16T00:56:43+00:00"
         },
         {
             "name": "thans/tp-jwt-auth",

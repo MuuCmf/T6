@@ -2,6 +2,7 @@
 namespace app\api\controller;
 
 use app\common\model\Verify as VerifyModel;
+use app\common\service\Mail;
 use app\common\controller\Common;
 
 /**
@@ -20,6 +21,7 @@ class Verify extends Common
         parent::__construct();
 
         $this->verifyModel = new VerifyModel();
+        $this->mailService = new Mail();
     }
 
     /**
@@ -93,8 +95,13 @@ class Verify extends Common
             break;
             case 'email':
                 //发送验证邮箱
-                $res = $this->verifyModel->sendMail($account, $verify);
-                //return $res;
+                $subject = config('system.WEB_SITE_NAME');
+                $body = "您的验证码为{$verify}验证码，账号为{$account}。";
+                
+                $res = $this->mailService->sendMailLocal($account, $subject, $body);
+                if($res == true){
+                    return $this->success('验证码发送成功');
+                }
             break;
         }
         

@@ -1,8 +1,8 @@
 <?php
-namespace app\common\model;
+namespace app\common\service;
 
 /**
- * 生成多层树状下拉选框的工具模型
+ * 生成多层树状的类
  */
 class Tree {
 	/**
