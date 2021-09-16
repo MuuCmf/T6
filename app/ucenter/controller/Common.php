@@ -150,9 +150,15 @@ class Common extends CommonCommon
              //获取参数
             $account = input('post.account', '', 'text');
             $password = input('post.password', '', 'text');
+            $captcha = input('post.captcha', '', 'text'); // 图形验证码
             if(empty($account)) return $this->error('账号不能为空');
             if(empty($password)) return $this->error('密码不能为空');
-
+            // 检测图形验证码
+            if (check_verify_open('login')) {
+                if (!captcha_check($captcha)) {
+                    return $this->error('图形验证码错误');
+                }
+            }
             // 验证账号和密码
             $commonMemberModel = new CommonMember;
             $uid = $commonMemberModel->verifyUserPassword($account, $password);
@@ -168,7 +174,13 @@ class Common extends CommonCommon
                 return $this->error($commonMemberModel->getError());
             }
         }else{
-            
+            // 允许的登录类型
+            $ph = [];
+            check_login_type('username') && $ph[] = '用户名';
+            check_login_type('email') && $ph[] = '邮箱';
+            check_login_type('mobile') && $ph[] = '手机';
+            View::assign('ph', implode('/', $ph));
+
             return View::fetch();
         }
     }

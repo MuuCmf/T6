@@ -1,13 +1,14 @@
-<div data-role="login_info"></div>
 <div class="login-main">
-
+    <div class="header">
+        <h2><span>[</span> 用户登录 <span>]</span></h2>
+    </div>
     <div class="clearfix"></div>
     <form action="{:url('ucenter/Common/login')}" method="post" class="ajax_form">
         <div class="row">
             <div class="form-group">
-                <label for="inputEmail" class=".sr-only col-xs-12"></label>
+                <label for="loginMainAccount" class=".sr-only col-xs-12"></label>
                 <div class="col-xs-12">
-                    <input type="text" id="inputEmail" class="form-control input-lg new-input" placeholder="{$ph}" name="account">
+                    <input type="text" id="loginMainAccount" class="form-control input-lg new-input" placeholder="{$ph}" name="account">
                 </div>
                 <div class="clearfix"></div>
             </div>
@@ -15,31 +16,26 @@
                 <label for="inputPassword" class=".sr-only col-xs-12"></label>
                 <div class="col-xs-12">
                     <div id="password_block" class="input-group">
-                        <input type="password" id="inputPassword" class="form-control input-lg new-input" placeholder="密 码" name="password">
+                        <input type="password" id="inputPassword" class="form-control input-lg new-input" placeholder="请输入密码" name="password">
                         <div class="input-group-addon"><a class="change_show" href="javascript:void(0);">show</a></div>
                     </div>
                 </div>
             </div>
-
             {if check_verify_open('login')}
                 <div class="form-group clearfix">
                     <label for="verifyCode" class=".sr-only col-xs-12" style="display: none"></label>
 
+                    <div class="col-xs-8">
+                        <input type="text" id="verifyCode" class="form-control input-lg new-input" placeholder="验证码" datatype="*5-5" name="captcha">
+                    </div>
                     <div class="col-xs-4">
-                        <input type="text" id="verifyCode" class="form-control input-lg new-input" placeholder="验证码" datatype="*5-5" name="verify">
+                        <img class="verifyimg reloadverify" alt="刷新验证码" src="{:captcha_src()}" style="cursor:pointer;height:43px;max-width: 100%">
                     </div>
-                    <div class="col-xs-8 lg_lf_fm_verify">
-                        <img class="verifyimg reloadverify" alt="刷新验证码" src="{:captcha_src(1)}" style="cursor:pointer;height:43px;max-width: 100%">
-                    </div>
-                    <div class="col-xs-11 Validform_checktip text-warning lg_lf_fm_tip col-sm-offset-1"></div>
                 </div>
             {/if}
             <div class="clearfix form-group">
                 <div class="col-xs-6">
-                    <label>
-                        <input type="checkbox" name="remember" value="1" style="cursor:pointer;">
-                        记住登录
-                    </label>
+                    
                 </div>
                 <div class="col-xs-6 text-right">
                     <div class="with-padding">
@@ -48,7 +44,6 @@
                 </div>
             </div>
         </div>
-        
         {php}
             if(!empty($_SERVER['HTTP_REFERER'])){
                 $referer = $_SERVER['HTTP_REFERER'];
@@ -59,24 +54,15 @@
         {/php}
         <input name="from" type="hidden" value="{$referer}">
         <div class="form-group">
-            <button type="submit" class="btn btn-block btn-warning btn-lg"> 登 陆 </button>
+            <button type="submit" class="btn btn-block btn-login btn-lg"> 登 录 </button>
         </div>
     </form>  
-</div>
 
-<div class="">
-    <h2>还没有账号  
-    <small>	
-        <a href="{:url('ucenter/common/register',array('type'=>'mobile'))}" class="">
-            立即注册
-        </a>
-    </small>
-    </h2>
+    <div class="register-section">
+        还没有账号  <a href="{:url('ucenter/common/register',array('type'=>'mobile'))}" class="">立即注册</a>
+    </div>
 </div>
-
 <div class="clearfix"></div>
-
-{block name="script"}
 
 <script type="text/javascript">
 
@@ -97,12 +83,12 @@
         function change_show(obj) {
             if ($(obj).text().trim() == 'show') {
                 var value = $('#inputPassword').val().trim();
-                var html = '<input type="text" value="' + value + '" id="inputPassword" class="form-control input-lg new-input" placeholder="'+"{:lang('_NEW_PW_INPUT_')}"+'" name="password">' +
+                var html = '<input type="text" value="' + value + '" id="inputPassword" class="form-control input-lg new-input" placeholder="'+"请输入密码"+'" name="password">' +
                         '<div class="input-group-addon"><a class="change_show" href="javascript:void(0);">hide</a></div>';
                 $('#password_block').html(html);
             } else {
                 var value = $('#inputPassword').val().trim();
-                var html = '<input type="password" value="' + value + '" id="inputPassword" class="form-control input-lg new-input" placeholder="'+"{:lang('_NEW_PW_INPUT_')}"+'" name="password">' +
+                var html = '<input type="password" value="' + value + '" id="inputPassword" class="form-control input-lg new-input" placeholder="'+"请输入密码"+'" name="password">' +
                         '<div class="input-group-addon"><a class="change_show" href="javascript:void(0);">show</a></div>';
                 $('#password_block').html(html);
             }
@@ -157,4 +143,3 @@
         });
     });
 </script>
-{/block}
