@@ -105,11 +105,6 @@
             border: 0;
           }
         }
-      
-        .existing-account {
-          margin-top: 30px;
-          text-align: center;
-        }
       }
 
       .register-close-section {
@@ -119,6 +114,9 @@
       }
 
       .existing-account {
+        color: #666;
+        margin-top: 30px;
+        text-align: center;
         a {
           color: #03b8cf;
         }
@@ -126,6 +124,22 @@
     }
   } 
   
+  .login {
+    position:relative;
+    margin:20px auto;
+    -webkit-transition: all 0.4s ease;
+    transition: all 0.4s ease;
+    .login-body {
+      padding:20px;
+      max-width:868px;
+      margin:0 auto;
+      background: #fff;
+      .login-form {
+        width: 500px;
+        margin: 10px auto;
+      }
+    }
+  }
   .login-main {
     padding: 0 60px;
     .header {
@@ -168,6 +182,8 @@
     }
     .register-section {
       color: #666;
+      margin-top: 30px;
+      text-align: center;
       a {
         color: #03b8cf;
       }
