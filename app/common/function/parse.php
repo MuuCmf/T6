@@ -112,7 +112,6 @@ function closetags($html)
  * check_image_src  判断链接是否为图片
  * @param $file_path
  * @return bool
- * @author:xjw129xjt xjt@ourstu.com
  */
 function check_image_src($file_path)
 {
@@ -129,7 +128,6 @@ function check_image_src($file_path)
  * filter_image  对图片src进行安全过滤
  * @param $content
  * @return mixed
- * @author:xjw129xjt xjt@ourstu.com
  */
 function filter_image($content)
 {
@@ -150,7 +148,6 @@ function filter_image($content)
  * @param $content
  * @param $tags
  * @return bool
- * @author:xjw129xjt xjt@ourstu.com
  */
 function check_html_tags($content, $tags = array())
 {
@@ -171,7 +168,6 @@ function check_html_tags($content, $tags = array())
  * filter_base64   对内容进行base64过滤
  * @param $content
  * @return mixed
- * @author:xjw129xjt xjt@ourstu.com
  */
 function filter_base64($content)
 {

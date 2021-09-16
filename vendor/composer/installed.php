@@ -19,6 +19,15 @@
             'reference' => 'eee4fc81296531e6aafba4c2bbccfc5adab1676e',
             'dev_requirement' => false,
         ),
+        'aferrandini/phpqrcode' => array(
+            'pretty_version' => '1.0.1',
+            'version' => '1.0.1.0',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../aferrandini/phpqrcode',
+            'aliases' => array(),
+            'reference' => '3c1c0454d43710ab5bbe19a51ad4cb41c22e3d46',
+            'dev_requirement' => false,
+        ),
         'alibabacloud/client' => array(
             'pretty_version' => '1.5.31',
             'version' => '1.5.31.0',
@@ -152,6 +161,15 @@
             'install_path' => __DIR__ . '/../phpmailer/phpmailer',
             'aliases' => array(),
             'reference' => 'dd803df5ad7492e1b40637f7ebd258fee5ca7355',
+            'dev_requirement' => false,
+        ),
+        'phpoffice/phpexcel' => array(
+            'pretty_version' => '1.8.2',
+            'version' => '1.8.2.0',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../phpoffice/phpexcel',
+            'aliases' => array(),
+            'reference' => '1441011fb7ecdd8cc689878f54f8b58a6805f870',
             'dev_requirement' => false,
         ),
         'psr/cache' => array(

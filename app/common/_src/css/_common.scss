@@ -290,6 +290,21 @@ ul {
 }
 /*提示信息颜色end*/
 
+/*单选多选颜色修正*/
+.checkbox-primary>label:after, .radio-primary>label:after {
+  z-index: 1;
+  border: 1px solid #999;
+}
+.checkbox-primary.checked>label:after, .checkbox-primary>input:checked+label:after, .radio-primary.checked>label:after, .radio-primary>input:checked+label:after {
+  background-color: #03b8cf;
+  border-color: #03b8cf;
+  border-width: 4px;
+}
+.checkbox-primary.focus>label:after, .checkbox-primary>input:focus+label:after, .radio-primary.focus>label:after, .radio-primary>input:focus+label:after {
+  border-color: #03b8cf;
+  -webkit-box-shadow: 0 0 8px #03b8cf;
+  box-shadow: 0 0 8px #03b8cf;
+}
 /**
  * 确认操作默认框
  */

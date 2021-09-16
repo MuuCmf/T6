@@ -62,11 +62,13 @@ class Extend extends Admin
             $builder
                 ->keyText('SMS_ALIYUN_ACCESSKEYID', 'AccessKeyID', 'Access Key ID是您访问阿里云API的密钥，具有该账户完全的权限，请您妥善保管.')
                 ->keyText('SMS_ALIYUN_ACCESSKEYSECRET', 'AccessKeySecret', 'Access Key Secret是您访问阿里云API的密钥，具有该账户完全的权限，请您妥善保管.')
+                ->keyText('SMS_ALIYUN_REGION', 'Region', 'Bucket所在区域，格式 如：cn-beijing.')
                 ->keyText('SMS_ALIYUN_SIGN', '短信签名', '短信签名，应严格按"签名名称"填写，请参考: https://dysms.console.aliyun.com/dysms.htm#/develop/sign.')
                 ->keyText('SMS_ALIYUN_TEMPLATEID', '短信模板', '短信模板Code，应严格按"模板CODE"填写, 请参考: https://dysms.console.aliyun.com/dysms.htm#/develop/template.')
-                ->group('阿里云OSS', [
+                ->group('阿里云短信', [
                     'SMS_ALIYUN_ACCESSKEYID', 
                     'SMS_ALIYUN_ACCESSKEYSECRET',
+                    'SMS_ALIYUN_REGION',
                     'SMS_ALIYUN_SIGN',
                     'SMS_ALIYUN_TEMPLATEID'
                 ]);

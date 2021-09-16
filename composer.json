@@ -33,7 +33,9 @@
         "qcloud/cos-sdk-v5": ">=2.0",
         "tencentcloud/sms": "^3.0",
         "alibabacloud/client": "^1.5",
-        "phpmailer/phpmailer": "^6.5"
+        "phpmailer/phpmailer": "^6.5",
+        "aferrandini/phpqrcode": "1.0.1",
+        "phpoffice/phpexcel": "^1.8"
     },
     "require-dev": {
         "symfony/var-dumper": "^4.2"

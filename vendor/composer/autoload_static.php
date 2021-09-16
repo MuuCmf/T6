@@ -261,6 +261,20 @@ class ComposerStaticInitbde435928c820c82e3ad724d7f427ac5
         ),
     );
 
+    public static $prefixesPsr0 = array (
+        'P' => 
+        array (
+            'PHPQRCode' => 
+            array (
+                0 => __DIR__ . '/..' . '/aferrandini/phpqrcode/lib',
+            ),
+            'PHPExcel' => 
+            array (
+                0 => __DIR__ . '/..' . '/phpoffice/phpexcel/Classes',
+            ),
+        ),
+    );
+
     public static $fallbackDirsPsr0 = array (
         0 => __DIR__ . '/../..' . '/extend',
     );
@@ -279,6 +293,7 @@ class ComposerStaticInitbde435928c820c82e3ad724d7f427ac5
         return \Closure::bind(function () use ($loader) {
             $loader->prefixLengthsPsr4 = ComposerStaticInitbde435928c820c82e3ad724d7f427ac5::$prefixLengthsPsr4;
             $loader->prefixDirsPsr4 = ComposerStaticInitbde435928c820c82e3ad724d7f427ac5::$prefixDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInitbde435928c820c82e3ad724d7f427ac5::$prefixesPsr0;
             $loader->fallbackDirsPsr0 = ComposerStaticInitbde435928c820c82e3ad724d7f427ac5::$fallbackDirsPsr0;
             $loader->classMap = ComposerStaticInitbde435928c820c82e3ad724d7f427ac5::$classMap;
 

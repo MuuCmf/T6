@@ -28,7 +28,7 @@ class Verify extends Model
      */
     public function addVerify($account, $type, $uid = 0)
     {
-        $uid = $uid?$uid:is_login();
+        $uid = $uid ? $uid:is_login();
         if ($type == 'mobile' || $type == 'email') {
             $verify = create_rand(6, 'num');
         } else {
@@ -49,11 +49,6 @@ class Verify extends Model
     }
 
     
-    public function getVerify($id){
-        $verify = $this->where(['id'=>$id])->value('verify');
-        return $verify;
-    }
-
     /**
      * 检测验证码
      *
@@ -64,8 +59,10 @@ class Verify extends Model
      *
      * @return     boolean  ( description_of_the_return_value )
      */
-    public function checkVerify($account, $type, $verify){
+    public function checkVerify($account, $type = 'mobile', $verify){
+
         $data = $this->where(['account'=>$account,'type'=>$type,'verify'=>$verify])->find();
+
         if(!$data){
             return false;
         }
@@ -104,7 +101,8 @@ class Verify extends Model
     {
         $access_key_id = config('extend.SMS_ALIYUN_ACCESSKEYID');
         $access_key_secret = config('extend.SMS_ALIYUN_ACCESSKEYSECRET');
-        AlibabaCloud::accessKeyClient($access_key_id, $access_key_secret)->regionId('cn-beijing')->asDefaultClient();
+        $region = config('extend.SMS_ALIYUN_REGION');
+        AlibabaCloud::accessKeyClient($access_key_id, $access_key_secret)->regionId($region)->asDefaultClient();
         
         $params = [
             'code' => $code

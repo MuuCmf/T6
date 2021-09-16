@@ -8,10 +8,9 @@ require_once(__DIR__ . '/common/function/builder.php');
 require_once(__DIR__ . '/common/function/editor.php');
 require_once(__DIR__ . '/common/function/file.php');
 require_once(__DIR__ . '/common/function/member.php');
-require_once(__DIR__ . '/common/function/message.php');
 require_once(__DIR__ . '/common/function/parse.php');
+require_once(__DIR__ . '/common/function/qrcode.php');
 require_once(__DIR__ . '/common/function/time.php');
-require_once(__DIR__ . '/common/function/vendors.php');
 require_once(__DIR__ . '/common/function/wechat.php');
 
 /**
@@ -599,6 +598,20 @@ function is_ie()
     }
 }
 
+/**
+ * 系统公共库文件扩展
+ * 主要定义系统公共函数库扩展
+ */
+function muucmf_hash($message, $salt = "MuuCmf")
+{
+    $s01 = $message . $salt;
+    $s02 = md5($s01) . $salt;
+    $s03 = sha1($s01) . md5($s02) . $salt;
+    $s04 = $salt . md5($s03) . $salt . $s02;
+    $s05 = $salt . sha1($s04) . md5($s04) . crc32($salt . $s04);
+    return md5($s05);
+}
+
 function array_subtract($a, $b)
 {
     return array_diff($a, array_intersect($a, $b));
@@ -792,6 +805,7 @@ function get_url() {
     }
     return $url;
 }
+
 /**
  * 判断网址是否包含参数,有参数返回后缀&，无返回后缀？
  * @param  [type] $url [description]

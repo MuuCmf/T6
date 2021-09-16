@@ -9,7 +9,7 @@ use app\ucenter\validate\Member;
 use think\exception\ValidateException;
 use app\common\model\ActionLimit;
 use thans\jwt\facade\JWTAuth;
-use app\ucenter\model\Verify;
+use app\common\model\Verify;
 use app\common\controller\Common as CommonCommon;
 
 /**
@@ -29,7 +29,7 @@ class Common extends CommonCommon
             $account = input('post.account', '', 'text'); // 账号
             $password = input('post.password', '', 'text'); // 密码
             $confirm_password = input('post.confirm_password', '', 'text'); // 确认密码
-            $verify = input('post.reg_verify', '', 'text'); // 邮件或手机验证码
+            $verify = input('post.verify', '', 'text'); // 邮件或手机验证码
             $captcha = input('post.captcha', '', 'text'); // 图形验证码
             $agreement = input('post.agreement', 0, 'intval'); // 用户服务协议勾选状态
             $forward = input('forward', '/index/index/index', 'text'); // 来源页面
@@ -42,11 +42,6 @@ class Common extends CommonCommon
             // 账号为空验证
             if(empty($account)){
                 return $this->error('账号不能为空');
-            }
-
-            // 验证是否勾选了协议
-            if(empty($agreement)){
-                return $this->error('请勾选用户服务协议');
             }
 
             // 行为限制验证
@@ -97,13 +92,6 @@ class Common extends CommonCommon
                 return $this->error($e->getError());
             }
 
-            // 验证验证码
-            if (($type == 'mobile') || $type == 'email') {
-                $verifyModel = new Verify();
-                if (!$verifyModel->checkVerify($account, $type, $verify)) {
-                    return $this->error('验证码错误');
-                }
-            }
             // 检测图形验证码
             if (check_verify_open('reg')) {
                 if (!captcha_check($captcha)) {
@@ -111,6 +99,18 @@ class Common extends CommonCommon
                 }
             }
 
+            // 验证验证码
+            if (($type == 'mobile') || $type == 'email') {
+                $verifyModel = new Verify();
+                if (!$verifyModel->checkVerify($account, $type, $verify)) {
+                    return $this->error('验证码错误');
+                }
+            }
+            
+            // 验证是否勾选了协议
+            if(empty($agreement)){
+                return $this->error('请勾选用户服务协议');
+            }
             /* 注册用户并写入数据 */
             $commonMemberModel = new CommonMember;
             $uid = $commonMemberModel->register($username, $nickname, $password, $email, $mobile, $type);
@@ -335,10 +335,20 @@ class Common extends CommonCommon
         preg_match('/^(?!_|\s\')[A-Za-z0-9_\x80-\xff\s\']+$/', $aNickname, $result);
 
         if (!$result) {
-            $this->error(lang('_ERROR_NICKNAME_ONLY_PERMISSION_'));
+            $this->error('只允许中文、字母和数字和下划线');
         }
 
-        $this->success('验证成功');
+        return $this->success('验证成功');
+    }
+
+    /**
+     * 用户服务协议显示页
+     */
+    public function agreement()
+    {
+        $agreement = config('system.USER_REG_AGREEMENT');
+        View::assign('agreement', $agreement);
+        return View::fetch();
     }
 
 }

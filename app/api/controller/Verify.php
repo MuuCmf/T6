@@ -35,6 +35,15 @@ class Verify extends Common
         if (empty($account)) {
             return $this->error('账号不能为空');
         }
+        // 判断格式类型
+        $check_email = preg_match("/[a-z0-9_\-\.]+@([a-z0-9_\-]+?\.)+[a-z]{2,3}/i", $account);
+        $check_mobile = preg_match("/^(1[0-9])[0-9]{9}$/", $account);
+        if($type == 'email' && !$check_email){
+            return $this->error('邮箱格式错误');
+        }
+        if($type == 'mobile' && !$check_mobile){
+            return $this->error('手机格式错误');
+        }
         // 自动判断发送类型
         check_username($username, $email, $mobile, $type);
         $time = time();
@@ -44,13 +53,6 @@ class Verify extends Common
             if($time <= session('verify_time') + $resend_time ){
                 return $this->error('请' . ($resend_time-($time-session('verify_time'))). '秒后再发');
             }
-        }
-
-        if ($type == 'email' && empty($email)) {
-            return $this->error('邮箱不能为空');
-        }
-        if ($type == 'mobile' && empty($mobile)) {
-            return $this->error('手机号不能为空');
         }
 
         // 写入验证码
@@ -100,6 +102,7 @@ class Verify extends Common
                 
                 $res = $this->mailService->sendMailLocal($account, $subject, $body);
                 if($res == true){
+                    session('verify_time', $time);
                     return $this->success('验证码发送成功');
                 }
             break;
