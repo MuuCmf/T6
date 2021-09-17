@@ -198,7 +198,7 @@
         }
 
         //弹出提示消息
-        if (data.code==1) {
+        if (data.code == 200) {
             toast.success(data.msg, 'success');
         } else {
             toast.error(data.msg, 'danger');

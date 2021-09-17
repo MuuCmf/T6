@@ -3,12 +3,12 @@ namespace app\install\controller;
 
 use think\facade\Db;
 use think\facade\View;
-use app\common\controller\Base;
 
-class Index
+class Index extends Base
 {
     //安装首页
     public function index(){
+        //dump(config());exit;
         if (is_file(root_path() . 'data/install.lock'))
         {
             // 已经安装过了 执行更新程序

@@ -27,8 +27,9 @@ return [
         '__STATIC__' => '/static',
         '__ZUI__' => '/static/common/lib/zui',
         '__CSS__' => '/static/install/css',
+        '__JS__' => '/static/install/js',
         '__IMG__' => '/static/install/images',
-        '__NAME__'=>'MuuCmf T5开源开发框架',
+        '__NAME__'=>'MuuCmf开源低代码应用开发框架',
         '__COMPANY__'=>'北京火木科技有限公司',
         '__WEBSITE__'=>'www.muucmf.cn',
         '__COMPANY_WEBSITE__'=>'www.hoomuu.cn'

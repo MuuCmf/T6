@@ -1,5 +1,7 @@
 <?php
 define('INSTALL_APP_PATH', dirname(dirname(__DIR__)));
+//配置目录
+define('CONFIG_PATH', dirname(dirname(__DIR__)) . '/config/');
 
 /**
  * T6 系统环境检测
@@ -55,24 +57,22 @@ function check_env()
 }
 
 /**
- * T5 目录，文件读写检测
+ * 目录，文件读写检测
  * @return array 检测数据
  */
 function check_dirfile()
 {
     $items = array(
         array('dir', '可写', 'ok', '../data'),
-        array('dir', '可写', 'ok', './uploads'),
+        array('dir', '可写', 'ok', '../public/attachment'),
         array('dir', '可写', 'ok', '../runtime'),
-        array('dir', '可写', 'ok', '../application'),
-        array('file', '可写', 'ok','../application/database.php'),
+        //array('dir', '可写', 'ok', '../app'),
+        array('file', '可写', 'ok','../.env'),
     );
 
     foreach ($items as &$val) {
         if ('dir' == $val[0]) {
-            //dump(is_writable($val[3]));exit;
             if (!is_writable($val[3])) {
-                //dump($items[1]);exit;
                 if (is_dir($val[3])) {
                     $val[1] = '可读';
                     $val[2] = 'remove';
@@ -112,7 +112,7 @@ function check_func()
         ['file_get_contents', '支持', 'ok'],
         ['mb_strlen', '支持', 'ok'],
         ['curl_init', '支持', 'ok'],
-        //['finfo_open','支持','ok'],
+        ['finfo_open','支持','ok'],
         ['pathinfo','支持','ok']
     ];
 
@@ -128,6 +128,30 @@ function check_func()
 }
 
 /**
+ * 设置数据库配置
+ */
+function set_database_config($dbconfig)
+{
+    // 初始化配置项
+    $databaseConfig = [
+        'default'         => 'mysql',
+        'time_query_rule' => [],
+        'auto_timestamp'  => true,
+        'datetime_format' => 'Y-m-d H:i:s',
+        'connections'     => [
+            'mysql' => [
+                'type' => 'mysql',
+            ],
+        ],
+    ];
+
+    $databaseConfig['connections']['mysql'] = $dbconfig;
+    config($databaseConfig, 'database');
+
+    return true;
+}
+
+/**
  * 写入配置文件
  * @param  array $config 配置信息
  */
@@ -135,7 +159,7 @@ function write_config($config, $auth)
 {
     if (is_array($config)) {
         //数据库配置文件
-        $dbConfigFile = APP_PATH . 'database.php';
+        $dbConfigFile = root_path() . '.env';
         //读取配置内容
         $db_conf = @file_get_contents($dbConfigFile);
         //把auth字串写入数组
@@ -168,7 +192,7 @@ function write_config($config, $auth)
             return '';
         } else {
             show_msg('数据库配置写入失败！', 'error');
-            return '由于您的环境不可写，请复制下面的配置文件内容覆盖到相关的配置文件，然后再登录后台。<p>' . APP_PATH . 'database.php</p>
+            return '由于您的环境不可写，请复制下面的配置文件内容覆盖到相关的配置文件，然后再登录后台。<p>' . root_path() . '.env</p>
             <textarea class="form-control" rows="15" name="" >' . $db_conf . '</textarea>';
         }
     }
@@ -182,10 +206,9 @@ function create_tables($db_instance, $prefix = '')
 {
     //读取SQL文件
 
-    $sql = @file_get_contents(INSTALL_PATH . 'install.sql');
+    $sql = @file_get_contents(root_path() . 'app/install/data/install.sql');
     $sql = str_replace("\r", "\n", $sql);
     $sql = explode(";\n", $sql);
-    
     //替换表前缀
     $orginal = 'muucmf_';
     $sql = str_replace(" `{$orginal}", " `{$prefix}", $sql);
@@ -224,8 +247,8 @@ function register_administrator($db, $prefix, $admin, $auth)
     $uid = 1;
     /*插入用户*/
     $sql = <<<sql
-REPLACE INTO `[PREFIX]ucenter_member` (`id`, `username`, `password`, `email`, `mobile`, `reg_time`, `reg_ip`, `last_login_time`, `last_login_ip`, `update_time`, `status`, `type`) VALUES
-('[UID]', '[NAME]', '[PASS]','[EMAIL]', '', '[TIME]', '[IP]', '[TIME]', '[IP]',  '[TIME]', 1, 1);
+REPLACE INTO `[PREFIX]member` (`uid`, `username`, `email`, `mobile`, `realname`, `nickname`, `password`, `sex`, `avatar`, `birthday`, `qq`, `login`, `signature`, `balance`, `score1`, `score2`, `score3`, `score4`, `status`, `reg_ip`, `last_login_time`, `last_login_ip`, `create_time`, `update_time`) VALUES
+('[UID]', '[NAME]', '[EMAIL]','','','[NAME]', '[PASS]',0, '', '[TIME]', '', '', '', 0, 0, 0, 0, 0, 1, '[IP]', '[TIME]','[IP]','[TIME]','[TIME]');
 sql;
 
     /*  "REPLACE INTO `[PREFIX]ucenter_member` VALUES " .
@@ -238,45 +261,6 @@ sql;
         $sql);
     //执行sql
     $db->execute($sql);
-
-    /*插入用户资料*/
-    $sql = <<<sql
-REPLACE INTO `[PREFIX]member` (`uid`, `nickname`, `sex`, `birthday`, `qq`, `login`, `reg_ip`, `reg_time`, `last_login_ip`, `last_login_role`, `show_role`, `last_login_time`, `status`, `signature`) VALUES
-('[UID]','[NAME]', 0,  '0', '', 1, 0, '[TIME]', 0, 1, 1, '[TIME]', 1, '');
-sql;
-
-    $sql = str_replace(
-        array('[PREFIX]', '[NAME]', '[TIME]', '[UID]'),
-        array($prefix, $admin['username'], time(), $uid),
-        $sql);
-
-
-    $db->execute($sql);
-
-    /*初始化角色表*/
-    $sql = <<<sql
-REPLACE INTO `[PREFIX]role` (`id`, `group_id`, `name`, `title`, `description`, `user_groups`, `invite`, `audit`, `sort`, `status`, `create_time`, `update_time`) VALUES
-    (1, 0, 'default', '普通用户', '普通用户', '1', 0, 0, 0, 1, [TIME], [TIME]);
-sql;
-    $sql = str_replace(
-        array('[PREFIX]', '[TIME]', '[UID]'),
-        array($prefix, time(), $uid),
-        $sql);
-    $db->execute($sql);
-
-    /*插入角色和用户对应关系*/
-    $sql = <<<sql
-REPLACE INTO `[PREFIX]user_role` (`id`, `uid`, `role_id`, `status`, `step`, `init`) VALUES
-    (1, [UID], 1, 1, 'finish', 1);
-sql;
-    $sql = str_replace(
-        array('[PREFIX]', '[UID]'),
-        array($prefix, $uid),
-        $sql);
-    $db->execute($sql);
-
-    /*初始化用户角色end*/
-
 
     show_msg('创始人帐号注册完成！');
 }

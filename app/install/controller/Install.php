@@ -1,22 +1,12 @@
 <?php
 namespace app\install\controller;
 
+use think\facade\Config;
 use think\facade\Db;
 use think\facade\View;
-use app\common\controller\Base;
 
 class Install extends Base
 {
-    public function _initialize()
-    {
-        parent::_initialize();
-        if (is_file(ROOT_PATH . 'install.lock'))
-        {
-            // 已经安装过了 执行更新程序
-            $msg = '请删除install.lock文件后再运行安装程序!';
-            $this->error($msg);
-        }
-    }
 
     //安装第一步，检测运行所需的环境设置
     public function step1(){
@@ -30,9 +20,10 @@ class Install extends Base
         //函数依赖检测
         $func = check_func();
         //数据库配置文件
-		$dbConfigFile = APP_PATH . 'database.php';
+		$root = root_path();
+        
         //目录文件读写检测
-        if(is_really_writable($dbConfigFile)){
+        if(is_really_writable($root)){
             $dirfile = check_dirfile();
             View::assign('dirfile', $dirfile);
         }
@@ -65,46 +56,54 @@ class Install extends Base
             if(!is_array($db) || empty($db[0]) ||  empty($db[1]) || empty($db[2]) || empty($db[3])){
                 return $this->error('请填写完整的数据库配置');
             } else {
-
-                $dbname = $db[2];
+                
+                //$dbname = $db[2];
 				//数据库配置
 	            $dbconfig['type']     = $db[0];
 	            $dbconfig['hostname'] = $db[1];
+                $dbconfig['database'] = $db[2];
 	            $dbconfig['username'] = $db[3];
 	            $dbconfig['password'] = $db[4];
 	            $dbconfig['hostport'] = $db[5];
+                $dbconfig['prefix'] = $db[6];
+                $dbconfig['charse'] = 'utf8';
+                //设置数据库配置
+                set_database_config($dbconfig);
                 // 创建数据库连接
-            	$db_instance = Db::connect($dbconfig);
+            	$db_instance = Db::connect('mysql');
+                //dump($db_instance);exit;
                 // 检测数据库连接
 	            try {
 	                $db_instance->execute('select version()');
 	            } catch (\Exception $e) {
-	                $this->error('数据库连接失败，请检查数据库配置！', 'install/Index/step2');
+	                return $this->error('数据库连接失败，请检查数据库配置！','', url('install/Index/step2'));
 	            }
 
 	            //建立数据库
-            	$sql = "CREATE DATABASE IF NOT EXISTS `{$dbname}` DEFAULT CHARACTER SET utf8";
-            	$db_instance->execute($sql) || $this->error($db_instance->getError(), 'install/Index/step2');
+            	$sql = "CREATE DATABASE IF NOT EXISTS `{$dbconfig['database']}` DEFAULT CHARACTER SET utf8";
+                if(!$db_instance->execute($sql)){
+                    return $this->error($db_instance->getError(), '' , url('install/Install/step2'));
+                }
                 
-            	//完整数据库配置
-	            $dbconfig['database'] = $dbname;
-	            $dbconfig['prefix']   = $db[6];
 	            //暂存数据库配置
-	            session('db_config',$dbconfig);
+	            session('db_config', $dbconfig);
                 session('step',2);
             }
+            return $this->success('配置成功，进入下一步','', url('install/Install/step3'));
 
             //跳转到数据库安装页面
-            $this->redirect('step3');
+            //$this->redirect('step3');
         } else {
-                session('error') && $this->error('环境检测没有通过，请调整环境后重试！');
-                session('step', 2);
-                return View::fetch();
+            if(session('error')) {
+                return $this->error('环境检测没有通过，请调整环境后重试！');
+            }
+            session('step', 2);
+            return View::fetch();
 
         }
     }
 
-    //安装第三步，安装数据表，创建配置文件
+    // 安装第三步，安装数据表，创建配置文件
     public function step3(){
         if(session('step') != 2){
             $this->redirect('step2');
@@ -112,16 +111,19 @@ class Install extends Base
 
         echo View::fetch();
 
+        sleep(1);
         //连接数据库
         $dbconfig = session('db_config');
-        $db_instance = Db::connect($dbconfig);
-
+        //设置数据库配置
+        set_database_config($dbconfig);
+        //动态连接数据库
+        $db_instance = Db::connect('mysql');
         //创建数据表
         create_tables($db_instance, $dbconfig['prefix']);
-        
         //注册创始人帐号
         $auth  = build_auth_key();
         $admin = session('admin_info');
+        dump($admin);
         register_administrator($db_instance, $dbconfig['prefix'], $admin, $auth);
 
         //更新配置文件
