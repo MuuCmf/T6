@@ -92,7 +92,10 @@ class Admin extends Base
      */
     protected function allModuleList()
     {
-        $all_module_list = $this->moduleModel->getAll(['is_setup' => 1,'name' => ['!=','ucenter']]);
+        $all_module_list = $this->moduleModel->getAll([
+            ['is_setup', '=', 1],
+            ['name', '<>','ucenter']
+        ]);
 
         return $all_module_list;
     }

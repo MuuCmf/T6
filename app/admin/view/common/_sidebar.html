@@ -21,23 +21,6 @@
                   <i class="fa fa-angle-left pull-right"></i>
                 </span>
             </a>
-            <ul class="treeview-menu">
-              {volist name="ALL_MODULE_LIST" id="vo"}
-              <li>
-                  <a href="{:url($vo.admin_entry)}">  
-                    <i class="fa fa-circle-o"></i>
-                    <span>{$vo.alias}</span>
-                </a>
-              </li>
-              {/volist}
-              <!--更多应用-->
-              <li>
-                <a href="{:url('admin/module/index')}">  
-                    <i class="fa fa-circle-o"></i>
-                    <span>更多应用...</span>
-                </a>
-              </li>
-            </ul>
           </li>
         </ul>
         {/notempty}
@@ -98,7 +81,7 @@
           <ul class="treeview-menu menu-open">
             {volist name="ALL_MODULE_LIST" id="vo"}
             <li>
-                <a href="{:url($vo.admin_entry)}">  
+                <a href="{:url($vo.entry)}">
                   <i class="fa fa-circle-o"></i>
                   <span>{$vo.alias}</span>
               </a>

@@ -2,7 +2,7 @@
 
 namespace app\admin\controller;
 
-use think\Db;
+use think\facade\Db;
 use think\facade\View;
 use app\common\model\Module as ModuleModel;
 
@@ -55,29 +55,13 @@ class Module extends Admin
             break;
 
             case 'core':
-                $map[] = ['can_uninstall','=',0];
+                $map[] = ['uninstall','=',0];
             break;
         };
 
         $modules = $this->moduleModel->getListByPage($map,'sort desc,id desc','*',20);
-        $page = $modules->render();
-        
-        View::assign('page', $page);
-        View::assign('modules', $modules);
-
-        return View::fetch();
-    }
-
-    /**
-     * 已安装模块使用列表（后台模块菜单底部，更多模块点击后进入）
-     */
-    public function lists()
-    {
-        $map['is_setup'] = 1;//已安装
-        $map['is_com'] = 1; //是否商业模块
-        $modules = model('Module')->getListByPage($map,'sort desc,id desc','*',20);
-        $page = $modules->render();
-
+        $page = htmlspecialchars_decode($modules->render());
+        //dump($modules);exit;
         View::assign('page', $page);
         View::assign('modules', $modules);
 
@@ -91,9 +75,8 @@ class Module extends Admin
     {
         $aId = input('id', 0, 'intval');
         $aNav = input('remove_nav', 0, 'intval');
-        $moduleModel = model('module');
 
-        $module = $moduleModel->getModuleById($aId);
+        $module = $this->moduleModel->getModuleById($aId);
         
         if (request()->isPost()) {
             $aWithoutData = input('withoutData', 1, 'intval');//是否保留数据
