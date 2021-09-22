@@ -108,14 +108,14 @@ class Base
 
     //    return $this->result(200, $msg, $data, $url);
     // }
-    protected function success($msg = '',  $data = '', string $url = null, int $wait = 3, array $header = []): Response
+    protected function success($msg = '',  $data = '', $url = '', int $wait = 3, array $header = []): Response
     {
-        if (is_null($url) && isset($_SERVER["HTTP_REFERER"])) {
+        if (empty($url) && isset($_SERVER["HTTP_REFERER"])) {
             $url = $_SERVER["HTTP_REFERER"];
         } elseif ($url) {
-            $url = (strpos($url, '://') || 0 === strpos($url, '/')) ? $url : app('route')->buildUrl($url);
+            $url = (strpos($url, '://') || 0 === strpos($url, '/')) ? $url : 'refresh';
         }
-
+        
         $result = [
             'code' => 200,
             'msg'  => $msg,
@@ -147,12 +147,12 @@ class Base
     // {
     //     return $this->result(0, $msg, $data, $url);
     // }
-    protected function error($msg = '', $data = '', string $url = null, int $wait = 3, array $header = []): Response
+    protected function error($msg = '', $data = '', $url = '', int $wait = 3, array $header = []): Response
     {
         if (is_null($url)) {
             $url = request()->isAjax() ? '' : 'javascript:history.back(-1);';
         } elseif ($url) {
-            $url = (strpos($url, '://') || 0 === strpos($url, '/')) ? $url : app('route')->buildUrl($url);
+            $url = (strpos($url, '://') || 0 === strpos($url, '/')) ? $url : 'refresh';
         }
 
         $result = [
