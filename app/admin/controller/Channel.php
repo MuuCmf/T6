@@ -129,7 +129,11 @@ class Channel extends Admin
             $list = $Channel->where($map)->order('sort asc,id asc')->select()->toArray();
             foreach ($list as $k => &$v) {
                 $module = Db::name('Module')->where(['entry' => $v['url']])->find();
-                $v['module_name'] = $module['name'];
+                if(!empty($module)){
+                    $v['module_name'] = $module['name'];
+                }else{
+                    $v['module_name'] = '';
+                }
                 unset($key, $val);
             }
             unset($k, $v);

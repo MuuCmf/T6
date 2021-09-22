@@ -29,15 +29,14 @@
                 </select>
         
                 <select name="nav[1][modul][]" class="form-control module margin-right" style="width: 100px;{if !$nav['module_name']}display:none{/if}">
-                    {php}foreach($module as $k=>$v){{/php}
-                    <option value="{$v.entry}" data-icon="{$v.icon}" selected="{if strtolower($nav['url']) == strtolower($v['entry'])}selected{else}false{/if}">{$v.alias}</option>
-                    {php}}unset($k,$v){/php}
+                    {volist name="module" id="v"}
+                    <option value="{$v.entry}" selected="{if strtolower($nav['url']) == strtolower($v['entry'])}selected{else}false{/if}">{$v.alias}</option>
+                    {/volist}
                 </select>
         
                 <input name="nav[1][title][]" placeholder="请输入标题" class="form-control title margin-right" style="width: 100px;" value="{$nav.title}">
         
                 <input name="nav[1][url][]" placeholder="请输入链接" class="form-control url margin-right" style="width: 300px;{if $nav['module_name']}display:none{/if}" value=" {$nav.url}">
-        
             </div>
         
             <div class='pull-left new-blank margin-right'>
@@ -83,9 +82,9 @@
             </select>
 
             <select name="nav[1][module][]" class="form-control module" style="width: 100px;">
-                {php}foreach($module as $k=>$v){{/php}
-                <option value="{$v.entry}"  data-icon="{$v.icon}" >{$v.alias}</option>
-                {php}}unset($k,$v){/php}
+                {volist name="module" id="v"}
+                <option value="{$v.entry}">{$v.alias}</option>
+                {/volist}
             </select>
 
             <input name="nav[1][title][]" placeholder="请输入标题" class="form-control title" style="width: 100px;" value="{$module.0.alias}">

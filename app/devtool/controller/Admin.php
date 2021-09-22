@@ -1,32 +1,36 @@
 <?php
 namespace app\devtool\controller;
 
-use think\Db;
+use think\facade\Db;
+use think\facade\View;
 use app\admin\controller\Admin as MuuAdmin;
-use reflectionclass;
+use app\common\model\Module as ModuleModel;
 
 class Admin extends MuuAdmin
 {
-    protected $module;
+    protected $moduleModel;
 
-    function _initialize()
+    /**
+     * 构造方法
+     * @access public
+     */
+    public function __construct()
     {
-        //cache(['type'=>'File','expire'=>600]);
-        $this->refreshS();
-        parent::_initialize();
-        
+        parent::__construct();
+
+        $this->moduleModel = new ModuleModel();
     }
     //获取模块信息
     private function refreshS()
     {
-        $module = model('Module')->getModule(cache('module'));
+        $module = $this->moduleModel->getModule(cache('module'));
         $this->module = $module;
-        $this->assign('module', $module);
+        View::assign('module', $module);
     }
 
     public function module()
     {
-        $modules = model('common/Module')->getAll();
+        $modules = $this->moduleModel->getAll();
         foreach ($modules as $key => $v) {
             if ($v['is_setup']) {
                 continue;
@@ -34,7 +38,7 @@ class Admin extends MuuAdmin
             unset($modules[$key]);
         }
 
-        $this->assign('modules', $modules);
+        View::assign('modules', $modules);
         cache('guide_menus', null);
         cache('guide_default_rule',null);
         cache('guide_auth_rule',null);
@@ -43,7 +47,7 @@ class Admin extends MuuAdmin
         cache('guide_sql_tables',null);
         cache('guide_sql_rows',null);
         cache('guide_sql_drop_table',null);
-        return $this->fetch('devtool@admin/module');
+        return View::fetch('module');
     }
 
     public function module1()
@@ -55,9 +59,9 @@ class Admin extends MuuAdmin
         $menus = $this->getSubMenus('0');
         $all_menus = Db::name('menu')->where(['module' => $this->module['name']])->select();
         
-        $this->assign('menus', $menus);
+        View::assign('menus', $menus);
 
-        return $this->fetch('devtool@admin/module1');
+        return View::fetch('module1');
 
     }
 
@@ -70,8 +74,8 @@ class Admin extends MuuAdmin
 
         $rules = Db::name('Auth_rule')->where(['module' => $this->module['name'], 'status' => 1])->select();
 
-        $this->assign('rules', $rules);
-        return $this->fetch('devtool@admin/module2');
+        View::assign('rules', $rules);
+        return View::fetch('module2');
     }
 
     public function module3()
@@ -86,11 +90,11 @@ class Admin extends MuuAdmin
         }
 
         $action = Db::name('Action')->where(['module' => $this->module['name'], 'status' => 1])->select();
-        $this->assign('action', $action);
+        View::assign('action', $action);
         $action_limit = Db::name('ActionLimit')->where(['module' => $this->module['name'], 'status' => 1])->select();
-        $this->assign('action_limit', $action_limit);
+        View::assign('action_limit', $action_limit);
 
-        return $this->fetch('devtool@admin/module3');
+        return View::fetch('module3');
     }
 
     public function module4()
@@ -107,7 +111,7 @@ class Admin extends MuuAdmin
         $list = Db::query('SHOW TABLE STATUS');
         $list = array_map('array_change_key_case', $list);
 
-        $db_prefix = config('DB_PREFIX');
+        $db_prefix = config('database.DB_PREFIX');
         $p = $db_prefix . strtolower($this->module['name']);
         $sql_table = '';
         $sql_drop_table = '';
@@ -130,12 +134,12 @@ class Admin extends MuuAdmin
                 }
             }
         }
-        $this->assign('tables', $list);
-        $this->assign('sql_tables', $sql_table);
-        $this->assign('sql_drop_tables', $sql_drop_table);
-        $this->assign('sql_rows', $sql_rows);
-        $this->assign('has_data', $has_data);
-        return $this->fetch('devtool@admin/module4');
+        View::assign('tables', $list);
+        View::assign('sql_tables', $sql_table);
+        View::assign('sql_drop_tables', $sql_drop_table);
+        View::assign('sql_rows', $sql_rows);
+        View::assign('has_data', $has_data);
+        return View::fetch('module4');
     }
 
     public function module5()
@@ -155,13 +159,14 @@ class Admin extends MuuAdmin
         }
         $guide = $this->getGuideContent();
         
-        $this->assign('guide', $guide);
+        View::assign('guide', $guide);
 
         $install = $this->getInstallContent();
-        $this->assign('install', $install);
-        $this->assign('cleanData', $sql_drop_table);
-        return $this->fetch('devtool@admin/module5');
+        View::assign('install', $install);
+        View::assign('cleanData', $sql_drop_table);
+        return View::fetch('devtool@admin/module5');
     }
+
     /**
      * 替换安装文件
      * @return [type] [description]
@@ -169,53 +174,53 @@ class Admin extends MuuAdmin
     public function replace()
     {
         if (is_writable(APP_PATH . $this->module['name'] . '/info')) {
-            $dir = '../application/' . $this->module['name'] . '/info';
+            $dir = '../app/' . $this->module['name'] . '/info';
             $info = lang('_PACK_REPLACE_INSTALL_FILE_').lang('_SUCCESS_');
 
             if(file_exists($dir . '/install.sql')) {
                 if (!rename($dir . '/install.sql', $dir . '/install.sql.bk')) {
                     $info = lang('_FAIL_BACKUP_WITH_BR_',['file'=>'install.sql']);
-                    $this->error($info);
+                    return $this->error($info);
                 }
             }
 
             if(file_exists($dir . '/guide.json')) {
                 if (!rename($dir . '/guide.json', $dir . '/guide.json.bk')) {
                     $info = lang('_FAIL_BACKUP_WITH_BR_',['file'=>'guide_json']);
-                    $this->error($info);
+                    return $this->error($info);
                 }
             }
 
             if(file_exists($dir . '/cleanData.sql')) {
                 if (!rename($dir . '/cleanData.sql', $dir . '/cleanData.sql.bk')) {
                     $info = lang('_FAIL_BACKUP_WITH_BR_',['file'=>'cleanData.sql']);
-                    $this->error($info);
+                    return $this->error($info);
                 }
             }
 
             if (!file_put_contents($dir . '/guide.json', json_encode($this->getGuideContent()))) {
                 $info = lang('_FAIL_REPLACE_WITH_BR_',['file'=>'guide.json']);
-                $this->error($info);
+                return $this->error($info);
             }
 
             if ($this->getInstallContent()) {
                 
                 if(!file_put_contents($dir . '/install.sql', $this->getInstallContent())){
                     $info =lang('_FAIL_REPLACE_WITH_BR_',['file'=>'install.sql']);
-                    $this->error($info);
+                    return $this->error($info);
                 }
             }
             if (cache('guide_sql_drop_table')) {
                 if (!file_put_contents($dir . '/cleanData.sql', cache('guide_sql_drop_table'))) {
                     $info = lang('_FAIL_REPLACE_WITH_BR_',['file'=>'cleanData.sql']);
-                    $this->error($info);
+                    return $this->error($info);
                 }
             }
 
         } else {
-            $this->error(lang('_ERROR_FAIL_REPLACE_'));
+            return $this->error(lang('_ERROR_FAIL_REPLACE_'));
         };
-        $this->success($info);
+        return $this->success($info);
     }
 
     /**
