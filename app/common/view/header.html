@@ -32,13 +32,7 @@
                         {volist name="user_nav" id="vo"}
                         <li>
                             <a target="{eq name='vo.target' value='1'}_blank{else/}_self{/eq}" href="{:get_nav_url($vo['url'])}">
-                                <i class="fa fa-{$vo.icon} icon-{$vo.icon}"></i>
                                 <span>{$vo.title}</span> 
-                                {notempty name="vo.band_text"}
-                                <span class="label label-badge rank-label" title="{$vo.band_text}">
-                                    {$vo.band_text}
-                                </span>
-                                {/notempty}
                             </a>
                         </li>
                         {/volist}
@@ -59,9 +53,9 @@
                 {else/}
                 <li class="">
                     {if condition="$open_quick_login"}
-                        <a data-login="quick_do_login" data-remote="{:url('ucenter/Common/quickLogin')}" data-show-header="false" data-toggle="modal">登陆</a>
+                    <a data-login="quick_do_login" data-remote="{:url('ucenter/Common/quickLogin')}" data-show-header="false" data-toggle="modal">登陆</a>
                     {else/}
-                        <a data-login="do_login" href="{$login_url}">登陆</a>
+                    <a data-login="do_login" href="{$login_url}">登陆</a>
                     {/if}
                 </li>
                 <li class="">

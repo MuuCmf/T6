@@ -77,7 +77,7 @@ class Channel extends Admin
      * @return [type] [description]
      */
     public function user(){
-        $Channel = Db::name('UserNav');
+
         if (request()->isPost()) {
             $one = $_POST['nav'][1];
             if (count($one) > 0) {
@@ -85,15 +85,15 @@ class Channel extends Admin
 
                 for ($i = 0; $i < count(reset($one)); $i++) {
                     $data[$i] = array(
+                        'type' => text($one['type'][$i]),
+                        'app' => text($one['app'][$i]),
                         'title' => text($one['title'][$i]),
                         'url' => text($one['url'][$i]),
                         'sort' => intval($one['sort'][$i]),
                         'target' => intval($one['target'][$i]),
-                        //'color' => text($one['color'][$i]),
-                        'band_text' => text($one['band_text'][$i]),
                         'status' => 1
                     );
-                    $pid[$i] = $Channel->insert($data[$i]);
+                    $pid[$i] = Db::name('UserNav')->insert($data[$i]);
                 }
                 cache('common_user_nav',null);
                 return $this->success('修改成功');
@@ -103,18 +103,8 @@ class Channel extends Admin
             $this->setTitle('导航管理');
             /* 获取频道列表 */
             $map[] = ['status','>', -1];
-            $list = $Channel->where($map)->order('sort asc,id asc')->select()->toArray();
-            foreach ($list as $k => &$v) {
-                $module = Db::name('Module')->where(['entry' => $v['url']])->find();
-                if(!empty($module)){
-                    $v['module_name'] = $module['name'];
-                }else{
-                    $v['module_name'] = '';
-                }
-                unset($key, $val);
-            }
-            unset($k, $v);
-
+            $list = Db::name('UserNav')->where($map)->order('sort asc,id asc')->select()->toArray();
+            
             // 获取应用模块列表
             $moduleModel = new ModuleModel();
             $module = $moduleModel->getAll(['is_setup' => 1]);

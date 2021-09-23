@@ -19,7 +19,7 @@ class Common extends Base
             $password = input('post.password', '', 'text');
 
             if(empty($account)){
-                return $this->result(0,'账号不能为空');
+                return $this->error('账号不能为空');
             }
             // 验证账号和密码
             $commonMemberModel = new CommonMember;
@@ -27,12 +27,14 @@ class Common extends Base
             if($uid < 1){
                 return $this->error($commonMemberModel->error);
             }
+
             // 登录
             $res = $commonMemberModel->login($uid);
 
             if ($res) {
                 $token = JWTAuth::builder(['uid' => $uid]); //参数为用户认证的信息，请自行添加
-                return $this->success('登录成功', $token, url('admin/index/index'));
+                
+                return $this->success('登录成功', $token);
             } else {
                 return $this->error($commonMemberModel->error);
             }

@@ -23,24 +23,24 @@
                 <div class="pull-left nav_list">
             
                     <select name="nav[1][type][]" class="form-control nav-type margin-right" style="width: 100px;">
-                        {if $nav['module_name']}
-                        <option value="module" selected>系统模块</option>
-                        <option value="custom" >自定义链接</option>
+                        {if $nav['type'] == '_custom'}
+                        <option value="app">系统应用</option>
+                        <option value="_custom" selected>自定义链接</option>
                         {else}
-                        <option value="module">系统模块</option>
-                        <option value="custom" selected>自定义链接</option>
+                        <option value="app" selected>系统应用</option>
+                        <option value="_custom">自定义链接</option>
                         {/if}
                     </select>
             
-                    <select name="nav[1][modul][]" class="form-control module margin-right" style="width: 100px;{if !$nav['module_name']}display:none{/if}">
-                        {php}foreach($module as $k=>$v){{/php}
-                        <option value="{$v.entry}" data-icon="{$v.icon}" selected="{if strtolower($nav['url']) == strtolower($v['entry'])}selected{else}false{/if}">{$v.alias}</option>
-                        {php}}unset($k,$v){/php}
+                    <select name="nav[1][app][]" class="form-control module margin-right" style="width: 100px;{if $nav['type']=='_custom'}display:none{/if}">
+                        {volist name="module" id="v"}
+                        <option value="{$v.name}" {if strtolower($nav['app']) == strtolower($v['name'])}selected{/if}>{$v.alias}</option>
+                        {/volist}
                     </select>
             
                     <input name="nav[1][title][]" placeholder="请输入标题" class="form-control title margin-right" style="width: 100px;" value="{$nav.title}">
             
-                    <input name="nav[1][url][]" placeholder="请输入链接" class="form-control url margin-right" style="width: 300px;{if $nav['module_name']}display:none{/if}" value=" {$nav.url}">
+                    <input name="nav[1][url][]" placeholder="请输入链接" class="form-control url margin-right" style="width: 300px;{if $nav['type']=='app'}display:none{/if}" value=" {$nav.url}">
             
                 </div>
             
@@ -50,10 +50,6 @@
                     <label class="target-blank">
                         新窗口
                     </label>
-                </div>
-            
-                <div class='pull-left band-text margin-right'>
-                    <input name="nav[1][band_text][]" class="form-control" placeholder="标志点文字" style="width: 100px;" value="{$nav['band_text']}">
                 </div>
             
                 <div class='pull-right i-list'>
@@ -83,14 +79,14 @@
             <input name="nav[1][sort][]" class="sort" type="hidden">
             <div class="pull-left nav_list">
                 <select name="nav[1][type][]" class="form-control nav-type" style="width: 100px;">
-                    <option value="module" >系统模块</option>
-                    <option value="custom" >自定义</option>
+                    <option value="app" selected>系统应用</option>
+                    <option value="_custom">自定义链接</option>
                 </select>
 
-                <select name="nav[1][module][]" class="form-control module" style="width: 100px;">
-                    {php}foreach($module as $k=>$v){{/php}
-                    <option value="{$v.entry}"  data-icon="{$v.icon}" >{$v.alias}</option>
-                    {php}}unset($k,$v){/php}
+                <select name="nav[1][app][]" class="form-control module" style="width: 100px;">
+                    {volist name="module" id="v"}
+                    <option value="{$v.name}">{$v.alias}</option>
+                    {/volist}
                 </select>
 
                 <input name="nav[1][title][]" placeholder="请输入标题" class="form-control title" style="width: 100px;" value="{$module.0.alias}">
@@ -103,10 +99,6 @@
                 <label class="target-blank">
                     新窗口
                 </label>
-            </div>
-
-            <div class='pull-left band-text'>
-                <input name="nav[1][band_text][]" class="form-control" placeholder="标志点文字"  style="width: 100px;" value="">
             </div>
 
             <div class='pull-right i-list'>
