@@ -18,13 +18,8 @@ class Channel extends Model
     {
         $map = array('status' => 1);
         $list = $this->field($field)->where($map)->order('sort')->select()->toArray();
-        foreach($list as &$v){
-            $v['_'] = '';
-        }
-        unset($v);
-
-        $tree = list_to_tree($list, 'id', 'pid', '_');
+        //$tree = list_to_tree($list, 'id', 'pid', '_');
         
-        return $tree;
+        return $list;
     }
 }
