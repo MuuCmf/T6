@@ -28,11 +28,11 @@
         $('.nav-type').change(function () {
             var obj = $(this);
             switch (obj.val()) {
-                case 'module':
+                case 'app':
                     obj.closest('li>div').children('select.module').show().change();
                     obj.closest('li>div').children('input.url').hide();
                     break;
-                case 'custom':
+                case '_custom':
                     obj.closest('li>div').children('select.module').hide();
                     obj.closest('li>div').children('input.url').show();
                     obj.closest('li>div').children('input.title').val('');
