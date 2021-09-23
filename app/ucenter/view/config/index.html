@@ -1,0 +1,273 @@
+{extend name="../../common/view/main"/}
+{block name="body"}
+<div class="main-wrapper">
+
+    <!--用户设置顶部-->
+    <div class="config_header">
+        <div class="user-info-panel text-center margin_bottom_10">
+            <div>
+                <img class="img-circle" src="{$user.avatar}">
+            </div>
+            <div>
+                <a class="nickname">{$user.nickname}</a>
+            </div>
+        </div>
+    </div>
+    <!--用户设置顶部end-->
+
+    <div id="main-container" class="container user-config">
+        <div class="row">
+            <div class="col-md-3">
+                <div>
+                    <nav class="menu" data-ride="menu">
+                        <ul id="treeMenu" class="tree tree-menu side-menu" data-ride="tree">
+                            <li id="info">
+                                <a href="{:url('index')}">
+                                    <i class="icon-th"></i> 基本信息
+                                </a>
+                            </li>
+                            <li id="avatar">
+                                <a href="{:url('avatar')}">
+                                    <i class="icon-user"></i> 头像设置
+                                </a>
+                            </li>
+                            <li id="password">
+                                <a href="{:url('password')}">
+                                    <i class="icon-lock"></i> 密码修改
+                                </a>
+                            </li>
+                            <li id="score">
+                                <a href="{:url('score')}">
+                                    <i class="icon-bar-chart"></i> 我的积分
+                                </a>
+                            </li>
+                            <li id="other">
+                                <a href="{:url('other')}">
+                                    <i class="icon-list-ul"></i> 其它
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+            <div class="col-md-9">
+                <div id="usercenter-content-td ">
+                    <div class="container-fluid common_block_border config-content">
+                        <div id="center">
+                            <div id="center_base">
+                                <div id="center_account">
+                                    <div class="row">
+                                        <div class="col-xs-12">
+                                            <ul class="nav nav-secondary">
+                                                <li class="active">
+                                                    <a href="#base" data-toggle="tab">
+                                                        用户设置
+                                                    </a>
+                                                </li>
+                                                
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <div class="tab-content">
+                                        <div class="tab-pane active" id="base">
+                                            <div class="with-padding" style="padding: 20px">
+                                                <div class="row">
+                                                    <div class="col-xs-8 center_info form-horizontal">
+                                                        {php}if(check_reg_type('username')){{/php}
+                                                        <div class="form-group">
+                                                            <label for="aUsername" class="col-xs-2 control-label">用户名</label>
+                        
+                                                            <div class="col-xs-10">
+                                                                {php}if($user['username']){{/php}
+                                                                    <span class="lh32">{$accountInfo['username']}</span>
+                                                                {php}}else{{/php}
+                                                                    <input type="text" class="form-control pull-left" id="aUsername" value="" placeholder="{:lang('_USER_NAME_NOT_SET_')}{:lang('_WAVE_')}">
+                                                                    <a class="pull-left lh32 saveUsername" style="margin-left: 10px">修改</a>
+                                                                {php}}{/php}
+                                                            </div>
+                                                        </div>
+                                                        {php}}{/php}
+                                                        <div class="form-group">
+                                                            <label for="aEmail" class="col-xs-2 control-label">Email</label>
+                                                            <div class="col-xs-10">
+                                                                {$user.email|default='未设置'}
+                                                                <a class=" lh32"
+                                                                   data-remote="{:url('ucenter/index/changeaccount',array('tag'=>'email'))}"
+                                                                   data-toggle="modal">修改邮箱</a>
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label for="aMobile" class="col-xs-2 control-label">手机号</label>
+                        
+                                                            <div class="col-xs-10">
+                                                                {$user.mobile|default='未设置'}
+                                                                <a class=" lh32 " style="margin-left: 10px" data-remote="{:url('ucenter/index/changeaccount',array('tag'=>'mobile'))}" data-toggle="modal">修改手机</a>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-xs-8">
+                                                        <form class="form-horizontal center_info ajax-form" role="form" action="{:url('ucenter/index/index')}" method="post">
+                                                            <div class="form-group">
+                                                                <label for="nickname" class="col-xs-2 control-label">昵称</label>
+                        
+                                                                <div class="col-xs-10">
+                                                                    <input type="text" class="form-control" id="nickname" name="nickname" value="{$user.nickname|text}" placeholder="昵称">
+                                                                </div>
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <label class="col-xs-2 control-label">性别</label>
+                        
+                                                                <div class="col-xs-10">
+                                                                    <label class="radio-inline">
+                                                                        <input name="sex" type="radio" value="1"
+                                                                        {eq name="user.sex" value="1"} checked{/eq}
+                                                                       >男
+                                                                    </label>
+                                                                    <label class="radio-inline">
+                                                                        <input name="sex" type="radio" value="2"
+                                                                        {eq name="user.sex" value="2"} checked{/eq}
+                                                                       >女
+                                                                    </label>
+                                                                    <label class="radio-inline">
+                                                                        <input name="sex" type="radio" value="0"
+                                                                        {eq name="user.sex" value="0"} checked{/eq}
+                                                                       >保密
+                                                                    </label>
+                                                                </div>
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <label for="signature" class="col-xs-2 control-label">签名</label>
+                        
+                                                                <div class="col-xs-10">
+                                                                    <textarea id="signature" name="signature" class="form-control" style="width: 100%; height: 6em;resize: none">{$user.signature|htmlspecialchars}</textarea>
+                                                                </div>
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <div class="col-sm-offset-2 col-xs-10">
+                                                                    <button type="submit" class="btn btn-primary">保 存</button>
+                                                                </div>
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                        
+                                        {volist name="profile_group_list" id="vo"}
+                                            <div class="tab-pane" id="expand_tab_{$vo.id}">
+                                                <form action="{:url('Config/edit_expandinfo')}" method="post" class="ajax-form">
+                                                    <div class="with-padding">
+                                                        <div class="row">
+                                                            <div class="col-xs-8">
+                                                                <input type="hidden" name="profile_group_id" value="{$vo.id}">
+                                                                <div>
+                                                                    <volist name="vo.fields" id="vl">
+                                                                        <dl>
+                                                                            
+                                                                        </dl>
+                                                                    </volist>
+                                                                </div>
+                                                                {if condition="count($vo['fields']) neq 0"}
+                                                                    <input type="submit" value="{:lang('_SAVE_')}" id="submit_btn" class="btn btn-primary expandinfo-sumbit">
+                                                                {else/}
+                                                                    <span class="expandinfo-noticeinfo">{:lang('_MESSAGE_EXPAND_NONE_')}{:lang('_EXCLAMATION_')}</span>
+                                                                {/if}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        {/volist}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="clearfix"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        $(window).resize(function () {
+            $("#main-container").css("min-height", $(window).height() - 343);
+        }).resize();
+    })
+
+
+    $("#{$tab}").addClass('active');
+
+
+    $(function () {
+        var $sidebar = $('#usercenter-sidebar-td');
+        var $sidebar_xs = $('#usercenter-sidebar-xs');
+        var $sidebar_sm = $('#usercenter-sidebar-sm');
+        var $content = $('#usercenter-content-td');
+
+        function trigger_resp() {
+            var width = $(window).width();
+            if (width < 768) {
+                on_xs();
+            } else {
+                on_sm();
+            }
+        }
+
+        function on_xs() {
+            $sidebar_xs.append($sidebar);
+            $content.css({'padding-left': 0, 'padding-right': 0});
+        }
+
+        function on_sm() {
+            $sidebar_sm.prepend($sidebar);
+        }
+
+        trigger_resp();
+
+        $(window).resize(function () {
+            trigger_resp();
+        })
+    })
+</script>
+
+
+{/block}
+{block name="script"}
+<script type="text/javascript" src="__JS__/ucenter.min.js"></script>
+<script>
+    function center_toggle(name) {
+        var show = $('#' + name + '_panel').css('display');
+        $('.center_panel').hide();
+        $('.center_arrow_right').show();
+        $('.center_arrow_bottom').hide()
+        if (show == 'none') {
+            $('#' + name + '_panel').show();
+            $('#' + name + '_toggle_right').hide();
+            $('#' + name + '_toggle_bottom').show()
+        } else {
+            $('#' + name + '_toggle_right').show();
+            $('#' + name + '_toggle_bottom').hide()
+        }
+    }
+
+    $(function () {
+        $('.saveUsername').click(function () {
+            var username = $(this).prev().val();
+            if (!username) {
+                toast.error("{:lang('_USERNAME_NOT_EMPTY_')}{:lang('_EXCLAMATION_')}");
+                return false;
+            }
+            if (confirm("{:lang('_USERNAME_SET_ONCE_')}{:lang('_QUESTION_')}")) {
+                $.post("{:url('ucenter/config/saveUsername')}", {username: username}, function (res) {
+                    handleAjax(res);
+                })
+            }
+        })
+    })
+</script>
+{/block}
