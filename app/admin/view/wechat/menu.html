@@ -1,0 +1,250 @@
+{extend name="common/main"/}
+
+{block name="body"}
+
+<div class="wechat-menu">
+    <div class="hbox">
+        <div class="inner-left">
+            <div class="menu-view-con">
+                <div class="menu-view">
+                    <div class="menu-view-title">公众号名称</div>
+                    <div class="custom-menu-view-body">
+                        <div class="weixin-msg-list"><ul class="msg-con"></ul></div>
+                    </div>
+                    <div id="menuMain" class="menu-view-footer">
+                        <div class="menu-view-footer-left"></div>
+                        <div class="menu-view-footer-right" >
+                            <!--父级菜单-->
+                            <div class="footer-parent-item" :class="{'choose-menu': selectedIndex[0] == index && selectedIndex[1] < 0}" v-for="(item,index) in menuList" @click="chooseMenu(index,-1)">
+                                <div class="text-ellipsis">{{item.title}}</div>
+                                <!--子级菜单-->
+                                <div class="menu-child">
+                                    <div class="menu-child-item" :class="{'choose-menu': selectedIndex[0] == index && selectedIndex[1] == cindex}" v-for="(child,cindex) in item.child" @click.stop="chooseMenu(index,cindex)">
+                                        <div class="text-ellipsis">{{child.title}}</div>
+                                    </div>
+                                    <div class="menu-child-item add" v-if="item.child.length < 5" @click.stop="addMenu(index,'child')">
+                                        <i class="fa fa-plus"></i>
+                                    </div>
+                                    <div class="arrow"></div>
+                                </div>
+                                <!--子级菜单-->
+                            </div>
+                            <div class="footer-parent-item add" v-if="menuList.length < 3" @click="addMenu(0,'parent')">
+                                <i class="fa fa-plus"></i>
+                            </div>
+                            <!--父级菜单-->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="inner-right">
+            <div class="edit-after" v-if="selectedMenu">
+                <form name="menu-form" class="form-horizontal">
+                    <div class="form-group">
+                        <label for="menu-name" class="col-sm-2">菜单名称</label>
+                        <div class="col-sm-6">
+                            <input type="text" class="form-control" id="menu-name" v-model="selectedMenu.title">
+                        </div>
+                        <div class="col-sm-4">
+                            <button type="button" class="btn btn-danger" @click="remove">删除菜单</button>
+                        </div>
+                    </div>
+                    <div class="help-block col-sm-12">
+                        字数不超过5个汉字或16个字符；若无二级菜单，可输入20个汉字或60个字符
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2">菜单内容</label>
+                        <div class="col-sm-10" style="margin-top: 5px">
+                            <input type="radio" name="content_type" value="1" v-model="selectedMenu.type" id="type-1" checked>
+                            <label for="type-1">发送消息</label>
+
+                            <input type="radio" name="content_type" value="2" v-model="selectedMenu.type" id="type-0">
+                            <label for="type-0">跳转链接</label>
+                        </div>
+                    </div>
+                    <div class="content">
+                        <div class="send-message" v-if="selectedMenu.type == 1">
+                            <div class="content-tab">
+                                <div class="tab-item col-sm-3 active">图文消息</div>
+                                <div class="tab-item col-sm-3">图片</div>
+                                <div class="tab-item col-sm-3">语音</div>
+                                <div class="tab-item col-sm-3">视频</div>
+                            </div>
+                            <div class="content-box">
+                                <a href="" class="choose">
+                                    <div class="add-icon">
+                                        <i class="fa fa-plus"></i><br>从素材库中选择
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="jump-url" v-if="selectedMenu.type == 2">
+                            <div class="help-block col-sm-12">
+                                粉丝点击该菜单会跳转到一下链接：
+                            </div>
+                            <div class="form-group">
+                                <label for="link-url" class="col-sm-4">页面地址</label>
+                                <div class="col-sm-6">
+                                    <input type="text" class="form-control" id="link-url" placeholder="认证号才可手动输入地址">
+                                    <div class="help-block col-sm-12">
+                                        必填，必须是正确的URL格式
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+<!--                    <button type="button" class="btn btn-primary" @click="edit">确认</button>-->
+                </form>
+            </div>
+            <div class="edit-before" v-if="!selectedMenu"><h5>点击左侧菜单进行操作</h5></div>
+        </div>
+    </div>
+    <div class="cm-edit-footer">
+        <button id="saveBtns" type="button" class="btn btn-info1">保存</button>
+        <button id="synchroBtns" type="button" class="btn btn-info1">同步</button>
+        <button id="showPhone"  type="button" class="btn btn-info1">预览</button>
+        <button id="deleteMenu"  type="button" class="btn btn-info1" onclick="deleteMenu()">清空菜单</button>
+    </div>
+
+    <!-- 对话框HTML -->
+    <div class="modal fade" id="clearParentModel">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">关闭</span></button>
+                    <h4 class="modal-title">提示</h4>
+                </div>
+                <div class="modal-body">
+                    添加子菜单后，一级菜单的内容将被清除。确定添加子菜单？
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" @click="addMenu(continueIndex,'child')">保存</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    var vm = new Vue({
+        el: '.wechat-menu',
+        data: {
+            menuList:[
+                {
+                    title:'新建菜单',
+                    type:1,
+                    child:[
+                        {
+                            title:'子级1',
+                            type:1
+                        },
+                        {
+                            title:'子级2',
+                            type:2
+                        },
+                        {
+                            title:'子级3',
+                            type:1
+                        },
+                        {
+                            title:'子级4',
+                            type:1
+                        },
+                    ]
+                },
+                {
+                    title:'新建菜单',
+                    type:2,
+                    child:[]
+                },
+            ],
+            selectedMenu:null,
+            selectedIndex:[-1,-1],
+            continueIndex:-1,//清除一级菜单索引
+        },
+        mounted(){
+            $(".menu-child").sortable()
+        },
+        methods: {
+            /**
+             * 添加菜单
+             */
+            addMenu(index,type){
+                let menu = {};
+                let that = this;
+                menu.title = "新建菜单";
+                menu.type = 1;
+                if (type == 'parent'){
+                    menu.child = [];
+                    that.menuList.push(menu);
+                    let len = that.menuList.length;
+                    setTimeout(function () {
+                        len--;
+                        that.chooseMenu(len,-1);
+                    },200)
+                }else{
+                    let len = that.menuList[index].child.length;
+                    if (len < 1 && that.continueIndex == -1){
+                        $('#clearParentModel').modal('show')
+                        that.continueIndex = index;
+                    }else{
+                        $('#clearParentModel').modal('hide')
+                        that.continueIndex = -1;
+                        that.menuList[index].child.push(menu);
+                        setTimeout(function () {
+                            that.chooseMenu(index,len);
+                        },200)
+                    }
+
+                }
+
+            },
+            /**
+             *选择菜单
+             */
+            handleMenu(){
+
+            },
+            /**
+             * 选择菜单
+             */
+            chooseMenu(index,childIndex){
+                this.selectedIndex = [index,childIndex];
+                if (childIndex > -1){
+                    this.selectedMenu = this.menuList[index].child[childIndex];
+                }else{
+                    this.selectedMenu = this.menuList[index];
+                }
+            },
+            /**
+             * 更改子项
+             */
+            edit(){
+                let index = this.selectedIndex;
+                let menu = JSON.parse(JSON.stringify(this.selectedMenu));
+                if (index[1] > -1){
+                    this.menuList[index[0]].child[index[1]] = menu;
+                }else{
+                    this.menuList[index[0]] = menu;
+                }
+            },
+            /**
+             * 移除当前菜单
+             */
+            remove(){
+                let index = this.selectedIndex;
+                if (index[1] > -1){
+                    this.menuList[index[0]].child.splice(index[1],1);
+                }else{
+                    this.menuList.splice(index[0],1);
+                }
+                this.selectedIndex = [-1,-1];
+                this.selectedMenu = null;
+
+            }
+        },
+    })
+</script>
+{/block}

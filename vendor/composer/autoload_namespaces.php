@@ -6,6 +6,7 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
+    'Pimple' => array($vendorDir . '/pimple/pimple/src'),
     'PHPQRCode' => array($vendorDir . '/aferrandini/phpqrcode/lib'),
     'PHPExcel' => array($vendorDir . '/phpoffice/phpexcel/Classes'),
     '' => array($baseDir . '/extend'),

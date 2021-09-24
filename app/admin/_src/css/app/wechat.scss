@@ -1,0 +1,199 @@
+.wechat-menu{
+  position: relative;
+  padding: 20px;
+  .hbox {
+    display: table;
+    table-layout: fixed;
+
+    .inner-left {
+      width: 380px;
+      display: table-cell;
+      vertical-align: top;
+      height: 100%;
+      float: none;
+      border: 1px solid #dee5e7;
+      border-right: none;
+      position: relative;
+      .menu-view-con {
+        width: 309px;
+        height: 506px;
+        position: relative;
+        margin: 50px auto;
+        .menu-view {
+          height: 100%;
+          border: 1px solid #dedede;
+          .menu-view-title {
+            height: 40px;
+            line-height: 40px;
+            text-align: center;
+            background: #323232;
+            color: #fff;
+          }
+          .menu-view-body {
+            position: absolute;
+            top: 40px;
+            left: 1px;
+            right: 1px;
+            bottom: 50px;
+            background: #f2f2f2;
+            overflow: auto;
+            border-bottom: 1px solid #dee5e7;
+            border-top: 1px solid #dee5e7;
+          }
+          .menu-view-footer {
+            position: absolute;
+            height: 50px;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            border-top: 1px solid #dee5e7;
+            .menu-view-footer-left {
+              position: absolute;
+              width: 40px;
+              top: 0;
+              bottom: 0;
+              left: 0;
+              border-right: 1px solid #dee5e7;
+              background: url(/static/admin/images/wechat/keyboard.png);
+              background-repeat: no-repeat;
+              background-position: center;
+            }
+            .menu-view-footer-right {
+              position: absolute;
+              left: 40px;
+              right: 0;
+              top: 0;
+              bottom: 0;
+              font-size: 13px;
+              display: flex;
+              flex-direction: row;
+              .choose-menu{
+                border: 1px solid #09c !important;
+              }
+              .footer-parent-item{
+                flex: 1;
+                text-align: center;
+                line-height: 50px;
+                border-right: 1px solid #dee5e7;
+                position: relative;
+                cursor: pointer;
+                .menu-child{
+                  position: absolute;
+                  bottom: 70px;
+                  left: 4px;
+                  right: 4px;
+                  .menu-child-item{
+                    width: 100%;
+                    height: 40px;
+                    line-height: 40px;
+                    text-align: center;
+                    border: 1px solid #dee5e7;
+                    border-top: none;
+                    background-color: #ffffff;
+                  }
+                  .menu-child-item:nth-of-type(1){
+                    border-top: 1px solid #dee5e7;
+                    border-top-left-radius: 6px;
+                    border-top-right-radius: 6px;
+                  }
+                  .menu-child-item:nth-last-child(2){
+                    border-bottom-left-radius: 6px;
+                    border-bottom-right-radius: 6px;
+                  }
+                  .arrow{
+                    width: 0;
+                    height: 0;
+                    border-left: 8px solid transparent;
+                    border-right: 8px solid transparent;
+                    border-top: 8px solid #ffffff;
+                    position: absolute;
+                    bottom: -7px;
+                    left: 50%;
+                    margin-left: -8px;
+                    z-index: 2;
+                  }
+                }
+              }
+              .add{
+                color: #09c;
+              }
+            }
+          }
+        }
+      }
+    }
+
+    .inner-right {
+      position: relative;
+      background: #f3f4f8;
+      display: table-cell;
+      vertical-align: top;
+      max-width: 718px;
+      min-width: 518px;
+      height: 100%;
+      border: 1px solid #dee5e7;
+      color: #58666e;
+      .edit-before{
+        position: absolute;
+        top: 0;
+        right: 0;
+        left: 0;
+        bottom: 0;
+        background-color: #ffffff;
+        text-align: center;
+        h5{
+          line-height: 400px;
+        }
+      }
+      .edit-after{
+        padding: 20px;
+        .form-group{
+          padding-top: 40px;
+        }
+        .content{
+          width: 100%;
+          border: 1px solid #dee5e7;
+          padding: 0;
+          min-height: 300px;
+          .send-message{
+            .content-tab{
+              height: 40px;
+              border-bottom: 1px solid #d2d9db;
+              .tab-item{
+                line-height: 40px;
+                text-align: center;
+              }
+              .active{
+                background: #09c;
+                color: #ffffff;
+              }
+            }
+            .content-box{
+              padding: 20px;
+              .choose{
+                display: block;
+                width: 324px;
+                height: 254px;
+                text-align: center;
+                position: relative;
+                .add-icon{
+                  position: absolute;
+                  left: 50%;
+                  top: 50%;
+                  margin-top: -24px;
+                  margin-left: -50px;
+                }
+              }
+              .choose:hover{
+                border: 1px dashed #000;
+              }
+            }
+          }
+          .jump-url{
+            padding: 20px;
+          }
+        }
+      }
+    }
+  }
+}
