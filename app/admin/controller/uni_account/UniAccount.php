@@ -77,7 +77,7 @@ class UniAccount extends Admin{
             }
 
             $data['status'] = 1;//默认状态为启用
-            if (isset($data['id'])){
+            if (!empty($data['id'])){
                 $res = $resId = $this->uniAccountModel->update($data);
             }else{
                 $res = $resId = $this->uniAccountModel->insertGetId($data);
@@ -120,10 +120,10 @@ class UniAccount extends Admin{
             $this->error('参数错误');
         }
 
-        if (Db::name('ExtendConfig')->where('id','in', $id)->delete()) {
-            cache('MUUCMF_EXT_CONFIG_DATA', null);
+        if (Db::name('UniAccount')->where('id','in', $id)->delete()) {
+            cache('MUUCMF_UNI_ACCOUNT_CONFIG_DATA', null);
             //记录行为
-            action_log('update_config', 'extend_config', $id, is_login());
+            action_log('update_config', 'uni_account_config', $id, is_login());
             return $this->success('删除成功');
         } else {
             return $this->error('删除失败');
