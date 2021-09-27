@@ -2,7 +2,7 @@
 /**
  * +----------------------------------------------------------------------
  *                                  |
- *     __     __  __     __  __     | FILE: Wechat.php
+ *     __     __  __     __  __     | FILE: OfficialAccount.php
  *    /\ \   /\_\_\_\   /\_\_\_\    | AUTHOR: 季骁宣
  *   _\_\ \  \/_/\_\/_  \/_/\_\/_   | EMAIL: jxx0410@sina.com
  *  /\_____\   /\_\/\_\   /\_\/\_\  | QQ: 516036855
@@ -18,11 +18,11 @@ use app\common\model\UniAccount;
 use think\facade\Db;
 
 /**
- * 微信控制器
- * Class Wechat
+ * 公众号管理
+ * Class OfficialAccount
  * @package app\admin\controller
  */
-class Wechat extends Admin {
+class OfficialAccount extends Admin {
     private  $uniAccountModel;
     function __construct()
     {
@@ -49,26 +49,8 @@ class Wechat extends Admin {
             //查询微信平台配置
 
             $builder = new AdminConfigBuilder();
-            $builder->title('微信配置')->suggest('基于微信各项参数配置');
-            $data = $this->uniAccountModel->findDataByWhere(['group' => 'wechat']);
-
-            //动态循环数据
-            foreach ($data as $item){
-                $builder
-                    ->keyText('appid', 'appid', 'Access Key ID是您访问阿里云API的密钥，具有该账户完全的权限，请您妥善保管.')
-                    ->keyText('OSS_ALIYUN_ACCESSKEYSECRET', 'AccessKeySecret', 'Access Key Secret是您访问阿里云API的密钥，具有该账户完全的权限，请您妥善保管.')
-                    ->keyText('OSS_ALIYUN_ENDPOINT', 'Endpoint', '如：oss-cn-beijing.aliyuncs.com.')
-                    ->keyText('OSS_ALIYUN_BUCKET', 'Bucket', 'Bucket.')
-                    ->keyText('OSS_ALIYUN_BUCKET_DOMAIN', 'Bucket域名', 'Bucket域名.')
-                    ->group('公众号', [
-                        'APPID',
-                        'OSS_ALIYUN_ACCESSKEYSECRET',
-                        'OSS_ALIYUN_ENDPOINT',
-                        'OSS_ALIYUN_BUCKET',
-                        'OSS_ALIYUN_BUCKET_DOMAIN'
-                    ]);
-            }
-
+            $builder->title('公众号配置')->suggest('基于微信各项参数配置');
+            $data = $this->uniAccountModel->where(['status' => 1, 'group' => 2])->field('id,name,title,extra,value,group,remark,type')->order('sort asc')->select()->toArray();
 
             // 腾讯云COS参数配置
             $builder
