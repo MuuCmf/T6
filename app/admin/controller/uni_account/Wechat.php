@@ -50,11 +50,10 @@ class Wechat extends Admin {
 
             $builder = new AdminConfigBuilder();
             $builder->title('微信配置')->suggest('基于微信各项参数配置');
-            $data = $this->uniAccountModel->findDataByWhere(['platform' => 'wechat']);
-            $data = $data['wechat'];
+            $data = $this->uniAccountModel->findDataByWhere(['group' => 'wechat']);
 
             //动态循环数据
-            foreach ($data['data'] as $item){
+            foreach ($data as $item){
                 $builder
                     ->keyText('appid', 'appid', 'Access Key ID是您访问阿里云API的密钥，具有该账户完全的权限，请您妥善保管.')
                     ->keyText('OSS_ALIYUN_ACCESSKEYSECRET', 'AccessKeySecret', 'Access Key Secret是您访问阿里云API的密钥，具有该账户完全的权限，请您妥善保管.')

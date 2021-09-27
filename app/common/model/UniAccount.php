@@ -26,11 +26,6 @@ class UniAccount extends Model{
         $type = ['offcial_account' => '微信公众号','wechat_mini_program' => '微信小程序'];
         return $type[$value];
     }
-    public function getPlatformStrAttr($value)
-    {
-        $type = ['wechat' => '微信','alipay' => '支付宝'];
-        return $type[$value];
-    }
 
     /**
      * 根据指定条件查询
@@ -39,16 +34,51 @@ class UniAccount extends Model{
     public function findDataByWhere($where)
     {
         $where['status'] = 1;
-        $data = $this->where($where)->field("id,name,type,title,group,platform,extra,remark,value")->order('sort','ASC')->select()->toArray();
+        $data = $this->where($where)->field("id,name,type,title,group,extra,remark,value")->order('sort','ASC')->select()->toArray();
         //处理相同平台数据
         $handle_data = [];
-        foreach ($data as &$item){
-            $platform = $item['platform'];//平台名称
-            $group = $item['group'];//相同应用
-            $handle_data[$platform]['title'] = $this->getPlatformStrAttr($platform);
-            $handle_data[$platform]['data'][$group]['title'] = $this->getGroupStrAttr($group);
-            $handle_data[$platform]['data'][$group]['data'][] = $item;
-        }
+//        foreach ($data as &$item){
+//            $platform = $item['platform'];//平台名称
+//            $group = $item['group'];//相同应用
+//            $handle_data[$platform]['title'] = $this->getPlatformStrAttr($platform);
+//            $handle_data[$platform]['data'][$group]['title'] = $this->getGroupStrAttr($group);
+//            $handle_data[$platform]['data'][$group]['data'][] = $item;
+//        }
         return $handle_data;
+    }
+    public function getbuilder($where){
+        $where['status'] = 1;
+        $data = $this->where($where)->field("id,name,type,title,group,extra,remark,value")->order('sort','ASC')->select()->toArray();
+        //处理相同平台数据
+//        $handle_data = [];
+//        foreach ($data as &$item){
+//            $group = $item['group'];//相同应用
+//            $handle_data[$platform]['data'][$group]['title'] = $this->getGroupStrAttr($group);
+//            $handle_data[$platform]['data'][$group]['data'][] = $item;
+//        }
+        return $data;
+    }
+    /**
+     * 根据配置类型解析配置
+     * @param  integer $type  配置类型
+     * @param  string  $value 配置值
+     * @author 麦当苗儿 <zuojiazi@vip.qq.com>
+     */
+    private function parse($type, $value){
+        switch ($type) {
+            case 3: //解析数组
+                $array = preg_split('/[,;\r\n]+/', trim($value, ",;\r\n"));
+                if(strpos($value,':')){
+                    $value  = array();
+                    foreach ($array as $val) {
+                        list($k, $v) = explode(':', $val);
+                        $value[$k]   = $v;
+                    }
+                }else{
+                    $value =    $array;
+                }
+                break;
+        }
+        return $value;
     }
 }

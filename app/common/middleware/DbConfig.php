@@ -44,6 +44,20 @@ class DbConfig
             if (!empty($ext_config)) {
                 Config::set($ext_config,'extend');
             }
+
+            //动态添加扩展配置,非模块配置
+            $uni_account_config = Cache::get('MUUCMF_UNI_ACCOUNT_CONFIG_DATA');
+            if (empty($uni_account_config)) {
+                $map[] = ['status','=',1];
+                $data = Db::name('UniAccount')->where($map)->field('type,name,value')->select()->toArray();
+                foreach ($data as $value) {
+                    $uni_account_config[$value['name']] = self::parse($value['type'], $value['value']);
+                }
+                Cache::set('MUUCMF_UNI_ACCOUNT_CONFIG_DATA', $uni_account_config);
+            }
+            if (!empty($uni_account_config)) {
+                Config::set($uni_account_config,'uni_account');
+            }
         }
         
         // 判断站点是否关闭

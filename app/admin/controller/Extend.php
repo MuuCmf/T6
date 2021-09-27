@@ -237,7 +237,7 @@ class Extend extends Admin
                 //记录行为
                 action_log('update_config', 'extend_config', $resId, is_login());
 
-                return $this->success('操作成功','',url('list'));
+                return $this->success('操作成功','',url('list')->build());
             }else{
                 return $this->error('操作失败');
             }

@@ -33,8 +33,11 @@ class Common extends Base
 
             if ($res) {
                 $token = JWTAuth::builder(['uid' => $uid]); //参数为用户认证的信息，请自行添加
-                
-                return $this->success('登录成功', $token);
+                $last_url = $_SERVER['HTTP_REFERER'];
+                if (empty($last_url)){
+                    return $this->success('登录成功', $token);
+                }
+                return $this->success('登录成功', $token,$last_url);
             } else {
                 return $this->error($commonMemberModel->error);
             }
