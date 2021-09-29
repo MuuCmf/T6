@@ -18,30 +18,20 @@ namespace app\common\service\wechat;
  * @package app\common\service
  */
 abstract class Wechat{
-    public $title = '微信应用';
-    public $type = '公众号';
-    public $app = null;
+    public $title;
+    public $type;
+    public $app;
     public function __construct($app)
     {
         $this->app = $app;
     }
-    /**
-     * 实例化
-     * @return mixed
-     */
-//    abstract function app();
-
-    /**
-     * 支付
-     * @return mixed
-     */
-//    abstract function payment();
     public function log(){
         $separator = DIRECTORY_SEPARATOR;
         $log['level'] = 'debug';
-        $log['file'] = app()->getRuntimePath() . "wechat{$separator}{$this->type}{$separator}";
-        $log['file'] .=  date('Y-M') . $separator;
+        $log['file'] = app()->getRootPath() . "runtime{$separator}wechat{$separator}{$this->type}{$separator}";
+        $log['file'] .=  date('Y') . '-' . date('m') . $separator;
         $log['file'] .= mktime(0,0,0,date('m'),date('d'),date('Y')) . '.log';
         return $log;
     }
+    abstract function config();
 }

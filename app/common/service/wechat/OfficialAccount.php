@@ -12,7 +12,9 @@
  * +----------------------------------------------------------------------
  */
 namespace app\common\service\wechat;
+use app\common\model\UniAccount;
 use EasyWeChat\Factory;
+use think\Exception;
 
 /**
  * 微信公众号类
@@ -23,19 +25,20 @@ class OfficialAccount extends Wechat {
 
     function __construct()
     {
+        $this->type = 'wechat_official_account';
         $app =  Factory::officialAccount($this->config());
         parent::__construct($app);
     }
-    protected function config()
+    public function config()
     {
         //获取配置信息
-        $data = [
-            'appid' => 'wx90fcefad8616a371',
-            'secret' => 'b0cdc7e33d76712be26ba233728f0fbb'
-        ];
+        $data = (new UniAccount())->findDataByWhere(['group' => $this->type]);
+        if (empty($data)){
+            throw  new Exception('公众号配置文件不存在');
+        }
         return [
-            'app_id' => $data['appid'],
-            'secret' => $data['secret'],
+            'app_id' => $data['MP_APPID'],
+            'secret' => $data['MP_APP_SECRET'],
             'response_type' => 'array',
             //生成日志
             'log' => $this->log()
@@ -43,7 +46,7 @@ class OfficialAccount extends Wechat {
     }
 
     /**
-     * 公众号授权网页验证
+     * 公众号授权验证
      */
     public function serverOAath(){
         $response = $this->app->server->serve();
@@ -51,5 +54,48 @@ class OfficialAccount extends Wechat {
         exit();
     }
 
+    /**
+     * 获取微信服务器IP
+     * @return mixed
+     */
+    public function getWechatServerIps(){
+        return $this->app->base->getValidIps();
+    }
 
+    /**
+     * 读取（查询）已设置菜单
+     * @return mixed
+     */
+    public function getMenu(){
+        return $this->app->menu->list();
+    }
+
+    /**
+     * 获取当前菜单
+     * @return mixed
+     */
+    public function currentMenu(){
+        return $this->app->menu->current();
+    }
+
+    /**
+     * 设置菜单
+     * @param $menu
+     * @return mixed
+     */
+    public function createMenu($menu){
+        return $this->app->menu->create($menu);
+    }
+
+    /**
+     * 获取当前设置的回复规则
+     * @return mixed
+     */
+    public function currentMessage(){
+        return $this->app->auto_reply->current();
+    }
+
+    public function getApp(){
+        return $this->app;
+    }
 }

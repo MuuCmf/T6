@@ -35,28 +35,25 @@ class UniAccount extends Model{
     {
         $where['status'] = 1;
         $data = $this->where($where)->field("id,name,type,title,group,extra,remark,value")->order('sort','ASC')->select()->toArray();
-        //处理相同平台数据
-        $handle_data = [];
-//        foreach ($data as &$item){
-//            $platform = $item['platform'];//平台名称
-//            $group = $item['group'];//相同应用
-//            $handle_data[$platform]['title'] = $this->getPlatformStrAttr($platform);
-//            $handle_data[$platform]['data'][$group]['title'] = $this->getGroupStrAttr($group);
-//            $handle_data[$platform]['data'][$group]['data'][] = $item;
-//        }
-        return $handle_data;
-    }
-    public function getbuilder($where){
-        $where['status'] = 1;
-        $data = $this->where($where)->field("id,name,type,title,group,extra,remark,value")->order('sort','ASC')->select()->toArray();
-        //处理相同平台数据
-//        $handle_data = [];
-//        foreach ($data as &$item){
-//            $group = $item['group'];//相同应用
-//            $handle_data[$platform]['data'][$group]['title'] = $this->getGroupStrAttr($group);
-//            $handle_data[$platform]['data'][$group]['data'][] = $item;
-//        }
+        if (!empty($data)){
+            $handle_data = [];
+            foreach ($data as &$item){
+                $handle_data[$item['name']] = $item['value'];
+            }
+            $data = $handle_data;
+        }
         return $data;
+    }
+    public function getbuilder($where = []){
+        $where['status'] = 1;
+        $list = $this->where($where)->field('type,name,value')->select()->toArray();
+        $config = [];
+        if($list && is_array($list)){
+            foreach ($list as $value) {
+                $config[$value['name']] = $this->parse($value['type'], $value['value']);
+            }
+        }
+        return $config;
     }
     /**
      * 根据配置类型解析配置

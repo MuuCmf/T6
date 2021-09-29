@@ -139,7 +139,8 @@ function get_config_type_list()
         'password' => '密码',
         'pic' => '图片',
         'checkbox' => '多选框',
-        'radio' => '单选框'
+        'radio' => '单选框',
+        'text' => '纯文本'
     ];
     
     return $list;
@@ -187,7 +188,7 @@ function get_extend_group($group = 1)
  * @param string $group 配置分组
  * @return string
  */
-function get_uni_account_group($group = 1)
+function get_uni_account_group($group = 'system')
 {
     $list = Config::get('uni_account.GROUP_LIST');
     return $group ? $list[$group] : '';
