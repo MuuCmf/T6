@@ -242,17 +242,18 @@ function get_thumb_image($attachment, $width = 100, $height = 'auto', $type = 0,
     $Attachment = new Attachment();
     
     $picture = Db::name('attachment')->where(['attachment' => $attachment])->find();
-         
+    
     if (empty($picture)) {
         $attach = $Attachment->getThumbImage('static/common/images/nopic.png', $width, $height, $type, $replace);
-        return get_attachment_url($attach['attachment']);
+        return get_attachment_url($attach);
     }
 
-    // 本地文件处理
+    // 本地图片处理
     if ($picture) {
         $attach = $Attachment->getThumbImage($picture['attachment'], $width, $height, $type, $replace);
-        return get_attachment_url($attach['src']);
+        return get_attachment_url($attach);
     } else {
+    // 远程云存储图片处理
         $new_img = $picture['attachment'];
         
         if (class_exists($name)) {
@@ -266,7 +267,7 @@ function get_thumb_image($attachment, $width = 100, $height = 'auto', $type = 0,
     }
 }
 
-/**简写函数，等同于getThumbImage（）
+/**简写函数，等同于get_thumb_image（）
  * @param $id 图片id
  * @param int $width 宽度
  * @param string $height 高度

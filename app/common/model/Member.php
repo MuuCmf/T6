@@ -220,14 +220,34 @@ class Member extends Model
     public function info($uid, $fields = 'uid,username,nickname,email,mobile,avatar,status')
     {
         if(!empty($uid)){
+            if(!empty($fields)){
+                if(!is_array($fields)){
+                    $fields_arr = explode(',', $fields);
+                }else{
+                    $fields_arr = $fields;
+                }
+                if(!in_array('uid',$fields_arr)){
+                    array_push($fields_arr, 'uid');
+                }
+    
+                // 转回字符串
+                $fields = implode(',', $fields_arr);
+            }
+            
+            // 查询用户数组
             $map['uid'] = $uid;
             $user = $this->where($map)->field($fields)->find()->toArray();
             if (is_array($user) && $user['status'] = 1) {
                 if(empty($user['avatar'])){
-                    $user['avatar'] = '/static/common/images/default_avatar.jpg';
+                    $user['avatar'] = $user['avatar64'] = $user['avatar128'] = $user['avatar256'] = $user['avatar512'] = get_http_https().$_SERVER['SERVER_NAME'] . '/static/common/images/default_avatar.jpg';
                 }else{
                     $user['avatar'] = get_attachment_src($user['avatar']);
+                    $user['avatar64'] = get_thumb_image($user['avatar'], 64, 64);
+                    $user['avatar128'] = get_thumb_image($user['avatar'], 128, 128);
+                    $user['avatar256'] = get_thumb_image($user['avatar'], 256, 256);
+                    $user['avatar512'] = get_thumb_image($user['avatar'], 512, 512);
                 }
+                
                 return $user;
             } else {
                 return -1; //用户不存在或被禁用
