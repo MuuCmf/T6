@@ -1,18 +1,12 @@
 {extend name="../../common/view/main"/}
+{block name="style"}
+<link href="__STATIC__/ucenter/css/main.min.css" rel="stylesheet">
+{/block}
 {block name="body"}
 <div class="main-wrapper">
 
     <!--用户设置顶部-->
-    <div class="config_header">
-        <div class="user-info-panel text-center margin_bottom_10">
-            <div>
-                <img class="img-circle" src="{$user.avatar}">
-            </div>
-            <div>
-                <a class="nickname">{$user.nickname}</a>
-            </div>
-        </div>
-    </div>
+    {include file="config/_header"/}
     <!--用户设置顶部end-->
 
     <div id="main-container" class="container user-config">
@@ -161,7 +155,10 @@
         </div>
     </div>
 </div>
+{/block}
 
+{block name="script"}
+<script src="__STATIC__/ucenter/js/main.min.js"></script>
 <script>
     $(function () {
         $(window).resize(function () {
@@ -203,12 +200,8 @@
             trigger_resp();
         })
     })
-</script>
-{/block}
 
-{block name="script"}
 
-<script>
     function center_toggle(name) {
         var show = $('#' + name + '_panel').css('display');
         $('.center_panel').hide();

@@ -300,73 +300,80 @@ class Attachment extends Model
      */
     private function Avatar($files, $dirname, $uid)
     {
-        $config = config('upload.avatar');
-
-        $return = [];
+        if (empty($files)) {
+            return false;
+        }
         foreach($files as $file){
-            if (empty($files)) {
-                $this->error = $file->getError();
-                return false;
-            }
-            //判断是否已经存在暂不做处理 TODO
-            
-
-            //获取上传驱动
-            $driver = modC('PICTURE_UPLOAD_DRIVER','local','config');
-            $driver = check_driver_is_exist($driver);
-            //构建返回数据
-            
-            if($driver == 'local'){
-                $info = $file->validate(['size'=>$config['maxsize'],'ext'=>$config['mimetype']])->move($config['savepath'] . DS . $uid);
+            //判断是否已经存在
+            $sha1 = $file->hash('sha1');
+            //处理已存在图片
+            $pic_info = $this->where(['sha1'=>$sha1])->find();
+            if(!empty($pic_info)){
+                $img = [];
+                $data = $pic_info->toArray();
+                $img['filename'] = $data['filename'];
+                $img['size'] = $data['size'];
+                $img['attachment'] = $data['attachment'];
+                $img['url'] = get_attachment_src($data['attachment']);
+            }else{
+                //构建返回数据
+                $data['filename'] = $file->getOriginalName();
+                $data['ext'] = $file->getOriginalExtension();
+                $data['md5'] = $file->hash('md5');
+                $data['sha1'] = $file->hash('sha1');
+                $data['size'] = $file->getSize();
+                $data['mime'] = $file->getMime();
+                $data['type'] = 'image';  // 类型用字符串 pic file audio video
+                $savename = Filesystem::disk('public')->putFile( 'image', $file);
+                // 成功上传后 获取上传信息
+                $data['attachment'] = $savename;
+                $data['attachment'] = str_replace("\\","/",$data['attachment']);
+                //dump($data);exit;
                 
-                if($info){
-                    // 成功上传后 获取上传信息
-                    $data['path'] = DS . 'uploads'  . DS . 'avatar' . DS . $uid . DS . $info->getSaveName();
-                    $data['path'] = str_replace("\\","/",$data['path']);
-                    //$data['md5'] = $info->md5();
-                    //$data['sha1'] = $info->sha1();
-                }else{
-                    $this->error = $file->getError();
-                    return false;
+                //获取上传驱动
+                $driver = config('extend.PICTURE_UPLOAD_DRIVER');
+                if($driver == 'local'){
+                    // 本地无需处理
+                }
+                // 阿里云OSS
+                if($driver == 'aliyun') {
+                    $oss_res = $this->ossUpload($data['attachment'], $file->getPathname());
+                    // 上传成功
+                    if($oss_res === true){
+                        // 删除本地文件
+                        $attachment_path = app()->getRootPath() . 'public/attachment';
+                        $file_path = $attachment_path . '/' . $data['attachment'];
+                        if(file_exists($file_path)){
+                            unlink($file_path);
+                        }
+                    }
+                }
+                // 腾讯云COS
+                if($driver == 'tencent') {
+                    $cos_res = $this->cosUpload($data['attachment'], $file->getPathname());
+                    // 上传成功
+                    if($cos_res === true){
+                        // 删除本地文件
+                        $attachment_path = app()->getRootPath() . 'public/attachment';
+                        $file_path = $attachment_path . '/' . $data['attachment'];
+                        if(file_exists($file_path)){
+                            unlink($file_path);
+                        }
+                    }
                 }
 
-            }else{
-                //驱动上传
-                //调用驱动上传数据
-                $res = $this->uploadDriver($driver, $file, $dirname);
-
-                if(isset($res['savepath'])){
-                    $data['path'] = $res['savepath']; 
-               }else{
-                    $this->error = $res;
-                    return false;
-               }
-            }
-
-            //写入数据库
-            $data['create_time'] = time();
-            $data['driver'] = $driver;
-            $data['status'] = 1;
-            $have = Db::name('Avatar')->where(['uid'=>$uid])->find();
-
-            if($have){
-                $updateAvatar = Db::name('Avatar')->where(['uid'=>$uid])->update($data);
-                if($updateAvatar){
-                    $id = $have['id'];
-                }
-
-            }else{
-                $data['uid'] = $uid;
-                $id = Db::name('Avatar')->insertGetId($data);
-            }
-
-            if($id){
-                $data['id'] = $id;
-                $return[] = $data;  
+                // 写入数据库
+                $this->save($data);
+                // 返回数据
+                $img = [];
+                $img['filename'] = $data['filename'];
+                $img['size'] = $data['size'];
+                $img['attachment'] = $data['attachment'];
+                $img['url'] = get_attachment_src($data['attachment']);
+                
             }
         }
-
-        return $return;
+        return $img;
     }
 
     /**

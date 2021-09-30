@@ -165,7 +165,7 @@ class Config extends Common
             return $this->success('SUCCESS');
 
         }else{
-
+            //dump(config());
             // 基本信息
             $user = query_user(is_login(),['nickname', 'avatar']);
             
