@@ -11,12 +11,13 @@ var gulp        = require('gulp'),
     reload      = browserSync.reload;
     
 // 定义源代码的目录和编译压缩后的目录
-var src='./_src',
+var src='./_src/',
     dist='../../public/static/common';
 // 编译全部scss 并压缩
 gulp.task('scss', function(){
     gulp.src(src + '/css/**/*.scss')
         .pipe(sass())
+        .pipe(concat('main.css'))//合并css
         .pipe(rename({suffix: '.min'}))//rename压缩后的文件名
         .pipe(minifyCss())
         .pipe(gulp.dest(dist+'/css'));

@@ -148,9 +148,11 @@ class Common extends CommonCommon
     {
         if (request()->isPost()) {
              //获取参数
-            $account = input('post.account', '', 'text');
-            $password = input('post.password', '', 'text');
+            $account = input('post.account', '', 'text'); // 账号
+            $password = input('post.password', '', 'text'); // 密码
             $captcha = input('post.captcha', '', 'text'); // 图形验证码
+
+
             if(empty($account)) return $this->error('账号不能为空');
             if(empty($password)) return $this->error('密码不能为空');
             // 检测图形验证码
@@ -168,8 +170,9 @@ class Common extends CommonCommon
             $res = $commonMemberModel->login($uid);
 
             if ($res) {
+                $last_url = $_SERVER['HTTP_REFERER'];
                 $token = JWTAuth::builder(['uid' => $uid]); //参数为用户认证的信息，请自行添加
-                return $this->success('登录成功',$token);
+                return $this->success('登录成功',$token, $last_url);
             } else {
                 return $this->error($commonMemberModel->getError());
             }

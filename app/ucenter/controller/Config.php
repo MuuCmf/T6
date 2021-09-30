@@ -14,6 +14,11 @@ class Config extends Common
      */
     public function index()
     {
+        // 验证登录
+        if (!is_login()) {
+            return redirect('/ucenter/common/login');
+        }
+
         $aUid = input('get.uid', is_login(), 'intval');
         $aNickname = input('post.nickname', '', 'text');
         $aSex = input('post.sex', 0, 'intval');
@@ -39,15 +44,11 @@ class Config extends Common
             //显示页面
             View::assign('user', $user);
             $this->_getExpandInfo();
-            $this->_setTab('info');
+            // 当前方法赋值变量
+            View::assign('tab', 'index');
 
             return View::fetch();
         }
-    }
-
-    private function _setTab($name)
-    {
-        View::assign('tab', $name);
     }
 
     /**获取用户扩展信息
@@ -135,6 +136,45 @@ class Config extends Common
         }
 
         return $info_list;
+    }
+
+    /**
+     * saveAvatar  保存头像
+     */
+    public function avatar()
+    {
+        if (Request()->isPost()) {
+            $aCrop = input('post.crop', '', 'text');
+            $aUid = session('temp_login_uid') ? session('temp_login_uid') : is_login();
+            $aPath = input('post.path', '', 'text');
+            
+            if (empty($aCrop)) {
+                return $this->error('参数错误');
+            }
+
+            //更新数据库数据
+            $data = [
+                'uid' => $aUid,
+                'status' => 1, 
+            ];
+            $res = Db::name('Member')->where(['uid' => $aUid])->update($data);
+            if (!$res) {
+                Db::name('Member')->insert($data);
+            }
+
+            return $this->success('SUCCESS');
+
+        }else{
+
+            // 基本信息
+            $user = query_user(is_login(),['nickname', 'avatar']);
+            dump($user);
+            //显示页面
+            View::assign('user', $user);
+
+            return View::fetch();
+        }
+        
     }
 
 }
