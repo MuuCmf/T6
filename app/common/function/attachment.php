@@ -256,12 +256,7 @@ function get_thumb_image($attachment, $width = 100, $height = 'auto', $type = 0,
     // 远程云存储图片处理
         $new_img = $picture['attachment'];
         
-        if (class_exists($name)) {
-            $class = new $name();
-            if (method_exists($class, 'thumb')) {
-                $new_img = $class->thumb($picture['path'], $width, $height);
-            }
-        }
+        
 
         return get_attachment_url($new_img);
     }

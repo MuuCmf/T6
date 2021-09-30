@@ -1,54 +1,18 @@
 {extend name="../../common/view/main"/}
+{block name="style"}
+<link href="__STATIC__/ucenter/css/main.min.css" rel="stylesheet">
+{/block}
 {block name="body"}
 <div class="main-wrapper">
 
     <!--用户设置顶部-->
-    <div class="config_header">
-        <div class="user-info-panel text-center margin_bottom_10">
-            <div>
-                <img class="img-circle" src="{$user.avatar}">
-            </div>
-            <div>
-                <a class="nickname">{$user.nickname}</a>
-            </div>
-        </div>
-    </div>
+    {include file="config/_header"/}
     <!--用户设置顶部end-->
 
     <div id="main-container" class="container user-config">
         <div class="row">
             <div class="col-md-3">
-                <div>
-                    <nav class="menu" data-ride="menu">
-                        <ul id="treeMenu" class="tree tree-menu side-menu" data-ride="tree">
-                            <li id="info">
-                                <a href="{:url('index')}">
-                                    <i class="icon-th"></i> 基本信息
-                                </a>
-                            </li>
-                            <li id="avatar">
-                                <a href="{:url('avatar')}">
-                                    <i class="icon-user"></i> 头像设置
-                                </a>
-                            </li>
-                            <li id="password">
-                                <a href="{:url('password')}">
-                                    <i class="icon-lock"></i> 密码修改
-                                </a>
-                            </li>
-                            <li id="score">
-                                <a href="{:url('score')}">
-                                    <i class="icon-bar-chart"></i> 我的积分
-                                </a>
-                            </li>
-                            <li id="other">
-                                <a href="{:url('other')}">
-                                    <i class="icon-list-ul"></i> 其它
-                                </a>
-                            </li>
-                        </ul>
-                    </nav>
-                </div>
+                {include file="config/_slide"/}
             </div>
             <div class="col-md-9">
                 <div id="usercenter-content-td ">
@@ -191,7 +155,10 @@
         </div>
     </div>
 </div>
+{/block}
 
+{block name="script"}
+<script src="__STATIC__/ucenter/js/main.min.js"></script>
 <script>
     $(function () {
         $(window).resize(function () {
@@ -233,12 +200,8 @@
             trigger_resp();
         })
     })
-</script>
-{/block}
 
-{block name="script"}
 
-<script>
     function center_toggle(name) {
         var show = $('#' + name + '_panel').css('display');
         $('.center_panel').hide();

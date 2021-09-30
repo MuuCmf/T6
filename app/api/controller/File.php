@@ -34,9 +34,9 @@ class File extends Base
         $result = $this->upload->upload($files,'pic',$dirname);
 
         if(is_array($result)){
-            return $this->success('上传成功', $result);
+            return $this->result(200, '上传成功', $result);
         }else{
-            return $this->error('上传失败');
+            return $this->result(0, '上传失败');
         }
     }
 
@@ -54,9 +54,9 @@ class File extends Base
         $result = $this->upload->upload($files,'file',$dirname);
 
         if(is_array($result)){
-            return $this->success('上传成功', $result);
+            return $this->result(200, '上传成功', $result);
         }else{
-            return $this->error('上传失败');
+            return $this->result(0, '上传失败');
         }
     }
     /**
