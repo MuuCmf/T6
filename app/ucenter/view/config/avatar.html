@@ -110,10 +110,10 @@ $(function () {
             toast.error(ret.msg);
         } else {
             
-            path = ret.data[0].path;
-            var src = ret.data[0].path;
+            path = ret.data.attachment;
+            var src = ret.data.url;
             
-            $('.avatar-wrapper').html('<img src="'+src+'" />');
+            $('.avatar-wrapper').html('<img src="'+ src +'" />');
 
             $('.avatar-wrapper img').load(function () {
                 //图片加载完成后初始化裁剪组件
@@ -153,7 +153,7 @@ $(function () {
         //提交到服务器
         var url = "{:url('ucenter/config/avatar')}";
 
-        $.post(url, {uid: uid, crop: crop, path:path}, function (res) {
+        $.post(url, {uid: uid, crop: crop, path: path}, function (res) {
             handleAjax(res);
         });
     })

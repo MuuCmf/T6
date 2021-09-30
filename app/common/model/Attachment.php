@@ -533,5 +533,58 @@ class Attachment extends Model
         }
     }
 
+    /** 
+     * 裁切图片
+     * @return mixed|string
+     */
+    public function cropImage($attachment, $crop)
+    {
+        $UPLOAD_PATH = PUBLIC_PATH . '/attachment/';
+        $info = pathinfo($attachment);
+        $file_path = $info['dirname'] . DIRECTORY_SEPARATOR . $info['filename'] . '.' . $info['extension'];
+        $file_path = str_replace("\\","/", $file_path);
+        $file_path = ltrim($file_path, '/');
+        $file_path = $UPLOAD_PATH . $file_path;
 
+        if (file_exists($file_path)) {
+            //如果不裁剪，则发生错误
+            if (!$crop) {
+                return $attachment;
+            }
+
+            //解析crop参数
+            $crop = explode(',', $crop);
+            $x = $crop[0];
+            $y = $crop[1];
+            $w = $crop[2];
+            $h = $crop[3];
+
+            $driver = config('extend.PICTURE_UPLOAD_DRIVER');
+            if (strtolower($driver) == 'local') {
+                //本地图片处理
+                $image = Image::open($file_path);
+                //生成将单位换算成为像素
+                //$x = $x * $image->width();
+                //$y = $y * $image->height();
+                //$w = $w * $image->width();
+                //$h = $h * $image->height();
+
+                //如果宽度和高度近似相等，则令宽和高一样
+                if (abs($h - $w) < $h * 0.01) {
+                    $h = min($h, $w);
+                    $w = $h;
+                }
+                //调用组件裁剪
+                $image->crop($w, $h, $x, $y);
+                $image->save($file_path);
+
+                //返回新文件的路径
+                return  $attachment;
+            }else{
+                // 远程图片处理
+                
+            }
+        }
+        
+    }
 }

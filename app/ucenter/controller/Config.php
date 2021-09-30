@@ -6,6 +6,7 @@ namespace app\ucenter\controller;
 use think\facade\Db;
 use think\facade\View;
 use app\common\controller\Common;
+use app\common\model\Attachment;
 
 class Config extends Common
 {
@@ -144,26 +145,28 @@ class Config extends Common
     public function avatar()
     {
         if (Request()->isPost()) {
-            $aCrop = input('post.crop', '', 'text');
-            $aUid = session('temp_login_uid') ? session('temp_login_uid') : is_login();
-            $aPath = input('post.path', '', 'text');
+            $crop = input('post.crop', '', 'text');
+            $uid = is_login();
+            $path = input('post.path', '', 'text');
             
-            if (empty($aCrop)) {
+            if (empty($crop)) {
                 return $this->error('参数错误');
             }
 
+            // 裁切图片
+            $Attachment = new Attachment();
+            $path = $Attachment->cropImage($path, $crop);
+
             //更新数据库数据
             $data = [
-                'uid' => $aUid,
-                'status' => 1, 
+                'avatar' => $path,
             ];
-            $res = Db::name('Member')->where(['uid' => $aUid])->update($data);
-            if (!$res) {
-                Db::name('Member')->insert($data);
+            $res = Db::name('Member')->where(['uid' => $uid])->update($data);
+            if ($res) {
+                return $this->success('保存成功');
+            }else{
+                return $this->error('保存失败');
             }
-
-            return $this->success('SUCCESS');
-
         }else{
             //dump(config());
             // 基本信息
