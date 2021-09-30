@@ -18,37 +18,7 @@
     <div id="main-container" class="container user-config">
         <div class="row">
             <div class="col-md-3">
-                <div>
-                    <nav class="menu" data-ride="menu">
-                        <ul id="treeMenu" class="tree tree-menu side-menu" data-ride="tree">
-                            <li id="info">
-                                <a href="{:url('index')}">
-                                    <i class="icon-th"></i> 基本信息
-                                </a>
-                            </li>
-                            <li id="avatar">
-                                <a href="{:url('avatar')}">
-                                    <i class="icon-user"></i> 头像设置
-                                </a>
-                            </li>
-                            <li id="password">
-                                <a href="{:url('password')}">
-                                    <i class="icon-lock"></i> 密码修改
-                                </a>
-                            </li>
-                            <li id="score">
-                                <a href="{:url('score')}">
-                                    <i class="icon-bar-chart"></i> 我的积分
-                                </a>
-                            </li>
-                            <li id="other">
-                                <a href="{:url('other')}">
-                                    <i class="icon-list-ul"></i> 其它
-                                </a>
-                            </li>
-                        </ul>
-                    </nav>
-                </div>
+                {include file="config/_slide"/}
             </div>
             <div class="col-md-9">
                 <div id="usercenter-content-td ">

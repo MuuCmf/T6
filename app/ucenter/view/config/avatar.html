@@ -2,15 +2,29 @@
 {block name="style"}
 <link href="__STATIC__/common/lib/webuploader/css/webuploader.css" type="text/css" rel="stylesheet">
 <link href="__STATIC__/common/lib/cropper/cropper.min.css" rel="stylesheet">
+<link href="__STATIC__/ucenter/css/main.min.css" rel="stylesheet">
 {/block}
 
 {block name="body"}
-<div id="center">
-    <div id="center_base">
-        <div class="with-padding">
-            <h2>头像</h2>
-            
-            <div class="row">
+<div class="main-wrapper">
+    <!--用户设置顶部-->
+    <div class="config_header">
+        <div class="user-info-panel text-center margin_bottom_10">
+            <div>
+                <img class="img-circle" src="{$user.avatar}">
+            </div>
+            <div>
+                <a class="nickname">{$user.nickname}</a>
+            </div>
+        </div>
+    </div>
+
+    <div id="main-container" class="container user-config">
+        <div class="row">
+            <div class="col-md-3">
+                {include file="config/_slide"/}
+            </div>
+            <div class="col-md-9">
                 <div class="ucenter-avatar col-xs-12" data-uid="{$user['uid']}">
                     <!--用来存放item-->
                     <div class="avatar-view">
@@ -49,7 +63,7 @@
                                         </div>
                                         <div class="col-md-3">
                                             <button class="btn btn-success btn-block avatar-save" data-role="avatar_btn" >
-                                                {:lang('_AVATAR_SAVE_')}
+                                                保存头像
                                             </button>
                                         </div>
                                     </div>
@@ -63,9 +77,11 @@
     </div>
 </div>
 {/block}
+
 {block name="script"}
 <script type="text/javascript" charset="utf-8" src="__STATIC__/common/lib/webuploader/js/webuploader.js"></script>
-<script src="__STATIC__/common//lib/cropper/cropper.min.js"></script>
+<script src="__STATIC__/common/lib/cropper/cropper.min.js"></script>
+<script src="__STATIC__/ucenter/js/main.min.js"></script>
 <script>
 
 $(function () {

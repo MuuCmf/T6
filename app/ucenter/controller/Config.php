@@ -168,7 +168,7 @@ class Config extends Common
 
             // 基本信息
             $user = query_user(is_login(),['nickname', 'avatar']);
-            dump($user);
+            
             //显示页面
             View::assign('user', $user);
 
