@@ -34,4 +34,12 @@ abstract class Wechat{
         return $log;
     }
     abstract function config();
+
+    /**
+     * 获取实例化app
+     * @return mixed
+     */
+    public function getApp(){
+        return $this->app;
+    }
 }

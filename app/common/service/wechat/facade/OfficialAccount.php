@@ -24,6 +24,7 @@ use think\Facade;
  * @method currentMenu() static
  * @method createMenu() static
  * @method currentMessage() static
+ * @method getMaterialList($type,$offset,$count) static
  */
 class OfficialAccount extends Facade {
     // getFacadeClass: 获取当前Facade对应类名

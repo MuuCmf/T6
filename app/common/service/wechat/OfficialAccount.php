@@ -95,7 +95,14 @@ class OfficialAccount extends Wechat {
         return $this->app->auto_reply->current();
     }
 
-    public function getApp(){
-        return $this->app;
+    /**
+     * @title 获取素材列表
+     * @param $type **图片(image)、视频(video)、语音（voice）、图文（news）
+     * @param int $offset 从全部素材的该偏移位置开始返回，可选，默认 0，0 表示从第一个素材 返回
+     * @param int $count 返回素材的数量，可选，默认 20, 取值在 1 到 20 之间
+     * @return mixed
+     */
+    public function getMaterialList($type, $offset = 0 ,$count = 20){
+        return $this->app->material->list($type, $offset, $count);
     }
 }

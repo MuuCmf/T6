@@ -13,6 +13,9 @@
  */
 namespace app\api\controller;
 use app\common\service\wechat\facade\OfficialAccount;
+use EasyWeChat\Kernel\Messages\Image;
+use EasyWeChat\Kernel\Messages\Media;
+
 class OfficialAccountService{
     public function callback()
     {
@@ -21,11 +24,13 @@ class OfficialAccountService{
 
         //消息通知
         $app->server->push(function ($message) {
-            switch ($message['MsgType']){
-                case 'text':
-
-                    break;
-            }
+//            switch ($message['MsgType']){
+//                case 'text':
+//
+//                    break;
+//            }
+            return new Image('Fi_ULDUOd0HAYf6xALb46lYFxejrw-xT8M9G8PlNx1I');
+            return new Media('Fi_ULDUOd0HAYf6xALb46lYFxejrw-xT8M9G8PlNx1I');
         });
         $app->server->serve();
 
@@ -34,6 +39,9 @@ class OfficialAccountService{
         OfficialAccount::serverOAath();
     }
     public function autoReply(){
-        dump(OfficialAccount::currentMessage());
+        $app = OfficialAccount::getApp();
+        $list = $app->material->list('image', 0, 10);
+
+        dump($list);
     }
 }
