@@ -288,7 +288,8 @@ class Member extends Model
         //检查旧密码是否正确
         if (!$this->verifyUser(get_uid(), $old_password)) {
             //'旧密码错误';
-            return -40;
+            $this->error = '旧密码错误';
+            return false;
         }
 
         $data = [
@@ -296,10 +297,10 @@ class Member extends Model
             'confirm_password' =>$confirm_password,
         ];
         //验证密码
-        $validate = new \app\ucenter\validate\UcenterMember;
-        $result = $validate->scene('password')->check($data);;
+        $validate = new \app\ucenter\validate\Member;
+        $result = $validate->scene('password')->check($data);
         if(false === $result){
-            return $validate->getError();
+            $this->error = $validate->getError();
             return false;
         }
         //移除数组中无用值
@@ -309,13 +310,14 @@ class Member extends Model
         $password = user_md5($new_password, Config::get('auth.auth_key'));
         $data['password'] = $password;
         //更新用户信息
-        $res = $this->save($data,['id' => get_uid()]);
+        $res = $this->where('uid', get_uid())->save($data);
         if($res){
             //返回成功信息
-            clean_query_user_cache(get_uid(), 'password');//删除缓存
-            Db::name('user_token')->where('uid','=',get_uid())->delete();
+            // clean_query_user_cache(get_uid(), 'password');//删除缓存
+            // Db::name('user_token')->where('uid','=',get_uid())->delete();
             return true;
         }else{
+            $this->error = '密码修改失败';
             return false;
         }
     }
@@ -395,20 +397,19 @@ class Member extends Model
     }
 
     /**
-     * 清除用户缓存
-     * @param  [type] $uid  [description]
-     * @param  [type] $type [description]
-     * @return [type]       [description]
+     * 验证用户密码
+     * @param int    $uid 用户id
+     * @param string $password_in 密码
+     * @return true 验证成功，false 验证失败
+     * @author huajie <banhuajie@163.com>
      */
-    public function cleanUserCache($uid,$type){
-
-        $uid = is_array($uid) ? $uid : explode(',',$uid);
-        $type = is_array($type)?$type:explode(',',$type);
-        foreach($uid as $val){
-            foreach($type as $v){
-                clean_query_user_cache($val, 'score' . $v);
-            }
-            clean_query_user_cache($val, 'title');
+    public function verifyUser($uid, $password_in)
+    {
+        $password = $this->where('uid', $uid)->value('password');
+        if (user_md5($password_in, Config::get('auth.auth_key')) === $password) {
+            return true;
         }
+        return false;
     }
+
 }

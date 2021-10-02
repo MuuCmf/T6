@@ -193,16 +193,19 @@ class Config extends Common
             $new_password = input('post.new_password','','text');
             $confirm_password = input('post.confirm_password','','text');
             //调用接口
-            $ucenterMemberModel = model('ucenterMember');
-            $resCode = $ucenterMemberModel->changePassword($old_password, $new_password, $confirm_password);
+            $commonMemberModel = new Member;
+            $resCode = $commonMemberModel->changePassword($old_password, $new_password, $confirm_password);
 
             if ($resCode>0) {
-
                 return $this->success('密码修改成功');
             } else {
-                return $this->error('修改失败');
+                return $this->error($commonMemberModel->error);
             }
         }else{
+            //调用基本信息
+            $user = query_user(is_login(),['nickname', 'signature', 'email', 'mobile', 'avatar', 'sex']);
+            //显示页面
+            View::assign('user', $user);
             View::assign('tab', 'password');
             return View::fetch(); 
         }
