@@ -111,7 +111,7 @@
 
         <div id="uploader_{$field.name}">
             <div class="btns">
-                <div id="picker">{:lang('_FILE_SELECT_')}</div>
+                <div id="picker">选择文件</div>
             </div>
         </div>
         </div>
@@ -138,7 +138,7 @@
             // 文件上传过程中创建进度条实时显示。
             uploader_{$field.name}.on( 'uploadSuccess', function( file ,ret ) {
                 if(ret.code==1){
-                    toast.success("{:lang('_SUCCESS_UPLOAD_')}{:lang('_PERIOD_')}");
+                    toast.success("上传成功");
                     $('#file_list_{$field.name}').html(
                         '<div class="file_item" data-id="'+ret.data[0].id+'">'+
                             '<span>'+ret.data[0].name+'</span>'+
@@ -147,14 +147,14 @@
                     );
                    $('#file_upload_{$field.name}').val(ret.data[0].id);
                 }else{
-                    toast.error("{:lang('_FAIL_UPLOAD_')}{:lang('_PERIOD_')}"+ret.msg);
+                    toast.error("上传失败"+ret.msg);
                 }
                 //重启webuploader,可多次上传
                 uploader_{$field.name}.reset();
             });
 
             uploader_{$field.name}.on( 'uploadError', function( file ) {
-                toast.error("{:lang('_ERROR_UPLOAD_')}{:lang('_PERIOD_')}")
+                toast.error("发生错误")
             });
 
             uploader_{$field.name}.on( 'uploadComplete', function( file ) {
@@ -185,7 +185,7 @@
 
         <div id="uploader_{$field.name}">
             <div class="btns">
-                <div id="picker">{:lang('_FILE_SELECT_')}</div>
+                <div id="picker">选择文件</div>
             </div>
         </div>
         <input name="{$field.name}" id="file_upload_{$field.name}" type="hidden" value="{$field.value}">
@@ -230,7 +230,7 @@
                 });
                 //上传错误
                 uploader_{$field.name}.on( 'uploadError', function( file ) {
-                    toast.error("{:lang('_ERROR_UPLOAD_')}{:lang('_PERIOD_')}")
+                    toast.error("发生错误")
                 });
                 //上传完成
                 uploader_{$field.name}.on( 'uploadComplete', function( file ) {
@@ -309,8 +309,8 @@
                     if (data.code) {
                         $("[name='{$field.name}']").val(data.data[0].id);
                         $("[name='{$field.name}']").parent().find('.upload-pre-item').html(
-                                ' <div class="each"><a href="'+ data.data[0].path+'" title={:lang("_CLICK_TO_SEE_THE_BIG_PICTURE_WITH_DOUBLE_")}><img src="'+ data.data[0].path+'"></a><div class="text-center opacity del_btn" ></div>' +
-                                        '<div onclick="admin_image.removeImage($(this),'+data.data[0].id+')"  class="text-center del_btn">{:lang("_DELETE_")}</div></div>'
+                                ' <div class="each"><a href="'+ data.data[0].path+'" title="显示大图"><img src="'+ data.data[0].path+'"></a><div class="text-center opacity del_btn" ></div>' +
+                                        '<div onclick="admin_image.removeImage($(this),'+data.data[0].id+')"  class="text-center del_btn">删除</div></div>'
                         );
                         //重启webuploader,可多次上传
                         uploader_{$field.name}.reset();
@@ -341,12 +341,12 @@
                         {php}$aIds = explode(',',$field['value']);{/php}
                         {volist name="aIds" id="aId"}
                             <div class="each">
-                                <a href="{$aId|get_cover='path'}" data-toggle="lightbox" title={:lang("_CLICK_TO_SEE_THE_BIG_PICTURE_WITH_DOUBLE_")}>
-                                    <img src="{$aId|get_cover='path'}">
+                                <a href="{$aId|get_attachment_src='path'}" data-toggle="lightbox" title="显示大图">
+                                    <img src="{$aId|get_attachment_src='path'}">
                                 </a>
                                 <div class="text-center opacity del_btn" ></div>
                                 <div onclick="admin_image.removeImage($(this),'{$aId}')"  class="text-center del_btn">
-                                    {:lang("_DELETE_")}
+                                    删除
                                 </div>
                             </div>
                         {/volist}
@@ -365,7 +365,7 @@
                 // 文件接收服务端。
                 server: "{:url('api/file/pic',['session_id'=>session_id()])}",
                 // 选择文件的按钮。可选。
-                // 内部根据当前运行是创建，可能是input元素，{:lang("_AND_IT_COULD_BE_FLASH_")}.
+                // 内部根据当前运行是创建，可能是input元素.
                 //pick: '#upload_multi_image_{$field.name}',
                 pick: {'id': id, 'multi': true},
                 fileNumLimit: limit,
@@ -398,11 +398,11 @@
                   }
                   $("[name='{$field.name}']").parent().find('.upload-pre-item').append(
                         '<div class="each">'+
-                        '<a href="'+ data.data[0].path+'" data-toggle="lightbox" title={:lang("_CLICK_TO_SEE_THE_BIG_PICTURE_WITH_DOUBLE_")}>'+
+                        '<a href="'+ data.data[0].path+'" data-toggle="lightbox" title="显示大图">'+
                         '<img src="'+ data.data[0].path+'">'+
                         '</a>'+
                         '<div class="text-center opacity del_btn" ></div>' +
-                            '<div onclick="admin_image.removeImage($(this),'+data.data[0].id+')"  class="text-center del_btn">{:lang("_DELETE_")}</div>'+
+                            '<div onclick="admin_image.removeImage($(this),'+data.data[0].id+')"  class="text-center del_btn">删除</div>'+
                         '</div>'
                     );
                 }else{
@@ -438,7 +438,7 @@
         }
         {/php}
         <div class="singleAudio">
-            <div id="upload_single_audio_{$field.name}">{:lang("_SELECT_AUDIO_")}</div>
+            <div id="upload_single_audio_{$field.name}">选择音频</div>
             <div class="audio-file-list" id="single_audio_list_{$field.name}">
                 <input type="hidden" name="{$field.name}" value="{$field['value']}" data-rule="audio_id" />
                 <div class="progress-box"></div>
@@ -687,7 +687,7 @@
         }
         {/php}
         <div class="singleVideo">
-            <div id="upload_single_video_{$field.name}" style="padding-bottom: 5px;">{:lang("_SELECT_VIDEO_")}</div>
+            <div id="upload_single_video_{$field.name}" style="padding-bottom: 5px;">选择视频</div>
             <div class="video-file-list" id="single_video_list_{$field.name}">
                 <input type="hidden" name="{$field.name}" value="{$field['value']}" data-rule="video_id" />
                 <div class="progress-box"></div>
