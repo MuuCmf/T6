@@ -269,8 +269,8 @@
             <div class="upload-pre-item popup-gallery">
             {notempty name="field.value"}
                 <div class="each">
-                    <a href="{$field.value|get_cover='path'}" title="点击查看大图">
-                        <img src="{$field.value|get_cover='path'}">
+                    <a href="{$field.value|get_attachment_src='path'}" title="点击查看大图">
+                        <img src="{$field.value|get_attachment_src='path'}">
                     </a>
                     <div class="text-center opacity del_btn" ></div>
                     <div onclick="admin_image.removeImage($(this),'{$field.value}')"  class="text-center del_btn">删除</div>
