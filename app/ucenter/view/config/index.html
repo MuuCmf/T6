@@ -138,11 +138,10 @@
         $(window).resize(function () {
             $("#main-container").css("min-height", $(window).height() - 343);
         }).resize();
+
+        // 设置当前高亮菜单
+        $("#{$tab}").addClass('active');
     })
-
-    // 设置当前高亮菜单
-    $("#{$tab}").addClass('active');
-
 
     $(function () {
         var $sidebar = $('#usercenter-sidebar-td');

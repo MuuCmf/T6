@@ -9,6 +9,8 @@ use app\common\controller\Common;
 use app\common\model\Attachment;
 use app\common\model\Verify;
 use app\common\model\Member;
+use app\common\model\ScoreType;
+use app\common\model\Action;
 
 class Config extends Common
 {
@@ -246,10 +248,65 @@ class Config extends Common
             
             //显示页面
             View::assign('user', $user);
-
+            View::assign('tab', 'avatar');
             return View::fetch();
         }
         
+    }
+
+        /**
+     * 我的积分
+     * @return [type] [description]
+     */
+    public function score()
+    {
+        $scoreModel = new ScoreType();
+
+        $scores = $scoreModel->getTypeList(['status'=>1]);
+        foreach ($scores as &$v) {
+            $v['value'] = $scoreModel->getUserScore(is_login(), $v['id']);
+        }
+        unset($v);
+        View::assign('scores', $scores);
+
+        $level = config('system.USER_LEVEL');
+        View::assign('level', $level);
+
+        $self = query_user(get_uid(), array('nickname','avatar' ,'score1', 'score2', 'score3', 'score4'));
+
+        View::assign('user', $self);
+
+        $actionModel = new Action();
+        $action = $actionModel->getAction(['status' => 1]);
+        $action_module = [];
+        
+        foreach ($action as &$v) {
+            $v['rule_array'] = unserialize($v['rule']);
+            if(is_array($v['rule_array'])){
+                foreach ($v['rule_array'] as &$o) {
+                    if (is_numeric($o['rule'])) {
+                        $o['rule'] = $o['rule'] > 0 ? '+' . intval($o['rule']) : $o['rule'];
+                    }
+                    $o['score'] = $scoreModel->getType(['id' => $o['field']]);
+                }
+            }
+            if ($v['rule_array'] != false) {
+                $action_module[$v['module']]['action'][] = $v;
+            }
+        }
+        unset($v);
+
+        // foreach ($action_module as $key => &$a) {
+        //     if (empty($a['action'])) {
+        //         unset($action_module[$key]);
+        //     }
+        //     $a['module'] = model('common/Module')->getModule($key);
+        // }
+        // unset($a);
+        View::assign('action_module', $action_module);
+        
+        View::assign('tab', 'score');
+        return View::fetch();
     }
 
 }

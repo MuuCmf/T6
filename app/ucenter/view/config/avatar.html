@@ -77,10 +77,11 @@
 <script>
 
 $(function () {
+    // 设置当前高亮菜单
+    $("#{$tab}").addClass('active');
+    
     var avatarData = $('[name="avatar_data"]');
-
     var path;
-
     var uploader = WebUploader.create({
         // 选完文件后，是否自动上传。
         auto: false,
