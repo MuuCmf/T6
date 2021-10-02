@@ -245,20 +245,20 @@ function get_thumb_image($attachment, $width = 100, $height = 'auto', $type = 0,
     
     if (empty($picture)) {
         $attach = $Attachment->getThumbImage('static/common/images/nopic.png', $width, $height, $type, $replace);
-        return get_attachment_url($attach);
+        return get_attachment_src($attach['src']);
     }
 
     // 本地图片处理
     if ($picture) {
         $attach = $Attachment->getThumbImage($picture['attachment'], $width, $height, $type, $replace);
-        return get_attachment_url($attach);
+        return get_attachment_src($attach['src']);
     } else {
     // 远程云存储图片处理
         $new_img = $picture['attachment'];
         
         
 
-        return get_attachment_url($new_img);
+        return get_attachment_src($new_img);
     }
 }
 

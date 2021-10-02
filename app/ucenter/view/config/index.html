@@ -119,31 +119,7 @@
                                             </div>
                                         </div>
                         
-                                        {volist name="profile_group_list" id="vo"}
-                                            <div class="tab-pane" id="expand_tab_{$vo.id}">
-                                                <form action="{:url('Config/edit_expandinfo')}" method="post" class="ajax-form">
-                                                    <div class="with-padding">
-                                                        <div class="row">
-                                                            <div class="col-xs-8">
-                                                                <input type="hidden" name="profile_group_id" value="{$vo.id}">
-                                                                <div>
-                                                                    <volist name="vo.fields" id="vl">
-                                                                        <dl>
-                                                                            
-                                                                        </dl>
-                                                                    </volist>
-                                                                </div>
-                                                                {if condition="count($vo['fields']) neq 0"}
-                                                                    <input type="submit" value="{:lang('_SAVE_')}" id="submit_btn" class="btn btn-primary expandinfo-sumbit">
-                                                                {else/}
-                                                                    <span class="expandinfo-noticeinfo">{:lang('_MESSAGE_EXPAND_NONE_')}{:lang('_EXCLAMATION_')}</span>
-                                                                {/if}
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </form>
-                                            </div>
-                                        {/volist}
+
                                     </div>
                                 </div>
                             </div>

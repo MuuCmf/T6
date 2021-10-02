@@ -20,7 +20,6 @@ class Config extends Common
             return redirect('/ucenter/common/login');
         }
 
-        $aUid = input('get.uid', is_login(), 'intval');
         $aNickname = input('post.nickname', '', 'text');
         $aSex = input('post.sex', 0, 'intval');
         $aSignature = input('post.signature', '', 'text');
@@ -40,11 +39,11 @@ class Config extends Common
             }
 
         } else {
-            //调用API获取基本信息
-            $user = query_user($aUid,['nickname', 'signature', 'email', 'mobile', 'avatar', 'sex']);
+            //调用基本信息
+            $user = query_user(is_login(),['nickname', 'signature', 'email', 'mobile', 'avatar', 'sex']);
             //显示页面
             View::assign('user', $user);
-            $this->_getExpandInfo();
+            // $this->_getExpandInfo();
             // 当前方法赋值变量
             View::assign('tab', 'index');
 
