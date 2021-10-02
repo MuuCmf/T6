@@ -7,6 +7,8 @@ use think\facade\Db;
 use think\facade\View;
 use app\common\controller\Common;
 use app\common\model\Attachment;
+use app\common\model\Verify;
+use app\common\model\Member;
 
 class Config extends Common
 {
@@ -25,7 +27,12 @@ class Config extends Common
         $aSignature = input('post.signature', '', 'text');
 
         if (Request()->isPost()) {
-            $this->checkNickname($aNickname);
+            $uid = is_login();
+            $commonMemberModel = new Member;
+            $check = $commonMemberModel->checkNickname($aNickname, $uid);
+            if($check !== true){
+                return $this->error($commonMemberModel->getError());
+            }
             $user['nickname'] = $aNickname;
             $user['sex'] = $aSex;
             $user['signature'] = $aSignature;
@@ -88,17 +95,6 @@ class Config extends Common
         View::assign('profile_group_list', $profile_group_list);
     }
 
-
-    /**扩展信息分组列表获取
-     * @return mixed
-     */
-    private function _profile_group_list($uid = null)
-    {
-        $profile_group_list = array();
-        
-        return $profile_group_list;
-    }
-
     /**分组下的字段信息及相应内容
      * @param null $id 扩展分组id
      * @param null $uid
@@ -136,6 +132,80 @@ class Config extends Common
         }
 
         return $info_list;
+    }
+
+    /**
+     * changeaccount  修改帐号信息
+     */
+    public function account()
+    {
+        if(request()->isPost()){
+            if (!is_login()) {
+                return $this->error('账号验证失败');
+            }
+            $account = input('account', '', 'text');
+            $type = input('type', '', 'text');
+            $verify = input('verify', '', 'text');
+            $type = $type == 'mobile' ? 'mobile' : 'email';
+
+            // 验证验证码
+            if (($type == 'mobile') || $type == 'email') {
+                $verifyModel = new Verify();
+                if (!$verifyModel->checkVerify($account, $type, $verify)) {
+                    return $this->error('验证码错误');
+                }
+            }
+            if($type == 'mobile'){
+                $data = [
+                    'mobile' => $account,
+                ];
+            }
+            if($type == 'email'){
+                $data = [
+                    'email' => $account,
+                ];
+            }
+            
+            $res = Db::name('Member')->where(['uid' => is_login()])->update($data);
+            if ($res) {
+                return $this->success('保存成功');
+            }else{
+                return $this->error('保存失败');
+            }
+        }else{
+            $aTag = input('tag', '', 'text');
+            $aTag = $aTag == 'mobile' ? 'mobile' : 'email';
+            View::assign('cName', $aTag == 'mobile' ? '手机号' : '邮箱');
+            View::assign('type', $aTag);
+
+            return View::fetch();
+        }
+    }
+
+    /**
+     * 修改密码
+     * @return [type] [description]
+     */
+    public function password()
+    {
+        if(request()->isPost()){
+            $old_password = input('post.old_password','','text');
+            $new_password = input('post.new_password','','text');
+            $confirm_password = input('post.confirm_password','','text');
+            //调用接口
+            $ucenterMemberModel = model('ucenterMember');
+            $resCode = $ucenterMemberModel->changePassword($old_password, $new_password, $confirm_password);
+
+            if ($resCode>0) {
+
+                return $this->success('密码修改成功');
+            } else {
+                return $this->error('修改失败');
+            }
+        }else{
+            View::assign('tab', 'password');
+            return View::fetch(); 
+        }
     }
 
     /**

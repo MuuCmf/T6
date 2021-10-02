@@ -356,10 +356,10 @@ class Member extends Model
     }
 
     /**
-     * 验证用户名
+     * 验证昵称
      * @param $nickname
      */
-    private function checkNickname($nickname, $uid)
+    public function checkNickname($nickname, $uid)
     {
         $length = mb_strlen($nickname, 'utf8');
         if ($length == 0) {
@@ -390,6 +390,8 @@ class Member extends Model
                 }
             }
         }
+
+        return true;
     }
 
     /**
