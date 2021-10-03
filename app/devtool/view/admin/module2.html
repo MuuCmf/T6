@@ -1,4 +1,4 @@
-{extend name="admin@common/main"/}
+{extend name="../../admin/view/common/main"/}
 {block name="body"}
     <div class="main-title">
         <h2>{:lang('_PACK_STEP_TWO_')}
@@ -10,7 +10,7 @@
         <div class="clearfix">
 
             <div class="alert alert-info">
-                {:lang('_PACK_MODULE_NOW_')}{:lang('_COMMA_')}<strong>{$module.alias}-{$module.name}</strong>
+                {:lang('_PACK_MODULE_NOW_')}<strong>{$module.alias}-{$module.name}</strong>
             </div>
         </div>
         <form action="{:url('module3')}" method="post">
