@@ -4,6 +4,7 @@ namespace app\admin\controller;
 
 use think\facade\Db;
 use think\facade\View;
+use app\admin\builder\AdminConfigBuilder;
 use app\common\model\Module as ModuleModel;
 
 class Module extends Admin
@@ -81,6 +82,7 @@ class Module extends Admin
         if (request()->isPost()) {
             $aWithoutData = input('withoutData', 1, 'intval');//是否保留数据
             $res = $this->moduleModel->uninstall($aId, $aWithoutData);
+
             if ($res == true) {
                 if ($aNav) {
                     Db::name('Channel')->where(['url' => $module['entry']])->delete();
@@ -91,7 +93,7 @@ class Module extends Admin
                 $this->moduleModel->where(['id' => $aId])->delete();
                 return $this->success('卸载模块成功。', url('index'));
             } else {
-                $this->error('卸载模块失败。' . $this->moduleModel->getError());
+                $this->error('卸载模块失败。' . $this->moduleModel->error);
             }
 
         }else{
@@ -101,7 +103,8 @@ class Module extends Admin
             $builder->keyReadOnly('id', '模块编号');
             $builder->suggest('<span class="text-danger">'.'请谨慎操作，此操作无法还原'.'</span>');
             $builder->keyReadOnly('alias', '卸载的模块');
-            $builder->keyBool('withoutData', '是否保留模块数据'.'?', '默认保留模块数据')->keyBool('remove_nav', '移除导航', '卸载后自动卸载掉对应的菜单，或者<a target="_blank" href="/index.php?s=/admin/channel/index.html">手动设置</a>');
+            $builder->keyBool('withoutData', '是否保留模块数据'.'?', '默认保留模块数据');
+            $builder->keyBool('remove_nav', '移除导航', '卸载后自动卸载掉对应的菜单，或者<a target="_blank" href="/index.php?s=/admin/channel/index.html">手动设置</a>');
 
             $module['withoutData'] = 1;
             $builder->data($module);
@@ -118,27 +121,17 @@ class Module extends Admin
     public function install()
     {
         $aName = input('name', '', 'text');
-        $aNav = input('add_nav', 0, 'intval');
         $module = $this->moduleModel->getModule($aName);
 
         if (request()->isPost()) {
             //执行guide中的内容
             $res = $this->moduleModel->install($module['id']);
-
+            
             if ($res === true) {
-                if ($aNav) {
-                    $channel['title'] = $module['alias'];
-                    $channel['url'] = $module['entry'];
-                    $channel['sort'] = 100;
-                    $channel['status'] = 1;
-                    $channel['icon'] = $module['icon'];
-                    Db::name('Channel')->insert($channel);
-                    cache('common_nav', null);
-                }
                 cache('ADMIN_MODULES_' . is_login(), null);
                 $this->success('安装模块成功。', url('index'));
             } else {
-                $this->error('安装模块失败。' . $this->moduleModel->getError());
+                $this->error('安装模块失败。' . $this->moduleModel->error);
             }
 
         } else {
@@ -153,13 +146,9 @@ class Module extends Admin
                 ->keyTextArea('summary', '模块介绍')
                 ->keyReadOnly('developer', '开发者')
                 ->keyText('entry', '前台入口')
-                ->keyText('admin_entry', '后台入口')
+                ->keyText('entry', '后台入口')
                 ->keyRadio('mode', '安装模式', '', ['install' => '覆盖安装模式']);
-            if ($module['entry']) {
-                $_Link_ = url('channel/index');
-                $builder->keyBool('add_nav', '添加导航', '安装后自动在导航栏中加入菜单，或者<a target="_blank" href="/index.php?s=/admin/channel/index.html">手动设置</a>');
-            }
-
+            
             $builder->group('安装选项', 'name,alias,version,mode,add_nav');
             
             $module['mode'] = 'install';

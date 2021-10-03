@@ -1,4 +1,4 @@
-{extend name="common/main" /}
+{extend name="../../admin/view/common/main"/}
 
 {block name="body"}
 <div class="builder">
@@ -19,12 +19,12 @@
             </div>
             <div class="category">
                 <div class="hd clearfix">
-                    <div class="fold">{:lang("_FOLD_")}</div>
-                    <div class="order">{:lang("_SORT_")}</div>
+                    <div class="fold">折叠</div>
+                    <div class="order">排序</div>
                     {volist name="keyList" id="field"}
                         <th>{$field.title|htmlspecialchars}</th>
                     {/volist}
-                    <div class="name">{:lang("_NAME_")}</div>
+                    <div class="name">名称</div>
                 </div>
                 {php}
                     $tree_list = new app\admin\builder\AdminTreeListBuilder();

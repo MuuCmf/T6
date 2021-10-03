@@ -27,7 +27,7 @@
                 <div class="group_list" style="{if condition='$i neq 1'}display: none;{/if}">
                     {volist name="keyList" id="field"}
                         {php}if(in_array($field['name'],$vGroup)){{/php}
-                        {include file="builder/_key"/}
+                        {include file="../../admin/view/builder/_key"/}
                         {php}}{/php}
                     {/volist}
                 </div>
@@ -35,7 +35,7 @@
 
         {php}}else{{/php}
             {volist name="keyList" id="field"}
-                {include file="builder/_key"/}
+            {include file="../../admin/view/builder/_key"/}
             {/volist}
         {php}}{/php}
         <br/>

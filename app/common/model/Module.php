@@ -6,10 +6,11 @@
 namespace app\common\model;
 
 use think\Model;
-use think\Db;
+use think\facade\Db;
 
 class Module extends Model
 {
+    public $error = '';
     protected $moduleName = '';
 
     /**
@@ -52,13 +53,13 @@ class Module extends Model
      * @return     <type>  The dir.
      */
     public function getDir($dir) {
-        $dirArray[]=NULL;
+        $dirArray[] = NULL;
         if (false != ($handle = opendir ( $dir ))) {
             $i=0;
             while ( false !== ($file = readdir ( $handle )) ) {
                 //去掉"“.”、“..”以及带“.xxx”后缀的文件
                 if ($file != "." && $file != ".."&&!strpos($file,".")) {
-                    $dirArray[$i]=$file;
+                    $dirArray[$i] = $file;
                     $i++;
                 }
             }
@@ -124,7 +125,7 @@ class Module extends Model
     {
         $module = $this->where(['name' => $name])->find();
         if (empty($module)) {
-            $this->error = lang('_MODULE_INFORMATION_DOES_NOT_EXIST_WITH_PERIOD_');
+            $this->error = '模块信息不存在。';
             return false;
         } else {
             if (file_exists(APP_PATH . '/' . $module['name'] . '/info/info.php') || file_exists(APP_PATH . '/' . $module['name'] . '/info/Info.php')) {
@@ -177,8 +178,6 @@ class Module extends Model
         }
         cache('module_all', null);
         cache('admin_modules', null);
-        cache('ALL_MESSAGE_SESSION',null);
-        cache('ALL_MESSAGE_TPLS',null);
     }
 
     /**清理某个模块的缓存
@@ -197,11 +196,10 @@ class Module extends Model
      */
     public function uninstall($id, $withoutData = 0)
     {
-        $module = $this->get($id);
+        $module = $this->find($id);
         $module = $module->toArray();
-
         if (!$module || $module['is_setup'] == 0) {
-            $this->error = lang('_MODULE_DOES_NOT_EXIST_OR_IS_NOT_INSTALLED_WITH_PERIOD_');
+            $this->error = '模块不存在或未安装';
             return false;
         }
         $this->cleanMenus($module['name']);
@@ -230,7 +228,8 @@ class Module extends Model
             $uninstallSql = explode(";\n", $uninstallSql);
             
             //系统配置表前缀
-            $prefix = config('database.prefix');
+            $prefix = config('database.connections.mysql.prefix');
+
             foreach($uninstallSql as $value){
                 $value = trim($value);
                 if (empty($value)) continue; 
@@ -246,13 +245,13 @@ class Module extends Model
             }
             
             if ($res === false) {
-                $this->error = lang('_CLEAN_UP_THE_MODULE_DATA_AND_ERROR_MESSAGE_WITH_COLON_') . $res['error_code'];
+                $this->error = '清理模块数据失败，错误信息：' . $res['error_code'];
                 return false;
             }
         }
         
         $module['is_setup'] = 0;
-        $this->save($module,['id'=>$id]);
+        $this->where('id', $id)->save($module);
 
         return true;
     }
@@ -263,7 +262,7 @@ class Module extends Model
      */
     public function getModule($name)
     {
-        if($name=='admin'){
+        if($name == 'admin'){
             return false;
         }
 
@@ -286,7 +285,7 @@ class Module extends Model
         if ($module === false || $module == null) {
             $m = $this->getInfo($module['name']);
             if ($m != array()) {
-                if ($m['can_uninstall']) {
+                if ($m['uninstall']) {
                     $m['is_setup'] = 0;//默认设为已安装，防止已安装的模块反复安装。
                 } else {
                     $m['is_setup'] = 1;
@@ -335,14 +334,13 @@ class Module extends Model
 
         $module = $module->toArray();
         if ($module['is_setup'] == 1) {
-            $this->error = lang('_MODULE_INSTALLED_WITH_PERIOD_');
+            $this->error = '模块已安装。';
             return false;
         }
         
-        if (file_exists(APP_PATH . $module['name'] . DS . 'info' .DS. 'guide.json')) {
-
+        if (file_exists(APP_PATH . $module['name'] . DIRECTORY_SEPARATOR . 'info' .DIRECTORY_SEPARATOR. 'guide.json')) {
             //如果存在guide.json
-            $guide = file_get_contents(APP_PATH . $module['name'] . DS . 'info' . DS . 'guide.json');
+            $guide = file_get_contents(APP_PATH . $module['name'] . DIRECTORY_SEPARATOR . 'info' . DIRECTORY_SEPARATOR . 'guide.json');
             $data = json_decode($guide, true);
 
             //导入菜单项,menu
@@ -393,7 +391,7 @@ class Module extends Model
                 $install_sql = str_replace("\r", "\n", $install_sql);
                 $install_sql = explode(";\n", $install_sql);
                 //系统配置表前缀
-                $prefix = config('database.prefix');
+                $prefix = config('database.connections.mysql.prefix');
                 
                 foreach ($install_sql as $value) {
                     
@@ -431,9 +429,9 @@ class Module extends Model
         }
         $module['is_setup'] = 1;
 
-        $rs = $this->save($module,['id'=>$module['id']]);
+        $rs = $this->where('id', $module['id'])->save($module);
         if ($rs === false) {
-            $this->error = lang('_MODULE_INFORMATION_MODIFICATION_FAILED_WITH_PERIOD_');
+            $this->error = '模块信息修改失败';
             return false;
         }
 
@@ -523,29 +521,29 @@ class Module extends Model
 
     private function cleanActionLimit($module_name)
     {
-        $db_prefix = config('database.prefix');
+        $db_prefix = config('database.connections.mysql.prefix');
         $sql = "DELETE FROM `{$db_prefix}action_limit` where `module` = '" . $module_name . "'";
         Db::execute($sql);
     }
 
     private function cleanAction($module_name)
     {
-        $db_prefix = config('database.prefix');
+        $db_prefix = config('database.connections.mysql.prefix');
         $sql = "DELETE FROM `{$db_prefix}action` where `module` = '" . $module_name . "'";
         Db::execute($sql);
     }
 
     private function cleanAuthRules($module_name)
     {
-        $db_prefix = config('database.prefix');
+        $db_prefix = config('database.connections.mysql.prefix');
         $sql = "DELETE FROM `{$db_prefix}auth_rule` where `module` = '" . $module_name . "'";
         Db::execute($sql);
     }
 
     private function cleanMenus($module_name)
     {
-        $db_prefix = config('database.prefix');
-        $sql = "DELETE FROM `{$db_prefix}menu` where `url` like '" . $module_name . "/%'";
+        $db_prefix = config('database.connections.mysql.prefix');
+        $sql = "DELETE FROM `{$db_prefix}menu` where `module` = '" . $module_name . "'";
         Db::execute($sql);
     }
     /**

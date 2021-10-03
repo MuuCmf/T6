@@ -27,7 +27,7 @@ abstract class AdminBuilder extends Admin
         //$template = APP_PATH . 'admin' .DIRECTORY_SEPARATOR. 'view' .DIRECTORY_SEPARATOR. 'builder'. DIRECTORY_SEPARATOR . $templateFile . '.html';
         
         //显示页面
-        $html = htmlspecialchars_decode(View::fetch('builder' . DIRECTORY_SEPARATOR . $templateFile));
+        $html = htmlspecialchars_decode(View::fetch('../../admin/view/builder' . DIRECTORY_SEPARATOR . $templateFile));
         echo $html;
     }
 
