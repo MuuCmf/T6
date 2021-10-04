@@ -218,77 +218,80 @@ class Attachment extends Model
      */
     public function file($files, $dirname)
     {   
-        $config = config('upload.file');
+        if (empty($files)) {
+            return false;
+        }
         
         foreach($files as $file){
-            if (empty($files)) {
-                $this->error = $file->getError();
-                return false;
-            }
-            //判断是否已经存在附件
-            $sha1 = $file->hash();
-            //处理已存在文件
-            if($sha1){
-                $file_info = Db::name('File')->where(['sha1'=>$sha1])->find();
-
-                if($file_info){
-                    $return['data'][] = $file_info;
-                    continue;
-                }
-            }
-            
-            //获取上传驱动
-            $driver = modC('DOWNLOAD_UPLOAD_DRIVER','local','config');
-            $driver = check_driver_is_exist($driver);
-            
-            if($driver == 'local'){
-                $info = $file->validate(['size'=>$config['maxsize'],'ext'=>$config['mimetype']])->move($config['savepath']);
-                if($info){
-                    // 成功上传后 获取上传信息
-                    $data['savepath'] = DS . 'uploads'  . DS . 'file'  . DS . $info->getSaveName();
-                    $data['savepath'] = str_replace("\\","/",$data['savepath']);
-                    $data['savename'] = str_replace("\\","/",$info->getSaveName());
-                    $data['name'] = $info->getInfo()['name'];
-                    $data['mime'] = $info->getMime();
-                    $data['size'] = $info->getInfo()['size'];
-                    $data['md5'] = $info->md5();
-                    $data['sha1'] = $info->sha1();
-                    $data['ext'] = substr(strrchr($data['savename'], '.'), 1);
-
-                }else{
-                    $this->error = $file->getError();
-                    return false;
-                }
+            //判断是否已经存在
+            $sha1 = $file->hash('sha1');
+            //处理已存在图片
+            $file_info = $this->where(['sha1'=>$sha1])->find();
+            if(!empty($file_info)){
+                $file_res = [];
+                $data = $file_info->toArray();
+                $file_res['filename'] = $data['filename'];
+                $file_res['size'] = $data['size'];
+                $file_res['attachment'] = $data['attachment'];
+                $file_res['url'] = get_attachment_src($data['attachment']);
             }else{
                 //构建返回数据
-                $data['driver'] = $driver;
-                $data['name'] = $file->getInfo()['name'];
-                $data['mime'] = $file->getInfo()['type'];
-                $data['size'] = $file->getInfo()['size'];
+                $data['filename'] = $file->getOriginalName();
+                $data['ext'] = $file->getOriginalExtension();
                 $data['md5'] = $file->hash('md5');
                 $data['sha1'] = $file->hash('sha1');
+                $data['size'] = $file->getSize();
+                $data['mime'] = $file->getMime();
+                $data['type'] = 'image';  // 类型用字符串 pic file audio video
+                $savename = Filesystem::disk('public')->putFile( 'image', $file);
+                // 成功上传后 获取上传信息
+                $data['attachment'] = $savename;
+                $data['attachment'] = str_replace("\\","/",$data['attachment']);
+                dump($data);exit;
+                
+                //获取上传驱动
+                $driver = config('extend.PICTURE_UPLOAD_DRIVER');
+                if($driver == 'local'){
+                    // 本地无需处理
+                }
+                // 阿里云OSS
+                if($driver == 'aliyun') {
+                    $oss_res = $this->ossUpload($data['attachment'], $file->getPathname());
+                    // 上传成功
+                    if($oss_res === true){
+                        // 删除本地文件
+                        $attachment_path = app()->getRootPath() . 'public/attachment';
+                        $file_path = $attachment_path . '/' . $data['attachment'];
+                        if(file_exists($file_path)){
+                            unlink($file_path);
+                        }
+                    }
+                }
+                // 腾讯云COS
+                if($driver == 'tencent') {
+                    $cos_res = $this->cosUpload($data['attachment'], $file->getPathname());
+                    // 上传成功
+                    if($cos_res === true){
+                        // 删除本地文件
+                        $attachment_path = app()->getRootPath() . 'public/attachment';
+                        $file_path = $attachment_path . '/' . $data['attachment'];
+                        if(file_exists($file_path)){
+                            unlink($file_path);
+                        }
+                    }
+                }
 
-                //调用驱动上传数据
-                $res = $this->uploadDriver($driver, $file, $dirname);
-
-                $data['savepath'] = $res['savepath'];
-                $data['savename'] = $res['savename'];
-                $data['ext'] = substr(strrchr($data['savename'], '.'), 1);
-            }
-
-            //写入数据库
-            $data['create_time'] = time();
-            $id = Db::name('file')->insertGetId($data);
-            cache('file_path'.$id, NULL);
-            cache('file_name'.$id, NULL);
-            cache('file_all'.$id, NULL);
-            if($id){
-                $data['id'] = $id;
-                $data['savepath'] = get_file_by_id($id);
-                $return['data'][] = $data;
+                // 写入数据库
+                $this->save($data);
+                // 返回数据
+                $file_res = [];
+                $file_res['filename'] = $data['filename'];
+                $file_res['size'] = $data['size'];
+                $file_res['attachment'] = $data['attachment'];
+                $file_res['url'] = get_attachment_src($data['attachment']);
             }
         }
-        return $return['data'];
+        return $file_res;
     }
 
     /**

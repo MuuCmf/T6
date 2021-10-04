@@ -123,7 +123,7 @@
                 // swf文件路径
                 swf: 'Uploader.swf',
                 // 文件接收服务端。
-                server: "{:url('api/file/upload',array('session_id'=>session_id()))}",
+                server: "{:url('api/file/file',array('session_id'=>session_id()))}",
                 // 选择文件的按钮。可选。
                 // 内部根据当前运行是创建，可能是input元素，也可能是flash.
                 pick: "#uploader_{$field.name}",
@@ -137,17 +137,17 @@
             });
             // 文件上传过程中创建进度条实时显示。
             uploader_{$field.name}.on( 'uploadSuccess', function( file ,ret ) {
-                if(ret.code==1){
-                    toast.success("上传成功");
+                if(ret.code == 200){
+                    // toast.success("上传成功");
                     $('#file_list_{$field.name}').html(
-                        '<div class="file_item" data-id="'+ret.data[0].id+'">'+
-                            '<span>'+ret.data[0].name+'</span>'+
+                        '<div class="file_item" data-filename="'+ret.data.filename+'">'+
+                            '<span>'+ret.data.filename+'</span>'+
                             '<a class="remove"><i class="icon-trash"></i></a>'+
                         '</div>'
                     );
-                   $('#file_upload_{$field.name}').val(ret.data[0].id);
+                   $('#file_upload_{$field.name}').val(ret.data.attachment);
                 }else{
-                    toast.error("上传失败"+ret.msg);
+                    toast.error("上传失败，" + ret.msg);
                 }
                 //重启webuploader,可多次上传
                 uploader_{$field.name}.reset();
@@ -160,6 +160,7 @@
             uploader_{$field.name}.on( 'uploadComplete', function( file ) {
                 toast.hideLoading();
             });
+
             //移除事件
             $('#file_list_{$field.name}').on("click",".remove",function(){
                 $('#file_upload_{$field.name}').val('');
@@ -197,7 +198,7 @@
                     // swf文件路径
                     swf: 'Uploader.swf',
                     // 文件接收服务端。
-                    server: "{:url('api/File/uploadFile',array('session_id'=>session_id()))}",
+                    server: "{:url('api/File/file',array('session_id'=>session_id()))}",
                     // 选择文件的按钮。可选。
                     // 内部根据当前运行是创建，可能是input元素，也可能是flash.
                     pick: "#uploader_{$field.name}",
@@ -212,17 +213,17 @@
                 // 文件上传成功
                 uploader_{$field.name}.on( 'uploadSuccess', function( file ,ret ) {
 
-                    if(ret.code==1){
-                        toast.success("上传成功");
+                    if(ret.code == 200){
+                        //toast.success("上传成功");
                         $('#file_list_{$field.name}').append(
-                            '<div class="file_item" data-id="'+ret.data[0].id+'">'+
-                                '<span>'+ret.data[0].name+'</span>'+
+                            '<div class="file_item" data-filename="'+ret.data.filename+'">'+
+                                '<span>'+ret.data.filename+'</span>'+
                                 '<a class="remove"><i class="icon-trash"></i></a>'+
                             '</div>'
                         );
-                        upAttachVal($('#file_upload_{$field.name}'),'add',ret.data[0].id);
+                        upAttachVal($('#file_upload_{$field.name}'),'add',ret.data.filename);
                     }else{
-                        toast.error("上传失败，"+ret.msg);
+                        toast.error("上传失败，"+ ret.msg);
                     }
 
                     //重启webuploader,可多次上传
@@ -253,7 +254,7 @@
                 }
                 //移除事件
                 $('#file_list_{$field.name}').on("click",".remove",function(){
-                    var attachId = $(this).parent('div').data('id');
+                    var attachId = $(this).parent('div').data('filename');
                     upAttachVal($('#file_upload_{$field.name}'),'del', attachId);
                     $(this).parent('div').remove();
                 });
@@ -283,13 +284,13 @@
 
         <script>
             $(function () {
-                var uploader_{$field.name}= WebUploader.create({
+                var uploader_{$field.name} = WebUploader.create({
                     // 选完文件后，是否自动上传。
                     auto: true,
                     // swf文件路径
                     swf: 'Uploader.swf',
                     // 文件接收服务端。
-                    server: "{:Url('api/file/uploadPicture',array('session_id'=>session_id()))}",
+                    server: "{:url('api/file/pic',array('session_id'=>session_id()))}",
                     // 选择文件的按钮。可选。
                     // 内部根据当前运行是创建，可能是input元素，也可能是flash.
                     pick: {id:'#upload_single_image_{$field.name}',multiple: false},
@@ -307,15 +308,16 @@
                 /*上传成功**/
                 uploader_{$field.name}.on('uploadSuccess', function (file, data) {
                     if (data.code) {
-                        $("[name='{$field.name}']").val(data.data[0].id);
+                        $("[name='{$field.name}']").val(data.data.attachment);
                         $("[name='{$field.name}']").parent().find('.upload-pre-item').html(
-                                ' <div class="each"><a href="'+ data.data[0].path+'" title="显示大图"><img src="'+ data.data[0].path+'"></a><div class="text-center opacity del_btn" ></div>' +
-                                        '<div onclick="admin_image.removeImage($(this),'+data.data[0].id+')"  class="text-center del_btn">删除</div></div>'
+                                '<div class="each"><a href="'+ data.data.url +'" data-toggle="lightbox" title="显示大图"><img src="'+ data.data.url +'"></a><div class="text-center opacity del_btn" ></div>' +
+                                    '<div onclick="admin_image.removeImage($(this),\''+data.data.attachment+'\')" class="text-center del_btn">删除</div>' +
+                                '</div>'
                         );
                         //重启webuploader,可多次上传
                         uploader_{$field.name}.reset();
                     } else {
-                        updateAlert(data.msg);
+                        toast.error(data.msg);
                         setTimeout(function () {
                             $('#top-alert').find('button').click();
                             $(that).removeClass('disabled').prop('disabled', false);
@@ -326,7 +328,6 @@
                 uploader_{$field.name}.on( 'uploadComplete', function( file ) {
                     toast.hideLoading();
                 });
-
             })
         </script>
 
@@ -363,7 +364,7 @@
                 // 选完文件后，是否自动上传。
                 swf: 'Uploader.swf',
                 // 文件接收服务端。
-                server: "{:url('api/file/pic',['session_id'=>session_id()])}",
+                server: "{:url('api/file/pic')}",
                 // 选择文件的按钮。可选。
                 // 内部根据当前运行是创建，可能是input元素.
                 //pick: '#upload_multi_image_{$field.name}',
@@ -387,29 +388,29 @@
             uploader_{$field.name}.on('uploadSuccess', function (file, data) {
               if (data.code) {
 
-                var ids = $("[name='{$field.name}']").val();
-                ids = ids.split(',');
+                var attachs = $("[name='{$field.name}']").val();
+                    attachs = attachs.split(',');
 
-              if( ids.indexOf(data.data[0].id) == -1){
-                    var rids = admin_image.upAttachVal('add',data.data[0].id, $("[name='{$field.name}']"));
+              if(attachs.indexOf(data.data.attachment) == -1){
+                    var rids = admin_image.upAttachVal('add',data.data.attachment, $("[name='{$field.name}']"));
                   if(rids.length>limit){
-                      updateAlert('超过图片限制');
+                      toast.error('超过图片限制');
                       return;
                   }
                   $("[name='{$field.name}']").parent().find('.upload-pre-item').append(
                         '<div class="each">'+
-                        '<a href="'+ data.data[0].path+'" data-toggle="lightbox" title="显示大图">'+
-                        '<img src="'+ data.data[0].path+'">'+
+                        '<a href="'+ data.data.url+'" data-toggle="lightbox" title="显示大图">'+
+                        '   <img src="'+ data.data.url+'">'+
                         '</a>'+
                         '<div class="text-center opacity del_btn" ></div>' +
-                            '<div onclick="admin_image.removeImage($(this),'+data.data[0].id+')"  class="text-center del_btn">删除</div>'+
+                            '<div onclick="admin_image.removeImage($(this),\''+data.data.attachment+'\')" class="text-center del_btn">删除</div>'+
                         '</div>'
                     );
                 }else{
-                    updateAlert('该图片已存在');
+                    toast.error('该图片已存在');
                 }
             } else {
-                updateAlert(data.msg);
+                toast.success(data.msg);
                 setTimeout(function () {
                     $('#top-alert').find('button').click();
                     $(that).removeClass('disabled').prop('disabled', false);

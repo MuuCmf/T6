@@ -2,11 +2,11 @@ var admin_image ={
     /**
      *
      * @param obj
-     * @param attachId
+     * @param attach
      */
-    removeImage: function (obj, attachId) {
+    removeImage: function (obj, attach) {
         // 移除附件ID数据
-        this.upAttachVal('del', attachId, obj);
+        this.upAttachVal('del', attach, obj);
         obj.parents('.each').remove();
 
     },
@@ -14,18 +14,18 @@ var admin_image ={
      * 更新附件表单值
      * @return void
      */
-    upAttachVal: function (type, attachId,obj) {
+    upAttachVal: function (type, attach,obj) {
         var $attach_ids = obj.parents('.controls').find('.attach');
         var attachVal = $attach_ids.val();
         var attachArr = attachVal.split(',');
         var newArr = [];
         for (var i in attachArr) {
-            if (attachArr[i] !== '' && attachArr[i] !== attachId.toString()) {
+            if (attachArr[i] !== '' && attachArr[i] !== attach.toString()) {
                 newArr.push(attachArr[i]);
             }
         }
-        type === 'add' && newArr.push(attachId);
-        $attach_ids.val(newArr.join(','));
+        type === 'add' && newArr.push(attach);
+        $attachs.val(newArr.join(','));
         return newArr;
     }
 }
