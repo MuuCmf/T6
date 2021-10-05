@@ -15,8 +15,8 @@ var admin_image ={
      * @return void
      */
     upAttachVal: function (type, attach,obj) {
-        var $attach_ids = obj.parents('.controls').find('.attach');
-        var attachVal = $attach_ids.val();
+        var $attachs = obj.parents('.controls').find('.attach');
+        var attachVal = $attachs.val();
         var attachArr = attachVal.split(',');
         var newArr = [];
         for (var i in attachArr) {

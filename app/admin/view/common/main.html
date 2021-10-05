@@ -31,7 +31,7 @@
 
   <!-- Content Wrapper. Contains page content -->
   <section class="content-wrapper container-fluid">
-    <div class="muu-wrapper">
+    <div class="muu-wrapper" style="display: none;">
       <!-- builder 构建器外层盒子 -->
       <div class="builder">
       {block name="body"}{/block}
@@ -53,6 +53,10 @@
 <!-- main -->
 <script src="__STATIC__/admin/js/main.min.js"></script>
 {block name="script"}{/block}
-
+<script>
+$(document).ready(function(){
+    $('.muu-wrapper').fadeIn(200); // 1000等于1秒
+});
+</script>
 </body>
 </html>

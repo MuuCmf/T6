@@ -238,9 +238,9 @@
                     toast.hideLoading();
                 });
 
-                function upAttachVal(input,type, attachId) {
-                    var $attach_ids =input ;
-                    var attachVal = $attach_ids.val();
+                function upAttachVal(input, type, attachId) {
+                    var $attachs =input ;
+                    var attachVal = $attachs.val();
                     var attachArr = attachVal.split(',');
                     var newArr = [];
 
@@ -250,7 +250,7 @@
                         }
                     }
                     type === 'add' && newArr.push(attachId);
-                    $attach_ids.val(newArr.join(','));
+                    $attachs.val(newArr.join(','));
                 }
                 //移除事件
                 $('#file_list_{$field.name}').on("click",".remove",function(){

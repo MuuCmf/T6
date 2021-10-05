@@ -70,21 +70,22 @@ class Field extends Admin
                 $res = Db::name('field_group')->insert($data);
             }
             if ($res) {
-                return $this->success($id == '' ? '新增分组成功' : '编辑分组成功', url('group'));
+                return $this->success($id == '' ? '新增分组成功' : '编辑分组成功', '', url('group')->build());
             } else {
                 return $this->error($id == '' ? '新增分组失败' : '编辑分组失败');
             }
         } else {
-            $builder = new AdminConfigBuilder($this->app);
+
+            $builder = new AdminConfigBuilder();
             if ($id != 0) {
                 $profile = Db::name('field_group')->where(['id'=>$id])->find();
                 $builder->title('修改分组信息');
             } else {
                 $builder->title('添加扩展信息分组');
-                $builder->meta_title = '新增分组';
+                $profile = [];
             }
             $builder
-                ->keyReadOnly("id", lang('Logo'))
+                ->keyReadOnly("id", 'ID')
                 ->keyText('profile_name', '分组名称')
                 ->keyBool('visiable', '是否公开');
 
