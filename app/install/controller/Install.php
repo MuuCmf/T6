@@ -76,7 +76,7 @@ class Install extends Base
 	            try {
 	                $db_instance->execute('select version()');
 	            } catch (\Exception $e) {
-	                return $this->error('数据库连接失败，请检查数据库配置！','', url('install/Index/step2'));
+	                return $this->error('数据库连接失败，请检查数据库配置！','');
 	            }
 
 	            //建立数据库
@@ -123,9 +123,7 @@ class Install extends Base
         //注册创始人帐号
         $auth  = build_auth_key();
         $admin = session('admin_info');
-        dump($admin);
         register_administrator($db_instance, $dbconfig['prefix'], $admin, $auth);
-
         //更新配置文件
         $conf   =   write_config($dbconfig, $auth);
         session('config_file',$conf);
@@ -134,7 +132,9 @@ class Install extends Base
             error_btn('很遗憾，安装失败，请检测后重新安装！','btn btn-warning btn-large btn-block');
         } else {
             session('step', 3);
-            echo "<script type=\"text/javascript\">setTimeout(function(){location.href='".url('Index/complete')."'},5000)</script>";
+            echo "<script type=\"text/javascript\">setTimeout(function(){location.href='".Url('Index/complete')."'},5000)</script>";
+            ob_flush();
+            flush();
         }
     }
 
@@ -142,5 +142,38 @@ class Install extends Base
         View::assign('info',$info);// 提示信息
         View::assign('title',$title);
         return View::fetch('error');
+    }
+
+    public function debug()
+    {
+        $config = [
+            "type" => "mysql",
+            "hostname" => "127.0.0.1",
+            "database" => "demo_t6_muucmf_c",
+            "username" => "demo_t6_muucmf_c",
+            "password" => "HhPwW2M2G4sZSfcT",
+            "hostport" => "3306",
+            "prefix" => "muucmf_",
+            "charse" => "utf8"
+        ];
+        $dbConfigFile = root_path() . '.env';
+        //读取配置内容
+        $db_conf = @file_get_contents($dbConfigFile);
+        //dump($db_conf);
+        //dump($config);
+        //把auth字串写入数组
+        $callback = function($matches) use($config) {
+            
+            $field = $matches[1];
+            $replace = $config[strtolower($field)];
+            dump($matches[1]);
+            return "{$matches[1]} = {$replace}";
+        };
+        
+        //修改数据库相关配置
+        $db_conf = preg_replace_callback("/(HOSTNAME|DATABASE|USERNAME|PASSWORD|HOSTPORT|PREFIX)(\s+)=(\s+)(.*)/", $callback, $db_conf);
+
+        //$db_conf = preg_replace("/(HOSTNAME)(\s+)=(\s+)(.*)/",'HOSTNAME = '.$config['hostname'],$db_conf);
+        dump($db_conf);
     }
 }

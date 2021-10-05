@@ -162,25 +162,19 @@ function write_config($config, $auth)
         $dbConfigFile = root_path() . '.env';
         //读取配置内容
         $db_conf = @file_get_contents($dbConfigFile);
-        //把auth字串写入数组
+        //把auth字串写入
         $callback = function($matches) use($config) {
-            //dump($matches);
             $field = $matches[1];
-            $replace = $config[$field];
-            if ($matches[1] == 'hostport' && $config['hostport'] == 3306)
-            {
-                $replace = 3306;
-            }
-            return "'{$matches[1]}'{$matches[2]}=>{$matches[3]}Env::get('database.{$matches[1]}', '{$replace}'),";
+            $replace = $config[strtolower($field)];
+            return "{$matches[1]} = {$replace}";
         };
-        //修改数据库相关配置
-        $db_conf = preg_replace_callback("/'(hostname|database|username|password|hostport|prefix)'(\s+)=>(\s+)Env::get\((.*)\)\,/", $callback, $db_conf);
         
+        //修改数据库相关配置
+        $db_conf = preg_replace_callback("/(HOSTNAME|DATABASE|USERNAME|PASSWORD|HOSTPORT|PREFIX)(\s+)=(\s+)(.*)/", $callback, $db_conf);
         //修改用户加密字串配置
-        $db_conf = preg_replace_callback("/'(auth_key)'(\s*)=>(\s*)'(.*)',/", function($matches) use($auth){
+        $db_conf = preg_replace_callback("/(AUTH_KEY)(\s*)=(\s*)(.*)/", function($matches) use($auth){
             $replace = $auth;
-            
-            return "'{$matches[1]}'{$matches[2]}=>{$matches[3]}'{$replace}',";
+            return "{$matches[1]} = {$replace}";
         }, $db_conf);
 
         //检测能否成功写入数据库配置
