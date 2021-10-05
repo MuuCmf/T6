@@ -1,8 +1,7 @@
 <?php
 return [
-    'MuuCmf'      =>'MuuCmf T6开源开发框架',
     'Install'     =>'安装',
-    'Protocols'   =>'安装协议',
+    'Protocols'   =>'协议',
     'Detection'   =>'环境检测',
     'Database'    =>'创建数据库',
     'Complete'    =>'完成',

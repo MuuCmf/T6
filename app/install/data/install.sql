@@ -333,8 +333,9 @@ INSERT INTO `muucmf_auth_rule` (`id`, `module`, `type`, `name`, `title`, `status
 --
 DROP TABLE IF EXISTS `muucmf_channel`;
 CREATE TABLE IF NOT EXISTS `muucmf_channel` (
-  `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '频道ID',
-  `pid` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '上级频道ID',
+  `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '频道ID',
+  `type` varchar(32) NOT NULL DEFAULT '0' COMMENT '链接类型',
+  `app` varchar(64) NOT NULL COMMENT '模块标识，空：自定义链接',
   `title` char(30) NOT NULL COMMENT '频道标题',
   `url` char(100) NOT NULL COMMENT '频道连接',
   `sort` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '导航排序',
@@ -346,17 +347,16 @@ CREATE TABLE IF NOT EXISTS `muucmf_channel` (
   `band_color` varchar(30) NOT NULL,
   `band_text` varchar(30) NOT NULL,
   `icon` varchar(20) NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `pid` (`pid`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=4 ;
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=4;
 
 --
 -- 转存表中的数据 `muucmf_channel`
 --
 
-INSERT INTO `muucmf_channel` (`id`, `pid`, `title`, `url`, `sort`, `create_time`, `update_time`, `status`, `target`, `color`, `band_color`, `band_text`, `icon`) VALUES
-(1, 0, '首页', 'index/index/index', 0, 0, 0, 1, 0, '', '', '', ''),
-(2, 0, '自定义', '#', 0, 0, 0, 1, 0, '', '', '', '');
+INSERT INTO `muucmf_channel` (`id`, `type`, `app`, `title`, `url`, `sort`, `create_time`, `update_time`, `status`, `target`, `color`, `band_color`, `band_text`, `icon`) VALUES
+(1, 'app', 'index', '首页', 'index', 0, 0, 0, 1, 0, '', '', '', ''),
+(2, '_custom', 'ucenter', '百度', 'https://www.baidu.com', 0, 0, 0, 1, 1, '', '', '', '');
 
 -- --------------------------------------------------------
 
@@ -4075,8 +4075,8 @@ INSERT INTO `muucmf_extend_config` (`id`, `name`, `type`, `title`, `group`, `ext
 --
 DROP TABLE IF EXISTS `muucmf_field`;
 CREATE TABLE IF NOT EXISTS `muucmf_field` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `uid` int(11) NOT NULL,
+  `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+  `uid` int(11) UNSIGNED NOT NULL,
   `field_id` int(11) NOT NULL,
   `field_data` varchar(1000) NOT NULL,
   `create_time` int(11) NOT NULL COMMENT '创建时间',
@@ -4091,7 +4091,7 @@ CREATE TABLE IF NOT EXISTS `muucmf_field` (
 --
 DROP TABLE IF EXISTS `muucmf_field_group`;
 CREATE TABLE IF NOT EXISTS `muucmf_field_group` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键ID',
   `profile_name` varchar(25) NOT NULL,
   `status` tinyint(4) NOT NULL DEFAULT '1',
   `sort` int(11) NOT NULL,
@@ -4115,7 +4115,7 @@ INSERT INTO `muucmf_field_group` (`id`, `profile_name`, `status`, `sort`, `visia
 --
 DROP TABLE IF EXISTS `muucmf_field_setting`;
 CREATE TABLE IF NOT EXISTS `muucmf_field_setting` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键ID',
   `field_name` varchar(25) NOT NULL COMMENT '字段名称',
   `group_id` int(11) NOT NULL COMMENT '分组ID',
   `visiable` tinyint(4) NOT NULL DEFAULT '1' COMMENT '是否公开',
@@ -4150,7 +4150,7 @@ INSERT INTO `muucmf_field_setting` (`id`, `field_name`, `group_id`, `visiable`, 
 --
 DROP TABLE IF EXISTS `muucmf_follow`;
 CREATE TABLE IF NOT EXISTS `muucmf_follow` (
-  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'id',
+  `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键ID',
   `follow_who` int(11) NOT NULL COMMENT '关注谁',
   `who_follow` int(11) NOT NULL COMMENT '谁关注',
   `create_time` int(11) NOT NULL,
@@ -4307,22 +4307,18 @@ INSERT INTO `muucmf_menu` (`id`, `title`, `pid`, `sort`, `url`, `hide`, `type`, 
 --
 DROP TABLE IF EXISTS `muucmf_module`;
 CREATE TABLE IF NOT EXISTS `muucmf_module` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键ID',
   `name` varchar(30) NOT NULL COMMENT '模块名',
   `alias` varchar(30) NOT NULL COMMENT '中文名',
   `version` varchar(20) NOT NULL COMMENT '版本号',
   `is_com` tinyint(4) NOT NULL COMMENT '是否商业版',
-  `show_nav` tinyint(4) NOT NULL COMMENT '是否显示在导航栏中',
   `summary` varchar(200) NOT NULL COMMENT '简介',
   `developer` varchar(50) NOT NULL COMMENT '开发者',
   `website` varchar(200) NOT NULL COMMENT '网址',
-  `entry` varchar(50) NOT NULL COMMENT '前台入口',
+  `entry` varchar(50) NOT NULL COMMENT '管理端入口',
   `is_setup` tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否已安装',
   `sort` int(11) NOT NULL COMMENT '模块排序',
-  `icon` varchar(255) NOT NULL,
-  `can_uninstall` tinyint(4) NOT NULL,
-  `custom_admin` tinyint(2) NOT NULL DEFAULT '0' COMMENT '是否自定义后台入口，0：否 1：是',
-  `admin_entry` varchar(50) NOT NULL COMMENT '后台入口',
+  `uninstall` tinyint(4) NOT NULL COMMENT '允许卸载',
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`),
   KEY `name_2` (`name`)
@@ -4332,9 +4328,11 @@ CREATE TABLE IF NOT EXISTS `muucmf_module` (
 -- 转存表中的数据 `muucmf_module`
 --
 
-INSERT INTO `muucmf_module` (`id`, `name`, `alias`, `version`, `is_com`, `show_nav`, `summary`, `developer`, `website`, `entry`, `is_setup`, `sort`, `icon`, `can_uninstall`, `custom_admin`, `admin_entry`) VALUES
-(3, 'ucenter', '用户中心', '1.0.0', 0, 0, '用户中心模块，系统核心模块', '北京火木科技有限公司', 'http://www.muucmf.com', 'ucenter/index/index', 1, 0, 'home', 0, 0, 'admin/index/index'),
-(4, 'index', '首页', '1.0.0', 0, 0, '系统主页，系统核心模块', '北京火木科技有限公司', 'http://www.muucmf.com', 'index/index/index', 1, 0, 'home', 0, 0, 'admin/index/index');
+INSERT INTO `muucmf_module` (`id`, `name`, `alias`, `version`, `is_com`, `summary`, `developer`, `website`, `entry`, `is_setup`, `sort`, `uninstall`) VALUES
+(3, 'ucenter', '用户中心', '1.0.0', 0, '用户中心模块，系统核心模块', '北京火木科技有限公司', 'http://www.muucmf.com', 'ucenter/index/index', 1, 0, 0),
+(4, 'index', '首页', '1.0.0', 0, '系统主页，系统核心模块', '北京火木科技有限公司', 'http://www.muucmf.com', 'index/admin/index', 1, 0, 0),
+(5, 'devtool', '开发者工具', '1.0.0', 0, '开发者工具，主要提供给开发者使用，包含了模块打包工具', '北京火木科技有限公司', 'https://www.muucmf.cn', 'devtool/Admin/module', 1, 0, 1),
+(7, 'demo', '模块开发演示', '1.0.0', 1, '模块开发演示', '北京火木科技有限公司', 'http://www.muucmf.cn', 'demo/Admin/index', 1, 0, 1);
 
 -- --------------------------------------------------------
 
@@ -4343,14 +4341,14 @@ INSERT INTO `muucmf_module` (`id`, `name`, `alias`, `version`, `is_com`, `show_n
 --
 DROP TABLE IF EXISTS `muucmf_score_log`;
 CREATE TABLE IF NOT EXISTS `muucmf_score_log` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `uid` int(11) NOT NULL,
+  `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `uid` int(11) UNSIGNED NOT NULL,
   `ip` bigint(20) NOT NULL,
   `type` int(11) NOT NULL,
   `action` varchar(20) NOT NULL,
   `value` double NOT NULL,
   `finally_value` double NOT NULL,
-  `create_time` int(11) NOT NULL,
+  `create_time` int(11) UNSIGNED NOT NULL,
   `remark` varchar(255) NOT NULL,
   `model` varchar(20) NOT NULL,
   `record_id` int(11) NOT NULL,
@@ -4364,10 +4362,10 @@ CREATE TABLE IF NOT EXISTS `muucmf_score_log` (
 --
 DROP TABLE IF EXISTS `muucmf_score_type`;
 CREATE TABLE IF NOT EXISTS `muucmf_score_type` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `title` varchar(50) NOT NULL,
-  `status` tinyint(4) NOT NULL,
-  `unit` varchar(20) NOT NULL,
+  `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+  `title` varchar(50) NOT NULL COMMENT '名称',
+  `status` tinyint(4) NOT NULL COMMENT '状态',
+  `unit` varchar(20) NOT NULL COMMENT '单位',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=100 ;
 
@@ -4388,7 +4386,7 @@ INSERT INTO `muucmf_score_type` (`id`, `title`, `status`, `unit`) VALUES
 --
 DROP TABLE IF EXISTS `muucmf_seo_rule`;
 CREATE TABLE IF NOT EXISTS `muucmf_seo_rule` (
-  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+  `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键ID',
   `title` text NOT NULL COMMENT '名称',
   `app` varchar(40) NOT NULL COMMENT '应用',
   `controller` varchar(40) NOT NULL COMMENT '控制器',
@@ -4430,7 +4428,7 @@ CREATE TABLE IF NOT EXISTS `muucmf_ucenter_setting` (
 --
 DROP TABLE IF EXISTS `muucmf_user_config`;
 CREATE TABLE IF NOT EXISTS `muucmf_user_config` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `uid` int(11) NOT NULL,
   `name` varchar(30) NOT NULL,
   `model` varchar(30) NOT NULL,
@@ -4446,6 +4444,8 @@ CREATE TABLE IF NOT EXISTS `muucmf_user_config` (
 DROP TABLE IF EXISTS `muucmf_user_nav`;
 CREATE TABLE IF NOT EXISTS `muucmf_user_nav` (
   `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '频道ID',
+  `type` varchar(32) NOT NULL,
+  `app` varchar(64) NOT NULL,
   `title` char(30) NOT NULL COMMENT '频道标题',
   `url` char(100) NOT NULL COMMENT '频道连接',
   `sort` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '导航排序',
@@ -4464,9 +4464,8 @@ CREATE TABLE IF NOT EXISTS `muucmf_user_nav` (
 -- 转存表中的数据 `muucmf_user_nav`
 --
 
-INSERT INTO `muucmf_user_nav` (`id`, `title`, `url`, `sort`, `create_time`, `update_time`, `status`, `target`, `color`, `band_color`, `band_text`, `icon`) VALUES
-(1, '首页', 'index/index/index', 0, 0, 0, 1, 0, '', '', '', ''),
-(2, '用户中心', 'ucenter/index/index', 0, 0, 0, 1, 0, '', '', '', '');
+INSERT INTO `muucmf_user_nav` (`id`, `type`, `app`, `title`, `url`, `sort`, `create_time`, `update_time`, `status`, `target`, `color`, `band_color`, `band_text`, `icon`) VALUES
+(1, '_custom', 'ucenter', '用户设置', 'ucenter/config/index', 0, 0, 0, 1, 0, '', '', '', '');
 
 -- --------------------------------------------------------
 
@@ -4475,7 +4474,7 @@ INSERT INTO `muucmf_user_nav` (`id`, `title`, `url`, `sort`, `create_time`, `upd
 --
 DROP TABLE IF EXISTS `muucmf_user_token`;
 CREATE TABLE IF NOT EXISTS `muucmf_user_token` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `uid` int(11) NOT NULL,
   `token` varchar(255) NOT NULL,
   `time` int(11) NOT NULL,
@@ -4489,8 +4488,8 @@ CREATE TABLE IF NOT EXISTS `muucmf_user_token` (
 --
 DROP TABLE IF EXISTS `muucmf_verify`;
 CREATE TABLE IF NOT EXISTS `muucmf_verify` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `uid` int(11) NOT NULL,
+  `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `uid` int(11) UNSIGNED NOT NULL,
   `account` varchar(255) NOT NULL,
   `type` varchar(20) NOT NULL,
   `verify` varchar(50) NOT NULL,
