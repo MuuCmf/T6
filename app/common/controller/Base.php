@@ -113,7 +113,11 @@ class Base
         if (empty($url) && isset($_SERVER["HTTP_REFERER"])) {
             $url = $_SERVER["HTTP_REFERER"];
         } elseif ($url) {
-            $url = (strpos($url, '://') || 0 === strpos($url, '/')) ? $url : 'refresh';
+            if(is_object($url)){
+                $url = $url->build();
+            }else{
+                $url = (strpos($url, '://') || 0 === strpos($url, '/')) ? $url : 'refresh';
+            }
         }
         
         $result = [
