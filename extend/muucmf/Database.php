@@ -11,7 +11,7 @@
 
 namespace muucmf;
 
-use think\Db;
+use think\facade\Db;
 
 //数据导出模型
 class Database{

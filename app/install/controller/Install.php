@@ -105,6 +105,7 @@ class Install extends Base
 
     // 安装第三步，安装数据表，创建配置文件
     public function step3(){
+        ob_start();
         if(session('step') != 2){
             $this->redirect('step2');
         }
@@ -132,7 +133,7 @@ class Install extends Base
             error_btn('很遗憾，安装失败，请检测后重新安装！','btn btn-warning btn-large btn-block');
         } else {
             session('step', 3);
-            echo "<script type=\"text/javascript\">setTimeout(function(){location.href='".Url('Index/complete')."'},5000)</script>";
+            echo "<script type=\"text/javascript\">setTimeout(function(){location.href='".url('Index/complete')."'},5000)</script>";
             ob_flush();
             flush();
         }
