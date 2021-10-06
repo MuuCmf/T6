@@ -65,6 +65,8 @@ class Module extends Admin
         //dump($modules);exit;
         View::assign('page', $page);
         View::assign('modules', $modules);
+        // 记录当前列表页的cookie
+        cookie('__forward__', $_SERVER['REQUEST_URI']);
 
         return View::fetch();
     }
@@ -91,7 +93,7 @@ class Module extends Admin
                 cache('admin_modules', null);
                 //删除module表中记录
                 $this->moduleModel->where(['id' => $aId])->delete();
-                return $this->success('卸载模块成功。', url('index'));
+                return $this->success('卸载模块成功。','', cookie('__forward__'));
             } else {
                 $this->error('卸载模块失败。' . $this->moduleModel->error);
             }
@@ -129,7 +131,7 @@ class Module extends Admin
             
             if ($res === true) {
                 cache('ADMIN_MODULES_' . is_login(), null);
-                $this->success('安装模块成功。', url('index'));
+                $this->success('安装模块成功。', '', cookie('__forward__'));
             } else {
                 $this->error('安装模块失败。' . $this->moduleModel->error);
             }
