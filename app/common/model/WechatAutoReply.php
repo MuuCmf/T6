@@ -17,7 +17,17 @@ class WechatAutoReply extends BaseModel
 {
     public function getTypeStrAttr($value)
     {
-        $arr = ['关注回复','文本'];
+        $arr = [1=>'关注回复',2=>'自动回复'];
+        return $arr[$value];
+    }
+    public function getMsgTypeStrAttr($value)
+    {
+        $arr = [1=>'文本',2=>'素材'];
+        return $arr[$value];
+    }
+    public function getMaterialTypeStrAttr($value)
+    {
+        $arr = ['news'=>'图文', 'image' => '图片', 'voice' => '音频' ,'video' => '视频'];
         return $arr[$value];
     }
     /**
@@ -27,7 +37,7 @@ class WechatAutoReply extends BaseModel
     public function checkUnique($key = 'keyword',$text = '',$id = 0)
     {
         $where = [
-            [$key,$text]
+            [$key,'=',$text]
         ];
         if ($id){
             $where[] = ['id','<>',$id];

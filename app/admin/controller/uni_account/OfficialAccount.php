@@ -75,7 +75,7 @@ class OfficialAccount extends Admin {
         ];
         if (isset($params['keyword']) && !empty($params['keyword'])) $where[] = ['keyword','like','%' . $params['keyword'] . '%'];
         $page = max(1,isset($params['page']) ?? $params['page']);
-        $list = $this->autoReplyModel->where($where)->field('*,type as type_str,status as status_str')->order('sort','DESC')->page($page,20)->paginate();
+        $list = $this->autoReplyModel->where($where)->field('*,type as type_str,status as status_str,msg_type as msg_type_str,material_type as material_type_str')->order('sort','DESC')->page($page,20)->paginate();
         // 获取分页显示
         $page = $list->render();
         unset($val);
@@ -93,38 +93,40 @@ class OfficialAccount extends Admin {
      */
     public function editAutoReply()
     {
-        $aId = input('id', 0, 'intval');
+        $aId = input('param.id', 0, 'intval');
         if (request()->isPost()) {
             $data['keyword'] = input('post.keyword', '', 'text');
             $data['text'] = input('post.text', '', 'text');
+            $data['media_id'] = input('post.media_id', '', 'text');
             $data['remark'] = input('post.remark', '', 'text');
             $data['sort'] = input('post.sort', 0, 'intval');
             $data['type'] = input('post.type', 1, 'intval');
+            $data['msg_type'] = input('post.msg_type', 1, 'intval');
+            $data['material_type'] = input('post.material_type', '', 'text');
+            $data['material_json'] = input('post.material_json', '', 'text');
             $data['status'] = input('post.status', 0, 'intval');
             $data['id'] = $aId;
             //验证文本唯一性
             if (!$this->autoReplyModel->checkUnique('keyword',$data['keyword'],$aId)){
                 $this->error('关键字重复');
             }
-            if (!$this->autoReplyModel->checkUnique('text',$data['text'],$aId)){
+            if (!empty($data['text']) && !$this->autoReplyModel->checkUnique('text',$data['text'],$aId)){
                 $this->error('内容重复');
             }
             //验证关注回复唯一性
-            if (!$this->autoReplyModel->checkUnique('type',0,$aId)){
+            if ($data['type'] == 1 && !$this->autoReplyModel->checkUnique('type',1,$aId)){
                 $this->error('关注消息只能添加一条');
             }
-
             $res = $this->autoReplyModel->edit($data);
             if($res){
-                return $this->success(($aId == 0 ? '新增' : '编辑') . '成功', '', url('limit'));
+                return $this->success(($aId == 0 ? '新增' : '编辑') . '成功', '', url('admin/uni_account.OfficialAccount/autoReply'));
             }else{
                 return $this->error('提交失败');
             }
-        } else {
-            $aId = 1;
-            $data = [];
-            if ($aId){
-                $data = $this->autoReplyModel->where('id',$aId)->find()->toArray();
+        }else {
+            $data = ['id' => $aId];
+            if ($aId > 0){
+                $data = $this->autoReplyModel->find(['id' => input('id')]);
             }
             View::assign([
                 'data' => $data

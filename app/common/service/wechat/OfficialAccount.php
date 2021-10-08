@@ -105,4 +105,13 @@ class OfficialAccount extends Wechat {
     public function getMaterialList($type, $offset = 0 ,$count = 20){
         return $this->app->material->list($type, $offset, $count);
     }
+
+    /**
+     * 根据素材id获取详情
+     * @param $media_id
+     * @return mixed
+     */
+    public function getMaterial($media_id){
+        return $this->app->material->get($media_id);
+    }
 }

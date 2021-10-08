@@ -66,8 +66,21 @@
                 </td>
                 <td>{$vo.id} </td>
                 <td>{$vo.keyword}</td>
-                <td>{$vo.text}</td>
-                <td>{$vo.remark}</td>
+                <td style="max-width: 300px">
+                    <p class="text-ellipsis text-nowrap">
+                        {if $vo.msg_type == 1}
+                        文本消息:{$vo.text}
+                        {else}
+                        {$vo.material_type_str}消息
+                        {/if}
+                    </p>
+
+                </td>
+                <td style="max-width: 300px" >
+                    <p class="text-ellipsis text-nowrap">
+                        {$vo.remark}
+                    </p>
+                </td>
                 <td>{$vo.type_str}</td>
                 <td>{$vo.status_str}</td>
                 <td>
