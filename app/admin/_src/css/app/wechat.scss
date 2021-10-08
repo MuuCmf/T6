@@ -216,6 +216,17 @@
           display: flex;
           flex-wrap: wrap;
           padding: 10px;
+          .mask-layer{
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            background: rgba(0,0,0,.5);
+            display: none;
+          }
+          .maskBlock{
+            display: block !important;
+          }
         }
         .panel{
           width: 260px;
@@ -226,14 +237,6 @@
           background-color:#f2f2f2 ;
           .shade{
             position: relative;
-            .mask-layer{
-              width: 100%;
-              height: 100%;
-              position: absolute;
-              top: 0;
-              background: rgba(0,0,0,.5);
-              display: none;
-            }
           }
           .panel-image{
             width: 100%;
@@ -294,12 +297,14 @@
           border-radius: 5px;
           background: #fff;
           display: flex;
-          padding: 8px;
+          padding: 8px 0;
           margin: 10px;
+          position: relative;
           .icon{
             font-size: 50px;
             color: #00a65a;
             line-height: 84px;
+            padding-left: 8px;
           }
           .information{
             padding-left: 10px;
@@ -327,6 +332,7 @@
           border-radius: 5px;
           position: relative;
           background: #fff;
+          position: relative;
           .video-item{
             width: 260px;
             height: 200px;
@@ -514,6 +520,9 @@
                   z-index: 2;
                 }
           }
+            .sub_pre_menu_box_show{
+              display: block !important;
+            }
             .popout{
               display: block;
             }
