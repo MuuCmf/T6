@@ -21,6 +21,7 @@ use think\Facade;
  * @method getWechatServerIps() static
  * @method getWechatServerIp() static
  * @method getMenu() static
+ * @method getApp() static
  * @method currentMenu() static
  * @method createMenu() static
  * @method currentMessage() static

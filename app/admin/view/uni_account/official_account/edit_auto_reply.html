@@ -141,18 +141,26 @@
     var vmEdit = new Vue({
         el: '.edit-auto-reply',
         data: {
-            msgType:'{$data.msg_type|default=1}',
-            materialType:'{$data.material_type|default="news"}',
+            msgType:1,
+            materialType:'news',
             material:{},
-            type:'{$data.type|default=1}',
+            type:'{$data.type|default=2}',
             status:'{$data.status|default=1}'
         },
         created:function () {
             //编辑时 初始化
             var id = $('input[name=id]').val();
             if (id > 0){
-                this.material = JSON.parse($("input[name=material_json]").val())
+                this.material = JSON.parse($("input[name=material_json]").val());
             }
+            let msgType = '{$data.msg_type|default="text"}';
+            if (msgType == 'text'){
+                this.msgType = 1;
+            }else{
+                this.msgType = 2;
+                this.materialType = msgType;
+            }
+
         },
         methods: {
             chooseMaterial(){

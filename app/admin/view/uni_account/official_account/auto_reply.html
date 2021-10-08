@@ -66,15 +66,8 @@
                 </td>
                 <td>{$vo.id} </td>
                 <td>{$vo.keyword}</td>
-                <td style="max-width: 300px">
-                    <p class="text-ellipsis text-nowrap">
-                        {if $vo.msg_type == 1}
-                        文本消息:{$vo.text}
-                        {else}
-                        {$vo.material_type_str}消息
-                        {/if}
-                    </p>
-
+                <td>
+                    {$vo.msg_type_str}消息
                 </td>
                 <td style="max-width: 300px" >
                     <p class="text-ellipsis text-nowrap">

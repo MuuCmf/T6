@@ -22,12 +22,7 @@ class WechatAutoReply extends BaseModel
     }
     public function getMsgTypeStrAttr($value)
     {
-        $arr = [1=>'文本',2=>'素材'];
-        return $arr[$value];
-    }
-    public function getMaterialTypeStrAttr($value)
-    {
-        $arr = ['news'=>'图文', 'image' => '图片', 'voice' => '音频' ,'video' => '视频'];
+        $arr = ['text' => '文本' ,'news'=>'图文', 'image' => '图片', 'voice' => '音频' ,'video' => '视频'];
         return $arr[$value];
     }
     /**
