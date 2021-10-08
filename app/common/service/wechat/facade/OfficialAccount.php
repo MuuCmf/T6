@@ -21,10 +21,12 @@ use think\Facade;
  * @method getWechatServerIps() static
  * @method getWechatServerIp() static
  * @method getMenu() static
+ * @method getApp() static
  * @method currentMenu() static
  * @method createMenu() static
  * @method currentMessage() static
  * @method getMaterialList($type,$offset,$count) static
+ * @method getMaterial($media_id) static
  */
 class OfficialAccount extends Facade {
     // getFacadeClass: 获取当前Facade对应类名

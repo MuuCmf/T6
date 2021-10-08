@@ -12,26 +12,73 @@
  * +----------------------------------------------------------------------
  */
 namespace app\api\controller;
+use app\common\model\WechatAutoReply;
 use app\common\service\wechat\facade\OfficialAccount;
 use EasyWeChat\Kernel\Messages\Image;
 use EasyWeChat\Kernel\Messages\Media;
+use EasyWeChat\Kernel\Messages\News;
+use EasyWeChat\Kernel\Messages\NewsItem;
+use EasyWeChat\Kernel\Messages\Text;
+use EasyWeChat\Kernel\Messages\Video;
+use EasyWeChat\Kernel\Messages\Voice;
 
 class OfficialAccountService{
     public function callback()
     {
+        //实例化公众号
         $app = OfficialAccount::getApp();
+        //获取消息类型
+        $message = $app->server->getMessage();
 
-
-        //消息通知
-        $app->server->push(function ($message) {
-//            switch ($message['MsgType']){
-//                case 'text':
-//
-//                    break;
-//            }
-            return new Image('Fi_ULDUOd0HAYf6xALb46lYFxejrw-xT8M9G8PlNx1I');
-            return new Media('Fi_ULDUOd0HAYf6xALb46lYFxejrw-xT8M9G8PlNx1I');
-        });
+        //获取平台配置消息
+        $map = [
+            ['status' ,'=' ,1],
+        ];
+        if ($message['MsgType'] == 'event' && $message['Event'] == 'subscribe'){
+            //关注消息
+            $map[] = ['type','=',1];
+        }else{
+            //自动回复消息
+            $map[] = ['type','=',2];
+            $map[] = ['keyword','=',$message['Content']];
+        }
+        $list = (new WechatAutoReply())->where($map)->order('sort','DESC')->order('id','DESC')->select()->toArray();
+        foreach ($list as $item){
+            $msg = null;
+            switch ($item['msg_type']){
+                case 'text':
+                    $msg = new Text($item['text']);
+                    break;
+                case 'news':
+                    if (isset($message['Event']) && $message['Event'] == 'subscribe'){
+                        $msg = new Media($item['media_id'], 'mpnews');
+                    }else{
+                        $news = json_decode($item['material_json'],true);
+                        $news = $news['content']['news_item'][0];
+                        $items = [
+                            new NewsItem([
+                                'title'       => $news['title'],
+                                'description' => $news['digest'],
+                                'url'         => $news['url'],
+                                'image'       => $news['thumb_url']
+                            ]),
+                        ];
+                        $msg = new News($items);
+                    }
+                    break;
+                case 'image':
+                    $msg = new Image($item['media_id']);
+                    break;
+                case 'voice':
+                    $msg = new Voice($item['media_id']);
+                    break;
+                case 'video':
+                    $msg = new Video($item['media_id']);
+                    break;
+            }
+            //消息通知
+            $app->customer_service->message($msg)->to($message['FromUserName'])->send();
+        }
         $app->server->serve();
 
 
