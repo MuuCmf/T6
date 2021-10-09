@@ -11,17 +11,17 @@
  *                                  | 登山则情满于山,观海则意溢于海
  * +----------------------------------------------------------------------
  */
-namespace app\admin\controller\uni_account;
-use app\admin\controller\Admin;
+namespace app\unions\controller;
+use app\admin\controller\Admin as MuuAdmin;
 use think\facade\Db;
 use think\facade\View;
 
-class UniAccount extends Admin{
+class UniAccount extends MuuAdmin{
     private  $uniAccountModel;
     function __construct()
     {
         parent::__construct();
-        $this->uniAccountModel = new \app\common\model\UniAccount();
+        $this->uniAccountModel = new \app\unions\model\UniAccount();
     }
     /**
      * 扩展配置管理

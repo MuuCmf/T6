@@ -12,7 +12,9 @@
  * +----------------------------------------------------------------------
  */
 
-namespace app\common\model;
+namespace app\unions\model;
+use app\common\model\BaseModel;
+
 class WechatAutoReply extends BaseModel
 {
     public function getTypeStrAttr($value)

@@ -11,7 +11,7 @@
  *                                  | 登山则情满于山,观海则意溢于海
  * +----------------------------------------------------------------------
  */
-namespace app\common\service\wechat\facade;
+namespace app\unions\facade;
 
 use think\Facade;
 
@@ -33,6 +33,6 @@ class OfficialAccount extends Facade {
     protected static function getFacadeClass()
     {
         // 返回当前类代理的类
-        return 'app\common\service\wechat\OfficialAccount';
+        return 'app\unions\service\wechat\OfficialAccount';
     }
 }

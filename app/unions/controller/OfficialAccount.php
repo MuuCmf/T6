@@ -11,14 +11,11 @@
  *                                  | 登山则情满于山,观海则意溢于海
  * +----------------------------------------------------------------------
  */
-namespace app\admin\controller\uni_account;
-use app\admin\builder\AdminConfigBuilder;
-use app\admin\controller\Admin;
-use app\common\model\UniAccount;
-use app\common\model\WechatAutoReply;
-use think\facade\Cache;
+namespace app\unions\controller;
+use app\admin\controller\Admin as MuuAdmin;
+use app\unions\model\UniAccount;
+use app\unions\model\WechatAutoReply;
 use think\facade\Config;
-use think\facade\Db;
 use think\facade\View;
 
 /**
@@ -26,7 +23,7 @@ use think\facade\View;
  * Class OfficialAccount
  * @package app\admin\controller
  */
-class OfficialAccount extends Admin {
+class OfficialAccount extends MuuAdmin {
     private  $uniAccountModel;
     private  $autoReplyModel;
     function __construct()
@@ -51,7 +48,7 @@ class OfficialAccount extends Admin {
      */
     public function syncMenu(){
         if (request()->isAjax()){
-            $menu = \app\common\service\wechat\facade\OfficialAccount::getMenu();
+            $menu = \app\unions\facade\OfficialAccount::getMenu();
             $menu = $menu['menu']['button'];
             if ($menu){
                 return $this->success('同步成功',$menu);
@@ -67,7 +64,7 @@ class OfficialAccount extends Admin {
         if (request()->isAjax()){
             $json = input('post.json');
             $menu = json_decode($json,true);
-            $res = \app\common\service\wechat\facade\OfficialAccount::createMenu($menu);
+            $res = \app\unions\facade\OfficialAccount::createMenu($menu);
             if ($res['errcode'] != 0){
                 $this->error($res['errmsg']);
             }
@@ -212,7 +209,7 @@ class OfficialAccount extends Admin {
         if (request()->isAjax()){
             $params = input('post.');
             $page = ($params['page'] - 1) * 20;
-            $data = \app\common\service\wechat\facade\OfficialAccount::getMaterialList($params['type'], $page,20);
+            $data = \app\unions\facade\OfficialAccount::getMaterialList($params['type'], $page,20);
             if (isset($data['item'])){
                 return  $this->success('success',$data);
             }elseif (isset($data['errmsg'])){

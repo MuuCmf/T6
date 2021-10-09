@@ -2651,7 +2651,7 @@ typeof(exports) != 'undefined' ? exports.SyntaxHighlighter = SyntaxHighlighter :
 						'mutable naked namespace new noinline noreturn nothrow ' +
 						'register reinterpret_cast return selectany ' +
 						'sizeof static static_cast struct switch template this ' +
-						'thread throw true false try typedef typeid typename union ' +
+						'thread throw true false try typedef typeid typename unions ' +
 						'using uuid virtual void volatile whcar_t while';
 					
 		var functions =	'assert isalnum isalpha iscntrl isdigit isgraph islower isprint' +
@@ -3536,7 +3536,7 @@ typeof(exports) != 'undefined' ? exports.SyntaxHighlighter = SyntaxHighlighter :
 						'restrict return returns revoke rollback rollup rows rule schema scroll ' +
 						'second section select sequence serializable set size smallint static ' +
 						'statistics table temp temporary then time timestamp to top transaction ' +
-						'translation trigger true truncate uncommitted union unique update values ' +
+						'translation trigger true truncate uncommitted unions unique update values ' +
 						'varchar varying view when where with work';
 
 		var operators =	'all and any between cross in join like not null or outer some';

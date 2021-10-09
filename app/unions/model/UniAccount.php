@@ -11,16 +11,12 @@
  *                                  | 登山则情满于山,观海则意溢于海
  * +----------------------------------------------------------------------
  */
-namespace app\common\model;
+namespace app\unions\model;
 
+use app\common\model\BaseModel;
 use think\Model;
 
-class UniAccount extends Model{
-    public function getStatusStrAttr($value)
-    {
-        $status = [-1=>'删除',0=>'禁用',1=>'正常',2=>'待审核'];
-        return $status[$value];
-    }
+class UniAccount extends BaseModel {
     public function getGroupStrAttr($value)
     {
         $type = ['offcial_account' => '微信公众号','wechat_mini_program' => '微信小程序'];

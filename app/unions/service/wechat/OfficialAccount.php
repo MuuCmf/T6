@@ -11,8 +11,8 @@
  *                                  | 登山则情满于山,观海则意溢于海
  * +----------------------------------------------------------------------
  */
-namespace app\common\service\wechat;
-use app\common\model\UniAccount;
+namespace app\unions\service\wechat;
+use app\unions\model\UniAccount;
 use EasyWeChat\Factory;
 use think\Exception;
 

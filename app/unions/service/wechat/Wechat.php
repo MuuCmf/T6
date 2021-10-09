@@ -11,7 +11,7 @@
  *                                  | 登山则情满于山,观海则意溢于海
  * +----------------------------------------------------------------------
  */
-namespace app\common\service\wechat;
+namespace app\unions\service\wechat;
 /**
  * 微信服务
  * Class Wechat
