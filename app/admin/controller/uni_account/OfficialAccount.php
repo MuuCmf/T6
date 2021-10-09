@@ -16,6 +16,8 @@ use app\admin\builder\AdminConfigBuilder;
 use app\admin\controller\Admin;
 use app\common\model\UniAccount;
 use app\common\model\WechatAutoReply;
+use think\facade\Cache;
+use think\facade\Config;
 use think\facade\Db;
 use think\facade\View;
 
@@ -35,7 +37,49 @@ class OfficialAccount extends Admin {
     }
 
     public function menu(){
+        if (request()->isAjax()){
+            $menu = Config::get('uni_account.MP_MENU');
+            $res = json_decode($menu,true);
+            return $this->result(200,'success',$res);
+        }
+        $this->setTitle('菜单管理');
         return view();
+    }
+
+    /**
+     * 同步远端菜单
+     */
+    public function syncMenu(){
+        if (request()->isAjax()){
+            $menu = \app\common\service\wechat\facade\OfficialAccount::getMenu();
+            $menu = $menu['menu']['button'];
+            if ($menu){
+                return $this->success('同步成功',$menu);
+            }
+            return $this->error('同步失败');
+        }
+    }
+
+    /**
+     * 保存菜单
+     */
+    public function saveMenu(){
+        if (request()->isAjax()){
+            $json = input('post.json');
+            $menu = json_decode($json,true);
+            $res = \app\common\service\wechat\facade\OfficialAccount::createMenu($menu);
+            if ($res['errcode'] != 0){
+                $this->error($res['errmsg']);
+            }
+            $updateRes = (new UniAccount())->where('name','MP_MENU')->save(['value'=>$json]);
+            if ($updateRes){
+                // 清理缓存
+                Config::set([],'uni_account');
+                cache('MUUCMF_UNI_ACCOUNT_CONFIG_DATA', null);
+                return $this->success('更新成功','refresh');
+            }
+            return $this->error('更新失败');
+        }
     }
     /**
      * 存储配置
@@ -57,7 +101,7 @@ class OfficialAccount extends Admin {
 
         }else{
             //查询微信平台配置
-            $list = $this->uniAccountModel->where(['group' => 'wechat_official_account','status' => 1])->order('sort','asc')->select()->toArray();
+            $list = $this->uniAccountModel->where(['group' => 'wechat_official_account','status' => 1])->order('sort','DESC')->order('id','DESC')->select()->toArray();
             View::assign('list', $list);
             return view();
         }

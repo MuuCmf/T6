@@ -130,15 +130,9 @@
 
 {block name="script"}
 <script>
-    //选择素材回调
-    function chooseMaterialCallback(material){
-        $('#material-model').modal('toggle', 'center')
-        vmEdit.material = material;
-        $('input[name=material_json]').val(JSON.stringify(material))
-        console.log(material)
-    }
 
-    var vmEdit = new Vue({
+
+    var vm = new Vue({
         el: '.edit-auto-reply',
         data: {
             msgType:1,
@@ -169,6 +163,13 @@
             setMaterialType(type){
                 this.materialType = type;
                 this.material = {};
+            },
+            //选择素材回调
+            chooseMaterialCallback(material){
+                $('#material-model').modal('toggle', 'center')
+                this.material = material;
+                $('input[name=material_json]').val(JSON.stringify(material))
+                console.log(material)
             }
         },
     })

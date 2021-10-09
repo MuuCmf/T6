@@ -57,7 +57,7 @@
 </div>
 <script>
 
-    var vm = new Vue({
+    var vue = new Vue({
         el: '#material-model',
         data: {
             list:[],
@@ -98,23 +98,23 @@
                 this.material = material;
             },
             confirm(){
-                chooseMaterialCallback(this.material)
+                vm.chooseMaterialCallback(this.material);
                 $('#materialModel').modal('toggle', 'center')
             }
         },
     })
     $('.pager').on('onPageChange', function(e, state, oldState) {
         if (state.page !== oldState.page) {
-            vm.page = state.page;
-            vm.getList();
+            vue.page = state.page;
+            vue.getList();
             console.log('页码从', oldState.page, '变更为', state.page);
         }
     });
     $("#material-model").on('show.zui.modal', function() {
-        vm.loading = true;
-        vm.page = 1;
-        vm.type = $('#material-type').val();
-        vm.getList();
-        console.log(vm.type)
+        vue.loading = true;
+        vue.page = 1;
+        vue.type = $('#material-type').val();
+        vue.getList();
+        console.log(vue.type)
     })
 </script>

@@ -84,7 +84,40 @@ class OfficialAccount extends Wechat {
      * @return mixed
      */
     public function createMenu($menu){
+
+        $menu = $this->handleMenu($menu);
         return $this->app->menu->create($menu);
+    }
+
+    /**
+     * 处理菜单数据
+     */
+    protected function handleMenu($menu){
+        $new_menu = [];
+        foreach ($menu as $m){
+            $item = [];
+            $item['name'] = $m['name'];
+            if (isset($m['sub_button']) && count($m['sub_button']) > 0){
+                $item['sub_button'] = $this->handleMenu($m['sub_button']);
+            }else{
+                switch ($m['type']){
+                    case 'view':
+                        $item['url'] = $m['url'];
+                        break;
+                    case 'media_id':
+                        $item['media_id'] = $m['media_id'];
+                        break;
+                    case 'miniprogram':
+                        $item['appid'] = $m['appid'];
+                        $item['pagepath'] = $m['pagepath'];
+                        $item['url'] = $m['url'];
+                        break;
+                }
+                $item['type'] = $m['type'];
+            }
+            array_push($new_menu,$item);
+        }
+        return $new_menu;
     }
 
     /**
