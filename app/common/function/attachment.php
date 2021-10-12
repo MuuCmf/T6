@@ -8,25 +8,25 @@ use app\common\model\Attachment;
  * @param  [type] $image_id [description]
  * @return [type]           [description]
  */
-function single_image_upload($name, $image_id){
+function single_image_upload($name, $image){
 
-    $image_path = get_cover($image_id);
-    $upload_picture = lang("_SELECT_PICTURES_");
-    $delete_picture = lang("_DELETE_");
-    $api = url('api/file/uploadPicture',array('session_id'=>session_id()));
+    $image_path = get_attachment_src($image);
+    $upload_picture = '上传图片';
+    $delete_picture = '删除';
+    $api = url('api/file/pic');
 
     $html = <<<EOF
 <div class="single-image-upload image-upload controls">
-    <input class="attach" type="hidden" name="{$name}" value="{$image_id}"/>
+    <input class="attach" type="hidden" name="{$name}" value="{$image}"/>
     <div class="upload-img-box">
         <div class="upload-pre-item popup-gallery">
 EOF;
-    if(!empty($image_id)){
+    if(!empty($image)){
     $html .= <<<EOF
         <div class="each">
             <img src="{$image_path}">
             <div class="text-center opacity del_btn"></div>
-            <div data-id="{$image_id}" class="text-center del_btn">{$delete_picture}</div>
+            <div data-id="{$image}" class="text-center del_btn">{$delete_picture}</div>
         </div>
 EOF;
     }
@@ -281,7 +281,8 @@ function thumb($attachment, $width = 100, $height = 'auto', $type = 0, $replace 
     return get_thumb_image($attachment, $width, $height, $type, $replace);
 }
 
-/**在富文本中获取第一张图
+/**
+ * 在富文本中获取第一张图
  * @param $str_img
  * @return mixed
  */
