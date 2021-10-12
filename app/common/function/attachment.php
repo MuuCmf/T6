@@ -232,34 +232,40 @@ function pic($id)
  * @param        $cover_id 图片的ID
  * @param int $width 需要取得的宽
  * @param string $height 需要取得的高
- * @param int $type 图片的类型，qiniu 七牛，local 本地, sae SAE
  * @param bool $replace 是否强制替换
  * @return string
  * @auth 大蒙
  */
-function get_thumb_image($attachment, $width = 100, $height = 'auto', $type = 0, $replace = false)
+function get_thumb_image($attachment, $width = 100, $height = 'auto', $replace = false, $type = 'attachment')
 {
-    $Attachment = new Attachment();
-    
-    $picture = Db::name('attachment')->where(['attachment' => $attachment])->find();
-    
-    if (empty($picture)) {
-        $attach = $Attachment->getThumbImage('static/common/images/nopic.png', $width, $height, $type, $replace);
-        return get_attachment_src($attach['src']);
-    }
+    //不存在http://
+    $not_http_remote=(strpos($attachment, 'http://') === false);
+    //不存在https://
+    $not_https_remote=(strpos($attachment, 'https://') === false);
 
-    // 本地图片处理
-    if ($picture) {
-        $attach = $Attachment->getThumbImage($picture['attachment'], $width, $height, $type, $replace);
-        return get_attachment_src($attach['src']);
-    } else {
-    // 远程云存储图片处理
-        $new_img = $picture['attachment'];
+    if ($not_http_remote && $not_https_remote) {
+        $Attachment = new Attachment();
+        $picture = Db::name('attachment')->where(['attachment' => $attachment])->find();
         
-        
+        if (empty($picture)) {
+            $attach = $Attachment->getThumbImage('static/common/images/nopic.png', $width, $height, $replace);
+            return get_attachment_src($attach['src']);
+        }
 
-        return get_attachment_src($new_img);
+        // 本地图片处理
+        if ($picture) {
+            $attach = $Attachment->getThumbImage($picture['attachment'], $width, $height, $replace);
+            return get_attachment_src($attach['src']);
+        } else {
+        // 远程云存储图片处理
+            $new_img = $picture['attachment'];
+            
+            return get_attachment_src($new_img);
+        }
+    }else{
+        return $attachment;
     }
+    
 }
 
 /**简写函数，等同于get_thumb_image（）
