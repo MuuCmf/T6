@@ -1,5 +1,7 @@
 {extend name="../../admin/view/common/main"/}
-
+{block name="style"}
+{include file="../../unions/view/common/style" /}
+{/block}
 {block name="body"}
 <div class="wechat-menu">
     <div class="hbox">
@@ -194,7 +196,6 @@
     </div>
     <div class="cm-edit-footer">
         <button @click="save" class="btn btn-info1 btn-primary"  type="button">保存</button>
-        <button @click="syncMenu" class="btn btn-info1 btn-primary" type="button" >同步</button>
         <button @click="previewView" class="btn btn-info1 btn-primary" type="button">预览</button>
         <button @click="deleteMenu" class="btn btn-info1 btn-primary" type="button">清空菜单</button>
     </div>
@@ -410,19 +411,6 @@
                             location.reload();
                         }, 500)
                     }
-                })
-            },
-            /**
-             *同步菜单
-             */
-            syncMenu() {
-                let that = this;
-                $.post("{:url('syncMenu')}", null, function (res) {
-                    if (res.code == 200) {
-                        that.menuList = res.data;
-                        that.$forceUpdate();
-                    }
-                    alert(res.msg);
                 })
             },
             /**

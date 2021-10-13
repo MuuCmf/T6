@@ -42,21 +42,6 @@ class OfficialAccount extends MuuAdmin {
         $this->setTitle('菜单管理');
         return view();
     }
-
-    /**
-     * 同步远端菜单
-     */
-    public function syncMenu(){
-        if (request()->isAjax()){
-            $menu = \app\unions\facade\OfficialAccount::getMenu();
-            $menu = $menu['menu']['button'];
-            if ($menu){
-                return $this->success('同步成功',$menu);
-            }
-            return $this->error('同步失败');
-        }
-    }
-
     /**
      * 保存菜单
      */

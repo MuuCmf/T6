@@ -12,7 +12,7 @@
  * +----------------------------------------------------------------------
  */
 namespace app\api\controller;
-use app\common\model\WechatAutoReply;
+use app\unions\model\WechatAutoReply;
 use app\unions\facade\OfficialAccount;
 use EasyWeChat\Kernel\Messages\Image;
 use EasyWeChat\Kernel\Messages\Media;
