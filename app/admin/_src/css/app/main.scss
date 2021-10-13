@@ -69,16 +69,6 @@ body {
     border-radius: 4px;
 }
 
-.btn-primary {
-    background-color: #03b8cf;
-    border-color: #03b8cf;
-
-    &:hover, &:active, &:focus, &:active:hover {
-      background-color: #0BA0B3;
-      border-color: #0BA0B3;
-    }
-}
-
 /*修复ZUI tree li样式*/
 .sidebar-menu.tree li {
     position: relative;
