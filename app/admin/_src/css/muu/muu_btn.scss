@@ -1,3 +1,41 @@
-.btn-primary {
-    
-}
+/*按钮重构*/
+.btn {
+    border: 0;
+  }
+  .btn-primary {
+      background-color: #11a8bb !important;
+      color: #fff;
+  }
+  .btn-primary.light {
+      border: 0;
+      background-color: #14c1d7 !important;
+  }
+  .btn-success {
+      background-color: #47D178 !important;
+      color: #fff;
+  }
+  .btn-success.light {
+      background-color: #5fd78a !important;
+  }
+  .btn-danger {
+      background-color: #ee5744 !important;
+      color: #fff;
+  }
+  .btn-danger.light {
+      background-color: #f17060 !important;
+  }
+  .btn-info {
+      background-color: #47d1af !important;
+      color: #fff;
+  }
+  .btn-info.light {
+      background-color: #5fd7ba !important;
+  }
+  .bg-warning {
+      background-color: #ff7444 !important;
+      color: #ffffff;
+  }
+  .bg-warning {
+      background-color: #ff7444 !important;
+      color: #ffffff;
+  }
