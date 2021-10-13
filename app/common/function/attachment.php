@@ -303,18 +303,28 @@ function get_pic($str_img)
  */
 function get_attachment_src($attachment)
 {
-    //获取上传驱动
-    $driver = config('extend.PICTURE_UPLOAD_DRIVER');
-    if ($driver == 'local') {
-        //本地url
-        return get_attachment_url() . str_replace('//', '/', $attachment); //防止双斜杠的出现
+    //不存在http://
+    $not_http_remote=(strpos($attachment, 'http://') === false);
+    //不存在https://
+    $not_https_remote=(strpos($attachment, 'https://') === false);
+
+    if ($not_http_remote && $not_https_remote) {
+        //获取上传驱动
+        $driver = config('extend.PICTURE_UPLOAD_DRIVER');
+        if ($driver == 'local') {
+            //本地url
+            return get_attachment_url() . str_replace('//', '/', $attachment); //防止双斜杠的出现
+        }
+        if ($driver == 'aliyun') {
+            return config('extend.OSS_ALIYUN_BUCKET_DOMAIN') . '/' . $attachment;
+        }
+        if ($driver == 'tencent') {
+            return config('extend.COS_TENCENT_BUCKET_DOMAIN') . '/' . $attachment;
+        }
+    }else{
+        return $attachment;
     }
-    if ($driver == 'aliyun') {
-        return config('extend.OSS_ALIYUN_BUCKET_DOMAIN') . '/' . $attachment;
-    }
-    if ($driver == 'tencent') {
-        return config('extend.COS_TENCENT_BUCKET_DOMAIN') . '/' . $attachment;
-    }
+    
 }
 
 
