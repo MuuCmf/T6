@@ -63,12 +63,12 @@ EOF;
         /*上传成功**/
         uploader_{$name}.on('uploadSuccess', function (file, data) {
             if (data.code) {
-                $("[name='{$name}']").val(data.data[0].id);
+                $("[name='{$name}']").val(data.data.attachment);
                 $("[name='{$name}']").parent().find('.upload-pre-item').html(
                     '<div class="each">' +
-                    '<img src="'+ data.data[0].path+'">' +
+                    '<img src="'+ data.data.url+'">' +
                     '<div class="text-center opacity del_btn"></div>' +
-                    '<div data-id="'+data.data[0].id+'" class="text-center del_btn">{$delete_picture}</div>'+
+                    '<div data-id="'+data.data.attachment+'" class="text-center del_btn">{$delete_picture}</div>'+
                     '</div>'
                 );
                 //重启webuploader,可多次上传
@@ -104,24 +104,24 @@ EOF;
  * @param  [type] $ids  [description]
  * @return [type]       [description]
  */
-function multi_image_upload($name, $ids = '')
+function multi_image_upload($name, $images = '')
 {
     $upload_picture = '选择图片';
     $delete_picture = '删除';
-    $picture_exists = lang('_THE_PICTURE_ALREADY_EXISTS_WITH_SINGLE_');
-    $limit_exceed = lang('_EXCEED_THE_PICTURE_LIMIT_WITH_SINGLE_');
-    $api = url('api/file/pic',['session_id'=>session_id()]);
+    $picture_exists = '该图片已存在';
+    $limit_exceed = '超过图片限制';
+    $api = url('api/file/pic');
 
     $html = '';
     $html .= '
     <div class="multi-image-upload image-upload controls">
-        <input class="attach" type="hidden" name="'.$name.'" value="'.$ids.'"/>
+        <input class="attach" type="hidden" name="'.$name.'" value="'.images.'"/>
         <div class="upload-img-box">
             <div class="upload-pre-item popup-gallery">';
-    if(!empty($ids)){
-        $aIds = explode(',',$ids);
+    if(!empty($images)){
+        $aIds = explode(',',$images);
         foreach($aIds as $aId){
-            $path = get_cover($aId);
+            $path = get_attachment_src($aId);
             $html .= '
                 <div class="each">
                     <img src="'.$path.'">
@@ -168,11 +168,11 @@ function multi_image_upload($name, $ids = '')
         });
         /*上传成功**/
         uploader_{$name}.on('uploadSuccess', function (file, data) {
-          if (data.code) {
+          if (data.code == 200) {
             var ids = $("[name='{$name}']").val();
             ids = ids.split(',');
-            if( ids.indexOf(data.data[0].id) == -1){
-                var rids = admin_image.upAttachVal('add',data.data[0].id, $("[name='{$name}']"));
+            if( ids.indexOf(data.data.attachment) == -1){
+                var rids = admin_image.upAttachVal('add',data.data.attachment, $("[name='{$name}']"));
                 if(rids.length>limit){
                     updateAlert({$limit_exceed});
                     return;
@@ -180,9 +180,9 @@ function multi_image_upload($name, $ids = '')
                 
                 $("[name='{$name}']").parent().find('.upload-pre-item').append(
                     '<div class="each">'+
-                    '<img src="'+ data.data[0].path+'">'+
+                    '<img src="'+ data.data.url+'">'+
                     '<div class="text-center opacity del_btn"></div>' +
-                    '<div data-id="'+data.data[0].id+'" class="text-center del_btn">{$delete_picture}</div>'+
+                    '<div data-id="'+data.data.attachment+'" class="text-center del_btn">{$delete_picture}</div>'+
                     '</div>'
                 );
             }else{
