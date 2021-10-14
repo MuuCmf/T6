@@ -33,7 +33,6 @@ class WechatConfig extends BaseModel{
     {
         $res = $this->where(
             [
-                ['status','=',1],
                 ['shopid','=',$shopid]
             ]
         )->find();
