@@ -4,6 +4,11 @@
 <!--图片上传-->
 <script type="text/javascript" charset="utf-8" src="__STATIC__/common/lib/webuploader/js/webuploader.js"></script>
 <link href="__STATIC__/common/lib/webuploader/css/webuploader.css" type="text/css" rel="stylesheet">
+<style>
+    .tools{
+        padding-top: 10px;
+    }
+</style>
 {/block}
 {block name="body"}
 <div class="panel edit-auto-reply">
@@ -41,25 +46,31 @@
                 </label>
                 <input type="text" class="text input-large form-control" name="url" style="width: 400px"
                        value="{$data.url|default=''}" readonly="readonly">
-                <a href="javascript:;" class="copy">复制</a>
+                <div class="tools">
+                    <a href="javascript:;" class="copy">复制</a>
+                </div>
             </div>
             <div class="form-item builder_item">
                 <label class="item-label">TOKEN<span class="check-tips">（TOKEN令牌）</span>
                 </label>
                 <input type="text" class="text input-large form-control" data-type="token" name="token" style="width: 400px"
                        value="{$data.token|default=''}" readonly="readonly">
-                <a href="javascript:;" class="create">生成</a>
-                <a href="javascript:;" class="edit">编辑</a>
-                <a href="javascript:;" class="copy">复制</a>
+                <div class="tools">
+                    <a href="javascript:;" class="create">生成</a>
+                    <a href="javascript:;" class="edit">编辑</a>
+                    <a href="javascript:;" class="copy">复制</a>
+                </div>
             </div>
             <div class="form-item builder_item">
                 <label class="item-label">EncodingAESKey<span class="check-tips">（消息加解密密钥）</span>
                 </label>
                 <input type="text" class="text input-large form-control" data-type="encoding_aes_key" name="encoding_aes_key" style="width: 400px"
                        value="{$data.encoding_aes_key|default=''}" readonly="readonly">
-                <a href="javascript:;" class="create">生成</a>
-                <a href="javascript:;" class="edit">编辑</a>
-                <a href="javascript:;" class="copy">复制</a>
+                <div class="tools">
+                    <a href="javascript:;" class="create">生成</a>
+                    <a href="javascript:;" class="edit">编辑</a>
+                    <a href="javascript:;" class="copy">复制</a>
+                </div>
             </div>
 
             <div class="form-item">
