@@ -4329,7 +4329,6 @@ CREATE TABLE IF NOT EXISTS `muucmf_module` (
 --
 
 INSERT INTO `muucmf_module` (`id`, `name`, `alias`, `version`, `is_com`, `summary`, `developer`, `website`, `entry`, `is_setup`, `sort`, `uninstall`) VALUES
-(3, 'ucenter', '用户中心', '1.0.0', 0, '用户中心模块，系统核心模块', '北京火木科技有限公司', 'http://www.muucmf.com', 'ucenter/index/index', 1, 0, 0),
 (4, 'index', '首页', '1.0.0', 0, '系统主页，系统核心模块', '北京火木科技有限公司', 'http://www.muucmf.com', 'index/admin/index', 1, 0, 0),
 (5, 'devtool', '开发者工具', '1.0.0', 0, '开发者工具，主要提供给开发者使用，包含了模块打包工具', '北京火木科技有限公司', 'https://www.muucmf.cn', 'devtool/Admin/module', 1, 0, 1),
 (7, 'demo', '模块开发演示', '1.0.0', 1, '模块开发演示', '北京火木科技有限公司', 'http://www.muucmf.cn', 'demo/Admin/index', 1, 0, 1);
