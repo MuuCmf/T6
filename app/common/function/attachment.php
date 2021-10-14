@@ -63,12 +63,12 @@ EOF;
         /*上传成功**/
         uploader_{$name}.on('uploadSuccess', function (file, data) {
             if (data.code) {
-                $("[name='{$name}']").val(data.data[0].id);
+                $("[name='{$name}']").val(data.data.attachment);
                 $("[name='{$name}']").parent().find('.upload-pre-item').html(
                     '<div class="each">' +
-                    '<img src="'+ data.data[0].path+'">' +
+                    '<img src="'+ data.data.url+'">' +
                     '<div class="text-center opacity del_btn"></div>' +
-                    '<div data-id="'+data.data[0].id+'" class="text-center del_btn">{$delete_picture}</div>'+
+                    '<div data-id="'+data.data.attachment+'" class="text-center del_btn">{$delete_picture}</div>'+
                     '</div>'
                 );
                 //重启webuploader,可多次上传
