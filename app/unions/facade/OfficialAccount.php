@@ -27,6 +27,7 @@ use think\Facade;
  * @method currentMessage() static
  * @method getMaterialList($type,$offset,$count) static
  * @method getMaterial($media_id) static
+ * @method callbackUrl() static
  */
 class OfficialAccount extends Facade {
     // getFacadeClass: 获取当前Facade对应类名
