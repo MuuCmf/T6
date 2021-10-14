@@ -13,8 +13,8 @@
  */
 namespace app\unions\controller;
 use app\admin\controller\Admin as MuuAdmin;
-use app\unions\model\UniAccount;
 use app\unions\model\WechatAutoReply;
+use app\unions\model\WechatConfig;
 use think\facade\Config;
 use think\facade\View;
 
@@ -24,20 +24,25 @@ use think\facade\View;
  * @package app\admin\controller
  */
 class OfficialAccount extends MuuAdmin {
-    private  $uniAccountModel;
-    private  $autoReplyModel;
+    private $wechatConfigModel;
+    private $autoReplyModel;
+    private $shopid = 0;
     function __construct()
     {
         parent::__construct();
-        $this->uniAccountModel = new UniAccount();
+        $this->wechatConfigModel = new WechatConfig();
         $this->autoReplyModel = new WechatAutoReply;
     }
 
     public function menu(){
         if (request()->isAjax()){
-            $menu = Config::get('uni_account.MP_MENU');
-            $res = json_decode($menu,true);
-            return $this->result(200,'success',$res);
+            $menu = $data = $this->wechatConfigModel->where(['shopid' => $this->shopid])->value('menu_json');
+            if ($menu){
+                $menu = json_decode($menu,true);
+            }else{
+                $menu = [];
+            }
+            return $this->result(200,'success',$menu);
         }
         $this->setTitle('菜单管理');
         return view();
@@ -53,11 +58,8 @@ class OfficialAccount extends MuuAdmin {
             if ($res['errcode'] != 0){
                 $this->error($res['errmsg']);
             }
-            $updateRes = (new UniAccount())->where('name','MP_MENU')->save(['value'=>$json]);
+            $updateRes = $this->wechatConfigModel->where('shopid',$this->shopid)->save(['menu_json'=>$json]);
             if ($updateRes){
-                // 清理缓存
-                Config::set([],'uni_account');
-                cache('MUUCMF_UNI_ACCOUNT_CONFIG_DATA', null);
                 return $this->success('更新成功','refresh');
             }
             return $this->error('更新失败');
@@ -69,22 +71,22 @@ class OfficialAccount extends MuuAdmin {
     public function index()
     {
         if (request()->isPost()) {
-            $config = input('post.config');
-            if ($config && is_array($config)) {
-                foreach ($config as $name => $value) {
-                    $map = ['name' => $name];
-                    $this->uniAccountModel->where($map)->update(['value' => $value]);
-                }
+            $config = input('post.');
+            $config['shopid'] = $this->shopid;
+            $res = $this->wechatConfigModel->edit($config);
+            if ($res){
+                return $this->success('保存成功',$config, 'refresh');
             }
-            // 清理缓存
-            cache('MUUCMF_UNI_ACCOUNT_CONFIG_DATA', null);
-
-            return $this->success('保存成功',$config, 'refresh');
+            return $this->error('网络异常，请稍后再试');
 
         }else{
             //查询微信平台配置
-            $list = $this->uniAccountModel->where(['group' => 'wechat_official_account','status' => 1])->order('sort','DESC')->order('id','DESC')->select()->toArray();
-            View::assign('list', $list);
+            $data = $this->wechatConfigModel->getWechatConfigByShopId($this->shopid)->toArray();
+            if (!$data){
+                $data['id'] = 0;
+                $data['url'] = \app\unions\facade\OfficialAccount::callbackUrl();
+            }
+            View::assign('data', $data);
             return view();
         }
     }
@@ -142,7 +144,7 @@ class OfficialAccount extends MuuAdmin {
             }
             $res = $this->autoReplyModel->edit($data);
             if($res){
-                return $this->success(($aId == 0 ? '新增' : '编辑') . '成功', '', url('admin/uni_account.OfficialAccount/autoReply'));
+                return $this->success(($aId == 0 ? '新增' : '编辑') . '成功', '', url('unions/OfficialAccount/autoReply'));
             }else{
                 return $this->error('提交失败');
             }

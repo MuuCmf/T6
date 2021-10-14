@@ -12,7 +12,7 @@
  * +----------------------------------------------------------------------
  */
 namespace app\unions\service\wechat;
-use app\unions\model\UniAccount;
+use app\unions\model\WechatConfig;
 use EasyWeChat\Factory;
 use think\Exception;
 
@@ -32,17 +32,25 @@ class OfficialAccount extends Wechat {
     public function config()
     {
         //获取配置信息
-        $data = (new UniAccount())->findDataByWhere(['group' => $this->type]);
+        $data = (new WechatConfig())->getWechatConfigByShopId();
         if (empty($data)){
             throw  new Exception('公众号配置文件不存在');
         }
         return [
-            'app_id' => $data['MP_APPID'],
-            'secret' => $data['MP_APP_SECRET'],
+            'app_id' => $data['appid'],
+            'secret' => $data['secret'],
             'response_type' => 'array',
             //生成日志
             'log' => $this->log()
         ];
+    }
+
+    /**
+     * @title 获取回调地址
+     * @return string
+     */
+    public function callbackUrl(){
+        return request()->domain() . "api{$this->separator}OfficialAccountService{$this->separator}callback";
     }
 
     /**

@@ -183,17 +183,6 @@ function get_extend_group($group = 1)
     return $group ? $list[$group] : '';
 }
 
-/**
- * 获取渠道配置的分组
- * @param string $group 配置分组
- * @return string
- */
-function get_uni_account_group($group = 'system')
-{
-    $list = Config::get('uni_account.GROUP_LIST');
-    return $group ? $list[$group] : '';
-}
-
 
 function int_to_string(&$data, $map = ['status' => [1 => '启用', -1 => '删除', 0 => '禁用', -2 => '未审核', 3 => '草稿']])
 {

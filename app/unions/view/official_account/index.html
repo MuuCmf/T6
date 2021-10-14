@@ -1,246 +1,69 @@
 {extend name="../../admin/view/common/main"/}
-
+{block name="style"}
+{include file="../../unions/view/common/style" /}
+<!--图片上传-->
+<script type="text/javascript" charset="utf-8" src="__STATIC__/common/lib/webuploader/js/webuploader.js"></script>
+<link href="__STATIC__/common/lib/webuploader/css/webuploader.css" type="text/css" rel="stylesheet">
+{/block}
 {block name="body"}
-<div class="main-title">
-    <h2>公众号配置</h2>
-</div>
-
-<div class="tab-content with-padding clearfix">
-    <div class="col-md-12">
-        <form action="{:url()}" method="post" class="form-horizontal ajax-form">
-            {volist name="list" id="config"}
+<div class="panel edit-auto-reply">
+    <div class="panel-heading">
+        公众号配置
+    </div>
+    <div class="panel-body">
+        <form action="{:url('index')}" method="post" class="form-horizontal ajax-form">
+            <input type="hidden" name="id" value="{$data.id}">
             <div class="form-item builder_item">
-                <label class="item-label">{$config.title}<span class="check-tips">（{$config.remark}）</span>
+                <label class="item-label">公众号名称<span class="check-tips">（公众号名称）</span>
                 </label>
-
-                <div class="controls">
-                    {switch name="config.type"}
-                    {case value="num"}
-                    <input type="number" class="text input-small form-control" name="config[{$config.name}]" style="width: 180px"
-                           value="{$config.value}">
-                    {/case}
-                    {case value="text"}
-                    <div>
-                        <input type="text" class="text input-small form-control" name="config[{$config.name}]" readonly="readonly"
-                               value="{$config.value}" data-type="{$config.name}" style="margin-bottom: 10px" >
-                    {php}
-                    $config['extra'] = explode("\r\n", $config['extra']);
-                    foreach( $config['extra'] as &$val){
-                    $val =  explode(':', $val);
-                    $config['opt'][] = $val;
-                    }
-                    {/php}
-                    {foreach name="config.opt" item="vo" key="k"}
-                    <a href="javascript:;" class="{$vo[0]}">{$vo[1]}</a>
-                    {/foreach}
-                    </div>
-                    {/case}
-                    {case value="string"}
-                    <input type="text" class="text input-large form-control" name="config[{$config.name}]" style="width: 400px"
-                           value="{$config.value}">
-                    {/case}
-                    {case value="textarea"}
-                    <label class="textarea input-large">
-                        <textarea name="config[{$config.name}]" class="form-control" style="width: 400px;height: 200px" >{$config.value}</textarea>
-                    </label>
-                    {/case}
-                    {case value="entity"}
-                    <label class="textarea input-large">
-                        <textarea name="config[{$config.name}]" class="form-control" style="width: 400px;min-height: 120px;" >{$config.value}</textarea>
-                    </label>
-                    {/case}
-                    {case value="select"}
-                    <select name="config[{$config.name}]" class="form-control" style="width: auto">
-                        {volist name=":parse_config_attr($config['extra'])" id="vo"}
-                        {eq name="config.value" value="$key"}
-                        <option value="{$key}" value="$key" selected>{$vo}</option>
-                        {else}
-                        <option value="{$key}" value="$key">{$vo}</option>
-                        {/eq}
-                        {/volist}
-                    </select>
-                    {/case}
-                    {case value="editor"}<!--增加富文本和非明文-->
-                    {:ueditor($config['name'],'config['.$config['name'].']',$config['value'])}
-                    {/case}
-                    {case value="password"}
-                    <input type="password" class="text input-large form-control" style="width:400px;" name="config[{$config.name}]" autoComplete="off" value="{$config.value}">
-                    {/case}
-                    {case value="pic"}
-                    <!--图片上传-->
-                    <script type="text/javascript" charset="utf-8" src="__STATIC__/common/lib/webuploader/js/webuploader.js"></script>
-                    <link href="__STATIC__/common/lib/webuploader/css/webuploader.css" type="text/css" rel="stylesheet">
-                    <div class="controls image-upload">
-                        <div id="upload_single_image_{$config.name}" style="padding-bottom: 5px;">图片上传</div>
-                        <input class="attach" type="hidden" name="config[{$config.name}]" value="{$config['value']}"/>
-                        <div class="upload-img-box">
-                            <div class="upload-pre-item popup-gallery">
-                                {notempty name="config.value"}
-                                <div class="each">
-                                    <a href="{$config.value|get_attachment_src='attachment'}">
-                                        <img src="{$config.value|get_attachment_src='attachment'}">
-                                    </a>
-                                    <div class="text-center opacity del_btn" ></div>
-                                    <div onclick="admin_image.removeImage($(this),'{$config.value}')"  class="text-center del_btn">删除</div>
-                                </div>
-                                {/notempty}
-                            </div>
-                        </div>
-                    </div>
-                    <script>
-                        $(function () {
-                            var uploader_{$config.name}= WebUploader.create({
-                                // 选完文件后，是否自动上传。
-                                auto: true,
-                                // sw{:lang("_F_FILE_PATH_")}
-                                swf: 'Uploader.swf',
-                                // 文件接收服务端。
-                                server: "{:url('api/File/pic',array('session_id'=>session_id()))}",
-                                // 选择文件的按钮。可选。
-                                // 内部根据当前运行是创建，可能是input元素，{:lang("_AND_IT_COULD_BE_FLASH_")}.
-                                pick: '#upload_single_image_{$config.name}',
-                                // 只允许{:lang("_SELECT_PICTURES_")}文件。
-                                accept: {
-                                    title: 'Images',
-                                    extensions: 'gif,jpg,jpeg,png',
-                                    mimeTypes: 'image/*'
-                                }
-                            });
-                            uploader_{$config.name}.on('fileQueued', function (file) {
-                                uploader_{$config.name}.upload();
-                            });
-                            /*{:lang("_UPLOAD_SUCCESS_")}*/
-                            uploader_{$config.name}.on('uploadSuccess', function (file, data) {
-                                if (data.code == 200) {
-                                    $("[name='config[{$config.name}]']").val(data.data.attachment);
-                                    $("[name='config[{$config.name}]']").parent().find('.upload-pre-item').html(
-                                        '<div class="each"><a href="'+ data.data.url+'" title="点击查看大图"><img src="'+ data.data.url+'"></a><div class="text-center opacity del_btn" ></div>' +
-                                        '<div onclick="admin_image.removeImage($(this),'+data.data.id+')"  class="text-center del_btn">删除</div></div>'
-                                    );
-                                } else {
-                                    handle_ajax(data.msg);
-                                    setTimeout(function () {
-                                        $('#top-alert').find('button').click();
-                                        $(that).removeClass('disabled').prop('disabled', false);
-                                    }, 1500);
-                                }
-
-                            });
-                            uploader_{$config.name}.on('', function(){
-                                //重启webuploader,可多次上传
-                                uploader_{$config.name}.reset();
-                            });
-                        })
-                    </script>
-                    {/case}
-
-
-                    {case value="checkbox"}
-                    {php}
-                    $config['value_array'] = explode(',', $config['value']);
-                    $config['extra'] = explode("\r\n", $config['extra']);
-                    $config['opt'] = array();
-                    foreach( $config['extra'] as &$val){
-                    $val =  explode(':', $val);
-                    $config['opt'][$val[0]] =  $val[1];
-                    }
-                    {/php}
-                    {volist name="config.opt" id="option"}
-                    {php}
-                    $checked = in_array($key,$config['value_array']) ? 'checked' : '';
-                    $inputId = "id_$config[name]_$key";
-                    {/php}
-                    <input type="checkbox" value="{$key}" id="{$inputId}" class="oneplus-checkbox" data-field-name="{$config.name}" {$checked}/>
-                    <label for="{$inputId}">{$option|htmlspecialchars}</label>
-                    {/volist}
-                    <input type="hidden" name="config[{$config.name}]" class="oneplus-checkbox-hidden" data-field-name="{$config.name}" value="{$config.value}"/>
-
-                    <script>
-                        $(function () {
-                            function implode(x, list) {
-                                var result = "";
-                                for (var i = 0; i < list.length; i++) {
-                                    if (result == "") {
-                                        result += list[i];
-                                    } else {
-                                        result += ',' + list[i];
-                                    }
-                                }
-                                return result;
-                            }
-
-                            $('.oneplus-checkbox').change(function (e) {
-                                var fieldName = $(this).attr('data-field-name');
-                                var checked = $('.oneplus-checkbox[data-field-name=' + fieldName + ']:checked');
-                                var result = [];
-                                for (var i = 0; i < checked.length; i++) {
-                                    var checkbox = $(checked.get(i));
-                                    result.push(checkbox.attr('value'));
-                                }
-                                result = implode(',', result);
-                                $('.oneplus-checkbox-hidden[data-field-name=' + fieldName + ']').val(result);
-                            });
-                        })
-                    </script>
-                    {/case}
-
-                    {case value="radio"}
-
-                    {php}
-                    $config['value_array'] = explode(',', $config['value']);
-                    $config['extra'] = explode("\r\n", $config['extra']);
-                    $config['opt'] = array();
-                    foreach( $config['extra'] as &$val){
-                    $val =  explode(':', $val);
-                    $config['opt'][$val[0]] =  $val[1];
-                    }
-                    {/php}
-                    {volist name="config.opt" id="option"}
-                    {php}
-                    $checked = in_array($key,$config['value_array']) ? 'checked' : '';
-                    $inputId = "id_$config[name]_$key";
-                    {/php}
-                    <input type="radio" name="config[{$config.name}]" value="{$key}" id="{$inputId}" class="oneplus-radio" data-field-name="{$config.name}" {$checked}/>
-                    <label for="{$inputId}">{$option|htmlspecialchars}</label>
-                    {/volist}
-                    <input type="hidden" name="config[{$config.name}]" class="oneplus-radio-hidden" data-field-name="{$config.name}" value="{$config.value}"/>
-
-                    <script>
-                        $(function () {
-                            function implode(x, list) {
-                                var result = "";
-                                for (var i = 0; i < list.length; i++) {
-                                    if (result == "") {
-                                        result += list[i];
-                                    } else {
-                                        result += ',' + list[i];
-                                    }
-                                }
-                                return result;
-                            }
-
-                            $('.oneplus-radio').change(function (e) {
-                                var fieldName = $(this).attr('data-field-name');
-                                var checked = $('.oneplus-radio[data-field-name=' + fieldName + ']:checked');
-                                var result = [];
-                                for (var i = 0; i < checked.length; i++) {
-                                    var checkbox = $(checked.get(i));
-                                    result.push(checkbox.attr('value'));
-                                }
-                                result = implode(',', result);
-                                $('.oneplus-radio-hidden[data-field-name=' + fieldName + ']').val(result);
-                            });
-                        })
-                    </script>
-                    {/case}
-                    {/switch}
-
-                </div>
+                <input type="text" class="text input-large form-control" name="title" style="width: 400px"
+                       value="{$data.title|default=''}">
             </div>
-            {/volist}
+            <div class="form-item builder_item">
+                <label class="item-label">公众号封面<span class="check-tips">（公众号封面）</span>
+                </label>
+                {:single_image_upload('cover', $data['cover'])}
+            </div>
+            <div class="form-item builder_item">
+                <label class="item-label">APPID<span class="check-tips">（应用的独立标识）</span>
+                </label>
+                <input type="text" class="text input-large form-control" name="appid" style="width: 400px"
+                       value="{$data.appid|default=''}">
+            </div>
+            <div class="form-item builder_item">
+                <label class="item-label">AppSecret<span class="check-tips">（应用密匙）</span>
+                </label>
+                <input type="text" class="text input-large form-control" name="secret" style="width: 400px"
+                       value="{$data.secret|default=''}">
+            </div>
+            <div class="form-item builder_item">
+                <label class="item-label">URL<span class="check-tips">（服务器地址(URL)）</span>
+                </label>
+                <input type="text" class="text input-large form-control" name="url" style="width: 400px"
+                       value="{$data.url|default=''}" readonly="readonly">
+                <a href="javascript:;" class="copy">复制</a>
+            </div>
+            <div class="form-item builder_item">
+                <label class="item-label">TOKEN<span class="check-tips">（TOKEN令牌）</span>
+                </label>
+                <input type="text" class="text input-large form-control" data-type="token" name="token" style="width: 400px"
+                       value="{$data.token|default=''}" readonly="readonly">
+                <a href="javascript:;" class="create">生成</a>
+                <a href="javascript:;" class="edit">编辑</a>
+                <a href="javascript:;" class="copy">复制</a>
+            </div>
+            <div class="form-item builder_item">
+                <label class="item-label">EncodingAESKey<span class="check-tips">（消息加解密密钥）</span>
+                </label>
+                <input type="text" class="text input-large form-control" data-type="encoding_aes_key" name="encoding_aes_key" style="width: 400px"
+                       value="{$data.encoding_aes_key|default=''}" readonly="readonly">
+                <a href="javascript:;" class="create">生成</a>
+                <a href="javascript:;" class="edit">编辑</a>
+                <a href="javascript:;" class="copy">复制</a>
+            </div>
+
             <div class="form-item">
                 <label class="item-label"></label>
-
                 <div class="controls">
                     <button type="submit" class="btn submit-btn btn-success" target-form="form-horizontal">
                         保存
@@ -249,7 +72,6 @@
             </div>
         </form>
     </div>
-
 </div>
 <div class="modal fade" id="create-tips">
     <div class="modal-dialog modal-sm">
@@ -263,7 +85,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-                <button type="button" class="btn btn-primary" onclick="confirm('create')">保存</button>
+                <button type="button" class="btn btn-primary" onclick="confirm('create')">确定</button>
             </div>
         </div>
     </div>
@@ -282,7 +104,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-                <button type="button" class="btn btn-primary" onclick="confirm('edit')">保存</button>
+                <button type="button" class="btn btn-primary" onclick="confirm('edit')">确定</button>
             </div>
         </div>
     </div>
@@ -317,7 +139,7 @@
         $(".create").click(function () {
             thisElem = $(this).parent().children('input');
             let type = $(thisElem).data('type');
-            if (type == 'MP_TOKEN'){
+            if (type == 'token'){
                 newValue = tokenGen();
             }else{
                 newValue = encodingAESKeyGen();

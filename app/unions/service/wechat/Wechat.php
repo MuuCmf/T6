@@ -21,15 +21,17 @@ abstract class Wechat{
     public $title;
     public $type;
     public $app;
+    public $separator;
     public function __construct($app)
     {
+        $this->separator = DIRECTORY_SEPARATOR;
         $this->app = $app;
     }
     public function log(){
-        $separator = DIRECTORY_SEPARATOR;
+
         $log['level'] = 'debug';
-        $log['file'] = app()->getRootPath() . "runtime{$separator}wechat{$separator}{$this->type}{$separator}";
-        $log['file'] .=  date('Y') . '-' . date('m') . $separator;
+        $log['file'] = app()->getRootPath() . "runtime{$this->separator}wechat{$this->separator}{$this->type}{$this->separator}";
+        $log['file'] .=  date('Y') . '-' . date('m') . $this->separator;
         $log['file'] .= mktime(0,0,0,date('m'),date('d'),date('Y')) . '.log';
         return $log;
     }
