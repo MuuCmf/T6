@@ -248,8 +248,7 @@ function get_thumb_image($attachment, $width = 100, $height = 'auto', $replace =
         $picture = Db::name('attachment')->where(['attachment' => $attachment])->find();
         
         if (empty($picture)) {
-            $attach = $Attachment->getThumbImage('static/common/images/nopic.png', $width, $height, $replace);
-            return get_attachment_src($attach['src']);
+            return request()->domain() . '/static/common/images/nopic.png';
         }
 
         // 本地图片处理
