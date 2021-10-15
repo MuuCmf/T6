@@ -85,10 +85,30 @@ class OfficialAccountService{
         //token 回调
         OfficialAccount::serverOAath();
     }
-    public function autoReply(){
-        $app = OfficialAccount::getApp();
-        $list = $app->material->list('image', 0, 10);
 
-        dump($list);
+    /**
+     * 网页授权
+     */
+    public function oauth(){
+        $target_url = 'http://www.baidu.com';
+        OfficialAccount::oauth($target_url);
+    }
+
+    /**
+     * 网页授权回调
+     */
+    public function oauthCallback(){
+        $app = OfficialAccount::getApp();
+        $oauth = $app->oauth;
+        // 获取 OAuth 授权结果用户信息
+        $user = $oauth->user();
+        $user = $user->toArray();
+        //处理用户数据
+//        dump($user);die();
+
+
+        //跳回原网页
+        $target_url = input('param.target_url');
+        header("Location:{$target_url}");die;
     }
 }

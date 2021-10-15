@@ -22,6 +22,7 @@ abstract class Wechat{
     public $type;
     public $app;
     public $separator;
+    public $config;
     public function __construct($app)
     {
         $this->separator = DIRECTORY_SEPARATOR;
@@ -35,7 +36,7 @@ abstract class Wechat{
         $log['file'] .= mktime(0,0,0,date('m'),date('d'),date('Y')) . '.log';
         return $log;
     }
-    abstract function config();
+    abstract function initConfig();
 
     /**
      * 获取实例化app

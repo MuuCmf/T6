@@ -22,14 +22,15 @@ use think\Exception;
  * @package app\common\service\wechat
  */
 class OfficialAccount extends Wechat {
-
     function __construct()
     {
         $this->type = 'wechat_official_account';
-        $app =  Factory::officialAccount($this->config());
+        //服务配置文件
+        $config = $this->config =  $this->initConfig();
+        $app =  Factory::officialAccount($config);
         parent::__construct($app);
     }
-    public function config()
+    public function initConfig()
     {
         //获取配置信息
         $data = (new WechatConfig())->getWechatConfigByShopId();
@@ -41,7 +42,11 @@ class OfficialAccount extends Wechat {
             'secret' => $data['secret'],
             'response_type' => 'array',
             //生成日志
-            'log' => $this->log()
+            'log' => $this->log(),
+            'oauth' => [
+                'scopes'   => ['snsapi_userinfo'],
+                'callback' => request()->domain() . "/api/officialAccountService/oauthCallback",
+            ],
         ];
     }
 
@@ -154,5 +159,21 @@ class OfficialAccount extends Wechat {
      */
     public function getMaterial($media_id){
         return $this->app->material->get($media_id);
+    }
+
+    /**
+     * 网页授权
+     * @param string $target_url
+     * @throws Exception
+     */
+    public function oauth(string $target_url = ''){
+        //授权回调参数处理
+        if ($target_url){
+            //重新初始化
+            $config = $this->initConfig();
+            $config['oauth']['callback'] .= '?target_url=' . $target_url;
+            $this->app = Factory::officialAccount($config);
+        }
+        $this->app->oauth->redirect()->send();
     }
 }
