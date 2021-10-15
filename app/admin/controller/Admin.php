@@ -56,7 +56,8 @@ class Admin extends Base
         View::assign('this_controller',strtolower(request()->controller()));
         View::assign('this_action',strtolower(request()->action()));
         // 当前应用模块信息
-        $module = $this->moduleModel->getModule(app('http')->getName());
+        $module_name = input('get.module_name');
+        $module = $this->moduleModel->getModule($module_name ?? app('http')->getName());
         View::assign('MODULE', $module);
         //当前管理菜单
         View::assign('ADMIN_MENU', $this->getMenus());
@@ -104,31 +105,39 @@ class Admin extends Base
      * 获取控制器菜单数组,二级菜单元素位于一级菜单的'_child'元素中
      */
     final public function getMenus()
-    {   
-        $module = app('http')->getName();
+    {
+        $module = input('param.module_name') ?? app('http')->getName();
         $controller = Request()->controller();
         $action = Request()->action();
 
         $menus  =   session('ADMIN_MENU_LIST'.$controller);
-        
+
         if (empty($menus)) {
             // 获取主菜单
             $where[] = ['pid','=','0'];
             $menuModel = new Menu();
             $menus['main'] = Db::name('menu')->where($where)->order('sort','asc')->select()->toArray();
             $menus['child'] = []; //设置子节点
-            
+
             //当前菜单
             $current_map[] = [
                 ['url','=', $module .'/'. $controller .'/'. $action],
             ];
             $current = Db::name('menu')->where($current_map)->find();
-            
-            if ($current) {
-                //获取顶级菜单数据
+            //获取顶级菜单数据
+            $nav_current_id = 0;
+            if (input('?param.module_name') && $module != 'admin'){
+                foreach ($menus['main'] as $m){
+                    if ($m['module'] == $module){
+                        $nav_current_id = $m['id'];
+                    }
+                }
+            }elseif($current){
                 $nav = $menuModel->getPath($current['id']);
                 $nav_current_id = $nav[0]['id'];
-                
+            }
+
+            if ($nav_current_id) {
                 //echo $nav_first_title;
                 foreach ($menus['main'] as $key => $item) {
 
@@ -196,15 +205,15 @@ class Admin extends Base
                             $map['hide'] = 0;
                             
                             $menuList = Db::name('Menu')->where($map)->field('id,pid,title,url,icon,tip')->order('sort asc')->select()->toArray();
-
-                            $menus['child'][$k]['group'] = $g;
-                            $menus['child'][$k]['child'] = list_to_tree($menuList, 'id', 'pid', 'operater', $item['id']);
+                            if ($menuList){
+                                $menus['child'][$k]['group'] = $g;
+                                $menus['child'][$k]['child'] = list_to_tree($menuList, 'id', 'pid', 'operater', $item['id']);
+                            }
                         }
                     }
                 }
             }
         }
-        
         return $menus;
     }
 
