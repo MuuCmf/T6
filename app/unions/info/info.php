@@ -5,6 +5,7 @@ return [
     'name' => 'unions',
     //别名
     'alias' => '公众号管理',
+    'logo' => 'xxxx',
     //版本号
     'version' => '1.0.0',
     //排序
@@ -21,4 +22,14 @@ return [
     'entry' => 'unions/OfficialAccount/index',
     //允许卸载
     'uninstall' => 0,
+    //微信公众号开关
+    'weixin' => 0,
+    //微信小程序开关
+    'weixin_mp' => 0,
+    //字节小程序开关
+    'bytedance_mp' => 0,
+    //支付宝小程序开关
+    'alipay_mp' => 0,
+    //百度小程序开关
+    'baidu_mp' => 0,
 ];

@@ -48,7 +48,7 @@ class Extend extends Admin
 
             $list = Db::name("ExtendConfig")->where(['status' => 1])->field('id,name,title,extra,value,group,remark,type')->order('sort asc')->select()->toArray();
             $list = $this->extendConfigModel->lists();
-
+//            dump($list);die();
             $builder = new AdminConfigBuilder();
             $builder->title('短信配置')->suggest('基于第三方短信发送各项参数配置');
     
