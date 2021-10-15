@@ -30,10 +30,10 @@ abstract class Wechat{
     }
     public function log(){
 
-        $log['level'] = 'debug';
-        $log['file'] = app()->getRootPath() . "runtime{$this->separator}wechat{$this->separator}{$this->type}{$this->separator}";
-        $log['file'] .=  date('Y') . '-' . date('m') . $this->separator;
-        $log['file'] .= mktime(0,0,0,date('m'),date('d'),date('Y')) . '.log';
+        $log['level'] = 'info'; //可选项debug
+        $log['file'] = app()->getRootPath() . "runtime/wechatservice/{$this->type}/";
+        $log['file'] .=  date('Y') . '-' . date('m') . '/';
+        $log['file'] .= date('d') . '.log';
         return $log;
     }
     abstract function initConfig();
