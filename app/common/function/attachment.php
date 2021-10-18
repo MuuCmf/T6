@@ -99,6 +99,59 @@ EOF;
 }
 
 /**
+ * 单图上传组件
+ * @param  [type] $name      [description]
+ * @param  [type] $image_id [description]
+ * @return [type]           [description]
+ */
+function single_file_upload($name, $file){
+    $api = url('api/file/file');
+
+    $html = <<<EOF
+    <div id="uploader-{$name}" >
+    <div class="file-list" data-drag-placeholder="请拖拽文件到此处"></div>
+    <button type="button" class="btn btn-primary uploader-btn-browse"><i class="icon icon-cloud-upload"></i> 选择文件</button>
+    </div>
+    <script>
+        $(function () {
+            $('#uploader-{$name}').uploader({
+                autoUpload: true,            // 当选择文件后立即自动进行上传操作
+                url: "{$api}",  // 文件上传提交地址
+EOF;
+
+    if (is_array($file)){
+        $image_path = get_attachment_src($file['attachment']);
+        $html .= <<<EOF
+        staticFiles: [
+                    {name: {$file['name']}, url: "{$image_path}"},
+                ],//初始化文件列表
+EOF;
+
+    }elseif (!empty($file)){
+        $image_path = get_attachment_src($file);
+        $html .= <<<EOF
+        staticFiles: [
+                    {name: '文件', url: "{$image_path}"},
+                ],//初始化文件列表
+EOF;
+    }
+    $html .= <<<EOF
+                limitFilesCount:1,//限制文件数量
+                responseHandler: function(responseObject, file) {
+                    responseObject = JSON.parse(responseObject.response);
+                    // 当服务器返回的文本内容包含 `'error'` 文本时视为上传失败
+                    if(responseObject.code != 200) {
+                        return '上传失败。服务器返回了一个错误：' + responseObject.msg;
+                    }
+                }
+            });
+        })
+    </script>
+EOF;
+    return $html;
+}
+
+/**
  * 多图上传
  * @param  [type] $name [description]
  * @param  [type] $ids  [description]

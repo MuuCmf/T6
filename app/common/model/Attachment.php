@@ -247,7 +247,7 @@ class Attachment extends Model
                 // 成功上传后 获取上传信息
                 $data['attachment'] = $savename;
                 $data['attachment'] = str_replace("\\","/",$data['attachment']);
-                dump($data);exit;
+//                dump($data);exit;
                 
                 //获取上传驱动
                 $driver = config('extend.PICTURE_UPLOAD_DRIVER');
