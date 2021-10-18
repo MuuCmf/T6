@@ -96,6 +96,47 @@ class Extend extends Admin
             $builder->buttonSubmit();
             $builder->display();
         }
+
+    }
+
+    /**
+     * 支付参数配置
+     */
+    public function payment() {
+
+        if (request()->isPost()) {
+            $config = input('post.');
+            //dump($config);exit;
+            if ($config && is_array($config)) {
+                foreach ($config as $name => $value) {
+                    $map = ['name' => $name];
+                    Db::name('ExtendConfig')->where($map)->save(['value' => $value]);
+                }
+            }
+            // 清理缓存
+            cache('MUUCMF_EXT_CONFIG_DATA', null);
+
+            return $this->success('保存成功',$config, 'refresh');
+
+        }else{
+            $list = $this->extendConfigModel->lists();
+            $builder = new AdminConfigBuilder();
+            $builder->title('支付配置')->suggest('基于第三方支付各项参数配置');
+            // 阿里云短信参数配置
+            $builder
+                ->keyText('WX_PAY_MCH_ID', 'MchID', 'Mch ID是您微信商户的商 户ID，请您妥善保管.')
+                ->keyText('WX_PAY_KEY_SECRET', 'KeySecret', 'Key Secret是您微信商户的API密钥，请您妥善保管.')
+                ->group('微信', [
+                    'WX_PAY_MCH_ID',
+                    'WX_PAY_KEY_SECRET',
+                ]);
+
+            // 支付宝支付参数配置
+
+            $builder->data($list);
+            $builder->buttonSubmit();
+            $builder->display();
+        }
         
     }
 
