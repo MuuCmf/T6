@@ -106,9 +106,10 @@ class File extends Base
 
         $action = input('action', '', 'text');
         switch($action){
+            
             case 'config':
                 $result = json_decode(preg_replace("/\/\*[\s\S]+?\*\//", "", file_get_contents(PUBLIC_PATH . '/static/common/lib/ueditor/php/config.json')), true);
-                break;
+            break;
 
             case 'uploadimage':
                 $files = request()->file();
@@ -118,12 +119,13 @@ class File extends Base
                     return json($return);
                 }
 
-                $arr = $this->upload->upload($files,'picture');
-
-                $result['state'] ='SUCCESS';
-                $result['url'] = $arr[0]['path'];
+                $res = $this->upload->upload($files,'pic');
                 
-                break;
+                $result['state'] ='SUCCESS';
+                $result['url'] = $res['url'];
+                
+            break;
+
             case 'uploadscrawl':
                 $files = input('upfile');
                 if (empty($files)) {
@@ -133,11 +135,11 @@ class File extends Base
                 }
 
                 $arr = $this->upload->upload($files,'base64');
-
+                
                 $result['state'] ='SUCCESS';
-                $result['url'] = $arr['path'];
+                $result['url'] = $arr['url'];
 
-                break;
+            break;
 
             case 'uploadfile':
 
@@ -153,17 +155,41 @@ class File extends Base
 
                 if(is_array($arr)){
                     $result['state'] ='SUCCESS';
-                    $result['url'] = $arr[0]['savepath'];
-                    $result['original'] = $arr[0]['name'];
+                    $result['url'] = $arr['url'];
+                    $result['original'] = $arr[0]['filename'];
                 }else{
                     $result['state'] = 'error';
                     $result['msg'] = $this->upload->getError();
                 }
                 return json($result);
 
-                break;
+            break;
+
+            case 'uploadvideo':
+                $files = request()->file();
+
+                if (empty($files)) {
+                    $return['code'] = 0;
+                    $return['msg'] = 'No file upload or server upload limit exceeded';
+                    return json($return);
+                }
+
+                $arr = $this->upload->upload($files,'file');
+
+                if(is_array($arr)){
+                    $result['state'] ='SUCCESS';
+                    $result['url'] = $arr['url'];
+                    $result['original'] = $arr['filename'];
+                }else{
+                    $result['state'] = 'error';
+                    $result['msg'] = $this->upload->getError();
+                }
+                return json($result);
+
+            break;
+
             default:
-                break;
+            break;
         }
         return json($result);
     }

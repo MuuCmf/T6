@@ -247,8 +247,6 @@ class Attachment extends Model
                 // 成功上传后 获取上传信息
                 $data['attachment'] = $savename;
                 $data['attachment'] = str_replace("\\","/",$data['attachment']);
-//                dump($data);exit;
-                
                 //获取上传驱动
                 $driver = config('extend.PICTURE_UPLOAD_DRIVER');
                 if($driver == 'local'){
@@ -380,15 +378,13 @@ class Attachment extends Model
     }
 
     /**
-     * [base64 description]
+     * [base64 description] 未完成
      * @param  [type] $files [description]
      * @return [type]        [description]
      */
     public function base64($files)
     {
-
         $aData = $files;
-
         if ($aData == '' || $aData == 'undefined') {
             return false;
         }
@@ -407,22 +403,26 @@ class Attachment extends Model
         $md5 = md5($base64_body);
         $sha1 = sha1($base64_body);
 
-        $check = Db::name('Picture')->where(['md5' => $md5, 'sha1' => $sha1])->find();
-
-        if ($check) {
-            //已存在则直接返回信息
-            $return['id'] = $check['id'];
-            $return['path'] = $check['path'];
-
-            return $return;
+        $file_info = $this->where(['sha1'=>$sha1])->find();
+        
+        if ($file_info) {
+            $file_res = [];
+            $data = $file_info->toArray();
+            $file_res['filename'] = $data['filename'];
+            $file_res['size'] = $data['size'];
+            $file_res['attachment'] = $data['attachment'];
+            $file_res['url'] = get_attachment_src($data['attachment']);
 
         } else {
             //不存在则上传并返回信息
-            $driver = modC('FILE_UPLOAD_DRIVER','local','config');
-            $driver = check_driver_is_exist($driver);
+            //获取上传驱动
+            $driver = config('extend.PICTURE_UPLOAD_DRIVER');
+            if($driver == 'local'){
+                // 本地无需处理
+            }
             $date = date('Y-m-d');
             $saveName = uniqid();
-            $savePath = '/attachment/picture/' . $date . '/';
+            $savePath = '/attachment/images/' . $date . '/';
 
             $path = $savePath . $saveName . '.' . $aExt;
             if($driver == 'local'){
