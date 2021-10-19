@@ -76,9 +76,12 @@ class Member extends Admin
         $map[] = ['status','>=', 0];
         list($list,$page) = $this->commonLists('Member', $map, $order);
 
-        $list_arr = $list->toArray()['data'];
+        $list = $list->toArray();
+        $list_arr = $list['data'];
 
         foreach($list_arr as $key=>$v){
+            //处理用户头像
+            $list_arr[$key]['avatar'] = get_attachment_src($list_arr[$key]['avatar']);
             //获取权限组
             $auth_g_id = Db::name('auth_group_access')->where(['uid'=>$v['uid']])->select()->toArray();
             foreach($auth_g_id as $k=>$val){
@@ -90,7 +93,10 @@ class Member extends Admin
         }
 
         int_to_string($list_arr);
-
+        if (request()->isAjax()){
+            $list['data'] = $list_arr;
+            return $this->success('success',$list);
+        }
         $this->setTitle('用户列表');
         View::assign('title','用户列表');
         View::assign('page',$page);
