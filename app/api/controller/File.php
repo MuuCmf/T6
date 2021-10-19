@@ -104,10 +104,10 @@ class File extends Base
      */
     public function ueditor(){
 
-        $action = $this->request->param('action');
+        $action = input('action', '', 'text');
         switch($action){
             case 'config':
-                $result = json_decode(preg_replace("/\/\*[\s\S]+?\*\//", "", file_get_contents(ROOT_PATH.'public/static/common/lib/ueditor/php/config.json')), true);
+                $result = json_decode(preg_replace("/\/\*[\s\S]+?\*\//", "", file_get_contents(PUBLIC_PATH . '/static/common/lib/ueditor/php/config.json')), true);
                 break;
 
             case 'uploadimage':

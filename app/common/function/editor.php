@@ -6,8 +6,9 @@
 function ueditor($id = 'myeditor', $name = 'content', $default='', $config='', $style='', $param='', $width='100%')
 {
     $url = url("api/file/ueditor");
-    if($config=='mini'){
-        $config="
+
+    if($config == 'mini'){
+        $config = "
             toolbars:[
                     [
                         'source','|',
@@ -34,15 +35,14 @@ function ueditor($id = 'myeditor', $name = 'content', $default='', $config='', $
         ";
     }
     if($config == 'all') {
-        $config="";
+        $config = "";
     }
     if($config == '') {
-        $config="{
+        $config = "
             autoHeightEnabled: false,
             autoFloatEnabled: false,
             initialFrameWidth: null,
             initialFrameHeight: 350
-        }
         ";
     }
 
@@ -58,7 +58,7 @@ function ueditor($id = 'myeditor', $name = 'content', $default='', $config='', $
     <script>
         var ue_'.$id.';
         $(function () {
-            var config = '. $config .';
+            var config = '. $UMconfig .';
             ue_'.$id.' = UE.getEditor("'.$id.'", config);
         });
     </script>';
