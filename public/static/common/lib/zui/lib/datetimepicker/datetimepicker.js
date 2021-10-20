@@ -4,7 +4,7 @@
  *
  * ZUI: The file has been changed in ZUI. It will not keep update with the
  * official version in the future.
- * http://zui.sexy
+ * http://openzui.com
  * ========================================================================
  * Copyright 2012 Stefan Petre
  * Improvements by Andrew Rowls
@@ -58,10 +58,10 @@
         this.element = $(element);
 
         this.language = (options.language || this.element.data('date-language') || ($.zui && $.zui.clientLang ? $.zui.clientLang().replace('_', '-') : "zh-cn")).toLowerCase();
-        this.language = this.language in dates ? this.language : "en";
-        this.isRTL = dates[this.language].rtl || false;
+        this.lang = $.zui && $.zui.getLangData ? $.zui.getLangData('datetimepicker', this.language, dates) : dates[this.language];
+        this.isRTL = this.lang.rtl || false;
         this.formatType = options.formatType || this.element.data('format-type') || 'standard';
-        this.format = DPGlobal.parseFormat(options.format || this.element.data('date-format') || dates[this.language].format || DPGlobal.getDefaultFormat(this.formatType, 'input'), this.formatType);
+        this.format = DPGlobal.parseFormat(options.format || this.element.data('date-format') || this.lang.format || DPGlobal.getDefaultFormat(this.formatType, 'input'), this.formatType);
         this.isInline = false;
         this.isVisible = false;
         this.isInput = this.element.is('input');
@@ -204,7 +204,7 @@
         this.todayBtn = (options.todayBtn || this.element.data('date-today-btn') || false);
         this.todayHighlight = (options.todayHighlight || this.element.data('date-today-highlight') || false);
 
-        this.weekStart = ((options.weekStart || this.element.data('date-weekstart') || dates[this.language].weekStart || 0) % 7);
+        this.weekStart = ((options.weekStart || this.element.data('date-weekstart') || this.lang.weekStart || 0) % 7);
         this.weekEnd = ((this.weekStart + 6) % 7);
         this.startDate = -Infinity;
         this.endDate = Infinity;
@@ -500,7 +500,7 @@
             var dowCnt = this.weekStart,
                 html = '<tr>';
             while(dowCnt < this.weekStart + 7) {
-                html += '<th class="dow">' + dates[this.language].daysMin[(dowCnt++) % 7] + '</th>';
+                html += '<th class="dow">' + this.lang.daysMin[(dowCnt++) % 7] + '</th>';
             }
             html += '</tr>';
             this.picker.find('.datetimepicker-days thead').append(html);
@@ -510,7 +510,7 @@
             var html = '',
                 i = 0;
             while(i < 12) {
-                html += '<span class="month">' + dates[this.language].monthsShort[i++] + '</span>';
+                html += '<span class="month">' + this.lang.monthsShort[i++] + '</span>';
             }
             this.picker.find('.datetimepicker-months td').html(html);
         },
@@ -532,24 +532,24 @@
                 currentDate = (new UTCDate(this.date.getUTCFullYear(), this.date.getUTCMonth(), this.date.getUTCDate())).valueOf(),
                 today = new Date();
             this.picker.find('.datetimepicker-days thead th:eq(1)')
-                .text(dates[this.language].months[month] + ' ' + year);
+                .text(this.lang.months[month] + ' ' + year);
             if(this.formatViewType == "time") {
                 var hourConverted = hours % 12 ? hours % 12 : 12;
                 var hoursDisplay = (hourConverted < 10 ? '0' : '') + hourConverted;
                 var minutesDisplay = (minutes < 10 ? '0' : '') + minutes;
-                var meridianDisplay = dates[this.language].meridiem[hours < 12 ? 0 : 1];
+                var meridianDisplay = this.lang.meridiem[hours < 12 ? 0 : 1];
                 this.picker.find('.datetimepicker-hours thead th:eq(1)')
                     .text(hoursDisplay + ':' + minutesDisplay + ' ' + meridianDisplay.toUpperCase());
                 this.picker.find('.datetimepicker-minutes thead th:eq(1)')
                     .text(hoursDisplay + ':' + minutesDisplay + ' ' + meridianDisplay.toUpperCase());
             } else {
                 this.picker.find('.datetimepicker-hours thead th:eq(1)')
-                    .text(dayMonth + ' ' + dates[this.language].months[month] + ' ' + year);
+                    .text(dayMonth + ' ' + this.lang.months[month] + ' ' + year);
                 this.picker.find('.datetimepicker-minutes thead th:eq(1)')
-                    .text(dayMonth + ' ' + dates[this.language].months[month] + ' ' + year);
+                    .text(dayMonth + ' ' + this.lang.months[month] + ' ' + year);
             }
             this.picker.find('tfoot th.today')
-                .text(dates[this.language].today)
+                .text(this.lang.today)
                 .toggle(this.todayBtn !== false);
             this.updateNavArrows();
             this.fillMonths();
@@ -609,8 +609,8 @@
                 } else if(hours == i) {
                     clsName += ' active';
                 }
-                if(this.showMeridian && dates[this.language].meridiem.length == 2) {
-                    meridian = (i < 12 ? dates[this.language].meridiem[0] : dates[this.language].meridiem[1]);
+                if(this.showMeridian && this.lang.meridiem.length == 2) {
+                    meridian = (i < 12 ? this.lang.meridiem[0] : this.lang.meridiem[1]);
                     if(meridian != meridianOld) {
                         if(meridianOld != '') {
                             html.push('</fieldset>');
@@ -640,8 +640,8 @@
                 } else if(Math.floor(minutes / this.minuteStep) == Math.floor(i / this.minuteStep)) {
                     clsName += ' active';
                 }
-                if(this.showMeridian && dates[this.language].meridiem.length == 2) {
-                    meridian = (hours < 12 ? dates[this.language].meridiem[0] : dates[this.language].meridiem[1]);
+                if(this.showMeridian && this.lang.meridiem.length == 2) {
+                    meridian = (hours < 12 ? this.lang.meridiem[0] : this.lang.meridiem[1]);
                     if(meridian != meridianOld) {
                         if(meridianOld != '') {
                             html.push('</fieldset>');
@@ -985,12 +985,13 @@
                             if(this.viewSelect >= 2) {
                                 this._setDate(UTCDate(year, month, day, hours, minutes, seconds, 0));
                             }
-                        }
-                        var oldViewMode = this.viewMode;
-                        this.showMode(-1);
-                        this.fill();
-                        if(oldViewMode == this.viewMode && this.autoclose) {
-                            this.hide();
+
+                            var oldViewMode = this.viewMode;
+                            this.showMode(-1);
+                            this.fill();
+                            if(oldViewMode == this.viewMode && this.autoclose) {
+                                this.hide();
+                            }
                         }
                         break;
                 }
@@ -1292,28 +1293,38 @@
             meridiem: ["am", "pm"],
             suffix: ["st", "nd", "rd", "th"],
             today: "Today"
+        },
+        'zh-cn': {
+            days: ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六", "星期日"],
+            daysShort: ["周日", "周一", "周二", "周三", "周四", "周五", "周六", "周日"],
+            daysMin: ["日", "一", "二", "三", "四", "五", "六", "日"],
+            months: ["一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "十二月"],
+            monthsShort: ["一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "十二月"],
+            today: "今日",
+            suffix: [],
+            meridiem: []
+        },
+        'zh-tw': {
+            days: ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六", "星期日"],
+            daysShort: ["周日", "周一", "周二", "周三", "周四", "周五", "周六", "周日"],
+            daysMin: ["日", "一", "二", "三", "四", "五", "六", "日"],
+            months: ["一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "十二月"],
+            monthsShort: ["一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "十二月"],
+            today: "今天",
+            suffix: [],
+            meridiem: ["上午", "下午"]
         }
     };
-
-    dates['zh-cn'] = {
-        days: ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六", "星期日"],
-        daysShort: ["周日", "周一", "周二", "周三", "周四", "周五", "周六", "周日"],
-        daysMin: ["日", "一", "二", "三", "四", "五", "六", "日"],
-        months: ["一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "十二月"],
-        monthsShort: ["一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "十二月"],
-        today: "今日",
-        suffix: [],
-        meridiem: []
-    };
-    dates['zh-tw'] = {
-        days: ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六", "星期日"],
-        daysShort: ["周日", "周一", "周二", "周三", "周四", "周五", "周六", "周日"],
-        daysMin: ["日", "一", "二", "三", "四", "五", "六", "日"],
-        months: ["一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "十二月"],
-        monthsShort: ["一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "十二月"],
-        today: "今天",
-        suffix: [],
-        meridiem: ["上午", "下午"]
+    var getDateLang = function(language) {
+        var data = dates[language];
+        if (!data) {
+            if ($.zui && $.zui.getLangData) {
+                data = dates[language] = $.zui.getLangData('datetimepicker', this.language, dates);
+            } else {
+                data = dates.en;
+            }
+        }
+        return data;
     };
 
     var DPGlobal = {
@@ -1485,24 +1496,24 @@
                     if(isNaN(val)) {
                         switch(part) {
                             case 'MM':
-                                filtered = $(dates[language].months).filter(function() {
+                                filtered = $(getDateLang(language).months).filter(function() {
                                     var m = this.slice(0, parts[i].length),
                                         p = parts[i].slice(0, m.length);
                                     return m == p;
                                 });
-                                val = $.inArray(filtered[0], dates[language].months) + 1;
+                                val = $.inArray(filtered[0], getDateLang(language).months) + 1;
                                 break;
                             case 'M':
-                                filtered = $(dates[language].monthsShort).filter(function() {
+                                filtered = $(getDateLang(language).monthsShort).filter(function() {
                                     var m = this.slice(0, parts[i].length),
                                         p = parts[i].slice(0, m.length);
                                     return m == p;
                                 });
-                                val = $.inArray(filtered[0], dates[language].monthsShort) + 1;
+                                val = $.inArray(filtered[0], getDateLang(language).monthsShort) + 1;
                                 break;
                             case 'p':
                             case 'P':
-                                val = $.inArray(parts[i].toLowerCase(), dates[language].meridiem);
+                                val = $.inArray(parts[i].toLowerCase(), getDateLang(language).meridiem);
                                 break;
                         }
                     }
@@ -1528,13 +1539,13 @@
                     yyyy: date.getUTCFullYear(),
                     // month
                     m: date.getUTCMonth() + 1,
-                    M: dates[language].monthsShort[date.getUTCMonth()],
-                    MM: dates[language].months[date.getUTCMonth()],
+                    M: getDateLang(language).monthsShort[date.getUTCMonth()],
+                    MM: getDateLang(language).months[date.getUTCMonth()],
                     // day
                     d: date.getUTCDate(),
-                    D: dates[language].daysShort[date.getUTCDay()],
-                    DD: dates[language].days[date.getUTCDay()],
-                    p: (dates[language].meridiem.length == 2 ? dates[language].meridiem[date.getUTCHours() < 12 ? 0 : 1] : ''),
+                    D: getDateLang(language).daysShort[date.getUTCDay()],
+                    DD: getDateLang(language).days[date.getUTCDay()],
+                    p: (getDateLang(language).meridiem.length == 2 ? getDateLang(language).meridiem[date.getUTCHours() < 12 ? 0 : 1] : ''),
                     // hour
                     h: date.getUTCHours(),
                     // minute
@@ -1543,7 +1554,7 @@
                     s: date.getUTCSeconds()
                 };
 
-                if(dates[language].meridiem.length == 2) {
+                if(getDateLang(language).meridiem.length == 2) {
                     val.H = (val.h % 12 == 0 ? 12 : val.h % 12);
                 } else {
                     val.H = val.h;
@@ -1562,19 +1573,19 @@
                     y: date.getUTCFullYear().toString().substring(2),
                     Y: date.getUTCFullYear(),
                     // month
-                    F: dates[language].months[date.getUTCMonth()],
-                    M: dates[language].monthsShort[date.getUTCMonth()],
+                    F: getDateLang(language).months[date.getUTCMonth()],
+                    M: getDateLang(language).monthsShort[date.getUTCMonth()],
                     n: date.getUTCMonth() + 1,
                     t: DPGlobal.getDaysInMonth(date.getUTCFullYear(), date.getUTCMonth()),
                     // day
                     j: date.getUTCDate(),
-                    l: dates[language].days[date.getUTCDay()],
-                    D: dates[language].daysShort[date.getUTCDay()],
+                    l: getDateLang(language).days[date.getUTCDay()],
+                    D: getDateLang(language).daysShort[date.getUTCDay()],
                     w: date.getUTCDay(), // 0 -> 6
                     N: (date.getUTCDay() == 0 ? 7 : date.getUTCDay()), // 1 -> 7
-                    S: (date.getUTCDate() % 10 <= dates[language].suffix.length ? dates[language].suffix[date.getUTCDate() % 10 - 1] : ''),
+                    S: (date.getUTCDate() % 10 <= getDateLang(language).suffix.length ? getDateLang(language).suffix[date.getUTCDate() % 10 - 1] : ''),
                     // hour
-                    a: (dates[language].meridiem.length == 2 ? dates[language].meridiem[date.getUTCHours() < 12 ? 0 : 1] : ''),
+                    a: (getDateLang(language).meridiem.length == 2 ? getDateLang(language).meridiem[date.getUTCHours() < 12 ? 0 : 1] : ''),
                     g: (date.getUTCHours() % 12 == 0 ? 12 : date.getUTCHours() % 12),
                     G: date.getUTCHours(),
                     // minute
@@ -1707,4 +1718,3 @@
     });
 
 }(window.jQuery);
-
