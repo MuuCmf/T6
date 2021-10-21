@@ -243,7 +243,7 @@ class Attachment extends Model
                 $data['size'] = $file->getSize();
                 $data['mime'] = $file->getMime();
                 $data['type'] = 'image';  // 类型用字符串 pic file audio video
-                $savename = Filesystem::disk('public')->putFile( 'image', $file);
+                $savename = Filesystem::disk('public')->putFile( 'file', $file);
                 // 成功上传后 获取上传信息
                 $data['attachment'] = $savename;
                 $data['attachment'] = str_replace("\\","/",$data['attachment']);

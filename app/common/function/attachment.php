@@ -14,10 +14,12 @@ function single_image_upload($name, $image){
     $upload_picture = '上传图片';
     $delete_picture = '删除';
     $api = url('api/file/pic');
-
+    $input_name = $name;
+    //兼容name数组形式
+    $name = preg_replace('/\[.*?\]/', '', $name);
     $html = <<<EOF
 <div class="single-image-upload image-upload controls">
-    <input class="attach" type="hidden" name="{$name}" value="{$image}"/>
+    <input class="attach" type="hidden" data-name="{$name}" name="{$input_name}" value="{$image}"/>
     <div class="upload-img-box">
         <div class="upload-pre-item popup-gallery">
 EOF;
@@ -30,11 +32,11 @@ EOF;
         </div>
 EOF;
     }
-            
+
     $html .= <<<EOF
         </div>
     </div>
-    <div id="upload_single_image_{$name}" class="">{$upload_picture}</div>
+    <div id="upload_single_image_{$name}" class=""></i>{$upload_picture}</div>
 </div>
 
 <script>
@@ -63,8 +65,8 @@ EOF;
         /*上传成功**/
         uploader_{$name}.on('uploadSuccess', function (file, data) {
             if (data.code) {
-                $("[name='{$name}']").val(data.data.attachment);
-                $("[name='{$name}']").parent().find('.upload-pre-item').html(
+                $("input[name='{$name}']").val(data.data.attachment);
+                $("input[name='{$name}']").parent().find('.upload-pre-item').html(
                     '<div class="each">' +
                     '<img src="'+ data.data.url+'">' +
                     '<div class="text-center opacity del_btn"></div>' +
@@ -97,7 +99,95 @@ EOF;
 EOF;
     return $html;
 }
+function single_video_upload($name, $video){
 
+    $video_path = get_attachment_src($video);
+    $api = url('api/file/video');
+    $input_name = $name;
+    //兼容name数组形式
+    $name = preg_replace('/\[.*?\]/', '', $name);
+    $html = <<<EOF
+<div class="single-video-upload image-upload controls">
+    <input class="attach" type="hidden" data-name="{$name}" name="{$input_name}" value="{$video}"/>
+    <div class="upload-video-box">
+EOF;
+    if(!empty($video)){
+        $html .= <<<EOF
+        <div class="box-item">
+            <video controls >
+            	 <source src="{$video_path}" ></source>
+	                		您的浏览器暂不支持播放该视频，请升级至最新版浏览器。
+            </video>
+            <div class="remove-box text-center opacity del_btn">删除</div>
+        </div>
+EOF;
+    }
+
+    $html .= <<<EOF
+    </div>
+    <div id="upload_single_video_{$name}" class=""></i>上传视频</div>
+</div>
+
+<script>
+    $(function () {
+        var uploader_{$name}= WebUploader.create({
+            // 选完文件后，是否自动上传。
+            auto: true,
+            // swf文件路径
+            swf: 'Uploader.swf',
+            // 文件接收服务端。
+            server: "{$api}",
+            // 选择文件的按钮。可选。
+            // 内部根据当前运行是创建，可能是input元素，也可能是flash.
+            pick: {id:'#upload_single_video_{$name}',multiple: false},
+            // 只允许选择图片文件
+            accept: {
+                title: 'Video',
+                extensions: 'mp4,flv,m3u8,m4v'
+            }
+        });
+        uploader_{$name}.on('fileQueued', function (file) {
+            uploader_{$name}.upload();
+            toast.showLoading();
+        });
+        /*上传成功**/
+        uploader_{$name}.on('uploadSuccess', function (file, data) {
+            if (data.code) {
+                $("input[name='{$name}']").val(data.data.attachment);
+                $("input[name='{$name}']").parent().find('.upload-video-box').html(
+                    '<div class="box-item">' +
+                            '<video controls >' + 
+            	                '<source src="' + data.data.url + '" ></source>' +
+	                		    '您的浏览器暂不支持播放该视频，请升级至最新版浏览器。' +
+                            '</video>' +
+                        '<div class="remove-box text-center opacity del_btn">删除</div>' +
+                    '</div>'
+                );
+                //重启webuploader,可多次上传
+                uploader_{$name}.reset();
+            } else {
+                updateAlert(data.msg);
+                setTimeout(function () {
+                    $('#top-alert').find('button').click();
+                    $(that).removeClass('disabled').prop('disabled', false);
+                }, 1500);
+            }
+        });
+        //上传完成
+        uploader_{$name}.on( 'uploadComplete', function( file ) {
+            toast.hideLoading();
+        });
+
+        //移除图片
+        $('.single-video-upload').on('click','.del_btn',function(){
+            $(this).parent().remove();
+        })
+
+    })
+</script>
+EOF;
+    return $html;
+}
 /**
  * 单图上传组件
  * @param  [type] $name      [description]
@@ -117,6 +207,10 @@ function single_file_upload($name, $file){
             $('#uploader-{$name}').uploader({
                 autoUpload: true,            // 当选择文件后立即自动进行上传操作
                 url: "{$api}",  // 文件上传提交地址
+                deleteActionOnDone:function(file, doRemoveFile){
+                    console.log(file)
+                    console.log(doRemoveFile)
+                },
 EOF;
 
     if (is_array($file)){
@@ -168,7 +262,7 @@ function multi_image_upload($name, $images = '')
     $html = '';
     $html .= '
     <div class="multi-image-upload image-upload controls">
-        <input class="attach" type="hidden" name="'.$name.'" value="'.images.'"/>
+        <input class="attach" type="hidden" name="'.$name.'" value="'.$images.'"/>
         <div class="upload-img-box">
             <div class="upload-pre-item popup-gallery">';
     if(!empty($images)){
@@ -222,7 +316,7 @@ function multi_image_upload($name, $images = '')
         /*上传成功**/
         uploader_{$name}.on('uploadSuccess', function (file, data) {
           if (data.code == 200) {
-            var ids = $("[name='{$name}']").val();
+            var ids = $("input[name='{$name}']").val();
             ids = ids.split(',');
             if( ids.indexOf(data.data.attachment) == -1){
                 var rids = admin_image.upAttachVal('add',data.data.attachment, $("[name='{$name}']"));
@@ -231,7 +325,7 @@ function multi_image_upload($name, $images = '')
                     return;
                 }
                 
-                $("[name='{$name}']").parent().find('.upload-pre-item').append(
+                $("input[name='{$name}']").parent().find('.upload-pre-item').append(
                     '<div class="each">'+
                     '<img src="'+ data.data.url+'">'+
                     '<div class="text-center opacity del_btn"></div>' +
