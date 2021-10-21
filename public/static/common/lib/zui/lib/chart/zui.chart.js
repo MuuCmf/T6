@@ -1,8 +1,8 @@
 /*!
- * ZUI: Chart.js - v1.9.1 - 2019-05-10
- * http://zui.sexy
+ * ZUI: Chart.js - v1.9.2 - 2020-07-09
+ * http://openzui.com
  * GitHub: https://github.com/easysoft/zui.git 
- * Copyright (c) 2019 cnezsoft.com; Licensed MIT
+ * Copyright (c) 2020 cnezsoft.com; Licensed MIT
  */
 
 /* ========================================================================
@@ -11,7 +11,7 @@
  *
  * ZUI: The file has been changed in ZUI. It will not keep update with the
  * official version in the future.
- * http://zui.sexy
+ * http://openzui.com
  * ========================================================================
  * Copyright 2015 Nick Downie, Released under the MIT license
  * https://github.com/nnnick/Chart.js/blob/master/LICENSE.md
@@ -2101,14 +2101,13 @@
 
 /// ----- ZUI change end -----
 
-
 /* ========================================================================
  * Chart.js: Chart.line.js [Version: 1.0.2]
  * http://chartjs.org/
  *
  * ZUI: The file has been changed in ZUI. It will not keep update with the
  * official version in the future.
- * http://zui.sexy
+ * http://openzui.com
  * ========================================================================
  * Copyright 2015 Nick Downie, Released under the MIT license
  * https://github.com/nnnick/Chart.js/blob/master/LICENSE.md
@@ -2542,14 +2541,13 @@
 
 /// ----- ZUI change end -----
 
-
 /* ========================================================================
  * Chart.js: Chart.Doughnut.js [Version: 1.0.2]
  * http://chartjs.org/
  *
  * ZUI: The file has been changed in ZUI. It will not keep update with the
  * official version in the future.
- * http://zui.sexy
+ * http://openzui.com
  * ========================================================================
  * Copyright 2015 Nick Downie, Released under the MIT license
  * https://github.com/nnnick/Chart.js/blob/master/LICENSE.md
@@ -2753,10 +2751,8 @@
             var middleAngle = (segment.endAngle + segment.startAngle) / 2;
             var placement = options.scaleLabelPlacement;
             if(placement !== 'inside' && placement !== 'outside') {
-                if((this.chart.width - this.chart.height) > 50) {
-                    if(segment.circumference < (Math.PI / 18)) {
-                        placement = 'outside';
-                    }
+                if((this.chart.width - this.chart.height) > 50 && segment.circumference < (Math.PI / 18)) {
+                    placement = 'outside';
                 }
             }
 
@@ -2909,14 +2905,13 @@
 
 /// ----- ZUI change end -----
 
-
 /* ========================================================================
  * Chart.js: Chart.Bar.js [Version: 1.0.2]
  * http://chartjs.org/
- * 
+ *
  * ZUI: The file has been changed in ZUI. It will not keep update with the
  * official version in the future.
- * http://zui.sexy
+ * http://openzui.com
  * ========================================================================
  * Copyright 2015 Nick Downie, Released under the MIT license
  * https://github.com/nnnick/Chart.js/blob/master/LICENSE.md
@@ -2965,7 +2960,7 @@
         //Boolean - Whether to show beyond lines
         scaleShowBeyondLine: true,
         /// ZUI change end
-        /// 
+        ///
         //Boolean - If there is a stroke on each bar
         barShowStroke: true,
 
@@ -3303,4 +3298,3 @@
 }).call(this, jQuery);
 
 /// ----- ZUI change end -----
-

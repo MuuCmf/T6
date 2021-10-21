@@ -1,13 +1,13 @@
 /*!
- * ZUI: 颜色选择器 - v1.9.1 - 2019-05-10
- * http://zui.sexy
+ * ZUI: 颜色选择器 - v1.9.2 - 2020-07-09
+ * http://openzui.com
  * GitHub: https://github.com/easysoft/zui.git 
- * Copyright (c) 2019 cnezsoft.com; Licensed MIT
+ * Copyright (c) 2020 cnezsoft.com; Licensed MIT
  */
 
 /* ========================================================================
  * ZUI: ColorPicker.js [1.5.0+]
- * http://zui.sexy
+ * http://openzui.com
  * ========================================================================
  * Copyright (c) 2016 cnezsoft.com; Licensed MIT
  * ======================================================================== */
@@ -16,7 +16,7 @@
 (function($) {
     'use strict';
 
-    var name = 'zui.colorPicker'; // modal name
+    var NAME = 'zui.colorPicker'; // modal name
     var TEAMPLATE = '<div class="colorpicker"><button type="button" class="btn dropdown-toggle" data-toggle="dropdown"><span class="cp-title"></span><i class="ic"></i></button><ul class="dropdown-menu clearfix"></ul></div>';
     var LANG = {
         zh_cn: {
@@ -32,25 +32,11 @@
 
     // The ColorPicker modal class
     var ColorPicker = function(element, options) {
-        this.name = name;
+        this.name = NAME;
         this.$ = $(element);
 
         this.getOptions(options);
         this.init();
-    };
-
-    // default options
-    ColorPicker.DEFAULTS = {
-        colors: ['#00BCD4', '#388E3C', '#3280fc', '#3F51B5', '#9C27B0', '#795548', '#F57C00', '#F44336', '#E91E63'],
-        pullMenuRight: true,
-        wrapper: 'btn-wrapper',
-        tileSize: 30,
-        lineCount: 5,
-        optional: true,
-        tooltip: 'top',
-        icon: 'caret-down',
-        updateBtn: 'auto'
-        // btnTip: 'Tool tip in button'
     };
 
     ColorPicker.prototype.init = function() {
@@ -141,12 +127,12 @@
     };
 
     ColorPicker.prototype.updateColors = function(colors) {
-        var $picker = this.$picker,
-            $menu = this.$menu.children('li:not(.heading)').remove(),
+        var $menu   = this.$menu,
             options = this.options,
-            colors = colors || this.colors,
-            that = this;
+            colors  = colors || this.colors,
+            that    = this;
         var bestLineCount = 0;
+        $menu.children('li:not(.heading)').remove();
         $.each(colors, function(idx, color) {
             that.addColor(color);
             bestLineCount++;
@@ -160,11 +146,11 @@
     };
 
     ColorPicker.prototype.setValue = function(color, notSetInput) {
-        var that = this;
+        var that    = this;
         var options = that.options;
-        var $btn = that.$btn;
+        var $btn    = that.$btn;
+        var hex     = '';
         that.$menu.find('.cp-tile.active').removeClass('active');
-        var hex = '';
         var updateBtn = options.updateBtn;
         if (updateBtn === 'auto') {
             var $btnBar = $btn.find('.color-bar');
@@ -231,13 +217,30 @@
     ColorPicker.prototype.getOptions = function(options) {
         var thisOptions = $.extend({}, ColorPicker.DEFAULTS, this.$.data(), options);
         if(typeof thisOptions.colors === 'string') thisOptions.colors = thisOptions.colors.split(',');
-        var lang = (thisOptions.lang || $.zui.clientLang()).toLowerCase();
+        var langName = thisOptions.lang || $.zui.clientLang();
+        var lang = this.lang = $.zui.getLangData ? $.zui.getLangData(NAME, langName, LANG) : (LANG[langName] || LANG.en);
         if(!thisOptions.errorTip) {
-            thisOptions.errorTip = LANG[lang].errorTip;
+            thisOptions.errorTip = lang.errorTip;
         }
         if(!$.fn.tooltip) thisOptions.btnTip = false;
         this.options = thisOptions;
     };
+
+    // default options
+    ColorPicker.DEFAULTS = {
+        colors: ['#00BCD4', '#388E3C', '#3280fc', '#3F51B5', '#9C27B0', '#795548', '#F57C00', '#F44336', '#E91E63'],
+        pullMenuRight: true,
+        wrapper: 'btn-wrapper',
+        tileSize: 30,
+        lineCount: 5,
+        optional: true,
+        tooltip: 'top',
+        icon: 'caret-down',
+        updateBtn: 'auto'
+        // btnTip: 'Tool tip in button'
+    };
+
+    ColorPicker.LANG = LANG;
 
     // Extense jquery element
     $.fn.colorPicker = function(option) {
