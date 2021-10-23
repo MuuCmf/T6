@@ -5,40 +5,56 @@ use app\common\model\Attachment;
 /**
  * 单图上传组件
  * @param  [type] $name      [description]
- * @param  [type] $image_id [description]
- * @return [type]           [description]
+ * @param  [type] $image     [description]
+ * @return [type]            [description]
  */
-function single_image_upload($name, $image){
+function single_image_upload($name, $image, $input = false){
 
     $image_path = get_attachment_src($image);
     $upload_picture = '上传图片';
     $delete_picture = '删除';
     $api = url('api/file/pic');
-    $input_name = $name;
     //兼容name数组形式
     $name = preg_replace('/\[.*?\]/', '', $name);
     $html = <<<EOF
-<div class="single-image-upload image-upload controls">
-    <input class="attach" type="hidden" data-name="{$name}" name="{$input_name}" value="{$image}"/>
-    <div class="upload-img-box">
-        <div class="upload-pre-item popup-gallery">
+    <div class="single-image-upload image-upload controls">
 EOF;
     if(!empty($image)){
     $html .= <<<EOF
-        <div class="each">
-            <img src="{$image_path}">
-            <div class="text-center opacity del_btn"></div>
-            <div data-id="{$image}" class="text-center del_btn">{$delete_picture}</div>
+        <div class="upload-img-box">
+            <div class="upload-pre-item popup-gallery">
+                <div class="each">
+                    <img src="{$image_path}">
+                    <div class="text-center opacity del_btn"></div>
+                    <div data-id="{$image}" class="text-center del_btn">{$delete_picture}</div>
+                </div>
+            </div>
+        </div>
+EOF;
+    }
+    if($input == false){
+        $html .= <<<EOF
+        <div class="input-group">
+            <input type="hidden" class="form-control attach" data-name="{$name}" name="{$name}" value="{$image}">
+            <button id="upload_single_image_{$name}" class="btn btn-default" type="button">{$upload_picture}</button>
+        </div>
+EOF;
+    }else{
+        $html .= <<<EOF
+        <div class="input-group">
+            <input type="text" class="form-control attach" data-name="{$name}" name="{$name}" value="{$image}">
+            <span class="input-group-btn">
+                <button id="upload_single_image_{$name}" class="btn btn-default" type="button">{$upload_picture}</button>
+            </span>
         </div>
 EOF;
     }
 
     $html .= <<<EOF
-        </div>
     </div>
-    <div id="upload_single_image_{$name}" class=""></i>{$upload_picture}</div>
-</div>
+EOF;
 
+$html .= <<<EOF
 <script>
     $(function () {
         var uploader_{$name}= WebUploader.create({
@@ -66,7 +82,7 @@ EOF;
         uploader_{$name}.on('uploadSuccess', function (file, data) {
             if (data.code) {
                 $("input[name='{$name}']").val(data.data.attachment);
-                $("input[name='{$name}']").parent().find('.upload-pre-item').html(
+                $("input[name='{$name}']").parent().parent().find('.upload-pre-item').html(
                     '<div class="each">' +
                     '<img src="'+ data.data.url+'">' +
                     '<div class="text-center opacity del_btn"></div>' +
@@ -99,6 +115,9 @@ EOF;
 EOF;
     return $html;
 }
+
+
+
 function single_video_upload($name, $video){
 
     $video_path = get_attachment_src($video);
@@ -108,7 +127,7 @@ function single_video_upload($name, $video){
     $name = preg_replace('/\[.*?\]/', '', $name);
     $html = <<<EOF
 <div class="single-video-upload image-upload controls">
-    <input class="attach" type="hidden" data-name="{$name}" name="{$input_name}" value="{$video}"/>
+    <input class="attach" type="text" data-name="{$name}" name="{$input_name}" value="{$video}"/>
     <div class="upload-video-box">
 EOF;
     if(!empty($video)){
@@ -188,8 +207,9 @@ EOF;
 EOF;
     return $html;
 }
+
 /**
- * 单图上传组件
+ * 单文件上传组件
  * @param  [type] $name      [description]
  * @param  [type] $image_id [description]
  * @return [type]           [description]
@@ -353,8 +373,7 @@ function multi_image_upload($name, $images = '')
             var id = $(this).data('id');
             admin_image.removeImage($(this),id);
         })
-
-    })
+    });
     </script>
 EOF;
 
