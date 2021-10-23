@@ -116,6 +116,113 @@ EOF;
     return $html;
 }
 
+/**
+ * 音频上传组件
+ * @param  [type] $name      [description]
+ * @param  [type] $image     [description]
+ * @return [type]            [description]
+ */
+function single_audio_upload($name, $audio, $input = false){
+
+    $audio_path = get_attachment_src($audio);
+    $upload = '上传音频';
+    $delete = '删除';
+    $api = url('api/file/pic');
+    //兼容name数组形式
+    $name = preg_replace('/\[.*?\]/', '', $name);
+    $html = <<<EOF
+        <div class="single-audio-upload audio-upload controls">
+    EOF;
+    
+    $html .= '<div class="upload-audio-box">';
+    if(!empty($audio)){
+    $html .= <<<EOF
+        <div class="upload-pre-item">
+            <audio id="audio_play_{$name}" controls="controls">
+                <source src="{$audio_path}" />
+            </audio>
+        </div>
+    EOF;
+}
+    $html .= '</div>';
+
+    if($input == false){
+        $html .= <<<EOF
+        <div class="input-group">
+            <input type="hidden" class="form-control attach" name="{$name}" value="{$audio}">
+            <button id="upload_single_audio_{$name}" class="btn btn-default" type="button">{$upload}</button>
+        </div>
+        EOF;
+    }else{
+        $html .= <<<EOF
+        <div class="input-group">
+            <input type="text" class="form-control attach" data-name="{$name}" name="{$name}" value="{$audio}">
+            <span class="input-group-btn">
+                <button id="upload_single_audio_{$name}" class="btn btn-default" type="button">{$upload}</button>
+            </span>
+        </div>
+EOF;
+    }
+
+    $html .= <<<EOF
+    </div>
+EOF;
+
+$html .= <<<EOF
+<script>
+    $(function () {
+        var uploader_{$name}= WebUploader.create({
+            // 选完文件后，是否自动上传。
+            auto: true,
+            // swf文件路径
+            swf: 'Uploader.swf',
+            // 文件接收服务端。
+            server: "{$api}",
+            // 选择文件的按钮。可选。
+            // 内部根据当前运行是创建，可能是input元素，也可能是flash.
+            pick: {id:'#upload_single_audio_{$name}',multiple: false},
+            // 只允许选择图片文件
+            accept: {
+                title: 'Images',
+                extensions: 'mp3',
+                mimeTypes: 'audio/mpeg3,audio/x-mpeg-3'
+            }
+        });
+        uploader_{$name}.on('fileQueued', function (file) {
+            uploader_{$name}.upload();
+            toast.showLoading();
+        });
+        /*上传成功**/
+        uploader_{$name}.on('uploadSuccess', function (file, data) {
+            if (data.code) {
+                $("input[name='{$name}']").val(data.data.attachment);
+                $("input[name='{$name}']").parent().parent().find('.upload-audio-box').html(
+                    '<div class="upload-pre-item">'+
+                        '<audio id="audio_play_{$name}" controls="controls">' +
+                            '<source src="'+ data.data.url+'" />' +
+                        '</audio>' +
+                    '</div>'
+                );
+                //重启webuploader,可多次上传
+                uploader_{$name}.reset();
+            } else {
+                updateAlert(data.msg);
+                setTimeout(function () {
+                    $('#top-alert').find('button').click();
+                    $(that).removeClass('disabled').prop('disabled', false);
+                }, 1500);
+            }
+        });
+        //上传完成
+        uploader_{$name}.on( 'uploadComplete', function( file ) {
+            toast.hideLoading();
+        });
+    });
+</script>
+EOF;
+    return $html;
+}
+
 
 
 function single_video_upload($name, $video){

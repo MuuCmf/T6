@@ -178,3 +178,50 @@
 		}
 	}
 }
+
+/*图片上传部分*/
+.audio-upload {
+	.input-group {
+		margin-bottom: 5px;
+		button {
+			height: 32px;
+			border: 1px solid #ddd;
+			.webuploader-pick {
+				border: 0;
+				margin: 0 auto;
+				padding: 0;
+			}
+			label {
+				margin: 0;
+				padding: 5px 12px;
+			}
+		}
+	}
+	.upload-audio-box {
+		margin-bottom: 5px;
+		.upload-pre-item {
+			font-size:0;
+			letter-spacing:-3px;
+
+			.del-btn {
+				width: 150px;
+				position: absolute;
+				color: #fff;
+				margin-top: -30px;
+				height: 30px;
+				line-height: 30px;
+				bottom: 0;
+				cursor: pointer;
+				font-size:12px;
+			}
+
+			.opacity {
+				filter: alpha(opacity=50);
+				-moz-opacity: 0.5;
+				-khtml-opacity: 0.5;
+				background: #000;
+				opacity: 0.5;
+			}
+		}
+	}
+}
