@@ -118,8 +118,9 @@ EOF;
 
 /**
  * 音频上传组件
- * @param  [type] $name      [description]
- * @param  [type] $image     [description]
+ * @param  string $name      唯一标示
+ * @param  string $audio     音频路径
+ * @param  bool $input       是否显示输入框
  * @return [type]            [description]
  */
 function single_audio_upload($name, $audio, $input = false){
