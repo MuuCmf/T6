@@ -18,7 +18,10 @@ class BaseModel extends Model{
     public $statusMap = [-1 => '删除', 0 => '禁用', 1 => '正常', 2 => '待审核'];
     public function getStatusStrAttr($value)
     {
-        return $this->statusMap[$value];
+        if (is_numeric($value)){
+            return $this->statusMap[$value];
+        }
+        return $value;
     }
     /**
      * [editData description]
@@ -27,12 +30,73 @@ class BaseModel extends Model{
      */
     public function edit($data)
     {
-        if($data['id']){
+        if(!empty($data['id'])){
             $res = $this->update($data);
+            if ($res !== false){
+                $res = $data['id'];
+            }
         }else{
-            $res = $this->insert($data);
+            if (isset($data['id'])){
+                unset($data['id']);
+            }
+            $res = $this->save($data);
+            if ($res){
+                $res = $this->id;
+            }
         }
 
+
         return $res;
+    }
+    /**
+     * Gets the list by page.
+     *
+     * @param      <array>   $map    The map
+     * @param      string   $order  The order
+     * @param      string   $field  The field
+     * @param      integer  $r      { parameter_description }
+     *
+     * @return     <array>   The list by page.
+     */
+    public function getListByPage($map, $order='create_time desc', $field='*', $r=20)
+    {
+        $list = $this->where($map)->order($order)->field($field)->paginate($r);
+
+        return $list;
+    }
+    /**
+     * Gets the data by identifier.
+     *
+     * @param      integer  $id     The identifier
+     *
+     * @return     <array>   The data by identifier.
+     */
+    public function getDataById($id)
+    {
+        if($id>0){
+            $data=$this->find($id);
+            return $data;
+        }
+        return null;
+    }
+
+    /**
+     * Gets the list.
+     *
+     * @param      <array>   $map    The map
+     * @param      integer  $limit  The limit
+     * @param      string   $order  The order
+     * @param      string   $field  The field
+     *
+     * @return     <array>   The list.
+     */
+    public function getList($map, $limit=10, $order = 'create_time desc' ,$field = '*')
+    {
+        $list = $this->where($map)->limit($limit)->order($order)->field($field)->select();
+        if ($list){
+            $list = $list->toArray();
+        }
+
+        return $list;
     }
 }
