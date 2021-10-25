@@ -20,20 +20,26 @@ function single_image_upload($name, $image, $input = false){
     $name = preg_replace('/\[.*?\]/', '', $name);
     $html = <<<EOF
     <div class="single-image-upload image-upload controls">
+        <div class="upload-img-box">
+            <div class="upload-pre-item popup-gallery">
 EOF;
     if(!empty($image)){
     $html .= <<<EOF
-        <div class="upload-img-box">
-            <div class="upload-pre-item popup-gallery">
+        
+            
                 <div class="each">
                     <img src="{$image_path}">
                     <div class="text-center opacity del_btn"></div>
                     <div data-id="{$image}" class="text-center del_btn">{$delete_picture}</div>
                 </div>
+            
+EOF;
+    }
+    $html .= <<<EOF
             </div>
         </div>
 EOF;
-    }
+
     if($input == false){
         $html .= <<<EOF
         <div class="input-group">
