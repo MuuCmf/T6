@@ -15,6 +15,8 @@ function single_image_upload($name, $image, $input = false){
     $delete_picture = '删除';
     $api = url('api/file/pic');
     //兼容name数组形式
+    $input_name = $name;
+
     $name = preg_replace('/\[.*?\]/', '', $name);
     $html = <<<EOF
     <div class="single-image-upload image-upload controls">
@@ -35,14 +37,14 @@ EOF;
     if($input == false){
         $html .= <<<EOF
         <div class="input-group">
-            <input type="hidden" class="form-control attach" data-name="{$name}" name="{$name}" value="{$image}">
+            <input type="hidden" class="form-control attach" data-name="{$name}" name="{$input_name}" value="{$image}">
             <button id="upload_single_image_{$name}" class="btn btn-default" type="button">{$upload_picture}</button>
         </div>
 EOF;
     }else{
         $html .= <<<EOF
         <div class="input-group">
-            <input type="text" class="form-control attach" data-name="{$name}" name="{$name}" value="{$image}">
+            <input type="text" class="form-control attach" data-name="{$name}" name="{$input_name}" value="{$image}">
             <span class="input-group-btn">
                 <button id="upload_single_image_{$name}" class="btn btn-default" type="button">{$upload_picture}</button>
             </span>
@@ -81,8 +83,8 @@ $html .= <<<EOF
         /*上传成功**/
         uploader_{$name}.on('uploadSuccess', function (file, data) {
             if (data.code) {
-                $("input[name='{$name}']").val(data.data.attachment);
-                $("input[name='{$name}']").parent().parent().find('.upload-pre-item').html(
+                $("input[name='{$input_name}']").val(data.data.attachment);
+                $("input[name='{$input_name}']").parent().parent().find('.upload-pre-item').html(
                     '<div class="each">' +
                     '<img src="'+ data.data.url+'">' +
                     '<div class="text-center opacity del_btn"></div>' +
@@ -134,7 +136,7 @@ function single_audio_upload($name, $audio, $input = false){
     $html = <<<EOF
         <div class="single-audio-upload audio-upload controls">
     EOF;
-    
+
     $html .= '<div class="upload-audio-box">';
     if(!empty($audio)){
     $html .= <<<EOF
@@ -229,7 +231,7 @@ EOF;
 function single_video_upload($name, $video){
 
     $video_path = get_attachment_src($video);
-    $api = url('api/file/video');
+    $api = url('api/file/file');
     $input_name = $name;
     //兼容name数组形式
     $name = preg_replace('/\[.*?\]/', '', $name);
