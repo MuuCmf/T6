@@ -228,16 +228,16 @@ EOF;
 
 
 
-function single_video_upload($name, $video){
+function single_video_upload($name, $video ,$input = false){
 
+    $upload = "上传视频";
     $video_path = get_attachment_src($video);
     $api = url('api/file/file');
     $input_name = $name;
     //兼容name数组形式
     $name = preg_replace('/\[.*?\]/', '', $name);
     $html = <<<EOF
-<div class="single-video-upload image-upload controls">
-    <input class="attach" type="text" data-name="{$name}" name="{$input_name}" value="{$video}"/>
+<div class="single-video-upload video-upload controls">
     <div class="upload-video-box">
 EOF;
     if(!empty($video)){
@@ -254,7 +254,23 @@ EOF;
 
     $html .= <<<EOF
     </div>
-    <div id="upload_single_video_{$name}" class=""></i>上传视频</div>
+    <div class="input-group">
+EOF;
+    if ($input){
+        $html .= <<<EOF
+        <input type="text" class="form-control attach" data-name="{$name}" name="{$input_name}" value="{$video}">
+        <span class="input-group-btn">
+            <button id="upload_single_video_{$name}" class="btn btn-default" type="button">{$upload}</button>
+        </span>
+EOF;
+    }else{
+        $html .= <<<EOF
+        <input type="hidden" class="form-control attach" data-name="{$name}" name="{$input_name}" value="{$video}">
+        <button id="upload_single_video_{$name}" class="btn btn-default" type="button">{$upload}</button>
+EOF;
+    }
+    $html .= <<<EOF
+    </div>
 </div>
 
 <script>
@@ -282,8 +298,9 @@ EOF;
         /*上传成功**/
         uploader_{$name}.on('uploadSuccess', function (file, data) {
             if (data.code) {
-                $("input[name='{$name}']").val(data.data.attachment);
-                $("input[name='{$name}']").parent().find('.upload-video-box').html(
+                console.log($("input[name='{$input_name}']").parent().prev());
+                $("input[name='{$input_name}']").val(data.data.attachment);
+                $("input[name='{$input_name}']").parent().prev().html(
                     '<div class="box-item">' +
                             '<video controls >' + 
             	                '<source src="' + data.data.url + '" ></source>' +
@@ -309,6 +326,7 @@ EOF;
 
         //移除图片
         $('.single-video-upload').on('click','.del_btn',function(){
+            $(this).parent().parent().next().find("[name='{$input_name}']").val('');
             $(this).parent().remove();
         })
 
