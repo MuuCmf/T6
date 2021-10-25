@@ -298,7 +298,6 @@ EOF;
         /*上传成功**/
         uploader_{$name}.on('uploadSuccess', function (file, data) {
             if (data.code) {
-                console.log($("input[name='{$input_name}']").parent().prev());
                 $("input[name='{$input_name}']").val(data.data.attachment);
                 $("input[name='{$input_name}']").parent().prev().html(
                     '<div class="box-item">' +
@@ -328,6 +327,26 @@ EOF;
         $('.single-video-upload').on('click','.del_btn',function(){
             $(this).parent().parent().next().find("[name='{$input_name}']").val('');
             $(this).parent().remove();
+        })
+        //视频input 改变后加载
+        $('.single-video-upload').on('blur','input[name="{$input_name}"]',function(){
+            var val = $(this).val();
+            if (val == ''){
+                $(this).parent().prev().children().remove();
+            }else{
+                if (val.indexOf('http') == -1){
+                    val = "/attachment/" + val;
+                }
+                $(this).parent().prev().html(
+                    '<div class="box-item">' +
+                            '<video controls >' + 
+            	                '<source src="' + val + '" ></source>' +
+	                		    '您的浏览器暂不支持播放该视频，请升级至最新版浏览器。' +
+                            '</video>' +
+                        '<div class="remove-box text-center opacity del_btn">删除</div>' +
+                    '</div>'
+                );
+            }
         })
 
     })
