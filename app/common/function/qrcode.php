@@ -16,7 +16,7 @@ function qrcode($data,$filename,$picPath=false,$logo=false,$size='4',$level='L',
     // 下面注释了把二维码图片保存到本地的代码,如果要保存图片,用$fileName替换第二个参数false
     $path = $picPath ? $picPath:PUBLIC_PATH. DIRECTORY_SEPARATOR. "uploads". DIRECTORY_SEPARATOR ."picture". DIRECTORY_SEPARATOR ."QRcode"; //图片输出路径
     if(!is_dir($path)){
-        mkdir($path);
+        mkdir($path,0777,true);
     }
 
     //在二维码上面添加LOGO

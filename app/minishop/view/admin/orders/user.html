@@ -1,0 +1,114 @@
+{extend name="../../admin/view/common/main"/}
+
+{block name="style"}
+<link href="__ADMINCSS__/main.min.css" rel="stylesheet" type="text/css"/>
+{/block}
+{block name="body"}
+<section class="knowledge-orders-lists">
+    <div class="top-area clearfix">
+        <div class="page-title">
+            <ol class="breadcrumb">
+                <li><a href="{:url('micro/User/lists')}"><i class="icon icon-home"></i> 用户管理</a></li>
+                <li>{$user_info.nickname} 的购买记录</li>
+            </ol>
+        </div>
+    </div>
+    <div class="user-info-panel text-center margin_bottom_10">
+        <div>
+            <img class="img-circle" src="{$user_info.avatar128}">
+        </div>
+        <div>
+            <a class="nickname" href="#">{$user_info.nickname} </a>
+        </div>
+    </div>
+
+    <div class="list-num">
+        
+    </div>
+
+    <div class="action-area clearfix">
+        <form class="form-inline search" action="{:url()}" method="get">
+            <div class="form-group">
+                <select class="form-control" name="search">
+                    <option value="order_no">商户订单号</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <select class="form-control" name="type">
+                    <option value="" selected="selected">全部</option>
+                    <option value="image_text">图文</option>
+                    <option value="audio">音频</option>
+                    <option value="video">视频</option>
+                    <option value="down">资料</option>
+                    <option value="column">专栏</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <input class="form-control value="" name="keyword" placeholder="请输入关键词" value="{$keyword}">
+            </div>
+            <div class="form-group">
+                <input type="hidden" name="uid" value="{$user_info.uid}" />
+                <button class="btn btn-primary">搜索</button>
+            </div>
+        </form>
+    </div>
+    
+    {notempty name="list"}
+    <table class="table table-hover">
+        <thead>
+          <tr>
+            <th>知识内容</th>
+            <th>订单号</th>
+            <th>类型</th>
+            <th>是否支付</th>
+            <th>支付金额</th>
+            <th>创建时间</th>
+            <th>操作</th>
+          </tr>
+        </thead>
+
+        <tbody>
+        {volist name="list" id="vo"}
+        <tr>
+            <td>
+                <div class="cover">
+                    <img src="{$vo.order_info.cover|getThumbImageById=80,60}" />
+                </div>
+                <div class="info">
+                    <div class="title text-ellipsis">{$vo.order_info.title}</div>
+                    <div class="description text-ellipsis">{$vo.order_info.description}</div>
+                </div>
+            </td>
+            <td>{$vo.order_no}</td>
+            <td>{$vo.type_str}</td>
+            {eq name="vo.paid" value='1'}
+            <td><span class="label label-success">{$vo.paid_str}</span></td>
+            {else /}
+            <td><span class="label">{$vo.paid_str}</span></td>
+            {/eq}
+            <td><span>￥</span> {$vo.paid_fee}</td>
+            <td>{$vo.create_time|time_format}</td>
+            <td>
+                <button data-remote="{:url('detail',['id'=>$vo['id']])}" data-show-header="false" data-toggle="modal" class="btn btn-sm btn-primary">详情</button>
+            </td>
+        </tr>
+
+        
+        {/volist}
+        </tbody>
+    </table>
+    <div class="page">
+        {$page}
+    </div>
+
+    {else /}
+    <div class="no-data-box">
+        <div class="no-data-img"></div>
+        <div class="no-data-tips">暂无订单~加油哦！</div>
+    </div>
+    {/notempty}
+</section>
+{/block}
+{block name="script"}
+
+{/block}

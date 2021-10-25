@@ -1,0 +1,120 @@
+{extend name="../../admin/view/common/main"/}
+
+{block name="style"}
+<link href="__ADMINCSS__/main.min.css" rel="stylesheet" type="text/css"/>
+{/block}
+{block name="body"}
+<div class="main-title">
+    <h2>订单列表</h2>
+</div>
+<div class="with-padding">
+    <section class="orders-lists-section">
+        <div class="order_totle_box">
+            <div class="order_totle_item">
+                <div class="totle_item">
+                    <div class="totle_title">累计总收入(元)</div>
+                    <div class="totle_num">{$total_all_sum}</div>
+                </div>
+            </div>
+            <div class="order_totle_item">
+                <div class="totle_item">
+                    <div class="totle_title">月总收入(元)</div>
+                    <div class="totle_num">{$total_month_sum}</div>
+                </div>
+            </div>
+            <div class="order_totle_item">
+                <div class="totle_item">
+                    <div class="totle_title">周总收入(元)</div>
+                    <div class="totle_num">{$total_week_sum}</div>
+                </div>
+            </div>
+            <div class="order_totle_item flex">
+                <div class="totle_item" style="border:none;">
+                    <div class="totle_title">今日最新订单</div>
+                    <div class="totle_num"></div>
+                </div>
+                <a class="handle_button" href=""></a>
+            </div>
+        </div>
+
+        <div class="action-area clearfix">
+            <form class="form-inline search" action="{:url()}" method="get">
+                <div class="form-group">
+                    <select class="form-control" name="search">
+                        <option value="order_no">商户订单号</option>
+                        <option value="uid">用户昵称</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <select class="form-control" name="type">
+                        <option value="" selected="selected">全部</option>
+                        <option value="image_text">图文</option>
+                        <option value="audio">音频</option>
+                        <option value="video">视频</option>
+                        <option value="down">资料</option>
+                        <option value="column">专栏</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <input class="form-control value="" name="keyword" placeholder="请输入关键词" value="{$keyword}">
+                </div>
+                <div class="form-group">
+                    <button class="btn btn-primary">搜索</button>
+                </div>
+            </form>
+        </div>
+        
+        {notempty name="list"}
+        <table class="table table-hover">
+            <thead>
+              <tr>
+                <th>用户</th>
+                <th>订单号</th>
+                <th>知识内容</th>
+                <th>类型</th>
+                <th>是否支付</th>
+                <th>支付金额</th>
+                <th>创建时间</th>
+                <th>操作</th>
+              </tr>
+            </thead>
+
+            <tbody>
+            {volist name="list" id="vo"}
+            <tr>
+                <td>{$vo.user_info.nickname}</td>
+                <td>{$vo.order_no}</td>
+                <td>{$vo.order_info.title}</td>
+                <td>{$vo.type_str}</td>
+                {eq name="vo.paid" value='1'}
+                <td><span class="label label-success">{$vo.paid_str}</span></td>
+                {else /}
+                <td><span class="label">{$vo.paid_str}</span></td>
+                {/eq}
+                <td><span>￥</span> {$vo.paid_fee}</td>
+                <td>{$vo.create_time|time_format}</td>
+                <td>
+                    <button data-remote="{:url('detail',['id'=>$vo['id']])}" data-show-header="false" data-toggle="modal" class="btn btn-sm btn-primary">详情</button>
+                </td>
+            </tr>
+
+            
+            {/volist}
+            </tbody>
+        </table>
+        <div class="page">
+            {$page}
+        </div>
+
+        {else /}
+        <div class="no-data-box">
+            <div class="no-data-img"></div>
+            <div class="no-data-tips">暂无订单~加油哦！</div>
+        </div>
+        {/notempty}
+    </section>
+</div>
+{/block}
+{block name="script"}
+
+{/block}
