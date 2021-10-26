@@ -75,6 +75,9 @@ class BaseModel extends Model{
     {
         if($id>0){
             $data=$this->find($id);
+            if ($data){
+                $data = $data->toArray();
+            }
             return $data;
         }
         return null;
