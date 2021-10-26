@@ -61,9 +61,10 @@ class Feedback extends Model
     /**
      * 数据处理
      */
-    public function formatData()
+    public function formatData($data)
     {
 
+        return $data;
     }
 
 }
