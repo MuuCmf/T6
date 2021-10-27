@@ -15,6 +15,7 @@ namespace app\common\model;
 use think\Model;
 
 class BaseModel extends Model{
+    public $logic;//处理类
     public $statusMap = [-1 => '删除', 0 => '禁用', 1 => '正常', 2 => '待审核'];
     public function getStatusStrAttr($value)
     {
@@ -44,62 +45,59 @@ class BaseModel extends Model{
                 $res = $this->id;
             }
         }
-
-
         return $res;
     }
-    /**
-     * Gets the list by page.
-     *
-     * @param      <array>   $map    The map
-     * @param      string   $order  The order
-     * @param      string   $field  The field
-     * @param      integer  $r      { parameter_description }
-     *
-     * @return     <array>   The list by page.
-     */
     public function getListByPage($map, $order='create_time desc', $field='*', $r=20)
     {
         $list = $this->where($map)->order($order)->field($field)->paginate($r);
-
         return $list;
     }
-    /**
-     * Gets the data by identifier.
-     *
-     * @param      integer  $id     The identifier
-     *
-     * @return     <array>   The data by identifier.
-     */
     public function getDataById($id)
     {
         if($id>0){
-            $data=$this->find($id);
+            $data = $this->find($id);
             if ($data){
                 $data = $data->toArray();
+                if (is_object($this->logic)){
+                    $data = $this->logic->_formatData($data);
+                }
             }
             return $data;
         }
         return null;
     }
 
-    /**
-     * Gets the list.
-     *
-     * @param      <array>   $map    The map
-     * @param      integer  $limit  The limit
-     * @param      string   $order  The order
-     * @param      string   $field  The field
-     *
-     * @return     <array>   The list.
-     */
+    public function getDataByMap($map)
+    {
+        $data = $this->where($map)->find();
+        if ($data){
+            $data = $data->toArray();
+            if (is_object($this->logic)){
+                $data = $this->logic->_formatData($data);
+            }
+        }
+        return $data;
+    }
+
     public function getList($map, $limit=10, $order = 'create_time desc' ,$field = '*')
     {
         $list = $this->where($map)->limit($limit)->order($order)->field($field)->select();
         if ($list){
             $list = $list->toArray();
+            if (is_object($this->logic)){
+                foreach ($list as &$val){
+                    $val = $this->logic->_formatData($val);
+                }
+                unset($val);
+            }
         }
 
         return $list;
+    }
+    public function getCount($map){
+        return $this->where($map)->count();
+    }
+    public function getAvg($map,$field = 'score'){
+        return $this->where($map)->avg($field);
     }
 }
