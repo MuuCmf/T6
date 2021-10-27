@@ -136,7 +136,7 @@ function single_audio_upload($name, $audio, $input = false){
     $audio_path = get_attachment_src($audio);
     $upload = '上传音频';
     $delete = '删除';
-    $api = url('api/file/pic');
+    $api = url('api/file/file');
     //兼容name数组形式
     $name = preg_replace('/\[.*?\]/', '', $name);
     $html = <<<EOF
@@ -192,9 +192,8 @@ $html .= <<<EOF
             pick: {id:'#upload_single_audio_{$name}',multiple: false},
             // 只允许选择图片文件
             accept: {
-                title: 'Images',
-                extensions: 'mp3',
-                mimeTypes: 'audio/mpeg3,audio/x-mpeg-3'
+                title: 'Audio',
+                extensions: 'mp3'
             }
         });
         uploader_{$name}.on('fileQueued', function (file) {
@@ -362,58 +361,99 @@ EOF;
 }
 
 /**
- * 单文件上传组件
- * @param  [type] $name      [description]
- * @param  [type] $image_id [description]
- * @return [type]           [description]
+ * 文件上传组件
+ * @param  string $name      唯一标示
+ * @param  string $audio     音频路径
+ * @param  bool $input       是否显示输入框
+ * @return [type]            [description]
  */
-function single_file_upload($name, $file){
+function single_file_upload($name, $file, $input = false){
+
+    $file_path = get_attachment_src($file);
+    $upload = '上传文件';
+    $delete = '删除';
     $api = url('api/file/file');
-
+    //兼容name数组形式
+    $name = preg_replace('/\[.*?\]/', '', $name);
     $html = <<<EOF
-    <div id="uploader-{$name}" >
-    <div class="file-list" data-drag-placeholder="请拖拽文件到此处"></div>
-    <button type="button" class="btn btn-primary uploader-btn-browse"><i class="icon icon-cloud-upload"></i> 选择文件</button>
-    </div>
-    <script>
-        $(function () {
-            $('#uploader-{$name}').uploader({
-                autoUpload: true,            // 当选择文件后立即自动进行上传操作
-                url: "{$api}",  // 文件上传提交地址
-                deleteActionOnDone:function(file, doRemoveFile){
-                    console.log(file)
-                    console.log(doRemoveFile)
-                },
-EOF;
+        <div class="single-file-upload file-upload controls">
+    EOF;
 
-    if (is_array($file)){
-        $image_path = get_attachment_src($file['attachment']);
-        $html .= <<<EOF
-        staticFiles: [
-                    {name: {$file['name']}, url: "{$image_path}"},
-                ],//初始化文件列表
-EOF;
+    $html .= '<div class="upload-file-box">';
+    if(!empty($file)){
+    $html .= <<<EOF
+        <div class="upload-pre-item">
+            
+        </div>
+    EOF;
+}
+    $html .= '</div>';
 
-    }elseif (!empty($file)){
-        $image_path = get_attachment_src($file);
+    if($input == false){
         $html .= <<<EOF
-        staticFiles: [
-                    {name: '文件', url: "{$image_path}"},
-                ],//初始化文件列表
+        <div class="input-group">
+            <input type="hidden" class="form-control attach" name="{$name}" value="{$file}">
+            <button id="upload_single_file_{$name}" class="btn btn-default" type="button">{$upload}</button>
+        </div>
+        EOF;
+    }else{
+        $html .= <<<EOF
+        <div class="input-group">
+            <input type="text" class="form-control attach" data-name="{$name}" name="{$name}" value="{$file}">
+            <span class="input-group-btn">
+                <button id="upload_single_file_{$name}" class="btn btn-default" type="button">{$upload}</button>
+            </span>
+        </div>
 EOF;
     }
+
     $html .= <<<EOF
-                limitFilesCount:1,//限制文件数量
-                responseHandler: function(responseObject, file) {
-                    responseObject = JSON.parse(responseObject.response);
-                    // 当服务器返回的文本内容包含 `'error'` 文本时视为上传失败
-                    if(responseObject.code != 200) {
-                        return '上传失败。服务器返回了一个错误：' + responseObject.msg;
-                    }
-                }
-            });
-        })
-    </script>
+    </div>
+EOF;
+
+$html .= <<<EOF
+<script>
+    $(function () {
+        var uploader_{$name} = WebUploader.create({
+            // 选完文件后，是否自动上传。
+            auto: true,
+            // swf文件路径
+            swf: 'Uploader.swf',
+            // 文件接收服务端。
+            server: "{$api}",
+            // 选择文件的按钮。可选。
+            // 内部根据当前运行是创建，可能是input元素，也可能是flash.
+            pick: {id:'#upload_single_file_{$name}',multiple: false},
+            // 只允许选择图片文件
+            accept: {
+                title: 'File',
+                extensions: 'xls,xlsx,doc,docx,ppt,pptx,pdf,zip'
+            }
+        });
+        uploader_{$name}.on('fileQueued', function (file) {
+            uploader_{$name}.upload();
+            toast.showLoading();
+        });
+        /*上传成功**/
+        uploader_{$name}.on('uploadSuccess', function (file, data) {
+            if (data.code) {
+                $("input[name='{$name}']").val(data.data.attachment);
+                //重启webuploader,可多次上传
+                uploader_{$name}.reset();
+            } else {
+                updateAlert(data.msg);
+                setTimeout(function () {
+                    $('#top-alert').find('button').click();
+                    $(that).removeClass('disabled').prop('disabled', false);
+                }, 1500);
+            }
+        });
+        //上传完成
+        uploader_{$name}.on( 'uploadComplete', function( file ) {
+            toast.hideLoading();
+        });
+    });
+</script>
 EOF;
     return $html;
 }
