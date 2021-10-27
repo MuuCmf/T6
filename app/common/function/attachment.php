@@ -79,7 +79,7 @@ $html .= <<<EOF
             accept: {
                 title: 'Images',
                 extensions: 'gif,jpg,jpeg,bmp,png',
-                mimeTypes: 'image/jpg,image/jpeg,image/png'
+                mimeTypes: 'image/*'
             }
         });
         uploader_{$name}.on('fileQueued', function (file) {
@@ -109,6 +109,14 @@ $html .= <<<EOF
         });
         //上传完成
         uploader_{$name}.on( 'uploadComplete', function( file ) {
+            toast.hideLoading();
+        });
+        // 发生错误
+        uploader_{$name}.on( 'error', function( err ) {
+            console.log(err);
+            if(err = 'Q_TYPE_DENIED'){
+                toast.error('不支持的文件格式');
+            }
             toast.hideLoading();
         });
 
@@ -193,7 +201,8 @@ $html .= <<<EOF
             // 只允许选择图片文件
             accept: {
                 title: 'Audio',
-                extensions: 'mp3'
+                extensions: 'mp3',
+                mimeTypes: 'audio/x-mpeg'
             }
         });
         uploader_{$name}.on('fileQueued', function (file) {
@@ -223,6 +232,14 @@ $html .= <<<EOF
         });
         //上传完成
         uploader_{$name}.on( 'uploadComplete', function( file ) {
+            toast.hideLoading();
+        });
+        // 发生错误
+        uploader_{$name}.on( 'error', function( err ) {
+            console.log(err);
+            if(err = 'Q_TYPE_DENIED'){
+                toast.error('不支持的文件格式');
+            }
             toast.hideLoading();
         });
     });
@@ -293,7 +310,8 @@ EOF;
             // 只允许选择图片文件
             accept: {
                 title: 'Video',
-                extensions: 'mp4,flv,m3u8,m4v'
+                extensions: 'mp4,m3u8,m4v',
+                mimeTypes: 'video/*'
             }
         });
         uploader_{$name}.on('fileQueued', function (file) {
@@ -325,6 +343,15 @@ EOF;
         });
         //上传完成
         uploader_{$name}.on( 'uploadComplete', function( file ) {
+            toast.hideLoading();
+        });
+
+        // 发生错误
+        uploader_{$name}.on( 'error', function( err ) {
+            console.log(err);
+            if(err = 'Q_TYPE_DENIED'){
+                toast.error('不支持的文件格式');
+            }
             toast.hideLoading();
         });
 
@@ -424,10 +451,11 @@ $html .= <<<EOF
             // 选择文件的按钮。可选。
             // 内部根据当前运行是创建，可能是input元素，也可能是flash.
             pick: {id:'#upload_single_file_{$name}',multiple: false},
-            // 只允许选择图片文件
+            // 只允许选择文件
             accept: {
                 title: 'File',
-                extensions: 'xls,xlsx,doc,docx,ppt,pptx,pdf,zip'
+                extensions: 'md,txt,xls,xlsx,doc,docx,ppt,pptx,pdf,zip',
+                // mimeTypes: 'application/*,application/msexcel,application/msdoc'
             }
         });
         uploader_{$name}.on('fileQueued', function (file) {
@@ -450,6 +478,14 @@ $html .= <<<EOF
         });
         //上传完成
         uploader_{$name}.on( 'uploadComplete', function( file ) {
+            toast.hideLoading();
+        });
+        // 发生错误
+        uploader_{$name}.on( 'error', function( err ) {
+            console.log(err);
+            if(err = 'Q_TYPE_DENIED'){
+                toast.error('不支持的文件格式');
+            }
             toast.hideLoading();
         });
     });
