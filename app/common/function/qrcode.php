@@ -11,7 +11,7 @@
  * @param bool $saveandprint 是否保存到文件并在浏览器直接输出，true:同时保存和输出，false:只保存文件
  * return string
  */
-function qrcode($data,$filename,$picPath=false,$logo=false,$size='4',$level='L',$padding=2,$saveandprint=false){
+function qrcode($data, $filename, $picPath = false, $logo = false, $size = '4', $level = 'L', $padding = 2, $saveandprint = false){
     
     // 下面注释了把二维码图片保存到本地的代码,如果要保存图片,用$fileName替换第二个参数false
     $path = $picPath ? $picPath:PUBLIC_PATH. DIRECTORY_SEPARATOR. "uploads". DIRECTORY_SEPARATOR ."picture". DIRECTORY_SEPARATOR ."QRcode"; //图片输出路径
@@ -61,5 +61,6 @@ function qrcode($data,$filename,$picPath=false,$logo=false,$size='4',$level='L',
             }
         }
     }
+    
     return $filename;
 }
