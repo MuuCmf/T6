@@ -256,7 +256,8 @@ class Module extends Model
         return true;
     }
 
-    /**通过模块名来获取模块信息
+    /**
+     * 通过模块名来获取模块信息
      * @param $name 模块名
      * @return array|mixed
      */
@@ -269,7 +270,7 @@ class Module extends Model
         $info = $this->where(['name'=>$name])->find();
 
         if($info){
-            $info['icon_image'] = $this->getIcon($info['name']);
+            $info['icon'] = $this->getIcon($info['name']);
         }
 
         return $info;
@@ -448,8 +449,8 @@ class Module extends Model
     private function getIcon($name)
     {
         //图标所在位置为模块静态目录跟下（推荐）
-        if(file_exists(PUBLIC_PATH . '/static/' . $name . '/images/icon.png')){
-            $icon = '/static/'. $name .'/images/icon.png';
+        if(file_exists(PUBLIC_PATH . '/static/' . $name . '/images/icon.jpg')){
+            $icon = '/static/'. $name .'/images/icon.jpg';
         }else{
             $icon = '/static/admin/images/module_default_icon.png';
         }
