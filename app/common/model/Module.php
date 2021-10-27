@@ -38,7 +38,7 @@ class Module extends Model
     {
         $list = $this->where($where)->order('sort desc')->select()->toArray();
         foreach ($list as &$val) {
-            $val['icon_image'] = $this->getIcon($val['name']);
+            $val['icon'] = $this->getIcon($val['name']);
         }
         unset($val);
 
