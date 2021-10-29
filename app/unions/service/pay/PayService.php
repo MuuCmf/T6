@@ -11,10 +11,19 @@
  *                                  | 登山则情满于山,观海则意溢于海
  * +----------------------------------------------------------------------
  */
-namespace app\common\service\pay;
+namespace app\unions\service\pay;
 
 abstract class PayService{
     protected $app;
-    abstract function pay();
+    public $config;
+    public $type;
+    public $sandbox;//沙箱模式
+    public function __construct($app)
+    {
+        $this->separator = DIRECTORY_SEPARATOR;
+        $this->app = $app;
+        $this->sandbox = true;//开启沙箱模式
+    }
+    abstract function pay($data);
     abstract function refund();
 }
