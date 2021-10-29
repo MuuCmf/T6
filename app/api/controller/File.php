@@ -59,6 +59,7 @@ class File extends Base
             return $this->result(0, '上传失败');
         }
     }
+    
     /**
      * 用户头像上传
      * @return [type] [description]

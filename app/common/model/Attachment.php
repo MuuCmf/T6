@@ -3,6 +3,7 @@
 namespace app\common\model;
 
 use think\Model;
+use think\facade\Db;
 use think\facade\Filesystem;
 use think\Image;
 use OSS\OssClient;
@@ -12,15 +13,8 @@ use Qcloud\Cos\Exception\ServiceResponseException;
 
 class Attachment extends Model
 {
-
     // 开启自动写入时间戳字段
     protected $autoWriteTimestamp = true;
-    // 定义时间戳字段名
-    protected $createTime = 'createtime';
-    protected $updateTime = 'updatetime';
-    // 定义字段类型
-    protected $type = [
-    ];
 
     public function setUploadtimeAttr($value)
     {
@@ -141,77 +135,6 @@ class Attachment extends Model
     }
 
     /**
-     * 阿里云OSS上传
-     * $object 文件名
-     * $filepath 文件路径
-     */
-    public function ossUpload($object, $filePath)
-    {
-        // 阿里云主账号AccessKey拥有所有API的访问权限，风险很高。强烈建议您创建并使用RAM账号进行API访问或日常运维，请登录RAM控制台创建RAM账号。
-        $accessKeyId = config('extend.OSS_ALIYUN_ACCESSKEYID');
-        $accessKeySecret = config('extend.OSS_ALIYUN_ACCESSKEYSECRET');
-        // Endpoint以杭州为例，其它Region请按实际情况填写。
-        $endpoint = config('extend.OSS_ALIYUN_ENDPOINT');
-        // 设置存储空间名称。
-        $bucket= config('extend.OSS_ALIYUN_BUCKET');
-        // 设置文件名称。
-        //$object = $file->getOriginalName();
-        // <yourLocalFile>由本地文件路径加文件名包括后缀组成，例如/users/local/myfile.txt。
-        //$filePath = $file->getPathname();
-
-        try{
-            $ossClient = new OssClient($accessKeyId, $accessKeySecret, $endpoint);
-
-            $ossClient->uploadFile($bucket, $object, $filePath);
-
-
-        } catch(OssException $e) {
-            //printf(__FUNCTION__ . ": FAILED\n");
-            //printf($e->getMessage() . "\n");
-            return $e->getMessage();
-        }
-
-        return true;
-    }
-
-    /**
-     * 腾讯云COS上传
-     */
-    protected function cosUpload($object, $filePath)
-    {
-        // SECRETID和SECRETKEY请登录访问管理控制台进行查看和管理
-        $appid = '';
-        $secretId = config('extend.COS_TENCENT_SECRETID'); //"云 API 密钥 SecretId";
-        $secretKey = config('extend.COS_TENCENT_SECRETKEY'); //"云 API 密钥 SecretKey";
-        $region = config('extend.COS_TENCENT_REGION'); //设置一个默认的存储桶地域
-        $cosClient = new CosClient([
-                'region' => $region,
-                'schema' => 'http', //协议头部，默认为http
-                'credentials'=> [
-                    'secretId'  => $secretId ,
-                    'secretKey' => $secretKey
-                ]
-        ]);
-        
-        try {
-            $bucket = config('extend.COS_TENCENT_BUCKET'); //存储桶名称 格式：BucketName-APPID
-            $key = $object; //此处的 key 为对象键，对象键是对象在存储桶中的唯一标识
-            $srcPath = $filePath;//本地文件绝对路径
-            $file = fopen($srcPath, "rb");
-            if ($file) {
-                $result = $cosClient->putObject(array(
-                    'Bucket' => $bucket,
-                    'Key' => $key,
-                    'Body' => $file));
-                //print_r($result);exit;
-                return true;
-            }
-        } catch (\Exception $e) {
-            echo "$e\n";
-        }
-    }
-
-    /**
      * 文件上传
      * @param      <type>         $files  The files
      * @return     array|boolean  ( description_of_the_return_value )
@@ -242,13 +165,31 @@ class Attachment extends Model
                 $data['sha1'] = $file->hash('sha1');
                 $data['size'] = $file->getSize();
                 $data['mime'] = $file->getMime();
-                $data['type'] = 'image';  // 类型用字符串 pic file audio video
-                $savename = Filesystem::disk('public')->putFile( 'file', $file);
+                $data['type'] = 'file';  // 类型用字符串 pic file audio video
+                dump($data);
+                dump($file);exit;
+                // 根据不同mimeType放入不同目录
+                $mime_arr = explode('/', $data['mime']);
+                switch($mime_arr[0])
+                {
+                    case 'image':
+                        $file_dir = 'images';
+                    break;
+                    case 'audio':
+                        $file_dir = 'audio';
+                    break;
+                    case 'video':
+                        $file_dir = 'video';
+                    break;
+                    default:
+                        $file_dir = 'file';
+                }
+                $savename = Filesystem::disk('public')->putFile( $file_dir, $file);
                 // 成功上传后 获取上传信息
                 $data['attachment'] = $savename;
                 $data['attachment'] = str_replace("\\","/",$data['attachment']);
                 //获取上传驱动
-                $driver = config('extend.PICTURE_UPLOAD_DRIVER');
+                $driver = config('extend.FILE_UPLOAD_DRIVE');
                 if($driver == 'local'){
                     // 本地无需处理
                 }
@@ -293,10 +234,9 @@ class Attachment extends Model
     }
 
     /**
-     * 图片上传
+     * 头像上传
      *
      * @param      <type>         $files  The files
-     *
      * @return     array|boolean  ( description_of_the_return_value )
      */
     private function Avatar($files, $dirname, $uid)
@@ -325,7 +265,7 @@ class Attachment extends Model
                 $data['size'] = $file->getSize();
                 $data['mime'] = $file->getMime();
                 $data['type'] = 'image';  // 类型用字符串 pic file audio video
-                $savename = Filesystem::disk('public')->putFile( 'image', $file);
+                $savename = Filesystem::disk('public')->putFile( 'avatar', $file);
                 // 成功上传后 获取上传信息
                 $data['attachment'] = $savename;
                 $data['attachment'] = str_replace("\\","/",$data['attachment']);
@@ -366,15 +306,15 @@ class Attachment extends Model
                 // 写入数据库
                 $this->save($data);
                 // 返回数据
-                $img = [];
-                $img['filename'] = $data['filename'];
-                $img['size'] = $data['size'];
-                $img['attachment'] = $data['attachment'];
-                $img['url'] = get_attachment_src($data['attachment']);
+                $avatar = [];
+                $avatar['filename'] = $data['filename'];
+                $avatar['size'] = $data['size'];
+                $avatar['attachment'] = $data['attachment'];
+                $avatar['url'] = get_attachment_src($data['attachment']);
                 
             }
         }
-        return $img;
+        return $avatar;
     }
 
     /**
@@ -463,6 +403,77 @@ class Attachment extends Model
         }
     }
 
+
+        /**
+     * 阿里云OSS上传
+     * $object 文件名
+     * $filepath 文件路径
+     */
+    public function ossUpload($object, $filePath)
+    {
+        // 阿里云主账号AccessKey拥有所有API的访问权限，风险很高。强烈建议您创建并使用RAM账号进行API访问或日常运维，请登录RAM控制台创建RAM账号。
+        $accessKeyId = config('extend.OSS_ALIYUN_ACCESSKEYID');
+        $accessKeySecret = config('extend.OSS_ALIYUN_ACCESSKEYSECRET');
+        // Endpoint以杭州为例，其它Region请按实际情况填写。
+        $endpoint = config('extend.OSS_ALIYUN_ENDPOINT');
+        // 设置存储空间名称。
+        $bucket= config('extend.OSS_ALIYUN_BUCKET');
+        // 设置文件名称。
+        //$object = $file->getOriginalName();
+        // <yourLocalFile>由本地文件路径加文件名包括后缀组成，例如/users/local/myfile.txt。
+        //$filePath = $file->getPathname();
+
+        try{
+            $ossClient = new OssClient($accessKeyId, $accessKeySecret, $endpoint);
+
+            $ossClient->uploadFile($bucket, $object, $filePath);
+
+
+        } catch(OssException $e) {
+            //printf(__FUNCTION__ . ": FAILED\n");
+            //printf($e->getMessage() . "\n");
+            return $e->getMessage();
+        }
+
+        return true;
+    }
+
+    /**
+     * 腾讯云COS上传
+     */
+    protected function cosUpload($object, $filePath)
+    {
+        // SECRETID和SECRETKEY请登录访问管理控制台进行查看和管理
+        $appid = '';
+        $secretId = config('extend.COS_TENCENT_SECRETID'); //"云 API 密钥 SecretId";
+        $secretKey = config('extend.COS_TENCENT_SECRETKEY'); //"云 API 密钥 SecretKey";
+        $region = config('extend.COS_TENCENT_REGION'); //设置一个默认的存储桶地域
+        $cosClient = new CosClient([
+                'region' => $region,
+                'schema' => 'http', //协议头部，默认为http
+                'credentials'=> [
+                    'secretId'  => $secretId ,
+                    'secretKey' => $secretKey
+                ]
+        ]);
+        
+        try {
+            $bucket = config('extend.COS_TENCENT_BUCKET'); //存储桶名称 格式：BucketName-APPID
+            $key = $object; //此处的 key 为对象键，对象键是对象在存储桶中的唯一标识
+            $srcPath = $filePath;//本地文件绝对路径
+            $file = fopen($srcPath, "rb");
+            if ($file) {
+                $result = $cosClient->putObject(array(
+                    'Bucket' => $bucket,
+                    'Key' => $key,
+                    'Body' => $file));
+                //print_r($result);exit;
+                return true;
+            }
+        } catch (\Exception $e) {
+            echo "$e\n";
+        }
+    }
 
     /** 
      * 获取缩微图
