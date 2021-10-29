@@ -3,6 +3,7 @@ namespace app\admin\controller;
 
 use think\facade\View;
 use app\common\model\Member as MemberModel;
+use app\common\model\Module as ModuleModel;
 use app\common\model\ScoreLog as ScoreLogModel;
 use app\common\model\ScoreType as ScoreTypeModel;
 use app\common\model\Vip as VipModel;
@@ -12,6 +13,7 @@ use app\common\model\Vip as VipModel;
  */
 class Vip extends Admin
 {
+    protected $ModuleModel;
     protected $MemberModel;
     protected $VipModel;
 
@@ -24,6 +26,7 @@ class Vip extends Admin
     {
         parent::__construct();
 
+        $this->ModuleModel = new ModuleModel();
         $this->MemberModel = new MemberModel();
         $this->VipModel = new VipModel();
     }
@@ -34,6 +37,7 @@ class Vip extends Admin
     public function list()
     {
 
+        return View::fetch();
     }
 
     /**
@@ -41,7 +45,8 @@ class Vip extends Admin
      */
     public function card()
     {
-
+        
+        return View::fetch();
     }
 
     /**
@@ -50,6 +55,8 @@ class Vip extends Admin
     public function orders()
     {
 
+
+        return View::fetch();
     }
 
 }
