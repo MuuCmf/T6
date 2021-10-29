@@ -17,20 +17,21 @@ class Orders extends Model
      */
     public function edit($data)
     {   
-        $data['status'] = 1; //默认状态为1
+        $data['status'] = $data['status'] ?? 1; //默认状态为1
 
         if(isset($data['price'])) $data['price'] = intval($data['price']*100);//金额单位转为分
         if(isset($data['paid_fee'])) $data['paid_fee'] = intval($data['paid_fee']*100);//金额单位转为分
 
         if(!empty($data['id'])){
-            $res = $this->save($data,$data['id']);
+            $res = $this->update($data);
+            if ($res !== false){
+                $res = $data['id'];
+            }
         }else{
             $data['order_no'] = $this->build_order_no();
             $res = $this->save($data);
+            if($res) $res = $this->id;
         }
-        
-        if($res) $res = $this->id;
-
         return $res;
     }
 
@@ -247,8 +248,15 @@ class Orders extends Model
      */
     public function getTodayOrdersCount($shopid = 0, $app = '')
     {
-        $count = $this->whereTime('paid_time','today')->count();
-
+        $today_time = yestodayTime();
+        $map = [
+            ['shopid','=',$shopid],
+            ['paid_time','between',[$today_time[0],$today_time[1]]]
+        ];
+        if (!empty($app)){
+            $map[] = ['app','=',$app];
+        }
+        $count = $this->where($map)->count();
         return $count;
     }
 
@@ -257,7 +265,15 @@ class Orders extends Model
      */
     public function getTodayPaidFeeSum($shopid = 0, $app = '')
     {
-        $data = $this->whereTime('paid_time','today')->sum('paid_fee');
+        $today_time = yestodayTime();
+        $map = [
+            ['shopid','=',$shopid],
+            ['paid_time','between',[$today_time[0],$today_time[1]]]
+        ];
+        if (!empty($app)){
+            $map[] = ['app','=',$app];
+        }
+        $data = $this->where($map)->sum('paid_fee');
         $data = sprintf("%.2f",$data/100);
 
         return $data;
@@ -271,6 +287,10 @@ class Orders extends Model
         list($start,$end) = weekTime();
         $map[] = ['create_time', 'between', [$start, $end]];
         $map[] = ['paid', '=', 1];
+        $map[] = ['shopid','=',$shopid];
+        if (!empty($app)){
+            $map[] = ['app','=',$app];
+        }
         $data = $this->where($map)->sum('paid_fee');
         $data = sprintf("%.2f",$data/100);
 
@@ -285,6 +305,10 @@ class Orders extends Model
         list($start,$end) = monthTime();
         $map[] = ['create_time', 'between', [$start, $end]];
         $map[] = ['paid', '=', 1];
+        $map[] = ['shopid','=',$shopid];
+        if (!empty($app)){
+            $map[] = ['app','=',$app];
+        }
         $data = $this->where($map)->sum('paid_fee');
         $data = sprintf("%.2f",$data/100);
         return $data;
@@ -295,8 +319,14 @@ class Orders extends Model
      */
     public function getAllOrdersCount($shopid = 0, $app = '')
     {
-        $count = $this->where('paid', '=', 1)->count();
-
+        $where = [
+            ['shopid','=',$shopid],
+            ['paid','=',1],
+        ];
+        if (!empty($app)){
+            $where[] = ['app','=',$app];
+        }
+        $count = $this->where($where)->count();
         return $count;
     }
 
@@ -305,7 +335,14 @@ class Orders extends Model
      */
     public function getAllPaidFeeSum($shopid = 0, $app = '')
     {
-        $data = $this->where('paid', '=', 1)->sum('paid_fee');
+        $where = [
+            ['shopid','=',$shopid],
+            ['paid','=',1],
+        ];
+        if (!empty($app)){
+            $where[] = ['app','=',$app];
+        }
+        $data = $this->where($where)->sum('paid_fee');
         $data = sprintf("%.2f",$data/100);
         return $data;
     }
@@ -315,7 +352,7 @@ class Orders extends Model
     /**
      * chart需要的今日24小时订单数据量结构
      */
-    public function todayTotalJson()
+    public function todayTotalJson($shopid = 0,$app = '')
     {
         //今日订单数量
         list($start,$end) = dayTime();
@@ -326,6 +363,10 @@ class Orders extends Model
             $today_total['time'][$i] = ($i).':00-'.($i+1).':00';
             $map[] = ['create_time', 'between', [$date_start, $date_end]];
             $map[] = ['paid', '=', 1];
+            $map[] = ['shopid', '=', $shopid];
+            if (!empty($app)){
+                $map[] = ['app', '=', $app];
+            }
             $count = $this->where($map)->count();
             $today_total['count'][$i] = $count;
         }
@@ -337,7 +378,7 @@ class Orders extends Model
     /**
      * chart需要的本周每日订单数据量结构
      */
-    public function weekTotalJson()
+    public function weekTotalJson($shopid = 0,$app = '')
     {
         //本周
         list($start,$end) = weekTime();
@@ -348,6 +389,10 @@ class Orders extends Model
             $week_total['time'][$i] ='周'. ($i+1);
             $map[] = ['create_time', 'between', [$date_start, $date_end]];
             $map[] = ['paid', '=', 1];
+            $map[] = ['shopid', '=', $shopid];
+            if (!empty($app)){
+                $map[] = ['app', '=', $app];
+            }
             $count = $this->where($map)->count();
             $week_total['count'][$i] = $count;
         }
@@ -359,7 +404,7 @@ class Orders extends Model
     /**
      * chart需要的本月每日订单数据量结构
      */
-    public function monthTotalJson()
+    public function monthTotalJson($shopid = 0,$app = '')
     {
         list($start,$end) = monthTime();
         $month_total = [];
@@ -369,6 +414,10 @@ class Orders extends Model
             $month_total['time'][$i] = ($i+1) . '日';
             $map[] = ['create_time', 'between', [$date_start, $date_end]];
             $map[] = ['paid', '=', 1];
+            $map[] = ['shopid', '=', $shopid];
+            if (!empty($app)){
+                $map[] = ['app', '=', $app];
+            }
             $count = $this->where($map)->count();
             $month_total['count'][$i] = $count;
         }
@@ -380,7 +429,7 @@ class Orders extends Model
     /**
      * chart需要的本年每月订单数据量结构
      */
-    public function yearTotalJson()
+    public function yearTotalJson($shopid = 0,$app ='')
     {
         $year = date('Y', time());
         $year_total = [];
@@ -390,6 +439,10 @@ class Orders extends Model
             $year_total['time'][$i] = ($i+1) . '月';
             $map[] = ['create_time', 'between', [$date_start, $date_end]];
             $map[] = ['paid', '=', 1];
+            $map[] = ['shopid', '=', $shopid];
+            if (!empty($app)){
+                $map[] = ['app', '=', $app];
+            }
             $count = $this->where($map)->count();
             $year_total['count'][$i] = $count;
         }
