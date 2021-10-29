@@ -19,7 +19,7 @@ class WechatAutoReply extends BaseModel
 {
     public function getTypeStrAttr($value)
     {
-        $arr = [1=>'关注回复',2=>'自动回复'];
+        $arr = [1=>'关注回复',2=>'自动回复',3 =>'扫码登录'];
         return $arr[$value];
     }
     public function getMsgTypeStrAttr($value)
