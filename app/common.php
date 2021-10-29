@@ -866,5 +866,14 @@ function get_root_url()
     return get_http_https().$_SERVER['SERVER_NAME'] . '/attachment/';
 }
 
+/**
+ * 生成唯一标识符
+ * @return string
+ */
+function create_unique(){
+    $data = $_SERVER['HTTP_USER_AGENT'].$_SERVER['REMOTE_ADDR'].time().rand();
+    return sha1($data);
+}
+
 
 
