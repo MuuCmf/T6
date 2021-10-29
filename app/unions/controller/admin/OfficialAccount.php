@@ -11,7 +11,7 @@
  *                                  | 登山则情满于山,观海则意溢于海
  * +----------------------------------------------------------------------
  */
-namespace app\unions\controller;
+namespace app\unions\controller\admin;
 use app\admin\controller\Admin as MuuAdmin;
 use app\unions\model\WechatAutoReply;
 use app\unions\model\WechatConfig;
@@ -144,7 +144,7 @@ class OfficialAccount extends MuuAdmin {
             }
             $res = $this->autoReplyModel->edit($data);
             if($res){
-                return $this->success(($aId == 0 ? '新增' : '编辑') . '成功', '', url('unions/OfficialAccount/autoReply'));
+                return $this->success(($aId == 0 ? '新增' : '编辑') . '成功', '', url('unions/admin.OfficialAccount/autoReply'));
             }else{
                 return $this->error('提交失败');
             }

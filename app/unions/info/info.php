@@ -19,7 +19,7 @@ return [
     //开发者网站
     'website' => 'http://www.muucmf.cn',
     //管理端入口
-    'entry' => 'unions/OfficialAccount/index',
+    'entry' => 'unions/admin.OfficialAccount/index',
     //允许卸载
     'uninstall' => 0,
     //微信公众号开关

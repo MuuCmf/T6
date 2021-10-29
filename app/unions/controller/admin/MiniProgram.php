@@ -11,7 +11,7 @@
  *                                  | 登山则情满于山,观海则意溢于海
  * +----------------------------------------------------------------------
  */
-namespace app\unions\controller;
+namespace app\unions\controller\admin;
 use app\admin\builder\AdminConfigBuilder;
 use app\admin\controller\Admin as MuuAdmin;
 use app\common\model\Module;

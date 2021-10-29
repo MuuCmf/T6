@@ -45,7 +45,7 @@ class OfficialAccount extends Wechat {
             'log' => $this->log(),
             'oauth' => [
                 'scopes'   => ['snsapi_userinfo'],
-                'callback' => request()->domain() . "/api/officialAccountService/oauthCallback",
+                'callback' => request()->domain() . "/unions/service.WechatOfficialAccount/oauthCallback",
             ],
         ];
     }
@@ -55,7 +55,7 @@ class OfficialAccount extends Wechat {
      * @return string
      */
     public function callbackUrl(){
-        return request()->domain() . "api{$this->separator}OfficialAccountService{$this->separator}callback";
+        return request()->domain() . "unions{$this->separator}service.WechatOfficialAccount{$this->separator}callback";
     }
 
     /**
