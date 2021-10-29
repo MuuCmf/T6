@@ -148,7 +148,7 @@
     $(function () {
 
         $(".create").click(function () {
-            thisElem = $(this).parent().children('input');
+            thisElem = $(this).parent().parent().children('input');
             let type = $(thisElem).data('type');
             if (type == 'token'){
                 newValue = tokenGen();
@@ -158,7 +158,7 @@
             $('#create-tips').modal('toggle', 'center')
         })
         $(".edit").click(function () {
-            thisElem = $(this).parent().children('input');
+            thisElem = $(this).parent().parent().children('input');
             $('#edit-model').modal('toggle', 'center');
             $('#edit-val').val($(thisElem).val())
         })
@@ -167,9 +167,10 @@
          * 复制
          */
         $(".copy").click(function() {
-            var ssrsss = $(this).parent().children('input').val();//获取文本
+            var ssrsss = $(this).parent().parent().children('input').val();//获取文本
+            console.log(ssrsss);
             var flag = copyText(ssrsss); //传递文本
-            alert(flag ? "复制成功！" : "复制失败！");
+            toast.info(flag ? "复制成功！" : "复制失败！");
         })
         function copyText(text) {
             var textarea = document.createElement("input");//创建input对象
