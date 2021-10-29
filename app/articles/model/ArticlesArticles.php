@@ -3,8 +3,10 @@ namespace app\articles\model;
 
 use think\Model;
 
-class Articles extends Model {
+class ArticlesArticles extends Model {
 
+    //自动写入创建和更新的时间戳字段
+    protected $autoWriteTimestamp = true; 
 
     public function edit($data)
     {
@@ -17,10 +19,8 @@ class Articles extends Model {
         $detail['content'] = $data['content'];
         
         if($data['id']){
-        	$data['update_time'] = time();
             $res = $this->save($data,$data['id']);
         }else{
-        	$data['create_time'] = $data['update_time'] = time();
             $res = $this->save($data);
         }
         
@@ -36,21 +36,11 @@ class Articles extends Model {
      */
     public function getDataById($id)
     {
-        if($id>0){
+        if(!empty($id)){
 
             $map['id'] = $id;
 
             $data=$this->where($map)->find();
-
-            $category = model('articles/ArticlesCategory')->_category();
-
-            if(!empty($data)){
-                //格式化数据
-                $data = $this->_formatData($data,$category);
-                //获取文章内容
-                $data['detail'] = model('articles/ArticlesDetail')->getDataById($id);
-            }
-
             return $data;
         }
         return null;
@@ -70,14 +60,6 @@ class Articles extends Model {
     {
         $list = $this->where($map)->order($order)->field($field)->paginate($r,false,['query'=>request()->param()]);
 
-        $category = model('articles/ArticlesCategory')->_category();
-
-        foreach($list as &$val){
-            //格式化数据
-            $val = $this->_formatData($val,$category);
-        }
-        unset($val);
-
         return $list;
     }
 
@@ -94,29 +76,7 @@ class Articles extends Model {
     {
     	$list = $this->where($map)->limit($limit)->order($order)->select();
 
-        foreach($list as &$val){
-            //格式化数据
-            $val = $this->_formatData($val);
-        }
-        unset($val);
-
     	return $list;
-    }
-
-    /**
-     * 格式化数据
-     *
-     * @param      <type>  $data   The data
-     */
-    public function _formatData($data,$category)
-    {
-        //关键字转化成数组
-        if(!empty($data['keywords'])){
-            $keywords = explode(',',$data['keywords']);
-        }
-        $data['category_title'] = $category[$data['category']]['title'];
-
-        return $data;
     }
 
     //获取用户文章数的总阅读量

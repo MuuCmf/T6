@@ -1,68 +1,111 @@
 <?php
 namespace app\articles\model;
+
 use think\Model;
+use app\articles\logic\Category as CategoryLogic;
 
-class ArticlesCategory extends Model {
+class ArticlesCategory extends Model
+{
+    //自动写入创建和更新的时间戳字段
+    protected $autoWriteTimestamp = true; 
 
-	//自定义初始化
-    protected function initialize()
+    /**
+     * 编辑/新增数据
+     *
+     * @param      <type>  $data   The data
+     *
+     * @return     <type>  ( description_of_the_return_value )
+     */
+    public function edit($data)
     {
-        //需要调用`Model`的`initialize`方法
-        parent::initialize();
-        //TODO:自定义的初始化
+        if(!isset($data['uid'])) $data['uid'] = is_login();
+        if(!empty($data['id'])){
+            $res = $this->update($data);
+        }else{
+            $res = $this->save($data);
+        }
+
+        return $res;
     }
 
     /**
-     * 获取分类详细信息
-     * @param $id
-     * @param bool $field
-     * @return mixed
+     * Gets the data by identifier.
+     *
+     * @param      integer  $id     The identifier
+     *
+     * @return     <type>   The data by identifier.
      */
-    public function info($id, $field = true){
-        /* 获取分类信息 */
-        $map = [];
-        if(is_numeric($id)){ //通过ID查询
-            $map['id'] = $id;
-        } else { //通过标识查询
-            $map['name'] = $id;
+    public function getDataById($id)
+    {
+        if($id > 0){
+            $data=$this->find($id);
+            return $data;
         }
-        return $this->field($field)->where($map)->find();
+        return null;
     }
 
-    public function getCategoryList($map,$type=0)
+    public function getDataTitleById($id)
     {
-        $list=$this->where($map)->field('id,title,pid,sort,status,can_post,need_audit')->order('sort desc')->select();
-        if(!$type){
-            return $list;
-        }
-        $father_list=$child_list=array();
-        foreach($list as $val){
-            if($val['pid']==0){
-                $father_list[]=$val;
-            }else{
-                $val['title']='[子分类]'.$val['title'];
-                $child_list[]=$val;
-            }
-        }
-        $cateList=array();
-        foreach($father_list as $val){
-            $cateList[]=$val;
-            foreach($child_list as $tt){
-                if($tt['pid']==$val['id']){
-                    $cateList[]=$tt;
-                }
-            }
-        }
-        return $cateList;
+        
     }
-
-    public function _category()
+    /**
+     * Gets the list.
+     *
+     * @param      <type>   $map    The map
+     * @param      integer  $limit  The limit
+     * @param      string   $order  The order
+     * @param      string   $field  The field
+     *
+     * @return     <type>   The list.
+     */
+    public function getList($map, $limit=999, $order = 'sort desc,create_time desc' , $field = '*')
     {
-        $category = $this->getCategoryList(['status'=>['egt',0]],1);
-        $category = collection($category)->toArray();
-        $category = array_combine(array_column($category,'id'),$category);
-        return $category;
+        $list = $this->where($map)->limit($limit)->order($order)->field($field)->select();
+        
+        return $list;
     }
     
+    /**
+     * 获取分页列表
+     */
+    public function getListByPage($map,$order='create_time desc',$field='*',$r=20)
+    {
+        $list  = $this->where($map)->order($order)->field($field)->paginate($r,false,['query'=>request()->param()]);
 
+        foreach($list as &$v){
+            $v = $this->_formatData($v);
+        }
+        unset($v);
+
+        return $list;
+    }
+
+    public function category($data){
+        //获取分类数据
+        if(!empty($data['category_id'])){
+            $data['category'] = $this->getDataById($data['category_id']);
+        }
+
+        return $data;
+    }
+
+    /**
+	 * 是否父级分类
+	 * @param  [type] $category_id [description]
+	 * @return [type]              [description]
+	 */
+	public function yesParent($category_id)
+	{
+        $map[] = ['pid', '=', $category_id];
+		$category_data = $this->getList($map, 999);
+
+		$cates_arr = [];
+		if(!empty($category_data)){
+			$cates_arr = array_column($category_data,'id');
+			$cates_arr = array_merge(array($category_id),$cates_arr);
+		}
+		return $cates_arr;
+	}
+
+    
 }

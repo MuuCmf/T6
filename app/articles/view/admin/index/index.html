@@ -1,0 +1,164 @@
+{extend name="../../admin/view/common/main"/}
+{block name="style"}
+<link href="__CSS__/main.min.css" type="text/css" rel="stylesheet">
+{/block}
+
+{block name="body"}
+<ol class="breadcrumb">
+	<i class="icon icon-angle-left"></i>
+	<li>
+		<a href="{:url('admin.index/index')}">图文管理</a>
+	</li>
+	<li>
+		图文列表
+	</li>
+</ol>
+<div class="action-btn-box margin-bottom">
+	<a class="btn btn-primary margin-right" href="{:url('edit')}" role="button">+ 新增文章</a>
+</div>
+
+<div class="search-box clearfix margin-bottom">
+
+	<form action="" method="get" class="row search-form" role="form">
+		<div class="col-sm-2">
+			<select name="category_id" class="form-control">
+				<option value="0">全部分类</option>
+				{volist name="$category_tree" id="v"}
+				{if $category_id == $v['id']}
+				<option selected value="{$v['id']}">{$v['title']}</option>
+				{else}
+				<option value="{$v['id']}">{$v['title']}</option>
+				{/if}
+				{if (!empty($v._child))}
+				{volist name="$v._child" id="_v"}
+				{if $category_id == $_v['id']}
+				<option selected value="{$v['id']}">|----{$_v['title']}</option>
+				{else}
+				<option value="{$v['id']}">|----{$_v['title']}</option>
+				{/if}
+				{/volist}
+				{/if}
+				{/volist}
+			</select>
+		</div>
+		<div class="col-sm-3">
+			<div class="input-group">
+				<div class="input-control search-box has-icon-left has-icon-right search-example" id="searchboxExample">
+				<input class="form-control" name="keyword" placeholder="关键字" id="" type="text" value="{$keyword}">
+				<label for="inputSearchExample4" class="input-control-icon-left search-icon"><i class="icon icon-search"></i></label>
+				</div>
+				<span class="input-group-btn">
+				<button class="btn btn-primary" type="submit">搜索</button>
+				</span>
+			</div>
+		</div>
+	</form>
+</div>
+
+
+<section class="knowledge-list-section clearfix row">
+	<div class="status-nav" data-status="{$status}">
+		<a class="all btn" href="{:url('lists')}">全部</a>
+		<a class="status0 btn" href="{:url('lists', ['status' => 0])}">已审核</a>
+		<a class="status-1 btn" href="{:url('lists', ['status' => -1])}">未审核</a>
+		<a class="status-2 btn" href="{:url('lists', ['status' => -2])}">审核未通过</a>
+	</div>
+	<script>
+		$(function(){
+			var status = $('.status-nav').data('status');
+			console.log(status);
+			$('.status-nav .btn').removeClass('btn-info');
+			if(status == 'all'){
+				$('.status-nav .all').addClass('btn-info');
+			}
+			if(status == 0){
+				$('.status-nav .status0').addClass('btn-info');
+			}
+			if(status == -1){
+				$('.status-nav .status-1').addClass('btn-info');
+			}
+			if(status == -2){
+				$('.status-nav .status-2').addClass('btn-info');
+			}
+		})
+	</script>
+	{if empty($lists['data'])}
+	<div class="item-section">
+		{include file="admin/common/_empty"/}
+	</div>
+    {else /}
+	<div class="item-section">
+        {volist name="$lists.data" id="v"}
+		<div class="item card">
+			<div class="cover">
+				<img src="{$v['cover_400']}">
+				<div class="type">{$v['type_str']}</div>
+			</div>
+			<div class="info">
+				<div class="title text-ellipsis">{$v['title']}</div>
+				<div class="description">{$v['description']}</div>
+			</div>
+
+			<div class="expense">
+				{if $v['expense'] == 0}
+				<div class="price">免费</div>
+				{else}
+				<div class="price"><span class="yuan">￥</span> {$v['price']}</div>
+				<div class="marking-price"><span class="yuan">￥</span> {$v['marking_price']}</div>
+				{/if}
+
+			</div>
+			<div class="data">
+				<div class="view">
+					<i class="fa fa-eye" aria-hidden="true"></i> {$v['view']}
+				</div>
+			
+				<div class="shopping">
+					<i class="fa fa-shopping-bag" aria-hidden="true"></i> {$v['sales']}
+				</div>
+			
+				<div class="favorites">
+					<i class="fa fa-star-o" aria-hidden="true"></i>
+					<span class="favorites-num">{$v['favorites']}</span>
+				</div>
+			</div>
+
+			<div class="action">
+				<button class="btn btn-sm btn-info" data-toggle="modal" data-target="#shareModal" 
+					data-id="{$v['id']}" 
+					data-title="{$v['title']}" 
+					data-all-url="{$v['url']}"
+				>
+					预览
+				</button>
+				
+				<a href="{:url('edit',['id'=>$v['id'],'type'=>$v['type']])}" class="btn btn-sm btn-primary">编辑</a>
+				{if $v['status'] == 1}
+				<a href="{:url('status', ['ids'=>$v['id'],'status'=> 0])}" class="btn btn-sm btn-warning ajax-get">下架</a>
+				{/if}
+
+				{if $v['status'] == 0}
+				<a href="{:url('status', ['ids'=>$v['id'], 'status'=> 1])}" class="btn btn-sm btn-info ajax-get">上架</a>
+				{/if}
+
+				{if $v['status'] == -1}
+				<button class="btn btn-sm btn-warning" data-remote="{:url('verify',['id'=>$v['id']])}" data-toggle="modal" data-title="状态审核">未审核</button>
+				{/if}
+				{if $v['status'] == -2}
+				<button disabled class="btn btn-sm disabled">审核未通过</button>
+				{/if}
+				<a href="{:url('status', ['ids'=>$v['id'], 'status'=> -3])}" data-confirm="确认执行删除操作？" class="btn btn-sm btn-danger ajax-get">
+                    <i class="fa fa-times"></i> 删除
+                </a>
+			</div>
+		</div>
+		{/volist}
+	</div>
+	<div class="page-section">
+		{$pager}
+	</div>
+	{/if}
+</section>
+
+{include file="admin/common/_qrcode" /}
+{/block}
