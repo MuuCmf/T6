@@ -166,10 +166,9 @@ class Attachment extends Model
                 $data['size'] = $file->getSize();
                 $data['mime'] = $file->getMime();
                 $data['type'] = 'file';  // 类型用字符串 pic file audio video
-                dump($data);
-                dump($file);exit;
                 // 根据不同mimeType放入不同目录
                 $mime_arr = explode('/', $data['mime']);
+
                 switch($mime_arr[0])
                 {
                     case 'image':
