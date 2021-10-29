@@ -105,7 +105,7 @@
             return false;
 
             function success(data) {
-                if (data.code) {
+                if (data.code == 200) {
                     toast.success(data.msg);
                     if (data.url == undefined && quickLogin == "quickLogin") {
                         $('[data-role="login_info"]').append(data.msg);
