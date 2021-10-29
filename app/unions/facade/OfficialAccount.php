@@ -28,7 +28,10 @@ use think\Facade;
  * @method getMaterialList($type,$offset,$count) static
  * @method getMaterial($media_id) static
  * @method callbackUrl() static
+ * @method getToken() static
  * @method oauth(string $target_url) static
+ * @method createQrcode(string $content ,$expiration_time) static
+ * @method getQrcodeUrl(string $ticket) static
  */
 class OfficialAccount extends Facade {
     // getFacadeClass: 获取当前Facade对应类名

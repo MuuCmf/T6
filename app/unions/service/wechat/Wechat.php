@@ -30,7 +30,7 @@ abstract class Wechat{
     }
     public function log(){
 
-        $log['level'] = 'info'; //可选项debug
+        $log['level'] = 'debug'; //可选项debug
         $log['file'] = app()->getRootPath() . "runtime/wechatservice/{$this->type}/";
         $log['file'] .=  date('Y') . '-' . date('m') . '/';
         $log['file'] .= date('d') . '.log';

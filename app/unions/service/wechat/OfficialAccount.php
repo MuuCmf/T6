@@ -176,4 +176,37 @@ class OfficialAccount extends Wechat {
         }
         $this->app->oauth->redirect()->send();
     }
+
+    /**
+     * 获取access token
+     * @return mixed
+     */
+    public function getToken(){
+        return $this->app->access_token->getToken();
+    }
+
+    /**
+     * 创建二维码
+     *
+     * @param $content 内容
+     * @param $expiration_time 过期时间
+     * @return mixed
+     */
+    public function createQrcode($content ,$expiration_time = 0){
+        if ($expiration_time > 0){
+            $qrcode = $this->app->qrcode->temporary($content ,$expiration_time);
+        }else{
+            $qrcode = $this->app->qrcode->forever($content);
+        }
+        return $qrcode;
+    }
+
+    /**
+     * 获取qrcode
+     * @param $ticket
+     * @return mixed
+     */
+    public function getQrcodeUrl($ticket){
+        return $this->app->qrcode->url($ticket);
+    }
 }
