@@ -34,7 +34,7 @@ class Menu extends Admin {
      */
     public function index(){
         $title = input('title','','text');
-        $pid  = input('pid','','text');
+        $pid  = input('pid','0','text');
         View::assign('pid',$pid);
         $map = [];
         //获取上级数据
@@ -57,7 +57,7 @@ class Menu extends Admin {
         }
         unset($val);
         // 转树结构
-        $list = list_to_tree($list, 'id', 'pid', '_child','0');
+        $list = list_to_tree($list, 'id', 'pid', '_child', $pid);
         View::assign('list',$list);
 
         // 记录当前列表页的cookie
@@ -68,7 +68,7 @@ class Menu extends Admin {
     }
 
     /**
-     * 后台菜单列表
+     * 后台菜单接口列表
      * @return none
      */
     public function list(){

@@ -12,7 +12,7 @@
     }
     .action .btn {
         
-        width: 49%;
+        width: 32%;
     }
 </style>
 {/block}
@@ -71,21 +71,24 @@
                                         <!--进入-->
                                         <a class="btn btn-block btn-info" href="{:url($vo.entry)}">进入应用</a>
                                         <div class="action">
-                                            <a class="btn btn-warning" href="{:url('edit', ['id' => $vo['id']])}">编辑</a>
+                                            <a class="btn btn-primary " href="{:url('edit', ['id' => $vo['id']])}">编辑</a>
+                                            <a class="btn btn-warning" href="{:url('menu', ['app' => $vo['name']])}">权限菜单</a>
                                             <a class="btn btn-danger" href="{:url('uninstall', ['id' => $vo['id']])}">卸载</a>
                                         </div>
                                     {else/}
                                         <!--进入-->
                                         <a class="btn btn-block btn-default disabled" href="{:url($vo.entry)}">进入应用</a>
                                         <div class="action">
-                                            <a class="btn btn-warning" href="{:url('edit', ['id' => $vo['id']])}">编辑</a>
+                                            <a class="btn btn-primary " href="{:url('edit', ['id' => $vo['id']])}">编辑</a>
+                                            <a class="btn btn-warning" href="{:url('menu', ['app' => $vo['name']])}">权限菜单</a>
                                             <a class="btn  btn-success" href="{:url('install', ['name' => $vo['name']])}">安装</a>
                                         </div>
                                     {/if}
                                 {else /}
                                     <a class="btn btn-block btn-info" href="{:url($vo.entry)}">进入应用</a>
                                     <div class="action">
-                                        <a class="btn btn-warning" href="{:url('edit', ['id' => $vo['id']])}">编辑</a>
+                                        <a class="btn btn-primary " href="{:url('edit', ['id' => $vo['id']])}">编辑</a>
+                                        <a class="btn btn-warning" href="{:url('menu', ['app' => $vo['name']])}">权限菜单</a>
                                         <a disabled class="btn btn-default">系统应用</a>
                                     </div>
                                 {/if}

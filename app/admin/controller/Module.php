@@ -5,10 +5,12 @@ namespace app\admin\controller;
 use think\facade\Db;
 use think\facade\View;
 use app\admin\builder\AdminConfigBuilder;
+use app\admin\model\Menu as MenuModel;
 use app\common\model\Module as ModuleModel;
 
 class Module extends Admin
 {
+    protected $MenuModel;
     protected $ModuleModel;
 
     /**
@@ -18,7 +20,7 @@ class Module extends Admin
     public function __construct()
     {
         parent::__construct();
-
+        $this->MenuModel = new MenuModel();
         $this->ModuleModel = new ModuleModel();
     }
 
@@ -185,6 +187,101 @@ class Module extends Admin
             $builder->buttonSubmit();
             $builder->buttonBack();
             $builder->display();
+        }
+    }
+
+    /**
+     * 应用权限菜单首页
+     * @return none
+     */
+    public function menu(){
+        $app = input('app', '', 'text');
+        $title = input('title','','text');
+        $pid  = input('pid','0','text');
+        View::assign('pid',$pid);
+        $map = [];
+        
+        $list_map = [];
+        if(!empty($app)){
+            //获取上级数据
+            $map['alias'] = $app;
+            $data = $this->ModuleModel->where($map)->find();
+            View::assign('data',$data);
+            $list_map[] = ['module', '=', $app];
+        }
+        
+        if(!empty($title)){
+            $list_map['title'] = ['like','%'.$title.'%'];
+        }
+        
+        $list = $this->MenuModel->where($list_map)->order('sort asc')->select()->toArray();
+        foreach($list as &$val){
+            $val = $this->MenuModel->handle($val);
+        }
+        unset($val);
+        // 转树结构
+        $list = list_to_tree($list, 'id', 'pid', '_child', $pid);
+        View::assign('list',$list);
+        
+        // 记录当前列表页的cookie
+        Cookie('__forward__', $_SERVER['REQUEST_URI']);
+        $this->setTitle('后台菜单管理');
+
+        return View::fetch();
+    }
+
+    /**
+     * 新增/编辑应用权限菜单
+     */
+    public function medit(){
+        
+        if(request()->isPost()){
+            $data = input('');
+            if($data['title'] == '') {
+                return $this->error('菜单标题不能为空');
+            }
+            if($data['url'] == '') {
+                return $this->error('菜单链接不能为空');
+            }
+
+            $res = $this->MenuModel->edit($data);
+            if($res){
+                //记录行为
+                action_log('update_menu', 'Menu', $data['id'], is_login());
+                return $this->success('保存成功', $res, cookie('__forward__'));
+            } else {
+                return $this->error('保存失败');
+            }
+            
+        } else {
+            $id = input('id','0','text');
+            $pid = input('pid','0','text');
+            View::assign('pid', $pid);
+            $info = [];
+            /* 获取数据 */
+            $info = $this->MenuModel->where(['id'=>$id])->find();
+
+            if(empty($info)){
+                $map['id'] = input('pid');
+                $info = $this->MenuModel->where($map)->field('module,pid,hide,type')->find();
+                $info['pid'] = input('pid','0','text');
+            }
+            View::assign('info', $info);
+
+            $menus = $this->MenuModel->order('sort asc,id asc')->select()->toArray();
+            //$tree = new Tree();
+            $menus = list_to_tree($menus, $title = 'title', $pk='id', $pid = 'pid', $root = '0');
+            $menus = array_merge([
+                0 => ['id'=>'0','title_show'=>'顶级菜单']
+            ], $menus);
+
+            View::assign('Menus', $menus);
+            $moduleModel = new ModuleModel();
+            View::assign('Modules',$moduleModel->getAll());
+
+            $this->setTitle('菜单编辑');
+
+            return View::fetch();
         }
     }
 
