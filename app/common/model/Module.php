@@ -118,7 +118,7 @@ class Module extends Model
                 $info = $this->getInfo($subdir);
                 
                 // 合并数据表内模块
-                $module_info = $this->getModule($info['name']);
+                $module_info = $this->getModuleByName($info['name']);
                 if($module_info){
                     $module_info = $module_info->toArray();
                     
@@ -171,7 +171,7 @@ class Module extends Model
      */
     public function checkCanVisit($name)
     {
-        $m = getModule($name);
+        $m = $this->getModule($name);
 
         if (isset($m['is_setup']) && $m['is_setup'] == 0 && $m['name'] == ucfirst($name)) {
             header("Content-Type: text/html; charset=utf-8");
@@ -185,7 +185,7 @@ class Module extends Model
      */
     public function checkInstalled($name)
     {
-        $m = getModule($name);
+        $m = $this->getModule($name);
 
         if ($m['name'] == $name && $m['is_setup']) {
             return true;
@@ -296,7 +296,19 @@ class Module extends Model
         }
 
         $info = $this->where(['name'=>$name])->find();
-        
+        $info['icon'] = $this->getIcon($info['name'], $info['icon']);
+
+        return $info;
+    }
+
+    public function getModuleByName($name)
+    {
+        if($name == 'admin'){
+            return false;
+        }
+
+        $info = $this->where(['name'=>$name])->find();
+
         return $info;
     }
 
