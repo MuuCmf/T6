@@ -62,12 +62,12 @@ class Module extends Admin
 
         $modules = $this->ModuleModel->getListByPage($map,'sort desc,id desc','*',20);
         $page = htmlspecialchars_decode($modules->render());
-        //dump($modules);exit;
+        
         View::assign('page', $page);
         View::assign('modules', $modules);
         // 记录当前列表页的cookie
         cookie('__forward__', $_SERVER['REQUEST_URI']);
-
+        // 输出页面
         return View::fetch();
     }
 
@@ -83,7 +83,7 @@ class Module extends Admin
             
             $res = $this->ModuleModel->edit($data);
             if($res){
-                return $this->success($title . '成功', $res, Cookie('__forward__'));
+                return $this->success($title . '成功', $res, cookie('__forward__'));
             }else{
                 return $this->error($title . '失败');
             }
