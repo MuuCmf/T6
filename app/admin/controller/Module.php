@@ -204,7 +204,7 @@ class Module extends Admin
         $list_map = [];
         if(!empty($app)){
             //获取上级数据
-            $map['alias'] = $app;
+            $map['name'] = $app;
             $data = $this->ModuleModel->where($map)->find();
             View::assign('data',$data);
             $list_map[] = ['module', '=', $app];

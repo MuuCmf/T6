@@ -3,36 +3,11 @@
 {block name="body"}
     <div class="main-title">
         <h2>
-            {present name="data"}[ {$data.title} ] 子{/present}
-            菜单管理
+            [ {$data.alias} ]
+            应用权限菜单管理
         </h2>
     </div>
     <div class="with-padding">
-
-        <div class="button-box row clearfix ">
-            <div class="col-xs-10">
-                <a class="btn btn-info" href="{:url('edit',['pid'=>$pid])}">新增</a>
-                <button class="btn btn-danger ajax-post confirm" url="{:url('del')}" target-form="ids">删除</button>
-                <a class="btn btn-warning" href="{:url('import',['pid'=>input('get.pid',0)])}">导入</a>
-                <button class="btn list_sort" url="{:url('sort',['pid'=>input('get.pid',0)])}">排序</button>
-            </div>
-            <!-- 高级搜索 -->
-            <div class="col-xs-2">
-                <div class="search-form fr cf">
-                    <div class="sleft">
-                        <div class="input-group">
-                            <input type="text" name="title" class="form-control" value="{:input('title')}"
-                                   placeholder="请输入菜单名称">
-                                   <span class="input-group-btn">
-                        <a class="btn btn-default" href="javascript:;" id="search" url="{:url()}">
-                            <i class="icon-search"></i>
-                        </a></span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
         <form class="ids">
             <table class="table table-bordered table-striped table-hover muu-table">
                 <thead>

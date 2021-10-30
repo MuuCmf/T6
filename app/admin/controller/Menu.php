@@ -34,30 +34,20 @@ class Menu extends Admin {
      */
     public function index(){
         $title = input('title','','text');
-        $pid  = input('pid','0','text');
-        View::assign('pid',$pid);
-        $map = [];
-        //获取上级数据
-        if($pid){
-            $map['id'] = $pid;
-            $data = $this->menuModel->where($map)->find();
-            View::assign('data',$data);
-        }
-        
-        
         if(!empty($title)){
             $list_map['title'] = ['like','%'.$title.'%'];
         }
         
         $list_map = [];
-        //$list_map['pid'] =   $pid;
+        $list_map['type'] =   0;
+
         $list = $this->menuModel->where($list_map)->order('sort asc')->select()->toArray();
         foreach($list as &$val){
             $val = $this->menuModel->handle($val);
         }
         unset($val);
         // 转树结构
-        $list = list_to_tree($list, 'id', 'pid', '_child', $pid);
+        $list = list_to_tree($list, 'id', 'pid', '_child', '0');
         View::assign('list',$list);
 
         // 记录当前列表页的cookie
