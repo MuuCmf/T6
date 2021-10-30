@@ -1,5 +1,21 @@
 {extend name="common/main"/}
 
+{block name="style"}
+<style>
+    .action {
+        margin-top: 5px; 
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-start;
+        align-content: flex-start;
+        justify-content: space-between;
+    }
+    .action .btn {
+        
+        width: 49%;
+    }
+</style>
+{/block}
 {block name="body"}
     <div class="main-title">
         <h2>应用管理</h2>
@@ -24,6 +40,7 @@
                 </a>
             </div>
         </div>
+
         <section class="module-list cards clearfix">
             {volist name="modules" id="vo"}
             <div class="item">
@@ -42,7 +59,7 @@
                             </div>
                             <div class="card-content text-muted">
                                 <p class="text-muted text-ellipsis" title="{$vo.summary}">{$vo.summary}</p>
-                                <p class="">应用目录：{$vo.name}</p>
+                                <p class="">应用标识：{$vo.name}</p>
                                 <p class="text-muted text-ellipsis">
                                     <span>开发者：</span> 
                                     <a style="color: #666">{$vo.developer}</a></p>
@@ -53,15 +70,24 @@
                                     {if $vo['is_setup'] == 1}
                                         <!--进入-->
                                         <a class="btn btn-block btn-info" href="{:url($vo.entry)}">进入应用</a>
-                                        <a class="btn btn-block btn-danger" href="{:url('uninstall', ['id' => $vo['id']])}">卸载</a>
+                                        <div class="action">
+                                            <a class="btn btn-warning" href="{:url('edit', ['id' => $vo['id']])}">编辑</a>
+                                            <a class="btn btn-danger" href="{:url('uninstall', ['id' => $vo['id']])}">卸载</a>
+                                        </div>
                                     {else/}
                                         <!--进入-->
                                         <a class="btn btn-block btn-default disabled" href="{:url($vo.entry)}">进入应用</a>
-                                        <a class="btn btn-block btn-success" href="{:url('install', ['name' => $vo['name']])}">安装</a>
+                                        <div class="action">
+                                            <a class="btn btn-warning" href="{:url('edit', ['id' => $vo['id']])}">编辑</a>
+                                            <a class="btn  btn-success" href="{:url('install', ['name' => $vo['name']])}">安装</a>
+                                        </div>
                                     {/if}
                                 {else /}
                                     <a class="btn btn-block btn-info" href="{:url($vo.entry)}">进入应用</a>
-                                    <a disabled class="btn btn-block btn-default">系统应用</a>
+                                    <div class="action">
+                                        <a class="btn btn-warning" href="{:url('edit', ['id' => $vo['id']])}">编辑</a>
+                                        <a disabled class="btn btn-default">系统应用</a>
+                                    </div>
                                 {/if}
                             </div>
                         </div>

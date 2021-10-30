@@ -9,7 +9,7 @@ use app\common\model\Module as ModuleModel;
 
 class Module extends Admin
 {
-    protected $moduleModel;
+    protected $ModuleModel;
 
     /**
      * 构造方法
@@ -19,7 +19,7 @@ class Module extends Admin
     {
         parent::__construct();
 
-        $this->moduleModel = new ModuleModel();
+        $this->ModuleModel = new ModuleModel();
     }
 
     /**
@@ -38,7 +38,7 @@ class Module extends Admin
         $aRefresh = input('refresh', 0, 'intval');
         if ($aRefresh == 1) {
             cache('admin_modules', null);
-            $this->moduleModel->reload();
+            $this->ModuleModel->reload();
         }
         /*刷新模块列表时清空缓存 end*/
         switch($aType){
@@ -60,13 +60,40 @@ class Module extends Admin
             break;
         };
 
-        $modules = $this->moduleModel->getListByPage($map,'sort desc,id desc','*',20);
+        $modules = $this->ModuleModel->getListByPage($map,'sort desc,id desc','*',20);
         $page = htmlspecialchars_decode($modules->render());
         //dump($modules);exit;
         View::assign('page', $page);
         View::assign('modules', $modules);
         // 记录当前列表页的cookie
         cookie('__forward__', $_SERVER['REQUEST_URI']);
+
+        return View::fetch();
+    }
+
+    /**
+     * 编辑模块数据
+     */
+    public function edit()
+    {
+        $id = input('id',0,'intval');
+        $title = $id ? "编辑" : "新建";
+        if (request()->isPost()) {
+            $data = input();
+            
+            $res = $this->ModuleModel->edit($data);
+            if($res){
+                return $this->success($title . '成功', $res, Cookie('__forward__'));
+            }else{
+                return $this->error($title . '失败');
+            }
+
+        }
+
+        if(!empty($id)){
+            $data = $this->ModuleModel->getDataById($id);
+        }
+        View::assign('data',$data);
 
         return View::fetch();
     }
@@ -79,11 +106,11 @@ class Module extends Admin
         $aId = input('id', 0, 'intval');
         $aNav = input('remove_nav', 0, 'intval');
 
-        $module = $this->moduleModel->getModuleById($aId);
+        $module = $this->ModuleModel->getModuleById($aId);
         
         if (request()->isPost()) {
             $aWithoutData = input('withoutData', 1, 'intval');//是否保留数据
-            $res = $this->moduleModel->uninstall($aId, $aWithoutData);
+            $res = $this->ModuleModel->uninstall($aId, $aWithoutData);
 
             if ($res == true) {
                 if ($aNav) {
@@ -92,10 +119,10 @@ class Module extends Admin
                 }
                 cache('admin_modules', null);
                 //删除module表中记录
-                $this->moduleModel->where(['id' => $aId])->delete();
+                $this->ModuleModel->where(['id' => $aId])->delete();
                 return $this->success('卸载模块成功。','', cookie('__forward__'));
             } else {
-                $this->error('卸载模块失败。' . $this->moduleModel->error);
+                $this->error('卸载模块失败。' . $this->ModuleModel->error);
             }
 
         }else{
@@ -123,17 +150,17 @@ class Module extends Admin
     public function install()
     {
         $aName = input('name', '', 'text');
-        $module = $this->moduleModel->getModule($aName);
+        $module = $this->ModuleModel->getModule($aName);
 
         if (request()->isPost()) {
             //执行guide中的内容
-            $res = $this->moduleModel->install($module['id']);
+            $res = $this->ModuleModel->install($module['id']);
             
             if ($res === true) {
                 cache('ADMIN_MODULES_' . is_login(), null);
                 $this->success('安装模块成功。', '', cookie('__forward__'));
             } else {
-                $this->error('安装模块失败。' . $this->moduleModel->error);
+                $this->error('安装模块失败。' . $this->ModuleModel->error);
             }
 
         } else {
