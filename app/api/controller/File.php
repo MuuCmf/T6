@@ -195,4 +195,19 @@ class File extends Base
         return json($result);
     }
 
+    /**
+     * 文件数据写入附件表接口
+     */
+    public function attachment()
+    {
+        $data = input('post.');
+
+        $res = $this->upload->edit($data);
+        if($res){
+            return $this->success('success');
+        }else{
+            return $this->error('error');
+        }
+    }
+
 }

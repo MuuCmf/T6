@@ -222,7 +222,7 @@ class Extend extends Admin
     {
         if (request()->isPost()) {
             $config = input('post.');
-            dump($config);exit;
+            
             if ($config && is_array($config)) {
                 foreach ($config as $name => $value) {
                     $map = ['name' => $name];

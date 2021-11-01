@@ -403,7 +403,7 @@ class Attachment extends Model
     }
 
 
-        /**
+    /**
      * 阿里云OSS上传
      * $object 文件名
      * $filepath 文件路径
@@ -599,5 +599,21 @@ class Attachment extends Model
             }
         }
         
+    }
+
+    /**
+     * 写入、更新数据表
+     */
+    public function edit($data)
+    {
+        if(!empty($data['id'])){
+            $res = $this->update($data);
+        }else{
+            $res = $this->save($data);
+        }
+        
+        if($res) $res = $this->id;
+
+        return $res;
     }
 }
