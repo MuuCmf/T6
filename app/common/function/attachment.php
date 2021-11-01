@@ -564,7 +564,9 @@ function single_audio_upload($name, $audio, $input = false){
 }
 
 
-
+/**
+ * 视频上传
+ */
 function single_video_upload($name, $video ,$input = false){
 
     $upload = "上传视频";
