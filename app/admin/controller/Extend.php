@@ -216,6 +216,73 @@ class Extend extends Admin
     }
 
     /**
+     * 云点播配置管理
+     */
+    public function vod()
+    {
+        if (request()->isPost()) {
+            $config = input('post.');
+            dump($config);exit;
+            if ($config && is_array($config)) {
+                foreach ($config as $name => $value) {
+                    $map = ['name' => $name];
+                    Db::name('ExtendConfig')->where($map)->save(['value' => $value]);
+                }
+            }
+            // 清理缓存
+            cache('MUUCMF_EXT_CONFIG_DATA', null);
+    
+            return $this->success('保存成功',$config, 'refresh');
+
+        }else{
+
+            $list = Db::name("ExtendConfig")->where(['status' => 1])->field('id,name,title,extra,value,group,remark,type')->order('sort asc')->select()->toArray();
+            $list = $this->extendConfigModel->lists();
+
+            $builder = new AdminConfigBuilder();
+            $builder->title('云点播配置')->suggest('基于第三方云点播各项参数配置');
+            
+            // 基础配置
+            $opt = ['disable' => '不启用', 'tencent' => '腾讯云'];
+            $builder
+                ->keySelect('VOD_UPLOAD_DRIVER', '云点播', '云点播上传驱动', $opt)
+                ->group('基础配置', [
+                    'VOD_UPLOAD_DRIVER'
+                ]);
+            
+            // // 阿里云OSS参数配置
+            // $builder
+            //     ->keyText('OSS_ALIYUN_ACCESSKEYID', 'AccessKeyID', 'Access Key ID是您访问阿里云API的密钥，具有该账户完全的权限，请您妥善保管.')
+            //     ->keyText('OSS_ALIYUN_ACCESSKEYSECRET', 'AccessKeySecret', 'Access Key Secret是您访问阿里云API的密钥，具有该账户完全的权限，请您妥善保管.')
+            //     ->keyText('OSS_ALIYUN_ENDPOINT', 'Endpoint', '如：oss-cn-beijing.aliyuncs.com.')
+            //     ->keyText('OSS_ALIYUN_BUCKET', 'Bucket', 'Bucket.')
+            //     ->keyText('OSS_ALIYUN_BUCKET_DOMAIN', 'Bucket域名', 'Bucket域名.')
+            //     ->group('阿里云OSS', [
+            //         'OSS_ALIYUN_ACCESSKEYID', 
+            //         'OSS_ALIYUN_ACCESSKEYSECRET',
+            //         'OSS_ALIYUN_ENDPOINT',
+            //         'OSS_ALIYUN_BUCKET',
+            //         'OSS_ALIYUN_BUCKET_DOMAIN'
+            //     ]);
+
+            // 腾讯云VOD参数配置
+            $builder
+                ->keyText('VOD_TENCENT_SECRETID', 'SecretID', 'SecretID 是您项目的安全密钥，具有该账户完全的权限，请妥善保管.')
+                ->keyText('VOD_TENCENT_SECRETKEY', 'SecretKEY', 'SecretKEY 是您项目的安全密钥，具有该账户完全的权限，请妥善保管.')
+                ->keyText('VOD_TENCENT_SUBAPPID', 'SubAppId', 'SubAppId 是您云点播平台子应用ID，请妥善保管.')
+                ->group('腾讯云COS', [
+                    'VOD_TENCENT_SECRETID',
+                    'VOD_TENCENT_SECRETKEY',
+                    'VOD_TENCENT_SUBAPPID',
+                ]);
+
+            $builder->data($list);
+            $builder->buttonSubmit();
+            $builder->display();
+        }
+    }
+
+    /**
      * 扩展配置管理
      */
     public function list()

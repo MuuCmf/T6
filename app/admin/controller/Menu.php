@@ -34,72 +34,31 @@ class Menu extends Admin {
      */
     public function index(){
         $title = input('title','','text');
-        $pid  = input('pid','0','text');
-        //获取上级数据
-        if($pid){
-            $where['id'] = $pid;
-            $data = $this->menuModel->where($where)->find();
-            View::assign('data',$data);
-        }
-        View::assign('pid',$pid);
-        
-        if($title){
-            $map['title'] = ['like','%'.$title.'%'];
+        if(!empty($title)){
+            $list_map['title'] = ['like','%'.$title.'%'];
         }
         
-        $map = [];
-        //$map['pid'] =   $pid;
-        $list = $this->menuModel->where($map)->order('sort asc')->select()->toArray();
+        $list_map = [];
+        $list_map['type'] =   0;
+
+        $list = $this->menuModel->where($list_map)->order('sort asc')->select()->toArray();
         foreach($list as &$val){
             $val = $this->menuModel->handle($val);
         }
         unset($val);
         // 转树结构
         $list = list_to_tree($list, 'id', 'pid', '_child', '0');
-        
         View::assign('list',$list);
 
+        // 记录当前列表页的cookie
+        Cookie('__forward__', $_SERVER['REQUEST_URI']);
         $this->setTitle('后台菜单管理');
 
         return View::fetch();
     }
-
-    public function index2(){
-        $title = input('title','','text');
-        $pid  = input('pid','0','text');
-        //获取上级数据
-        if($pid){
-            $where['id'] = $pid;
-            $data = $this->menuModel->where($where)->find();
-            View::assign('data',$data);
-        }
-        View::assign('pid',$pid);
-        
-        if($title){
-            $map['title'] = ['like','%'.$title.'%'];
-        }
-        
-        $map = [];
-        //$map['pid'] =   $pid;
-        $list = $this->menuModel->where($map)->order('sort asc')->select()->toArray();
-        foreach($list as &$val){
-            $val = $this->menuModel->handle($val);
-        }
-        unset($val);
-        // 转树结构
-        $list = list_to_tree($list, 'id', 'pid', '_child', '0');
-        
-        dump($list);
-        View::assign('list',$list);
-
-        $this->setTitle('后台菜单管理');
-
-        return View::fetch();
-    }
-
 
     /**
-     * 后台菜单列表
+     * 后台菜单接口列表
      * @return none
      */
     public function list(){
@@ -139,7 +98,7 @@ class Menu extends Admin {
             if($res){
                 //记录行为
                 action_log('update_menu', 'Menu', $data['id'], is_login());
-                return $this->success('保存成功',url('index'));
+                return $this->success('保存成功', $res, cookie('__forward__'));
             } else {
                 return $this->error('保存失败');
             }
@@ -253,12 +212,11 @@ class Menu extends Admin {
             $pid = input('get.pid','0');
 
             //获取排序的数据
-            $map['hide']=0;
             if(!empty($ids)){
-                $map['id'] = ['in',$ids];
+                $map[] = ['id', 'in', $ids];
             }else{
                 if($pid !== ''){
-                    $map['pid'] = $pid;
+                    $map[] = ['pid', '=', $pid];
                 }
             }
             $list = Db::name('Menu')->where($map)->field('id,title')->order('sort asc')->select();
@@ -271,7 +229,7 @@ class Menu extends Admin {
             $ids = input('post.ids');
             $ids = explode(',', $ids);
             foreach ($ids as $key=>$value){
-                $res = Db::name('Menu')->where(['id'=>$value])->setField('sort', $key+1);
+                $res = Db::name('Menu')->where(['id'=>$value])->update(['sort' => $key+1]);
             }
             if($res !== false){
                 return $this->success('排序成功');

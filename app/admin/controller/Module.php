@@ -5,11 +5,13 @@ namespace app\admin\controller;
 use think\facade\Db;
 use think\facade\View;
 use app\admin\builder\AdminConfigBuilder;
+use app\admin\model\Menu as MenuModel;
 use app\common\model\Module as ModuleModel;
 
 class Module extends Admin
 {
-    protected $moduleModel;
+    protected $MenuModel;
+    protected $ModuleModel;
 
     /**
      * 构造方法
@@ -18,8 +20,8 @@ class Module extends Admin
     public function __construct()
     {
         parent::__construct();
-
-        $this->moduleModel = new ModuleModel();
+        $this->MenuModel = new MenuModel();
+        $this->ModuleModel = new ModuleModel();
     }
 
     /**
@@ -38,7 +40,7 @@ class Module extends Admin
         $aRefresh = input('refresh', 0, 'intval');
         if ($aRefresh == 1) {
             cache('admin_modules', null);
-            $this->moduleModel->reload();
+            $this->ModuleModel->reload();
         }
         /*刷新模块列表时清空缓存 end*/
         switch($aType){
@@ -60,13 +62,40 @@ class Module extends Admin
             break;
         };
 
-        $modules = $this->moduleModel->getListByPage($map,'sort desc,id desc','*',20);
+        $modules = $this->ModuleModel->getListByPage($map,'sort desc,id desc','*',20);
         $page = htmlspecialchars_decode($modules->render());
-        //dump($modules);exit;
+        
         View::assign('page', $page);
         View::assign('modules', $modules);
         // 记录当前列表页的cookie
         cookie('__forward__', $_SERVER['REQUEST_URI']);
+        // 输出页面
+        return View::fetch();
+    }
+
+    /**
+     * 编辑模块数据
+     */
+    public function edit()
+    {
+        $id = input('id',0,'intval');
+        $title = $id ? "编辑" : "新建";
+        if (request()->isPost()) {
+            $data = input();
+            
+            $res = $this->ModuleModel->edit($data);
+            if($res){
+                return $this->success($title . '成功', $res, cookie('__forward__'));
+            }else{
+                return $this->error($title . '失败');
+            }
+
+        }
+
+        if(!empty($id)){
+            $data = $this->ModuleModel->getDataById($id);
+        }
+        View::assign('data',$data);
 
         return View::fetch();
     }
@@ -79,11 +108,11 @@ class Module extends Admin
         $aId = input('id', 0, 'intval');
         $aNav = input('remove_nav', 0, 'intval');
 
-        $module = $this->moduleModel->getModuleById($aId);
+        $module = $this->ModuleModel->getModuleById($aId);
         
         if (request()->isPost()) {
             $aWithoutData = input('withoutData', 1, 'intval');//是否保留数据
-            $res = $this->moduleModel->uninstall($aId, $aWithoutData);
+            $res = $this->ModuleModel->uninstall($aId, $aWithoutData);
 
             if ($res == true) {
                 if ($aNav) {
@@ -92,10 +121,10 @@ class Module extends Admin
                 }
                 cache('admin_modules', null);
                 //删除module表中记录
-                $this->moduleModel->where(['id' => $aId])->delete();
+                $this->ModuleModel->where(['id' => $aId])->delete();
                 return $this->success('卸载模块成功。','', cookie('__forward__'));
             } else {
-                $this->error('卸载模块失败。' . $this->moduleModel->error);
+                $this->error('卸载模块失败。' . $this->ModuleModel->error);
             }
 
         }else{
@@ -123,17 +152,17 @@ class Module extends Admin
     public function install()
     {
         $aName = input('name', '', 'text');
-        $module = $this->moduleModel->getModule($aName);
+        $module = $this->ModuleModel->getModule($aName);
 
         if (request()->isPost()) {
             //执行guide中的内容
-            $res = $this->moduleModel->install($module['id']);
+            $res = $this->ModuleModel->install($module['id']);
             
             if ($res === true) {
                 cache('ADMIN_MODULES_' . is_login(), null);
                 $this->success('安装模块成功。', '', cookie('__forward__'));
             } else {
-                $this->error('安装模块失败。' . $this->moduleModel->error);
+                $this->error('安装模块失败。' . $this->ModuleModel->error);
             }
 
         } else {
@@ -158,6 +187,101 @@ class Module extends Admin
             $builder->buttonSubmit();
             $builder->buttonBack();
             $builder->display();
+        }
+    }
+
+    /**
+     * 应用权限菜单首页
+     * @return none
+     */
+    public function menu(){
+        $app = input('app', '', 'text');
+        $title = input('title','','text');
+        $pid  = input('pid','0','text');
+        View::assign('pid',$pid);
+        $map = [];
+        
+        $list_map = [];
+        if(!empty($app)){
+            //获取上级数据
+            $map['name'] = $app;
+            $data = $this->ModuleModel->where($map)->find();
+            View::assign('data',$data);
+            $list_map[] = ['module', '=', $app];
+        }
+        
+        if(!empty($title)){
+            $list_map['title'] = ['like','%'.$title.'%'];
+        }
+        
+        $list = $this->MenuModel->where($list_map)->order('sort asc')->select()->toArray();
+        foreach($list as &$val){
+            $val = $this->MenuModel->handle($val);
+        }
+        unset($val);
+        // 转树结构
+        $list = list_to_tree($list, 'id', 'pid', '_child', $pid);
+        View::assign('list',$list);
+        
+        // 记录当前列表页的cookie
+        Cookie('__forward__', $_SERVER['REQUEST_URI']);
+        $this->setTitle('后台菜单管理');
+
+        return View::fetch();
+    }
+
+    /**
+     * 新增/编辑应用权限菜单
+     */
+    public function medit(){
+        
+        if(request()->isPost()){
+            $data = input('');
+            if($data['title'] == '') {
+                return $this->error('菜单标题不能为空');
+            }
+            if($data['url'] == '') {
+                return $this->error('菜单链接不能为空');
+            }
+
+            $res = $this->MenuModel->edit($data);
+            if($res){
+                //记录行为
+                action_log('update_menu', 'Menu', $data['id'], is_login());
+                return $this->success('保存成功', $res, cookie('__forward__'));
+            } else {
+                return $this->error('保存失败');
+            }
+            
+        } else {
+            $id = input('id','0','text');
+            $pid = input('pid','0','text');
+            View::assign('pid', $pid);
+            $info = [];
+            /* 获取数据 */
+            $info = $this->MenuModel->where(['id'=>$id])->find();
+
+            if(empty($info)){
+                $map['id'] = input('pid');
+                $info = $this->MenuModel->where($map)->field('module,pid,hide,type')->find();
+                $info['pid'] = input('pid','0','text');
+            }
+            View::assign('info', $info);
+
+            $menus = $this->MenuModel->order('sort asc,id asc')->select()->toArray();
+            //$tree = new Tree();
+            $menus = list_to_tree($menus, $title = 'title', $pk='id', $pid = 'pid', $root = '0');
+            $menus = array_merge([
+                0 => ['id'=>'0','title_show'=>'顶级菜单']
+            ], $menus);
+
+            View::assign('Menus', $menus);
+            $moduleModel = new ModuleModel();
+            View::assign('Modules',$moduleModel->getAll());
+
+            $this->setTitle('菜单编辑');
+
+            return View::fetch();
         }
     }
 

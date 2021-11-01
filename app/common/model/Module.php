@@ -13,17 +13,44 @@ class Module extends Model
     public $error = '';
     protected $moduleName = '';
 
+    public function edit($data)
+    {
+        if(!empty($data['id'])){
+            $res = $this->update($data);
+        }else{
+            $res = $this->save($data);
+        }
+
+        return $res;
+    }
+
+    /**
+     * Gets the data by identifier.
+     *
+     * @param      integer  $id     The identifier
+     *
+     * @return     <array>   The data by identifier.
+     */
+    public function getDataById($id)
+    {
+        if($id>0){
+            $data=$this->find($id);
+            return $data;
+        }
+        return null;
+    }
+
     /**
      * 获取已安装模块分页列表
      */
     public function getListByPage($map,$order='create_time desc',$field='*',$r=20)
     {
-        $this->reload();
+        //$this->reload();
 
         $list = $this->where($map)->order($order)->field($field)->paginate($r,false,['query'=>request()->param()]);
 
         foreach ($list as &$val) {
-            $val['icon'] = $this->getIcon($val['name']);
+            $val['icon'] = $this->getIcon($val['name'], $val['icon']);
         }
         unset($val);
 
@@ -38,7 +65,7 @@ class Module extends Model
     {
         $list = $this->where($where)->order('sort desc')->select()->toArray();
         foreach ($list as &$val) {
-            $val['icon'] = $this->getIcon($val['name']);
+            $val['icon'] = $this->getIcon($val['name'], $val['icon']);
         }
         unset($val);
 
@@ -87,15 +114,16 @@ class Module extends Model
         foreach ($dir as $subdir) {
             if (file_exists(APP_PATH . '/' . $subdir . '/info/info.php') && $subdir != '.' && $subdir != '..')
             {
+                // 获取配置数据
                 $info = $this->getInfo($subdir);
                 
-                //合并数据表内模块
-                $module_info = $this->getModule($info['name']);
+                // 合并数据表内模块
+                $module_info = $this->getModuleByName($info['name']);
                 if($module_info){
                     $module_info = $module_info->toArray();
                     
                     if(is_array($module_info)){
-                        $info = array_merge($module_info, $info);
+                        $info = array_merge($info, $module_info);
                     }
                 }
                 $module[] = $info;
@@ -143,7 +171,7 @@ class Module extends Model
      */
     public function checkCanVisit($name)
     {
-        $m = getModule($name);
+        $m = $this->getModule($name);
 
         if (isset($m['is_setup']) && $m['is_setup'] == 0 && $m['name'] == ucfirst($name)) {
             header("Content-Type: text/html; charset=utf-8");
@@ -157,7 +185,7 @@ class Module extends Model
      */
     public function checkInstalled($name)
     {
-        $m = getModule($name);
+        $m = $this->getModule($name);
 
         if ($m['name'] == $name && $m['is_setup']) {
             return true;
@@ -268,10 +296,18 @@ class Module extends Model
         }
 
         $info = $this->where(['name'=>$name])->find();
+        $info['icon'] = $this->getIcon($info['name'], $info['icon']);
 
-        if($info){
-            $info['icon'] = $this->getIcon($info['name']);
+        return $info;
+    }
+
+    public function getModuleByName($name)
+    {
+        if($name == 'admin'){
+            return false;
         }
+
+        $info = $this->where(['name'=>$name])->find();
 
         return $info;
     }
@@ -446,25 +482,20 @@ class Module extends Model
      * @param  [type] $name [description]
      * @return [type]       [description]
      */
-    private function getIcon($name)
+    private function getIcon($name, $icon)
     {
-        //图标所在位置为模块静态目录跟下（推荐）
-        if(file_exists(PUBLIC_PATH . '/static/' . $name . '/images/icon.jpg')){
-            $icon = '/static/'. $name .'/images/icon.jpg';
+        if(empty($icon)){
+            //图标所在位置为模块静态目录下（推荐）
+            if(file_exists(PUBLIC_PATH . '/static/' . $name . '/images/icon.jpg')){
+                $icon = '/static/'. $name .'/images/icon.jpg';
+            }else{
+                $icon = '/static/admin/images/module_default_icon.png';
+            }
         }else{
-            $icon = '/static/admin/images/module_default_icon.png';
+            $icon = get_attachment_src($icon);
         }
-
+        
         return $icon;
-    }
-
-    /**获取模块的相对目录
-     * @param $file
-     * @return string
-     */
-    private function getRelativePath($file)
-    {
-        return APP_PATH . $this->moduleName . $file;
     }
 
     /**
