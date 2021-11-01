@@ -14,6 +14,7 @@
 
 namespace app\unions\controller\service;
 
+use app\common\model\Member;
 use app\common\model\QrcodeLogin;
 use app\unions\model\WechatAutoReply;
 use app\unions\facade\OfficialAccount;
@@ -24,6 +25,7 @@ use EasyWeChat\Kernel\Messages\NewsItem;
 use EasyWeChat\Kernel\Messages\Text;
 use EasyWeChat\Kernel\Messages\Video;
 use EasyWeChat\Kernel\Messages\Voice;
+use thans\jwt\facade\JWTAuth;
 use think\Exception;
 
 /**
@@ -33,6 +35,7 @@ use think\Exception;
  */
 class WechatOfficialAccount
 {
+    private $shopid = 0;
     /**
      * 微信回调
      */
@@ -183,7 +186,7 @@ class WechatOfficialAccount
      */
     public function oauth()
     {
-        $target_url = 'http://www.baidu.com';
+        $target_url = input('param.target_url',request()->domain());
         OfficialAccount::oauth($target_url);
     }
 
@@ -195,15 +198,24 @@ class WechatOfficialAccount
         $app = OfficialAccount::getApp();
         $oauth = $app->oauth;
         // 获取 OAuth 授权结果用户信息
-        $user = $oauth->user();
-        $user = $user->toArray();
+        $user = $oauth->user()->getOriginal();
         //处理用户数据
-        dump($user);
-        die();
-
-
+        $memberModel = new Member();
+        $user['oauth_type'] = 1;//1为公众号授权
+        $user['shopid'] = $this->shopid;//1为公众号授权
+        $user['avatar'] = $user['headimgurl'];
+        $user = $memberModel->oauth($user);
+        $memberModel->updateLogin($user['uid']);
+        //生成token
+        $token = JWTAuth::builder(['uid' => $user['uid']]);
         //跳回原网页
         $target_url = input('param.target_url');
+        if (strpos($target_url,'?')){
+            $target_url .= "&token=" . $token;
+        }else{
+            $target_url .= "?token=" . $token;
+        }
+
         header("Location:{$target_url}");
         die;
     }

@@ -1,10 +1,11 @@
 <?php
 namespace app\common\model;
 
+use app\common\model\ActionLog;
+use think\Exception;
 use think\Model;
 use think\facade\Db;
 use think\facade\Config;
-use app\common\model\ActionLog;
 
 /**
  * 会员模型
@@ -328,8 +329,8 @@ class Member extends Model
     public function randEmail()
     {
         $email = create_rand(10) . '@muucmf.cn';
-        if ($this->where(['email' => $email])->select()) {
-            $this->rand_email();
+        if ($this->where('email',$email)->count() > 0) {
+            return $this->randEmail();
         } else {
             return $email;
         }
@@ -410,6 +411,58 @@ class Member extends Model
             return true;
         }
         return false;
+    }
+
+    /**
+     * 授权
+     */
+    public function oauth($data){
+        $syncModel = new MemberSync();
+        //是否已有授权信息
+        $sync = $syncModel->where('openid',$data['openid'])->find();
+        if ($sync){
+            $uid = $sync['uid'];
+        }else{
+            //是否已有开放平台相同的账户
+            $has_union = empty($data['unionid']);
+            if ($has_union){
+                $has_union = $syncModel->where('unionid',$data['unionid']);
+            }
+            if ($has_union){
+                $uid = $has_union['uid'];
+            }else{
+                $member_data = [
+                    'uid'       => 'default',
+                    'shopid'    => $data['shopid'],
+                    'nickname'  => $data['nickname'],
+                    'username'  => rand_username('oauth'),
+                    'password'  => user_md5( 123456,Config::get('auth.auth_key')),
+                    'avatar'    => $data['avatar'],
+                    'sex'       => $data['sex'],
+                    'email'     => $this->randEmail()
+                ];
+                $result = $this->save($member_data);
+                if (!$result){
+                    throw new Exception('存入用户信息失败');
+                }
+                $uid = $this->id;
+            }
+
+
+            $sync = $syncModel->edit([
+                'uid'       => $uid,
+                'openid'    => $data['openid'],
+                'unionid'   => $data['unionid'],
+                'type'      => $data['oauth_type']
+            ]);
+            //存入授权记录
+            if(!$sync){
+                throw new Exception('存入用户授权记录失败');
+            }
+            $actionLog = new ActionLog();
+            $actionLog->add('reg','member',1,$uid);
+        }
+        return $this->where('uid',$uid)->find();
     }
 
 }
