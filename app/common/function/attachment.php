@@ -290,7 +290,10 @@ function single_audio_upload($name, $audio, $input = false){
             $html .= <<<EOF
             <div class="input-group">
                 <input type="hidden" class="form-control attach" name="{$name}" value="{$audio}">
-                <input class="btn btn-default" type="file" accept="audio/*" value="{$upload}" />
+                <button class="btn btn-default btn-cos" type="button">
+                    {$upload}
+                    <input class="vos-upload" type="file" accept="audio/*" value="{$upload}" />
+                </button>
             </div>
             EOF;
         }else{
@@ -298,7 +301,10 @@ function single_audio_upload($name, $audio, $input = false){
             <div class="input-group">
                 <input type="text" class="form-control attach" data-name="{$name}" name="{$name}" value="{$audio}">
                 <span class="input-group-btn">
-                    <input class="btn btn-default" type="file" accept="audio/*" value="{$upload}" />
+                    <button class="btn btn-default btn-cos" type="button">
+                        {$upload}
+                        <input class="vos-upload" type="file" accept="audio/*" value="{$upload}" />
+                    </button>
                 </span>
             </div>
             EOF;
@@ -309,6 +315,20 @@ function single_audio_upload($name, $audio, $input = false){
         EOF;
 
         $html .= <<<EOF
+        <style>
+            #upload_single_audio_{$name} .btn-cos {
+                position: relative;
+            }
+            .vos-upload {
+                position: absolute;
+                font-size: 48px;
+                right: 0;
+                top: 0;
+                opacity: 0;
+                filter: alpha(opacity=0);
+                cursor: pointer;
+            }
+        </style>
         <script src="https://cdn-go.cn/cdn/vod-js-sdk-v6/latest/vod-js-sdk-v6.js"></script>
         <script>
             $(function () {

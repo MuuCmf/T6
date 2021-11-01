@@ -82,6 +82,7 @@ class Attachment extends Model
                 $data['size'] = $file->getSize();
                 $data['mime'] = $file->getMime();
                 $data['type'] = 'image';  // 类型用字符串 pic file audio video
+                $data['driver'] = 'loacal';
                 $savename = Filesystem::disk('public')->putFile( 'images', $file);
                 // 成功上传后 获取上传信息
                 $data['attachment'] = $savename;
@@ -104,6 +105,7 @@ class Attachment extends Model
                         if(file_exists($file_path)){
                             unlink($file_path);
                         }
+                        $data['driver'] = 'oss';
                     }
                 }
                 // 腾讯云COS
@@ -117,6 +119,7 @@ class Attachment extends Model
                         if(file_exists($file_path)){
                             unlink($file_path);
                         }
+                        $data['driver'] = 'cos';
                     }
                 }
 
@@ -165,7 +168,8 @@ class Attachment extends Model
                 $data['sha1'] = $file->hash('sha1');
                 $data['size'] = $file->getSize();
                 $data['mime'] = $file->getMime();
-                $data['type'] = 'file';  // 类型用字符串 pic file audio video
+                $data['type'] = 'file';  // 类型用字符串 image file audio video
+                $data['driver'] = 'loacal';
                 // 根据不同mimeType放入不同目录
                 $mime_arr = explode('/', $data['mime']);
 
@@ -183,6 +187,7 @@ class Attachment extends Model
                     default:
                         $file_dir = 'file';
                 }
+                $data['type'] = $file_dir;
                 $savename = Filesystem::disk('public')->putFile( $file_dir, $file);
                 // 成功上传后 获取上传信息
                 $data['attachment'] = $savename;
@@ -203,6 +208,7 @@ class Attachment extends Model
                         if(file_exists($file_path)){
                             unlink($file_path);
                         }
+                        $data['driver'] = 'oss';
                     }
                 }
                 // 腾讯云COS
@@ -216,6 +222,7 @@ class Attachment extends Model
                         if(file_exists($file_path)){
                             unlink($file_path);
                         }
+                        $data['driver'] = 'cos';
                     }
                 }
 
