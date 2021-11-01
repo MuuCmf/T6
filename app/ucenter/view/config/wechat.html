@@ -74,9 +74,9 @@
         },function (res) {
             if (res.code == 200){
                 window.location.reload();
-                toast.success('绑定成功');
+                toast.success(res.msg);
             }else{
-                toast.error('绑定失败');
+                toast.error(res.msg);
             }
         })
     })

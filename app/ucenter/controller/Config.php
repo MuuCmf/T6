@@ -315,6 +315,12 @@ class Config extends Common
         if (request()->isAjax()){
             //绑定用户信息
             $params = input('param.');
+            //是否绑定过其他账号
+            $bind_map =[];
+            $bind_map[] = ['openid','=', $params['openid']];
+            $bind_map[] = ['type','=',1];
+            $has_bind = boolval((new MemberSync())->where($bind_map)->count());
+            if ($has_bind) $this->error('当前微信已绑定了其他账号');
             $data = [
                 'uid'     => get_uid(),
                 'openid'  => $params['openid'],
