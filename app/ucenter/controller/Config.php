@@ -3,6 +3,8 @@ declare (strict_types = 1);
 
 namespace app\ucenter\controller;
 
+use app\common\model\MemberSync;
+use app\unions\controller\service\WechatOfficialAccount;
 use think\facade\Db;
 use think\facade\View;
 use app\common\controller\Common;
@@ -306,6 +308,40 @@ class Config extends Common
         View::assign('action_module', $action_module);
         
         View::assign('tab', 'score');
+        return View::fetch();
+    }
+
+    public function wechat(){
+        if (request()->isAjax()){
+            //绑定用户信息
+            $params = input('param.');
+            $data = [
+                'uid'     => get_uid(),
+                'openid'  => $params['openid'],
+                'unionid' => $params['unionid'] ?? '',
+                'type'    => 1
+            ];
+            $res = (new MemberSync())->edit($data);
+            if ($res){
+                $this->success('绑定成功');
+            }
+            $this->error('绑定失败，请稍后再试！');
+        }
+        $uid = get_uid();
+        $self = query_user($uid, array('nickname','avatar' ,'score1', 'score2', 'score3', 'score4'));
+        //是否绑定微信
+        $bind_map =[];
+        $bind_map[] = ['uid','=',$uid];
+        $bind_map[] = ['type','=',1];
+        $has_bind = boolval((new MemberSync())->where($bind_map)->count());
+        //异步扫码key
+        $scene_key = create_unique();
+        View::assign([
+            'user'      => $self,
+            'has_bind'  => boolval($has_bind),
+            'qrcode'    => WechatOfficialAccount::loginQrcode($scene_key),
+            'scene_key' => $scene_key
+        ]);
         return View::fetch();
     }
 

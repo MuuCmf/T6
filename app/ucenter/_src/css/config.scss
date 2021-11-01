@@ -16,6 +16,46 @@
     }
 }
 
+.bind-wechat{
+    background-color: #ffffff;
+    min-height: 185px;
+    .bind{
+        padding: 40px 0 0 40px;
+        color: #449d44;
+    }
+    .no-bind{
+        .qrcode{
+            text-align: center;
+            padding: 20px;
+            img{
+                width: 200px;
+                height: 200px;
+            }
+            .scan-status{
+                color: #c4c4c4;
+            }
+        }
+        .user{
+            display: none;
+            padding: 65px 0 0 10px;
+            .user-info{
+                padding-bottom: 20px;
+                .wx-avatar{
+                    width: 50px;
+                    height: 50px;
+                    border-radius: 50%;
+                    margin-right: 10px;
+                }
+                .wx-nickname{
+                    color: #222222;
+                }
+            }
+            .confirm{
+                margin-left: 30px;
+            }
+        }
+    }
+}
 
 
 

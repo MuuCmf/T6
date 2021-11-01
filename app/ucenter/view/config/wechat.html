@@ -1,0 +1,84 @@
+{extend name="../../common/view/main"/}
+{block name="style"}
+<link href="__STATIC__/ucenter/css/main.min.css" rel="stylesheet">
+{/block}
+{block name="body"}
+<div class="main-wrapper">
+
+    <!--用户设置顶部-->
+    {include file="config/_header"/}
+    <!--用户设置顶部end-->
+
+    <div id="main-container" class="container user-config">
+        <div class="row">
+            <div class="col-xs-3">
+                {include file="config/_slide"/}
+            </div>
+            <div class="col-xs-9">
+                <div id="usercenter-content-td ">
+                    <div class="bind-wechat col-md-12">
+                        {if $has_bind}
+                        <div class="bind">
+                            <span>绑定成功</span>
+                        </div>
+                        {else /}
+                        <div class="no-bind">
+                            <div class="col-md-6 qrcode">
+                                <img src="{$qrcode}" alt="">
+                                <div class="scan-status">未扫码</div>
+                            </div>
+                            <div class="col-md-6 user">
+                                <div class="user-info">
+                                    <img class="wx-avatar" src="" alt="">
+                                    <span class="wx-nickname"></span>
+                                </div>
+                                <button class="btn btn-info confirm btn-bind" type="button">绑定</button>
+                            </div>
+                        </div>
+                        {/if}
+                    </div>
+                </div>
+            </div>
+            <div class="clearfix"></div>
+        </div>
+    </div>
+</div>
+{/block}
+
+{block name="script"}
+<script src="__STATIC__/ucenter/js/main.min.js"></script>
+<script>
+    var sceneKey = '{$scene_key}';
+    var userInfo = null;
+    hasScan();
+    function hasScan() {
+        $.get('{:url("unions/service.wechat_official_account/hasScan")}',{scene_key:sceneKey},function (res) {
+            if (res.code == 200){
+                $('.scan-status').text('已扫码');
+                $('.user').css('display','block');
+                $('.wx-avatar').attr('src',res.data.headimgurl);
+                $('.wx-nickname').text(res.data.nickname);
+                userInfo = res.data;
+            }else{
+                setTimeout(function () {
+                    hasScan()
+                },3000)
+            }
+        })
+    }
+
+    $('.btn-bind').on('click','',function () {
+        $.post("./wechat",{
+            openid:userInfo.openid,
+            unionid:userInfo.unionid,
+        },function (res) {
+            if (res.code == 200){
+                window.location.reload();
+                toast.success('绑定成功');
+            }else{
+                toast.error('绑定失败');
+            }
+        })
+    })
+</script>
+{/block}

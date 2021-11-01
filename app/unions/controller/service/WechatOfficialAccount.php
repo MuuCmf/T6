@@ -14,6 +14,7 @@
 
 namespace app\unions\controller\service;
 
+use app\common\controller\Base;
 use app\common\model\Member;
 use app\common\model\QrcodeLogin;
 use app\unions\model\WechatAutoReply;
@@ -33,7 +34,7 @@ use think\Exception;
  * Class WechatOfficaialAccount
  * @package app\unions\controller\service
  */
-class WechatOfficialAccount
+class WechatOfficialAccount extends Base
 {
     private $shopid = 0;
     /**
@@ -165,9 +166,8 @@ class WechatOfficialAccount
      * @param $scene_key
      * @return \think\response\Json
      */
-    public static function loginQrcode($scene_key){
+    public static function loginQrcode($scene_key, $params = array()){
         //模板调用
-        //{:app\\api\\controller\\OfficialAccountService::loginQrcode(create_unique())}
         $access_token = OfficialAccount::getToken();
         $qrcode_url = 'https://api.weixin.qq.com/cgi-bin/qrcode/create?access_token=' . $access_token['access_token'];
         $qrcode_url .= "&islogin=1";
@@ -175,10 +175,24 @@ class WechatOfficialAccount
         $result = OfficialAccount::createQrcode($qrcode_url , 60 * 60);
         $ticket = $result['ticket'];
         $qrcode = OfficialAccount::getQrcodeUrl($ticket);
+        return $qrcode;
+    }
+
+    /**
+     * 是否扫码
+     */
+    public function hasScan(){
         if (request()->isAjax()){
-            return json($qrcode);
+            $scene_key = input('get.scene_key','');
+            $data = (new QrcodeLogin())->getDataByMap([
+                ['scene_key','=',$scene_key]
+            ]);
+            if (!empty($data)){
+                $data = json_decode($data['metadata'],true);
+                $this->success('success',$data);
+            }
+            $this->error('没有查询到相关数据');
         }
-        echo $qrcode;
     }
 
     /**
