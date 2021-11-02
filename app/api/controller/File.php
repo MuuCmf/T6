@@ -21,17 +21,17 @@ class File extends Base
 
         $this->upload = new Attachment();
     }
-    /* 图片上传 */
-    public function pic()
+
+    /* 通用文件上传 */
+    public function upload()
     {   
-        //自定义目录名，暂只支持云存储
-        $dirname = input('dirname','','text');
         $files = request()->file();
+
         if (empty($files)) {
             return $this->error('未选择文件');
         }
 
-        $result = $this->upload->upload($files,'pic',$dirname);
+        $result = $this->upload->upload($files,'file');
 
         if(is_array($result)){
             return $this->result(200, '上传成功', $result);
@@ -40,26 +40,6 @@ class File extends Base
         }
     }
 
-    /* 文件上传 */
-    public function file()
-    {   
-        //自定义目录名，暂只支持云存储
-        $dirname = input('dirname','','text');
-        $files = request()->file();
-
-        if (empty($files)) {
-            return $this->error('未选择文件');
-        }
-
-        $result = $this->upload->upload($files,'file',$dirname);
-
-        if(is_array($result)){
-            return $this->result(200, '上传成功', $result);
-        }else{
-            return $this->result(0, '上传失败');
-        }
-    }
-    
     /**
      * 用户头像上传
      * @return [type] [description]

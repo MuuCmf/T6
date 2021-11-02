@@ -30,11 +30,8 @@ class Attachment extends Model
      *
      * @return     <type>  ( description_of_the_return_value )
      */
-    public function upload($files, $type = "pic", $dirname = '', $uid = 0)
+    public function upload($files, $type = "file", $dirname = '', $uid = 0)
     {
-        if($type=='pic'){
-            $result = $this->picture($files, $dirname);
-        }
         if($type=='file'){
             $result = $this->file($files, $dirname);
         }
@@ -47,94 +44,6 @@ class Attachment extends Model
 
         return $result;
 
-    }
-
-    /**
-     * 图片上传
-     *
-     * @param      <type>         $files  The files
-     *
-     * @return     array|boolean  ( description_of_the_return_value )
-     */
-    private function picture($files, $dirname)
-    {
-        if (empty($files)) {
-            return false;
-        }
-        foreach($files as $file){
-            //判断是否已经存在
-            $sha1 = $file->hash('sha1');
-            //处理已存在图片
-            $pic_info = $this->where(['sha1'=>$sha1])->find();
-            if(!empty($pic_info)){
-                $img = [];
-                $data = $pic_info->toArray();
-                $img['filename'] = $data['filename'];
-                $img['size'] = $data['size'];
-                $img['attachment'] = $data['attachment'];
-                $img['url'] = get_attachment_src($data['attachment']);
-            }else{
-                //构建返回数据
-                $data['filename'] = $file->getOriginalName();
-                $data['ext'] = $file->getOriginalExtension();
-                $data['md5'] = $file->hash('md5');
-                $data['sha1'] = $file->hash('sha1');
-                $data['size'] = $file->getSize();
-                $data['mime'] = $file->getMime();
-                $data['type'] = 'image';  // 类型用字符串 pic file audio video
-                $data['driver'] = 'loacal';
-                $savename = Filesystem::disk('public')->putFile( 'images', $file);
-                // 成功上传后 获取上传信息
-                $data['attachment'] = $savename;
-                $data['attachment'] = str_replace("\\","/",$data['attachment']);
-                //dump($data);exit;
-                
-                //获取上传驱动
-                $driver = config('extend.PICTURE_UPLOAD_DRIVER');
-                if($driver == 'local'){
-                    // 本地无需处理
-                }
-                // 阿里云OSS
-                if($driver == 'aliyun') {
-                    $oss_res = $this->ossUpload($data['attachment'], $file->getPathname());
-                    // 上传成功
-                    if($oss_res === true){
-                        // 删除本地文件
-                        $attachment_path = app()->getRootPath() . 'public/attachment';
-                        $file_path = $attachment_path . '/' . $data['attachment'];
-                        if(file_exists($file_path)){
-                            unlink($file_path);
-                        }
-                        $data['driver'] = 'oss';
-                    }
-                }
-                // 腾讯云COS
-                if($driver == 'tencent') {
-                    $cos_res = $this->cosUpload($data['attachment'], $file->getPathname());
-                    // 上传成功
-                    if($cos_res === true){
-                        // 删除本地文件
-                        $attachment_path = app()->getRootPath() . 'public/attachment';
-                        $file_path = $attachment_path . '/' . $data['attachment'];
-                        if(file_exists($file_path)){
-                            unlink($file_path);
-                        }
-                        $data['driver'] = 'cos';
-                    }
-                }
-
-                // 写入数据库
-                $this->save($data);
-                // 返回数据
-                $img = [];
-                $img['filename'] = $data['filename'];
-                $img['size'] = $data['size'];
-                $img['attachment'] = $data['attachment'];
-                $img['url'] = get_attachment_src($data['attachment']);
-                
-            }
-        }
-        return $img;
     }
 
     /**
@@ -187,7 +96,7 @@ class Attachment extends Model
                     default:
                         $file_dir = 'file';
                 }
-                $data['type'] = $file_dir;
+                $data['type'] = $mime_arr[0];
                 $savename = Filesystem::disk('public')->putFile( $file_dir, $file);
                 // 成功上传后 获取上传信息
                 $data['attachment'] = $savename;
