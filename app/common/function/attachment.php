@@ -13,7 +13,7 @@ function single_image_upload($name, $image, $input = false){
     $image_path = get_attachment_src($image);
     $upload_picture = '上传图片';
     $delete_picture = '删除';
-    $api = url('api/file/pic');
+    $api = url('api/file/upload');
     //兼容name数组形式
     $input_name = $name;
 
@@ -144,7 +144,7 @@ function multi_image_upload($name, $images = '')
     $delete_picture = '删除';
     $picture_exists = '该图片已存在';
     $limit_exceed = '超过图片限制';
-    $api = url('api/file/pic');
+    $api = url('api/file/upload');
 
     $html = '';
     $html .= '
@@ -465,7 +465,7 @@ function single_audio_upload($name, $audio, $input = false){
 
     }else{
         // 本地或云存储的方式上传
-        $api = url('api/file/file');
+        $api = url('api/file/upload');
         $html .= <<<EOF
         <script>
             $(function () {
@@ -561,7 +561,7 @@ function single_video_upload($name, $video ,$input = false){
 
     $upload = "上传视频";
     $video_path = get_attachment_src($video);
-    $api = url('api/file/file');
+    $api = url('api/file/upload');
     //$input_name = $name;
     //兼容name数组形式
     $name = preg_replace('/\[.*?\]/', '', $name);
@@ -894,7 +894,7 @@ function single_file_upload($name, $file, $input = false){
     $file_path = get_attachment_src($file);
     $upload = '上传文件';
     $delete = '删除';
-    $api = url('api/file/file');
+    $api = url('api/file/upload');
     //兼容name数组形式
     $name = preg_replace('/\[.*?\]/', '', $name);
     $html = <<<EOF
