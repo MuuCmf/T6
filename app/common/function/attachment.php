@@ -328,7 +328,6 @@ function single_audio_upload($name, $audio, $input = false){
             </div>
             EOF;
         }
-        
     }
 
     $html .= <<<EOF
@@ -597,7 +596,7 @@ function single_video_upload($name, $video ,$input = false){
                 <span class="input-group-btn">
                     <button class="btn btn-default btn-upload" type="button">
                         {$upload}
-                        <input class="vos-upload" type="file" accept="audio/*" />
+                        <input class="vos-upload" type="file" accept="video/*" />
                     </button>
                 </span>
             EOF;
@@ -615,7 +614,7 @@ function single_video_upload($name, $video ,$input = false){
                 <input type="hidden" class="form-control attach" name="{$name}" value="{$video}">
                 <button class="btn btn-default btn-upload" type="button">
                     {$upload}
-                    <input class="vos-upload" type="file" accept="audio/*" />
+                    <input class="vos-upload" type="file" accept="video/*" />
                 </button>
             EOF;
         }else{
@@ -637,6 +636,7 @@ function single_video_upload($name, $video ,$input = false){
         $sign_api = url('api/vod/sign');
         // 写入附件表接口
         $attachment_api = url('api/file/attachment');
+
         $html .= <<<EOF
         <style>
             #upload_single_video_{$name} .btn-upload {
@@ -654,7 +654,117 @@ function single_video_upload($name, $video ,$input = false){
             }
         </style>
         <script src="https://cdn-go.cn/cdn/vod-js-sdk-v6/latest/vod-js-sdk-v6.js"></script>
-
+        <script>
+            $(function () {
+                //上传按钮事件绑定
+                $('#upload_single_video_{$name}').off('change').on('change','input[type="file"]',function(){
+                    var mediaFile = this.files[0];
+                    //console.log(mediaFile);
+                    //云点播签名获取函数
+                    function getSignature() {
+                        var url = '{$sign_api}';
+                        var sign = '';
+                        $.ajax({
+                            url: url,//请求路径
+                            async: false,
+                            data: '',
+                            type: "POST",//GET
+                            //dataType: "JSON",//需要返回JSON对象(如果Ajax返回的是手动拼接的JSON字符串,需要Key,Value都有引号)
+                            success: function(resp) {
+                                //处理 resp.responseText;
+                                sign = resp;
+                            },
+                            error: function(a, b, c) {
+                                //a,b,c三个参数,具体请参考JQuery API
+                                alert('签名错误');
+                            }
+                        });
+                        return sign;
+                    };
+                    //写入云点播本地存储表
+                    function writerVodAttachment(params,type,mediaFile){
+                        // 获取文件扩展名
+                        var filename = mediaFile.name;
+                        var index = filename.lastIndexOf(".");
+                        var suffix = filename.substr(index+1);
+                        // 接口路径
+                        var url = '{$attachment_api}';
+                        // 异步请求
+                        $.ajax({
+                            url: url,// 请求路径
+                            data: {
+                                'filename': mediaFile.name,
+                                'attachment': params.video.url,
+                                'type': type, // 附件类型
+                                'mime': mediaFile.type,
+                                'size': mediaFile.size,
+                                'ext': suffix,
+                                'driver': 'tcvod',
+                                'file_id': params.fileId,
+                            },
+                            type: "POST",//GET
+                            success: function(resp) {
+                                // 写入文本框
+                                $('#upload_single_video_{$name} input[name="{$name}"]').val(params.video.url);
+                                $('#upload_single_video_{$name}').find('.upload-video-box').html(
+                                    '<div class="box-item">' +
+                                        '<video controls >' + 
+                                            '<source src="' + params.video.url + '" ></source>' +
+                                            '您的浏览器暂不支持播放该视频，请升级至最新版浏览器。' +
+                                        '</video>' +
+                                    '<div class="remove-box text-center opacity del_btn">删除</div>' +
+                                '</div>'
+                                );
+                            },
+                            error: function(a, b, c) {
+                                alert('写入数据错误');
+                            }
+                        });
+                    }
+                    // 开始上传至腾讯云点播
+                    var tcVod = new TcVod.default({
+                        getSignature: getSignature // 前文中所述的获取上传签名的函数
+                    });
+                    var uploader = tcVod.upload({
+                        mediaFile: mediaFile, // 媒体文件（视频或音频或图片），类型为 File
+                    });
+                    // 上传完成时
+                    uploader.on('media_upload', function(info) {
+                        //console.log(info);
+                    });
+                    uploader.on('media_progress', function(info) {
+                        //console.log(info.percent) // 进度
+                        var percentage = info.percent; //进度值
+                        var box = $('#upload_single_video_{$name} .progress-box');
+                        var percent = box.find('.progress .progress-bar');
+                        // 避免重复创建
+                        if (!percent.length) {
+                            var html = '<div class="progress">'+
+                            '               <div class="progress-bar" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width: 0%">'+
+                            '                   <span class="sr-only">0% Complete (success)</span>'+
+                            '               </div>'+
+                            '            </div>'+
+                            '            <strong><span class="progressbar-value">0</span>%</strong>';
+                            percent = $(html).appendTo(box).find('.progress-bar');
+                        }
+                        var progress_val = Math.round(percentage * 100);
+                        percent.css('width', progress_val + '%');
+                        box.find('.progressbar-value').text(progress_val);
+                    });
+                    uploader.done().then(function (doneResult) {
+                        //console.log(doneResult);
+                        //移除进度条
+                        $('#upload_single_video_{$name} .progress-box').html('');
+                        //写入本地存储表
+                        writerVodAttachment(doneResult,'video',mediaFile)
+                        // deal with doneResult
+                    }).catch(function (err) {
+                        console.log(err);
+                    // deal with error
+                    });
+                });
+            });
+        </script>
         EOF;
 
     }else{
@@ -739,8 +849,7 @@ function single_video_upload($name, $video ,$input = false){
                     }
                     toast.hideLoading();
                 });
-    
-                //移除图片
+                //移除
                 $('.single-video-upload').on('click','.del_btn',function(){
                     $(this).parent().parent().next().find("[name='{$name}']").val('');
                     $(this).parent().remove();
