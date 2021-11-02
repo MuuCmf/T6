@@ -898,7 +898,7 @@ function single_file_upload($name, $file, $input = false){
     //兼容name数组形式
     $name = preg_replace('/\[.*?\]/', '', $name);
     $html = <<<EOF
-        <div class="single-file-upload file-upload controls">
+        <div id="upload_single_file_{$name}" class="single-file-upload file-upload controls">
     EOF;
 
     $html .= '<div class="upload-file-box">';
@@ -910,12 +910,12 @@ function single_file_upload($name, $file, $input = false){
     EOF;
 }
     $html .= '</div>';
-
+    $html .= '<div class="progress-box"></div>';
     if($input == false){
         $html .= <<<EOF
         <div class="input-group">
             <input type="hidden" class="form-control attach" name="{$name}" value="{$file}">
-            <button id="upload_single_file_{$name}" class="btn btn-default" type="button">{$upload}</button>
+            <button class="btn btn-default btn-upload" type="button">{$upload}</button>
         </div>
         EOF;
     }else{
@@ -923,7 +923,7 @@ function single_file_upload($name, $file, $input = false){
         <div class="input-group">
             <input type="text" class="form-control attach" data-name="{$name}" name="{$name}" value="{$file}">
             <span class="input-group-btn">
-                <button id="upload_single_file_{$name}" class="btn btn-default" type="button">{$upload}</button>
+                <button class="btn btn-default btn-upload" type="button">{$upload}</button>
             </span>
         </div>
 EOF;
@@ -945,7 +945,7 @@ $html .= <<<EOF
             server: "{$api}",
             // 选择文件的按钮。可选。
             // 内部根据当前运行是创建，可能是input元素，也可能是flash.
-            pick: {id:'#upload_single_file_{$name}',multiple: false},
+            pick: {id:'#upload_single_file_{$name} .btn-upload',multiple: false},
             // 只允许选择文件
             accept: {
                 title: 'File',
@@ -957,6 +957,26 @@ $html .= <<<EOF
             uploader_{$name}.upload();
             toast.showLoading();
         });
+        //进度条
+        uploader_{$name}.on('uploadProgress', function( file,percentage ) {
+            var percentage = percentage; //进度值
+            var box = $('#upload_single_file_{$name} .progress-box');
+            var percent = box.find('.progress .progress-bar');
+            //显示控制按钮
+            // 避免重复创建
+            if (!percent.length) {
+                var html = '<div class="progress">'+
+                '               <div class="progress-bar" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100" style="width: 0%">'+
+                '                   <span class="sr-only">0% Complete (success)</span>'+
+                '               </div>'+
+                '            </div>'+
+                '            <strong><span class="progressbar-value">0</span>%</strong>';
+                percent = $(html).appendTo(box).find('.progress-bar');
+            }
+            var progress_val = Math.round(percentage * 100);
+            percent.css('width', progress_val + '%');
+            box.find('.progressbar-value').text(progress_val);
+        }),
         /*上传成功**/
         uploader_{$name}.on('uploadSuccess', function (file, data) {
             if (data.code) {
@@ -974,6 +994,8 @@ $html .= <<<EOF
         //上传完成
         uploader_{$name}.on( 'uploadComplete', function( file ) {
             toast.hideLoading();
+            //移除进度条
+            $('#upload_single_file_{$name} .progress-box').html('');
         });
         // 发生错误
         uploader_{$name}.on( 'error', function( err ) {
