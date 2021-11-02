@@ -16,6 +16,7 @@ namespace app\unions\service\wechat;
 use app\unions\model\MiniProgramConfig;
 use EasyWeChat\Factory;
 use think\Exception;
+use think\facade\Cache;
 
 /**
  * 微信小程序类
@@ -23,10 +24,12 @@ use think\Exception;
  * @package app\unions\service\wechat
  */
 class MiniProgram extends Wechat{
-    function __construct($app)
+    function __construct()
     {
         $this->type = 'wechat_mini_program';
         //服务配置文件
+        $this->shopid = Cache::get('shopid') ?: 0;
+        $this->module = Cache::get('module_name') ?: '';
         $config = $this->config = $this->initConfig();
         $app = Factory::miniProgram($config);
         parent::__construct($app);
@@ -35,8 +38,8 @@ class MiniProgram extends Wechat{
     public function initConfig(){
         //获取配置信息
         $map = [
-            ['shopid' ,'=' ,0],
-            ['name' ,'=' ,'classroom'],
+            ['shopid' ,'=' ,$this->shopid],
+            ['name' ,'=' , $this->module],
             ['platform' ,'=' ,'wechat']
         ];
         $data = (new MiniProgramConfig())->where($map)->find();
@@ -50,5 +53,14 @@ class MiniProgram extends Wechat{
             //生成日志
             'log' => $this->log(),
         ];
+    }
+
+    /**
+     * code获取用户信息
+     * @param $code
+     * @return mixed
+     */
+    public function user($code){
+        return $this->app->auth->session($code);
     }
 }

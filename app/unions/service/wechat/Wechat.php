@@ -12,6 +12,8 @@
  * +----------------------------------------------------------------------
  */
 namespace app\unions\service\wechat;
+use think\facade\Cache;
+
 /**
  * 微信服务
  * Class Wechat
@@ -23,6 +25,8 @@ abstract class Wechat{
     public $app;
     public $separator;
     public $config;
+    public $shopid;
+    public $module;
     public function __construct($app)
     {
         $this->separator = DIRECTORY_SEPARATOR;

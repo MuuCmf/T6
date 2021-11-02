@@ -100,6 +100,7 @@ class OfficialAccount extends MuuAdmin {
         $params = input('get.');
         $where = [
             ['status','>=',0],
+            ['shopid','=',$this->shopid]
         ];
         if (isset($params['keyword']) && !empty($params['keyword'])) $where[] = ['keyword','like','%' . $params['keyword'] . '%'];
         $page = max(1,isset($params['page']) ?? $params['page']);
@@ -132,6 +133,7 @@ class OfficialAccount extends MuuAdmin {
             $data['type'] = input('post.type', 1, 'intval');
             $data['material_json'] = input('post.material_json', '', 'text');
             $data['status'] = input('post.status', 0, 'intval');
+            $data['shopid'] = $this->shopid;
             $data['id'] = $aId;
             if ($msg_type == 1){
                 $data['msg_type'] = 'text';

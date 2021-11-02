@@ -15,6 +15,7 @@ namespace app\unions\service\wechat;
 use app\unions\model\WechatConfig;
 use EasyWeChat\Factory;
 use think\Exception;
+use think\facade\Cache;
 
 /**
  * 微信公众号类
@@ -26,6 +27,8 @@ class OfficialAccount extends Wechat {
     {
         $this->type = 'wechat_official_account';
         //服务配置文件
+        $this->shopid = Cache::get('shopid') ?: 0;
+        $this->module = Cache::get('module_name') ?: '';
         $config = $this->config =  $this->initConfig();
         $app =  Factory::officialAccount($config);
         parent::__construct($app);
@@ -33,7 +36,7 @@ class OfficialAccount extends Wechat {
     public function initConfig()
     {
         //获取配置信息
-        $data = (new WechatConfig())->getWechatConfigByShopId();
+        $data = (new WechatConfig())->getWechatConfigByShopId($this->shopid);
         if (empty($data)){
             throw  new Exception('公众号配置文件不存在');
         }

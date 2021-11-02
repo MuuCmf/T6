@@ -29,7 +29,7 @@ class WechatConfig extends BaseModel{
      * @throws \think\db\exception\DbException
      * @throws \think\db\exception\ModelNotFoundException
      */
-    function getWechatConfigByShopId(int $shopid = 0)
+    function getWechatConfigByShopId($shopid = 0)
     {
         $res = $this->where(
             [
