@@ -28,14 +28,15 @@ class MiniProgram extends Wechat{
     {
         $this->type = 'wechat_mini_program';
         //服务配置文件
-        $this->shopid = Cache::get('shopid') ?: 0;
-        $this->module = Cache::get('module_name') ?: '';
+
         $config = $this->config = $this->initConfig();
         $app = Factory::miniProgram($config);
         parent::__construct($app);
     }
 
     public function initConfig(){
+        $this->shopid = Cache::get('shopid') ?: 0;
+        $this->module = Cache::get('module_name') ?: '';
         //获取配置信息
         $map = [
             ['shopid' ,'=' ,$this->shopid],
@@ -44,7 +45,7 @@ class MiniProgram extends Wechat{
         ];
         $data = (new MiniProgramConfig())->where($map)->find();
         if (empty($data)){
-            throw  new Exception('公众号配置文件不存在');
+            throw  new Exception('小程序配置信息不存在');
         }
         return [
             'app_id' => $data['appid'],

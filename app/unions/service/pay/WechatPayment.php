@@ -12,20 +12,22 @@
  * +----------------------------------------------------------------------
  */
 namespace app\unions\service\pay;
+use app\common\model\Orders;
+use app\unions\model\MiniProgramConfig;
 use EasyWeChat\Factory;
 use think\Exception;
 
 class WechatPayment extends PayService{
 
-    function __construct()
+    function __construct($appid)
     {
         $this->type = 'wechat';
         //服务配置文件
-        $config = $this->config =  $this->initConfig();
+        $config = $this->config =  $this->initConfig($appid);
         $app =  Factory::payment($config);
         parent::__construct($app);
     }
-    public function initConfig()
+    public function initConfig($appid)
     {
         //获取配置信息
         $mchid = config('extend.WX_PAY_MCH_ID');
@@ -36,16 +38,13 @@ class WechatPayment extends PayService{
         if (empty($key)){
             throw new Exception('请填写商户密钥');
         }
-        //登录信息中，保存当前应用appid
-        $appid = [];
-        $appid = 'wx90fcefad8616a371';
         return [
             'app_id' => $appid,
             'mch_id' => $mchid,
             'key' => $key,
             'cert_path' => app()->getRootPath() . 'public/cert/wechat_cert.pem',
             'key_path' => app()->getRootPath() . 'public/cert/wechat_key.pem',
-            'notify_url' => request()->domain() . "/api/PayService/callback",
+            'notify_url' => request()->domain() . "/union/PayService/callback",
             'sandbox' => $this->sandbox,//沙盒模式开关
         ];
     }
@@ -67,8 +66,27 @@ class WechatPayment extends PayService{
         return $res;
     }
     
-    public function refund()
+    public function refund($order)
     {
         // TODO: Implement refund() method.
+        // 参数分别为：商户订单号、商户退款单号、订单金额、退款金额、其他参数
+        return $this->app->refund->byOutTradeNumber($order['order_no'], $order['refund_no'], $order['price'], $order['config'] ?? []);
+
+    }
+    public function notify($params)
+    {
+        // TODO: Implement notify() method.
+        if($params['return_code'] == 'SUCCESS' && $params['result_code'] == 'SUCCESS'){
+            //查询订单是否已支付
+            $map = [];
+            $map[] = ['paid','=',1];
+            $map[] = ['order_no','=',$params['out_trade_no']];
+            $count = Orders::where($map)->count();
+            if ($count > 0){
+                return  false;
+            }
+            return true;
+        }
+        return false;
     }
 }

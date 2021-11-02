@@ -465,4 +465,34 @@ class Member extends Model
         return $this->where('uid',$uid)->find();
     }
 
+    /**
+     * 更新用户余额 或积分
+     * @param $uid
+     * @param $field
+     * @param $num
+     * @param int $type
+     * @return Member|bool
+     */
+    public static function updateAmount($uid,$field,$num,$type = 1){
+        $value = Member::where('uid',$uid)->value($field);
+        //加法
+        if ($type == 1){
+            $value = bcadd($value,$num,2);
+        }else{
+            $value = bcsub($value,$num,2);
+        }
+        if ($value >= 0){
+            $result = Member::where('uid',$uid)->update([
+                $field => $value
+            ]);
+            if ($result !== false){
+                $result = true;
+            }
+        }else{
+            $result = false;
+        }
+        return $result;
+    }
+
+
 }

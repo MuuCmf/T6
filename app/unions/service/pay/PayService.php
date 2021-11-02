@@ -18,6 +18,9 @@ abstract class PayService{
     public $config;
     public $type;
     public $sandbox;//沙箱模式
+    public $module;//模块
+    public $shopid;//店铺Id
+    public $platform;//平台
     public function __construct($app)
     {
         $this->separator = DIRECTORY_SEPARATOR;
@@ -25,5 +28,6 @@ abstract class PayService{
         $this->sandbox = true;//开启沙箱模式
     }
     abstract function pay($data);
-    abstract function refund();
+    abstract function refund($order);
+    abstract function notify($params);
 }
