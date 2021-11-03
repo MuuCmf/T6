@@ -2,6 +2,7 @@
 namespace app\ucenter\controller;
 
 use think\App;
+use think\facade\Cookie;
 use think\facade\Db;
 use think\facade\View;
 use app\common\model\Member as CommonMember;
@@ -170,12 +171,13 @@ class Common extends CommonCommon
             $res = $commonMemberModel->login($uid);
 
             if ($res) {
-                // $last_url = $_SERVER['HTTP_REFERER'];
-                //if(empty($last_url)){
-                $last_url = url('index/index/index',[],true,true);
-                //}
+                 $last_url = session('login_http_referer');
+                if(empty($last_url)){
+                    $last_url = url('index/index/index',[],true,true);
+                }
                 $token = JWTAuth::builder(['uid' => $uid]); //参数为用户认证的信息，请自行添加
-                return $this->success('登录成功',$token, $last_url);
+                Cookie::set('token',$token);
+                return $this->success('登录成功',$token,$last_url);
             } else {
                 return $this->error($commonMemberModel->getError());
             }
