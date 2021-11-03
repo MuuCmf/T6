@@ -4,9 +4,11 @@ namespace app\admin\controller;
 
 use think\facade\Db;
 use think\facade\View;
+use app\common\service\Tree;
 use app\admin\builder\AdminConfigBuilder;
 use app\admin\model\Menu as MenuModel;
 use app\common\model\Module as ModuleModel;
+
 
 class Module extends Admin
 {
@@ -89,7 +91,6 @@ class Module extends Admin
             }else{
                 return $this->error($title . '失败');
             }
-
         }
 
         if(!empty($id)){
@@ -196,6 +197,7 @@ class Module extends Admin
      */
     public function menu(){
         $app = input('app', '', 'text');
+        View::assign('app',$app);
         $title = input('title','','text');
         $pid  = input('pid','0','text');
         View::assign('pid',$pid);
@@ -257,6 +259,8 @@ class Module extends Admin
             $id = input('id','0','text');
             $pid = input('pid','0','text');
             View::assign('pid', $pid);
+            $app = input('app', '', 'text');
+            View::assign('app', $app);
             $info = [];
             /* 获取数据 */
             $info = $this->MenuModel->where(['id'=>$id])->find();
@@ -268,13 +272,10 @@ class Module extends Admin
             }
             View::assign('info', $info);
 
-            $menus = $this->MenuModel->order('sort asc,id asc')->select()->toArray();
-            //$tree = new Tree();
-            $menus = list_to_tree($menus, $title = 'title', $pk='id', $pid = 'pid', $root = '0');
-            $menus = array_merge([
-                0 => ['id'=>'0','title_show'=>'顶级菜单']
-            ], $menus);
-
+            $menus = $this->MenuModel->where('module','=',$app)->order('sort asc,id asc')->select()->toArray();
+            $tree = new Tree();
+            $menus = $tree->toFormatTree($menus,$title = 'title',$pk='id',$pid = 'pid',$root = '0');
+            
             View::assign('Menus', $menus);
             $moduleModel = new ModuleModel();
             View::assign('Modules',$moduleModel->getAll());
