@@ -22,7 +22,6 @@
                     <th width="400">URL</th>
                     <th>排序</th>
                     <th>是否隐藏</th>
-                    <th>类型</th>
                     <th width="120">操作</th>
                 </tr>
                 </thead>
@@ -55,11 +54,7 @@
                         <td>
                             {$menu.hide_str}
                         </td>
-                        <td>
-                            <a href="#" class="ajax-get">
-                                {$menu.type_str}
-                            </a>
-                        </td>
+                        
                         <td width="160" class="text-right">
                             <a title="新增" class="btn btn-sm btn-success" href="{:url('medit',['pid' => $menu['id'],'app'=> $app])}"> + 新增 </a>
                             <a title="编辑" class="btn btn-sm btn-info" href="{:url('medit',['id' => $menu['id'],'app'=> $app])}">编辑</a>
@@ -91,11 +86,6 @@
                         <td>
                             {$cmenu2.hide_str}
                         </td>
-                        <td>
-                            <a href="#" class="ajax-get">
-                                {$cmenu2.type_str}
-                            </a>
-                        </td>
                         <td class="text-right">
                             <a title="新增" class="btn btn-sm btn-success" href="{:url('medit',['pid' => $cmenu2['id'], 'app'=> $app])}"> + 新增 </a>
                             <a title="编辑" class="btn btn-sm btn-info" href="{:url('medit',['id' => $cmenu2['id'],'app'=> $app])}">编辑</a>
@@ -126,11 +116,6 @@
                         </td>
                         <td>
                             {$cmenu3.hide_str}
-                        </td>
-                        <td>
-                            <a href="#" class="ajax-get">
-                                {$cmenu3.type_str}
-                            </a>
                         </td>
                         <td class="text-right">
                             <a title="编辑" class="btn btn-sm btn-info" href="{:url('medit',['id' => $cmenu3['id'],'app'=> $app])}">编辑</a>
