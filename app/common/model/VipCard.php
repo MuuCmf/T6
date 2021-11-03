@@ -8,6 +8,17 @@ use think\Model;
  */
 class VipCard extends Model
 {
+    public function edit($data)
+    {
+        if(!empty($data['id'])){
+            $res = $this->update($data);
+        }else{
+            $res = $this->save($data);
+        }
+
+        return $res;
+    }
+    
     /**
      * Gets the list.
      *
