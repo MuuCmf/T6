@@ -21,7 +21,7 @@ class CheckParam extends Api{
         'app' => '应用标识'
     ];
     /**
-     * Auth鉴权
+     * 参数鉴权
      */
     public function handle($request, \Closure $next): Response
     {
