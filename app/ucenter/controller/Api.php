@@ -6,26 +6,23 @@
  *    /\ \   /\_\_\_\   /\_\_\_\    | AUTHOR: 季骁宣
  *   _\_\ \  \/_/\_\/_  \/_/\_\/_   | EMAIL: jxx0410@sina.com
  *  /\_____\   /\_\/\_\   /\_\/\_\  | QQ: 516036855
- *  \/_____/   \/_/\/_/   \/_/\/_/  | DATETIME: 2021/11/3
+ *  \/_____/   \/_/\/_/   \/_/\/_/  | DATETIME: 2021/11/4
  *                                  |-------------------------------------
  *                                  | 登山则情满于山,观海则意溢于海
  * +----------------------------------------------------------------------
  */
-namespace app\common\controller;
-use think\facade\Cache;
-use think\helper\Str;
-
-class Api extends Base{
-    protected $middleware = [
-        'app\\common\\middleware\\CheckParam',
-    ];
-    public $shopid;//店铺ID
-    public $module;//请求的应用
+namespace app\ucenter\controller;
+use app\common\controller\Api as ApiBase;
+class Api extends ApiBase{
     function __construct()
     {
         parent::__construct();
-        $params = request()->param();
-        $this->shopid = $params['shopid'] ?? 0;
-        $this->module = $params['app'] ?? '';
+        //添加token验证中间件
+        $this->middleware[] = 'app\\common\\middleware\\CheckAuth';
+    }
+
+    function getUserInfo(){
+
+        echo 123;
     }
 }

@@ -28,6 +28,7 @@ use EasyWeChat\Kernel\Messages\Video;
 use EasyWeChat\Kernel\Messages\Voice;
 use thans\jwt\facade\JWTAuth;
 use think\Exception;
+use think\facade\Cookie;
 
 /**
  * 微信公众号服务
@@ -224,11 +225,7 @@ class WechatOfficialAccount extends Base
         $token = JWTAuth::builder(['uid' => $user['uid']]);
         //跳回原网页
         $target_url = input('param.target_url');
-        if (strpos($target_url,'?')){
-            $target_url .= "&token=" . $token;
-        }else{
-            $target_url .= "?token=" . $token;
-        }
+        Cookie::set('token',$token);
 
         header("Location:{$target_url}");
         die;

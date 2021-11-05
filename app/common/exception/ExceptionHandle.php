@@ -50,10 +50,6 @@ class ExceptionHandle extends Handle{
             if (($e instanceof Exception || $e instanceof PDOException || $e instanceof HttpException || $e instanceof InvalidArgumentException || $e instanceof ErrorException || $e instanceof ParseError || $e instanceof TypeError) && request()->isAjax()) {
                 return json(['code' => 0,'msg' => env('app_debug') ? $e->getMessage() : '系统异常，请稍后再试', 'data' => env('app_debug') ? 'line:'. $e->getFile() . ' on ' . $e->getLine() . ' row' : []]);
             }
-
-            if ($e instanceof Exception){
-                return json(['code' => 0 ,'msg' => $e->getMessage() , 'data' => []]);
-            }
         }
         // 其他错误交给系统处理
         return parent::render($request, $e);

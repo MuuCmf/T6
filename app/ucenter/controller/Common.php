@@ -171,17 +171,23 @@ class Common extends CommonCommon
             $res = $commonMemberModel->login($uid);
 
             if ($res) {
-                 $last_url = session('login_http_referer');
+
+                $token = JWTAuth::builder(['uid' => $uid]); //参数为用户认证的信息，请自行添加
+                Cookie::set('token',$token);
+                $last_url = session('login_http_referer');
                 if(empty($last_url)){
                     $last_url = url('index/index/index',[],true,true);
                 }
-                $token = JWTAuth::builder(['uid' => $uid]); //参数为用户认证的信息，请自行添加
-                Cookie::set('token',$token);
                 return $this->success('登录成功',$token,$last_url);
             } else {
                 return $this->error($commonMemberModel->getError());
             }
         }else{
+            if (is_weixin()){
+                //微信浏览器跳转微信授权
+                $url = url('unions/service.WechatOfficialAccount/oauth')->build();
+                $this->redirect($url);
+            }
             // 允许的登录类型
             $ph = [];
             check_login_type('username') && $ph[] = '用户名';
