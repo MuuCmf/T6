@@ -940,11 +940,12 @@ if (!function_exists('save_local_storage')) {
     /**
      * 判断手机是IOS还是Android
      */
-    function save_local_storage($key,$value)
+    function save_local_storage($key,$value,$script = '')
     {
         $html = "<script language='javascript'>";
         $value = is_array($value) ? json_encode($value) : $value;
         $html .= "localStorage.setItem('{$key}','{$value}');";
+        $html .= $script;
         $html .= "</script>";
         return $html;
     }

@@ -424,11 +424,11 @@ class Member extends Model
             $uid = $sync['uid'];
         }else{
             //是否已有开放平台相同的账户
-            $has_union = empty($data['unionid']);
-            if ($has_union){
-                $has_union = $syncModel->where('unionid',$data['unionid']);
+            if (!empty($data['unionid'])){
+                $has_union = $syncModel->where('unionid',$data['unionid'])->find();
+                if ($has_union) $has_union = $has_union->toArray();
             }
-            if ($has_union){
+            if (isset($has_union)){
                 $uid = $has_union['uid'];
             }else{
                 $member_data = [

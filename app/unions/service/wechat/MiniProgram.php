@@ -36,7 +36,7 @@ class MiniProgram extends Wechat{
 
     public function initConfig(){
         $this->shopid = Cache::get('shopid') ?: 0;
-        $this->module = Cache::get('module_name') ?: '';
+        $this->module = Cache::get('module') ?: '';
         //获取配置信息
         $map = [
             ['shopid' ,'=' ,$this->shopid],
@@ -63,5 +63,9 @@ class MiniProgram extends Wechat{
      */
     public function user($code){
         return $this->app->auth->session($code);
+    }
+
+    public function decryptData($session, $iv, $encryptedData){
+        return $this->app->encryptor->decryptData($session, $iv, $encryptedData);
     }
 }
