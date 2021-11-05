@@ -936,6 +936,19 @@ if (!function_exists('get_device_type')) {
         return $type;
     }
 }
+if (!function_exists('save_local_storage')) {
+    /**
+     * 判断手机是IOS还是Android
+     */
+    function save_local_storage($key,$value)
+    {
+        $html = "<script language='javascript'>";
+        $value = is_array($value) ? json_encode($value) : $value;
+        $html .= "localStorage.setItem('{$key}','{$value}');";
+        $html .= "</script>";
+        return $html;
+    }
+}
 
 
 

@@ -225,8 +225,7 @@ class WechatOfficialAccount extends Base
         $token = JWTAuth::builder(['uid' => $user['uid']]);
         //跳回原网页
         $target_url = input('param.target_url');
-        Cookie::set('token',$token);
-
+        echo save_local_storage('user_token',$token);
         header("Location:{$target_url}");
         die;
     }

@@ -51,7 +51,6 @@ class CheckAuth extends Base
         } catch (TokenExpiredException $e) { // 捕获token过期
             // 尝试刷新token
             try {
-                $this->auth->setRefresh();
                 $token = $this->auth->refresh();
 
                 $payload = $this->auth->auth(false);
@@ -65,7 +64,7 @@ class CheckAuth extends Base
                 return $this->result(0,'需要登录');
             }
         } catch (\Exception $e) { // 捕获黑名单宽限期
-            return $this->result(0,'验证失败');
+            return $this->result(0,$e->getMessage());
         }
 
         return $next($request);

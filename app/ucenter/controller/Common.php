@@ -169,11 +169,8 @@ class Common extends CommonCommon
             if($uid == -2) return $this->error('密码错误');
             //登录
             $res = $commonMemberModel->login($uid);
-
             if ($res) {
-
                 $token = JWTAuth::builder(['uid' => $uid]); //参数为用户认证的信息，请自行添加
-                Cookie::set('token',$token);
                 $last_url = session('login_http_referer');
                 if(empty($last_url)){
                     $last_url = url('index/index/index',[],true,true);
@@ -185,7 +182,7 @@ class Common extends CommonCommon
         }else{
             if (is_weixin()){
                 //微信浏览器跳转微信授权
-                $url = url('unions/service.WechatOfficialAccount/oauth')->build();
+                $url = url('unions/service.WechatOfficialAccount/oauth',['target_url'=> input('get.target_url')])->build();
                 $this->redirect($url);
             }
             // 允许的登录类型
