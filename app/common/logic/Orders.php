@@ -16,7 +16,7 @@ class Orders
     /**
      * 格式化数据
      */
-    public function _formatData($data)
+    public function formatData($data)
     {   
 
         
