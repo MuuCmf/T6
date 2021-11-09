@@ -124,7 +124,7 @@ class Orders extends Model
      * @param  integer $paid [description]
      * @return [type]        [description]
      */
-    public function yesSale($uid, $shopid= 0, $app= 'classroom', $id, $type)
+    public function yesSale($shopid= 0, $app= 'classroom', $uid, $id, $type)
     {   
         $where = 'app = :app AND order_info_id = :id AND order_info_type = :type AND paid = 1 AND status = 1 AND uid = :uid AND (end_time > :time OR end_time = 0)';
         if(!empty($shopid)){
