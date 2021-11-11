@@ -65,7 +65,18 @@ class MiniProgram extends Wechat{
         return $this->app->auth->session($code);
     }
 
+    /**
+     * 解密
+     * @param $session
+     * @param $iv
+     * @param $encryptedData
+     * @return mixed
+     */
     public function decryptData($session, $iv, $encryptedData){
         return $this->app->encryptor->decryptData($session, $iv, $encryptedData);
+    }
+
+    public function unlimitQrcode($scene ,$optional = []){
+        return $this->app->app_code->getUnlimit($scene,$optional);
     }
 }

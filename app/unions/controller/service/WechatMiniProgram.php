@@ -87,4 +87,23 @@ class WechatMiniProgram extends Base {
         $token = JWTAuth::builder(['uid'=>$user['uid']]);
         $this->success('success',['user_info'=>$user,'token'=>$token]);
     }
+
+    /**
+     * 获取小程序码：适用于需要的码数量极多，或仅临时使用的业务场景
+     * @return mixed
+     */
+    public function unlimitQrcode(){
+        //小程序路径
+        $path = input('param.path','muu_'.Cache::get('module') . '/pages/index/index');
+        //二维码url参数
+        $scene = input('param.scene','');
+        $width = input('param.width','500');
+        $option = [
+            'page' => $path,
+            'width' => $width
+        ];
+        $result = $this->factory->unlimitQrcode($scene, $option);
+        Header("Content-type: image/jpeg");//直接输出显示jpg格式图片
+        echo $result;
+    }
 }
