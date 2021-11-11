@@ -422,6 +422,7 @@ class Member extends Model
         $sync = $syncModel->where('openid',$data['openid'])->find();
         if ($sync){
             $uid = $sync['uid'];
+            return $this->where('uid',$uid)->find();
         }else{
             //是否已有开放平台相同的账户
             if (!empty($data['unionid'])){
