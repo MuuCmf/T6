@@ -49,19 +49,33 @@ class WechatPayment extends PayService{
         ];
     }
 
-    public function pay($data)
+    protected function handlePayData($order_data){
+        $pay_data['body'] = $order_data['products']['title'];
+        $pay_data['out_trade_no'] = $order_data['order_no'];
+        $pay_data['total_fee'] = intval($order_data['price']);
+        $pay_data['openid'] = $order_data['openid'];
+        return $pay_data;
+    }
+
+    /**
+     * 支付
+     * @param $data 数据
+     * @param string $trade_type 支付类型
+     * @param string $notify_url 回调
+     * @return mixed
+     */
+    public function pay($order_data ,$trade_type = 'JSAPI' ,$notify_url = '')
     {
         // TODO: Implement pay() method.
-        $pay_data = [];
-        $pay_data['body'] = $data['title'];
-        $pay_data['out_trade_no'] = $data['order_no'];
-        $pay_data['total_fee'] = intval($data['price']);
-        $pay_data['trade_type'] = $data['trade_type'] ?? 'JSAPI';
-        $pay_data['openid'] = $data['openid'];
-        if (isset($data['notify_url'])){
-            $pay_data['notify_url'] = $data['notify_url'];
+        $pay_data = $this->handlePayData($order_data);
+        $pay_data['trade_type'] = $trade_type;
+        if (!empty($notify_url)){
+            $pay_data['notify_url'] = $notify_url;
         }
         $res = $this->app->order->unify($pay_data);
+        if ($res['return_code'] == 'FAIL'){
+            throw new Exception($res['return_msg']);
+        }
         $res = $this->app->jssdk->sdkConfig($res['prepay_id']);
         return $res;
     }

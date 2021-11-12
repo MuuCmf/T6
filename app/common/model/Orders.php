@@ -16,12 +16,7 @@ class Orders extends Model
      * @return     <type>  ( description_of_the_return_value )
      */
     public function edit($data)
-    {   
-        $data['status'] = $data['status'] ?? 1; //默认状态为1
-
-        if(isset($data['price'])) $data['price'] = intval($data['price']*100);//金额单位转为分
-        if(isset($data['paid_fee'])) $data['paid_fee'] = intval($data['paid_fee']*100);//金额单位转为分
-
+    {
         if(!empty($data['id'])){
             $res = $this->update($data);
             if ($res !== false){
@@ -61,6 +56,7 @@ class Orders extends Model
         if($id>0){
             $data = $this->field($field)->find($id);
             if($data){
+                $data = $data->toArray();
                 return $data;
             }
         }
@@ -77,8 +73,9 @@ class Orders extends Model
     public function getDataByOrderNo($order_no, $field='*')
     {
         $map['order_no'] = $order_no;
-        $data = $this->with('orderInfo')->where($map)->field($field)->find();
+        $data = $this->where($map)->field($field)->find();
         if($data){
+            $data = $data->toArray();
             return $data;
         }
         
@@ -458,7 +455,7 @@ class Orders extends Model
     /**
      * 生成流水号
      */
-    public function _build_serial_no()
+    protected function _build_serial_no()
     {
         return date('Ymd').time().substr(implode(NULL, array_map('ord', str_split(substr(uniqid(), 7, 13), 1))), 0, 10);
     }
@@ -467,7 +464,7 @@ class Orders extends Model
      * 生成订单号
      * @return [type] [description]
      */
-    private function build_order_no(){
+    protected function build_order_no(){
         return date('Ymd').substr(implode(NULL, array_map('ord', str_split(substr(uniqid(), 7, 13), 1))), 0, 10);
     }
 

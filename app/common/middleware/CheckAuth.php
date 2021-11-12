@@ -61,10 +61,10 @@ class CheckAuth extends Base
                 return $this->setAuthentication($response, $token);
 
             } catch (\Exception $e) { // 捕获黑名单宽限期
-                return $this->result(0,'需要登录');
+                return $this->error('需要登录','login');
             }
         } catch (\Exception $e) { // 捕获黑名单宽限期
-            return $this->result(0,$e->getMessage());
+            return $this->error($e->getMessage(),'login');
         }
 
         return $next($request);
