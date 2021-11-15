@@ -245,7 +245,7 @@ class Member extends Model
             
             if (is_array($user) && $user['status'] = 1) {
                 if(empty($user['avatar'])){
-                    $user['avatar'] = $user['avatar64'] = $user['avatar128'] = $user['avatar256'] = $user['avatar512'] = get_http_https().$_SERVER['SERVER_NAME'] . '/static/common/images/default_avatar.jpg';
+                    $user['avatar'] = $user['avatar64'] = $user['avatar128'] = $user['avatar256'] = $user['avatar512'] = request()->domain() . '/static/common/images/default_avatar.jpg';
                 }else{
                     $user['avatar64'] = get_thumb_image($user['avatar'], 64, 64);
                     $user['avatar128'] = get_thumb_image($user['avatar'], 128, 128);
