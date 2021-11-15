@@ -3,7 +3,7 @@
 <link href="__STATIC__/ucenter/css/main.min.css" rel="stylesheet">
 {/block}
 {block name="body"}
-<div class="main-wrapper">
+<div class="main-wrapper" style="padding-bottom: 40px">
 
     <!--用户设置顶部-->
     {include file="config/_header"/}
@@ -52,7 +52,7 @@
     var userInfo = null;
     hasScan();
     function hasScan() {
-        $.get('{:url("unions/service.wechat_official_account/hasScan")}',{scene_key:sceneKey},function (res) {
+        $.get('{:url("unions/api.wechat_official_account/hasScan")}',{scene_key:sceneKey},function (res) {
             if (res.code == 200){
                 $('.scan-status').text('已扫码');
                 $('.user').css('display','block');

@@ -11,7 +11,7 @@
  *                                  | 登山则情满于山,观海则意溢于海
  * +----------------------------------------------------------------------
  */
-namespace app\unions\controller\service;
+namespace app\unions\controller\api;
 use app\common\controller\Base;
 use app\common\model\Member;
 use app\common\model\MemberSync;

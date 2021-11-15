@@ -12,7 +12,7 @@
  * +----------------------------------------------------------------------
  */
 
-namespace app\unions\controller\service;
+namespace app\unions\controller\api;
 
 use app\common\controller\Base;
 use app\common\model\Member;

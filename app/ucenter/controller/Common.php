@@ -182,7 +182,7 @@ class Common extends CommonCommon
         }else{
             if (is_weixin()){
                 //微信浏览器跳转微信授权
-                $url = url('unions/service.WechatOfficialAccount/oauth',['target_url'=> input('get.target_url')])->build();
+                $url = url('unions/api.WechatOfficialAccount/oauth',['target_url'=> input('get.target_url')])->build();
                 $this->redirect($url);
             }
             // 允许的登录类型
