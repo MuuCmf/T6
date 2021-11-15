@@ -235,4 +235,22 @@ class WechatOfficialAccount extends Base
         echo save_local_storage('user_token',$token,$script);
         exit();
     }
+
+    public function jssdk(){
+        if (request()->isPost()){
+            $app = OfficialAccount::getApp();
+            $apis = input('post.apis');
+            if (empty($apis)){
+                $apis = [
+                    'chooseWXPay',
+                    'checkJsApi',
+                    'scanQRCode',
+                    'onMenuShareTimeline',
+                    'onMenuShareAppMessage'
+                ];
+            }
+            $jssdk = $app->jssdk->buildConfig($apis);
+            return $this->success('success',$jssdk);
+        }
+    }
 }
