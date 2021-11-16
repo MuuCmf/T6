@@ -222,7 +222,7 @@ class WechatOfficialAccount extends Base
         $user = $oauth->user()->getOriginal();
         //处理用户数据
         $memberModel = new Member();
-        $user['oauth_type'] = 1;//1为公众号授权
+        $user['oauth_type'] = 'weixin_h5';//1为公众号授权
         $user['shopid'] = Cache::get('shopid');//1为公众号授权
         $user['avatar'] = $user['headimgurl'];
         $user = $memberModel->oauth($user);
@@ -236,6 +236,10 @@ class WechatOfficialAccount extends Base
         exit();
     }
 
+    /**
+     * 生成微信SDK
+     * @return \think\Response|void
+     */
     public function jssdk(){
         if (request()->isPost()){
             $app = OfficialAccount::getApp();

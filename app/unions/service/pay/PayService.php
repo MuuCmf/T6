@@ -25,7 +25,7 @@ abstract class PayService{
     {
         $this->separator = DIRECTORY_SEPARATOR;
         $this->app = $app;
-        $this->sandbox = true;//开启沙箱模式
+        $this->sandbox = false;//开启沙箱模式
     }
     abstract function pay($data);
     abstract function refund($order);

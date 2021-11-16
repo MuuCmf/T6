@@ -29,6 +29,17 @@ function get_uid()
     return is_login();
 }
 
+function get_openid($uid ,$channel = 'weixin_h5')
+{
+    $model = new \app\common\model\MemberSync();
+    $map = [
+        ['uid' ,'=' ,$uid],
+        ['type' ,'=' , $channel]
+    ];
+    $openid = $model->where($map)->value('openid');
+    return $openid;
+}
+
 /**
  * 获取用户数据
  */

@@ -32,6 +32,7 @@ use think\Facade;
  * @method oauth(string $target_url) static
  * @method createQrcode(string $content ,$expiration_time) static
  * @method getQrcodeUrl(string $ticket) static
+ * @method sendTemplateMsg(array $data) static
  */
 class OfficialAccount extends Facade {
     // getFacadeClass: 获取当前Facade对应类名

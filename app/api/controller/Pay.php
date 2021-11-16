@@ -16,11 +16,14 @@ use app\common\controller\Base;
 use app\common\model\CapitalFlow;
 use app\common\model\Member;
 use app\common\model\MemberSync;
+use app\common\model\Orders;
 use app\common\model\Orders as OrdersModel;
+use app\unions\facade\OfficialAccount;
 use app\unions\model\MiniProgramConfig;
 use app\unions\model\WechatConfig;
 use think\Exception;
 use think\facade\Db;
+use think\facade\Log;
 use think\Request;
 
 class Pay extends Base {
@@ -30,7 +33,6 @@ class Pay extends Base {
     private $OrderLogic;//订单模型
     private $params;//参数
     protected $middleware = [
-        'app\\common\\middleware\\CheckParam',
         'app\\common\\middleware\\CheckAuth' => ['only' => 'pay'],
     ];
 
@@ -39,10 +41,11 @@ class Pay extends Base {
         parent::__construct();
         //中间件加载完成后执行
         $this->initParams();//参数赋值
-        $this->initPayService();//初始化支付服务
-        $this->initOrderLogic();
+        if ($request->action() != 'payCallback'){
+            $this->initPayService();//初始化支付服务
+            $this->initOrderLogic();
+        }
         $this->OrderModel = new OrdersModel();
-
     }
 
 
@@ -62,19 +65,19 @@ class Pay extends Base {
     }
 
 
+
     /**
      * 初始化支付
      */
     protected function initPayService(){
         //服务类
         $className = [
-            1 => 'WechatPayment',
-            2 => 'WechatPayment',
-            3 => 'AlipayPayment',
+            'weixin_h5' => 'WechatPayment',
+            'weixin_app' => 'WechatPayment',
+            'alipay' => 'AlipayPayment',
         ];
-        $pay_type = $this->params['pay_type'];
         //获取实例化的服务
-        $pay_namespace = "app\\unions\\service\\pay\\{$className[$pay_type]}";
+        $pay_namespace = "app\\unions\\service\\pay\\{$className[$this->params['channel']]}";
         $config = $this->initUnionConfig();
         $this->PayService = new $pay_namespace($config['appid']);
     }
@@ -87,16 +90,16 @@ class Pay extends Base {
     protected function initUnionConfig()
     {
 
-        switch ($this->params['pay_type']){
+        switch ($this->params['channel']){
             //微信公众号
-            case 1:
+            case 'weixin_h5':
                 $data = (new WechatConfig())->getWechatConfigByShopId($this->params['shopid']);
                 if (empty($data)){
                     throw  new Exception('公众号配置文件不存在');
                 }
                 break;
             //微信小程序
-            case 2:
+            case 'weixin_app':
                 //获取配置信息
                 $map = [
                     ['shopid' ,'=' , $this->params['shopid']],
@@ -115,7 +118,7 @@ class Pay extends Base {
     public function pay(){
         if (request()->isPost()){
             try {
-                $order_no = input('post.order_no');
+                $order_no = $this->params['order_no'];
                 $order_data = $this->OrderModel->getDataByOrderNo($order_no);
                 if (!$order_data){
                     throw new Exception('订单不存在');
@@ -123,9 +126,30 @@ class Pay extends Base {
                 $order_data = $this->OrderLogic->_formatData($order_data);
                 $order_data['openid'] = MemberSync::where([
                     ['uid' , '=', request()->uid],
-                    ['type', '=', $this->params['pay_type']]
+                    ['type', '=', $this->params['channel']]
                 ])->value('openid');
-                $pay = $this->PayService->pay($order_data);
+                //初始化支付数据
+                $pay_data['body'] = $order_data['products']['title'];
+                $pay_data['out_trade_no'] = $order_data['order_no'];
+                $pay_data['total_fee'] = $order_data['price'] * 100;
+                $pay_data['openid'] = $order_data['openid'];
+                //支付回调
+                if (isset($this->params['notify_url'])){
+                    $pay_data['notify_url'] = $this->params['notify_url'];
+                }else{
+                    $notify_url = request()->domain() . "/api/pay/payCallback";
+                    $notify_url .= "/channel/{$this->params['channel']}";
+                    $notify_url .= "/shopid/{$this->params['shopid']}";
+                    $notify_url .= "/app/{$this->params['app']}";
+                    $pay_data['notify_url'] = $notify_url;
+                }
+                $pay = $this->PayService->pay($pay_data);
+                //更改支付渠道标识
+                $channel_map = [
+                    'id' => $order_data['id'],
+                    'channel' => $this->params['channel']
+                ];
+                $this->OrderModel->edit($channel_map);
                 return $this->success('success',$pay);
             }catch (Exception $e){
                 return $this->error($e->getMessage());
@@ -181,19 +205,105 @@ class Pay extends Base {
         $notify_xml = file_get_contents("php://input");
         $jsonxml = json_encode(simplexml_load_string($notify_xml, 'SimpleXMLElement', LIBXML_NOCDATA));
         $notify = json_decode($jsonxml, true);
+        //实例化支付服务
+        $this->initPayService();
+        $order_no = $this->PayService->notify($notify);
         //判断订单是否已支付
-        $result = $this->payService->notify($notify);
-        if ($result){//true未支付
-            $this->orderService->notify($notify['out_trade_no']);
-            //消息通知
+        if (!$order_no){
+            $this->payXmlMsg('FAIL','通信失败，请稍后再通知我');
         }
-        $this->success('回调成功');
+
+        $order_info =$this->OrderModel->getDataByOrderNo($order_no);
+        if (!$order_info){
+            $this->payXmlMsg('FAIL','没有查询到订单');
+        }
+        if ($order_info['paid'] == 1){
+            $this->payXmlMsg('订单支付完成');
+        }
+        //实例化订单逻辑
+        $this->initOrderLogic();
+        //处理订单
+        $result = $this->OrderLogic->paySuccess($order_info);
+        //消息通知
+        if (isset($result['tmplmsg']) && $result['tmplmsg']['switch'] == 1){
+            $this->sendPaySuccessTmplmsg($result['tmplmsg'],$order_info);
+        }
+        $this->payXmlMsg();
+    }
+
+    /**
+     * 返回xml信息
+     * @param string $code
+     * @param string $msg
+     * @return string
+     */
+    protected function payXmlMsg($code = 'SUCCESS',$msg = ''){
+        $data = [
+            'return_code' => $code,
+            'return_msg'  => $msg
+        ];
+        echo array_to_xml($data);exit();
+    }
+
+    /**
+     * 发送支付成功公众号模板消息
+     * @param $tmplmsg_config
+     * @param $order_info
+     */
+    public function sendPaySuccessTmplmsg($tmplmsg_config,$order_info){
+        //消息模板是否设置
+        if (empty($tmplmsg_config['pay_success'])){
+            return false;
+        }
+        $msg_list = [];
+        if (strstr($tmplmsg_config['to'],'manager')){
+            $msg_item['openid'] = get_openid($tmplmsg_config['manager_uid']);
+            $msg_item['user_info'] = query_user($order_info['uid']);
+            $msg_item['first'] = '客户的订单已支付成功';
+            $msg_item['remark'] = '客户的订单已支付成功，如有任何问题请联系平台客服！';
+            $msg_list[] = $msg_item;
+        }
+        if (strstr($tmplmsg_config['to'],'user')){
+            $msg_item['openid'] = get_openid($order_info['uid']);
+            $msg_item['user_info'] = query_user($order_info['uid']);
+            $msg_item['first'] = '尊敬的客户，您的订单已支付成功';
+            $msg_item['remark'] = '感谢您的支持，如有任何问题请联系平台客服！';
+            $msg_list[] = $msg_item;
+        }
+
+        foreach ($msg_list as $item){
+            $msg = [
+                'touser' => $item['openid'],
+                'template_id' => $tmplmsg_config['pay_success'],
+                'data' => [
+                    'first' => $item['first'],
+                    'keyword1' => [
+                        'value' => $item['user_info']['nickname'],
+                        'color' => '#ff510'
+                    ],
+                    'keyword2' => [
+                        'value' => $order_info['order_no'],
+                        'color' => '#ff510'
+                    ],
+                    'keyword3' => [
+                        'value' => sprintf("%.2f",$order_info['paid_fee']/100). '元',
+                        'color' => '#ff510'
+                    ],
+                    'keyword4' => [
+                        'value' => $order_info['products']['title'] ?? '商品',
+                        'color' => '#ff510'
+                    ],
+                    'remark' => $item['remark'],
+                ],
+            ];
+            @OfficialAccount::sendTemplateMsg($msg);
+        }
     }
 
     function createCapitalFlow($data){
         //生成订单流水
         $flow_data = [
-            'shopid'    => $this->shopid,
+            'shopid'    => $this->params['shopid'],
             'uid'       => $data['uid'],
             'flow_no'   => $data['refund_no'] ?? CapitalFlow::build_flow_no(),
             'order_no'  => $data['order_no'],

@@ -47,10 +47,13 @@ class WechatMiniProgram extends Base {
      */
     public function code($code){
         $result = $this->factory->user($code);
+        if (!isset($result['openid'])){
+            $this->error($result['errmsg']);
+        }
         //查询是否注册过
         $map = [];
         $map[] = ['openid','=',$result['openid']];
-        $map[] = ['type','=',2];
+        $map[] = ['type','=', 'weixin_app'];
         $user = $this->MemberSyncModel->getDataByMap($map);
         $token = '';
         if ($user){
@@ -79,7 +82,7 @@ class WechatMiniProgram extends Base {
             'avatar'    => $result['avatarUrl'],
             'sex'       => $result['gender'],
             'shopid'    => $params['shopid'],
-            'oauth_type' => 2
+            'oauth_type' => 'weixin_app'
         ];
         $user = $this->MemberModel->oauth($data);
         $this->MemberModel->updateLogin($user['uid']);

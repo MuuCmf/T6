@@ -72,7 +72,7 @@ class Orders extends Model
      */
     public function getDataByOrderNo($order_no, $field='*')
     {
-        $map['order_no'] = $order_no;
+        $map[] = ['order_no','=',$order_no];
         $data = $this->where($map)->field($field)->find();
         if($data){
             $data = $data->toArray();

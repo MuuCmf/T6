@@ -44,18 +44,11 @@ class WechatPayment extends PayService{
             'key' => $key,
             'cert_path' => app()->getRootPath() . 'public/cert/wechat_cert.pem',
             'key_path' => app()->getRootPath() . 'public/cert/wechat_key.pem',
-            'notify_url' => request()->domain() . "/union/PayService/callback",
+            'notify_url' => request()->domain() . "/api/pay/payCallback",
             'sandbox' => $this->sandbox,//沙盒模式开关
         ];
     }
 
-    protected function handlePayData($order_data){
-        $pay_data['body'] = $order_data['products']['title'];
-        $pay_data['out_trade_no'] = $order_data['order_no'];
-        $pay_data['total_fee'] = intval($order_data['price']);
-        $pay_data['openid'] = $order_data['openid'];
-        return $pay_data;
-    }
 
     /**
      * 支付
@@ -64,15 +57,14 @@ class WechatPayment extends PayService{
      * @param string $notify_url 回调
      * @return mixed
      */
-    public function pay($order_data ,$trade_type = 'JSAPI' ,$notify_url = '')
+    public function pay($data ,$trade_type = 'JSAPI' ,$notify_url = '')
     {
         // TODO: Implement pay() method.
-        $pay_data = $this->handlePayData($order_data);
-        $pay_data['trade_type'] = $trade_type;
+        $data['trade_type'] = $trade_type;
         if (!empty($notify_url)){
-            $pay_data['notify_url'] = $notify_url;
+            $data['notify_url'] = $notify_url;
         }
-        $res = $this->app->order->unify($pay_data);
+        $res = $this->app->order->unify($data);
         if ($res['return_code'] == 'FAIL'){
             throw new Exception($res['return_msg']);
         }
@@ -91,16 +83,11 @@ class WechatPayment extends PayService{
     {
         // TODO: Implement notify() method.
         if($params['return_code'] == 'SUCCESS' && $params['result_code'] == 'SUCCESS'){
-            //查询订单是否已支付
-            $map = [];
-            $map[] = ['paid','=',1];
-            $map[] = ['order_no','=',$params['out_trade_no']];
-            $count = Orders::where($map)->count();
-            if ($count > 0){
-                return  false;
-            }
-            return true;
+            return $params['out_trade_no'];
         }
         return false;
+    }
+    public function queryByOutTradeNumber($order_no){
+        return $this->app->order->queryByOutTradeNumber($order_no);
     }
 }

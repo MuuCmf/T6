@@ -211,4 +211,13 @@ class OfficialAccount extends Wechat {
     public function getQrcodeUrl($ticket){
         return $this->app->qrcode->url($ticket);
     }
+
+    /**
+     * 发送模板消息
+     * @param $data
+     * @return mixed
+     */
+    public function sendTemplateMsg($data){
+        return $this->app->template_message($data);
+    }
 }
