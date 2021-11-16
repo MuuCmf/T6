@@ -14,7 +14,7 @@ class History extends BaseModel
      *
      * @return     <type>  The favorites.
      */
-    public function getHistory($shopid = 0, $app, $info_id, $info_type)
+    public function getHistory($shopid, $app, $info_id, $info_type)
     {   
         if(!empty($shopid) && $shopid != 0){
             $map[] = ['shopid', '=', $shopid];
@@ -30,7 +30,7 @@ class History extends BaseModel
     /**
      * 判断用户是否浏览
      */
-    public function yesHistory($shopid = 0, $app, $uid, $info_id, $info_type)
+    public function yesHistory($shopid, $app, $uid, $info_id, $info_type)
     {
         if(!empty($shopid) && $shopid != 0){
             $map[] = ['shopid', '=', $shopid];
@@ -44,6 +44,25 @@ class History extends BaseModel
         $data = $this->getDataByMap($map);
         
         return $data;
+    }
+
+    /**
+     * 增加浏览记录
+     * @param $uid
+     * @param $info_id
+     * @param $info_type
+     */
+    public static function addLog($uid,$info_id ,$info_type){
+        //写浏览记录
+        $history_data = [
+            'info_id' => $info_id,
+            'info_type' => $info_type,
+            'uid'=> $uid,
+            'shopid' => request()->param('shopid'),
+            'app' => request()->param('app'),
+            'status' => 1
+        ];
+        (new History())->edit($history_data);
     }
 
 }
