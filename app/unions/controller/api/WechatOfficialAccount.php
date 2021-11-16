@@ -244,6 +244,7 @@ class WechatOfficialAccount extends Base
         if (request()->isPost()){
             $app = OfficialAccount::getApp();
             $apis = input('post.apis');
+            $url = input('post.url');
             if (empty($apis)){
                 $apis = [
                     'chooseWXPay',
@@ -253,8 +254,9 @@ class WechatOfficialAccount extends Base
                     'onMenuShareAppMessage'
                 ];
             }
+            $app->jssdk->setUrl($url);
             $jssdk = $app->jssdk->buildConfig($apis);
-            return $this->success('success',$jssdk);
+            return $this->success('success',json_decode($jssdk,true));
         }
     }
 }

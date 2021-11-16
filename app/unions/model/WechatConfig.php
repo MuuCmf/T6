@@ -37,6 +37,7 @@ class WechatConfig extends BaseModel{
             ]
         )->find();
         if ($res){
+            $res = $res->toArray();
             return $res;
         }
         return null;
