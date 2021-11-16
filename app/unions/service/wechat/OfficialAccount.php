@@ -218,6 +218,6 @@ class OfficialAccount extends Wechat {
      * @return mixed
      */
     public function sendTemplateMsg($data){
-        return $this->app->template_message($data);
+        return $this->app->template_message->send($data);
     }
 }

@@ -226,7 +226,7 @@ class Pay extends Base {
         $result = $this->OrderLogic->paySuccess($order_info);
         //消息通知
         if (isset($result['tmplmsg']) && $result['tmplmsg']['switch'] == 1){
-            $this->sendPaySuccessTmplmsg($result['tmplmsg'],$order_info);
+            $this->sendPaySuccessTmplmsg($result['tmplmsg'],$result['order_info']);
         }
         $this->payXmlMsg();
     }
@@ -250,7 +250,7 @@ class Pay extends Base {
      * @param $tmplmsg_config
      * @param $order_info
      */
-    public function sendPaySuccessTmplmsg($tmplmsg_config,$order_info){
+    protected function sendPaySuccessTmplmsg($tmplmsg_config,$order_info){
         //消息模板是否设置
         if (empty($tmplmsg_config['pay_success'])){
             return false;
