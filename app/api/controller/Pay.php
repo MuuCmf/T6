@@ -228,6 +228,15 @@ class Pay extends Base {
         if (isset($result['tmplmsg']) && $result['tmplmsg']['switch'] == 1){
             $this->sendPaySuccessTmplmsg($result['tmplmsg'],$result['order_info']);
         }
+        //订单流水
+        (new CapitalFlow())->createFlow([
+            'uid' => $order_info['uid'],
+            'order_no' => $order_info['order_no'],
+            'price' => $order_info['paid_fee'],
+            'shopid' => $this->params['shopid'],
+            'app' => $this->params['app'],
+            'channel' => $this->params['channel'],
+        ]);
         $this->payXmlMsg();
     }
 
@@ -297,25 +306,6 @@ class Pay extends Base {
                 ],
             ];
             @OfficialAccount::sendTemplateMsg($msg);
-        }
-    }
-
-    function createCapitalFlow($data){
-        //生成订单流水
-        $flow_data = [
-            'shopid'    => $this->params['shopid'],
-            'uid'       => $data['uid'],
-            'flow_no'   => $data['refund_no'] ?? CapitalFlow::build_flow_no(),
-            'order_no'  => $data['order_no'],
-            'channel'   => ($this->params['refund_to'] ?? 0) > 0 ? $data['channel'] : 0,
-            'type'      => 1,
-            'price'     => $data['price'],
-            'remark'    => $data['remark'] ?? '',
-            'status'    => $data['status'] ?? 1
-        ];
-        $flow_res = (new CapitalFlow())->edit($flow_data);
-        if (!$flow_res){
-            throw new Exception('生成流水号失败');
         }
     }
 }

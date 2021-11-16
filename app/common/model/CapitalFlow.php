@@ -21,7 +21,24 @@ class CapitalFlow extends BaseModel{
      * 生成流水号
      * @return [type] [description]
      */
-    public static function build_flow_no(){
+    protected function build_flow_no(){
         return date('Ymd').substr(implode(NULL, array_map('ord', str_split(substr(uniqid(), 7, 13), 1))), 0, 14);
+    }
+
+    public function createFlow($data){
+        //生成订单流水
+        $flow_data = [
+            'shopid'    => $data['shopid'],
+            'app'       => $data['app'],
+            'uid'       => $data['uid'],
+            'flow_no'   => $data['refund_no'] ?? $this->build_flow_no(),
+            'order_no'  => $data['order_no'],
+            'channel'   => $data['channel'],
+            'type'      => $data['type'] ?? 1,
+            'price'     => $data['price'],
+            'remark'    => $data['remark'] ?? '',
+            'status'    => $data['status'] ?? 1
+        ];
+        return $this->edit($flow_data);
     }
 }
