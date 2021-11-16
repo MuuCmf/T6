@@ -48,7 +48,6 @@ class Member extends Admin
             //用户名或昵称查询
             if($username){
                 $mapUsername['username'] = ['like', '%' . $username . '%'];
-
                 $uid = Db::name('member')->where($mapUsername)->value('id');
                 if($uid){
                     $map['uid'] = $uid;
@@ -72,16 +71,24 @@ class Member extends Admin
         if($sort == 'login_num'){
             $order = 'login desc';
         }
-
         $map[] = ['status','>=', 0];
-        list($list,$page) = $this->commonLists('Member', $map, $order);
-
+        // 每页显示数量
+        $rows = input('rows', 15, 'intval');
+        $list = $this->memberModel->where($map)->order($order)->paginate($rows);
+        $pager = $list->render();
         $list = $list->toArray();
         $list_arr = $list['data'];
 
         foreach($list_arr as $key=>$v){
             //处理用户头像
-            $list_arr[$key]['avatar'] = get_attachment_src($list_arr[$key]['avatar']);
+            if(empty($list_arr[$key]['avatar'])){
+                $list_arr[$key]['avatar'] = $list_arr[$key]['avatar64'] = $list_arr[$key]['avatar128'] = $list_arr[$key]['avatar256'] = $list_arr[$key]['avatar512'] = request()->domain() . '/static/common/images/default_avatar.jpg';
+            }else{
+                $list_arr[$key]['avatar64'] = get_thumb_image($list_arr[$key]['avatar'], 64, 64);
+                $list_arr[$key]['avatar128'] = get_thumb_image($list_arr[$key]['avatar'], 128, 128);
+                $list_arr[$key]['avatar256'] = get_thumb_image($list_arr[$key]['avatar'], 256, 256);
+                $list_arr[$key]['avatar512'] = get_thumb_image($list_arr[$key]['avatar'], 512, 512);
+            }
             //获取权限组
             $auth_g_id = Db::name('auth_group_access')->where(['uid'=>$v['uid']])->select()->toArray();
             foreach($auth_g_id as $k=>$val){
@@ -99,7 +106,7 @@ class Member extends Admin
         }
         $this->setTitle('用户列表');
         View::assign('title','用户列表');
-        View::assign('page',$page);
+        View::assign('pager',$pager);
         View::assign('_list', $list_arr);
         
         return View::fetch();
