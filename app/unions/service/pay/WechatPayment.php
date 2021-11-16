@@ -57,7 +57,7 @@ class WechatPayment extends PayService{
      * @param string $notify_url 回调
      * @return mixed
      */
-    public function pay($data ,$trade_type = 'JSAPI' ,$notify_url = '')
+    public function pay($data ,$trade_type = 'JSAPI')
     {
         // TODO: Implement pay() method.
         $data['trade_type'] = $trade_type;
