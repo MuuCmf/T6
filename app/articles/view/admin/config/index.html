@@ -1,0 +1,116 @@
+{extend name="../../admin/view/common/main"/}
+{block name="style"}
+<link href="__CSS__/main.min.css" type="text/css" rel="stylesheet">
+{/block}
+
+{block name="body"}
+
+<ol class="breadcrumb">
+	<li>
+		<a href="{:url('index')}">基础配置</a>
+	</li>
+	<li>
+		基础配置
+	</li>
+</ol>
+<div class="config-section" style="width: 100%">
+	<div class="form-files-box card">
+		<!-- 基本设置 start -->
+		<div class="form-file header">基本设置</div>
+		<div class="form-files margin-bottom">
+
+			<!-- 插件功能开关 start -->
+			<div class="form-file">
+				<div class="form-label">启用文章营销插件</div>
+				<div class="form-value">
+					<span class="margin-left">
+						{$data['status_str']}
+					</span>
+					<span class="margin-left">
+						是否启用文章营销插件
+					</span>
+				</div>
+				<div class="form-edit">
+					<label>
+						<div class="switch {if $data['status'] == 1}switchOn{/if}" data-role="article_status" data-value="{$data['status']}" data-url="{:url('index')}"></div>
+					</label>
+				</div>
+			</div>
+			<!-- 插件功能开关 end -->
+		</div>
+		<!-- 基础设置 end -->
+	</div>
+
+	<div class="form-files-box card">
+		<div class="form-file header">评论设置</div>
+		<div class="form-files margin-bottom">
+			<!-- 评论功能开关 start -->
+			<div class="form-file">
+				<div class="form-label">启用文章评价</div>
+				<div class="form-value">
+					<span class="margin-left">
+						
+						{$data['config']['comment']['switch_str']}
+						
+					</span>
+					<span class="margin-left">
+						是否开启文章评价
+					</span>
+				</div>
+				<div class="form-edit">
+					<label>
+						<div class="switch {if $data['config']['comment']['switch'] == 1}switchOn{/if}" data-role="comment_switch" data-value="{$data['config']['comment']['switch']}" data-url="{:url('index')}"></div>
+					</label>
+				</div>
+			</div>
+			<!-- 评论功能开关 end -->
+		</div>
+	</div>
+</div>
+
+<script>
+$(function(){
+	//插件功能开关状态
+	$('[data-role="article_status"]').click(function(e){
+
+		var value = $(this).data('value');
+		if(value == 1){
+			value = 0;
+		}else{
+			value = 1;
+		}
+		var url = $(this).data('url');
+		var data = {
+			id : "{$data['id']}",
+			article_status : value,
+		};
+
+		$.post(url, data, function (a) {
+			//console.log(a);
+            handle_ajax(a);
+        });
+	});
+
+	//评价开关
+	$('[data-role="comment_switch"]').click(function(e){
+
+		var value = $(this).data('value');
+		if(value == 1){
+			value = 0;
+		}else{
+			value = 1;
+		}
+		var url = $(this).data('url');
+		var data = {
+			id : "{$data['id']}",
+			comment_switch : value,
+		};
+
+		$.post(url, data, function (a) {
+			//console.log(a);
+			handle_ajax(a);
+		});
+	});
+});
+</script>
+{/block}

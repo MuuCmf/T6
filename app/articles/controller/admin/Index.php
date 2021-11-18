@@ -2,14 +2,13 @@
 namespace app\articles\controller\admin;
 
 use think\facade\View;
-use app\admin\controller\Admin as MuuAdmin;
 use app\articles\model\ArticlesCategory as CategoryModel;
 use app\articles\logic\Category as CategoryLogic;
 use app\articles\model\ArticlesArticles as ArticlesModel;
 use app\articles\logic\Articles as ArticlesLogic;
 use app\common\model\Module;
 
-class Index extends MuuAdmin
+class Index extends Admin
 {
     protected $ModuleModel;
     protected $CategoryModel;

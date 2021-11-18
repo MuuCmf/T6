@@ -2,11 +2,10 @@
 namespace app\articles\controller\admin;
 
 use think\facade\View;
-use app\admin\controller\Admin as MuuAdmin;
 use app\articles\model\ArticlesCategory as CategoryModel;
 use app\articles\logic\Category as CategoryLogic;
 
-class Category extends MuuAdmin
+class Category extends Admin
 {
     protected $CategoryModel;
     protected $CategoryLogic;
