@@ -1,0 +1,77 @@
+.category-list-section {
+	.category {
+		padding: 10px;
+	}
+	.parent-item {
+		border-left: 1px #ccc dashed;
+		border-right: 1px #ccc dashed;
+		border-top: 1px #ccc dashed;
+	    border-bottom: 1px #ccc dashed;
+	    padding: 10px 30px;
+	    margin: 10px 10px 0 10px;
+
+	   	.div-checkbox {
+	    	float: left;
+	    	width: 40px;
+	    	line-height: 32px;
+	    }
+
+		.title {
+			float: left;
+			width: 400px;
+			line-height: 32px;
+			.cover {
+				float: left;
+				width:32px;
+			}
+			.info {
+			    margin-left: 42px;
+			}
+		}
+		.status {
+			width: 90px;
+			float: left;
+			line-height: 32px;
+		}
+		.action {
+			float: right;
+			line-height: 32px;
+		}
+		
+	}
+
+	.child-item {
+		border-left: 1px #ccc dashed;
+		border-right: 1px #ccc dashed;
+	    border-bottom: 1px #ccc dashed;
+	    padding: 10px 30px;
+	    margin: 0 10px 0 52px;
+	    .div-checkbox {
+	    	float: left;
+	    	width: 40px;
+	    	line-height: 32px;
+	    }
+		.title {
+			float: left;
+			width: 358px;
+			line-height: 32px;
+			.cover {
+				float: left;
+				width:32px;
+			}
+			.info {
+			    margin-left: 42px;
+			}
+		}
+		.status {
+			width: 90px;
+			float: left;
+			line-height: 32px;
+		}
+		.action {
+			float: right;
+			line-height: 32px;
+		}
+		
+	}
+}

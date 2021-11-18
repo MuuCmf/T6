@@ -14,7 +14,7 @@ var gulp        = require('gulp'),
     
 // 定义源代码的目录和编译压缩后的目录
 var src='./_src/',
-    dist='../../public/static/classroom';
+    dist='../../public/static/articles';
 // 编译全部scss 并压缩
 gulp.task('scss', function(){
     gulp.src([

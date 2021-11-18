@@ -26,6 +26,7 @@ return [
     'tpl_replace_string' => [
         '__STATIC__' => '/static',
         '__ZUI__' => '/static/common/lib/zui',
+        '__LIB__' => '/static/articles/lib',
         '__CSS__' => '/static/articles/css',
         '__JS__' => '/static/articles/js',
         '__IMG__' => '/static/articles/images',
