@@ -18,16 +18,28 @@ class Category extends Admin
         $this->CategoryLogic = new CategoryLogic(); //分类逻辑
     }
 
-    /**
+        /**
      * 分类管理页
      */
     public function lists()
     {
         $category_tree = $this->CategoryModel->getTree();
+        if(request()->isAjax()){
+            return $this->success('success', $category_tree);
+        }
         
         View::assign('category_tree',$category_tree);
         //输出页面
     	return View::fetch();
+    }
+
+    /**
+     * 树结构返回
+     */
+    public function tree()
+    {
+        $category_tree = $this->CategoryModel->getTree(1);
+        return $this->success('success', $category_tree);
     }
 
     /**
@@ -68,7 +80,7 @@ class Category extends Admin
 
         } else {
             // 获取顶级分类树
-            $category = $this->CategoryModel->getCategoryTree(0);
+            $category= $this->CategoryModel->getTree(1);
             View::assign('category',$category);
 
             // 初始化数据结构
@@ -83,8 +95,8 @@ class Category extends Admin
             if (!empty($id)) {
                 $category_data = $this->CategoryModel->getDataById($id);
             }
-
             View::assign('category_data',$category_data);
+
             // 输出页面
             return View::fetch();
         }
