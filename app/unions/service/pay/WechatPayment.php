@@ -72,11 +72,19 @@ class WechatPayment extends PayService{
         return $res;
     }
     
-    public function refund($order)
+    public function refund($refund_info)
     {
         // TODO: Implement refund() method.
         // 参数分别为：商户订单号、商户退款单号、订单金额、退款金额、其他参数
-        return $this->app->refund->byOutTradeNumber($order['order_no'], $order['refund_no'], $order['price'], $order['config'] ?? []);
+        $result = $this->app->refund->byOutTradeNumber($refund_info['order_no'], $refund_info['refund_no'], $refund_info['total_fee'],$refund_info['refund_fee'], [
+            'refund_desc' => $refund_info['title']
+        ]);
+        if ($result['return_code'] == 'SUCCESS' && $result['result_code'] == 'SUCCESS') {
+            return true;
+        }elseif($result['return_msg'] == 'OK'){
+            return true;
+        }
+        throw new Exception($result['return_msg']);
 
     }
     public function notify($params)
