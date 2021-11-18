@@ -1,13 +1,13 @@
 <?php
 namespace app\articles\model;
 
-use think\Model;
+use app\articles\model\ArticlesBase as Base;
 use app\articles\logic\Category as CategoryLogic;
 
-class ArticlesCategory extends Model
+class ArticlesCategory extends Base
 {
     //自动写入创建和更新的时间戳字段
-    protected $autoWriteTimestamp = true; 
+    protected $autoWriteTimestamp = true;
 
     /**
      * 编辑/新增数据
@@ -29,54 +29,21 @@ class ArticlesCategory extends Model
     }
 
     /**
-     * Gets the data by identifier.
-     *
-     * @param      integer  $id     The identifier
-     *
-     * @return     <type>   The data by identifier.
+     * 获取分类树
      */
-    public function getDataById($id)
-    {
-        if($id > 0){
-            $data=$this->find($id);
-            return $data;
-        }
-        return null;
-    }
-
-    public function getDataTitleById($id)
-    {
-        
-    }
-    /**
-     * Gets the list.
-     *
-     * @param      <type>   $map    The map
-     * @param      integer  $limit  The limit
-     * @param      string   $order  The order
-     * @param      string   $field  The field
-     *
-     * @return     <type>   The list.
-     */
-    public function getList($map, $limit=999, $order = 'sort desc,create_time desc' , $field = '*')
-    {
-        $list = $this->where($map)->limit($limit)->order($order)->field($field)->select();
-        
-        return $list;
-    }
-    
-    /**
-     * 获取分页列表
-     */
-    public function getListByPage($map,$order='create_time desc',$field='*',$r=20)
-    {
-        $list  = $this->where($map)->order($order)->field($field)->paginate($r,false,['query'=>request()->param()]);
-
+    public function getTree($status = 0)
+    {   
+        $map[] = ['status', '>=', $status];
+        $list = $this->getList($map, 999, 'sort desc,create_time desc');
+        $list = $list->toArray();
+        $CategoryLogic = new CategoryLogic();
         foreach($list as &$v){
-            $v = $this->_formatData($v);
+            $v = $CategoryLogic->formatData($v);
         }
         unset($v);
 
+        $list = list_to_tree($list);
+        
         return $list;
     }
 

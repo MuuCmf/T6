@@ -3,7 +3,7 @@ namespace app\articles\controller\admin;
 
 use think\facade\View;
 use app\admin\controller\Admin as MuuAdmin;
-use app\articles\model\ClassroomCategory as CategoryModel;
+use app\articles\model\ArticlesCategory as CategoryModel;
 use app\articles\logic\Category as CategoryLogic;
 
 class Category extends MuuAdmin
@@ -16,7 +16,7 @@ class Category extends MuuAdmin
         parent::__construct();
 
         $this->CategoryModel = new CategoryModel(); //分类模型
-        $this->CategoryLogic = new CategoryLogic(); //分类模型
+        $this->CategoryLogic = new CategoryLogic(); //分类逻辑
     }
 
     /**
@@ -24,7 +24,7 @@ class Category extends MuuAdmin
      */
     public function lists()
     {
-        $category_tree = $this->CategoryModel->getCategoryTree();
+        $category_tree = $this->CategoryModel->getTree();
         
         View::assign('category_tree',$category_tree);
         //输出页面

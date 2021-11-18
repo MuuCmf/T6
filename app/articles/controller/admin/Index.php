@@ -20,7 +20,6 @@ class Index extends MuuAdmin
     public function __construct()
     {
         parent::__construct();
-
         $this->ModuleModel = new Module();
         $this->CategoryModel = new CategoryModel(); //分类模型
         $this->CategoryLogic = new CategoryLogic(); //分类逻辑

@@ -1,27 +1,11 @@
 <?php
 namespace app\articles\model;
 
-use think\Model;
+use app\articles\model\ArticlesBase as Base;
 
-class ArticlesComment extends Model
+class ArticlesComment extends Base
 {
 
-    public function edit($data)
-    {
-        $d = $this->get($data['articles_id']);
-        if($d){
-            $res=$this->save($data);
-        }else{
-            $res=$this->save($data);
-        }
-        return $res;
-    }
-
-    public function getDataById($id)
-    {   
-        $map['articles_id'] = $id;
-        $res=$this->get($map);
-        return $res;
-    }
+    
 
 }

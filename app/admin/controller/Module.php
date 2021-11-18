@@ -286,4 +286,20 @@ class Module extends Admin
         }
     }
 
+    /**
+     * 菜单删除
+     */
+    public function mdel()
+    {
+        $ids = input('ids/a');
+        !is_array($ids)&&$ids=explode(',',$ids);
+
+        $res = $this->MenuModel->where('id', 'in', $ids)->delete();
+        if($res){
+            return $this->success('删除成功');
+        }else{
+            return $this->error('删除失败');
+        }  
+    }
+
 } 
