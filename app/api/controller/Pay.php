@@ -31,6 +31,7 @@ class Pay extends Base {
     private $PayService;//支付服务
     private $OrderModel;//订单模型
     private $OrderLogic;//订单模型
+    private $CapitalFlowModel;
     private $params;//参数
     protected $middleware = [
         'app\\common\\middleware\\CheckAuth' => ['only' => 'pay'],
@@ -46,6 +47,7 @@ class Pay extends Base {
             $this->initOrderLogic();
         }
         $this->OrderModel = new OrdersModel();
+        $this->CapitalFlowModel = new CapitalFlow();
     }
 
 
@@ -165,32 +167,71 @@ class Pay extends Base {
             //开启事务
             Db::startTrans();
             try {
+                $refund_to = $this->params['refund_to'] ?? 1;
                 //处理订单业务
-                $order = $this->orderService->refund($this->params);
-                if (!$order){
-                    throw new Exception('订单不存在');
-                }
-                //生成订单流水
-                $this->createCapitalFlow($order);
-                //退款逻辑
-                if ($this->params['refund_to'] == 0){
-                    //退款至用户账户
-                    $result = Member::updateAmount($order['uid'],'balance',$order['price']);
-                }elseif($this->params['refund_to'] == 1){
-                    //退款至付款账户
-                    $result = $this->payService->refund($order);
-                    if ($result['return_code'] == 'SUCCESS' && $result['result_code'] == 'SUCCESS'){
-                        $result = true;
+                $refund_info = $this->OrderLogic->refund($this->params);
+                //更改订单状态
+                $order_data = [
+                    'id' => $refund_info['order_id'],
+                    'refund' => $this->params['refund'],
+                    'refund_to' => $refund_to,
+                ];
+
+                //4为退款流程，其他只更改订单状态
+                if ($this->params['refund'] == 4){
+                    //是否已有退款记录
+                    $map = [
+                        ['order_no', '=', $refund_info['order_no']],
+                        ['shopid', '=', $this->params['shopid']],
+                        ['app', '=', $this->params['app']],
+                    ];
+                    $has_refund = $this->CapitalFlowModel->getDataByMap($map);
+                    if ($has_refund){
+                        $refund_info['refund_no'] = $has_refund['flow_no'];
                     }else{
-                        throw new Exception($result['return_code']);
+                        //订单流水
+                        $flow_no = $this->CapitalFlowModel->createFlow([
+                            'uid' => $refund_info['uid'],
+                            'order_no' => $refund_info['order_no'],
+                            'price' => $refund_info['refund_fee'],
+                            'shopid' => $this->params['shopid'],
+                            'app' => $this->params['app'],
+                            'channel' => $refund_to == 0 ? 'balance' : $refund_info['channel'],
+                            'type' => 2,
+                            'status' => 0
+                        ]);
+                        if ($flow_no){
+                            $refund_info['refund_no'] = $flow_no;
+                        }else{
+                            throw new Exception('创建退款订单失败');
+                        }
                     }
+                    if (!$has_refund || $has_refund['status'] == 0){
+                        //退款逻辑
+                        if ($refund_to == 0){
+                            //退款至用户账户
+                            $result = Member::updateAmount($refund_info['uid'],'balance',$refund_info['refund_fee']);
+                        }else{
+                            //退款至付款账户
+                            $result = $this->PayService->refund($refund_info);
+                        }
+                        if (!$result){
+                            throw new Exception('网络异常，请稍后再试');
+                        }
+                        //更改流水状态
+                        $this->CapitalFlowModel->where('flow_no',$refund_info['refund_no'])->update([
+                            'update_time' => time(),
+                            'status' => 1
+                        ]);
+                    }
+
+                    $order_data['refund_no'] =  $refund_info['refund_no'];
                 }
-                if (!$result){
-                    throw new Exception('网络异常，请稍后再试');
-                }
+
+                $this->OrderModel->edit($order_data);
                 Db::commit();
-                $this->success('退款成功');
-            }catch (\Exception $e){
+                $this->success('处理成功');
+            }catch (Exception $e){
                 Db::rollback();
                 $this->error($e->getMessage());
             }
@@ -229,7 +270,7 @@ class Pay extends Base {
             $this->sendPaySuccessTmplmsg($result['tmplmsg'],$result['order_info']);
         }
         //订单流水
-        (new CapitalFlow())->createFlow([
+        $this->CapitalFlowModel->createFlow([
             'uid' => $order_info['uid'],
             'order_no' => $order_info['order_no'],
             'price' => $order_info['paid_fee'],

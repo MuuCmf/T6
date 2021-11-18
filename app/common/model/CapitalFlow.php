@@ -26,12 +26,13 @@ class CapitalFlow extends BaseModel{
     }
 
     public function createFlow($data){
+        $flow_no = $this->build_flow_no();
         //生成订单流水
         $flow_data = [
             'shopid'    => $data['shopid'],
             'app'       => $data['app'],
             'uid'       => $data['uid'],
-            'flow_no'   => $data['refund_no'] ?? $this->build_flow_no(),
+            'flow_no'   => $flow_no,
             'order_no'  => $data['order_no'],
             'channel'   => $data['channel'],
             'type'      => $data['type'] ?? 1,
@@ -39,6 +40,10 @@ class CapitalFlow extends BaseModel{
             'remark'    => $data['remark'] ?? '',
             'status'    => $data['status'] ?? 1
         ];
-        return $this->edit($flow_data);
+        $res = $this->edit($flow_data);
+        if ($res){
+            return $flow_no;
+        }
+        return false;
     }
 }
