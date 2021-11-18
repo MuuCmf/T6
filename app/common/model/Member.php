@@ -247,6 +247,7 @@ class Member extends Model
                 if(empty($user['avatar'])){
                     $user['avatar'] = $user['avatar64'] = $user['avatar128'] = $user['avatar256'] = $user['avatar512'] = request()->domain() . '/static/common/images/default_avatar.jpg';
                 }else{
+                    $user['avatar'] = get_attachment_src($user['avatar']);
                     $user['avatar64'] = get_thumb_image($user['avatar'], 64, 64);
                     $user['avatar128'] = get_thumb_image($user['avatar'], 128, 128);
                     $user['avatar256'] = get_thumb_image($user['avatar'], 256, 256);

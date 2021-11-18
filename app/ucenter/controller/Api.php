@@ -13,15 +13,17 @@
  */
 namespace app\ucenter\controller;
 use app\common\controller\Api as ApiBase;
+use app\common\model\Member;
 use think\Request;
 
 class Api extends ApiBase{
+    protected $MemberModel;
     function __construct()
     {
         parent::__construct();
         //添加token验证中间件
         $this->middleware[] = 'app\\common\\middleware\\CheckAuth';
-
+        $this->MemberModel = new Member();
     }
 
     function getUserInfo(){
@@ -32,5 +34,20 @@ class Api extends ApiBase{
             $this->success('success',$user);
         }
         $this->error('没有查询到用户数据');
+    }
+
+    /**
+     * 更换用户头像
+     */
+    function avatar(){
+        $uid = request()->uid;
+        $avatar = input('post.avatar');
+        $res = $this->MemberModel->where('uid',$uid)->update([
+            'avatar' => $avatar
+        ]);
+        if ($res !== false){
+            $this->success('更新成功');
+        }
+        $this->error('更新失败');
     }
 }
