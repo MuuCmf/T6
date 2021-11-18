@@ -14,6 +14,7 @@
 namespace app\ucenter\controller;
 use app\common\controller\Api as ApiBase;
 use app\common\model\Member;
+use app\unions\service\wechat\MiniProgram;
 use think\Request;
 
 class Api extends ApiBase{
@@ -26,7 +27,7 @@ class Api extends ApiBase{
         $this->MemberModel = new Member();
     }
 
-    function getUserInfo(){
+    public function getUserInfo(){
         $uid = request()->uid;
         //查询用户信息
         $user = query_user($uid,['uid','nickname','avatar','email','mobile','realname','sex','qq','balance','score1']);
@@ -39,10 +40,11 @@ class Api extends ApiBase{
     /**
      * 更换用户头像
      */
-    function avatar(){
+    public function avatar(){
         $uid = request()->uid;
         $avatar = input('post.avatar');
-        $res = $this->MemberModel->where('uid',$uid)->update([
+        $res = $this->MemberModel->edit([
+            'uid' => $uid,
             'avatar' => $avatar
         ]);
         if ($res !== false){
@@ -50,4 +52,9 @@ class Api extends ApiBase{
         }
         $this->error('更新失败');
     }
+
+    public function bindMobile(){
+    }
+
+
 }

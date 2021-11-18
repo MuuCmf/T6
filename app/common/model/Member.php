@@ -497,5 +497,15 @@ class Member extends Model
         return $result;
     }
 
+    public function edit($data){
+        if ($data['uid']){
+            $result = $this->where('uid',$data['uid'])->update($data);
+            if ($result !== false){
+                return true;
+            }
+        }
+        return false;
+    }
+
 
 }
