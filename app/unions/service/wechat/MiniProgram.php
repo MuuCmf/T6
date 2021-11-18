@@ -35,8 +35,8 @@ class MiniProgram extends Wechat{
     }
 
     public function initConfig(){
-        $this->shopid = Cache::get('shopid') ?: 0;
-        $this->module = Cache::get('module') ?: '';
+        $this->shopid = request()->param('shopid');
+        $this->module = request()->param('app');
         //获取配置信息
         $map = [
             ['shopid' ,'=' ,$this->shopid],
