@@ -19,7 +19,7 @@ class Admin extends MuuAdmin{
         parent::__construct();
         $this->ConfigModel = new ConfigModel();
         $this->ConfigLogic = new ConfigLogic();
-        $config_data = Cache::get('MUUCMF_ARTICLES_CONFIG_DATA');
+        //$config_data = Cache::get('MUUCMF_ARTICLES_CONFIG_DATA');
         if (empty($config_data)){
             $config_data = $this->ConfigModel->getDataByMap(['shopid' => 0]);
             $config_data = $this->ConfigLogic->formatData($config_data);

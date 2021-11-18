@@ -82,7 +82,7 @@ $(function(){
 		var url = $(this).data('url');
 		var data = {
 			id : "{$data['id']}",
-			article_status : value,
+			status : value,
 		};
 
 		$.post(url, data, function (a) {

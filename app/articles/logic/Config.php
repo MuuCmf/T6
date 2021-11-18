@@ -22,7 +22,8 @@ class Config {
 	 */
 	public function formatData($data)
 	{
-        if($data){
+        if(!empty($data)){
+            $data = $data->toArray();
             if(!empty($data['status'])){
                 $data['status_str'] = $this->_status[$data['status']];
             }else{
@@ -36,12 +37,14 @@ class Config {
             if(!empty($data['config']['comment']['switch'])){
                 $data['config']['comment']['switch_str'] = $this->_status[$data['config']['comment']['switch']];
             }else{
-                //$data['article_config']['comment']['switch'] = 0;
+                $data['config']['comment']['switch'] = 0;
                 $data['config']['comment']['switch_str'] = $this->_status[0];
             }
     
             return $data;
         }else{
+            $data = (new ConfigModel())->defaultData();
+
             return $data;
         }
 	}

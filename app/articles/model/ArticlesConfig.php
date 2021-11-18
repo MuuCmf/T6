@@ -20,9 +20,11 @@ class ArticlesConfig extends Base
             'config' => [
                 'comment' => [
                     'switch' => 0,
+                    'switch_str' => '禁用',
                 ]
             ],
             'status' => 1,
+            'status_str' => '启用'
         ];
         return $data;
     }
