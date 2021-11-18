@@ -53,6 +53,7 @@ class Index extends Admin
 
         View::assign('pager',$pager);
         View::assign('lists',$lists);
+
         // 获取分类树
         $category_list = $this->CategoryModel->getList([['status','=',1]], 999)->toArray();
         $category_tree = $this->CategoryLogic->categoryTree($category_list);
@@ -62,6 +63,7 @@ class Index extends Admin
         View::assign('channel', $channel);
         // 记录当前列表页的cookie
         Cookie('__forward__', $_SERVER['REQUEST_URI']);
+
         // 输出模板
         return View::fetch();
     }
@@ -82,7 +84,8 @@ class Index extends Admin
                 validate(Articles::class)->check([
                     'title'  => $data['title'],
                     'description' => $data['description'],
-                    'cover' => $data['cover']
+                    'cover' => $data['cover'],
+                    'category_id' => $data['category_id']
                 ]);
             } catch (ValidateException $e) {
                 // 验证失败 输出错误信息
