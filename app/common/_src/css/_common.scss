@@ -362,22 +362,188 @@ ul {
 }
 
 /*通用footer*/
-.footer-bar {
-  background:#252c34;
-  margin-top:20px;
-  padding-top:30px;
-  div {
-    color:#fff;
+// .footer-bar {
+//   background:#252c34;
+//   margin-top:20px;
+//   padding-top:30px;
+//   div {
+//     color:#fff;
+//   }
+//   a {
+//     color:#999;
+//   }
+//   .power-by {
+//     margin-top:10px;
+//     padding:8px 0;
+//     border-top:1px solid #2E343B;
+//   }
+// }
+.tabbar{
+  background: #fff;
+.tabbar-item {
+  width: 1200px;
+  height: 600px;
+  margin: 0 auto;
+  display: flex;
+  padding: 130px 20px 0;
+ background: #fff;
+  .support {
+    width: 500px;
+
+    >h3 {
+      margin: 0;
+      color: #212428;
+      font-size: 28px;
+      font-weight: 600;
+    }
+
+    >div {
+      border-bottom: 1px solid #dfe1e6;
+
+      >p {
+        font-size: 16px;
+        color: #828797;
+        margin-top: 30px;
+      }
+
+      .E-mailAddress {
+        display: flex;
+        margin-top: -15px;
+
+        >textarea {
+          font-size: 16px;
+          color: #222946;
+          margin-top: 5px;
+          line-height: 47px;
+          width: 200px;
+          height: 47px;
+          border: 0px;
+          resize: none;
+        }
+
+        >textarea:focus {
+          outline: none;
+        }
+
+        .iconfont {
+          font-size: 40px;
+          color: #cdcdcd;
+          margin-left: auto;
+        }
+      }
+    }
+
+    .qqCluster {
+      font-size: 14px;
+      color: #4c535e;
+      margin-top: 20px;
+    }
+
+    .company {
+      font-size: 14px;
+      color: #222946;
+      margin-top: 90px;
+
+      >span {
+        padding-right: 20px;
+      }
+
+      >span::after {
+        content: "";
+        width: 1px;
+        height: 14px;
+        background: #222946;
+        position: absolute;
+        margin: 4px 10px 0;
+      }
+    }
+
+    .recordnVarchar {
+      font-size: 14px;
+      color: #818597;
+
+      >span {
+        padding-right: 30px;
+      }
+
+      >span::after {
+        content: "";
+        width: 1px;
+        height: 14px;
+        background: #818597;
+        position: absolute;
+        margin: 4px 15px 0;
+      }
+    }
   }
-  a {
-    color:#999;
+
+  .contactUs {
+    margin-left: 260px;
+
+    >.contactUs-item {
+      color: #03b8cf;
+      font-size: 16px;
+      padding-left: 13px;
+      margin: 0;
+    }
+
+    >div {
+      margin-top: 30px;
+      width: 190px;
+
+      >img {
+        width: 190px;
+        height: 190px;
+      }
+
+      >p {
+        //  text-align: center;
+        font-size: 16px;
+        color: #4e546b;
+        padding-left: 13px;
+      }
+    }
+
+    >h3 {
+      font-size: 30px;
+      color: #222946;
+      margin-top: 20px;
+      padding-left: 13px;
+    }
   }
-  .power-by {
-    margin-top:10px;
-    padding:8px 0;
-    border-top:1px solid #2E343B;
+
+  .product {
+    margin-left: auto;
+
+    >h3 {
+      margin: 0;
+      color: #03b8cf;
+      font-size: 16px;
+    }
+
+    >ul {
+      margin-top: 30px;
+
+      >li {
+        height: 34px;
+
+        >a {
+          display: block;
+          font-size: 14px;
+          color: #72768b;
+          text-decoration: none;
+          line-height: 34px;
+        }
+      }
+
+      >li:hover>a {
+        color: #03b8cf;
+      }
+    }
   }
 }
+}
+
 
 
 
