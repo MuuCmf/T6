@@ -22,7 +22,7 @@ class Category {
      *
      * @return     <type>  ( description_of_the_return_value )
      */
-    public function _formatData($data)
+    public function formatData($data)
     {   
         if(isset($data['status'])){
             $data['status_str'] = $this->_status[$data['status']];
@@ -50,7 +50,7 @@ class Category {
     public function categoryTree($list)
     {   
         foreach($list as &$v){
-            $v = $this->_formatData($v);
+            $v = $this->formatData($v);
         }
         unset($v);
         
