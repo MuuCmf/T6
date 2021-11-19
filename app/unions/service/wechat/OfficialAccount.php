@@ -168,12 +168,15 @@ class OfficialAccount extends Wechat {
      * @param string $target_url
      * @throws Exception
      */
-    public function oauth(string $target_url = ''){
+    public function oauth(array $params = []){
         //授权回调参数处理
-        if ($target_url){
+        if ($params){
             //重新初始化
             $config = $this->initConfig();
-            $config['oauth']['callback'] .= '?target_url=' . $target_url;
+            $config['oauth']['callback'] .= "?muu=muucmf";
+            foreach ($params as $key => $item){
+                $config['oauth']['callback'] .= "&{$key}={$item}";
+            }
             $this->app = Factory::officialAccount($config);
         }
         $this->app->oauth->redirect()->send();

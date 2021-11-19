@@ -29,7 +29,7 @@ use think\Facade;
  * @method getMaterial($media_id) static
  * @method callbackUrl() static
  * @method getToken() static
- * @method oauth(string $target_url) static
+ * @method oauth(array $params) static
  * @method createQrcode(string $content ,$expiration_time) static
  * @method getQrcodeUrl(string $ticket) static
  * @method sendTemplateMsg(array $data) static

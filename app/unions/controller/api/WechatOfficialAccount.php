@@ -208,7 +208,15 @@ class WechatOfficialAccount extends Base
     public function oauth()
     {
         $target_url = input('param.target_url',request()->domain());
-        OfficialAccount::oauth($target_url);
+        $target_url = explode('#',$target_url);
+        $oauth_data = [
+            'target_url' => $target_url[0]
+        ];
+        //uniapp hash路由带有# ,防止跳转授权时丢失
+        if (isset($target_url[1])){
+            $oauth_data['spa_param'] = $target_url[1];
+        }
+        OfficialAccount::oauth($oauth_data);
     }
 
     /**
@@ -232,7 +240,9 @@ class WechatOfficialAccount extends Base
         $token = 'Bearer ' . $token;
         //跳回原网页
         $target_url = input('param.target_url');
-        $script = "window.location.href='{$target_url}'";
+        $spa_param = input('param.spa_param');
+
+        $script = "window.location.href='{$target_url}#{$spa_param}'";
         echo save_local_storage('user_token',$token,$script);
         exit();
     }
