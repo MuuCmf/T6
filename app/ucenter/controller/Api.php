@@ -13,6 +13,7 @@
  */
 namespace app\ucenter\controller;
 use app\common\controller\Api as ApiBase;
+use app\common\model\Feedback;
 use app\common\model\Member;
 use app\common\model\Verify;
 use app\unions\service\wechat\MiniProgram;
@@ -54,6 +55,9 @@ class Api extends ApiBase{
         $this->error('更新失败');
     }
 
+    /**
+     * 绑定手机号
+     */
     public function mobile(){
         $uid = request()->uid;
         $mobile = input('post.mobile');
@@ -82,6 +86,9 @@ class Api extends ApiBase{
         $this->error('绑定失败');
     }
 
+    /**
+     * 绑定邮件
+     */
     public function email(){
         $uid = request()->uid;
         $email = input('post.email');
@@ -108,6 +115,35 @@ class Api extends ApiBase{
             $this->success('绑定成功');
         }
         $this->error('绑定失败');
+    }
+
+    /**
+     * 建议、反馈
+     */
+    public function feedback(){
+        $uid = request()->uid;
+        $content = input('post.content','');
+        if (empty($content)){
+            $this->error('内容不能为空');
+        }
+        if (input('?post.images')){
+            $images = input('post.images');
+            $images = explode(',', $images);
+        }else{
+            $images = '';
+        }
+        $data = [
+            'shopid' => $this->shopid,
+            'app' => $this->module,
+            'content' => $content,
+            'images' => $images,
+            'uid' => $uid,
+        ];
+        $res = (new Feedback())->edit($data);
+        if ($res){
+            $this->success('提交成功，我们会尽快处理您的反馈');
+        }
+        $this->error('网络异常，请稍后再试');
     }
 
 }

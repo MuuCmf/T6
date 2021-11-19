@@ -253,7 +253,10 @@ class Member extends Model
                     $user['avatar256'] = get_thumb_image($user['avatar'], 256, 256);
                     $user['avatar512'] = get_thumb_image($user['avatar'], 512, 512);
                 }
-                $user['balance'] = sprintf("%.2f",$user['balance'] / 100);
+                if (isset($user['balance'])){
+                    $user['balance'] = sprintf("%.2f",$user['balance'] / 100);
+                }
+
 
                 return $user;
             } else {
