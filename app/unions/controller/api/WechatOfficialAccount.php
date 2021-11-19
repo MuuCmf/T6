@@ -229,6 +229,7 @@ class WechatOfficialAccount extends Base
         $memberModel->updateLogin($user['uid']);
         //生成token
         $token = JWTAuth::builder(['uid' => $user['uid']]);
+        $token = 'Bearer ' . $token;
         //跳回原网页
         $target_url = input('param.target_url');
         $script = "window.location.href='{$target_url}'";

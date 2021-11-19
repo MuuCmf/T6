@@ -171,6 +171,7 @@ class Common extends CommonCommon
             $res = $commonMemberModel->login($uid);
             if ($res) {
                 $token = JWTAuth::builder(['uid' => $uid]); //参数为用户认证的信息，请自行添加
+                $token = 'Bearer ' . $token;
                 $last_url = session('login_http_referer');
                 if(empty($last_url)){
                     $last_url = url('index/index/index',[],true,true);
