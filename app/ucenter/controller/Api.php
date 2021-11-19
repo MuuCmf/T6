@@ -14,6 +14,7 @@
 namespace app\ucenter\controller;
 use app\common\controller\Api as ApiBase;
 use app\common\model\Member;
+use app\common\model\Verify;
 use app\unions\service\wechat\MiniProgram;
 use think\Request;
 
@@ -53,8 +54,60 @@ class Api extends ApiBase{
         $this->error('更新失败');
     }
 
-    public function bindMobile(){
+    public function mobile(){
+        $uid = request()->uid;
+        $mobile = input('post.mobile');
+        $code = input('post.code');
+
+        if (empty($mobile)){
+            $this->error('请输入手机号');
+        }
+        if (empty($code)){
+            $this->error('请输入验证码');
+        }
+        $verifyModel = new Verify();
+        if (!$verifyModel->checkVerify($mobile, 'mobile', $code)) {
+            $this->error('验证码错误');
+        }
+
+        $has_bind = $this->MemberModel->where('mobile',$mobile)->count();
+        if ($has_bind > 0){
+            $this->error('当前手机号已被他人绑定');
+        }
+        $data = ['uid' => $uid,'mobile' => $mobile];
+        $res = $this->MemberModel->edit($data);
+        if ($res){
+            $this->success('绑定成功');
+        }
+        $this->error('绑定失败');
     }
 
+    public function email(){
+        $uid = request()->uid;
+        $email = input('post.email');
+        $code = input('post.code');
+
+        if (empty($email)){
+            $this->error('请输入邮箱');
+        }
+        if (empty($code)){
+            $this->error('请输入验证码');
+        }
+        $verifyModel = new Verify();
+        if (!$verifyModel->checkVerify($email, 'email', $code)) {
+            $this->error('验证码错误');
+        }
+
+        $has_bind = $this->MemberModel->where('email',$email)->count();
+        if ($has_bind > 0){
+            $this->error('当前邮箱已被他人绑定');
+        }
+        $data = ['uid' => $uid,'email' => $email];
+        $res = $this->MemberModel->edit($data);
+        if ($res){
+            $this->success('绑定成功');
+        }
+        $this->error('绑定失败');
+    }
 
 }
