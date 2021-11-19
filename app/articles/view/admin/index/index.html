@@ -7,19 +7,19 @@
 <ol class="breadcrumb">
 	<i class="icon icon-angle-left"></i>
 	<li>
-		<a href="{:url('admin.index/index')}">图文管理</a>
+		<a href="{:url('article',array('action'=>'lists'))}">文章管理</a>
 	</li>
 	<li>
-		图文列表
+		文章列表
 	</li>
 </ol>
 <div class="action-btn-box margin-bottom">
-	<a class="btn btn-primary margin-right" href="{:url('edit')}" role="button">+ 新增文章</a>
+	<a class="btn btn-primary margin-right" href="{:url('article', array('action'=> 'edit'))}" role="button">+ 新增文章</a>
 </div>
 
-<div class="search-box clearfix margin-bottom">
+<div class="search-box clearfix margin-bottom row">
 
-	<form action="" method="get" class="row search-form" role="form">
+	<form action="{:url('article', array('action'=> 'lists'))}" method="get" class="search-form" role="form">
 		<div class="col-sm-2">
 			<select name="category_id" class="form-control">
 				<option value="0">全部分类</option>
@@ -56,109 +56,74 @@
 </div>
 
 
-<section class="knowledge-list-section clearfix">
-	<div class="status-nav" data-status="{$status}">
-		<a class="all btn" href="{:url('lists')}">全部</a>
-		<a class="status0 btn" href="{:url('lists', ['status' => 0])}">已审核</a>
-		<a class="status-1 btn" href="{:url('lists', ['status' => -1])}">未审核</a>
-		<a class="status-2 btn" href="{:url('lists', ['status' => -2])}">审核未通过</a>
-	</div>
-	<script>
-		$(function(){
-			var status = $('.status-nav').data('status');
-			console.log(status);
-			$('.status-nav .btn').removeClass('btn-info');
-			if(status == 'all'){
-				$('.status-nav .all').addClass('btn-info');
-			}
-			if(status == 0){
-				$('.status-nav .status0').addClass('btn-info');
-			}
-			if(status == -1){
-				$('.status-nav .status-1').addClass('btn-info');
-			}
-			if(status == -2){
-				$('.status-nav .status-2').addClass('btn-info');
-			}
-		})
-	</script>
-	{if empty($lists['data'])}
-	<div class="item-section">
+<section class="article-list-section clearfix">
+
+	<div class="item-section card">
+		{if empty($lists.data)}
 		{include file="admin/common/_empty"/}
-	</div>
-    {else /}
-	<div class="item-section">
-        {volist name="$lists.data" id="v"}
-		<div class="item card">
-			<div class="cover">
-				<img src="{$v['cover_400']}">
-				<div class="type">{$v['type_str']}</div>
-			</div>
-			<div class="info">
-				<div class="title text-ellipsis">{$v['title']}</div>
-				<div class="description">{$v['description']}</div>
-			</div>
-
-			<div class="expense">
-				{if $v['expense'] == 0}
-				<div class="price">免费</div>
-				{else}
-				<div class="price"><span class="yuan">￥</span> {$v['price']}</div>
-				<div class="marking-price"><span class="yuan">￥</span> {$v['marking_price']}</div>
-				{/if}
-
-			</div>
-			<div class="data">
-				<div class="view">
-					<i class="fa fa-eye" aria-hidden="true"></i> {$v['view']}
-				</div>
+		{else /}
+		<table class="table muu-table">
+			<thead>
+			  <tr>
+				<th>标题</th>
+				<th>状态</th>
+				<th>创建时间</th>
+				<th>更新时间</th>
+				<th>操作</th>
+			  </tr>
+			</thead>
+			<tbody>
+				{foreach $lists.data as $k => $v}
+				<tr>
+					<td>
+						<div class="cover">
+							<img src="{$v['cover_400']}">
+						</div>
+						<div class="info">
+							<div class="title text-ellipsis">{$v['title']}</div>
+							<div class="description text-ellipsis-2">{$v['description']}</div>
+						</div>
+					</td>
+					<td>
+						{$v['status_str']}
+					</td>
+					<td>
+						{$v['create_time_str']}
+					</td>
+					<td>
+						{$v['update_time_str']}
+					</td>
+					<td class="action">
+						<div >
+							<a class="btn btn-sm btn-info" data-toggle="modal" data-target="#shareModal" data-id="{$v['id']}" data-title="{$v['title']}" data-url="{:url('article', array('action'=>'detail','id'=>$v['id']))}" data-all-url="">预览</a>
+							
+							<a href="{:url('edit',array('id'=>$v['id']))}" class="btn btn-sm btn-primary">编辑</a>
+							{if $v['status'] == 1}
+								<a href="{:url('article',array('action'=>'status','id'=>$v['id'],'status'=> 0))}" class="btn btn-sm btn-warning ajax-get">禁用</a>
+							{/if}
 			
-				<div class="shopping">
-					<i class="fa fa-shopping-bag" aria-hidden="true"></i> {$v['sales']}
-				</div>
+							{if $v['status'] == 0}
+								<a href="{:url('article',array('action'=>'status','id'=>$v['id'], 'status'=> 1))}" class="btn btn-sm btn-info ajax-get">启用</a>
+							{/if}
 			
-				<div class="favorites">
-					<i class="fa fa-star-o" aria-hidden="true"></i>
-					<span class="favorites-num">{$v['favorites']}</span>
-				</div>
-			</div>
-
-			<div class="action">
-				<button class="btn btn-sm btn-info" data-toggle="modal" data-target="#shareModal" 
-					data-id="{$v['id']}" 
-					data-title="{$v['title']}" 
-					data-all-url="{$v['url']}"
-				>
-					预览
-				</button>
-				
-				<a href="{:url('edit',['id'=>$v['id'],'type'=>$v['type']])}" class="btn btn-sm btn-primary">编辑</a>
-				{if $v['status'] == 1}
-				<a href="{:url('status', ['ids'=>$v['id'],'status'=> 0])}" class="btn btn-sm btn-warning ajax-get">下架</a>
-				{/if}
-
-				{if $v['status'] == 0}
-				<a href="{:url('status', ['ids'=>$v['id'], 'status'=> 1])}" class="btn btn-sm btn-info ajax-get">上架</a>
-				{/if}
-
-				{if $v['status'] == -1}
-				<button class="btn btn-sm btn-warning" data-remote="{:url('verify',['id'=>$v['id']])}" data-toggle="modal" data-title="状态审核">未审核</button>
-				{/if}
-				{if $v['status'] == -2}
-				<button disabled class="btn btn-sm disabled">审核未通过</button>
-				{/if}
-				<a href="{:url('status', ['ids'=>$v['id'], 'status'=> -3])}" data-confirm="确认执行删除操作？" class="btn btn-sm btn-danger ajax-get">
-                    <i class="fa fa-times"></i> 删除
-                </a>
-			</div>
-		</div>
-		{/volist}
+							{if $v['status'] == -1}
+								<button class="btn btn-sm btn-warning" data-remote="{:url('article',array('action'=>'verify','id'=>$v['id']))}" data-toggle="modal" data-title="状态审核">未审核</button>
+							{/if}
+							{if $v['status'] == -2}
+								<button disabled class="btn btn-sm disabled">审核未通过</button>
+							{/if}
+							<a href="{:url('article',array('action'=>'status','id'=>$v['id'], 'status'=> -3))}" data-confirm="确认执行删除操作？" class="btn btn-sm btn-danger ajax-get"><i class="fa fa-times"></i> 删除</a>
+						</div>
+					</td>
+				</tr>
+				{/foreach}
+			</tbody>
+		</table>
+		{/if}
 	</div>
-	<div class="page-section">
-		{$pager}
-	</div>
-	{/if}
 </section>
-
-{include file="admin/common/_qrcode" /}
+	
+<div class="page-section">
+	{:htmlspecialchars_decode($pager)}
+</div>
 {/block}

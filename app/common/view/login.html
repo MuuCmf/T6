@@ -1,0 +1,177 @@
+<div class="login-bg">
+  <div class="login-box">
+    <div  class="ewm login-method">
+      <div>微信扫码登录</div>
+      <span class="iconfont"id="ewm">&#xe678;</span>
+    </div>
+    <div class="password-login">
+      <div class=" login-method">
+        <div>密码登录</div>
+        <span class="iconfont" id="password-login">&#xe679;</span>
+      </div>
+    </div>
+    <div class="wrapper">
+      <div class="login-method">
+        <ul id="login" class="nav-tabs">
+          <li class="login-method-captcha">
+            <a href="#captcha" data-toggle="tab">验证码登录</a>
+          </li>
+          <li class="active login-method-password">
+            <a href="#password" data-toggle="tab">密码登录</a>
+          </li>
+        </ul>
+      </div>
+      
+      <div class="tab-content" id="myTabContent">
+<!-- 密码登录 -->
+        <div id="password" class="password tab-pane fade in active">
+          <form  action="">
+          <div>
+            <input id="loginaccount" oninput="account()" placeholder="请输入用户名/邮箱/手机" type="text" />
+          </div>
+          <div class="displaypassword">
+            <input
+            id="clo"
+              class="password_item"
+              placeholder="请输入密码"
+              type="password"
+              oninput="account()"
+            />
+            <span  class="check iconfont" data-type="hidden">&#xe67a;</span>
+            <p class="prompt">您输入的密码不正确，请重新输入</p>
+          </div>
+          <div class="saveaccount">
+              <div class=""><input type="checkbox" value="" /> 记住我</div>
+              <p class="forgetpassword">忘记密码</p>
+            </div>
+            <button onClick="accountlogin()" class="login-btn">登录</button>
+            <p class="registation">还没有账号？<a href="">立即注册</a></p>
+        </form>
+        </div>
+        <!-- 验证码登录 -->
+        <div id="captcha" class="captcha tab-pane fade">
+          <form action="">
+          <div>
+            <input oninput="captcha()" id="mobile" placeholder="请输入手机号" oninput="value = value.replace(/[^\d]/g,'')" type="text" />
+          </div>
+          <div>
+            <input oninput="captcha()" id="mobilecaptcha"  placeholder="验证码" type="text" />
+            <p class="elicitcaptcha" onClick="elicitcaptcha()">
+              <a href="#">获取验证码</a>
+            </p>
+            <!-- <p class="anewelicit"><a href="">重新获取(19)</a></p> -->
+          </div>
+          <div class="saveaccount">
+              <div class=""><input type="checkbox" value="" /> 记住我</div>
+            </div>
+            <button onClick="captchalogin()"  class="captchalogin">登录</button>
+            <p class="registation">还没有账号？<a href="">立即注册</a></p>
+          </form>
+        </div>
+      </div>
+    </div>
+    <!-- 微信扫码登录 -->
+    <div class="ewm-login">
+      <h3>微信扫码登录</h3>
+      <img src="__STATIC__/common/images/login.png" alt="" />
+      <p>请使用微信扫描二维码登录MuuCmf</p>
+      <p class="registation">还没有账号？<a href="">立即注册</a></p>
+    </div>
+  </div>
+</div>
+<script src="__STATIC__/common/js/main.min.js"></script>
+<script>
+// $("button").click(function(){
+//     $("p").toggle();
+// });
+$(".displaypassword").on("click", ".check", function () {
+    let type = $(this).data('type');
+    if(type == 'hidden'){
+        $(this).data('type','show');
+        $(this).html('&#xe6b1;');
+        $(this).prev().attr("type", "text");
+     }else{
+        $(this).data('type','hidden');
+        $(this).html('&#xe67a;');
+        $(this).prev().attr("type", "password");
+    }
+ });
+// --------------------------------------------------
+ function accountlogin()
+{
+var loginaccount = document.getElementById("loginaccount").value;
+var clo = document.getElementById("clo").value;
+console.log(clo,loginaccount)
+// var myreg=/^[1][3,5,7,8,9][0-9]{9}$/;
+// if (!myreg.test(mobile)) {
+//     alert("手机号码不正确");
+// } else {
+//     console.log(mobile)
+//     alert("提交成功")
+// }    
+}
+function captchalogin()
+{
+var mobile = document.getElementById("mobile").value;
+var mobilecaptcha = document.getElementById("mobilecaptcha").value;
+var myreg=/^[1][3,5,7,8,9][0-9]{9}$/;
+var captcha = /^[0-9]{6}$/;
+if (!myreg.test(mobile)) {
+    console.log("手机号码不正确");
+} else {
+    if(!captcha.test(mobilecaptcha)){
+       console.log("验证码错误")
+    }else(
+      console.log("验证通过")
+    )
+}   
+}
+
+//判断输入框是否为空
+function account() {
+  var loginaccount = document.getElementById("loginaccount").value;
+  var clo = document.getElementById("clo").value;
+  if(loginaccount.length > 0 && clo.length > 0){
+    $(".login-btn").css({"background":"#03b8cf","opacity": "1"});
+    $(".login-btn").removeAttr("disabled")
+  }else{
+    $(".login-btn").css({"background":"#03b8cf","opacity": "0.4"});
+    $(".login-btn").attr({"disabled":"true"})
+  }
+}
+function captcha() {
+  var mobile = document.getElementById("mobile").value;
+  var mobilecaptcha = document.getElementById("mobilecaptcha").value;
+  if(mobile.length > 0 && mobilecaptcha.length > 0){
+    $(".captchalogin").css({"background":"#03b8cf","opacity": "1"});
+    $(".captchalogin").removeAttr("disabled")
+  }else{
+    $(".captchalogin").css({"background":"#03b8cf","opacity": "0.4"});
+    $(".captchalogin").attr({"disabled":"true"})
+  }
+}
+
+//获取验证码倒计时
+var validatecode = 60;
+function elicitcaptcha(){
+    if(validatecode === 1){
+      validatecode = 60;
+    $(".elicitcaptcha").text("获取验证码");
+    $(".elicitcaptcha").removeAttr("disabled");
+    $(".elicitcaptcha").css("pointer-events","all");
+    $(".elicitcaptcha").css({"border":"1px solid #03b8cf","color":"#03b8cf"})
+      return
+    }else{
+      validatecode--;
+    $(".elicitcaptcha").text("重新获取("+validatecode+")");
+    $(".elicitcaptcha").attr("disabled","true")
+    $(".elicitcaptcha").css("pointer-events","none");
+    $(".elicitcaptcha").css({"border":"1px solid #ababab","color":"#ababab"})
+    }
+    setTimeout(function(){
+      elicitcaptcha();
+    },1000)
+}
+
+</script>
+

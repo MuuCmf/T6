@@ -2,13 +2,15 @@
 namespace app\articles\logic;
 
 use app\articles\model\ArticlesCategory as CategoryModel;
+use app\articles\model\ArticlesConfig as ConfigModel;
+use app\articles\logic\Config as ConfigLogic;
 use app\common\model\Favorites as FavoritesModel;
 use app\articles\logic\Favorites as FavoritesLogic;
 
 /*
  * 数据逻辑层
  */
-class Articles
+class Articles extends Base
 {
 
     /**
@@ -22,12 +24,14 @@ class Articles
         '-3' => '已删除',
     ];
 
-    protected $CategoryModel;
+    protected $ConfigModel;
+    protected $ConfigLogic;
     protected $FavoritesModel;
 
     public function __construct()
     {
-        $this->CategoryModel = new CategoryModel();
+        $this->ConfigModel = new ConfigModel();
+        $this->ConfigLogic = new ConfigLogic();
         $this->FavoritesModel = new FavoritesModel();
     }
 
@@ -87,7 +91,7 @@ class Articles
         if(!empty($data)){
             $id = $data['id'];
             
-            $data = $this->setCoverAttr($data, $config_data['thumb']);
+            $data = $this->setCoverAttr($data, '4:3');
             
             // 获取分类数据
             if(!empty($data['category'])){
@@ -115,43 +119,7 @@ class Articles
             }
 
             //拼接url地址
-            $data['url'] = url('classroom\h5\index',[],'',true) . '#/muu_classroom/pages/articles/detail?id='.$data['id'];
-        }
-
-        return $data;
-    }
-
-    /**
-     * 生成封面缩微图
-     */
-    public function setCoverAttr($data, $proportion = '4:3')
-    {
-        global $_W;
-        if($proportion == '1:1'){
-            $width = 100;
-            $height = 100;
-        }
-        if($proportion == '4:3'){
-            $width = 100;
-            $height = 75;
-        }
-        if($proportion == '16:9'){
-            $width = 100;
-            $height = 56;
-        }
-        if($proportion == '3:5'){
-            $width = 100;
-            $height = 167;
-        }
-        if(empty($data['cover'])){
-            $data['cover_100'] = $data['cover_200'] = $data['cover_300'] = $data['cover_400'] = $data['cover_800'] = request()->domain() . "/static/classroom/images/nopic.png";
-        }else{
-            //处理缩微图
-            $data['cover_100'] = get_thumb_image($data['cover'], intval($width), intval($height));
-            $data['cover_200'] = get_thumb_image($data['cover'], intval($width*2), intval($height*2));
-            $data['cover_300'] = get_thumb_image($data['cover'], intval($width*3), intval($height*3));
-            $data['cover_400'] = get_thumb_image($data['cover'], intval($width*4), intval($height*4));
-            $data['cover_800'] = get_thumb_image($data['cover'], intval($width*8), intval($height*8));
+            $data['url'] = url('articles\h5\index',[],'',true) . '#/articles/pages/articles/detail?id='.$data['id'];
         }
 
         return $data;

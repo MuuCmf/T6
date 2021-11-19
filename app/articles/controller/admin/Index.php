@@ -7,6 +7,8 @@ use app\articles\logic\Category as CategoryLogic;
 use app\articles\model\ArticlesArticles as ArticlesModel;
 use app\articles\logic\Articles as ArticlesLogic;
 use app\common\model\Module;
+use app\articles\validate\Articles;
+use think\exception\ValidateException;
 
 class Index extends Admin
 {
@@ -51,6 +53,7 @@ class Index extends Admin
 
         View::assign('pager',$pager);
         View::assign('lists',$lists);
+
         // 获取分类树
         $category_list = $this->CategoryModel->getList([['status','=',1]], 999)->toArray();
         $category_tree = $this->CategoryLogic->categoryTree($category_list);
@@ -60,6 +63,7 @@ class Index extends Admin
         View::assign('channel', $channel);
         // 记录当前列表页的cookie
         Cookie('__forward__', $_SERVER['REQUEST_URI']);
+
         // 输出模板
         return View::fetch();
     }
@@ -69,8 +73,61 @@ class Index extends Admin
      */
     public function edit()
     {
+        $id = input('id',0,'intval');
+        $title = $id ? "编辑" : "新建";
+        View::assign('title',$title);
+
+        if (request()->isPost()) {
+            $data = input();
+            // 数据验证
+            try {
+                validate(Articles::class)->check([
+                    'title'  => $data['title'],
+                    'description' => $data['description'],
+                    'cover' => $data['cover'],
+                    'category_id' => $data['category_id']
+                ]);
+            } catch (ValidateException $e) {
+                // 验证失败 输出错误信息
+                // dump($e->getError());exit;
+                return $this->error($e->getError());
+            }
+
+            $res = $this->ArticlesModel->edit($data);
+
+            if($res){
+                return $this->success($title . '成功', $res, Cookie('__forward__'));
+            }else{
+                return $this->error($title . '失败');
+            }
+        }
+
+        //获取数据
+        $data['id'] = 0;
+        $data['title'] = '';
+        $data['description'] = '';
+        $data['cover'] = '';
+        $data['category_id'] = 0;
+        $data['sort'] = 0; // 排序
+        $data['content'] = '';
+        $data['f_view'] = 0;
+        $data['f_support'] = 0;
+        $data['f_favorites'] = 0;
+        $data['status'] = 0; // 状态
+        $data['reason'] = ''; // 审核拒绝原因
+
+        if(!empty($id)){
+            $data = $this->ArticlesModel->getDataById($id);
+            $data = $this->ArticlesLogic->formatData($data);
+        }
+        View::assign('data',$data);
+
+        // 获取分类树
+        $category_list = $this->CategoryModel->getList([['status','=',1]], 999)->toArray();
+        $category_tree = $this->CategoryLogic->categoryTree($category_list);
+        View::assign('category_tree', $category_tree);
 
         // 输出模板
-        View::fetch();
+        return View::fetch();
     }
 }
