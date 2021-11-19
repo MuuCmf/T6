@@ -130,4 +130,32 @@ class Index extends Admin
         // 输出模板
         return View::fetch();
     }
+
+    /**
+     * 设置状态
+     */
+    public function status()
+    {   
+        $ids = input('ids/a');
+        !is_array($ids)&&$ids=explode(',',$ids);
+        $status = input('status', 0, 'intval');
+        $title = '更新';
+        if($status == 0){
+            $title = '禁用';
+        }
+        if($status == 1){
+            $title = '启用';
+        }
+        if($status == -3){
+            $title = '删除';
+        }
+        $data['status'] = $status;
+
+        $res = $this->ArticlesModel->where('id', 'in', $ids)->update($data);
+        if($res){
+            return $this->success($title . '成功');
+        }else{
+            return $this->error($title . '失败');
+        }  
+    }
 }
