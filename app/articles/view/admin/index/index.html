@@ -7,15 +7,13 @@
 <ol class="breadcrumb">
 	<i class="icon icon-angle-left"></i>
 	<li>
-		<a href="{:url('article',array('action'=>'lists'))}">文章管理</a>
+		<a href="{:url('index')}">文章管理</a>
 	</li>
 	<li>
 		文章列表
 	</li>
 </ol>
-<div class="action-btn-box margin-bottom">
-	<a class="btn btn-primary margin-right" href="{:url('article', array('action'=> 'edit'))}" role="button">+ 新增文章</a>
-</div>
+
 
 <div class="search-box clearfix margin-bottom row">
 
@@ -54,7 +52,28 @@
 		</div>
 	</form>
 </div>
-
+<div class="action-btn-box margin-bottom">
+	<a class="btn btn-primary margin-right" href="{:url('edit')}" role="button">+ 新增文章</a>
+	<button class="btn ajax-post btn-info confirm margin-right" 
+		url="{:url('status',['status' => 1])}" 
+		target-form="ids"
+	>
+		启用
+	</button>
+	<button class="btn ajax-post btn-warning confirm margin-right" 
+		url="{:url('status',['status' => 0])}" 
+		target-form="ids"
+	>
+		禁用
+	</button>
+	<button class="btn ajax-post btn-danger margin-right confirm" 
+		data-confirm="您确实要删除吗？（删除后不可恢复）" 
+		url="{:url('status',['status' => -3])}" 
+		target-form="ids"
+	>
+		删除
+	</button>
+</div>
 
 <section class="article-list-section clearfix">
 
@@ -64,17 +83,25 @@
 		{else /}
 		<table class="table muu-table">
 			<thead>
-			  <tr>
-				<th>标题</th>
-				<th>状态</th>
-				<th>创建时间</th>
-				<th>更新时间</th>
-				<th>操作</th>
-			  </tr>
+				<tr>
+					<th width="40">
+						<input type="checkbox" class="check-all" id="check-all">
+						<label for="check-all"></label>
+					</th>
+					<th>标题</th>
+					<th>状态</th>
+					<th>创建时间</th>
+					<th>更新时间</th>
+					<th>操作</th>
+				</tr>
 			</thead>
 			<tbody>
 				{foreach $lists.data as $k => $v}
 				<tr>
+					<td>
+						<input type="checkbox" class="ids" name="ids[]" id="a_{$v['id']}" value="{$v['id']}">
+						<label for="a_{$v['id']}"></label>
+					</td>
 					<td>
 						<div class="cover">
 							<img src="{$v['cover_400']}">
@@ -95,24 +122,22 @@
 					</td>
 					<td class="action">
 						<div >
-							<a class="btn btn-sm btn-info" data-toggle="modal" data-target="#shareModal" data-id="{$v['id']}" data-title="{$v['title']}" data-url="{:url('article', array('action'=>'detail','id'=>$v['id']))}" data-all-url="">预览</a>
-							
-							<a href="{:url('edit',array('id'=>$v['id']))}" class="btn btn-sm btn-primary">编辑</a>
+							<a href="{:url('edit',['id'=>$v['id']])}" class="btn btn-sm btn-primary">编辑</a>
 							{if $v['status'] == 1}
-								<a href="{:url('article',array('action'=>'status','id'=>$v['id'],'status'=> 0))}" class="btn btn-sm btn-warning ajax-get">禁用</a>
+								<a href="{:url('status',['ids'=>$v['id'],'status'=> 0])}" class="btn btn-sm btn-warning ajax-get">禁用</a>
 							{/if}
 			
 							{if $v['status'] == 0}
-								<a href="{:url('article',array('action'=>'status','id'=>$v['id'], 'status'=> 1))}" class="btn btn-sm btn-info ajax-get">启用</a>
+								<a href="{:url('status', ['ids'=>$v['id'], 'status'=> 1])}" class="btn btn-sm btn-info ajax-get">启用</a>
 							{/if}
 			
 							{if $v['status'] == -1}
-								<button class="btn btn-sm btn-warning" data-remote="{:url('article',array('action'=>'verify','id'=>$v['id']))}" data-toggle="modal" data-title="状态审核">未审核</button>
+								<button class="btn btn-sm btn-warning" data-remote="{:url('verify',['id'=>$v['id']])}" data-toggle="modal" data-title="状态审核">未审核</button>
 							{/if}
 							{if $v['status'] == -2}
 								<button disabled class="btn btn-sm disabled">审核未通过</button>
 							{/if}
-							<a href="{:url('article',array('action'=>'status','id'=>$v['id'], 'status'=> -3))}" data-confirm="确认执行删除操作？" class="btn btn-sm btn-danger ajax-get"><i class="fa fa-times"></i> 删除</a>
+							<a href="{:url('status', ['ids'=>$v['id'], 'status'=> -3])}" data-confirm="确认执行删除操作？" class="btn btn-sm btn-danger ajax-get"><i class="fa fa-times"></i> 删除</a>
 						</div>
 					</td>
 				</tr>

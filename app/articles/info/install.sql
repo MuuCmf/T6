@@ -1,7 +1,7 @@
 -- -----------------------------
 -- 表结构 `muucmf_articles`
 -- -----------------------------
-CREATE TABLE IF NOT EXISTS `muucmf_articles` (
+CREATE TABLE IF NOT EXISTS `muucmf_articles_articles` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '自增ID',
   `uid` int(11) NOT NULL,
   `title` varchar(50) NOT NULL COMMENT '标题',
@@ -28,8 +28,9 @@ CREATE TABLE IF NOT EXISTS `muucmf_articles` (
 -- -----------------------------
 CREATE TABLE IF NOT EXISTS `muucmf_articles_category` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '自增ID',
+  `shopid` int(11) unsigned NOT NULL COMMENT '平台ID',
   `title` varchar(20) NOT NULL,
-  `pid` int(11) NOT NULL,
+  `pid` int(11) unsigned NOT NULL,
   `can_post` tinyint(4) NOT NULL COMMENT '前台可投稿',
   `need_audit` tinyint(4) NOT NULL COMMENT '前台投稿是否需要审核',
   `sort` tinyint(4) unsigned NOT NULL DEFAULT '0',
@@ -41,12 +42,19 @@ CREATE TABLE IF NOT EXISTS `muucmf_articles_category` (
 -- -----------------------------
 -- 表结构 `muucmf_articles_detail`
 -- -----------------------------
-CREATE TABLE IF NOT EXISTS `muucmf_articles_detail` (
-  `articles_id` int(11) NOT NULL,
-  `content` text NOT NULL COMMENT '内容',
-  `template` varchar(50) NOT NULL COMMENT '模板',
-  PRIMARY KEY (`articles_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='文章详情';
+CREATE TABLE IF NOT EXISTS `muucmf_articles_comment` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+  `shopid` int(11) unsigned NOT NULL COMMENT '平台ID',
+  `uid` int(11) unsigned NOT NULL COMMENT '用户ID',
+  `pid` int(11) unsigned NOT NULL COMMENT '上级评论ID',
+  `article_id` int(11) unsigned NOT NULL COMMENT '文章ID',
+  `content` text NOT NULL COMMENT '评论内容',
+  `support` int(11) unsigned NOT NULL COMMENT '点赞数量',
+  `create_time` int(11) unsigned NOT NULL COMMENT '创建时间',
+  `update_time` int(11) unsigned NOT NULL COMMENT '更新时间',
+  `status` tinyint(2) NOT NULL COMMENT '状态',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='文章评论表';
 
 -- -----------------------------
 -- 表内记录 `muucmf_articles_category`
