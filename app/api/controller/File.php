@@ -100,7 +100,7 @@ class File extends Base
                     return json($return);
                 }
 
-                $res = $this->upload->upload($files,'pic');
+                $res = $this->upload->upload($files,'file');
                 
                 $result['state'] ='SUCCESS';
                 $result['url'] = $res['url'];
