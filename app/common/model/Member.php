@@ -242,8 +242,10 @@ class Member extends Model
             // 查询用户数组
             $map['uid'] = $uid;
             $user = $this->where($map)->field($fields)->find();
-            if (is_array($user) && $user['status'] = 1) {
+            if ($user){
                 $user = $user->toArray();
+            }
+            if (is_array($user) && $user['status'] = 1) {
                 if(empty($user['avatar'])){
                     $user['avatar'] = $user['avatar64'] = $user['avatar128'] = $user['avatar256'] = $user['avatar512'] = request()->domain() . '/static/common/images/default_avatar.jpg';
                 }else{
