@@ -38,12 +38,12 @@ class CheckAuth extends JWTAuth
                 $payload = $this->auth->auth(false);
             } catch (JWTException $exception) {
                 // 如果捕获到此异常，即代表 refresh 也过期了，用户无法刷新令牌，需要重新登录。
-                echo json(['code' => 0 ,'data' => 'login' ,'msg' => '未登录']);exit();
+                echo json_encode(['code' => 0 ,'data' => 'login' ,'msg' => '未登录']);exit();
             }
         } catch (TokenBlacklistGracePeriodException $e) { // 捕获黑名单宽限期
             $payload = $this->auth->auth(false);
         } catch (TokenBlacklistException $e) { // 捕获黑名单，退出登录或者已经自动刷新，当前token就会被拉黑
-            echo json(['code' => 0 ,'data' => 'login' ,'msg' => '未登录']);exit();
+            echo json_encode(['code' => 0 ,'data' => 'login' ,'msg' => '未登录']);exit();
         }
 
         // 可以获取payload里自定义的字段，比如uid
