@@ -7,7 +7,11 @@
 <div id="main-container" class="container">
     <div class="register">
         <div class="register-header">
-            注册{:config('system.WEB_SITE_NAME')}账号
+            <!-- 注册{:config('system.WEB_SITE_NAME')}账号 -->
+            <h3>
+                    <img src="__STATIC__/common/images/logo.png" alt="">
+                    <span>注册</span>
+                </h3>
         </div>
         <div class="register-body clearfix">
             {if !empty($regSwitch)}
@@ -49,7 +53,7 @@
                                 <!--邮箱注册-->
                                 <div class="tab-pane {if $key == 0}active in{/if}" id="email_reg">
                                     <div class="form-group clearfix">
-                                        <input type="text" id="email" class="form-control form_check new-input" check-type="UserEmail" check-url="{:url('ucenter/common/checkAccount')}" placeholder="请输入邮箱地址" name="account" {if $key != 0}disabled{/if}>
+                                        <input  type="text" id="email" class="form-control form_check new-input" check-type="UserEmail" check-url="{:url('ucenter/common/checkAccount')}" placeholder="请输入邮箱地址" name="account" {if $key != 0}disabled{/if}>
                                     </div>
 
                                     <div class="form-group row clearfix">
@@ -95,17 +99,19 @@
                         <div class="form-group clearfix">
                             <div class="password-block input-group">
                                 <input type="password" id="inputPassword" class="form-control new-input" check-length="6,30"  placeholder="请输入密码"  name="password">
-                                <span class="input-group-addon">
+                                <!-- <span class="input-group-addon">
                                     <a href="javascript:void(0);" id="change_show"><i class="icon icon-eye-open"></i></a>
-                                </span>
+                                </span> -->
+                                <span  class="see iconfont input-group-addon" data-type="hidden">&#xe6b1;</span>
                             </div>
                         </div>
                         <div class="form-group clearfix">
                             <div class="password-block input-group">
                                 <input type="password" class="form-control new-input" check-length="6,30"  placeholder="再次输入密码" name="confirm_password">
-                                <span class="input-group-addon">
+                                <!-- <span class="input-group-addon">
                                     <a href="javascript:void(0);" id="change_show"><i class="icon icon-eye-open"></i></a>
-                                </span>
+                                </span> -->
+                                <span  class="see iconfont input-group-addon" data-type="hidden">&#xe6b1;</span>
                             </div>
                         </div>
                         {if condition="check_verify_open('reg')"}
@@ -120,7 +126,7 @@
                         </div>
                         {/if}
 
-                        <div class="form-group row clearfix">
+                        <div class="form-group row clearfix service-agreement">
                             <div class="col-xs-12">
                                 <div class="checkbox-primary register-agreement">
                                     <input type="checkbox" id="registerAgreement" name="agreement" value="1">
@@ -128,9 +134,9 @@
                                 </div>
                             </div>
                         </div>
-                        <button type="button" data-type="submit" class="btn btn-submit btn-block btn-lg">同意协议并提交</button>
+                        <button type="button" data-type="submit" class="btn btn-submit btn-block btn-lg">登录</button>
                         <div class="existing-account">
-                            已有账户， <a href="{:url('ucenter/common/login')}" title="">点此登录</a>
+                            已有账号？ <a href="{:url('ucenter/common/login')}" title="">立即登录</a>
                         </div>
                     </div>
                 </form>
@@ -171,19 +177,31 @@
         });
     });
 
-    $(function () {
-        // 显示密码
-        $('#change_show').click(function(){
-            var obj = $(this);
-            if ($(obj).html().trim() == '<i class="icon icon-eye-open"></i>') {
-                $(obj).html('<i class="icon icon-eye-close"></i>');
-                $(obj).parents('.password_block').find('input').attr('type', 'text');
-            } else {
-                $(obj).html('<i class="icon icon-eye-open"></i>');
-                $(obj).parents('.password_block').find('input').attr('type', 'password');
-            }
-        });
-    })
+    // $(function () {
+    //     // 显示密码
+    //     $('#change_show').click(function(){
+    //         var obj = $(this);
+    //         if ($(obj).html().trim() == '<i class="icon icon-eye-open"></i>') {
+    //             $(obj).html('<i class="icon icon-eye-close"></i>');
+    //             $(obj).parents('.password_block').find('input').attr('type', 'text');
+    //         } else {
+    //             $(obj).html('<i class="icon icon-eye-open"></i>');
+    //             $(obj).parents('.password_block').find('input').attr('type', 'password');
+    //         }
+    //     });
+    // })
+    $(".form-group").on("click", ".see", function () {
+    let type = $(this).data('type');
+    if(type == 'hidden'){
+        $(this).data('type','show');
+        $(this).html('&#xe67a;');
+        $(this).prev().attr("type", "text");
+    }else{
+        $(this).data('type','hidden');
+        $(this).html('&#xe6b1;');
+        $(this).prev().attr("type", "password");
+    }
+ });  
 
     $(function () {
         // 图形验证码
@@ -233,7 +251,6 @@
             $('.tab-pane').eq($("#regNav li a").index(this)).find('button').attr('disabled',false);
         })
     })
-
     $(function(){
         
     })

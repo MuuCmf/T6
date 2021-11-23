@@ -139,12 +139,18 @@
         </div>
         <div class="member">
             <ul>
-                <li class="verticalbar" ><a>登录</a></li>
-                <li><a href="{:url('muu/registration/index')}">注册</a></li>
+                <!-- <li class="verticalbar" ><a>登录</a></li>
+                <li><a href="{:url('muu/registration/index')}">注册</a></li> -->
+                <li class="member login">
+                    <!-- <a data-login="quick_do_login" data-remote="{:url('ucenter/Common/quickLogin')}" data-show-header="false" data-toggle="modal">登陆</a> -->
+                    <a data-login="do_login" href="{$login_url}">登陆</a>
+                </li>
+                <li class="member">
+                    <a data-role="do_register" href="{:url('ucenter/Common/register',['forward'=> $_SERVER['REQUEST_URI']])}">注册</a>
+                </li>
             </ul>
             <div>
-                {include file="../../common/view/login" /}
-                <!-- {include file="../../ucenter/view/common.login" /} -->
+              
             </div>
             <!-- <p class="username">你好，<span id="item">12345678901</span></p> 
             <p class="logout">【退出】</p> -->
@@ -163,5 +169,4 @@
 //     });
 //   });
 
-// window.location.pathname  设置或获取对象指定的文件名或路径，就是/topic/index
 </script>
