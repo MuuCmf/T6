@@ -1,8 +1,4 @@
 <?php
-/**
- * 所属项目 MuuCmf T6
- * 开发者: 大蒙
- */
 namespace app\common\model;
 
 use think\Model;
@@ -38,6 +34,16 @@ class Module extends Model
             return $data;
         }
         return null;
+    }
+
+    /**
+     * 通过数组查询数据
+     */
+    public function getDataByMap($map)
+    {
+        $data = $this->where($map)->find();
+
+        return $data;
     }
 
     /**
