@@ -1,73 +1,165 @@
 <div class="login-main">
-    <div class="header">
+    <!-- <div class="header">
         <h2><span>[</span> 用户登录 <span>]</span></h2>
+    </div> -->
+    <div class="login-box">
+        <div class="ewm login-method">
+            <div>微信扫码登录</div>
+            <span class="iconfont" id="ewm">&#xe678;</span>
+        </div>
+        <div class="password-login">
+            <div class=" login-method">
+                <div>密码登录</div>
+                <span class="iconfont" id="password-login">&#xe679;</span>
+            </div>
+        </div>
     </div>
     <div class="clearfix"></div>
-    <form action="{:url('ucenter/Common/login')}" method="post" class="ajax_form">
-        <div class="row">
-            <div class="form-group">
-                <label for="loginMainAccount" class=".sr-only col-xs-12"></label>
-                <div class="col-xs-12">
-                    <input type="text" id="loginMainAccount" class="form-control" placeholder="{$ph}" name="account">
-                </div>
-                <div class="clearfix"></div>
-            </div>
-            <div class="form-group clearfix">
-                <label for="inputPassword" class=".sr-only col-xs-12"></label>
-                <div class="col-xs-12">
-                    <div id="password_block" class="input-group">
-                        <input type="password" id="inputPassword" class="form-control" placeholder="请输入密码" name="password">
-                        <div class="input-group-addon"><a class="change_show" href="javascript:void(0);">show</a></div>
-                    </div>
-                </div>
-            </div>
-            {if check_verify_open('login')}
-                <div class="form-group clearfix">
-                    <label for="verifyCode" class=".sr-only col-xs-12" style="display: none"></label>
-
-                    <div class="col-xs-8">
-                        <input type="text" id="verifyCode" class="form-control" placeholder="验证码" datatype="*5-5" name="captcha">
-                    </div>
-                    <div class="col-xs-4">
-                        <img class="verifyimg reloadverify" alt="刷新验证码" src="{:captcha_src()}" style="cursor:pointer;height:43px;max-width: 100%">
-                    </div>
-                </div>
-            {/if}
-            <div class="clearfix form-group">
-                <div class="col-xs-6">
-                    
-                </div>
-                <div class="col-xs-6 text-right">
-                    <div class="with-padding">
-                        <a class="" href="{:url('ucenter/Common/mi')}" style="color: #848484;font-size: 12px;">忘记密码</a>
-                    </div>
-                </div>
-            </div>
+    <div class="wrapper">
+        <div class="password-captcha">
+            <ul id="login" class="nav-tabs">
+                <li class="login-method-captcha">
+                    <a href="#captcha" data-toggle="tab">验证码登录</a>
+                </li>
+                <li class="active login-method-password">
+                    <a href="#password" data-toggle="tab">密码登录</a>
+                </li>
+            </ul>
         </div>
-        {php}
+        <form action="{:url('ucenter/Common/login')}" method="post" class="ajax_form">
+            <div class="row">
+                <div class="form-group">
+                    <label for="loginMainAccount" class=".sr-only col-xs-12"></label>
+                    <div class="col-xs-12">
+                        <input type="text" id="loginMainAccount" class="form-control" placeholder="{$ph}"
+                            name="account">
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="tab-content" id="myTabContent">
+                    <div id="password" class="form-group clearfix tab-pane fade in active">
+                        <label for="inputPassword" class=".sr-only col-xs-12"></label>
+                        <div class="col-xs-12 ">
+                            <div id="password_block" class="input-group">
+                                <input type="password" id="inputPassword" class="form-control" placeholder="请输入密码"
+                                    name="password">
+                                <!-- <div class="input-group-addon"><a class="change_show" href="javascript:void(0);">show</a></div> -->
+                                <span class="see iconfont input-group-addon" data-type="hidden">&#xe6b1;</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="captcha" class="form-group captcha clearfix tab-pane fade">
+                        <div class="col-xs-8">
+                            <input type="text" id="verifyCode" class="form-control" placeholder="验证码" datatype="*5-5"
+                                name="captcha">
+                        </div>
+                        <div class="captcha-btn">
+                            <button class="">获取验证码</button>
+                        </div>
+                    </div>
+                    {if check_verify_open('login')}
+                    <div id="captcha" class="form-group clearfix tab-pane fade">
+                        <label for="verifyCode" class=".sr-only col-xs-12" style="display: none"></label>
+                        <div class="col-xs-8">
+                            <input type="text" id="verifyCode" class="form-control" placeholder="验证码" datatype="*5-5"
+                                name="captcha">
+                        </div>
+                        <div class="col-xs-4">
+                            <img class="verifyimg reloadverify" alt="刷新验证码" src="{:captcha_src()}"
+                                style="cursor:pointer;height:43px;max-width: 100%">
+                        </div>
+                    </div>
+
+                    {/if}
+                </div>
+                <div class="clearfix form-group">
+                    <div class="col-xs-6">
+                        <input type="checkbox">
+                        记住我
+                    </div>
+                    <div class="col-xs-6 text-right">
+                        <div class="with-padding">
+                            <a class="" href="{:url('ucenter/Common/mi')}"
+                                style="color: #666666;font-size: 14px;">忘记密码</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {php}
             if(!empty($_SERVER['HTTP_REFERER'])){
-                $referer = $_SERVER['HTTP_REFERER'];
+            $referer = $_SERVER['HTTP_REFERER'];
             }else{
-                $referer = url('index/index/index');
+            $referer = url('index/index/index');
             }
             session('login_http_referer',$referer);
-        {/php}
-        <input name="from" type="hidden" value="{$referer}">
-        <div class="form-group">
-            <button type="submit" class="btn btn-block btn-login btn-lg"> 登 录 </button>
-        </div>
-    </form>  
-
-    <div class="register-section">
-        还没有账号  <a href="{:url('ucenter/common/register',array('type'=>'mobile'))}" class="">立即注册</a>
+            {/php}
+            <input name="from" type="hidden" value="{$referer}">
+            <div class="form-group">
+                <button type="submit" class="btn btn-block btn-login btn-lg"> 登 录 </button>
+            </div>
+        </form>
     </div>
+    <div class="ewm-login">
+        <h3>微信扫码登录</h3>
+        <div>
+             <img src="__STATIC__/common/images/login.png" alt="" />
+        </div>
+        <p>请使用微信扫描二维码登录MuuCmf</p>
+    </div>
+    <div class="register-section">
+        还没有账号? <a href="{:url('ucenter/common/register',array('type'=>'mobile'))}" class="">立即注册</a>
+    </div>
+
 </div>
 <div class="clearfix"></div>
 
 <script type="text/javascript">
+    //切换登录方式
+    $(document).ready(function () {
+        $("#password-login").click(function () {
+            $(".ewm").show();
+            $(".wrapper").show();
+            $(".password-login").hide();
+            $(".ewm-login").hide();
+        });
+        $("#ewm").click(function () {
+            $(".ewm").hide();
+            $(".wrapper").hide();
+            $(".password-login").show();
+            $(".ewm-login").show();
 
-    $(function(){
-        
+        });
+    });
+
+    $(function () {
+        $("#login li:eq(1) a").tab("show");
+    });
+
+    $(".input-group").on("click", ".see", function () {
+        let type = $(this).data('type');
+        if (type == 'hidden') {
+            $(this).data('type', 'show');
+            $(this).html('&#xe67a;');
+            $(this).prev().attr("type", "text");
+        } else {
+            $(this).data('type', 'hidden');
+            $(this).html('&#xe6b1;');
+            $(this).prev().attr("type", "password");
+        }
+    });
+
+    $(document).ready(function () {
+        $(".login-method-password").click(function () {
+            $(".text-right").show();
+        });
+        $(".login-method-captcha").click(function () {
+            $(".text-right").hide();
+
+        });
+    });
+    // -----------------------------------
+    $(function () {
+
         $(document)
             .ajaxStart(function () {
                 $("button:submit").addClass("log-in").attr("disabled", true);
@@ -76,25 +168,29 @@
                 $("button:submit").removeClass("log-in").attr("disabled", false);
             });
 
-        $('.login-main').on("click",'.change_show',function(){
+        $('.login-main').on("click", '.change_show', function () {
             change_show($(this));
         });
 
         function change_show(obj) {
             if ($(obj).text().trim() == 'show') {
                 var value = $('#inputPassword').val().trim();
-                var html = '<input type="text" value="' + value + '" id="inputPassword" class="form-control input-lg new-input" placeholder="'+"请输入密码"+'" name="password">' +
-                        '<div class="input-group-addon"><a class="change_show" href="javascript:void(0);">hide</a></div>';
+                var html = '<input type="text" value="' + value +
+                    '" id="inputPassword" class="form-control input-lg new-input" placeholder="' + "请输入密码" +
+                    '" name="password">' +
+                    '<div class="input-group-addon"><a class="change_show" href="javascript:void(0);">hide</a></div>';
                 $('#password_block').html(html);
             } else {
                 var value = $('#inputPassword').val().trim();
-                var html = '<input type="password" value="' + value + '" id="inputPassword" class="form-control input-lg new-input" placeholder="'+"请输入密码"+'" name="password">' +
-                        '<div class="input-group-addon"><a class="change_show" href="javascript:void(0);">show</a></div>';
+                var html = '<input type="password" value="' + value +
+                    '" id="inputPassword" class="form-control input-lg new-input" placeholder="' + "请输入密码" +
+                    '" name="password">' +
+                    '<div class="input-group-addon"><a class="change_show" href="javascript:void(0);">show</a></div>';
                 $('#password_block').html(html);
             }
         }
     });
-    
+
 
     $(function () {
         $("form").submit(function (e) {
@@ -107,8 +203,8 @@
             function success(data) {
                 if (data.code == 200) {
                     toast.success(data.msg);
-                    if (data.data){
-                        localStorage.setItem('user_token',data.data)
+                    if (data.data) {
+                        localStorage.setItem('user_token', data.data)
                     }
                     if (data.url == undefined && quickLogin == "quickLogin") {
                         $('[data-role="login_info"]').append(data.msg);

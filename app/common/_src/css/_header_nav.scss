@@ -24,14 +24,14 @@
     display: flex;
     
     .logo {
-      color: #03b8cf;
-
+      width: 13%;
       >h1 {
         margin: 0;
         line-height: 48px;
       }
     }
     .navigation {
+      width: 82%;
       font-size: 16px;
       color: #222;
       margin-left: 60px;
@@ -44,9 +44,43 @@
             color: #222;
             text-decoration: none;
             display: block;
-            padding: 0 21px;
+            padding: 1px 21px 0;
           }
         }
+        .dropdown,.verticalbar{
+          line-height: 60px;
+          margin: 0;
+          margin-left: auto;
+          >a:hover{
+            text-decoration:none;
+          }
+          >a{
+            color: #222;
+          }
+          .number{
+            color: #222;
+            margin-right: 10px;
+          }
+          .logout{
+            color: #03b8cf;
+          }
+        }
+        .verticalbar{
+          line-height: 56px;
+        }
+        .verticalbar::after {
+          content: '|';
+          margin: 0 10px;
+        }
+        .registration{
+          >a{
+            padding-top: 1px;
+            color: #222;
+          }
+        }
+        // {
+        //   margin-left: auto;
+        // }
         .active:hover .active-item {
           color: #03b8cf;
           border-bottom: 3px solid #03b8cf;
@@ -186,40 +220,37 @@
 
     }
 
-    .member {
-      font-size: 16px;
-      margin-left: auto;
-       display: flex;
-      >ul {
-        display: flex;
-
-        >li {
-          line-height: 60px;
-          >a:hover{
-            text-decoration:none;
-          }
-          >a{
-            color: #222;
-          }
-        }
-        .verticalbar::after {
-          content: '|';
-          margin: 0 10px;
-        }
-      }
-      >p{
-        line-height: 60px;
-      }
-      .number{
-        color: #222;
-        margin-right: 10px;
-        >span{
-         
-        }
-      }
-      .logout{
-        color: #03b8cf;
-      }
-    }
+    // .member {
+    //   font-size: 16px;
+    //   margin-left: auto;
+    //    display: flex;
+    //   >ul {
+    //     display: flex;
+    //     >li {
+    //       line-height: 60px;
+    //       margin: 0;
+    //       >a:hover{
+    //         text-decoration:none;
+    //       }
+    //       >a{
+    //         color: #222;
+    //       }
+    //     }
+    //     .verticalbar::after {
+    //       content: '|';
+    //       margin: 0 10px;
+    //     }
+    //   }
+    //   >p{
+    //     line-height: 60px;
+    //   }
+    //   .number{
+    //     color: #222;
+    //     margin-right: 10px;
+    //   }
+    //   .logout{
+    //     color: #03b8cf;
+    //   }
+    // }
   }
 }
