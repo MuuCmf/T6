@@ -46,7 +46,7 @@ function get_openid($uid ,$channel = 'weixin_h5')
 function query_user($uid = 0, $field_arr = [])
 {
     if(empty($field_arr)){
-        $field = "'uid','nickname', 'email', 'mobile', username', 'sex', 'avatar', 'signature'";
+        $field = "'uid','nickname', 'email', 'mobile', username', 'realname', 'sex', 'avatar', 'signature'";
     }
     if(is_array($field_arr)){
         $field = implode(',' ,$field_arr);

@@ -120,29 +120,30 @@ class Auth extends Admin
     public function user()
     {
         $group_id = input('group_id', 1, 'intval');
+        View::assign('group_id', $group_id);
         if (empty($group_id)) {
             $this->error('参数错误');
         }
-
-        $auth_group = Db::name('AuthGroup')->where(array('status' => array('egt', '0'), 'module' => 'admin', 'type' => AuthGroup::TYPE_ADMIN))->field('id,title,rules')->select();
+        // 权限组列表
+        $auth_group = Db::name('AuthGroup')->where(['status' => 1, 'module' => 'admin', 'type' => AuthGroup::TYPE_ADMIN])->field('id,title,rules')->select()->toArray();
+        View::assign('auth_group', $auth_group);
 
         $prefix = config('database.connections.mysql.prefix');
         $l_table = $prefix . (AuthGroup::MEMBER);
         $r_table = $prefix . (AuthGroup::AUTH_GROUP_ACCESS);
         $where = [
-            'a.group_id'=>$group_id,
-            'status'=>['>=',0]
+            ['a.group_id', '=', $group_id],
+            ['status', '>=', 0]
         ];
         $list = Db::table($l_table . ' m')->join($r_table . ' a ',' m.uid=a.uid')->where($where)->order('m.uid desc')
             ->paginate(20,false,[
-                
                 'query'=> ['group_id'=>$group_id],
-
             ]);
         // 获取分页显示
         $page = $list->render();
         // 转数组
         $list = $list->toArray()['data'];
+        // 更改状态值
         int_to_string($list);
 
         $this->setTitle('用户授权');

@@ -63,16 +63,13 @@
                     </td>
                     <td>{$vo.id} </td>
                     <td>{:get_action($vo['action_id'],'title')}</td>
-                    <td><a href="{:url('admin/action/actionLog',['uid'=>$vo['uid']])}">{:get_nickname($vo['uid'])}</a></td>
+                    <td><a href="{:url('admin/member/detail',['uid'=>$vo['uid']])}">{:get_nickname($vo['uid'])}</a></td>
                     <td>{$vo.ip}</td>
                     <td>{$vo['remark']}</td>
                     <td>
                         <span>{$vo.create_time|time_format}</span>
                     </td>
                     <td>
-                        <a class="btn btn-sm btn-info" href="{:url('admin/action/detail',['id'=>$vo['id']])}">
-                            详情
-                        </a>
                         <a class="btn btn-sm btn-danger ajax-get" data-confirm="确认执行该操作" href="{:url('admin/action/remove',['ids'=>$vo['id']])}">
                             删除
                         </a>
@@ -87,7 +84,7 @@
     </div>
     <!-- 分页 -->
     <div class="page">
-        {:htmlspecialchars_decode($page)}
+        {:htmlspecialchars_decode($pager)}
     </div>
     <!-- /分页-->
     </div>

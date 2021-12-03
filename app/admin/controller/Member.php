@@ -213,19 +213,14 @@ class Member extends Admin
 
             // 清理用户缓存
             // clean_query_user_cache($uid);
-            //if ($rs_member) {
-                return $this->success('保存成功');
-            //} else {
-                //$this->error('保存失败');
-            //}
+            return $this->success('保存成功');
+            
         } else {
             // 获取用户数据
-            $memberModel = new MemberModel();
             $uid = input('uid');
-            $map[] = ['uid', '=', $uid];
-            $map[] = ['status', '>=', 0];
-            $member = $memberModel->where($map)->find()->toArray();
-            //扩展信息查询
+            $member = $this->memberModel->where('uid','=',$uid)->find()->toArray();
+            
+            /**/
             $field_group = Db::name('field_group')->where('status', '=', 1)->select()->toArray();
             $field_group_ids = array_column($field_group, 'id');
             $map_profile[] = ['group_id', 'in', $field_group_ids];
@@ -251,7 +246,6 @@ class Member extends Admin
                 $auth_group[] = $val['group_id'];
             }
             $member['auth_group'] = implode(',',$auth_group);
-            /**/
 
             $builder = new AdminConfigBuilder();
             $builder->title('用户扩展资料详情');
@@ -278,7 +272,7 @@ class Member extends Admin
                 $builder->keyText('score' . $vf['id'], $vf['title']);
             }
 
-            $score_data = $memberModel->where('uid', '=', $uid)->field(implode(',', $score_key))->find()->toArray();
+            $score_data = $this->memberModel->where('uid', '=', $uid)->field(implode(',', $score_key))->find()->toArray();
             $member = array_merge($member, $score_data);
             /*积分设置end*/
 
@@ -301,6 +295,20 @@ class Member extends Admin
                 ->buttonBack()
                 ->display();
         }
+    }
+
+    /**
+     * 用户详情
+     */
+    public function detail()
+    {
+        $uid = input('uid',0, 'intval');
+        $map[] = ['uid', '=', $uid];
+        $member = $this->memberModel->where($map)->find()->toArray();
+
+        View::assign('member', $member);
+
+        return View::fetch();
     }
 
     /**

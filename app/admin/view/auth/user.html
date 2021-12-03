@@ -10,7 +10,7 @@
     <div class="tab-wrap clearfix">
         <div class="col-xs-10">
             <ul class="nav nav-pills">
-                <li><a href="{:url('Auth/access',['group_name'=>input('group_name') ,'group_id'=> input('group_id'))]}">管理后台权限</a></li>
+                <li><a href="{:url('Auth/access',['group_name'=>input('group_name') ,'group_id'=> $group_id])}">管理后台权限</a></li>
                 <li class="active"><a href="javascript:;">用户授权</a></li>
             </ul>
         </div>
@@ -49,10 +49,11 @@
 			<td>{$vo.uid} </td>
 			<td>{$vo.nickname}</td>
 			<td><span>{$vo.last_login_time|time_format}</span></td>
-			<td><span>{$vo.last_login_ip|long2ip}</span></td>
+			<td><span>{$vo.last_login_ip}</span></td>
 			<td>{$vo.status_text}</td>
 			<td>
-          <a class="btn btn-sm btn-danger" href="{:url('Auth/removeFromGroup?uid='.$vo['uid'].'&group_id='.input('group_id'))}" class="ajax-get">{:lang("_RELEASE_AUTHORITY_")}
+          <a class="btn btn-sm btn-danger ajax-post" href="{:url('Auth/removeFromGroup?uid='.$vo['uid'].'&group_id='.input('group_id'))}" data-confirm="确认执行移除操作？">
+            移除
           </a>
       </td>
 		</tr>

@@ -241,26 +241,38 @@ class Member extends Model
             
             // 查询用户数组
             $map['uid'] = $uid;
-            $user = $this->where($map)->field($fields)->find();
-            if ($user){
-                $user = $user->toArray();
+            $member = $this->where($map)->field($fields)->find();
+            if ($member){
+                $member = $member->toArray();
             }
-            if (is_array($user) && $user['status'] = 1) {
-                if(empty($user['avatar'])){
-                    $user['avatar'] = $user['avatar64'] = $user['avatar128'] = $user['avatar256'] = $user['avatar512'] = request()->domain() . '/static/common/images/default_avatar.jpg';
+            if (is_array($member) && $member['status'] = 1) {
+                // 头像
+                if(empty($member['avatar'])){
+                    $member['avatar'] = $member['avatar64'] = $member['avatar128'] = $member['avatar256'] = $member['avatar512'] = request()->domain() . '/static/common/images/default_avatar.jpg';
                 }else{
-                    $user['avatar'] = get_attachment_src($user['avatar']);
-                    $user['avatar64'] = get_thumb_image($user['avatar'], 64, 64);
-                    $user['avatar128'] = get_thumb_image($user['avatar'], 128, 128);
-                    $user['avatar256'] = get_thumb_image($user['avatar'], 256, 256);
-                    $user['avatar512'] = get_thumb_image($user['avatar'], 512, 512);
-                }
-                if (isset($user['balance'])){
-                    $user['balance'] = sprintf("%.2f",$user['balance'] / 100);
+                    $member['avatar'] = get_attachment_src($member['avatar']);
+                    $member['avatar64'] = get_thumb_image($member['avatar'], 64, 64);
+                    $member['avatar128'] = get_thumb_image($member['avatar'], 128, 128);
+                    $member['avatar256'] = get_thumb_image($member['avatar'], 256, 256);
+                    $member['avatar512'] = get_thumb_image($member['avatar'], 512, 512);
                 }
 
+                // 余额
+                if (isset($member['balance'])){
+                    $member['balance'] = sprintf("%.2f",$member['balance'] / 100);
+                }
 
-                return $user;
+                // 扩展字段
+
+                // 权限组
+                $auth = Db::name('auth_group_access')->where(['uid'=>$uid])->select();
+                $auth_group = [];
+                foreach($auth as $key=>$val){
+                    $auth_group[] = $val['group_id'];
+                }
+                $member['auth_group'] = implode(',',$auth_group);
+
+                return $member;
             } else {
                 return -1; //用户不存在或被禁用
             }

@@ -36,7 +36,7 @@ class Action extends Admin {
 
         $map[]    =   ['status','>', -1];
 
-        list($list,$page)   =   $this->commonLists('action_log', $map);
+        list($list,$pager)   =   $this->commonLists('action_log', $map);
         
         $list = $list->toArray()['data'];
         int_to_string($list);
@@ -44,7 +44,7 @@ class Action extends Admin {
         foreach ($list as $key => &$value){
             //$model_id                  =   get_document_field($value['model'],"name","id");
             //$list[$key]['model_id']    =   $model_id ? $model_id : 0;
-            $list[$key]['ip'] = long2ip($value['action_ip']);
+            $list[$key]['ip'] = $value['action_ip'];
         }
         unset($value);
 
@@ -52,7 +52,7 @@ class Action extends Admin {
         View::assign('action_list', $actionList);
 
         View::assign('_list', $list);
-        View::assign('page', $page);
+        View::assign('pager', $pager);
         $this->setTitle('日志列表');
 
         return View::fetch();
