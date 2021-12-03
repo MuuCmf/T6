@@ -39,10 +39,12 @@ class Articles extends Admin
         View::assign('category_id', $category_id);
         $status = input('status') == null?'all':input('status');
         View::assign('status', $status);
+        $rows = input('rows', 20, 'intval');
+
         // 获取查询条件
         $map = $this->ArticlesLogic->getMap(0, $keyword, $category_id, $status);
         // 获取列表
-        $lists = $this->ArticlesModel->getListByPage($map, 'sort DESC,id DESC', '*', 20);
+        $lists = $this->ArticlesModel->getListByPage($map, 'sort DESC,id DESC', '*', $rows);
         $pager = $lists->render();
         $lists = $lists->toArray();
         

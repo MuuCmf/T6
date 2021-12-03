@@ -26,12 +26,14 @@ class Articles extends Base
     protected $ConfigModel;
     protected $ConfigLogic;
     protected $FavoritesModel;
+    protected $CategoryModel;
 
     public function __construct()
     {
         $this->ConfigModel = new ConfigModel();
         $this->ConfigLogic = new ConfigLogic();
         $this->FavoritesModel = new FavoritesModel();
+        $this->CategoryModel = new CategoryModel();
     }
 
     /**
@@ -92,8 +94,8 @@ class Articles extends Base
             $data = $this->setCoverAttr($data, '4:3');
             
             // 获取分类数据
-            if(!empty($data['category'])){
-                $data['category'] = $this->CategoryModel->getDataById($data['category_id']);
+            if(!empty($data['category_id'])){
+                $data['category'] = $this->CategoryModel->getDataById($data['category_id'])->toArray();
             }
 
             $data['content'] = htmlspecialchars_decode($data['content']);
