@@ -85,6 +85,51 @@ CREATE TABLE IF NOT EXISTS `muucmf_action_log` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='行为日志表' AUTO_INCREMENT=1 ;
 
 --
+-- 表的结构 `muucmf_address`
+--
+DROP TABLE IF EXISTS `muucmf_address`;
+DROP TABLE IF EXISTS `muucmf_address` (
+  `id` int(11) UNSIGNED NOT NULL COMMENT 'id',
+  `shopid` int(11) UNSIGNED NOT NULL COMMENT '平台ID',
+  `app` varchar(255) NOT NULL COMMENT '应用标识',
+  `uid` int(11) UNSIGNED NOT NULL COMMENT '用户ID',
+  `name` varchar(25) NOT NULL COMMENT '收件人姓名',
+  `phone` varchar(11) NOT NULL COMMENT '收件人电话号码',
+  `address` varchar(200) NOT NULL COMMENT '详细地址',
+  `pos_province` varchar(64) NOT NULL COMMENT '省份',
+  `pos_city` varchar(64) NOT NULL COMMENT '城市',
+  `pos_district` varchar(64) NOT NULL COMMENT '区、县',
+  `first` tinyint(2) NOT NULL COMMENT '是否默认地址',
+  `status` tinyint(2) NOT NULL COMMENT '状态',
+  `create_time` int(11) UNSIGNED NOT NULL COMMENT '创建时间',
+  `update_time` int(11) UNSIGNED NOT NULL COMMENT '更新时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='用户收货地址';
+
+--
+-- 表的结构 `muucmf_announce`
+--
+
+DROP TABLE IF EXISTS `muucmf_announce`;
+CREATE TABLE IF NOT EXISTS `muucmf_announce` (
+  `id` int(11) UNSIGNED NOT NULL COMMENT '主键ID',
+  `shopid` int(11) NOT NULL,
+  `app` varchar(90) NOT NULL,
+  `uid` int(11) UNSIGNED NOT NULL COMMENT '操作用户ID',
+  `type` tinyint(2) NOT NULL DEFAULT '1' COMMENT '公告类型 1、图片 0、文字',
+  `title` varchar(128) NOT NULL COMMENT '公告标题',
+  `content` text NOT NULL COMMENT '公告描述',
+  `cover` varchar(255) NOT NULL DEFAULT '0' COMMENT '公告图片',
+  `url` varchar(255) NOT NULL COMMENT '公告链接',
+  `link_to` varchar(255) NOT NULL COMMENT '公告链接至JSON参数',
+  `sort` int(11) NOT NULL COMMENT '排序',
+  `status` tinyint(2) NOT NULL DEFAULT '0',
+  `create_time` int(11) UNSIGNED NOT NULL COMMENT '创建时间',
+  `update_time` int(11) UNSIGNED NOT NULL COMMENT '更新时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='公告表';
+
+--
 -- 表的结构 `muucmf_attachment`
 --
 DROP TABLE IF EXISTS `muucmf_attachment`;
