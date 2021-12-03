@@ -27,6 +27,7 @@ class ScoreType extends Model
      */
     public function getTypeListByIndex($map = []){
         $list = $this->where($map)->order('id asc')->select()->toArray();
+        $array = [];
         foreach($list as $v)
         {
             $array[$v['id']] = $v;
