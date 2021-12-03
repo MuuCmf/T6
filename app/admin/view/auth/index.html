@@ -12,6 +12,7 @@
 </div>
 <!-- 数据列表 -->
 <div class="data-table with-padding">
+{notempty name="_list"}
 <table class="table table-bordered table-striped muu-table">
 	<thead>
 	    <tr>
@@ -27,7 +28,7 @@
 		</tr>
 	</thead>
 	<tbody>
-		{notempty name="_list"}
+		
 		{volist name="_list" id="vo"}
 		<tr>
 	        <td>
@@ -48,21 +49,21 @@
 			</td>
 			<td>{$vo.status_text}</td>
 			<td>
-				<a href="{:url('Auth/editGroup?id='.$vo['id'])}" class="">编辑</a>
+				<a class="btn btn-sm btn-primary" href="{:url('Auth/editGroup?id='.$vo['id'])}">编辑</a>
 				{eq name="vo.status" value="1"}
-				<a href="{:url('Auth/changeStatus?method=forbidGroup&id='.$vo['id'])}" class="ajax-get">禁用</a>
+				<a class="btn btn-sm btn-warning ajax-get" href="{:url('Auth/changeStatus?method=forbidGroup&id='.$vo['id'])}" >禁用</a>
 				{else/}
-				<a href="{:url('Auth/changeStatus?method=resumeGroup&id='.$vo['id'])}" class="ajax-get">启用</a>
+				<a class="btn btn-sm btn-info ajax-get" href="{:url('Auth/changeStatus?method=resumeGroup&id='.$vo['id'])}" >启用</a>
 				{/eq}
-				<a href="{:url('Auth/changeStatus?method=deleteGroup&id='.$vo['id'])}" class="confirm ajax-get">删除</a>
+				<a class="btn btn-sm btn-danger confirm ajax-get" href="{:url('Auth/changeStatus?method=deleteGroup&id='.$vo['id'])}" >删除</a>
 	            </td>
 		</tr>
 		{/volist}
-		{else/}
-		<td colspan="6" class="text-center"> 空空如也~ </td>
-		{/notempty}
 	</tbody>
 </table>
+{else/}
+	<div class="text-center">空空如也~ </div>
+{/notempty}
 </div>
 
 {/block}

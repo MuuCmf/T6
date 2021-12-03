@@ -31,7 +31,7 @@
         </div>
     </div>
 
-
+    {notempty name="_list"}
 	<table class="table table-bordered table-striped">
     <thead>
     <tr>
@@ -52,17 +52,18 @@
 			<td><span>{$vo.last_login_ip}</span></td>
 			<td>{$vo.status_text}</td>
 			<td>
-          <a class="btn btn-sm btn-danger ajax-post" href="{:url('Auth/removeFromGroup?uid='.$vo['uid'].'&group_id='.input('group_id'))}" data-confirm="确认执行移除操作？">
-            移除
-          </a>
-      </td>
+                <a class="btn btn-sm btn-danger ajax-post" href="{:url('Auth/removeFromGroup?uid='.$vo['uid'].'&group_id='.input('group_id'))}" data-confirm="确认执行移除操作？">
+                    移除
+                </a>
+            </td>
 		</tr>
 		{/volist}
-	 </tbody>
-  </table>
+	</tbody>
+    </table>
+    {/notempty}
 
     <div class="page">
-        {$page}
+        {:htmlspecialchars_decode($pager)}
     </div>
 </div>
 

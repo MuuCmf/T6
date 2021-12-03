@@ -140,7 +140,7 @@ class Auth extends Admin
                 'query'=> ['group_id'=>$group_id],
             ]);
         // 获取分页显示
-        $page = $list->render();
+        $pager = $list->render();
         // 转数组
         $list = $list->toArray()['data'];
         // 更改状态值
@@ -149,63 +149,11 @@ class Auth extends Admin
         $this->setTitle('用户授权');
         
         View::assign('_list', $list);
-        View::assign('page', $page);
+        View::assign('pager', $pager);
         View::assign('auth_group', $auth_group);
         View::assign('group_id', $group_id);
         
         return View::fetch();
-    }
-
-    /**
-     * 将用户添加到用户组的编辑页面
-     */
-    public function group()
-    {
-        $uid = input('uid',0,'intval');
-        $AuthGroup = new AuthGroup();
-        $auth_groups = $AuthGroup->getGroups();
-        $user_groups = AuthGroup::getUserGroup($uid);
-        $ids = [];
-        foreach ($user_groups as $value) {
-            $ids[] = $value['group_id'];
-        }
-        $nickname = model('Member')->getNickName($uid);
-
-        View::assign('nickname', $nickname);
-        View::assign('auth_groups', $auth_groups);
-        View::assign('user_groups', implode(',', $ids));
-
-        return View::fetch();
-    }
-
-    /**
-     * 将用户添加到用户组,入参uid,group_id
-     */
-    public function addToGroup()
-    {
-        $uid = input('post.uid');
-        $gid = input('post.group_id/a');
-        if (empty($uid)) {
-            $this->error('用户不存在');
-        }
-        $AuthGroup = new AuthGroup();
-        if (is_numeric($uid)) {
-            if (is_root($uid)) {
-                $this->error('超级管理员无需操作');
-            }
-            if (!Db::name('Member')->where(array('uid' => $uid))->find()) {
-                $this->error('用户不存在');
-            }
-        }
-
-        if ($gid && !$AuthGroup->checkGroupId($gid)) {
-            $this->error($AuthGroup->error);
-        }
-        if ($AuthGroup->addToGroup($uid, $gid)) {
-            $this->success('操作成功');
-        } else {
-            $this->error($AuthGroup->getError());
-        }
     }
 
     /**
@@ -227,30 +175,6 @@ class Auth extends Admin
             return $this->error('该用户组不存在');
         }
         if ($AuthGroup->removeFromGroup($uid, $gid)) {
-            return $this->success('操作成功');
-        } else {
-            return $this->error('操作失败');
-        }
-    }
-
-    /**
-     * 将分类添加到用户组  入参:cid,group_id
-     */
-    public function addToCategory()
-    {
-        $cid = input('cid');
-        $gid = input('group_id');
-        if (empty($gid)) {
-            return $this->error('组ID不能为空');
-        }
-        $AuthGroup = new AuthGroup();
-        if (!$AuthGroup->find($gid)) {
-            return $this->error('用户组不存在');
-        }
-        if ($cid && !$AuthGroup->checkCategoryId($cid)) {
-            return $this->error($AuthGroup->error);
-        }
-        if ($AuthGroup->addToCategory($gid, $cid)) {
             return $this->success('操作成功');
         } else {
             return $this->error('操作失败');
