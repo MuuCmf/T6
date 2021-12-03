@@ -2,6 +2,7 @@
 namespace app\articles\logic;
 
 use app\articles\model\ArticlesCategory as CategoryModel;
+use app\articles\logic\Category as CategoryLogic;
 use app\articles\model\ArticlesConfig as ConfigModel;
 use app\articles\logic\Config as ConfigLogic;
 use app\common\model\Favorites as FavoritesModel;
@@ -27,6 +28,7 @@ class Articles extends Base
     protected $ConfigLogic;
     protected $FavoritesModel;
     protected $CategoryModel;
+    protected $CategoryLogic;
 
     public function __construct()
     {
@@ -34,6 +36,7 @@ class Articles extends Base
         $this->ConfigLogic = new ConfigLogic();
         $this->FavoritesModel = new FavoritesModel();
         $this->CategoryModel = new CategoryModel();
+        $this->CategoryLogic = new CategoryLogic();
     }
 
     /**
@@ -68,7 +71,7 @@ class Articles extends Base
         
         //分类id
         if(!empty($category_id)){
-            $category_ids = $this->CategoryModel->yesParent($category_id); 
+            $category_ids = $this->CategoryLogic->yesParent($category_id); 
             if(!empty($category_ids)){
                 $category_ids = implode(',', $category_ids);
                 $map[] = ['category_id', 'in', $category_ids];

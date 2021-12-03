@@ -56,23 +56,5 @@ class ArticlesCategory extends Base
         return $data;
     }
 
-    /**
-	 * 是否父级分类
-	 * @param  [type] $category_id [description]
-	 * @return [type]              [description]
-	 */
-	public function yesParent($category_id)
-	{
-        $map[] = ['pid', '=', $category_id];
-		$category_data = $this->getList($map, 999);
-
-		$cates_arr = [];
-		if(!empty($category_data)){
-			$cates_arr = array_column($category_data,'id');
-			$cates_arr = array_merge(array($category_id),$cates_arr);
-		}
-		return $cates_arr;
-	}
-
     
 }

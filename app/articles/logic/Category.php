@@ -16,6 +16,24 @@ class Category {
     ];
 
     /**
+	 * 是否父级分类
+	 * @param  [type] $category_id [description]
+	 * @return [type]              [description]
+	 */
+	public function yesParent($category_id)
+	{
+        $map[] = ['pid', '=', $category_id];
+		$category_data = (new \app\articles\model\ArticlesCategory)->getList($map, 999)->toArray();
+
+		$cates_arr = [];
+		if(!empty($category_data)){
+			$cates_arr = array_column($category_data,'id');
+			$cates_arr = array_merge(array($category_id),$cates_arr);
+		}
+		return $cates_arr;
+	}
+
+    /**
      * 格式化数据
      *
      * @param      <type>  $data   The data
