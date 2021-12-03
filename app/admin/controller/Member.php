@@ -117,10 +117,11 @@ class Member extends Admin
      */
     public function initPass()
     {
-        $uids = input('param.id/a');
+        $uids = input('id/a');
         !is_array($uids) && $uids = explode(',', $uids);
+
         foreach ($uids as $key => $val) {
-            if (!query_user(['uid'], $val)) {
+            if (!query_user($val, ['uid'])) {
                 unset($uids[$key]);
             }
         }
@@ -319,13 +320,13 @@ class Member extends Admin
         $map[] = ['uid', 'in', $id];
 
         switch (strtolower($method)) {
-            case 'forbiduser':
+            case 'forbid':
                 return $this->forbid('Member', $map);
                 break;
-            case 'resumeuser':
+            case 'resume':
                 return $this->resume('Member', $map);
                 break;
-            case 'deleteuser':
+            case 'delete':
                 return $this->delete('Member', $map);
                 break;
             default:
