@@ -1,4 +1,5 @@
-<div id="header" class="header-container">
+<!-- <div id="header" class="header-container"> -->
+    <div class="header-container">
     <div class="header-container-item">
         <div class="navbar-header">
             <div class="logo">
@@ -8,165 +9,26 @@
             </div>
             <div class="navigation">
                 <ul>
-                    <li class="active"><a href="{:url('muu/index/index')}" class="active-item">首页</a></li>
-                    <li class="active product">
-                        <a href="#product" class="active-item triangle" data-toggle="tab">产品</a>
-                        <div class="article_case">
-                            <div class="article_case-item">
-                                <div class="coreProduct">
-                                    <h3 class="title">核心产品</h3>
-                                    <div class="coreProduct-item">
-                                        <ul>
-                                            <li>
-                                                <a href="{:url('muu/classroom/index')}">
-                                                    <img src="__STATIC__/common/images/Classroom.png" alt="">
-                                                    <div>
-                                                        <h4>云课堂</h4>
-                                                        <span>知识服务全生态内容管理系统</span>
-                                                    </div>
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <a href="{:url('muu/cloudstore/index')}">
-                                                    <img src="__STATIC__/common/images/Store.png" alt="">
-                                                    <div>
-                                                        <h4>云小店</h4>
-                                                        <span>轻量级商城系统解决方案</span>
-                                                    </div>
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <a href="{:url('muu/forum/index')}">
-                                                    <img src="__STATIC__/common/images/communities.png" alt="">
-                                                    <div>
-                                                        <h4>付费社群</h4>
-                                                        <span>维护运营私域流量的社群营销系统</span>
-                                                    </div>
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <a href="{:url('muu/offlineactivity/index')}">
-                                                    <img src="__STATIC__/common/images/offlineactivity.png" alt="">
-                                                    <div>
-                                                        <h4>线下活动</h4>
-                                                        <span>同城线下活动管理平台</span>
-                                                    </div>
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <a href="{:url('muu/itembankexam/index')}">
-                                                    <img src="__STATIC__/common/images/test.png" alt="">
-                                                    <div>
-                                                        <h4>题库考试</h4>
-                                                        <span>在线练习和考试测评系统</span>
-                                                    </div>
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <a href="{:url('muu/shop/index')}">
-                                                    <img src="__STATIC__/common/images/shop.png" alt="">
-                                                    <div>
-                                                        <h4>积分商城</h4>
-                                                        <span>积分商城系统解决方案</span>
-                                                    </div>
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <a href="">
-                                                    <img src="__STATIC__/common/images/live.png" alt="">
-                                                    <div>
-                                                        <h4>直播</h4>
-                                                        <span>在线互动直播平台</span>
-                                                    </div>
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <a href="">
-                                                    <img src="__STATIC__/common/images/download.png" alt="">
-                                                    <div>
-                                                        <h4>资料下载</h4>
-                                                        <span>一分钟搭建资料下载管理平台</span>
-                                                    </div>
-                                                </a>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </div>
-                                <div class="otherProduct">
-                                    <h3 class="title">其他产品</h3>
-                                    <div class="otherProduct-item">
-                                        <ul>
-                                            <li>
-                                                <a href="">
-                                                    <img src="__STATIC__/common/images/Lineclass.png" alt="">
-                                                    <h4>线下课</h4>
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <a href="">
-                                                    <img src="__STATIC__/common/images/marketing.png" alt="">
-                                                    <h4>文章营销</h4>
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <a href="">
-                                                    <img src="__STATIC__/common/images/lecturer.png" alt="">
-                                                    <h4>讲师</h4>
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <a href="">
-                                                    <img src="__STATIC__/common/images/Khamwia.png" alt="">
-                                                    <h4>卡密</h4>
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <a href="">
-                                                    <img src="__STATIC__/common/images/distribution.png" alt="">
-                                                    <h4>分销</h4>
-                                                </a>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </li>
+                    <li class="active"><a href="{:url('muu/index/index')}" class="active-item ">首页</a></li>
+                    <li class="active product"><a href="{:url('muu/product/index')}" class="active-item">产品</a></li>
                     <li class="active"><a href="{:url('muu/frame/index')}" class="active-item">下载开源框架</a></li>
                     <li class="active"><a href="{:url('muu/nslookup/index')}" class="active-item">授权查询</a></li>
                     <li class="active"><a href="{:url('muu/about/index')}" class="active-item">关于我们</a></li>
                     {if condition="is_login()"}
                     <li class="dropdown">
-                        <a role="button" class="dropdown-toggle dropdown-toggle-avatar" data-toggle="dropdown">
-                            <!-- <img src="{$common_header_user.avatar64}" class="avatar img-circle" style="width:30px; height:30px;" /> -->
-                            <!-- {$common_header_user.nickname}&nbsp;<i class="icon-chevron-down"></i> -->
-                            <!-- <p class="username">你好，<span id="item">12345678901</span></p>  -->
+                        <!-- 手机号 -->
+                            <!-- <p class="mobile">你好，<span id="item">12345678901</span></p>  -->
+                            <!-- 头像 -->
+                            <div class="avatar">
+                                <a role="button" class="dropdown-toggle dropdown-toggle-avatar" data-toggle="dropdown">
+                                    <img src = "{$common_header_user.avatar64}" class="avatar img-circle"/>
+                                        {$common_header_user.nickname}
+                                        <!-- &nbsp;<i class="icon-chevron-down"></i> -->
+                                </a>
+                            </div>
                             <a class="logout" event-node="logout" data-url="{:url('ucenter/Common/logout')}">
                                 【退出】
                             </a>
-                        </a>
-                        <!-- <ul class="dropdown-menu pull-right" role="menu">
-                            {volist name="user_nav" id="vo"}
-                            <li>
-                                <a target="{eq name='vo.target' value='1'}_blank{else/}_self{/eq}"
-                                    href="{:get_nav_url($vo['url'])}">
-                                    <span>{$vo.title}</span>
-                                </a>
-                            </li>
-                            {/volist}
-                            {if condition="check_auth('admin/Index/index')"}
-                            <li>
-                                <a href="{:url('admin/Index/index')}" target="_blank">
-                                    管理后台
-                                </a>
-                            </li>
-                            {/if}
-                            <li>
-                                <a event-node="logout" data-url="{:url('ucenter/Common/logout')}">
-                                    退出
-                                </a>
-                            </li>
-                        </ul> -->
                     </li>
                     {else/}
                     <li class="member login verticalbar">
@@ -186,10 +48,21 @@
                     {/if}
                 </ul>
             </div>
-            <!-- <div class="member"> -->
-            <!-- <p class="username">你好，<span id="item">12345678901</span></p> 
-            <p class="logout">【退出】</p> -->
-            <!-- </div> -->
         </div>
     </div>
 </div>
+<script>
+    console.log(window.location.pathname)
+       if(window.location.pathname == "/muu/index/index.html"){
+           console.log(11111111)
+        //    $(".active-item").css({"color":"#03b8cf"});
+       }else{
+         console.log(222222)
+       }
+    // var address = "/muu/index/index.html"
+    // if(window.location.pathname == address){
+    // $(".wemreceive").css({"display":"none"});
+//   }
+
+// groupnumber.select();
+</script>

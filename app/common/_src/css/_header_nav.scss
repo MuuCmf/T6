@@ -8,6 +8,8 @@
   position: fixed;
   z-index: 99;
   width: 100%;
+  min-width: 1200px;
+  background: #fff;
   .header-container-item{
     width: 100%;
     height: 60px;
@@ -39,7 +41,8 @@
       >ul {
         display: flex;
         >li {
-          line-height: 55px;
+          line-height: 56px;
+          position: relative;
           .active-item{
             color: #222;
             text-decoration: none;
@@ -51,6 +54,27 @@
           line-height: 60px;
           margin: 0;
           margin-left: auto;
+          .mobile{
+            font-size: 16px;
+            color: #222;
+            display: inline-block;
+            margin: 0;
+          }
+          .avatar{
+            // width: 40px;
+            height: 40px;
+            display: inline-block;
+            >a{
+              >img{
+                width: 40px;
+                height: 40px;
+                margin-right: 10px;
+              }
+              color: #222;
+              font-size: 16px;
+              text-decoration:none;
+            }
+          }
           >a:hover{
             text-decoration:none;
           }
@@ -70,7 +94,8 @@
         }
         .verticalbar::after {
           content: '|';
-          margin: 0 10px;
+          margin: 0 10px 0 6px;
+          color: #c7cacf;
         }
         .registration{
           >a{
@@ -78,38 +103,19 @@
             color: #222;
           }
         }
-        // {
-        //   margin-left: auto;
-        // }
         .active:hover .active-item {
           color: #03b8cf;
-          border-bottom: 3px solid #03b8cf;
         }
-        .active .active-item:focus {
-          color: #03b8cf;
-          border-bottom: 3px solid #03b8cf;
+        .active:hover .active-item::after{
+          content: ' ';
+          position: absolute;
+          bottom: 6px;
+          left: 50%;
+          width: 12px;
+          height: 3px;
+          background: #03b8cf;
+          margin-left: -6px;
         }
-
-        .active a:hover{
-          text-decoration:none;
-        }
-
-        .triangle::after {
-          content: '';
-          width: 0;
-          height: 0;
-          position: relative;
-          top: 14px;
-          left: 5px;
-          border-width: 5px;
-          border-style: solid;
-          border-color: #afb5c1 transparent transparent transparent;
-        }
-
-        .product:hover .article_case {
-          display: block
-        }
-
         .article_case {
           width: 100%;
           height: 652px;
