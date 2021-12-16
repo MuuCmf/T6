@@ -17,14 +17,9 @@
 body{
   font-family: -apple-system-font,"Helvetica Neue",Tahoma,"PingFang SC","lantinghei sc","Microsoft Yahei",sans-serif !important;
 }
-// 
-// -webkit-user-select: none;
-// -moz-user-select: none;
-// -ms-user-select:none;
-// user-select: none;
 
 .container{
-  min-width: 800px;
+  min-width: 1200px;
 }
 .register {
   position: relative;
@@ -104,26 +99,21 @@ body{
       .form-group {
         position: relative;
         margin-bottom: 35px;
-
         .col-xs-4 {
           position: absolute;
           right: 0;
           bottom: 14px;
         }
-
         .col-xs-8 {
           width: 100%;
         }
-
         .col-xs-12 {
           margin-top: -8px;
         }
       }
-
       .service-agreement {
         margin-bottom: 20px;
       }
-
       .tab-content {
         background: #fff;
         padding: 20px 0;
@@ -224,7 +214,8 @@ body{
   }
 }
 
-.login {
+.login-pages {
+  width: 1200px;
   position: relative;
   margin: 20px auto;
   -webkit-transition: all 0.4s ease;
@@ -277,10 +268,10 @@ body{
     }
 
     .login-form {
-      width: 494px;
+      width: 500px;
       padding: 45px 45px 0 0;
-      margin-left: auto;
-
+      margin: 0 auto;
+      // margin-left: auto;
     }
   }
 
@@ -307,11 +298,26 @@ body{
   }
 }
 
+
+// -----------------
+.modal-dialog{
+  width: 530px;
+  height: 530px;
+  margin: 0 auto;
+}
+.modal-content{
+  height: 530px;
+}
+.modal-body{
+  max-width: 530px;
+  height: 530px;
+}
+// ---------------
 .login-main {
 
   // width: 530px;
-  height: 530px;
-  min-width: 330px;
+  height: 520px;
+  min-width: 500px;
   background: #fff;
 
   // padding: 5px 20px 0 0;
@@ -437,7 +443,7 @@ body{
   .ewm-login {
     display: none;
     text-align: center;
-    padding-bottom: 14px;
+    padding-bottom: 18px;
     >h3 {
       margin: 10px 0 40px;
       font-size: 18px;
@@ -512,9 +518,6 @@ body{
 
     >div {
       width: 100%;
-
-      >input {}
-
       >button {
         width: 120px;
         height: 44px;

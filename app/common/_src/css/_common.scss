@@ -660,6 +660,36 @@ ul {
     }
   }
 }
+.suspension {
+  >div{
+    width: 58px;
+    height: 164px;
+    background: #fff;
+    border-radius: 10px 0 0 10px;
+    position: fixed;
+    right: 0;
+    bottom: 200px;
+    z-index: 2;
+    box-shadow: 0 0 10px #ccc;
+    text-align: center;
+    >div{
+      margin: 0;
+      width: 58px;
+      height:58px;
+      >i{
+        font-size: 40px;
+        color: #03b8cf;
+      }
+    }
+    >p{
+      font-size: 16px;
+      color: #03b8cf;
+      width: 20px;
+      margin: 0 auto;
+      line-height: 23px;
+    }
+  }
+}
 }
 
 

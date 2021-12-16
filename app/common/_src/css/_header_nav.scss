@@ -9,7 +9,7 @@
   z-index: 99;
   width: 100%;
   min-width: 1200px;
-  background: #fff;
+  // background: #fff;
   .header-container-item{
     width: 100%;
     height: 60px;
@@ -49,6 +49,30 @@
             display: block;
             padding: 1px 21px 0;
           }
+          .main-active{
+            color: #358cc3;
+          }
+          .main-active::after{
+            content: ' ';
+            position: absolute;
+            bottom: 6px;
+            left: 50%;
+            width: 12px;
+            height: 3px;
+            background: #358cc2;
+            margin-left: -6px;
+          }
+          >span{
+            display: inline-block;
+            width: 12px;
+            height: 3px;
+            background: #358cc2;
+            position: absolute;
+            left: 50%;
+            margin-left: -6px;
+            bottom: 6px;
+            display: none;
+          }
         }
         .dropdown,.verticalbar{
           line-height: 60px;
@@ -86,7 +110,7 @@
             margin-right: 10px;
           }
           .logout{
-            color: #03b8cf;
+            color: #358cc2;
           }
         }
         .verticalbar{
@@ -98,13 +122,17 @@
           color: #c7cacf;
         }
         .registration{
+          // padding: 0;
           >a{
             padding-top: 1px;
             color: #222;
           }
+          >a:hover{
+            text-decoration: none;
+          }
         }
         .active:hover .active-item {
-          color: #03b8cf;
+          color: #358cc2;
         }
         .active:hover .active-item::after{
           content: ' ';
@@ -113,7 +141,7 @@
           left: 50%;
           width: 12px;
           height: 3px;
-          background: #03b8cf;
+          background: #358cc2;
           margin-left: -6px;
         }
         .article_case {
@@ -182,30 +210,25 @@
                 color: #03b8cf;
                 margin-bottom: 30px;
               }
-
               .otherProduct-item {
                 >ul {
                   display: flex;
-
                   >li {
                     width: 72px;
                     height: 120px;
                     line-height: 0px;
                     text-align: center;
                     margin-right: 72px;
-
                     >a {
                       >img {
                         width: 72px;
                         height: 72px;
-                      }
-
+                      } 
                       >h4 {
                         font-size: 16px;
                         margin-top: 20px;
                         color: #000;
                       }
-
                     }
                   }
                 }

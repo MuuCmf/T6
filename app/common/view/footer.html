@@ -53,28 +53,34 @@
       </ul>
     </div>
   </div>
+  <div class="suspension">
+      <div class="customerservice">
+        <div><i class="iconfont">&#xe672;</i></div>
+        <p>在线咨询</p>
+      </div>
+  </div>
 </div>
 <script>
+ //授权查询页 底部扫码领取方案不显示
   var address = "/muu/nslookup/index.html";
   if(window.location.pathname == address){
     $(".wemreceive").css({"display":"none"});
   }
+  //用户协议页面底部不显示
   var serviceagreement ="/ucenter/Common/agreement.html"
   if( window.location.pathname ==serviceagreement){
     $(".tabbar").css({"display":"none"});
   }
-
 // 领取方案
-function mobile()
-{
+function mobile(){
 var mobile = document.getElementById("mobile").value;
 var myreg=/^[1][3,5,7,8,9][0-9]{9}$/;
-if (!myreg.test(mobile)) {
-    alert("手机号码不正确");
-} else {
-  $("#mobile").val("");
+if (myreg.test(mobile)) {
+    alert("提交成功");
+    $("#mobile").val("");
     console.log(mobile)
-    alert("提交成功")
+}else {
+    alert("手机号码不正确")
 }    
 }
 // 领取方案
@@ -91,8 +97,8 @@ alert('复制成功')
 function groupnumber()
     {
     var groupnumber=document.getElementById("groupnumber");
-    groupnumber.select();// 选择对象
-    document.execCommand("Copy");// 执行浏览器复制命令
+    groupnumber.select();
+    document.execCommand("Copy");
     alert('复制成功')
     };
 // 点击复制qq群号码

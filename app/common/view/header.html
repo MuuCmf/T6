@@ -1,5 +1,5 @@
 <!-- <div id="header" class="header-container"> -->
-    <div class="header-container">
+<div class="header-container">
     <div class="header-container-item">
         <div class="navbar-header">
             <div class="logo">
@@ -8,27 +8,31 @@
                 </h1>
             </div>
             <div class="navigation">
-                <ul>
-                    <li class="active"><a href="{:url('muu/index/index')}" class="active-item ">首页</a></li>
-                    <li class="active product"><a href="{:url('muu/product/index')}" class="active-item">产品</a></li>
+                <ul class="index-menu">
+                    <li class="active"><a href="{:url('muu/index/index')}" class="active-item">首页</a></li>
+                    <li class="active">
+                        <a href="{:url('muu/product/index')}" class="active-item product">产品</a>
+                        <span class="product-underline"></span>
+                    </li>
                     <li class="active"><a href="{:url('muu/frame/index')}" class="active-item">下载开源框架</a></li>
                     <li class="active"><a href="{:url('muu/nslookup/index')}" class="active-item">授权查询</a></li>
                     <li class="active"><a href="{:url('muu/about/index')}" class="active-item">关于我们</a></li>
                     {if condition="is_login()"}
                     <li class="dropdown">
                         <!-- 手机号 -->
-                            <!-- <p class="mobile">你好，<span id="item">12345678901</span></p>  -->
-                            <!-- 头像 -->
-                            <div class="avatar">
+                        <p class="mobile">你好，<span id="item">13333289403</span></p>
+                        <!-- 头像 -->
+                        <!-- <div class="avatar">
                                 <a role="button" class="dropdown-toggle dropdown-toggle-avatar" data-toggle="dropdown">
                                     <img src = "{$common_header_user.avatar64}" class="avatar img-circle"/>
                                         {$common_header_user.nickname}
-                                        <!-- &nbsp;<i class="icon-chevron-down"></i> -->
+                                        &nbsp;<i class="icon-chevron-down"></i>
                                 </a>
-                            </div>
-                            <a class="logout" event-node="logout" data-url="{:url('ucenter/Common/logout')}">
-                                【退出】
-                            </a>
+                            </div> -->
+
+                        <a class="logout" event-node="logout" data-url="{:url('ucenter/Common/logout')}">
+                            【退出】
+                        </a>
                     </li>
                     {else/}
                     <li class="member login verticalbar">
@@ -52,17 +56,54 @@
     </div>
 </div>
 <script>
-    console.log(window.location.pathname)
-       if(window.location.pathname == "/muu/index/index.html"){
-           console.log(11111111)
-        //    $(".active-item").css({"color":"#03b8cf"});
-       }else{
-         console.log(222222)
-       }
-    // var address = "/muu/index/index.html"
-    // if(window.location.pathname == address){
-    // $(".wemreceive").css({"display":"none"});
-//   }
+    // 首页顶部背景
+    if (window.location.pathname == "/muu/index/index.html") {
+        $(window).scroll(function () {
+            if ($(window).scrollTop() >= 750) {
+                $(".header-container").css({
+                    "background": "#fff"
+                });
+            } else {
+                $(".header-container").css({
+                    "background": "transparent"
+                });
+            }
+        })
+    } else {
+        $(".header-container").css({
+            "background": "#fff"
+        });
+    }
+    //下划线
+    $(document).ready(function () {
+        $(".index-menu a").each(function () {
+            $this = $(this);
+            if ($this[0].href == String(window.location)) {
+                $this.addClass("main-active");
+            }
+        });
+    });
 
-// groupnumber.select();
+    if (window.location.pathname != "/muu/index/index.html" &&
+        window.location.pathname != "/muu/frame/index.html" &&
+        window.location.pathname != "/muu/nslookup/index.html" &&
+        window.location.pathname != "/muu/about/index.html" &&
+        window.location.pathname != "/ucenter/Common/agreement.html") {
+        console.log(window.location.pathname)
+        $(".product").css({
+            "color": "#358cc2"
+        });
+        $(".product-underline").css({
+            'display': 'block'
+        });
+    }
+    //手机号替换
+    $('#item').each(function () {
+        var text = $(this).text();
+        var array = text.split('');
+        var replacement = array.splice(3, 4, "****");
+        var conversion = array.toString();
+        var mobile = conversion.replace(/,/ig, '');
+        $(this).text(mobile);
+    })
 </script>
