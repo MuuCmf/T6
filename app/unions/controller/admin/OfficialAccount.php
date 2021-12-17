@@ -81,7 +81,7 @@ class OfficialAccount extends MuuAdmin {
 
         }else{
             //查询微信平台配置
-            $data = $this->wechatConfigModel->getWechatConfigByShopId($this->shopid)->toArray();
+            $data = $this->wechatConfigModel->getWechatConfigByShopId($this->shopid);
             if (!$data){
                 $data['id'] = 0;
                 $data['url'] = \app\unions\facade\OfficialAccount::callbackUrl();
