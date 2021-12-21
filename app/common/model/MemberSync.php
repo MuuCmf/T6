@@ -12,6 +12,6 @@
  * +----------------------------------------------------------------------
  */
 namespace app\common\model;
-class MemberSync extends BaseModel{
+class MemberSync extends Base{
     protected $autoWriteTimestamp = true;
 }

@@ -4,7 +4,7 @@ namespace app\common\model;
 use think\Model;
 use think\facade\Db;
 
-class Module extends Model
+class Module extends Base
 {
     public $error = '';
     protected $moduleName = '';
@@ -18,32 +18,6 @@ class Module extends Model
         }
 
         return $res;
-    }
-
-    /**
-     * Gets the data by identifier.
-     *
-     * @param      integer  $id     The identifier
-     *
-     * @return     <array>   The data by identifier.
-     */
-    public function getDataById($id)
-    {
-        if($id>0){
-            $data=$this->find($id);
-            return $data;
-        }
-        return null;
-    }
-
-    /**
-     * 通过数组查询数据
-     */
-    public function getDataByMap($map)
-    {
-        $data = $this->where($map)->find();
-
-        return $data;
     }
 
     /**

@@ -12,8 +12,10 @@
  * +----------------------------------------------------------------------
  */
 namespace app\common\model;
-class CapitalFlow extends BaseModel{
+
+class CapitalFlow extends Base{
     protected $autoWriteTimestamp = true;
+    
     public function getPriceAttr($value,$data){
         return sprintf("%.2f",$value/100);
     }
