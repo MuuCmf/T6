@@ -1,0 +1,61 @@
+{if $vo['type'] == 'article_list'}
+<!--文章列表-->
+<div class="object-item preview article-list" data-type="article_list" data-object-index="article_list-{$key}">
+	<div class="article-list-preview">
+        <div class="title clearfix">
+        	<h3>{$vo['data']['title']}</h3>
+        	<small class="more">查看更多 </small>
+        </div>
+        <div class="list clearfix">
+            {notempty name="$vo['data']['list']"}
+			{foreach $vo['data']['list'] as $k => $article_data}
+			<!--竖排列表-->
+            {if $vo['data']['style'] == 0}
+            <div class="item small" data-type="article_list_item" data-id="{$article_data['id']}">
+                    
+                <div class="image" style="background-image:url({$article_data['cover_200']})"></div>
+                <div class="content">
+                    <div class="title h3 text-ellipsis-2">{$article_data['title']}</div>
+                    <div class="info">
+                        <div class="category">{$article_data['category']['title']}</div>
+                        <div class="pop-info">
+                            <div class="view">
+                                <i class="fa fa-eye" aria-hidden="true"></i> {$article_data['view']}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {/if}
+            {if $vo['data']['style'] == 1}
+                <div class="item big" data-type="article_list_item" data-id="{$article_data['id']}">
+                    <div class="image">
+                        <img src="{$article_data['cover_800']}" />
+                        <div class="type-container">{$article_data['category']['title']}</div>
+                    </div>
+                    <div class="content">
+                        <div class="title h3 text-ellipsis">{$article_data['title']}</div>
+                        <div class="description text-ellipsis">{$article_data['description']}</div>
+                        <div class="info">
+                            <div class="type">
+                                <div class="view">
+                                    <i class="fa fa-eye" aria-hidden="true"></i> {$article_data['view']}
+                                </div>
+                            
+                                <div class="favorites">
+                                    <i class="fa fa-star-o" aria-hidden="true"></i>
+                                    <span class="favorites-num">{$article_data['favorites']}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+            {/if}
+			{/foreach}
+            {/notempty}
+		</div>
+	</div>
+</div>
+<!--文章列表END-->
+{/if}

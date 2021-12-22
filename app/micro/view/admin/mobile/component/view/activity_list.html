@@ -1,0 +1,132 @@
+{if $vo['type'] == 'activity_list'}
+<!--线下活动列表-->
+<div class="object-item preview" data-type="activity_list" data-object-index="activity_list-{$key}">
+	<div class="object-drag activity-list">
+		<div class="activity-list-preview">
+            <div class="title clearfix">
+            	<h3>{$vo['data']['title']}</h3>
+            	<small class="more">查看更多 </small>
+            </div>
+			<div class="list rank{$vo['data']['rank']} clearfix">
+            	{if $vo['data']['rank'] == 1}
+				{foreach $vo['data']['list'] as $activity_key => $activity_data}
+				{if $vo['data']['style'] == 0}
+					<div class="item small" data-type="offline_list_item" data-id="{$activity_data['id']}">
+						<div class="image">
+							<img src="{$activity_data['cover_200']}" />
+						</div>
+						<div class="content">
+							<div class="title h3 text-ellipsis-2">{$activity_data['title']}</div>
+							<div class="description text-ellipsis">{$offline_data['description']}</div>
+							<div class="start-time">{$activity_data['start_time_sim']} {$activity_data['start_time_week']}</div>
+							<div class="info">
+					            <div class="type">
+					            {if $config_data['show_view'] == 1}
+					            	<div class="view">
+								    <i class="fa fa-eye" aria-hidden="true"></i> {$activity_data['view']}
+								    </div>
+					            {/if}
+							    
+							    {if $config_data['show_sale'] == 1}
+							    	<div class="shopping">
+							    	<i class="fa fa-users" aria-hidden="true"></i> {$activity_data['sales']}
+							    	</div>
+							    {/if}
+
+							    {if $config_data['show_favorites'] == 1}
+								    <div class="favorites">
+								    <i class="fa fa-star-o" aria-hidden="true"></i>
+								    <span class="favorites-num">{$activity_data['favorites']}</span>
+								    </div>
+								{/if}
+								</div>
+					            <div class="price">￥ {if $activity_data['price'] == 0}免费{else}{$activity_data['price']}{/if}</div>
+					        </div>
+						</div>
+					</div>
+					{/if}
+					{if $vo['data']['style'] == 1}
+					<div class="item big" data-type="offline_list_item" data-id="{$activity_data['id']}">
+						<div class="image">
+							<img src="{$activity_data['cover_800']}" />
+						</div>
+						<div class="content">
+							<div class="title h3 text-ellipsis">{$activity_data['title']}</div>
+							<div class="description text-ellipsis">{$activity_data['description']}</div>
+							<div class="start-time">{$activity_data['start_time_sim']} {$activity_data['start_time_week']}</div>
+							<div class="info">
+								
+					            <div class="type text-ellipsis">
+					            {if $config_data['show_view'] == 1}
+					            	<div class="view">
+								    <i class="fa fa-eye" aria-hidden="true"></i> {$activity_data['view']}
+								    </div>
+					            {/if}
+							    
+							    {if $config_data['show_sale'] == 1}
+							    	<div class="shopping">
+							    	<i class="fa fa-users" aria-hidden="true"></i> {$activity_data['sales']}
+							    	</div>
+							    {/if}
+
+							    {if $config_data['show_favorites'] == 1}
+								    <div class="favorites">
+								    <i class="fa fa-star-o" aria-hidden="true"></i>
+								    <span class="favorites-num">{$activity_data['favorites']}</span>
+								    </div>
+								{/if}
+								</div>
+					            <div class="price">￥ {if $activity_data['price'] == 0}免费{else}{$activity_data['price']}{/if}</div>
+					        </div>
+						</div>
+						
+					</div>
+					{/if}
+				{/foreach}
+				{/if}
+				
+				<!--横排-->
+				{if $vo['data']['rank'] == 0}
+				{foreach $vo['data']['list'] as $activity_key => $activity_data}
+					<div class="item clearfix" data-type="offline_list_item" data-id="{$activity_data['id']}">
+						
+			      		<div class="image">
+			      			<img src="{$activity_data['cover_200']}" />
+			      		</div>
+						<div class="content">
+							<div class="title h3 text-ellipsis-2">{$activity_data['title']}</div>
+							<div class="start-time">{$activity_data['start_time_sim']} {$activity_data['start_time_week']}</div>
+							<div class="info">
+								<div class="price">￥ {if $activity_data['price'] == 0}免费{else}{$activity_data['price']}{/if}</div>
+					            <div class="type">
+					            {if $config_data['show_view'] == 1}
+					            	<div class="view">
+								    <i class="fa fa-eye" aria-hidden="true"></i> {$activity_data['view']}
+								    </div>
+					            {/if}
+							    
+							    {if $config_data['show_sale'] == 1}
+							    	<div class="shopping">
+							    	<i class="fa fa-users" aria-hidden="true"></i> {$activity_data['sales']}
+							    	</div>
+							    {/if}
+
+							    {if $config_data['show_favorites'] == 1}
+								    <div class="favorites">
+								    <i class="fa fa-star-o" aria-hidden="true"></i>
+								    <span class="favorites-num">{$activity_data['favorites']}</span>
+								    </div>
+								{/if}
+								</div>
+					        </div>
+						</div>
+			        </div>
+				{/foreach}
+				{/if}
+			</div>
+		</div>
+	</div>
+</div>
+
+<!--线下活动列表END-->
+{/if}

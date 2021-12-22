@@ -1,0 +1,21 @@
+<!--关注公众号组件-->
+{if $vo['type'] == 'weixin'}
+<div class="object-item preview weixin" data-type="weixin" data-object-index="weixin-{$key}">
+	<div class="object-drag">
+		<div class="weixin-preview preview">
+			<div class="weixin-lists-box">
+				<div class="content clearfix">
+					<div class="logo"><img src={$config_data.cover_100} /></div>
+					<div class="info">
+						<div class="title">{$config_data.follow.title}</div>
+						<div class="desc">{$config_data.follow.desc}</div>
+					</div>
+				</div>
+				<div class="follow-btn">
+					<button class="btn btn-default btn-block">关注公众号</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{/if}

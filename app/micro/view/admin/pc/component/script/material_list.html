@@ -1,0 +1,89 @@
+<!--资料列表-->
+<script type="text/html" data-object-type="material_list">
+	
+	<div class="object-item" data-type="material_list">
+		<div class="object-drag material-list">
+			<div class="material-list-preview">
+                <div class="title clearfix">
+					<h3>资料下载</h3>
+					<span class="sub-title">副标题</span>
+                	<small class="more">查看更多 </small>
+                </div>
+                <div class="list clearfix">
+                	
+				</div>
+			</div>
+			<div class="del-btn"><i class="fa fa-times-circle fa-2x"></i></div>
+			<div class="up-btn"><i class="fa fa-chevron-circle-up fa-2x"></i></div>
+			<div class="down-btn"><i class="fa fa-chevron-circle-down fa-2x"></i></div>
+		</div>
+		<div class="diy-preview-controller material-list">
+			<div class="panel panel-info">
+			 	<div class="panel-heading">
+			    资料列表
+			 	</div>
+			 	<div class="panel-body">
+				<div class="form-horizontal">
+					<div class="form-group">
+					    <label class="col-sm-3 control-label">标题</label>
+					    <div class="col-sm-9">
+					    	<input type="text" class="form-control" name="title" value="资料下载">
+					    </div>
+					</div>
+					<div class="form-group">
+					    <label class="col-sm-3">副标题</label>
+					    <div class="col-sm-9">
+					    	<input type="text" class="form-control" name="sub_title" value="副标题">
+					    </div>
+				  	</div>
+				  	<div class="form-group">
+					    <label class="col-sm-3 control-label">课程分类</label>
+					    <div class="col-sm-9">
+						   <select class="form-control wide" name="category_id">
+						   		<option value="0">所有</option>
+							</select>
+					    </div>
+				  	</div>
+			 		<div class="form-group">
+					    <label class="col-sm-3 control-label">显示数量</label>
+					    <div class="col-sm-9">
+					    	<input type="text" class="form-control" name="rows" value="5">
+					    </div>
+				  	</div>
+				  	<div class="form-group">
+					    <label class="col-sm-3">排序方法</label>
+					    <div class="col-sm-9">
+						    <select class="form-control wide" name="order_field">
+								<option value="create_time" selected>发布时间</option>
+								<option value="update_time">更新时间</option>
+								<option value="view">浏览量</option>
+								<option value="price">价格</option>
+								<option value="sort">排序值</option>
+							</select>
+					    </div>
+				  	</div>
+				  	<div class="form-group">
+					    <label class="col-sm-3">排序方向</label>
+					    <div class="col-sm-9">
+						    <select class="form-control wide" name="order_type">
+								<option value="ASC" selected>正序</option>
+								<option value="DESC">倒序</option>
+							</select>
+					    </div>
+				  	</div>
+
+				  	<div class="form-group">
+					    <label class="col-sm-3 control-label"></label>
+					    <div class="col-sm-9">
+					      <button class="btn btn-primary">确认</button>
+					    </div>
+				  	</div>
+			 	</div>	
+
+				</div>
+			</div>
+		</div>
+	</div>
+	
+</script>
+<!--资料列表END-->

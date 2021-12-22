@@ -1,0 +1,127 @@
+{if $vo['type'] == 'live_list'}
+<!--课程列表-->
+<div class="object-item preview live-list" data-type="live_list" data-object-index="live_list-{$key}">
+	<div class="live-list-preview">
+        <div class="title clearfix">
+        	<h3>{$vo['data']['title']}</h3>
+        	<small class="more">查看更多 </small>
+        </div>
+        <div class="list rank{$vo['data']['rank']} clearfix">
+			{foreach $vo['data']['list'] as $k => $v}
+			{if $vo['data']['rank'] == 1}
+			<!--竖排列表-->
+				{if $vo['data']['style'] == 0}
+				<!--小图列表-->
+				<div class="item small" data-id="{$v['id']}">
+					<div class="image">
+						<img src="{$v['cover_200']}" />
+						<div class="type-container">{$v['type_str']}</div>
+					</div>
+					<div class="content">
+						<div class="title h3 text-ellipsis-2">{$v['title']}</div>
+						<div class="description text-ellipsis">{$v['description']}</div>
+						<div class="info">
+				            <div class="type text-ellipsis">
+				            {if $config_data['show_view'] == 1}
+				            	<div class="view">
+							    <i class="fa fa-eye" aria-hidden="true"></i> {$v['view']}
+							    </div>
+				            {/if}
+						    
+						    {if $config_data['show_sale'] == 1}
+						    	<div class="shopping">
+						    	<i class="fa fa-shopping-bag" aria-hidden="true"></i> {$v['sales']}
+						    	</div>
+						    {/if}
+
+						    {if $config_data['show_favorites'] == 1}
+							    <div class="favorites">
+							    <i class="fa fa-star-o" aria-hidden="true"></i>
+							    <span class="favorites-num">{$v['favorites']}</span>
+							    </div>
+							{/if}
+							</div>
+				            <div class="price">￥ {if $v['price'] == 0}免费{else}{$v['price']}{/if}</div>
+				        </div>
+					</div>
+				</div>
+				{/if}
+				{if $vo['data']['style'] == 1}
+				<!--大图列表-->
+				<div class="item big" data-id="{$v['id']}">
+					<div class="image">
+						<img src="{$v['cover_800']}" />
+						<div class="type-container">{$v['type_str']}</div>
+					</div>
+					<div class="content">
+						<div class="title h3 text-ellipsis">{$v['title']}</div>
+						<div class="description text-ellipsis">{$v['description']}</div>
+						<div class="info">
+				            <div class="type">
+				            {if $config_data['show_view'] == 1}
+				            	<div class="view">
+							    <i class="fa fa-eye" aria-hidden="true"></i> {$v['view']}
+							    </div>
+				            {/if}
+						    
+						    {if $config_data['show_sale'] == 1}
+						    	<div class="shopping">
+						    	<i class="fa fa-shopping-bag" aria-hidden="true"></i> {$v['sales']}
+						    	</div>
+						    {/if}
+
+						    {if $config_data['show_favorites'] == 1}
+							    <div class="favorites">
+							    <i class="fa fa-star-o" aria-hidden="true"></i>
+							    <span class="favorites-num">{$v['favorites']}</span>
+							    </div>
+							{/if}
+							</div>
+				            <div class="price">￥ {if $v['price'] == 0}免费{else}{$v['price']}{/if}</div>
+				        </div>
+					</div>
+				</div>
+				{/if}
+			{/if}
+			{if $vo['data']['rank'] == 0}
+			<!--横排列表-->
+				<div class="item" data-id="{$v['id']}">
+		      		<div class="image">
+		      			<img src="{$v['cover_200']}" />
+		      			<div class="type-container">{$v['type_str']}</div>
+		      		</div>
+					<div class="content">
+						<div class="title h3 text-ellipsis">{$v['title']}</div>
+						<div class="info">
+							<div class="price">￥ {if $v['price'] == 0}免费{else}{$v['price']}{/if}</div>
+				            <div class="type text-ellipsis">
+				            {if $config_data['show_view'] == 1}
+				            	<div class="view">
+							    <i class="fa fa-eye" aria-hidden="true"></i> {$v['view']}
+							    </div>
+				            {/if}
+						    
+						    {if $config_data['show_sale'] == 1}
+						    	<div class="shopping">
+						    	<i class="fa fa-shopping-bag" aria-hidden="true"></i> {$v['sales']}
+						    	</div>
+						    {/if}
+
+						    {if $config_data['show_favorites'] == 1}
+							    <div class="favorites">
+							    <i class="fa fa-star-o" aria-hidden="true"></i>
+							    <span class="favorites-num">{$v['favorites']}</span>
+							    </div>
+							{/if}
+							</div>
+				            
+				        </div>
+					</div>
+		        </div>
+			{/if}
+			{/foreach}
+		</div>
+	</div>
+</div>
+<!--课程列表END-->
+{/if}

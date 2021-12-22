@@ -1,0 +1,132 @@
+{extend name="../../admin/view/common/main"/}
+
+{block name="style"}
+<script type="text/javascript" charset="utf-8" src="__STATIC__/common/lib/webuploader/js/webuploader.js"></script>
+<link href="__STATIC__/common/lib/webuploader/css/webuploader.css" type="text/css" rel="stylesheet">
+<link rel="stylesheet" href="__COMMON__/lib/Swiper-3.4.2/css/swiper.min.css">
+<script type="text/javascript" src="__COMMON__/lib/Swiper-3.4.2/js/swiper.min.js"></script>
+<link href="__ADMIN_CSS__/main.min.css" rel="stylesheet" type="text/css"/>
+{/block}
+
+{block name="body"}
+<ol class="breadcrumb">
+	<i class="icon icon-angle-left"></i>
+	<li>
+		<a href="{:url('pcList')}">自定义页面</a>
+	</li>
+	<li>
+		PC端
+	</li>
+	<li>
+		页面DIY
+	</li>
+</ol>
+<section class="page-diy-pc-section this-page" data-role="page_diy_section" data-this-page="page">
+	{include file="admin/page/pc/component/pannel" /}
+	<section class="page-diy-content">
+		<section class="page-diy-item">
+			<div class="{$config_data['style']}">
+				<div class="page-header">
+					<div class="config-preview">
+						<div class="page-title">
+						{empty name="$page_data['title']"}
+							点击设置页面标题&描述
+						{else /}
+							{$page_data['title']}
+						{/empty}
+						</div>
+
+						<div class="config-controller">
+							<div class="panel panel-info">
+							 	<div class="panel-heading">
+							    	基础信息
+							 	</div>
+							 	<div class="panel-body">
+							 		<div class="form-group">
+								 		<input type="text" name="title" class="form-control" value="{$page_data['title']|default=''}" placeholder="页面标题" />
+								 	</div>
+								 	<div class="form-group">
+								 		<textarea class="form-control" rows="3" name="description" placeholder="简单描述">{$page_data['description']|default=''}</textarea>
+								 	</div>
+							 	</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="public-header">
+					<div class="config-preview">
+						{include file="admin/page/pc/component/object/public_header" /}
+						<div class="config-controller">
+							<div class="panel panel-info">
+								 <div class="panel-heading">
+									通用顶部设置
+								 </div>
+								 <div class="panel-body form-horizontal">
+									<div class="form-group">
+										<label class="col-sm-3">选择样式</label>
+										<div class="col-sm-9">
+											<select class="form-control wide" name="style">
+												{if $page_data['header']['style'] == 1}
+												<option value="1" selected>样式一</option>
+												{else}
+												<option value="1">样式一</option>
+												{/if}
+				
+												{if $page_data['header']['style'] == 2}
+												<option value="2" selected>样式二</option>
+												{else}
+												<option value="2">样式二</option>
+												{/if}
+											</select>
+										</div>
+									  </div>
+									<div class="form-group">
+										<label class="col-sm-3">LOGO</label>
+										<div class="col-xs-9">
+											<input type="hidden" name="logo" value="{$page_data['header']['logo']}"/>
+											<div class="uploadImgBtn btn btn-primary">选择LOGO</div>
+											<button class="btn btn-danger logo-default">还原</button>
+										</div>
+									</div>
+								 </div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<section class="preview-target {$config_data['style']}">
+					{notempty name="page_data['data']"}
+					{foreach $page_data['data'] as $key => $vo}
+					{include file="admin/page/pc/component/object" /}
+					{/foreach}
+					{/notempty}
+				</section>
+				<section class="diy-script">
+					{include file="admin/page/pc/component/script" /}
+				</section>
+			</div>
+		</section>
+	</section>
+</section>
+
+<script>
+	//$('.content-wrapper').scrollTop()
+	$(function(){
+		$('.page-diy-pc-section .object-box').height();
+		$('.content-wrapper').scroll(function() {
+			//console.log($('.content-wrapper').scrollTop());
+			if($('.content-wrapper').scrollTop() >= 60){
+				$('.page-diy-pc-section .object-box').css('top',60);
+			}else{
+				$('.page-diy-pc-section .object-box').css('top',116);
+			}
+		});
+	});
+</script>
+{include file="admin/page/_modal" /}
+{include file="admin/common/_api" /}
+{/block}
+
+{block name="script"}
+<script type="text/javascript" src="__COMMON__/lib/zui/lib/sortable/zui.sortable.min.js"></script>
+<script src="__ADMIN_JS__/main.min.js"></script>
+{/block}

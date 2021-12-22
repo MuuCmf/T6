@@ -1,0 +1,197 @@
+{if $vo['type'] == 'scoreshop_goods_list'}
+<!--积分商品列表-->
+<div class="object-item" data-type="scoreshop_goods_list" data-object-index="scoreshop_goods_list-{$key}">
+	<div class="object-drag scoreshop-goods-list">
+		<div class="scoreshop-goods-list-preview">
+            <div class="title clearfix">
+            	<h3>{$vo['data']['title']}</h3>
+            	<small class="more">查看更多 </small>
+            </div>
+            <div class="list clearfix">
+				{notempty name="$vo['data']['list']"}
+				{foreach $vo['data']['list'] as $goods_key => $goods_data}
+				<div class="item" data-type="goods_list_item" data-id="{$goods_data['id']}">
+					<div class="image">
+						<img src="{$goods_data['cover_200']}" />
+						<div class="type-container">{$goods_data['type_str']}</div>
+					</div>
+					<div class="content">
+						<div class="title h3 text-ellipsis">{$goods_data['title']}</div>
+						<div class="description text-ellipsis">{$goods_data['description']}</div>
+						<div class="price"><span class="score">{$goods_data['price']}</span></div>
+						<div class="info">
+							<div class="type">
+							{if $config_data['show_view'] == 1}
+								<div class="view">
+								<i class="fa fa-eye" aria-hidden="true"></i> {$goods_data['view']}
+								</div>
+							{/if}
+							
+							{if $config_data['show_sale'] == 1}
+								<div class="shopping">
+								<i class="fa fa-shopping-bag" aria-hidden="true"></i> {$goods_data['sell_num']}
+								</div>
+							{/if}
+
+							{if $config_data['show_favorites'] == 1}
+								<div class="favorites">
+								<i class="fa fa-star-o" aria-hidden="true"></i>
+								<span class="favorites-num">{$goods_data['favorite']}</span>
+								</div>
+							{/if}
+							</div>
+						</div>
+					</div>
+				</div>
+				{/foreach}
+				{/notempty}
+			</div>
+		</div>
+	</div>
+	<div class="diy-preview-controller scoreshop-goods-list">
+		<div class="panel panel-info">
+		 	<div class="panel-heading">
+		    积分商品
+		 	</div>
+		 	<div class="panel-body">
+		 		<div class="form-horizontal">
+					<div class="form-group">
+					    <label class="col-sm-3">标题</label>
+					    <div class="col-sm-9">
+					    	<input type="text" class="form-control" name="title" value="{$vo['data']['title']}">
+					    </div>
+				  	</div>
+			 		
+				  	<div class="form-group">
+					    <label class="col-sm-3">商品类型</label>
+					    <div class="col-sm-9">
+						    <select class="form-control wide" name="type">
+								{if $vo['data']['type'] == 'all'}
+								<option value="all" selected>所有</option>
+								{else}
+								<option value="all">所有</option>
+								{/if}
+
+								{if $vo['data']['type'] == 'image_text'}
+								<option value="image_text" selected>图文</option>
+								{else}
+								<option value="image_text">图文</option>
+								{/if}
+
+								{if $vo['data']['type'] == 'audio'}
+								<option value="audio" selected>音频</option>
+								{else}
+								<option value="audio">音频</option>
+								{/if}
+
+								{if $vo['data']['type'] == 'video'}
+								<option value="video" selected>视频</option>
+								{else}
+								<option value="video">视频</option>
+								{/if}
+							</select>
+					    </div>
+				  	</div>
+				  	<div class="form-group">
+					    <label class="col-sm-3">商品分类</label>
+					    <div class="col-sm-9">
+						   <select class="form-control wide" name="category_id" data-category-id="{$vo['data']['category_id']}">
+						   		<option value="0">所有</option>
+						   		{foreach $category_tree as $key=>$cate}
+						   		{if $vo['data']['category_id']==$cate['id']}
+						   		<option value="{$cate['id']}" selected>{$cate['title']}</option>
+						   		{else}
+						   		<option value="{$cate['id']}">{$cate['title']}</option>
+						   		{/if}
+								   	{if !empty($cate['_child'])}
+									{foreach $cate['_child'] as $child}
+						   			{if $vo['data']['category_id']==$child['id']}
+							   		<option value="{$child['id']}" selected>{$child['title']}</option>
+							   		{else}
+							   		<option value="{$child['id']}">{$child['title']}</option>
+							   		{/if}
+						   			{/foreach}
+									{/if}
+						   		{/foreach}
+							</select>
+					    </div>
+				  	</div>
+
+				  	<div class="form-group">
+					    <label class="col-sm-3">显示数量</label>
+					    <div class="col-sm-9">
+					    	<input type="text" class="form-control" name="rows" value="{$vo['data']['rows']}">
+					    </div>
+				  	</div>
+				  	<div class="form-group">
+					    <label class="col-sm-3">排序方法</label>
+					    <div class="col-sm-9">
+						    <select class="form-control wide" name="order_field">
+								{if $vo['data']['order_field']=='create_time'}
+						    	<option value="create_time" selected>发布时间</option>
+						    	{else}
+						    	<option value="create_time">发布时间</option>
+						    	{/if}
+
+						    	{if $vo['data']['order_field']=='update_time'}
+						    	<option value="update_time" selected>更新时间</option>
+						    	{else}
+						    	<option value="update_time">更新时间</option>
+						    	{/if}
+
+						    	{if $vo['data']['order_field']=='view'}
+						    	<option value="view" selected>浏览量</option>
+						    	{else}
+						    	<option value="view">浏览量</option>
+						    	{/if}
+
+						    	{if $vo['data']['order_field']=='price'}
+						    	<option value="price" selected>价格</option>
+						    	{else}
+						    	<option value="price">价格</option>
+						    	{/if}
+
+								{if $vo['data']['order_field']=='sort'}
+								<option value="sort" selected>排序值</option>
+								{else}
+								<option value="sort">排序值</option>
+								{/if}
+							</select>
+					    </div>
+				  	</div>
+				  	<div class="form-group">
+					    <label class="col-sm-3">排序方向</label>
+					    <div class="col-sm-9">
+						    <select class="form-control wide" name="order_type">
+								{if $vo['data']['order_type']=='ASC'}
+						    	<option value="ASC" selected>正序</option>
+						    	{else}
+						    	<option value="ASC">正序</option>
+						    	{/if}
+
+						    	{if $vo['data']['order_type']=='DESC'}
+						    	<option value="DESC" selected>倒序</option>
+						    	{else}
+						    	<option value="DESC">倒序</option>
+						    	{/if}
+							</select>
+					    </div>
+				  	</div>
+				  	
+				  	<div class="form-group">
+					    <label class="col-sm-3"></label>
+					    <div class="col-sm-9">
+					      <button class="btn btn-primary">确认</button>
+					    </div>
+				  	</div>
+		 		</div>
+			</div>
+		</div>
+	</div>
+	<div class="del-btn"><i class="fa fa-times-circle fa-2x"></i></div>
+	<div class="up-btn"><i class="fa fa-chevron-circle-up fa-2x"></i></div>
+	<div class="down-btn"><i class="fa fa-chevron-circle-down fa-2x"></i></div>
+</div>
+
+<!--积分商品列表END-->
+{/if}

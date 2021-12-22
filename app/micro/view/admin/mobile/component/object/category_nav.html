@@ -1,0 +1,147 @@
+{if $vo['type'] == 'category_nav'}
+<!--图文导航组件-->
+<div class="object-item" data-type="category_nav" data-object-index="category_nav-{$key}">
+	<div class="object-drag category-nav">
+		<div class="category-nav-preview">
+			<div class="nav-class-one">
+				{if !empty($vo['data'])}
+				{foreach $vo['data'] as $key=>$vo_pre_data}
+				<div class="category-nav-item enable" style="
+					{if $vo['colume'] == 3}width: 33%;{/if}
+					{if $vo['colume'] == 4}width: 25%;{/if}
+					{if $vo['colume'] == 5}width: 20%;{/if}">
+
+					{if !empty($vo_pre_data['icon_url'])}
+					<img src="{$vo_pre_data['icon_url']}" class="item-image">
+					{else}
+					<img src="{$no_icon}" class="item-image"> 
+					{/if}
+					<div class="item-text">{$vo_pre_data['nav_title']}</div>
+				</div>
+				{/foreach}
+				{/if}
+				<!--放置空容器、以便操作区处理-->
+				<div class="category-nav-item hidden">
+					<img src="{$no_icon}" class="item-image"> 
+					<div class="item-text">导航</div>
+				</div>
+				<div class="category-nav-item hidden">
+					<img src="{$no_icon}" class="item-image"> 
+					<div class="item-text">导航</div>
+				</div>
+				<!--放置空容器、以便操作区处理END-->
+			</div>
+		</div>
+	</div> 
+
+	<div class="diy-preview-controller category-nav">
+		<div class="panel panel-info">
+		 	<div class="panel-heading">
+		    图文导航
+		 	</div>
+		 	<div class="panel-body">
+		 		<input type="hidden" name="title" value="图文导航"/>
+		 		<input type="hidden" name="type" value="category_nav"/>
+		    	<div class="choose category-nav-form-item">
+				{if !empty($vo['colume'])}
+	    		<select class="form-control" name="colume" data-colume="{$vo['colume']}">
+	    			{if $vo['colume'] == 3}
+	    			<option value="3" selected>3列</option>
+	    			{else}
+	    			<option value="3">3列</option>
+	    			{/if}
+
+	    			{if $vo['colume'] == 4}
+	    			<option value="4" selected>4列</option>
+	    			{else}
+	    			<option value="4">4列</option>
+	    			{/if}
+
+	    			{if $vo['colume'] == 5}
+	    			<option value="5" selected>5列</option>
+	    			{else}
+	    			<option value="5">5列</option>
+	    			{/if}
+				</select>
+		    	{else}
+				<select class="form-control" name="colume">
+					<option value="3">3列</option>
+					<option value="4" selected>4列</option>
+					<option value="5">5列</option>
+				</select>
+		    	{/if}
+				</div>
+	    		<div class="category-nav-box">
+	    			{if !empty($vo['data'])}
+	    			{foreach $vo['data'] as $k => $vo_data}
+	    			<div class="form-horizontal category-nav-form-item enable" data-rule="object-controller-item">
+			    		<div class="form-group">
+						    <div class="col-sm-12">
+							    <input type="text" name="nav_title" class="form-control" value="{$vo_data['nav_title']}">
+							</div>
+						</div>
+						<div class="form-group">
+						    <div for="" class="col-sm-3">
+							    <input type="hidden" name="icon_id" value="{$vo_data['icon_id']}">
+							    <input type="hidden" name="icon_url" value="{$vo_data['icon_url']}">
+							    <button class="btn btn-primary" data-toggle="modal" data-target="#iconModal">
+							    	选择图标
+							    </button>
+							</div>
+						</div>
+						<div class="form-group">
+							{include file="admin/page/_link_btn" /}
+						</div>
+					</div>
+					{/foreach}
+					{/if}
+					<!--放置空容器、以便操作区处理-->
+					<div class="form-horizontal category-nav-form-item hidden">
+			    		<div class="form-group">
+						    <div class="col-sm-12">
+							    <input type="text" name="nav_title" class="form-control" value="{$vo_data['nav_title']}">
+							</div>
+						</div>
+						<div class="form-group">
+						    <div for="" class="col-sm-12">
+							    <input type="hidden" name="icon_id" value="{$vo_data['icon_id']}">
+							    <input type="hidden" name="icon_url" value="{$vo_data['icon_url']}">
+							    <button class="btn btn-primary" data-toggle="modal" data-target="#iconModal">
+							    	选择图标
+							    </button>
+							</div>
+						</div>
+						<div class="form-group">
+							{include file="admin/page/_link_btn" /}
+						</div>
+					</div>
+					<div class="form-horizontal category-nav-form-item hidden">
+			    		<div class="form-group">
+						    <div class="col-sm-12">
+							    <input type="text" name="nav_title" class="form-control" value="{$vo_data['nav_title']}">
+							</div>
+						</div>
+						<div class="form-group">
+						    <div for="" class="col-sm-12">
+							    <input type="hidden" name="icon_id" value="{$vo_data['icon_id']}">
+							    <input type="hidden" name="icon_url" value="{$vo_data['icon_url']}">
+							    <button class="btn btn-primary" data-toggle="modal" data-target="#iconModal">
+							    	选择图标
+							    </button>
+							</div>
+						</div>
+						<div class="form-group">
+							{include file="admin/page/_link_btn" /}
+						</div>
+					</div>
+					<!--放置空容器、以便操作区处理END-->
+				</div>
+		    	
+		 	</div>
+		</div>
+	</div>
+	<div class="del-btn"><i class="fa fa-times-circle fa-2x"></i></div>
+	<div class="up-btn"><i class="fa fa-chevron-circle-up fa-2x"></i></div>
+	<div class="down-btn"><i class="fa fa-chevron-circle-down fa-2x"></i></div>
+</div>
+{/if}

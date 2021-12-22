@@ -1,0 +1,11 @@
+{if $vo['type'] == 'custom_text'}
+<!--自定义文本组件-->
+<div class="object-item preview custom-text" data-type="custom_text" data-object-index="category_nav-{$key}">
+	<div class="custom-text-preview">
+        <div class="content">
+            {:htmlspecialchars_decode($vo['data']['content'])}
+        </div>
+	</div>
+</div>
+<!--自定义文本组件END-->
+{/if}

@@ -1,0 +1,29 @@
+
+<div class="page-footer-preview">
+
+	{if !empty($config_data['footer'])}
+	{if $config_data['footer']['colume'] == 2} {php}$width = '50%';{/php}{/if}
+	{if $config_data['footer']['colume'] == 3} {php}$width = '33%';{/php}{/if}
+	{if $config_data['footer']['colume'] == 4} {php}$width = '25%';{/php}{/if}
+	{if $config_data['footer']['colume'] == 5} {php}$width = '20%';{/php}{/if}
+	{foreach $config_data['footer']['data'] as $k=>$vo}
+
+	{if $k != 0 && $k != ($config_data['footer']['colume']-1)}
+	<div class="item enable custom" style="width:{$width}">
+		{if !empty($vo['icon_url'])}
+		<img src="{$vo['icon_url']}" data-url="{$vo['icon_url']}" class="item-image">
+		{else}
+		<img src="__COMMON__/images/nopic.png" class="item-image">
+		{/if}
+		<div class="item-text">{$vo['nav_title']}</div>
+	</div>
+	{else /}
+	<div class="item enable system" style="width:{$width}">
+		<img src="{$vo['icon_url']}" data-url="{$vo['icon_url']}" class="item-image"> 
+		<div class="item-text">{$vo['nav_title']}</div>
+	</div>
+	{/if}
+	{/foreach}
+	{/if}
+
+</div>

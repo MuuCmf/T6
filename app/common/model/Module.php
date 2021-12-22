@@ -276,8 +276,10 @@ class Module extends Base
         }
 
         $info = $this->where(['name'=>$name])->find();
-        $info['icon'] = $this->getIcon($info['name'], $info['icon']);
-
+        if(!empty($info)){
+            $info['icon'] = $this->getIcon($info['name'], $info['icon']);
+        }
+        
         return $info;
     }
 

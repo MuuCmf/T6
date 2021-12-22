@@ -1,0 +1,24 @@
+{if $vo['type'] == 'slideshow'}
+<section class="object-item preview slideshow" data-type="slideshow" data-object-index="slideshow-{$key}">
+	<div class="slideshow-preview">
+		<div class="swiper-container swiper-slideshow-container style-{$vo['style']}">
+            <div class="swiper-wrapper">
+            	{if $vo['data'] != ''}
+            	{foreach $vo['data'] as $k => $v}
+				<div class="swiper-slide">
+	                <img src="{$v['img_url']}" class="img-responsive">
+	            </div>
+    			{/foreach}
+    			{else}
+    			<div class="title-preview">
+                    轮播图广告组件
+                </div>
+    			{/if}
+            </div>
+            <div class="swiper-button-prev swiper-button-white muu-button-prev"></div>
+            <div class="swiper-button-next swiper-button-white muu-button-next"></div> <!-- 白色 -->
+            <div class="swiper-pagination"></div>
+        </div>
+	</div>
+</section>
+{/if}

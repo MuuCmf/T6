@@ -26,6 +26,7 @@ class Mobile extends Admin
     public function lists()
     {
         $keyword = input('get.keyword','');
+        View::assign('keyword', $keyword);
         // 初始化查询条件
         $map = [
             ['shopid','=', 0],
@@ -39,28 +40,27 @@ class Mobile extends Admin
         $r = input('r', 15, 'intval');
         $lists = $this->PageModel->getListByPage($map,'id desc,create_time desc', '*', $r);
         $pager = $lists->render();
+        View::assign('pager',$pager);
         $lists = $lists->toArray();
         foreach ($lists['data'] as &$item){
             $item = $this->PageLogic->formatData($item);
         }
         unset($item);
+        
         if (request()->isAjax()){
             return $this->success('success',$lists);
         }
-        $lists = $lists['data'];
+        View::assign('lists',$lists);
         // 获取分类树
-        $category_tree = $this->CategoryModel->getTree(0);
+        // $category_tree = $this->CategoryModel->getTree(0);
+        // View::assign('category_tree', $category_tree);
         View::assign([
-            'category_tree' => $category_tree,
-            'keyword' => $keyword,
-            'lists' => $lists,
-            'pager' => $pager,
             'channel' => 'mobile'
         ]);
         // 设置title
         $this->setTitle('移动端自定义页面管理');
         // 输出页面
-        return View::fetch('admin/page/mobile/lists');
+        return View::fetch();
     }
 
     /**
@@ -131,144 +131,12 @@ class Mobile extends Admin
         View::assign('link_list', $link_list);
         
         // 获取无图标路径
-        $no_icon = request()->domain() . '/static/classroom/images/diy/noimg.png';
+        $no_icon = request()->domain() . '/static/common/images/diy/noimg.png';
         View::assign('no_icon', $no_icon);
         // 设置title
         $this->setTitle('移动端自定义页面DIY');
         // 输出页面
-        return view('admin/page/mobile/diy');
-    }
-
-    /**
-     * PC端自定义页面列表
-     */
-    public function pcList()
-    {
-        $keyword = input('get.keyword','');
-        // 初始化查询条件
-        $map = [
-            ['shopid','=', 0],
-            ['app', '=', 'classroom'],
-            ['status','>=', 0],
-            ['port_type', '=', 'pc']
-        ];
-        if (!empty($keyword)){
-            $map[] = ['title','like',"%{$keyword}%"];
-        }
-        // 每页显示数量
-        $r = input('r', 15, 'intval');
-        $lists = $this->PageModel->getListByPage($map,'id desc,create_time desc', '*', $r);
-        $pager = $lists->render();
-        $lists = $lists->toArray();
-        foreach ($lists['data'] as &$item){
-            $item = $this->PageLogic->formatData($item);
-        }
-        unset($item);
-        if (request()->isAjax()){
-            return $this->success('success',$lists);
-        }
-        $lists = $lists['data'];
-
-        // 获取分类树
-        $category_tree = $this->CategoryModel->getTree(0);
-        View::assign([
-            'category_tree' => $category_tree,
-            'keyword' => $keyword,
-            'lists' => $lists,
-            'pager' => $pager,
-            'channel' => 'pc'
-        ]);
-        // 设置title
-        $this->setTitle('PC端自定义页面管理');
-        // 输出页面
-        return View::fetch('admin/page/pc/lists');
-    }
-
-    /**
-     * PC端DIY
-     */
-    public function pcDiy()
-    {
-        $id = input('id',0);
-        if (request()->isAjax()){
-            $params = input('post.');
-            $id = empty($params['id'])? 0 : $params['id'];
-            if(!empty($params['data'])){
-                //反编译无需转义的组件内容
-                foreach($params['data'] as &$v){
-                    if($v['type'] == 'custom_text'){
-                        $v['data']['content'] = htmlspecialchars_decode($v['data']['content']);
-                    }
-                }
-                unset($v);
-            }
-            $data = [
-                'id' => $id,
-                'shopid' => $this->shopid,
-                'app' => 'classroom',
-                'title' => !empty($params['title'])?$params['title']:'页面标题未填写',
-                'description' => !empty($params['description'])?$params['description']:'页面描述未填写',
-                'data' => json_encode($params['data']),
-                'port_type' => 'pc',
-                'header' => json_encode($params['header']),
-                'header_show' => 1,
-                'footer_show' => 0,
-            ];
-            $result = $this->PageModel->edit($data);
-            if($result){
-                return $this->success('保存成功');
-            }else{
-                return $this->error( '保存失败');
-            }
-        }
-
-        //获取分类树
-        $category_tree = $this->CategoryModel->getTree(1);
-        View::assign('category_tree', $category_tree);
-        //获取文章模块分类
-		$article_plugin_setup = $this->ModuleModel->checkInstalled('articles');
-		$article_category_tree = [];
-		if($article_plugin_setup){
-            $article_category_tree = (new \app\articles\model\ArticlesCategory())->getTree(1);
-		}
-        View::assign('article_category_tree', $article_category_tree);
-        //页面数据
-        $page_data = $this->PageModel->find($id);
-        if (!empty($page_data)){
-            $page_data = $page_data->toArray();
-            $page_data = $this->PageLogic->formatData($page_data);
-            $page_data = $this->PageLogic->handlingNoParamJson($page_data);
-        }else{
-            // 初始化数据
-            $page_data = [
-                'title' => '',
-                'description' => '',
-                'type' => 0,
-                'data' => [],
-                'header' => [
-                    'style' => 1,
-                    'logo' => ''
-                ],
-                'header_show' => 1,
-                'status' => 1
-            ];
-        }
-        
-        View::assign([
-            'page_data' => $page_data,
-            'icon_list' => $this->PageLogic->getIconLists()
-        ]);
-        // 链接至参数
-        $link_list = $this->PageLogic->linkParams();
-        View::assign('link_list', $link_list);
-        
-        // 获取无图标路径
-        $no_icon = request()->domain() . '/static/classroom/images/diy/noimg.png';
-        View::assign('no_icon', $no_icon);
-        // 设置title
-        $this->setTitle('PC端自定义页面DIY');
-        // 输出页面
-        return view('admin/page/pc/diy');
+        return view();
     }
 
     /**

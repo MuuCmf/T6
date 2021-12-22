@@ -1,0 +1,122 @@
+{extend name="../../admin/view/common/main"/}
+
+{block name="style"}
+<script type="text/javascript" charset="utf-8" src="__STATIC__/common/lib/webuploader/js/webuploader.js"></script>
+<link href="__STATIC__/common/lib/webuploader/css/webuploader.css" type="text/css" rel="stylesheet">
+<link rel="stylesheet" href="__COMMON__/lib/Swiper-3.4.2/css/swiper.min.css">
+<script type="text/javascript" src="__COMMON__/lib/Swiper-3.4.2/js/swiper.min.js"></script>
+<link href="__ADMIN_CSS__/main.min.css" rel="stylesheet" type="text/css"/>
+{/block}
+
+{block name="body"}
+<ol class="breadcrumb">
+	<i class="icon icon-angle-left"></i>
+	<li>
+		<a href="{:url('pcList')}">自定义页面</a>
+	</li>
+	<li>
+		PC端
+	</li>
+	<li>
+		页面列表
+	</li>
+</ol>
+
+<div class="choose">
+	<ul class="nav nav-tabs">
+	  <li class="active">
+	  	<a href="{:url('pcList')}" role="button">PC端</a></li>
+	  <li>
+	  	<a href="{:url('mobileList')}">移动端</a>
+	  </li>
+	</ul>
+</div>
+
+<section class="pc-list-section" style="background-color: #fff;padding: 10px;">
+	<div class="margin-bottom">
+		<a class="btn btn-success margin-right" href="{:url('pcDiy')}" role="button">+ 新建页面</a>
+	</div>
+
+	<div class="search-box clearfix margin-bottom">
+
+		<form action="" method="get" class="search-form row" role="form">
+			<div class="col-md-6">
+				<div class="input-group">
+				  <div class="input-control search-box has-icon-left has-icon-right search-example" id="searchboxExample">
+					<input class="form-control" name="keyword" placeholder="关键字" id="" type="text" value="{$keyword}">
+					<label for="inputSearchExample4" class="input-control-icon-left search-icon"><i class="icon icon-search"></i></label>
+				  </div>
+				  <span class="input-group-btn">
+					<button class="btn btn-primary" type="submit">搜索</button>
+				  </span>
+				</div>
+			</div>
+		</form>
+	</div>
+	<div class="page-list-pc-section row clearfix">
+		{empty name="$lists"}
+		{include file="admin/common/_empty"/}
+	    {else /}
+		<div>
+		{foreach $lists as $p_k => $p_v}
+		<div class="col-xs-12">
+			<div class="page-list-item card">
+				<div class="page-preview-content">
+					<div class="page-header">
+						<span class="page-title"> 
+							{$p_v['title']}
+						</span>
+					</div>
+					<div class="preview-target {php echo $this->config_data['style']}">
+						<div class="public-header">
+							{include file="admin/page/pc/component/view/public_header" /}
+						</div>
+						{foreach $p_v['data'] as $key => $vo}
+						{include file="admin/page/pc/component/view" /}
+						{/foreach}
+					</div>
+				</div>
+				
+				<div class="action">
+					
+					<a class="btn btn-sm btn-info" data-toggle="modal" data-target="#shareModal" data-id="{$p_v['id']}" data-url="{:url('classroom/pc/page',['id'=>$p_v['id']], '', true)}" data-title="{$p_v['title']}" title="预览">
+						<i class="fa fa-eye" aria-hidden="true"></i> 预览
+					</a>
+
+					{if $p_v['home'] == 1}
+		            <a href="#" class="btn btn-sm btn-success" title="店铺首页">
+			            <i class="fa fa-home" aria-hidden="true"></i> 首页
+			        </a>
+					{/if}
+
+					{if $p_v['home'] == 0}
+		            <a href="{:url('setHome',['id'=>$p_v['id'],'port_type'=>'pc'])}" class="btn btn-sm btn-warning ajax-get" data-confirm="确认设置为主页？" title="设置为首页">
+			            <i class="fa fa-home" aria-hidden="true"></i> 设置为首页
+			        </a>
+					{/if}
+		            
+			        <a href="{:url('pcDiy',['id'=>$p_v['id']])}" class="btn btn-sm btn-primary" title="装修页面">
+		            	<i class="fa fa-pencil-square-o" aria-hidden="true"></i> DIY
+		            </a> 
+		            
+					<a href="{:url('status',['ids'=>$p_v['id'], 'status'=> -1])}" data-confirm="确认执行删除操作？" class="btn btn-sm btn-danger ajax-get" title="删除">
+			            <i class="fa fa-times" aria-hidden="true"></i> 删除
+			        </a>
+				</div>
+			</div>
+		</div>
+		{/foreach}
+		</div>
+	    {/empty}
+	</div>
+	<div class="page-section">
+        {:htmlspecialchars_decode($pager)}
+    </div>
+</section>
+{include file="admin/qrcode/qrcode" /}
+{/block}
+
+{block name="script"}
+<script type="text/javascript" src="__COMMON__/lib/zui/lib/sortable/zui.sortable.min.js"></script>
+<script src="__ADMIN_JS__/main.min.js"></script>
+{/block}

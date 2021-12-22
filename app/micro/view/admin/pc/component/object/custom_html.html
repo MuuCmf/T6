@@ -1,0 +1,28 @@
+{if $vo['type'] == 'custom_html'}
+<!--自定义文本组件-->
+<div class="object-item" data-type="custom_html" data-object-index="custom_html-{$key}">
+	<div class="object-drag custom-html">
+		<div class="custom-html-preview">
+            <div class="content">
+                {$vo['data']['content']}
+            </div>
+		</div>
+	</div>
+	<div class="diy-preview-controller custom-html">
+		<div class="panel panel-info">
+		 	<div class="panel-heading">
+		    自定义Html
+		 	</div>
+		 	<div class="panel-body">
+		 		<textarea class="hidden" name="content">{$vo['data']['content']}</textarea>
+		 		<button class="btn btn-block btn-primary" data-toggle="modal" data-target="#customHtmlModal">自定义Html</button>
+
+			</div>
+		</div>
+	</div>
+	<div class="del-btn"><i class="fa fa-times-circle fa-2x"></i></div>
+	<div class="up-btn"><i class="fa fa-chevron-circle-up fa-2x"></i></div>
+	<div class="down-btn"><i class="fa fa-chevron-circle-down fa-2x"></i></div>
+</div>
+<!--自定义文本组件END-->
+{/if}
