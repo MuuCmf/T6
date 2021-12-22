@@ -1,0 +1,64 @@
+<!-- 分享对话框HTML -->
+<div class="modal fade" id="previewModal">
+    <div class="modal-dialog modal-md">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title"></h4>
+            </div>
+            <div class="modal-body">
+                <div class="text-center share">
+                    {if $channel == 'pc'}
+                    {else}
+                    <div>
+                        <h3>微信扫码预览</h3>
+                    </div>
+                    <div class="qrcode-section">
+                        <div class="item">
+                            <img src="/static/classroom/images/60x60.png" class="all"/>
+                            <h5>url</h5>
+                        </div>
+                    </div>
+
+                    {/if}
+                    <div class="url">
+                        <div class="input-group all-url">
+                            <span class="input-group-addon">url</span>
+                            <input type="text" class="form-control all">
+                            <span class="input-group-btn">
+                              <button class="btn btn-warning" data-role="copy-url" type="button">复制</button>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function(){
+        //复制文本
+        $('[data-role="copy-url"]').click(function(e){
+            var oInput = $(this).parent().parent().find('input');
+            console.log(oInput);
+            oInput.select(); // 选择对象
+            document.execCommand("Copy"); // 执行浏览器复制命令
+            toast.success('复制成功', 'success');
+        });
+
+        // 预览按钮点击事件
+        $('[data-target="#previewModal"]').click(function(e){
+            var path = $(this).data('path');
+            var src = "{:url('api/qrcode/qrcode')}?url=" + encodeURIComponent(path);
+            var title = $(this).data('title');
+            $('#previewModal .modal-title').text(title);
+
+            //新版二维码地址
+            $('#previewModal .modal-body img.all').attr('src',src);
+            //新版url地址
+            var all_text_url = $(this).data('all-url');
+            $('#previewModal .modal-body input.all').attr('value',src);
+        });
+    });
+</script>

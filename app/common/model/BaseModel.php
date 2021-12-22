@@ -15,7 +15,6 @@ namespace app\common\model;
 use think\Model;
 
 class BaseModel extends Model{
-    public $logic;//处理类
     public $statusMap = [-1 => '删除', 0 => '禁用', 1 => '正常', 2 => '待审核'];
     public function getStatusStrAttr($value)
     {
@@ -58,9 +57,6 @@ class BaseModel extends Model{
             $data = $this->find($id);
             if ($data){
                 $data = $data->toArray();
-                if (is_object($this->logic)){
-                    $data = $this->logic->_formatData($data);
-                }
             }
             return $data;
         }
@@ -72,9 +68,6 @@ class BaseModel extends Model{
         $data = $this->where($map)->find();
         if ($data){
             $data = $data->toArray();
-            if (is_object($this->logic)){
-                $data = $this->logic->_formatData($data);
-            }
         }
         return $data;
     }
@@ -84,12 +77,6 @@ class BaseModel extends Model{
         $list = $this->where($map)->limit($limit)->order($order)->field($field)->select();
         if ($list){
             $list = $list->toArray();
-            if (is_object($this->logic)){
-                foreach ($list as &$val){
-                    $val = $this->logic->_formatData($val);
-                }
-                unset($val);
-            }
         }
 
         return $list;
