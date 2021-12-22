@@ -17,6 +17,6 @@ namespace app\common\model;
  * Class QrcodeLogin
  * @package app\common\model
  */
-class QrcodeLogin extends BaseModel{
+class QrcodeLogin extends Base{
     protected $autoWriteTimestamp = true;
 }

@@ -384,67 +384,50 @@ ul {
 .wemreceive {
   width: 100%;
   min-width: 1200px;
-  height: 468px;
-  background: url("../images/receiveProgram.png")no-repeat center;
-  background-size: 1920px 468px;
+  height: 362px;
+  background: #20202d;
+  position: relative;
   .wemreceive-item {
     width: 1200px;
-    margin: 0 auto;
-    padding-top: 70px;
+    padding-top: 115px;
+    position: absolute;
+    left: 50%;
+    margin-left: -600px;
     >h3 {
-      color: #222;
+      color: #fff;
       font-size: 30px;
       text-align: center;
+      margin: 0;
+      font-weight: 400;
     }
-    >div {
-      display: flex;
-      .EwmConsulting {
-        margin: 70px 0 0 214px;
-        text-align: center;
-
-        >img {
-          width: 170px;
-          height: 170px;
-          border-radius: 4px;
-        }
-
-        >p {
-          font-size: 20px;
-          color: #444;
-          margin-top: 15px;
-        }
-      }
-
       .receiveProgram {
-        margin: 110px 0 0 150px;
-
-        >div {
+         text-align: center;
+         padding-top: 50px;
           >input {
-            width: 317px;
-            height: 48px;
-            border: 1px solid #444;
+            width: 341px;
+            height: 47px;
+            border: 1px solid #03b8cf;
             border-right: 0;
-            color: #b3b3b3;
+            color: #03b8cf;
             font-size: 18px;
-            padding-left: 10px;
-            background:#f2f1f8;
-            -webkit-text-fill-color: #b3b3b3 !important;
-            box-shadow: inset 0 0 200px #f2f1f8 !important;
+            padding-left: 20px;
+            background:#20202d; 
+            -webkit-text-fill-color: rgba(3,184,207,0.6) !important; //#116c7e
+            box-shadow: inset 0 0 200px #20202d !important;
           }
-
           input:focus {
             outline: none;
           }
-
           >button {
-            width: 115px;
-            height: 48px;
-            color: #fff;
-            background: #444;
+            width: 154px;
+            height: 47px;
+            color: #20202d;
+            background: #03b8cf;
             vertical-align: bottom;
             font-size: 18px;
             border: 0;
-            margin-left: -4px;
+            margin-left: -5px;
+            font-weight: 600;
             //---------------
             outline: none;
             border: none;
@@ -458,12 +441,12 @@ ul {
             content: "";
             z-index: -1;
             position: absolute;
-            background: #595959;
-            /* 核心代码：位置一步步调整 */
+            background: #76f4f6;
+            /*位置一步步调整 */
             top: -50%;
             left: 0%;
-            bottom: -50%;
-            width: 27px;
+            bottom: -100%;
+            width: 34px;
             transform: translate3d(-200%, 0, 0) rotate(35deg);
             /*  */
           }
@@ -478,40 +461,37 @@ ul {
           }
 
           //闪光
-        }
-
-        >p {
-          font-size: 20px;
-          color: #444;
-          margin-top: 30px;
-          text-align: center;
-        }
+        
       }
-    }
   }
 }
 //扫码咨询
 
 .tabbar-item {
-  width: 1200px;
-  height: 600px;
-  margin: 0 auto;
-  display: flex;
-  padding: 130px 20px 0;
- background: #fff;
+  width: 100%;
+  // height: 600px;
+  height: 491px;
+  // margin: 0 auto;
+  // display: flex;
+  // padding: 130px 20px 0;
+  background: #20202d;
+ >div{
+    width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    padding-top: 90px;
   .support {
     width: 500px;
 
     >h3 {
       margin: 0;
-      color: #212428;
+      color: #03b8cf;
       font-size: 28px;
       font-weight: 600;
     }
 
     >div {
-      border-bottom: 1px solid #dfe1e6;
-
+      border-bottom: 1px solid #828797;
       >p {
         font-size: 16px;
         color: #828797;
@@ -521,16 +501,16 @@ ul {
       .E-mailAddress {
         display: flex;
         margin-top: -15px;
-
         >textarea {
           font-size: 16px;
-          color: #222946;
+          color: #fff;
           margin-top: 5px;
           line-height: 47px;
           width: 200px;
           height: 47px;
           border: 0px;
           resize: none;
+          background: #20202d;
         }
 
         >textarea:focus {
@@ -539,7 +519,7 @@ ul {
 
         .iconfont {
           font-size: 40px;
-          color: #cdcdcd;
+          color: #707085;
           margin-left: auto;
         }
       }
@@ -547,7 +527,7 @@ ul {
 
     .qqCluster {
       font-size: 14px;
-      color: #4c535e;
+      color: #fff;
       margin-top: 20px;
       >textarea {
         width: 100px;
@@ -555,13 +535,15 @@ ul {
         resize: none;
         height: 22px;
         outline: none;
+        color: #fff;
         -webkit-tap-highlight-color:rgba(0,0,0,0);
+        background: #20202d;
       }
     }
 
     .company {
       font-size: 14px;
-      color: #222946;
+      color: #84848f;
       margin-top: 80px;
       >span {
         padding-right: 20px;
@@ -571,7 +553,7 @@ ul {
         content: "";
         width: 1px;
         height: 14px;
-        background: #222946;
+        background: #84848f;
         position: absolute;
         margin: 4px 10px 0;
       }
@@ -579,7 +561,7 @@ ul {
 
     .recordnVarchar {
       font-size: 14px;
-      color: #818597;
+      color: #84848f;
 
       >span {
         padding-right: 30px;
@@ -589,7 +571,7 @@ ul {
         content: "";
         width: 1px;
         height: 14px;
-        background: #818597;
+        background: #84848f;
         position: absolute;
         margin: 4px 15px 0;
       }
@@ -597,36 +579,41 @@ ul {
   }
 
   .contactUs {
-    margin-left: 260px;
+    margin-left: 216px;
     >.contactUs-item {
-      color: #03b8cf;
+      color: #fff;
       font-size: 16px;
-      padding-left: 13px;
       margin: 0;
     }
-
-    >div {
-      margin-top: 30px;
-      width: 190px;
-
+    >p{
+      margin: 0;
+      font-size: 16px;
+      color: #828797;
+      padding-top: 30px;
+    }
+>div{
+  display: flex;
+  margin-top: 23px;
+  >div {
+      width: 140px;
+      margin-right: 20px;
       >img {
-        width: 190px;
-        height: 190px;
+        width: 137px;
+        height: 137px;
       }
-
       >p {
-        //  text-align: center;
-        font-size: 16px;
-        color: #4e546b;
-        padding-left: 13px;
+        text-align: center;
+        font-size: 14px;
+        color: #fff;
+        margin-top: 8px;
       }
     }
-
+}
     >h3 {
       font-size: 30px;
-      color: #222946;
-      margin-top: 20px;
-      padding-left: 13px;
+      color: #fff;
+      margin: 10px 0 0;
+      font-weight: 300;
     }
   }
 
@@ -635,7 +622,7 @@ ul {
 
     >h3 {
       margin: 0;
-      color: #03b8cf;
+      color: #fff;
       font-size: 16px;
     }
 
@@ -648,18 +635,20 @@ ul {
         >a {
           display: block;
           font-size: 14px;
-          color: #72768b;
+          color: #828797;
           text-decoration: none;
           line-height: 34px;
         }
       }
 
       >li:hover>a {
-        color: #03b8cf;
+        color: #fff;
       }
     }
   }
 }
+}
+
 .suspension {
   >div{
     width: 58px;
