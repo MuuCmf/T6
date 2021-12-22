@@ -4,7 +4,7 @@ namespace app\common\model;
 use app\common\model\Base;
 
 /******************店铺配置模型******************/
-class ClassroomConfig extends Base
+class MicroConfig extends Base
 {
     //自动写入创建和更新的时间戳字段
     protected $autoWriteTimestamp = true; 

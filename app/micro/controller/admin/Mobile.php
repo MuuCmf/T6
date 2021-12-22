@@ -1,10 +1,10 @@
 <?php
 namespace app\micro\controller\admin;
 
-use app\common\model\Module;
 use app\admin\controller\Admin;
-use app\common\model\Page as PageModel;
-use app\common\logic\Page as PageLogic;
+use app\common\model\Module;
+use app\micro\model\MicroPage as PageModel;
+use app\micro\logic\Page as PageLogic;
 use think\facade\View;
 
 class Mobile extends Admin
@@ -18,6 +18,14 @@ class Mobile extends Admin
         $this->ModuleModel = new Module();
         $this->PageLogic = new PageLogic();
         $this->PageModel = new PageModel();
+
+        // 获取各应用配置项
+
+        $classroom_config_data = (new \app\classroom\model\ClassroomConfig())->getDataByMap(['shopid' => 0]);
+        $classroom_config_data = (new \app\classroom\model\Config())->formatData($config_data);
+
+        
+
     }
 
     /**
