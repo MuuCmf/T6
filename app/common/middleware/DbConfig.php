@@ -34,7 +34,7 @@ class DbConfig
             $app = Config::get('app');
             $app['default_app'] = $sys_config['DEFUALT_HOME_URL'];
             Config::set($app, 'app');
-            
+
             //动态添加扩展配置,非模块配置
             $ext_config = Cache::get('MUUCMF_EXT_CONFIG_DATA');
             if (empty($ext_config)) {
@@ -48,15 +48,6 @@ class DbConfig
             }
             if (!empty($ext_config)) {
                 Config::set($ext_config,'extend');
-            }
-        }
-        
-        // 判断站点是否关闭
-        if (strtolower(App('http')->getName()) != 'install' && strtolower(App('http')->getName()) != 'admin') {
-            
-            if (!Config::get('system.WEB_SITE_CLOSE')) {
-                header("Content-Type: text/html; charset=utf-8");
-                return Config::get('system.WEB_SITE_CLOSE_HINT');
             }
         }
 

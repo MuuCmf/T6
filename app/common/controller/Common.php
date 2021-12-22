@@ -1,6 +1,7 @@
 <?php
 namespace app\common\controller;
 
+use think\facade\Config;
 use think\facade\Db;
 use think\facade\View;
 use app\common\model\Channel;
@@ -21,6 +22,15 @@ class Common extends Base
      */
     public function __construct()
     {
+        // 判断站点是否关闭
+        if (strtolower(App('http')->getName()) != 'install' && strtolower(App('http')->getName()) != 'admin') {
+            
+            if (!Config::get('system.WEB_SITE_CLOSE')) {
+                header("Content-Type: text/html; charset=utf-8");
+                echo Config::get('system.WEB_SITE_CLOSE_HINT');
+                exit;
+            }
+        }
         // 控制器初始化
         $this->initialize();
     }

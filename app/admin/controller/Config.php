@@ -151,10 +151,7 @@ class Config extends Admin
 
             $list = Db::name("Config")->where(['status' => 1, 'group' => $id])->field('id,name,title,extra,value,group,remark,type')->order('sort asc')->select()->toArray();
 
-            if ($list) {
-                View::assign('list', $list);
-            }
-
+            View::assign('list', $list);
             View::assign('id', $id);
             View::assign('type', $type);
             $this->setTitle($type[$id] . '设置');
