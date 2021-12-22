@@ -26,9 +26,14 @@ class DbConfig
                 }
                 Cache::set('MUUCMF_SYS_CONFIG_DATA', $sys_config);
             }
+            //动态添加系统配置
             if (!empty($sys_config)) {
                 Config::set($sys_config,'system');
             }
+            //动态更改app项目配置
+            $app = Config::get('app');
+            $app['default_app'] = $sys_config['DEFUALT_HOME_URL'];
+            Config::set($app, 'app');
             
             //动态添加扩展配置,非模块配置
             $ext_config = Cache::get('MUUCMF_EXT_CONFIG_DATA');
