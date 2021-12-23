@@ -24,7 +24,15 @@ class Config extends Admin
     }
 
     /**
-     * 配置管理
+     * 站点信息配置
+     */
+    public function info()
+    {
+
+    }
+
+    /**
+     * 系统配置参数管理
      */
     public function list()
     {

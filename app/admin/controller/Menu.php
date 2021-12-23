@@ -12,8 +12,8 @@ use app\common\service\Tree;
  */
 class Menu extends Admin {
 
-    protected $menuModel;
-    protected $moduleModel;
+    protected $MenuModel;
+    protected $ModuleModel;
 
     /**
      * 构造方法
@@ -24,12 +24,12 @@ class Menu extends Admin {
     {
         parent::__construct();
 
-        $this->menuModel = new MenuModel();
-        $this->moduleModel = new moduleModel();
+        $this->MenuModel = new MenuModel();
+        $this->ModuleModel = new moduleModel();
     }
 
     /**
-     * 后台菜单首页
+     * 后台权限菜单列表
      * @return none
      */
     public function index(){
@@ -41,9 +41,9 @@ class Menu extends Admin {
         $list_map = [];
         $list_map['type'] =   0;
 
-        $list = $this->menuModel->where($list_map)->order('sort asc')->select()->toArray();
+        $list = $this->MenuModel->where($list_map)->order('sort asc')->select()->toArray();
         foreach($list as &$val){
-            $val = $this->menuModel->handle($val);
+            $val = $this->MenuModel->handle($val);
         }
         unset($val);
         // 转树结构
@@ -58,7 +58,7 @@ class Menu extends Admin {
     }
 
     /**
-     * 后台菜单接口列表
+     * 后台权限菜单接口列表
      * @return none
      */
     public function list(){
@@ -73,7 +73,7 @@ class Menu extends Admin {
             $map['module'] = $module;
         }
         $map['pid'] =   $pid;
-        $list       =   Db::name("Menu")->where($map)->order('sort asc,id asc')->select();
+        $list       =   $this->MenuModel->where($map)->order('sort asc,id asc')->select();
 
         //输出
         return $this->result(200,'SUCCESS',$list);
@@ -93,8 +93,7 @@ class Menu extends Admin {
                 return $this->error('菜单链接不能为空');
             }
 
-            $menuModel = new MenuModel();
-            $res = $menuModel->edit($data);
+            $res = $this->MenuModel->edit($data);
             if($res){
                 //记录行为
                 action_log('update_menu', 'Menu', $data['id'], is_login());
@@ -109,17 +108,16 @@ class Menu extends Admin {
             View::assign('pid', $pid);
             $info = [];
             /* 获取数据 */
-            $menuModel = new MenuModel();
-            $info = $menuModel->where(['id'=>$id])->find();
+            $info = $this->MenuModel->where(['id'=>$id])->find();
 
             if(empty($info)){
                 $map['id'] = input('pid');
-                $info = $menuModel->where($map)->field('module,pid,hide,type')->find();
+                $info = $this->MenuModel->where($map)->field('module,pid,hide,type')->find();
                 $info['pid'] = input('pid','0','text');
             }
             View::assign('info', $info);
 
-            $menus = $menuModel->order('sort asc,id asc')->select()->toArray();
+            $menus = $this->MenuModel->order('sort asc,id asc')->select()->toArray();
             $tree = new Tree();
             $menus = $tree->toFormatTree($menus,$title = 'title',$pk='id',$pid = 'pid',$root = '0');
             $menus = array_merge([
@@ -127,11 +125,10 @@ class Menu extends Admin {
             ], $menus);
 
             View::assign('Menus', $menus);
-            $moduleModel = new ModuleModel();
-            View::assign('Modules',$moduleModel->getAll());
+            View::assign('Modules',$this->ModuleModel->getAll());
 
             $this->setTitle('菜单编辑');
-
+            // 输出页面
             return View::fetch();
         }
     }
@@ -146,13 +143,13 @@ class Menu extends Admin {
             return $this->error('参数错误');
         }
         //判断是否有下级菜单
-        $res =  Db::name('Menu')->where('pid', 'in', $id)->select()->toArray();
+        $res =  $this->MenuModel->where('pid', 'in', $id)->select()->toArray();
         
         if(!empty($res)){
             return $this->error('下级菜单不为空');
         }
         //开始移除菜单
-        if(Db::name('Menu')->where('id', 'in', $id)->delete()){
+        if($this->MenuModel->where('id', 'in', $id)->delete()){
             //记录行为
             action_log('update_menu', 'Menu', $id, is_login());
             return $this->success('删除成功');
@@ -176,7 +173,7 @@ class Menu extends Admin {
                 foreach ($lists as $key => $value) {
                     $record = explode('|', $value);
                     if(count($record) == 2){
-                        Db::name('Menu')->insert([
+                        $this->MenuModel->insert([
 
                             'id' =>create_guid(),
                             'title'=>$record[0],
@@ -195,7 +192,7 @@ class Menu extends Admin {
             $this->setTitle('菜单导入');
             $pid = (string)input('get.pid');
             View::assign('pid', $pid);
-            $data = Db::name('Menu')->where('id','=', $pid)->find();
+            $data = $this->MenuModel->where('id','=', $pid)->find();
 
             View::assign('data', $data);
             return View::fetch();
@@ -206,30 +203,12 @@ class Menu extends Admin {
      * 菜单排序
      */
     public function sort(){
-        if(request()->isGet()){
-            $this->setTitle('菜单排序');
-            $ids = input('get.ids/a');
-            $pid = input('get.pid','0');
 
-            //获取排序的数据
-            if(!empty($ids)){
-                $map[] = ['id', 'in', $ids];
-            }else{
-                if($pid !== ''){
-                    $map[] = ['pid', '=', $pid];
-                }
-            }
-            $list = Db::name('Menu')->where($map)->field('id,title')->order('sort asc')->select();
-
-            View::assign('list', $list);
-            
-            return View::fetch();
-
-        }elseif (request()->isPost()){
+        if (request()->isPost()){
             $ids = input('post.ids');
             $ids = explode(',', $ids);
             foreach ($ids as $key=>$value){
-                $res = Db::name('Menu')->where(['id'=>$value])->update(['sort' => $key+1]);
+                $res = $this->MenuModel->where(['id'=>$value])->update(['sort' => $key+1]);
             }
             if($res !== false){
                 return $this->success('排序成功');
@@ -237,7 +216,14 @@ class Menu extends Admin {
                 return $this->error('排序失败');
             }
         }else{
-            return $this->error('非法请求');
+            $map[] = ['pid', '=', '0'];
+            $map[] = ['type', '=', 0];
+            $list = $this->MenuModel->where($map)->field('id,title')->order('sort asc')->select();
+
+            View::assign('list', $list);
+            $this->setTitle('菜单排序');
+            // 输出页面
+            return View::fetch();
         }
     }
 }

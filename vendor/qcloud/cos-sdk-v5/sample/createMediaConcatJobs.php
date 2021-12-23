@@ -2,9 +2,9 @@
 
 require dirname(__FILE__) . '/../vendor/autoload.php';
 
-$secretId = "SECRETID"; //"云 API 密钥 SecretId";
-$secretKey = "SECRETKEY"; //"云 API 密钥 SecretKey";
-$region = "ap-beijing"; //设置一个默认的存储桶地域
+$secretId = "SECRETID"; //替换为用户的 secretId，请登录访问管理控制台进行查看和管理，https://console.cloud.tencent.com/cam/capi
+$secretKey = "SECRETKEY"; //替换为用户的 secretKey，请登录访问管理控制台进行查看和管理，https://console.cloud.tencent.com/cam/capi
+$region = "ap-beijing"; //替换为用户的 region，已创建桶归属的region可以在控制台查看，https://console.cloud.tencent.com/cos5/bucket
 $cosClient = new Qcloud\Cos\Client(
     array(
         'region' => $region,
@@ -15,7 +15,7 @@ $cosClient = new Qcloud\Cos\Client(
 try {
     // start --------------- 使用模版 ----------------- //
     $result = $cosClient->createMediaConcatJobs(array(
-        'Bucket' => 'examplebucket-125000000', //格式：BucketName-APPID
+        'Bucket' => 'examplebucket-125000000', //存储桶名称，由BucketName-Appid 组成，可以在COS控制台查看 https://console.cloud.tencent.com/cos5/bucket
         'Tag' => 'Concat',
         'QueueId' => 'asdadadfafsdkjhfjghdfjg',
         'CallBack' => 'https://example.com/callback',
@@ -26,7 +26,7 @@ try {
             'TemplateId' => 'asdfafiahfiushdfisdhfuis',
             'Output' => array(
                 'Region' => $region,
-                'Bucket' => 'examplebucket-125000000', //格式：BucketName-APPID
+                'Bucket' => 'examplebucket-125000000', //存储桶名称，由BucketName-Appid 组成，可以在COS控制台查看 https://console.cloud.tencent.com/cos5/bucket
                 'Object' => 'concat-video02.mp4',
             ),
         ),
@@ -37,7 +37,7 @@ try {
 
     // start --------------- 自定义参数 ----------------- //
     $result = $cosClient->createMediaConcatJobs(array(
-        'Bucket' => 'examplebucket-125000000', //格式：BucketName-APPID
+        'Bucket' => 'examplebucket-125000000', //存储桶名称，由BucketName-Appid 组成，可以在COS控制台查看 https://console.cloud.tencent.com/cos5/bucket
         'Tag' => 'Concat',
         'QueueId' => 'asdadadfafsdkjhfjghdfjg',
         'CallBack' => 'https://example.com/callback',
@@ -47,7 +47,7 @@ try {
         'Operation' => array(
             'Output' => array(
                 'Region' => $region,
-                'Bucket' => 'examplebucket-125000000', //格式：BucketName-APPID
+                'Bucket' => 'examplebucket-125000000', //存储桶名称，由BucketName-Appid 组成，可以在COS控制台查看 https://console.cloud.tencent.com/cos5/bucket
                 'Object' => 'concat-video03.mp4',
             ),
             'ConcatTemplate' => array(
