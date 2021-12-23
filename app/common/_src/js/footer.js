@@ -31,7 +31,9 @@
     var email = document.getElementById("e-mail");
     email.select(); // 选择对象
     document.execCommand("Copy"); // 执行浏览器复制命令
-    alert('复制成功')
+    // alert('复制成功')
+    $('.prompt').css({"display":"block"})
+    setTimeout("$('.prompt').css({'display':'none'})",2000);
   };
   // 点击复制
   // 点击复制qq群号码
@@ -39,27 +41,22 @@
     var groupnumber = document.getElementById("groupnumber");
     groupnumber.select();
     document.execCommand("Copy");
-    alert('复制成功')
+    $('.getqq').css({"display":"inline-block"})
+    setTimeout("$('.getqq').css({'display':'none'})",2000)
+    // alert('复制成功')
   };
   // 点击复制qq群号码
 
-    var SEPARATION = 70, AMOUNTX = 60, AMOUNTY = 60;
-
+    var SEPARATION = 60, AMOUNTX = 50, AMOUNTY = 50;
     var container;
     var camera, scene, renderer;
-
     var particles, particle, count = 0;
-
     var mouseX = 0, mouseY = 0;
-
     var windowHalfX = window.innerWidth / 2;
     var windowHalfY = 362 / 2;
-
     init();
     animate();
-
     function init() {
-
       container = document.createElement( 'div' );
       document.getElementById('wemreceive').appendChild(container);
       camera = new THREE.PerspectiveCamera( 75, window.innerWidth / 362, 1, 10000 );
@@ -73,26 +70,17 @@
           context.beginPath();
           context.arc( 0, 0, 1, 0, PI2, true );
           context.fill();
-
         }
-
       } );
-
       var i = 0;
-
       for ( var ix = 0; ix < AMOUNTX; ix ++ ) {
-
         for ( var iy = 0; iy < AMOUNTY; iy ++ ) {
-
           particle = particles[ i ++ ] = new THREE.Particle( material );
           particle.position.x = ix * SEPARATION - ( ( AMOUNTX * SEPARATION ) / 2 );
           particle.position.z = iy * SEPARATION - ( ( AMOUNTY * SEPARATION ) / 2 );
           scene.add( particle );
-
         }
-
       }
-
       renderer = new THREE.CanvasRenderer();
       renderer.setSize( window.innerWidth, 362 );
       container.appendChild( renderer.domElement );

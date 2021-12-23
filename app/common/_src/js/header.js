@@ -1,6 +1,7 @@
  // 首页顶部背景
  if (window.location.pathname == "/muu/index/index.html") {
     $(window).scroll(function () {
+        // console.log(222222)
         if ($(window).scrollTop() >= 750) {
             $(".header-container").css({
                 "background": "#fff"
@@ -11,27 +12,31 @@
             });
         }
     })
+    if($(window).scrollTop() >= 750){
+        $(".header-container").css({
+            "background": "#fff"
+        });
+    }
 } else {
     $(".header-container").css({
         "background": "#fff"
     });
 }
 //下划线
-$(document).ready(function () {
-    $(".index-menu a").each(function () {
-        $this = $(this);
-        if ($this[0].href == String(window.location)) {
-            $this.addClass("main-active");
-        }
-    });
-});
+// $(document).ready(function(){
+//     $(".index-menu a").ench(function(){
+//         $this = $(this);
+//         if($this[0].href == String(window.location)){
+//             $this.addClass("main-active")
+//         }
+//     })
+// })
 // ----------------------------
 if (window.location.pathname != "/muu/index/index.html" &&
     window.location.pathname != "/muu/frame/index.html" &&
     window.location.pathname != "/muu/nslookup/index.html" &&
     window.location.pathname != "/muu/about/index.html" &&
     window.location.pathname != "/ucenter/Common/agreement.html") {
-    console.log(window.location.pathname)
     $(".product").css({
         "color": "#358cc2"
     });

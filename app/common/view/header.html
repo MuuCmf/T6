@@ -56,5 +56,12 @@
     </div>
 </div>
 <script>
-   
+   $(document).ready(function () {
+    $(".index-menu a").each(function () {
+        $this = $(this);
+        if ($this[0].href == String(window.location)) {
+            $this.addClass("main-active");
+        }
+    });
+});
 </script>
