@@ -1,0 +1,181 @@
+.mobile-list-section{
+	.page-list-mobile-section {
+
+		.page-list-item {
+			margin: 15px;
+			width: 328px;
+			float: left;
+			.page-header {
+				font-size: 14px;
+			}
+	
+			.page-header {
+				margin: 0 auto;
+				padding: 10px;
+				position: relative;
+				background-image: url(../../images/diy/img_top_weixin.png);
+				background-repeat: no-repeat;
+				background-size: cover;
+				width: 100%;
+				height: 48px;
+				border-radius: 4px 4px 0 0;
+	
+				.page-title {
+					display: block;
+					width: 100%;
+					text-align: center;
+					position: absolute;
+					bottom: 3px;
+					font-weight: bold;
+					font-size: 14px;
+					left: 0;
+					color:#fff;
+				}
+			}
+	
+			.preview-target {
+				height: 518px;
+				overflow-x: hidden;
+				overflow-y: auto;
+				&::-webkit-scrollbar {/*滚动条整体样式*/
+					width: 3px;     /*高宽分别对应横竖滚动条的尺寸*/
+					height: 1px;
+				}
+			}
+			.action {
+				background: #f6f6f6;
+				padding: 10px 0;
+				text-align: center;
+				font-size: 0;
+				a {
+					margin: 0 2px;
+				}
+			}
+		}
+	}
+}
+
+.pc-list-section{
+	.page-list-pc-section {
+
+		.page-list-item {
+			padding: 10px;
+			min-width: 518px;
+			max-width: 1330px;
+			width: 100%;
+			margin-left:0;
+			margin-right: 0;
+			border: 1px solid #ddd;
+	
+			.page-header {
+				margin: 0 auto;
+				position: relative;
+				width: 100%;
+				height: 48px;
+	
+				.page-title {
+					display: block;
+					width: 100%;
+					font-weight: bold;
+					font-size: 14px;
+					line-height: 38px;
+					color:#333;
+				}
+			}
+	
+			.preview-target {
+				height: 518px;
+				overflow-x: hidden;
+				overflow-y: auto;
+				&::-webkit-scrollbar {/*滚动条整体样式*/
+					width: 3px;     /*高宽分别对应横竖滚动条的尺寸*/
+					height: 1px;
+				}
+
+				.list {
+					padding: 0 10px;
+					border: 0;
+				}
+
+				.object-item {
+					position: relative;
+					margin-bottom: 30px;
+					background: #fff;
+					border:1px solid #fff;
+					font-size:12px;
+				}
+			}
+			/*风格价格色系样式*/
+			.preview-target.Green {
+				.price {
+				color: #00ce74;
+				}
+			}
+			.preview-target.Blue {
+				.price {
+				color: #03b8cf;
+				}
+			}
+			.preview-target.LightRed {
+				.price {
+				color: #ea644a;
+				}
+			}
+			.preview-target.Orange {
+				.price {
+				color: #ff9900;
+				}
+			}
+			.preview-target.LightPink {
+				.price {
+				color: #FFB6C1;
+				}
+			}
+			.preview-target.Magenta {
+				.price {
+				color: #8666b8;
+				}
+			}
+			.action {
+				background: #f6f6f6;
+				padding: 10px 0;
+				text-align: center;
+				font-size: 0;
+				a {
+					margin: 0 2px;
+				}
+			}
+		}
+	}
+}
+
+
+/*装修首页预览区*/
+.page-preview-section {
+	position:relative;
+	padding-top:0;
+
+	.info-box {
+		border: 1px solid #ddd;
+		background: #f2f2f2;
+		padding: 10px;
+		color: #333;
+		text-align: center;
+	}
+
+	.qrcode-img {
+		text-align: center;
+		.previewBox {
+			display:block;
+			width:200px;
+			height:200px;
+			border:1px solid #ddd;
+			margin: 10px auto;
+
+			img {
+				max-width: 100%;
+			}
+		}
+	}
+	
+}

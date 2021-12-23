@@ -1,0 +1,205 @@
+.my-section {
+    background-color: #f2f2f2;
+    padding-top: 60px;
+    padding-bottom: 60px;
+    .my-slide {
+        
+        .nav-stacked {
+            background-color: #fff;
+        }
+    }
+
+    .header {
+        height: 220px;
+        
+        padding-top: 57px;
+        box-sizing: border-box;
+        overflow: hidden;
+        .head_icon {
+            width: 72px;
+            height: 72px;
+            text-align: center;
+            border: 3px solid rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+            margin: 0 auto;
+            position: relative;
+            cursor: pointer;
+            .avatar {
+
+                img {
+                    border-radius: 50%;
+                    overflow: hidden;
+                }
+            }
+        }
+        .head_nickname {
+            line-height: 36px;
+            text-align: center;
+            
+            font-size: 16px;
+            font-weight: 500;
+        }
+    }
+    .my-content {
+        
+        .slider {
+            border: 1px solid #ddd;
+            background-color: #fff;
+
+            .nav {
+                li {
+                    a {
+                        text-indent: 20px;
+                        font-size: 14px;
+                        padding: 15px 15px;
+                        -webkit-box-shadow: inset 3px 0 0 #fff;
+                        box-shadow: inset 3px 0 0 #fff;
+                        &:hover {
+                            -webkit-box-shadow: inset 3px 0 0 #ddd;
+                            box-shadow: inset 3px 0 0 #ddd;
+                        }
+                    }
+                }
+                li.active {
+                    a {
+                        background-color: #fff;
+                    }
+                }
+            }
+        }
+        .content {
+            
+            h2 {
+                margin: 0 0 15px 0;
+                font-weight: 600;
+            }
+            .item-section {
+                padding-top: 10px;
+                border: 1px solid #ddd;
+                background-color: #fff;
+                min-height: 300px;
+                margin-bottom: 15px;
+            }
+        }
+
+
+        .study-total-section {
+            margin-bottom: 20px;
+            .item {
+                padding: 10px 0;
+                text-align: center;
+                color: #fff;
+                border-radius: 6px;
+                .title {
+                    margin: 10px 0;
+                }
+            }
+            .all {
+                background-color: #03b8cf;
+            }
+            .today {
+                background-color: #ff7444;
+            }
+            .day {
+                background-color: #47d1af;
+            }
+        }
+    }
+}
+
+/*风格价格色系样式*/
+.Green {
+	.my-section {
+        .slider {
+            .nav {
+                li.active {
+                    a {
+                        color: #00ce74;
+                        -webkit-box-shadow: inset 3px 0 0 #00ce74;
+                        box-shadow: inset 3px 0 0 #00ce74;
+                    }
+                }
+            }
+        }
+	}
+}
+
+.Blue {
+    .my-section {
+        .slider {
+            .nav {
+                li.active {
+                    a {
+                        color: #03b8cf;
+                        -webkit-box-shadow: inset 3px 0 0 #03b8cf;
+                        box-shadow: inset 3px 0 0 #03b8cf;
+                    }
+                }
+            }
+        }
+	}
+}
+
+.LightRed {
+    .my-section {
+        .slider {
+            .nav {
+                li.active {
+                    a {
+                        color: #ea644a;
+                        -webkit-box-shadow: inset 3px 0 0 #ea644a;
+                        box-shadow: inset 3px 0 0 #ea644a;
+                    }
+                }
+            }
+        }
+	}
+}
+
+.Orange {
+    .my-section {
+        .slider {
+            .nav {
+                li.active {
+                    a {
+                        color: #ff9900;
+                        -webkit-box-shadow: inset 3px 0 0 #ff9900;
+                        box-shadow: inset 3px 0 0 #ff9900;
+                    }
+                }
+            }
+        }
+	}
+}
+
+.LightPink {
+    .my-section {
+        .slider {
+            .nav {
+                li.active {
+                    a {
+                        color: #FFB6C1;
+                        -webkit-box-shadow: inset 3px 0 0 #FFB6C1;
+                        box-shadow: inset 3px 0 0 #FFB6C1;
+                    }
+                }
+            }
+        }
+	}
+}
+
+.Magenta {
+    .my-section {
+        .slider {
+            .nav {
+                li.active {
+                    a {
+                        color: #8666b8;
+                        -webkit-box-shadow: inset 3px 0 0 #8666b8;
+                        box-shadow: inset 3px 0 0 #8666b8;
+                    }
+                }
+            }
+        }
+	}
+}

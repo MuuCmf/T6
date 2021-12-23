@@ -1,0 +1,71 @@
+.join-section {
+	form {
+
+	}
+	.tip {
+		display: flex;
+		align-items: center!important;
+		min-height: 90vh;
+		max-width: 768px;
+		position: relative;
+		margin: 0 auto;
+	}
+	/*成功入驻*/
+	.join-success-section {
+		width: 100%;
+		padding: 60px 0;
+		h1 {
+			text-align: center;
+		}
+		h2,h3 {
+			color: #666;
+			text-align: center;
+			
+		}
+		.manager {
+			padding: 10px 0;
+			text-align: center;
+		}
+	}
+
+	/*审核中*/
+	.join-verify-section {
+		width: 100%;
+		padding: 60px 0;
+		h1 {
+			text-align: center;
+		}
+		h2,h3 {
+			color: #666;
+			text-align: center;
+			
+		}
+		.manager {
+			padding: 10px 0;
+			text-align: center;
+		}
+	}
+	/*审核失败*/
+	.join-fail-section {
+		width: 100%;
+		padding: 60px 0;
+		h1 {
+			text-align: center;
+		}
+		h2,h3 {
+			color: #666;
+			text-align: center;
+			
+		}
+		.reason {
+			background-color: #f6f6f6;
+			border: 1px solid #ddd;
+			margin: 0 60px;
+			padding: 10px;
+		}
+		.manager {
+			padding: 10px 0;
+			text-align: center;
+		}
+	}
+}

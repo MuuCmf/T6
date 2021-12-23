@@ -1,0 +1,34 @@
+
+.page-diy-section .preview-target,.page-list-mobile-section .preview-target {
+	[data-type="search_block"] {
+		margin-bottom: 0!important;
+	}
+	.search-block-preview {
+
+		.search-block-item {
+			position:relative;
+			padding:5px 10px;
+			 
+			.search-box {
+				border: 0;
+				padding: 0;
+				margin-right: 32px;
+				.search-input {
+					border:0;
+					background-color: #f4f6f7;
+					box-shadow: 0 0 0 0;
+				}
+			}
+
+			.checkin {
+				float: right;
+				width: 32px;
+				height: 32px;
+				text-align: center;
+				line-height: 32px;
+				font-size: 16px;
+				color: #666;
+			}
+		}
+	}
+}

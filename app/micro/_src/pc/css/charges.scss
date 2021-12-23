@@ -1,0 +1,27 @@
+.charges-lists-item {
+	table td .avatar {
+		float:left;
+		width:60px;
+		height: 60px;
+		margin-right:10px;
+
+		img {
+			border-radius: 50%;
+		}
+	}
+
+	table td .nickname {
+		margin-left: 70px;
+		font-size:14px;
+		line-height: 60px;
+		color:#666;
+		height: 60px;
+		width:200px;
+		overflow:hidden;
+
+		a {
+			color:#666;
+		}
+
+	}
+}

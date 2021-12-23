@@ -1,5 +1,5 @@
 <?php
-namespace app\common\model;
+namespace app\micro\model;
 
 use app\common\model\Base;
 
@@ -16,16 +16,7 @@ class MicroConfig extends Base
     public function defaultData()
     {
         $data = [
-            'title' => 'MuuCmf',
-            'cover' => request()->domain() .'/static/common/images/default_logo.png',
             'style' => 'Blue',
-            'thumb' => '4:3',
-            'mobile_bind' => 0,
-            'show_view' => 0,
-            'show_sale' => 0,
-            'show_favorites' => 0,
-            'show_marking_price' => 0,
-            'status' => 1,
         ];
         return $data;
     }

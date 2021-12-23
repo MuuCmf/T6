@@ -1,0 +1,138 @@
+/*************积分商品列表组件*****************/
+.page-diy-pc-section .preview-target,.page-list-pc-section .preview-target {
+	margin-bottom: 30px;
+    /*预览区*/
+	.scoreshop-goods-list {
+		
+		.scoreshop-goods-list-preview {
+
+			.title {
+				padding:5px 0;
+				margin-bottom: 10px;
+				h2,h3 {
+					float:left;
+					margin:0 20px 0 0;
+					font-size: 24px;
+					font-weight: 500;
+					color: #333;
+				}
+				.sub-title {
+					font-size: 14px;
+					line-height: 26px;
+					color: #999;
+				}
+				.more{
+					float:right;
+					line-height: 26px;
+					color:#999;
+				}
+			}
+
+			/*横排样式*/
+			.list {
+				
+			    padding: 0 5px;
+			    border-top: 0;
+
+				.item {
+					
+					box-sizing: border-box;
+					background:#fff;
+					padding:5px 10px;
+					width:25%;
+					float: left;
+
+					.image {
+						overflow: hidden;
+						position: relative;
+						width: 100%;
+						
+						img {
+							width:100%;
+							border-radius:5px;
+						}
+						.type-container {
+				          	position:absolute;
+				          	bottom:5px;
+				          	right:5px;
+				          	background-color:rgba(0,0,0,.5);
+				          	color:#fff;
+				          	padding:2px 5px;
+				          	border-radius:5px;
+				        }
+					}
+					.content {
+						
+						padding:0;
+
+						.title {
+							font-weight: 600;
+							color: #666;
+							font-size:14px;
+							padding:0;
+							padding-top: 5px;
+							margin: 0;
+						}
+						.description {
+							color:#999;
+						}
+						.price {
+				            margin-top:5px;
+				            text-align: left;
+				            color: #f60;
+				            .score {
+				              display: block;
+				              padding-left: 30px;
+				              line-height: 24px;
+				              background: url('../../images/coins.png') no-repeat 0 5px;
+				              background-size: 16px 16px;
+				            }
+				        }
+
+						.info {
+							margin-top:0;
+							display:flex;
+
+							.type {
+					            flex:1;
+					            text-align: left;
+					            color:#999;
+
+					            div {
+					              display: inline-block;
+					              margin-right:5px;
+					            }
+					        }
+						}
+
+						@media screen and(max-width: 365px) {
+							.info {
+								margin-top:0;
+								display:block;
+
+								.type {
+						            text-align: left;
+						            color:#999;
+
+						            div {
+						              display: inline-block;
+						              margin-right:5px;
+						            }
+						        }
+							}
+						}
+					}
+				}
+			}
+		}
+    }
+    /*控制区*/
+    .diy-preview-controller.scoreshop-goods-list {
+        
+        
+    }
+}
+
+
+
+

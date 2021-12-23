@@ -1,0 +1,47 @@
+#customTextEditorModal {
+	z-index: 1050;
+	.modal-body {
+		padding: 10px;
+	}
+	.ueditor-box {
+		position: relative;
+		max-height: 428px!important;
+		overflow-x :hidden!important;
+		overflow-y :auto!important;
+		border: 1px solid #ddd;
+		border-left: 0;
+		#edui1_toolbarbox {
+			position: static!important;
+		}
+	}
+}
+/*预览区*/
+.page-diy-section .preview-target,.page-list-mobile-section .preview-target {
+	.custom-text {
+
+		.custom-text-preview {
+
+			.content{
+				min-height: 12px;
+				padding:0 10px;
+				p {
+					margin: 5px 0;
+				}	
+
+				.tmp-text {
+					background: #eee;
+					display:block;
+					line-height: 100px;
+					text-align:center;
+				}
+			}
+
+		}
+	}
+}
+
+/*控制区*/
+.diy-preview-controller.custom-text {
+
+	width: 500px!important;
+}

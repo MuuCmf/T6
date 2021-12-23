@@ -1,0 +1,69 @@
+/*************轮播图片组件*****************/
+.page-diy-pc-section .preview-target,.page-list-pc-section .preview-target {
+	
+	/*预览区*/
+	.slideshow {
+			
+		.slideshow-preview {
+			background:#eee;
+			min-height: 80px;
+			text-align: center;
+
+			.swiper-container {
+				min-height:80px;
+				overflow: hidden;
+
+				.title-preview {
+					line-height: 50px;
+					text-align: center;
+					display: block;
+					width:100%;
+				}
+
+				img {
+					width: 100%;
+					vertical-align: bottom;
+				}
+
+			}
+		}
+	}
+	
+	/*控制区*/
+	.diy-preview-controller.slideshow {
+		
+		.slideshow-img-box {
+
+			.slideshow-form-item {
+				position:relative;
+
+				.slideshow-item {
+
+					img {
+						max-width: 100%;
+						display: block;
+					}
+				}
+
+				.del-item-btn {
+					position:absolute;
+					width: 16px;
+					height: 16px;
+					z-index: 20;
+					top: -8px;
+					right: -8px;
+					cursor: pointer;
+
+					i {
+						color:#ccc;
+					}
+				}
+
+			}
+			
+
+		}
+
+	}
+
+}

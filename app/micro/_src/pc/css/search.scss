@@ -1,0 +1,455 @@
+/*搜索页容器*/
+.muu_classroom_search_list_section {
+    .keyword {
+        color: red;
+    }
+	/*排序*/
+	.orderby-block {
+		padding: 0 10px;
+		margin: 0 0 20px 0;
+		border-radius: 3px;
+		border: 1px solid #f2f2f2;
+		background-color: #f2f2f2;
+		span {
+			display: inline-block;
+			text-align: center;
+			
+			a {
+				display: block;
+				padding: 10px;
+				color: #666;
+				&:hover {
+					text-decoration: none;
+				}
+			}
+		}
+		span.active {
+			a {
+				color: #ff9900;
+			}
+		}
+	}
+	/*列表容器*/
+	.search-list-section {
+		margin-left: -10px;
+    	margin-right: -10px;
+		.item {
+			background-color: #fff;
+			float:left;
+			box-sizing: border-box;
+			padding:0 10px 10px 10px;
+			margin-bottom: 20px;
+			width:20%;
+			a {
+				.image {
+					position: relative;
+					border-radius:5px;
+					overflow:hidden;
+				  
+					img {
+						
+						width:100%;
+						vertical-align: bottom;
+						transition:transform 0.5s;
+					}
+	
+					.type-container {
+						  position:absolute;
+						  bottom:5px;
+						  right:5px;
+						  background-color:rgba(0,0,0,.5);
+						  color:#fff;
+						  padding:2px 5px;
+						  border-radius:5px;
+					}
+				}
+				.content {
+	
+					padding:0;
+	
+					.title {
+						font-weight: 550;
+						font-size:16px;
+						padding:20px 0 3px 0;
+						color: #000;
+						margin-bottom: 0;
+					}
+					.description {
+						color:#999;
+						font-size:12px;
+						margin-bottom: 10px;
+					}
+					.info {
+	
+						.type {
+							float: left;
+							width: 60%;
+							text-align: left;
+							color:#999;
+							font-size: 12px;
+							overflow: hidden;
+	
+							div {
+							  display: inline-block;
+							  margin-right:5px;
+							}
+						}
+	
+						.price {
+							float:right;
+							span {
+								font-size: 18px;
+							}
+						}
+					}
+				}
+	
+				&:hover {
+					text-decoration: none;
+					.image {
+						img {
+							transform: scale(1.1);
+							-ms-transform: scale(1.1);
+						}
+					}
+				}
+			}
+		}
+		/*讲师列表容器*/
+		.teacher-item {
+			background-color: #fff;
+			float:left;
+			box-sizing: border-box;
+			width:25%;
+			a {
+				display: block;
+				box-shadow: 0 2px 15px 0 rgba(0,0,0,.1);
+				border-radius: 12px;
+				position: relative;
+				margin: 0;
+				margin-bottom: 34px;
+				padding: 1px 0;
+				.image {
+					position: relative;
+					border-radius:50%;
+					width: 60px;
+					height: 60px;
+					margin: 30px auto 10px auto;
+					overflow:hidden;
+					
+					img {
+						border-radius:50%;
+						width: 60px;
+						height: 60px;
+						vertical-align: bottom;
+						transition:transform 0.5s;
+					}
+				}
+
+				.content {
+					box-sizing: border-box;
+					height: 103px;
+					padding: 10px;
+
+					.title {
+						font-weight: 550;
+						font-size:16px;
+						padding:20px 0 3px 0;
+						color: #000;
+						margin-bottom: 0;
+					}
+					.description {
+						color:#999;
+						font-size:12px;
+						margin-bottom: 10px;
+					}
+				}
+				&:hover {
+					text-decoration: none;
+					.image {
+						img {
+							transform: scale(1.1);
+							-ms-transform: scale(1.1);
+						}
+					}
+				}
+			}
+			a:nth-child(4n) {
+				margin-right: 0;
+			}
+		}
+	}
+}
+
+/*风格价格色系样式*/
+.Green {
+	.orderby-block {
+		span.active {
+			a {
+				color: #00ce74;
+			}
+		}
+	}
+	.search-list-section {
+		.item {
+			.price {
+				color: #00ce74;
+			}
+		}
+	}
+	
+	.muu_classroom_knowledge_detail_section {
+		.tab-title-box {
+			.nav-default {
+				li {
+					a {
+						color: #666;
+						&:hover {
+							color: #00ce74;;
+						}
+					}
+				}
+				li.active {
+					a {
+						border-bottom: 4px solid #00ce74;
+						color: #00ce74;
+					}
+				}
+			}
+		}
+		.member-price-item {
+			background-color: #00ce74;
+			color: #fff;
+		}
+		.sale-btn {
+			background-color: #00ce74;
+			color: #fff;
+		}
+
+	}
+}
+
+.Blue {
+	.orderby-block {
+		span.active {
+			a {
+				color: #03b8cf;
+			}
+		}
+	}
+	.search-list-section {
+		.item {
+			.price {
+				color: #03b8cf;
+			}
+		}
+	}
+	.muu_classroom_knowledge_detail_section {
+		.tab-title-box {
+			.nav-default {
+				li {
+					a {
+						color: #666;
+						&:hover {
+							color: #03b8cf;
+						}
+					}
+				}
+				li.active {
+					a {
+						border-bottom: 4px solid #03b8cf;
+						color: #03b8cf;
+					}
+				}
+			}
+		}
+		.member-price-item {
+			background-color: #03b8cf;
+			color: #fff;
+		}
+		.sale-btn {
+			background-color: #03b8cf;
+			color: #fff;
+		}
+	}
+}
+
+.LightRed {
+	.orderby-block {
+		span.active {
+			a {
+				color: #ea644a;
+			}
+		}
+	}
+	.search-list-section {
+		.item {
+			.price {
+				color: #ea644a;
+			}
+		}
+	}
+	.muu_classroom_knowledge_detail_section {
+		.tab-title-box {
+			.nav-default {
+				li {
+					a {
+						color: #666;
+						&:hover {
+							color: #ea644a;
+						}
+					}
+				}
+				li.active {
+					a {
+						border-bottom: 4px solid #ea644a;
+						color: #ea644a;
+					}
+				}
+			}
+		}
+		.member-price-item {
+			background-color: #ea644a;
+			color: #fff;
+		}
+		.sale-btn {
+			background-color: #ea644a;
+			color: #fff;
+		}
+	}
+}
+
+.Orange {
+	.orderby-block {
+		span.active {
+			a {
+				color: #ff9900;
+			}
+		}
+	}
+	.search-list-section {
+		.item {
+			.price {
+				color: #ff9900;
+			}
+		}
+	}
+	.muu_classroom_knowledge_detail_section {
+		.tab-title-box {
+			.nav-default {
+				li {
+					a {
+						color: #666;
+						&:hover {
+							color: #ff9900;
+						}
+					}
+				}
+				li.active {
+					a {
+						border-bottom: 4px solid #ff9900;
+						color: #ff9900;
+					}
+				}
+			}
+		}
+		.member-price-item {
+			background-color: #ff9900;
+			color: #fff;
+		}
+		.sale-btn {
+			background-color: #ff9900;
+			color: #fff;
+		}
+	}
+}
+
+.LightPink {
+	.orderby-block {
+		span.active {
+			a {
+				color: #FFB6C1;
+			}
+		}
+	}
+	.search-list-section {
+		.item {
+			.price {
+				color: #FFB6C1;
+			}
+		}
+	}
+	.muu_classroom_knowledge_detail_section {
+		.tab-title-box {
+			.nav-default {
+				li {
+					a {
+						color: #666;
+						&:hover {
+							color: #FFB6C1;
+						}
+					}
+				}
+				li.active {
+					a {
+						border-bottom: 4px solid #FFB6C1;
+						color: #FFB6C1;
+					}
+				}
+			}
+		}
+		.member-price-item {
+			background-color: #FFB6C1;
+			color: #fff;
+		}
+		.sale-btn {
+			background-color: #FFB6C1;
+			color: #fff;
+		}
+	}
+}
+
+.Magenta {
+	.orderby-block {
+		span.active {
+			a {
+				color: #8666b8;
+			}
+		}
+	}
+	.search-list-section {
+		.item {
+			.price {
+				color: #8666b8;
+			}
+		}
+	}
+	.muu_classroom_knowledge_detail_section {
+		.tab-title-box {
+			.nav-default {
+				li {
+					a {
+						color: #666;
+						&:hover {
+							color: #8666b8;
+						}
+					}
+				}
+				li.active {
+					a {
+						border-bottom: 4px solid #8666b8;
+						color: #8666b8;
+					}
+				}
+			}
+		}
+		.member-price-item {
+			background-color: #8666b8;
+			color: #fff;
+		}
+		.sale-btn {
+			background-color: #8666b8;
+			color: #fff;
+		}
+	}
+}

@@ -1,0 +1,15 @@
+.page-object {
+	.page-object-item {
+		margin-bottom: 30px;
+		/*单图组件*/
+		.single-img {
+			padding:0;
+			
+			img {
+				width:100%;
+				vertical-align: bottom;
+				display: block;
+			}
+		}
+	}
+}

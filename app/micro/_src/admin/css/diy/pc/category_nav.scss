@@ -1,0 +1,84 @@
+/*************图文导航组件*****************/
+
+/*预览区*/
+.page-diy-pc-section .preview-target,.page-list-pc-section .preview-target {
+	.category-nav {
+		
+		.category-nav-preview {
+			.title {
+				padding:5px 0;
+				margin-bottom: 10px;
+				h2,h3 {
+					float:left;
+					margin:0 20px 0 0;
+					font-size: 24px;
+					font-weight: 500;
+					color: #333;
+				}
+				.sub-title {
+					font-size: 14px;
+					color: #999;
+				}
+			}
+			.nav-class-one {
+				width: 100%;
+				min-height: 80px;
+				box-sizing: border-box;
+				display: flex;
+				align-items: center;
+	
+				.category-nav-item {
+					width: 100%;
+					height: 100%;
+					padding: 5px;
+					margin-right: 1px;
+					display: flex;
+					align-items: center;
+					flex-direction: column;
+					justify-content: center;
+		
+					.item-image {
+						width: 100%;
+						height: auto;
+					}
+	
+					.item-text {
+						font-size: 12px;
+						margin-top: 5px;
+						height: 18px;
+						line-height: 18px;
+					}
+	
+					a {
+						color:#666;
+					}
+				}
+			}
+		}
+	}
+	
+    /*控制区*/
+    .diy-preview-controller.category-nav {
+        .choose {
+			margin-top: 5px;
+			padding: 5px 0;
+			border-top: 1px solid #ddd;
+		}
+		.category-nav-box {
+			
+		}
+        .category-nav-form-item {
+            margin-bottom: 10px;
+            border-bottom:1px solid #ddd;
+			padding:5px;
+			background-color: #f2f2f2;
+
+            .form-group:last-child {
+                margin-bottom: 0;
+            }
+        }
+
+    }
+}
+
+

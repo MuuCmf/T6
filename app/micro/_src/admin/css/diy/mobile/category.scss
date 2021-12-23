@@ -1,0 +1,105 @@
+/*************分类&筛选组件*****************/
+
+/*预览区*/
+.page-diy-section .preview-target,.page-list-mobile-section .preview-target {
+	.category {
+
+		border: 0;
+
+		.category-preview {
+			padding: 0;
+
+			.category-box {
+                position: relative;
+                background-color: #fff;
+                margin: 0 0px;
+                padding: 0 10px 0 10px;
+                max-height: 73px;
+                overflow: hidden;
+                .main-box {
+                    .recommend-btn {
+                        float: left;
+                        width: 38px;
+                        position: relative;
+                        height: 39px;
+                        text-align: left;
+                        padding: 5px 0px;
+                        line-height: 24px;
+                        color: #666;
+                        overflow: hidden;
+                        font-size: 15px;
+                        font-weight: 700;
+                        color: #000;
+                        
+                        hr {
+                            margin: 0 auto 0 5px;
+                            border: 0;
+                            width: 20px;
+                            border-top: 3px solid #ff6600;
+                        }
+                    }
+                    .category-list {
+                        margin: 0 0 0 38px;
+                        position: relative;
+                        width: calc(100% - 38px);
+                        overflow: hidden;
+                        .swiper-wrapper {
+                            display: flex;
+                            .item {
+                                position: relative;
+                                height: 39px;
+                                text-align: center;
+                                width: auto;
+                                min-width: 46px;
+                                padding: 5px 10px;
+                                font-size: 13px;
+                                line-height: 26px;
+                                color: #666;
+                                overflow: hidden;
+                                hr {
+                                    margin: 0 auto 0 auto;
+                                    width: 20px;
+                                    border: 0;
+                                }
+                            }
+                            .item.active {
+                                font-size: 15px;
+                                font-weight: 700;
+                                color: #000;
+                                
+                                hr {
+                                    width: 20px;
+                                    border-top: 3px solid #ff6600;
+                                }
+                            }
+                        }
+                    }
+                    
+                }
+				.sub-box {
+                    padding-bottom: 6px;
+                    .sub-items {
+                        display: none;
+                        .sub-item {
+                            font-size: 12px;
+                            border-radius: 8px;
+                            background-color: #f2f2f2;
+                            color: #999;
+                            padding: 3px 6px;
+                            width: auto;
+                            overflow: hidden;
+                            margin-right: 10px;
+                        }
+                    }
+                    .sub-items.active {
+                        display: flex;
+                        padding: 0 5px;
+                    }
+                    .sub-items:first-child {
+                        display: flex;
+                    }
+                }
+			}
+		}
+	}
+}

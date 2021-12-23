@@ -1,0 +1,1574 @@
+/*点播课列表*/
+.muu_classroom_knowledge_section {
+
+	/*排序*/
+	.orderby-block {
+		padding: 0 10px;
+		margin: 0 0 20px 0;
+		border-radius: 3px;
+		border: 1px solid #f2f2f2;
+		background-color: #f2f2f2;
+		span {
+			display: inline-block;
+			text-align: center;
+			
+			a {
+				display: block;
+				padding: 10px;
+				color: #666;
+				&:hover {
+					text-decoration: none;
+				}
+			}
+		}
+		span.active {
+			a {
+				color: #ff9900;
+			}
+		}
+	}
+	/*课程列表容器*/
+	.knowledge-list-section {
+		margin-left: -10px;
+    	margin-right: -10px;
+		.item {
+			background-color: #fff;
+			float:left;
+			box-sizing: border-box;
+			padding:0 10px 10px 10px;
+			margin-bottom: 20px;
+			width:20%;
+			a {
+				.image {
+					position: relative;
+					border-radius:5px;
+					overflow:hidden;
+				  
+					img {
+						width: 236px;
+						height: 177px;
+						vertical-align: bottom;
+						transition:transform 0.5s;
+					}
+	
+					.type-container {
+						  position:absolute;
+						  bottom:5px;
+						  right:5px;
+						  background-color:rgba(0,0,0,.5);
+						  color:#fff;
+						  padding:2px 5px;
+						  border-radius:5px;
+					}
+				}
+				.content {
+	
+					padding:0;
+	
+					.title {
+						font-weight: 550;
+						font-size:16px;
+						padding:20px 0 3px 0;
+						color: #000;
+						margin-bottom: 0;
+					}
+					.description {
+						color:#999;
+						font-size:12px;
+						margin-bottom: 10px;
+					}
+					.info {
+	
+						.type {
+							float: left;
+							width: 60%;
+							text-align: left;
+							color:#999;
+							font-size: 12px;
+							overflow: hidden;
+	
+							div {
+							  display: inline-block;
+							  margin-right:5px;
+							}
+						}
+	
+						.price {
+							float:right;
+							span {
+								font-size: 18px;
+							}
+						}
+					}
+				}
+	
+				&:hover {
+					text-decoration: none;
+					.image {
+						img {
+							transform: scale(1.1);
+							-ms-transform: scale(1.1);
+						}
+					}
+				}
+			}
+		}
+	
+	}
+}
+
+/*点播课详情*/
+.muu_classroom_knowledge_detail_section {
+	.knowledge-base {
+		.base-info {
+			position: relative;
+			background-color: #2D323D;
+			background-size: cover;
+			background-position: center;
+			background-repeat: no-repeat;
+			padding: 10px 0 120px 0;
+			margin-bottom: 100px;
+			z-index: 1;
+			&:after{
+				content: "";
+				width:100%;
+				height:100%;
+				position: absolute;
+				top:0;right:0;bottom:0;left:0;
+				background: inherit;
+				filter: blur(10px);/*为了模糊更明显，调高模糊度*/
+				z-index: 2;
+			}
+			
+			.bg {
+				position: absolute;
+				top: 0;
+				bottom: 0;
+				left: 0;
+				right: 0;
+				background: rgba(0,0,0,0.4);
+				z-index: 3;
+				
+			}
+			.top {
+				position: relative;
+				.path {
+					position: absolute;
+					top: 3px;
+					font-size: 12px;
+					line-height: 24px;
+					z-index: 5;
+					.breadcrumb {
+						color: rgba(255,255,255,.6);
+						a {
+							color: rgba(255,255,255,.6);
+						}
+						.active {
+							color: rgba(255,255,255,.6);
+						}
+					}
+				}
+				.support {
+					position: absolute;
+					top: 16px;
+					right: 0;
+					font-size: 12px;
+					line-height: 24px;
+					z-index: 16;
+					ul {
+						li {
+							a {
+								border-radius: 15px;
+								color: rgba(255,255,255,.6);
+								&:hover {
+									background-color: rgba(0,0,0,.2);
+								}
+							}
+						}
+					}
+				}
+			}
+			
+			.title {
+				position: relative;
+				text-align: center;
+				font-size: 40px;
+				color: #fff;
+				line-height: 46px;
+				text-shadow: 0 2px 4px rgba(28,31,33,.6);
+				margin-top: 80px;
+				margin-bottom: 10px;
+				z-index: 5;
+			}
+			.description {
+				position: relative;
+				text-align: center;
+				font-size: 16px;
+				color: #fff;
+				line-height: 24px;
+				text-shadow: 0 2px 4px rgba(28,31,33,.6);
+				margin-top: 8px;
+				z-index: 5;
+			}
+			.fixed-wrap {
+				width: 1152px;
+				min-height: 128px;
+				position: absolute;
+				left: 50%;
+				margin-left: -576px;
+				bottom: -64px;
+				background-color: #fff;
+				background-repeat: no-repeat;
+				background-size: cover;
+				background-position: center;
+				border-radius: 18px;
+				box-shadow: 0 8px 16px 0 rgba(28,31,33,.1);
+				z-index: 15;
+				.con {
+					text-align: left;
+					position: relative;
+					width: 100%;
+					height: 100%;
+					padding: 32px 40px;
+					box-sizing: border-box;
+
+					.price-box {
+						background-color: #fff;
+						
+						.price-item {
+							padding: 0;
+							.price {
+								display: inline-block;
+								font-size: 22px;
+								line-height: 32px;
+								font-weight: 700;
+								color: #ff9900;
+							}
+							.member-price-item {
+								
+								display: inline-block;
+								padding: 0 10px 0 10px;
+								color: #fff;
+								font-size: 18px;
+								line-height: 32px;
+								border-radius: 8px;
+								.price {
+									color: #fff;
+									font-size: 22px;
+								}
+							}
+							.marking-price {
+								display: inline-block;
+								font-size: 14px;
+								color: #999;
+								text-decoration:line-through;
+							}
+						}
+					}
+					.pop-info {
+						
+						.info-item {
+							display: inline-block;
+							color: #999;
+
+							.column-data {
+								display: inline-block;
+								line-height: 36px;
+								margin-right:5px;
+								
+								.tit {
+									display: inline-block;
+									background-color: #f2f2f2;
+									padding: 2px 5px;
+									border-radius: 5px;
+									line-height: 16px;
+									margin: 10px 0;
+									margin-right: 5px;
+								}
+								a {
+									color: #666;
+									&:hover {
+										text-decoration: none;
+									}
+								}
+							}
+				
+							.favorites {
+								display: inline-block;
+								line-height: 36px;
+								margin-right:5px;
+							}
+					
+							.sale-num {
+								display: inline-block;
+								line-height: 36px;
+								margin-right:5px;
+							}
+					
+							.view {
+								display: inline-block;
+								line-height: 36px;
+								margin-right:5px;
+							}
+							.score {
+								display: inline-block;
+								line-height: 36px;
+								margin-right:5px;
+							}
+						}
+						.other-info {
+							display: inline-block;
+						}
+					}
+					.btns {
+						position: absolute;
+						top: 40px;
+						right: 40px;
+						font-size: 0;
+						
+						.sale-btn,.card-btn {
+							padding: 10px 30px;
+							margin: 0 10px;
+							line-height: 28px;
+							border-radius: 20px;
+							&:focus {
+								outline: 0;
+							}
+						}
+					}
+				}
+			}
+
+		}
+	}
+	/*视频类课程*/
+	.knowledge-base {
+		.video-base {
+			position: relative;
+			padding: 0;
+			
+			/*视频播放部分*/
+			.study {
+				border-radius: 8px;
+				box-shadow: 0 4px 8px 0 rgba(7,17,27,.1);
+				overflow: hidden;
+				.knowledge-player {
+					background-color: #000;
+					margin-right: 380px;
+					overflow: hidden;
+
+					.video-player {
+						position: relative;
+					}
+			
+					img {
+						width: 100%;
+						vertical-align: bottom;
+					}
+				}
+				.knowledge-info {
+					background-color: #2D323D;
+					float: right;
+					color: #fff;
+					width: 380px;
+					min-height: 495px;
+					padding: 10px;
+					.teacher {
+						padding: 0 0 10px 0;
+						.item  {
+							width:100%;
+							cursor: pointer;
+							overflow:hidden;
+					
+							.image {
+								float: left;
+								width: 60px;
+								height: 60px;
+								overflow: hidden;
+					
+								img {
+								max-width: 100%;
+								border-radius: 50%;
+								}
+							}
+					
+							.info {
+								margin-left: 60px;
+								padding-left:10px;
+					
+								.title {
+									font-size:18px;
+									font-weight: 500;
+									padding: 0;
+									padding-top: 8px;
+								}
+								.description {
+									color: #999;
+									padding: 0;
+									line-height: 22px;
+								}
+							}
+						}
+					}
+					/*大图显示讲师信息*/
+					.teacher.big-show {
+						padding: 110px 0 10px 0;
+						.item  {
+							width:100%;
+							cursor: pointer;
+							overflow:hidden;
+					
+							.image {
+								float: none;
+								width: 120px;
+								height: 120px;
+								margin: 0 auto;
+								overflow: hidden;
+					
+								img {
+								max-width: 100%;
+								border-radius: 50%;
+								}
+							}
+					
+							.info {
+								margin-left: auto;
+								padding-left: 0;
+					
+								.title {
+									font-size:18px;
+									font-weight: 500;
+									padding: 0;
+									padding-top: 8px;
+									text-align: center;
+								}
+								.description {
+									color: #f2f2f2;
+									margin-top: 10px;
+									line-height: 22px;
+									width: 100%;
+								}
+							}
+						}
+					}
+
+					.chapter-section {
+						padding: 0;
+						color: #666;
+						overflow-y: auto;
+						height: 405px;
+						.chapter {
+							margin: 10px 0;
+
+							.chapter-title {
+								font-size:15px;
+								color: #fff;
+							}
+							.lessons {
+								.lessons-item {
+									padding-right: 5px;
+									position: relative;
+									cursor: pointer;
+									&:active {
+										background-color: #000;
+									}
+									.title {
+										line-height: 32px;
+										padding-right: 62px;
+										color: #a8a8a8;
+										.lessons-index {
+											padding-left: 10px;
+										}
+										.try-play {
+											color: #f60;
+											font-size: 10px;
+										}
+									}
+									.status-desc {
+										position: absolute;
+										width: 50px;
+										height: 32px;
+										right: 30px;
+										top: 0;
+										line-height: 32px;
+										display: none;
+									}
+									.play-status {
+										position: absolute;
+										width: 25px;
+										height: 32px;
+										right: 5px;
+										top: 0;
+										text-align: right;
+										color: #eee;
+										padding-top: 5px;
+										.icon-box {
+											font-size: 20px;
+										}
+									}
+									.play-active {
+										color: #f60;
+										.status-desc {
+											display: inline;
+											font-size: 10px;
+											
+										}
+									}
+									
+								}
+							}
+						}
+						&::-webkit-scrollbar {/*滚动条整体样式*/
+							width: 5px;     /*高宽分别对应横竖滚动条的尺寸*/
+							height: 1px;
+						}
+					}
+				}
+			}
+
+			.preview-vod-component {
+				display: block;
+			}
+			.vip_limit_content {
+				display: flex;
+				width: 100%;
+				height: 100%;
+				flex-wrap: wrap;
+				justify-content: center;
+				align-items: center;
+			}
+			.vip_limit_content {
+				.tip-icon {
+					text-align: center;
+					font-size: 36px;
+					color: #f90;
+				}
+				.title {
+					font-size: 18px;
+					line-height: 36px;
+					color: #fff;
+					text-align: center;
+					width: 100%;
+				}
+			}
+			
+			
+			.vip_limit_button_box {
+				text-align: center;
+				white-space: nowrap;
+				overflow: hidden;
+				width: 100%;
+			}
+			.preview-vod-component .preview-component-layer {
+				display: none;
+				z-index: 1049;
+			}
+			.preview-vod-component .preview-component-tip {
+				position: absolute;
+				left: 25px;
+				right: 25px;
+				bottom: 45px;
+				text-align: center;
+			}
+		}
+	}
+
+	/*音频类课程*/
+	.knowledge-base {
+		.audio-base {
+			position: relative;
+			padding: 0;
+			
+			/*音频播放部分*/
+			.study {
+				border-radius: 8px;
+				box-shadow: 0 4px 10px 0 rgba(7,17,27,.2);
+				overflow: hidden;
+				.knowledge-player {
+					position: relative;
+					margin-right: 380px;
+					overflow: hidden;
+					background-color: #fff;
+					background-size: cover;
+					background-position: center;
+					background-repeat: no-repeat;
+					width: 880px;
+
+					.audio-player {
+						position: absolute;
+						z-index: 666;
+						padding:20px 80px;
+						margin-top: 0px;
+						bottom: 0;
+						left: 0;
+						right: 0;
+						.audio-box {
+							width: 100%;
+						}
+					}
+			
+					img {
+						width: 100%;
+						vertical-align: bottom;
+					}
+				}
+				.knowledge-player.player-height-16-9 {
+					height: 495px;
+				}
+				.knowledge-player.player-height-4-3 {
+					height: 660px;
+				}
+				
+				.knowledge-info {
+					background-color: #2D323D;
+					float: right;
+					color: #fff;
+					width: 380px;
+					padding: 10px;
+					.teacher {
+						padding: 0 0 10px 0;
+						.item  {
+							width:100%;
+							cursor: pointer;
+							overflow:hidden;
+					
+							.image {
+								float: left;
+								width: 60px;
+								height: 60px;
+								overflow: hidden;
+					
+								img {
+								max-width: 100%;
+								border-radius: 50%;
+								}
+							}
+					
+							.info {
+								margin-left: 60px;
+								padding-left:10px;
+					
+								.title {
+									font-size:18px;
+									font-weight: 500;
+									padding: 0;
+									padding-top: 8px;
+								}
+								.description {
+									color: #999;
+									padding: 0;
+									line-height: 22px;
+								}
+							}
+						}
+					}
+					/*大图显示讲师信息*/
+					.teacher.big-show {
+						padding: 110px 0 10px 0;
+						.item  {
+							width:100%;
+							cursor: pointer;
+							overflow:hidden;
+					
+							.image {
+								float: none;
+								width: 120px;
+								height: 120px;
+								margin: 0 auto;
+								overflow: hidden;
+					
+								img {
+								max-width: 100%;
+								border-radius: 50%;
+								}
+							}
+					
+							.info {
+								margin-left: auto;
+								padding-left: 0;
+					
+								.title {
+									font-size:18px;
+									font-weight: 500;
+									padding: 0;
+									padding-top: 8px;
+									text-align: center;
+								}
+								.description {
+									color: #f2f2f2;
+									margin-top: 10px;
+									line-height: 22px;
+									width: 100%;
+								}
+							}
+						}
+					}
+
+					.chapter-section {
+						padding: 0;
+						color: #666;
+						overflow-y: auto;
+						
+						.chapter {
+							margin: 10px 0;
+
+							.chapter-title {
+								font-size:15px;
+								color: #fff;
+							}
+							.lessons {
+								.lessons-item {
+									padding-right: 5px;
+									position: relative;
+									cursor: pointer;
+									&:active {
+										background-color: #000;
+									}
+									.title {
+										line-height: 32px;
+										padding-right: 62px;
+										color: #a8a8a8;
+										.lessons-index {
+											padding-left: 10px;
+										}
+										.try-play {
+											color: #f60;
+											font-size: 10px;
+										}
+									}
+									.status-desc {
+										position: absolute;
+										width: 50px;
+										height: 32px;
+										right: 30px;
+										top: 0;
+										line-height: 32px;
+										display: none;
+									}
+									.play-status {
+										position: absolute;
+										width: 25px;
+										height: 32px;
+										right: 5px;
+										top: 0;
+										text-align: right;
+										color: #eee;
+										padding-top: 5px;
+										.icon-box {
+											font-size: 20px;
+										}
+									}
+									.play-active {
+										color: #f60;
+										.status-desc {
+											display: inline;
+											font-size: 10px;
+											
+										}
+									}
+									
+								}
+							}
+						}
+						&::-webkit-scrollbar {/*滚动条整体样式*/
+							width: 5px;     /*高宽分别对应横竖滚动条的尺寸*/
+							height: 1px;
+						}
+					}
+				}
+				.height-16-9 {
+					height: 495px;
+					.chapter-section {
+						height: 405px;
+					}
+				}
+				.height-4-3 {
+					height: 660px;
+					.chapter-section {
+						height: 575px;
+					}
+				}
+			}
+		}
+	}
+	
+	/*内容详情容器*/
+	.content-section {
+		padding:0;
+		background-color: #f2f2f2;
+		.tab-title-box {
+			width: 100%;
+			background: #fff;
+			box-shadow: 0 4px 8px 0 rgba(28,31,33,.1);
+			padding: 10px 0;
+			.nav-default {
+				text-align: center;
+				li {
+					display: inline-block;
+					a {
+						font-size: 16px;
+						padding: 15px 30px;
+						border-bottom: 4px solid #fff;
+						border-radius: 0;
+						&:hover {
+							border-bottom: 4px solid #f2f2f2;
+							background-color: #fff;
+						}
+					}
+				}
+				li.active {
+					a {
+						
+						&:hover,&:focus {
+							background-color: #fff;
+						}
+					}
+				}
+			}
+		}
+		.content-detail-box {
+			.content-left-box {
+				float: left;
+				width: 870px;
+				margin-right: 10px;
+				.tab-content {
+					padding: 20px 0;
+				}
+				#tabDetail {
+					.detail-content {
+						background-color: #fff;
+						padding: 10px;
+						min-height: 407px;
+						* {
+							-webkit-user-select:text;
+							-moz-user-select:text;
+							-ms-user-select:text;
+							user-select:text;
+						}
+						/*课程归属专栏样式 开发中*/
+						.knowledge-column {
+							background: #f6f6f6;
+							padding:0 10px;
+							color:#999;
+							.title {
+					
+							}
+							.lists {
+								.item {
+						
+									.column-title {
+									color: #999;
+									}
+								}
+							}
+						}
+				
+						p {
+							padding: 0;
+							margin: 0;
+							img {
+							max-width: 100%;
+							}
+						}
+					}
+				}
+
+				/*系列课目录*/
+				#tabChapter {
+					.chapter-section {
+						background-color: #fff;
+						padding: 10px;
+						color: #666;
+						.chapter {
+							margin: 10px 0;
+							.chapter-title {
+							font-size:15px;
+							color: #000;
+							}
+							.lessons {
+							.lessons-item {
+								position: relative;
+								&:active {
+								background-color: #f2f2f2;
+								}
+								.title {
+								line-height: 32px;
+								padding-right: 62px;
+								color: #a8a8a8;
+								.lessons-index {
+									padding-left: 10px;
+								}
+								.try-play {
+									color: #f60;
+									font-size: 10px;
+								}
+								}
+								.status-desc {
+								position: absolute;
+								width: 30px;
+								height: 32px;
+								right: 25px;
+								top: 0;
+								line-height: 32px;
+								display: none;
+								}
+								.play-status {
+								position: absolute;
+								width: 25px;
+								height: 32px;
+								right: 0;
+								top: 0;
+								text-align: right;
+								color: #eee;
+								padding-top: 5px;
+								.icon-box {
+									font-size: 20px;
+								}
+								}
+								.play-active {
+								color: #f60;
+								.status-desc {
+									display: inline;
+									font-size: 10px;
+									
+								}
+								}
+								
+							}
+							}
+						}
+					}
+				}
+			
+				.knowledge-questions {
+					padding: 10px 0;
+					display: none;
+			
+					.item  {
+						background:#fff;
+						height:90px;
+						margin-bottom:15px;
+						width:100%;
+						overflow:hidden;
+				
+						.image {
+							float: left;
+							width: 80px;
+							height: 80px;
+						}
+					}
+				}
+				#tabTeacher {
+					.teacher {
+						background-color: #fff;
+						padding: 10px;
+						.item  {
+							background:#fff;
+							height:100px;
+							margin-bottom:15px;
+							width:100%;
+							overflow:hidden;
+							padding: 0 0 10px 0;
+							border-bottom: 1px solid #f4f6f7;
+					
+							.image {
+								float: left;
+								width: 90px;
+								height: 90px;
+								overflow: hidden;
+					
+								img {
+								max-width: 100%;
+								border-radius: 50%;
+								}
+							}
+					
+							.info {
+								margin-left: 90px;
+								padding-left:10px;
+								height:90px;
+					
+								.title {
+								font-size:18px;
+								font-weight: 500;
+								padding: 0;
+								}
+								.description {
+								display: -webkit-box;
+								color: #666;
+								padding: 0;
+								line-height: 22px;
+								}
+							}
+						}
+				
+						.content {
+				
+							img {
+								max-width: 100%!important;
+							}
+						}
+					}
+				}
+				
+			}
+			
+			.content-right-box {
+				float: left;
+				width: 380px;
+				padding-top: 20px;
+				
+				.item {
+					background-color: #fff;
+					padding: 10px;
+					h3 {
+						margin: 10px 0;
+					}
+					ul {
+						list-style: none;
+						padding: 0;
+					}
+				}
+				.new-list {
+					ul {
+						list-style: none;
+						padding: 0;
+						li {
+							margin: 5px 0;
+							margin-bottom: 10px;
+							a {
+								.cover {
+									width: 80px;
+									height: 60px;
+									float: left;
+									img {
+										border-radius: 5px;
+										max-width: 100%;
+									}
+								}
+								.info {
+									margin-left: 80px;
+									padding-left: 10px;
+									.title {
+										padding: 5px 0;
+										font-size: 15px;
+										color: #666;
+									}
+									.other {
+										color: #333;
+										.price {
+											font-weight: 700;
+										}
+										.data-show {
+											display: inline-block;
+											margin-left: 10px;
+											color: #999;
+										}
+									}
+								}
+								&:hover,&:focus {
+									text-decoration: none;
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		
+	}
+}
+
+/*我的课程列表*/
+.my-knowledge-section {
+	padding: 10px;
+	.knowledge-list-section {
+
+		.knowledge-item {
+			margin-bottom: 30px;
+			.cover {
+				float: left;
+				width: 180px;
+				height: 135px;
+				overflow: hidden;
+				img {
+					border-radius: 5px;
+					width: 100%;
+				}
+			}
+			.info {
+				margin-left: 190px;
+				height: 135px;
+				border-bottom: 1px solid #eee;
+				padding: 0;
+				padding-top: 1px;
+				.title {
+					.label {
+						background-color: #f2f2f2;
+						color: #666;
+						border: 0;
+						font-size: 12px;
+					}
+					h3 {
+						margin: 10px 0;
+					}
+				}
+				.description {
+					color: #666;
+				}
+				.other {
+					.other-info {
+						width: 500px;
+						float: left;
+						.teacher {
+							.cover {
+								float: left;
+								width: 40px;
+								height: 40px;
+								overflow: hidden;
+								img {
+									border-radius: 50%;
+									width: 100%;
+								}
+							}
+							.name {
+								margin-left: 50px;
+								line-height: 40px;
+								font-size: 14px;
+								color: #999;
+							}
+						}
+					}
+					.action {
+						position: relative;
+						margin-left: 500px;
+						text-align: right;
+						a.btn {
+							&:hover {
+								color: #fff;
+							}
+						}
+						.disabled {
+							color: #fff;
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+/*风格价格色系样式*/
+.Green {
+	.orderby-block {
+		span.active {
+			a {
+				color: #00ce74;
+			}
+		}
+	}
+	.knowledge-list-section {
+		.item {
+			.price {
+				color: #00ce74;
+			}
+		}
+	}
+	
+	.muu_classroom_knowledge_detail_section {
+		.tab-title-box {
+			.nav-default {
+				li {
+					a {
+						color: #666;
+						&:hover {
+							color: #00ce74;;
+						}
+					}
+				}
+				li.active {
+					a {
+						border-bottom: 4px solid #00ce74;
+						color: #00ce74;
+					}
+				}
+			}
+		}
+		.member-price-item {
+			background-color: #00ce74;
+			color: #fff;
+		}
+		.sale-btn {
+			background-color: #00ce74;
+			color: #fff;
+		}
+
+	}
+}
+
+.Blue {
+	.orderby-block {
+		span.active {
+			a {
+				color: #03b8cf;
+			}
+		}
+	}
+	.knowledge-list-section {
+		.item {
+			.price {
+				color: #03b8cf;
+			}
+		}
+	}
+	.muu_classroom_knowledge_detail_section {
+		.tab-title-box {
+			.nav-default {
+				li {
+					a {
+						color: #666;
+						&:hover {
+							color: #03b8cf;
+						}
+					}
+				}
+				li.active {
+					a {
+						border-bottom: 4px solid #03b8cf;
+						color: #03b8cf;
+					}
+				}
+			}
+		}
+		.member-price-item {
+			background-color: #03b8cf;
+			color: #fff;
+		}
+		.sale-btn {
+			background-color: #03b8cf;
+			color: #fff;
+		}
+	}
+}
+
+.LightRed {
+	.orderby-block {
+		span.active {
+			a {
+				color: #ea644a;
+			}
+		}
+	}
+	.knowledge-list-section {
+		.item {
+			.price {
+				color: #ea644a;
+			}
+		}
+	}
+	.muu_classroom_knowledge_detail_section {
+		.tab-title-box {
+			.nav-default {
+				li {
+					a {
+						color: #666;
+						&:hover {
+							color: #ea644a;
+						}
+					}
+				}
+				li.active {
+					a {
+						border-bottom: 4px solid #ea644a;
+						color: #ea644a;
+					}
+				}
+			}
+		}
+		.member-price-item {
+			background-color: #ea644a;
+			color: #fff;
+		}
+		.sale-btn {
+			background-color: #ea644a;
+			color: #fff;
+		}
+	}
+}
+
+.Orange {
+	.orderby-block {
+		span.active {
+			a {
+				color: #ff9900;
+			}
+		}
+	}
+	.knowledge-list-section {
+		.item {
+			.price {
+				color: #ff9900;
+			}
+		}
+	}
+	.muu_classroom_knowledge_detail_section {
+		.tab-title-box {
+			.nav-default {
+				li {
+					a {
+						color: #666;
+						&:hover {
+							color: #ff9900;
+						}
+					}
+				}
+				li.active {
+					a {
+						border-bottom: 4px solid #ff9900;
+						color: #ff9900;
+					}
+				}
+			}
+		}
+		.member-price-item {
+			background-color: #ff9900;
+			color: #fff;
+		}
+		.sale-btn {
+			background-color: #ff9900;
+			color: #fff;
+		}
+	}
+}
+
+.LightPink {
+	.orderby-block {
+		span.active {
+			a {
+				color: #FFB6C1;
+			}
+		}
+	}
+	.knowledge-list-section {
+		.item {
+			.price {
+				color: #FFB6C1;
+			}
+		}
+	}
+	.muu_classroom_knowledge_detail_section {
+		.tab-title-box {
+			.nav-default {
+				li {
+					a {
+						color: #666;
+						&:hover {
+							color: #FFB6C1;
+						}
+					}
+				}
+				li.active {
+					a {
+						border-bottom: 4px solid #FFB6C1;
+						color: #FFB6C1;
+					}
+				}
+			}
+		}
+		.member-price-item {
+			background-color: #FFB6C1;
+			color: #fff;
+		}
+		.sale-btn {
+			background-color: #FFB6C1;
+			color: #fff;
+		}
+	}
+}
+
+.Magenta {
+	.orderby-block {
+		span.active {
+			a {
+				color: #8666b8;
+			}
+		}
+	}
+	.knowledge-list-section {
+		.item {
+			.price {
+				color: #8666b8;
+			}
+		}
+	}
+	.muu_classroom_knowledge_detail_section {
+		.tab-title-box {
+			.nav-default {
+				li {
+					a {
+						color: #666;
+						&:hover {
+							color: #8666b8;
+						}
+					}
+				}
+				li.active {
+					a {
+						border-bottom: 4px solid #8666b8;
+						color: #8666b8;
+					}
+				}
+			}
+		}
+		.member-price-item {
+			background-color: #8666b8;
+			color: #fff;
+		}
+		.sale-btn {
+			background-color: #8666b8;
+			color: #fff;
+		}
+	}
+}
+
+/**
+ * 音频播放器
+ */
+ .green-audio-player {
+	width: 400px;
+	min-width: 300px;
+  
+	.green-audio-player-box {
+	  box-shadow: 0 4px 16px 0 rgba(0, 0, 0, 0.07);
+	  width: 100%;
+	  height: 56px;
+	  display: flex;
+	  justify-content: space-between;
+	  align-items: center;
+	  padding-left: 24px;
+	  padding-right: 24px;
+	  border-radius: 15px;
+	  user-select: none;
+	  background-color: #fff;
+	}
+  }
+  .green-audio-player svg,
+  .green-audio-player img {
+	display: block; 
+  }
+  .green-audio-player .play-pause-btn {
+	display: block;
+	cursor: pointer; 
+  }
+  .green-audio-player .loading {
+  display: none;
+  }
+  .green-audio-player .loading .loading__spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid #b0b0b0;
+  border-right-color: transparent;
+  border-radius: 50%;
+  animation: spin 0.4s linear infinite; 
+  }
+  .green-audio-player .slider {
+  flex-grow: 1;
+  background-color: #d8d8d8;
+  cursor: pointer;
+  position: relative; }
+  .green-audio-player .slider .progress {
+  background-color: #44bfa3;
+  border-radius: inherit;
+  position: absolute;
+  pointer-events: none;
+  margin-bottom:0; 
+  }
+  .green-audio-player .slider .progress .pin {
+  height: 16px;
+  width: 16px;
+  border-radius: 8px;
+  background-color: #44bfa3;
+  position: absolute;
+  pointer-events: all;
+  }
+  .green-audio-player .controls {
+  font-family: "Roboto", sans-serif;
+  font-size: 16px;
+  line-height: 18px;
+  color: #888;
+  display: flex;
+  flex-grow: 1;
+  justify-content: space-between;
+  align-items: center;
+  margin-left: 24px;
+  margin-right: 24px; 
+  }
+  .green-audio-player .controls .controls__slider {
+  margin-left: 16px;
+  margin-right: 16px;
+  border-radius: 2px;
+  height: 4px; 
+  }
+  .green-audio-player .controls .controls__slider .controls__progress {
+  width: 0;
+  height: 100%; 
+  }
+  .green-audio-player .controls .controls__slider .controls__progress .progress__pin {
+	right: -8px;
+	top: -6px; 
+  }
+  .green-audio-player .controls span {
+	cursor: default; 
+  }
+  .green-audio-player .volume {
+	position: relative; 
+  }
+  .green-audio-player .volume .volume__button {
+	cursor: pointer; 
+  }
+  .green-audio-player .volume .volume__button.open path {
+	fill: #44bfa3; 
+  }
+  .green-audio-player .volume .volume__controls {
+	width: 30px;
+	height: 135px;
+	background-color: rgba(0, 0, 0, 0.62);
+	border-radius: 7px;
+	position: absolute;
+	left: -3px;
+	bottom: 52px;
+	flex-direction: column;
+	align-items: center;
+	display: flex; 
+  }
+  .green-audio-player .volume .volume__controls.hidden {
+	display: none; 
+  }
+  .green-audio-player .volume .volume__controls.top {
+	bottom: 52px;
+	left: -3px; 
+  }
+  .green-audio-player .volume .volume__controls.middle {
+	bottom: -54px;
+	left: 54px; 
+  }
+  .green-audio-player .volume .volume__controls.bottom {
+	bottom: -164px;
+	left: -3px; 
+  }
+  .green-audio-player .volume .volume__controls .volume__slider {
+	margin-top: 12px;
+	margin-bottom: 12px;
+	width: 6px;
+	border-radius: 3px; 
+  }
+  .green-audio-player .volume .volume__controls .volume__slider .volume__progress {
+	bottom: 0;
+	height: 100%;
+	width: 6px; 
+  }
+  .green-audio-player .volume .volume__controls .volume__slider .volume__progress .volume__pin {
+	left: -5px;
+	top: -8px; 
+  }
+

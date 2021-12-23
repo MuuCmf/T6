@@ -1,0 +1,144 @@
+.attribute-box {
+    border-top: 1px solid #f2f2f2;
+    border-bottom: 1px solid #f2f2f2;
+    margin-bottom: 20px;
+    border-radius: 5px;
+    padding: 5px 0;
+    .item {
+        font-size:14px;
+        padding: 10px 0;
+        border-bottom: 0;
+        border-bottom: 1px solid #f2f2f2;
+        span.title {
+            font-weight: 600;
+            color: #333;
+            min-width: 68px;
+            display: block;
+            overflow: hidden;
+            font-size: 14px;
+            float: left;
+            line-height: 26px;
+            text-align: left;
+        }
+    
+        ul {
+            padding-left: 0;
+            margin: 0;
+            list-style: none;
+            margin-left: 68px;
+        
+            li {
+                float: left;
+                position: relative;
+                min-width: 68px;
+                line-height: 26px;
+                overflow: hidden;
+                margin-right: 10px;
+                border-radius: 3px;
+                padding: 0 5px;
+                text-align: center;
+                color: #6f726f;
+                font-size: 13px;
+                cursor: pointer;
+
+                &:hover {
+                    background-color: #f2f2f2;
+                }
+            }
+        
+            li.active {
+                font-weight: 550;
+                background-color: #f2f2f2;
+            }
+        }
+    }
+    .item:last-child {
+        border-bottom: 0;
+    }
+  }
+
+  /*风格价格色系样式*/
+.Green {
+	.attribute-box {
+		li {
+            &:hover {
+                color: #00ce74;
+            }
+        }
+        li.active {
+            
+            color: #00ce74;
+        }
+	}
+}
+
+.Blue {
+    .attribute-box {
+		li {
+            &:hover {
+                
+                color: #03b8cf;
+            }
+        }
+        li.active {
+            
+            color: #03b8cf;
+        }
+	}
+}
+
+.LightRed {
+    .attribute-box {
+		li {
+            &:hover {
+                background-color: #ea644a;
+                color: #fff;
+            }
+        }
+        li.active {
+            background: #ea644a;
+        }
+	}
+}
+
+.Orange {
+    .attribute-box {
+		li {
+            &:hover {
+                background-color: #ff9900;
+                color: #fff;
+            }
+        }
+        li.active {
+            background: #ff9900;
+        }
+	}
+}
+
+.LightPink {
+    .attribute-box {
+		li {
+            &:hover {
+                background-color: #FFB6C1;
+                color: #fff;
+            }
+        }
+        li.active {
+            background: #FFB6C1;
+        }
+	}
+}
+
+.Magenta {
+	.attribute-box {
+		li {
+            &:hover {
+                background-color: #8666b8;
+                color: #fff;
+            }
+        }
+        li.active {
+            background: #8666b8;
+        }
+	}
+}

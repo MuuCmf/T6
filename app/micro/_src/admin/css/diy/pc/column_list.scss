@@ -1,0 +1,119 @@
+/*************专栏列表组件*****************/
+
+/*预览区*/
+.page-diy-pc-section .preview-target,.page-list-pc-section .preview-target {
+	
+	.column-list {
+		
+		.column-list-preview {
+
+			.title {
+				padding:5px 0;
+				margin-bottom: 10px;
+				h2,h3 {
+					float:left;
+					margin:0 20px 0 0;
+					font-size: 24px;
+					font-weight: 500;
+					color: #333;
+				}
+				.sub-title {
+					font-size: 14px;
+					line-height: 26px;
+					color: #999;
+				}
+				.more{
+					float:right;
+					line-height: 26px;
+					color:#999;
+				}
+			}
+
+			.list{
+				display:box;
+				padding: 0;
+				margin-left: -10px;
+				margin-right: -10px;
+				//横排
+				.item {
+					background-color: #fff;
+					float:left;
+					box-sizing: border-box;
+					padding:0 10px 10px 10px;
+					margin-bottom: 10px;
+					width:20%;
+
+					.image {
+						position: relative;
+						
+						img {
+							width:100%;
+							border-radius:5px;
+						}
+
+						.type-container {
+				          	position:absolute;
+				          	bottom:5px;
+				          	right:5px;
+				          	background-color:rgba(0,0,0,.5);
+				          	color:#fff;
+				          	padding:2px 5px;
+				          	border-radius:5px;
+				        }
+					}
+					.content {
+						padding:0;
+						min-height: 60px!important;
+
+						.title {
+							font-weight: 550;
+							font-size:16px;
+							padding:20px 0 3px 0;
+							color: #000;
+							margin-bottom: 0;
+						}
+						.description {
+							color:#999;
+							font-size:12px;
+							margin-bottom: 10px;
+						}
+
+						.info {
+							display: block;
+
+							.type {
+								float: left;
+								width: 60%;
+								min-width: 60px;
+								text-align: left;
+								color:#999;
+								font-size: 12px;
+								overflow: hidden;
+
+								div {
+								  display: inline-block;
+								  margin-right:5px;
+								}
+							}
+
+							.price {
+								float:right;
+								span {
+									font-size: 18px;
+								}
+							}
+						}
+					}
+				}
+			}	
+		}
+    }
+    
+    /*控制区*/
+    .diy-preview-controller.column-list {
+        
+        
+    }
+}
+
+

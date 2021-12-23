@@ -1,0 +1,287 @@
+.member-page-section.detail{
+	background-color: #eee;
+	/*顶部选项卡*/
+	.tag-title-box {
+		background-color: #fff;
+	}
+
+	/*选项卡内容区*/
+	.muu-control-content {
+		background-color: #fff;
+		padding: 0 10px;
+		.member-card-box{
+			position: relative;
+			margin: 15px auto;
+			width: 398px;
+			height: 240px;
+			float: left;
+			.member-card-bg {
+				top: 0;
+				left: 0;
+				right: 0;
+				bottom: 0;
+				z-index: 1;
+				border-radius: 15px;
+				overflow: hidden;
+				img {
+					width: 100%;
+					display: block;
+				}
+			}
+			.member-card-info {
+				position: absolute;
+				top: 0;
+				left: 0;
+				right: 0;
+				bottom: 0;
+				height: auto;
+				padding: 15px;
+				padding-bottom: 10%;
+				display: block;
+				border-radius: 20px;
+				z-index: 2;
+	
+				.title{
+					color: #D9B68B;
+					.member-card-logo {
+						float: left;
+						width: 36px;
+						height: 36px;
+						border-radius: 5px;
+						overflow: hidden;
+						img {
+							width: 100%;
+						}
+					}
+					.member-card-title {
+						margin-left: 46px;
+						line-height: 36px;
+						.b-title {
+							font-weight: 600;
+						}
+					}
+				}
+	
+				.member-type {
+					text-align: left;
+					font-size:36px;
+					line-height: 36px;
+					margin-top: 20px;
+				}
+				.member-description {
+					margin-top: 10px;
+					font-size: 12px;
+					display: block;
+					line-height: 18px;
+					height: 36px;
+					color: #D9B68B;
+					overflow: hidden;
+					text-overflow: ellipsis;
+					display: -webkit-box;
+					-webkit-box-orient: vertical;
+					-webkit-line-clamp: 2;
+				}
+	
+				.status {
+					position: absolute;
+					width: 80px;
+					height:26px;
+					line-height: 26px;
+					text-align: center;
+					top: 20px;
+					right: 20px;
+					color: #fff;
+					border: 1px solid #fff;
+					border-radius: 5px;
+				}
+			}
+		}
+
+		.member-price-box {
+			margin-top: 10px;
+			background-color: #fff;
+			float: right;
+			width: 435px;
+			.price {
+				position: relative;
+				width: 435px;
+				margin: 5px auto;
+				padding: 10px 15px;
+				border-radius: 5px;
+				border: 0;
+				background-color: #eee;
+				line-height: 42px;
+				color: #666;
+                cursor: pointer;
+				.fa {
+					display: none;
+				}
+			}
+			.active {
+				background-color: #eee;
+				border: 0;
+				color: #666;
+				.fa {
+					position: absolute;
+					top: 25px;
+					right: 10px;
+					display: block;
+				}
+			}
+			.cdkey-activate {
+				padding: 0 15px;
+				margin-top: 5px;
+				border-radius: 5px;
+				border: 1px solid #eee;
+				background-color: #eee;
+				line-height: 32px;
+				.fa {
+					font-size: 14px;
+				}
+			}
+		}
+	}
+
+	.member-content-box {
+		padding: 5px 15px;
+		background-color: #fff;
+		p {
+			margin: 0;
+			img {
+				display: block;
+			}
+		}
+	}
+
+	.cdkey-activate {
+		background-color: #fff;
+		padding: 5px 15px;
+		position: relative;
+		color: #333;
+		cursor: pointer;
+		.item {
+			border: 1px solid #f0f0f0;
+			border-radius: 15px;
+			padding: 10px 0;
+			text-align: center;
+			font-size: 14px;
+
+			.title {
+				font-weight: 700;
+			}
+		}
+	}
+
+	.member-sale {
+		background-color: #fff;
+        padding: 5px 15px;
+		color: #8d8d8d;
+		cursor: pointer;
+		.item {
+			background-color: #333;
+			border-radius: 15px;
+			padding: 10px 0;
+			text-align: center;
+			font-size: 14px;
+
+			.title {
+				font-weight: 700;
+			}
+		}
+	}
+	
+}
+
+
+/*会员列表页*/
+.member-page-section.list {
+	padding-top: 10px;
+
+	.member-card-box{
+		position: relative;
+		margin: 15px;
+		width: 398px;
+		height: 240px;
+		float: left;
+		.member-card-bg {
+			top: 0;
+			left: 0;
+			right: 0;
+			bottom: 0;
+			z-index: 1;
+			border-radius: 15px;
+			overflow: hidden;
+			img {
+				width: 100%;
+				display: block;
+			}
+		}
+		.member-card-info {
+			position: absolute;
+			top: 0;
+			left: 0;
+			right: 0;
+			bottom: 0;
+			height: auto;
+			padding: 15px;
+			padding-bottom: 10%;
+			display: block;
+			border-radius: 20px;
+			z-index: 2;
+
+			.title{
+				color: #D9B68B;
+				.member-card-logo {
+					float: left;
+					width: 36px;
+					height: 36px;
+					border-radius: 5px;
+					overflow: hidden;
+					img {
+						width: 100%;
+					}
+				}
+				.member-card-title {
+					margin-left: 46px;
+					line-height: 36px;
+					.b-title {
+						font-weight: 600;
+					}
+				}
+			}
+
+			.member-type {
+				text-align: left;
+				font-size:36px;
+				line-height: 36px;
+				margin-top: 20px;
+			}
+			.member-description {
+				margin-top: 10px;
+				font-size: 12px;
+				display: block;
+				line-height: 18px;
+				height: 36px;
+				color: #D9B68B;
+				overflow: hidden;
+				text-overflow: ellipsis;
+				display: -webkit-box;
+				-webkit-box-orient: vertical;
+				-webkit-line-clamp: 2;
+			}
+
+			.status {
+				position: absolute;
+				width: 80px;
+				height:26px;
+				line-height: 26px;
+				text-align: center;
+				top: 20px;
+				right: 20px;
+				color: #fff;
+				border: 1px solid #fff;
+				border-radius: 5px;
+			}
+		}
+	}
+}

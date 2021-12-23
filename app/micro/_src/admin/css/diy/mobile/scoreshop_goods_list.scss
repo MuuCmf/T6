@@ -1,0 +1,204 @@
+/*************积分商城商品列表组件*****************/
+
+/*预览区*/
+
+.page-diy-section .preview-target,.page-list-mobile-section .preview-target {
+	.scoreshop-goods-list {
+		line-height: 21px;
+		.scoreshop-goods-list-preview {
+
+			.title {
+				padding:5px 10px;
+				h3 {
+					float:left;
+					margin:10px auto;
+				}
+				.more{
+					float:right;
+					line-height: 32px;
+					color:#999;
+				}
+			}
+
+			/*竖排样式*/
+			.list.rank1 {
+				border-top: 0;
+				padding: 0 10px;
+				.item {
+					min-height: 90px;
+					margin-bottom:30px;
+
+					.image {
+				        position:relative;
+				        float:left;
+						width: 140px;
+						height: 140px;
+				        overflow:hidden;
+
+				        img {
+				            width:100%;
+				            border-radius:5px;
+				        }
+				    }
+
+				    .content {
+				        margin-left: 140px;
+				        padding:0;
+				        padding-left:10px;
+				        height: 140px;
+
+						.title {
+                            color:#333;
+                            font-weight: 600;
+							font-size:14px;
+							line-height: 21px;
+							height: 46px;
+							padding:0;
+							margin: 0;
+                        }
+
+				        .description {
+				            color:#999;
+				            font-size: 14px;
+				        }
+				        
+
+				        .info {
+				            margin-top:28px;
+				            
+
+				            .type {
+				              text-align: left;
+				              color:#999;
+				              font-size:12px;
+
+					            div {
+					                display: inline-block;
+					                margin-right:5px;
+					            }
+							}
+							
+							.price {
+								margin-top:5px;
+								text-align: left;
+								color: #f60;
+								.score {
+								  display: block;
+								  padding-left: 30px;
+								  line-height: 24px;
+								  background: url('../../images/coins.png') no-repeat 0 5px;
+								  background-size: 16px 16px;
+								}
+							}
+				        }
+				    }
+				}
+			}
+
+			/*横排样式*/
+			.list.rank0 {
+				padding: 0 5px;
+			    border: 0;
+
+				.item {
+					box-sizing: border-box;
+					background:#fff;
+					padding:5px;
+					width:50%;
+					float: left;
+
+					.image {
+						overflow: hidden;
+						position: relative;
+						width: 100%;
+						
+						img {
+							width:100%;
+							border-radius:5px;
+						}
+						.type-container {
+				          	position:absolute;
+				          	bottom:5px;
+				          	right:5px;
+				          	background-color:rgba(0,0,0,.5);
+				          	color:#fff;
+				          	padding:2px 5px;
+				          	border-radius:5px;
+				        }
+					}
+					.content {
+						
+						padding:0;
+
+						.title {
+							margin-top: 8px;
+							margin-bottom: 0;
+							font-weight: 600;
+							font-size:14px;
+							padding:0;
+							color: #333;
+							height: 36px;
+							line-height: 18px;
+						}
+						.description {
+							color:#999;
+						}
+						
+
+						.info {
+							margin-top: 5px;
+
+							.type {
+					            flex:1;
+					            text-align: left;
+					            color:#999;
+								font-size:12px;
+					            div {
+					              display: inline-block;
+					              margin-right:5px;
+					            }
+							}
+							.price {
+								margin-top:5px;
+								text-align: left;
+								color: #f60;
+								.score {
+								  display: block;
+								  padding-left: 30px;
+								  line-height: 24px;
+								  background: url('../../images/coins.png') no-repeat 0 5px;
+								  background-size: 16px 16px;
+								}
+							}
+						}
+
+						@media screen and(max-width: 365px) {
+							.info {
+								margin-top:0;
+								display:block;
+
+								.type {
+						            text-align: left;
+						            color:#999;
+
+						            div {
+						              display: inline-block;
+						              margin-right:5px;
+						            }
+						        }
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+
+
+/*控制区*/
+.diy-preview-controller.scoreshop-goods-list {
+	
+    
+}

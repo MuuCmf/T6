@@ -1,0 +1,30 @@
+
+/*预览区*/
+.page-diy-pc-section .preview-target,.page-list-pc-section .preview-target {
+	.custom-text {
+
+		.custom-text-preview {
+
+			.content{
+				min-height: 12px;
+				padding:0px;
+				p {
+					margin: 5px 0;
+				}	
+
+				.tmp-text {
+					background: #eee;
+					display:block;
+					line-height: 100px;
+					text-align:center;
+				}
+			}
+
+		}
+	}
+}
+
+/*控制区*/
+.page-diy-pc-section .diy-preview-controller.custom-text {
+	width: 310px!important;
+}

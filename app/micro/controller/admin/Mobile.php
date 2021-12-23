@@ -20,12 +20,14 @@ class Mobile extends Admin
         $this->PageModel = new PageModel();
 
         // 获取各应用配置项
-
-        $classroom_config_data = (new \app\classroom\model\ClassroomConfig())->getDataByMap(['shopid' => 0]);
-        $classroom_config_data = (new \app\classroom\model\Config())->formatData($config_data);
-
+        // 获取classroom模块
+        $classroom_config = (new \app\classroom\model\ClassroomConfig())->getDataByMap(['shopid' => 0]);
+        $classroom_config = (new \app\classroom\logic\Config())->formatData($classroom_config);
+        View::assign('classroom_config', $classroom_config);
+        //获取分类树
+        $category_tree = (new \app\classroom\model\ClassroomCategory())->getTree(1);
+        View::assign('category_tree', $category_tree);
         
-
     }
 
     /**

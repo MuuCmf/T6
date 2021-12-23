@@ -1,0 +1,37 @@
+/*用户上传图标*/
+.upload-list {
+	margin-top:10px;
+
+	span {
+		width:40px;
+		height:40px;
+		display:inline-block;
+		cursor:pointer;
+		text-align: center;
+	}
+}
+
+.nav-tabs {
+	font-size:12px;
+}
+/*内置图标列表*/
+.icon-section {
+	padding:10px;
+
+	span {
+		width:40px;
+		height:40px;
+		display:inline-block;
+		cursor:pointer;
+		text-align: center;
+
+		img {
+			width:32px;
+			height:32px;
+		}
+	}
+
+	.no-icon {
+		line-height: 88px;
+	}
+}

@@ -1,0 +1,44 @@
+/*************公告组件*****************/
+
+/*预览区*/
+.page-diy-section .preview-target,.page-list-mobile-section .preview-target {
+	.announce {
+
+		border: 0;
+
+		.announce-preview {
+			padding: 5px 0;
+
+			.announce-lists-box {
+				background-color: #f2f2f2;
+				margin: 0 8px;
+				border-radius: 10px;
+				height: 28px;
+				overflow: hidden;
+				.announce-left {
+					float: left;
+					width: 50px;
+					height:28px;
+					line-height: 28px;
+					font-weight: 600;
+					color:#ff6600;
+					text-align: center;
+				}
+				.announce-list {
+
+					margin: 0;
+					padding: 0;
+					margin-left:50px;
+
+					li {
+						display: block;
+						height: 28px;
+						line-height: 28px;
+						padding: 0 5px;
+					}
+				}
+				
+			}
+		}
+	}
+}
