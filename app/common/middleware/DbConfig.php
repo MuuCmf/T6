@@ -32,9 +32,11 @@ class DbConfig
             }
             //动态更改app项目配置
             $app = Config::get('app');
-            $app['default_app'] = $sys_config['DEFUALT_HOME_URL'];
-            Config::set($app, 'app');
-
+            if(!empty($sys_config['DEFUALT_APP'])){
+                $app['default_app'] = $sys_config['DEFUALT_APP'];
+                Config::set($app, 'app');
+            }
+            
             //动态添加扩展配置,非模块配置
             $ext_config = Cache::get('MUUCMF_EXT_CONFIG_DATA');
             if (empty($ext_config)) {

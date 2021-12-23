@@ -49,7 +49,7 @@ class Config extends Admin
         // 记录当前列表页的cookie
         Cookie('__forward__', $_SERVER['REQUEST_URI']);
         $this->setTitle('配置管理');
-
+        // 输出页面
         return View::fetch();
     }
 
@@ -86,7 +86,7 @@ class Config extends Admin
                 cache('MUUCMF_SYS_CONFIG_DATA', null);
                 //记录行为
                 action_log('update_config', 'config', $resId, is_login());
-                return $this->success('操作成功');
+                return $this->success('操作成功', $res, Cookie('__forward__'));
             }else{
                 return $this->error('操作失败');
             }
@@ -104,7 +104,7 @@ class Config extends Admin
             View::assign('group', config('system.CONFIG_GROUP_LIST'));
             View::assign('info', $info);
             $this->setTitle('编辑配置');
-
+            // 输出页面
             return View::fetch();
         }
     }
@@ -143,19 +143,21 @@ class Config extends Admin
             }
             cache('MUUCMF_SYS_CONFIG_DATA', null);
             
-            return $this->success('保存成功',$config, 'refresh');
+            return $this->success('保存成功',$config, cookie('__forward__'));
 
         }else{
             $id = input('id', 1,'intval');
+            // 配置分组
             $type = config('system.CONFIG_GROUP_LIST');
-
+            // 配置项列表
             $list = Db::name("Config")->where(['status' => 1, 'group' => $id])->field('id,name,title,extra,value,group,remark,type')->order('sort asc')->select()->toArray();
 
             View::assign('list', $list);
             View::assign('id', $id);
             View::assign('type', $type);
             $this->setTitle($type[$id] . '设置');
-
+            // 记录当前列表页的cookie
+            cookie('__forward__', $_SERVER['REQUEST_URI']);
             return View::fetch();
         }
     }
