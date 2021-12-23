@@ -131,7 +131,7 @@ function get_config_type_list()
     // 'file' => array('上传附件', 'int(10) UNSIGNED NOT NULL'),
     $list = [
         'num' => '数字',
-        'string' => '字符',
+        'string' => '文本框',
         'textarea' => '文本域',
         'entity' => '枚举',
         'select' => '下拉框',
