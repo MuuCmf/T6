@@ -4,14 +4,14 @@ namespace app\admin\controller;
 use think\facade\Db;
 use think\facade\View;
 use app\admin\model\Config as MuuConfigModel;
-
+// +----------------------------------------------------------------------
+// | TODO:系统设置 站点信息内容包含：站点基本信息 联络和客服信息 版权信息
+// +----------------------------------------------------------------------
 /**
  * 后台配置控制器
  */
 class Config extends Admin
 {
-    protected $moduleModel;
-
     /**
      * 构造方法
      * @access public
@@ -20,15 +20,7 @@ class Config extends Admin
     {
         parent::__construct();
 
-        $this->configModel = new MuuConfigModel();
-    }
-
-    /**
-     * 站点信息配置
-     */
-    public function info()
-    {
-
+        $this->ConfigModel = new MuuConfigModel();
     }
 
     /**
@@ -89,7 +81,7 @@ class Config extends Admin
 
             $data['status'] = 1;//默认状态为启用
 
-            $res = $resId = $this->configModel->edit($data);
+            $res = $resId = $this->ConfigModel->edit($data);
             if($res){
                 cache('MUUCMF_SYS_CONFIG_DATA', null);
                 //记录行为
@@ -103,7 +95,7 @@ class Config extends Admin
             $id = input('id', 0, 'intval');
             /* 获取数据 */
             if($id != 0){
-                $info = $this->configModel->find($id);
+                $info = $this->ConfigModel->find($id);
             }else{
                 $info = [];
             }

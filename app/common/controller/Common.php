@@ -25,9 +25,9 @@ class Common extends Base
         // 判断站点是否关闭
         if (strtolower(App('http')->getName()) != 'install' && strtolower(App('http')->getName()) != 'admin') {
             
-            if (!Config::get('system.WEB_SITE_CLOSE')) {
+            if (!Config::get('system.SITE_CLOSE')) {
                 header("Content-Type: text/html; charset=utf-8");
-                echo Config::get('system.WEB_SITE_CLOSE_HINT');
+                echo Config::get('system.SITE_CLOSE_HINT');
                 exit;
             }
         }
