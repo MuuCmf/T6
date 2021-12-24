@@ -1,8 +1,10 @@
 /*按钮重构*/
 
 .btn-primary {
+    border: 0;
     background-color: #11a8bb !important;
     color: #fff;
+    padding: 6px 12px;
 }
 .btn-primary.light {
     border: 0;
@@ -44,4 +46,10 @@
     border: 0;
     background-color: #ff7444 !important;
     color: #ffffff;
+}
+.btn-mini, .btn-sm, .btn-xs {
+    padding: 2px 8px;
+    font-size: 12px;
+    line-height: 1.5;
+    border-radius: 4px;
 }

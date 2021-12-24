@@ -22,6 +22,11 @@ class Page
         -1 => '已删除'
     ];
 
+    public function pannel()
+    {
+        
+    }
+
     /**
      * 连接至参数配置
      */
@@ -774,7 +779,9 @@ class Page
      */
     public function category($data,$shopid = 0)
     {
-        
+        // 默认给文章模块分类数据
+        $app = !empty($data['data']['app'])?$data['data']['app']:'articles';
+
         return $data;
     }
 

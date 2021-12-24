@@ -11,7 +11,6 @@ class Mobile extends Admin
 {
     protected $PageLogic;
     protected $PageModel;
-    protected $CategoryModel;
     function __construct()
     {
         parent::__construct();
@@ -21,12 +20,12 @@ class Mobile extends Admin
 
         // 获取各应用配置项
         // 获取classroom模块
-        $classroom_config = (new \app\classroom\model\ClassroomConfig())->getDataByMap(['shopid' => 0]);
-        $classroom_config = (new \app\classroom\logic\Config())->formatData($classroom_config);
-        View::assign('classroom_config', $classroom_config);
+        $classroom_config_data = (new \app\classroom\model\ClassroomConfig())->getDataByMap(['shopid' => 0]);
+        $classroom_config_data = (new \app\classroom\logic\Config())->formatData($classroom_config_data);
+        View::assign('classroom_config_data', $classroom_config_data);
         //获取分类树
-        $category_tree = (new \app\classroom\model\ClassroomCategory())->getTree(1);
-        View::assign('category_tree', $category_tree);
+        $classroom_category_tree = (new \app\classroom\model\ClassroomCategory())->getTree(1);
+        View::assign('classroom_category_tree', $classroom_category_tree);
         
     }
 
@@ -56,7 +55,7 @@ class Mobile extends Admin
             $item = $this->PageLogic->formatData($item);
         }
         unset($item);
-        
+
         if (request()->isAjax()){
             return $this->success('success',$lists);
         }
@@ -108,45 +107,46 @@ class Mobile extends Admin
             }else{
                 return $this->error( '保存失败');
             }
-        }
-
-        //获取分类树
-        $category_tree = $this->CategoryModel->getTree(0);
-        View::assign('category_tree', $category_tree);
-        //获取文章模块分类
-		$article_plugin_setup = $this->ModuleModel->checkInstalled('articles');
-		$article_category_tree = [];
-		if($article_plugin_setup){
-            $article_category_tree = (new \app\articles\model\ArticlesCategory())->getTree(1);
-		}
-        View::assign('article_category_tree', $article_category_tree);
-
-
-        //页面数据
-        $page_data = $this->PageModel->find($id);
-        if (!empty($page_data)){
-            $page_data = $page_data->toArray();
-            $page_data = $this->PageLogic->formatData($page_data);
-            $page_data = $this->PageLogic->handlingNoParamJson($page_data);
         }else{
-            $page_data = [];
+            $app_list = $this->ModuleModel->getAll();
+            //dump($app_list);
+            //获取分类树
+            $category_tree = (new \app\classroom\model\ClassroomCategory())->getTree(0);
+            View::assign('category_tree', $category_tree);
+            //获取文章模块分类
+            $article_plugin_setup = $this->ModuleModel->checkInstalled('articles');
+            $article_category_tree = [];
+            if($article_plugin_setup){
+                $article_category_tree = (new \app\articles\model\ArticlesCategory())->getTree(1);
+            }
+            View::assign('article_category_tree', $article_category_tree);
+
+            //页面数据
+            $page_data = $this->PageModel->find($id);
+            if (!empty($page_data)){
+                $page_data = $page_data->toArray();
+                $page_data = $this->PageLogic->formatData($page_data);
+                $page_data = $this->PageLogic->handlingNoParamJson($page_data);
+            }else{
+                $page_data = [];
+            }
+            
+            View::assign([
+                'page_data' => $page_data,
+                'icon_list' => $this->PageLogic->getIconLists()
+            ]);
+            // 链接至参数
+            $link_list = $this->PageLogic->linkParams();
+            View::assign('link_list', $link_list);
+            
+            // 获取无图标路径
+            $no_icon = request()->domain() . '/static/common/images/diy/noimg.png';
+            View::assign('no_icon', $no_icon);
+            // 设置title
+            $this->setTitle('移动端自定义页面DIY');
+            // 输出页面
+            return view();
         }
-        
-        View::assign([
-            'page_data' => $page_data,
-            'icon_list' => $this->PageLogic->getIconLists()
-        ]);
-        // 链接至参数
-        $link_list = $this->PageLogic->linkParams();
-        View::assign('link_list', $link_list);
-        
-        // 获取无图标路径
-        $no_icon = request()->domain() . '/static/common/images/diy/noimg.png';
-        View::assign('no_icon', $no_icon);
-        // 设置title
-        $this->setTitle('移动端自定义页面DIY');
-        // 输出页面
-        return view();
     }
 
     /**

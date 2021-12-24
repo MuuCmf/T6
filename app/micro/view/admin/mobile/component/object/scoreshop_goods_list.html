@@ -9,7 +9,7 @@
             </div>
             <div class="list rank{$vo['data']['rank']} clearfix">
             	{if $vo['data']['rank'] == 1}
-				{loop $vo['data']['list'] $goods_key $goods_data}
+				{foreach $vo['data']['list'] as $goods_key => $goods_data}
 					<div class="item" data-type="goods_list_item" data-id="{$goods_data['id']}">
 						
 						<div class="image">
@@ -46,11 +46,11 @@
 						</div>
 						
 					</div>
-				{/loop}
+				{/foreach}
 				{/if}
 
 				{if $vo['data']['rank'] == 0}
-				{loop $vo['data']['list'] $goods_key $goods_data}
+				{foreach $vo['data']['list'] as $goods_key => $goods_data}
 					<div class="item" data-type="goods_list_item" data-id="{$goods_data['id']}">
 						
 			      		<div class="image">
@@ -84,9 +84,8 @@
 								</div>
 					        </div>
 						</div>
-						
 			        </div>
-				{/loop}
+				{/foreach}
 				{/if}
 			</div>
 		</div>

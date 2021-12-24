@@ -74,7 +74,7 @@
 							{$p_v['title']}
 						</span>
 					</div>
-					<div class="preview-target {$classroom_config['style']}">
+					<div class="preview-target {:config('system.WEB_SITE_STYLE')}">
 						{if !empty($p_v['data'])}
 						{foreach $p_v['data'] as $key=>$vo} 
 						{include file="admin/mobile/component/view" /}
