@@ -3,6 +3,9 @@
 <!--图片上传-->
 <script type="text/javascript" charset="utf-8" src="__STATIC__/common/lib/webuploader/js/webuploader.js"></script>
 <link href="__STATIC__/common/lib/webuploader/css/webuploader.css" type="text/css" rel="stylesheet">
+<!--颜色选择器-->
+<link href="__ZUI__/lib/colorpicker/zui.colorpicker.min.css" rel="stylesheet">
+<script src="__ZUI__/lib/colorpicker/zui.colorpicker.min.js"></script>
 {/block}
 {block name="body"}
     <div class="main-title">
@@ -28,28 +31,22 @@
                     <label class="item-label">{$config.title}<span class="check-tips">（{$config.remark}）</span>
                     </label>
 
-                    <div class="controls">
+                    <div class="controls {$config.type}">
                         {switch name="config.type"}
                             {case value="num"}
-                                <input type="number" class="text input-small form-control" name="config[{$config.name}]" style="width: 180px"
-                                       value="{$config.value}">
+                                <input type="number" class="text input-small form-control" name="config[{$config.name}]" value="{$config.value}">
                             {/case}
                             {case value="string"}
-                                <input type="text" class="text input-large form-control" name="config[{$config.name}]" style="width: 400px"
-                                       value="{$config.value}">
+                                <input type="text" class="text input-large form-control" name="config[{$config.name}]" value="{$config.value}">
                             {/case}
                             {case value="textarea"}
-                                <label class="textarea input-large">
-                                    <textarea name="config[{$config.name}]" class="form-control" style="width: 400px;height: 100px" >{$config.value}</textarea>
-                                </label>
+                                <textarea name="config[{$config.name}]" class="form-control">{$config.value}</textarea>
                             {/case}
                             {case value="entity"}
-                                <label class="textarea input-large">
-                                    <textarea name="config[{$config.name}]" class="form-control" style="width: 400px;min-height: 120px;" >{$config.value}</textarea>
-                                </label>
+                                <textarea name="config[{$config.name}]" class="form-control">{$config.value}</textarea>
                             {/case}
                             {case value="select"}
-                                <select name="config[{$config.name}]" class="form-control" style="width: auto">
+                                <select name="config[{$config.name}]" class="form-control">
                                     {volist name=":parse_config_attr($config['extra'])" id="vo"}
                                     {eq name="config.value" value="$key"}
                                     <option value="{$key}" value="$key" selected>{$vo}</option>
@@ -63,7 +60,7 @@
                                 {:ueditor($config['name'],'config['.$config['name'].']',$config['value'])}
                             {/case}
                             {case value="password"}
-                                <input type="password" class="text input-large form-control" style="width:400px;" name="config[{$config.name}]" autoComplete="off" value="{$config.value}">
+                                <input type="password" class="text input-large form-control" name="config[{$config.name}]" autoComplete="off" value="{$config.value}">
                             {/case}
                             {case value="pic"}
                                 <div class="controls image-upload">
@@ -137,8 +134,8 @@
                                     $config['extra'] = explode("\r\n", $config['extra']);
                                     $config['opt'] = array();
                                     foreach( $config['extra'] as &$val){
-                                    $val =  explode(':', $val);
-                                    $config['opt'][$val[0]] =  $val[1];
+                                        $val =  explode(':', $val);
+                                        $config['opt'][$val[0]] =  $val[1];
                                     }
                                 {/php}
                                 {volist name="config.opt" id="option"}
@@ -181,14 +178,13 @@
                             {/case}
 
                             {case value="radio"}
-
                                 {php}
                                     $config['value_array'] = explode(',', $config['value']);
                                     $config['extra'] = explode("\r\n", $config['extra']);
                                     $config['opt'] = array();
                                     foreach( $config['extra'] as &$val){
-                                    $val =  explode(':', $val);
-                                    $config['opt'][$val[0]] =  $val[1];
+                                        $val =  explode(':', $val);
+                                        $config['opt'][$val[0]] =  $val[1];
                                     }
                                 {/php}
                                 {volist name="config.opt" id="option"}
@@ -228,6 +224,19 @@
                                             });
                                         })
                                     </script>
+                            {/case}
+                            {case value="color"}
+                                <div class="input-group">
+                                    <input type="text" class="form-control" id="{$config.name}" name="config[{$config.name}]" data-provide="colorpicker" data-wrapper="input-group-btn" data-pull-menu-right="true" value="{$config.value}" placeholder="请输入16进制颜色值，例如 #FF00DD">
+                                </div> 
+                                <script>
+                                    $(function(){
+                                        // 手动初始化时，也可以使用数组来定于预设颜色
+                                        $('.input-group #{$config.name}').colorPicker({
+                                            colors: ['#fff', '#000', '#3280fC', 'red']
+                                        });
+                                    })
+                                </script>
                             {/case}
                         {/switch}
 

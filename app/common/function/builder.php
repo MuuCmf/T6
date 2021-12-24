@@ -133,14 +133,14 @@ function get_config_type_list()
         'num' => '数字',
         'string' => '文本框',
         'textarea' => '文本域',
-        'entity' => '枚举',
         'select' => '下拉框',
         'editor' => '富文本',
-        'password' => '密码',
-        'pic' => '图片',
         'checkbox' => '多选框',
         'radio' => '单选框',
-        'text' => '纯文本'
+        'color' => '颜色',
+        'password' => '密码',
+        'pic' => '图片',
+        'entity' => '枚举',
     ];
     
     return $list;
