@@ -36,15 +36,19 @@
                             {case value="num"}
                                 <input type="number" class="text input-small form-control" name="config[{$config.name}]" value="{$config.value}">
                             {/case}
+
                             {case value="string"}
                                 <input type="text" class="text input-large form-control" name="config[{$config.name}]" value="{$config.value}">
                             {/case}
+
                             {case value="textarea"}
                                 <textarea name="config[{$config.name}]" class="form-control">{$config.value}</textarea>
                             {/case}
+
                             {case value="entity"}
                                 <textarea name="config[{$config.name}]" class="form-control">{$config.value}</textarea>
                             {/case}
+
                             {case value="select"}
                                 <select name="config[{$config.name}]" class="form-control">
                                     {volist name=":parse_config_attr($config['extra'])" id="vo"}
@@ -56,12 +60,15 @@
                                     {/volist}
                                 </select>
                             {/case}
+
                             {case value="editor"}<!--增加富文本和非明文-->
                                 {:ueditor($config['name'],'config['.$config['name'].']',$config['value'])}
                             {/case}
+
                             {case value="password"}
                                 <input type="password" class="text input-large form-control" name="config[{$config.name}]" autoComplete="off" value="{$config.value}">
                             {/case}
+
                             {case value="pic"}
                                 <div class="controls image-upload">
                                     <div id="upload_single_image_{$config.name}" style="padding-bottom: 5px;">图片上传</div>
@@ -127,7 +134,6 @@
                                 </script>
                             {/case}
 
-
                             {case value="checkbox"}
                                 {php}
                                     $config['value_array'] = explode(',', $config['value']);
@@ -188,43 +194,44 @@
                                     }
                                 {/php}
                                 {volist name="config.opt" id="option"}
-                                    {php}
-                                        $checked = in_array($key,$config['value_array']) ? 'checked' : '';
-                                        $inputId = "id_$config[name]_$key";
-                                    {/php}
-                                    <input type="radio" name="config[{$config.name}]" value="{$key}" id="{$inputId}" class="oneplus-radio" data-field-name="{$config.name}" {$checked}/>
-                                    <label for="{$inputId}">{$option|htmlspecialchars}</label>
+                                {php}
+                                    $checked = in_array($key,$config['value_array']) ? 'checked' : '';
+                                    $inputId = "id_$config[name]_$key";
+                                {/php}
+                                <input type="radio" name="config[{$config.name}]" value="{$key}" id="{$inputId}" class="oneplus-radio" data-field-name="{$config.name}" {$checked}/>
+                                <label for="{$inputId}">{$option|htmlspecialchars}</label>
                                 {/volist}
-                                    <input type="hidden" name="config[{$config.name}]" class="oneplus-radio-hidden" data-field-name="{$config.name}" value="{$config.value}"/>
+                                <input type="hidden" name="config[{$config.name}]" class="oneplus-radio-hidden" data-field-name="{$config.name}" value="{$config.value}"/>
 
-                                    <script>
-                                        $(function () {
-                                            function implode(x, list) {
-                                                var result = "";
-                                                for (var i = 0; i < list.length; i++) {
-                                                    if (result == "") {
-                                                        result += list[i];
-                                                    } else {
-                                                        result += ',' + list[i];
-                                                    }
+                                <script>
+                                    $(function () {
+                                        function implode(x, list) {
+                                            var result = "";
+                                            for (var i = 0; i < list.length; i++) {
+                                                if (result == "") {
+                                                    result += list[i];
+                                                } else {
+                                                    result += ',' + list[i];
                                                 }
-                                                return result;
                                             }
+                                            return result;
+                                        }
 
-                                            $('.oneplus-radio').change(function (e) {
-                                                var fieldName = $(this).attr('data-field-name');
-                                                var checked = $('.oneplus-radio[data-field-name=' + fieldName + ']:checked');
-                                                var result = [];
-                                                for (var i = 0; i < checked.length; i++) {
-                                                    var checkbox = $(checked.get(i));
-                                                    result.push(checkbox.attr('value'));
-                                                }
-                                                result = implode(',', result);
-                                                $('.oneplus-radio-hidden[data-field-name=' + fieldName + ']').val(result);
-                                            });
-                                        })
-                                    </script>
+                                        $('.oneplus-radio').change(function (e) {
+                                            var fieldName = $(this).attr('data-field-name');
+                                            var checked = $('.oneplus-radio[data-field-name=' + fieldName + ']:checked');
+                                            var result = [];
+                                            for (var i = 0; i < checked.length; i++) {
+                                                var checkbox = $(checked.get(i));
+                                                result.push(checkbox.attr('value'));
+                                            }
+                                            result = implode(',', result);
+                                            $('.oneplus-radio-hidden[data-field-name=' + fieldName + ']').val(result);
+                                        });
+                                    })
+                                </script>
                             {/case}
+
                             {case value="color"}
                                 <div class="input-group">
                                     <input type="text" class="form-control" id="{$config.name}" name="config[{$config.name}]" data-provide="colorpicker" data-wrapper="input-group-btn" data-pull-menu-right="true" value="{$config.value}" placeholder="请输入16进制颜色值，例如 #FF00DD">
@@ -237,6 +244,35 @@
                                         });
                                     })
                                 </script>
+                            {/case}
+
+                            {case value="style"}
+                                <!--风格样式-->
+                                <div class="style-config clearfix {$config.name}">
+                                    <input type="hidden" name="config[{$config.name}]" value="{$config['value']}" />
+                                    {php}
+                                        $config['extra'] = explode("\r\n", $config['extra']);
+                                    {/php}
+                                    {volist name="$config['extra']" id="vo"}
+                                    <div class="style {$vo} {if $config['value']==$vo} active{/if}" data-style="{$vo}" >
+                                        {$vo}
+                                        <div class="choose"><i class="fa fa-check"></i></div>	
+                                    </div>
+                                    {/volist}
+                                </div>
+                                <script>
+                                $(function(){
+                                    //更新店铺风格
+                                    $('.style-config.{$config.name} .style').click(function(e){
+                                        $('.style-config.{$config.name} .style').removeClass('active');
+                                        $(this).addClass('active');
+                                        var style = $(this).data('style');
+                                        console.log(style);
+                                        $('[name="config[{$config.name}]"]').val(style);
+                                    });
+                                });
+                                </script>
+                                <!-- 店铺风格设置模态框 end -->
                             {/case}
                         {/switch}
 

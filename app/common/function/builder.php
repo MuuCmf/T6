@@ -141,6 +141,7 @@ function get_config_type_list()
         'password' => '密码',
         'pic' => '图片',
         'entity' => '枚举',
+        'style' => '风格',
     ];
     
     return $list;
