@@ -2,9 +2,6 @@
 
 namespace app\common\middleware;
 
-use think\App;
-use think\Response;
-use think\facade\Request;
 use think\facade\Config;
 use think\facade\Cache;
 use think\facade\Db;
@@ -21,9 +18,10 @@ class DbConfig
                 $map[] = ['status','=',1];
                 //$map[] = ['group','>',0];
                 $data = Db::name('Config')->where($map)->field('type,name,value')->select()->toArray();
-                foreach ($data as $value) {
+                foreach ($data as &$value) {
                     $sys_config[$value['name']] = self::parse($value['type'], $value['value']);
                 }
+                unset($value);
                 Cache::set('MUUCMF_SYS_CONFIG_DATA', $sys_config);
             }
             //动态添加系统配置
@@ -41,11 +39,11 @@ class DbConfig
             $ext_config = Cache::get('MUUCMF_EXT_CONFIG_DATA');
             if (empty($ext_config)) {
                 $map[] = ['status','=',1];
-                //$map[] = ['group','>',0];
                 $data = Db::name('ExtendConfig')->where($map)->field('type,name,value')->select()->toArray();
-                foreach ($data as $value) {
+                foreach ($data as &$value) {
                     $ext_config[$value['name']] = self::parse($value['type'], $value['value']);
                 }
+                unset($value);
                 Cache::set('MUUCMF_EXT_CONFIG_DATA', $ext_config);
             }
             if (!empty($ext_config)) {
@@ -77,5 +75,5 @@ class DbConfig
             break;
         }
         return $value;
-    }   
+    } 
 }

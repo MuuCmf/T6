@@ -1114,6 +1114,8 @@ function get_attachment_src($attachment)
         }else{
             $type = 'file';
         }
+        // 初始化上传驱动
+        $driver = 'local';
         // 获取上传驱动
         if($type == 'pic'){
             $driver = config('extend.PICTURE_UPLOAD_DRIVER');
@@ -1121,7 +1123,6 @@ function get_attachment_src($attachment)
         if($type == 'file'){
             $driver = config('extend.FILE_UPLOAD_DRIVER');
         }
-        
         // 获取附件路径
         if ($driver == 'local') {
             //本地url
@@ -1146,5 +1147,5 @@ function get_attachment_src($attachment)
  */
 function get_attachment_url()
 {
-    return get_http_https().$_SERVER['SERVER_NAME'] . '/attachment/';
+    return request()->domain() . '/attachment/';
 }

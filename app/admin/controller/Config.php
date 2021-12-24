@@ -12,6 +12,7 @@ use app\admin\model\Config as MuuConfigModel;
  */
 class Config extends Admin
 {
+    protected $ConfigModel;
     /**
      * 构造方法
      * @access public
@@ -19,11 +20,43 @@ class Config extends Admin
     public function __construct()
     {
         parent::__construct();
-
         $this->ConfigModel = new MuuConfigModel();
     }
 
-    /**
+    // 获取某个标签的配置参数
+    public function group()
+    {
+        if (request()->isPost()) {
+            $config = input('post.config/a');
+            if ($config && is_array($config)) {
+                foreach ($config as $name => $value) {
+                    $map = ['name' => $name];
+                    $this->ConfigModel->where($map)->save(['value' => $value]);
+                }
+            }
+            cache('MUUCMF_SYS_CONFIG_DATA', null);
+            
+            return $this->success('保存成功',$config, cookie('__forward__'));
+
+        }else{
+            $id = input('id', 1,'intval');
+            View::assign('id', $id);
+            // 配置分组
+            $type = config('system.CONFIG_GROUP_LIST');
+            View::assign('type', $type);
+            // 配置项列表
+            $list = $this->ConfigModel->where(['status' => 1, 'group' => $id])->field('id,name,title,extra,value,group,remark,type')->order('sort asc')->select()->toArray();
+
+            View::assign('list', $list);
+            // 设置页面Title
+            $this->setTitle($type[$id] . '设置');
+            // 记录当前列表页的cookie
+            cookie('__forward__', $_SERVER['REQUEST_URI']);
+            return View::fetch();
+        }
+    }
+
+        /**
      * 系统配置参数管理
      */
     public function list()
@@ -41,7 +74,7 @@ class Config extends Admin
 
         list($list,$page) = $this->commonLists('Config', $map, 'sort,id');
         $list = $list->toArray()['data'];
-        
+
         View::assign('group', config('system.CONFIG_GROUP_LIST'));
         View::assign('group_id', input('get.group', 0));
         View::assign('list', $list);
@@ -120,45 +153,13 @@ class Config extends Admin
             $this->error('参数错误');
         }
 
-        if (Db::name('Config')->where('id','in', $id)->delete()) {
+        if ($this->ConfigModel->where('id','in', $id)->delete()) {
             cache('MUUCMF_SYS_CONFIG_DATA', null);
             //记录行为
             action_log('update_config', 'config', $id, is_login());
             return $this->success('删除成功');
         } else {
             return $this->error('删除失败');
-        }
-    }
-
-    // 获取某个标签的配置参数
-    public function group()
-    {
-        if (request()->isPost()) {
-            $config = input('post.config/a');
-            if ($config && is_array($config)) {
-                foreach ($config as $name => $value) {
-                    $map = ['name' => $name];
-                    Db::name('config')->where($map)->save(['value' => $value]);
-                }
-            }
-            cache('MUUCMF_SYS_CONFIG_DATA', null);
-            
-            return $this->success('保存成功',$config, cookie('__forward__'));
-
-        }else{
-            $id = input('id', 1,'intval');
-            // 配置分组
-            $type = config('system.CONFIG_GROUP_LIST');
-            // 配置项列表
-            $list = Db::name("Config")->where(['status' => 1, 'group' => $id])->field('id,name,title,extra,value,group,remark,type')->order('sort asc')->select()->toArray();
-
-            View::assign('list', $list);
-            View::assign('id', $id);
-            View::assign('type', $type);
-            $this->setTitle($type[$id] . '设置');
-            // 记录当前列表页的cookie
-            cookie('__forward__', $_SERVER['REQUEST_URI']);
-            return View::fetch();
         }
     }
 
