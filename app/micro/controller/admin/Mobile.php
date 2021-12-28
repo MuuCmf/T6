@@ -1,13 +1,16 @@
 <?php
 namespace app\micro\controller\admin;
 
-use app\admin\controller\Admin;
+use think\helper\Str;
+use think\facade\Cache;
+use think\facade\View;
+use app\micro\controller\admin\Admin as MicroAdmin;
 use app\common\model\Module;
 use app\micro\model\MicroPage as PageModel;
 use app\micro\logic\Page as PageLogic;
-use think\facade\View;
 
-class Mobile extends Admin
+
+class Mobile extends MicroAdmin
 {
     protected $PageLogic;
     protected $PageModel;
@@ -92,8 +95,7 @@ class Mobile extends Admin
             }
             $data = [
                 'id' => $id,
-                'shopid' => $this->shopid,
-                'app' => 'classroom',
+                'shopid' => 0,
                 'title' => !empty($params['title'])?$params['title']:'页面标题未填写',
                 'description' => !empty($params['description'])?$params['description']:'页面描述未填写',
                 'data' => json_encode($params['data']),
@@ -101,6 +103,7 @@ class Mobile extends Admin
                 'footer_show' => intval($params['footer_show']),
                 'type' => 0,
             ];
+            // 写入数据
             $result = $this->PageModel->edit($data);
             if($result){
                 return $this->success('保存成功');
@@ -202,5 +205,59 @@ class Mobile extends Admin
         }  
     }
 
+    /**
+     * 移动端底部导航
+     */
+    public function nav()
+    {
+        //post 提交处理
+        if (request()->isPost()) {
+            $params = input('post.footer');
+            foreach ($params['data'] as &$item){
+                $domain = request()->domain();
+                if (Str::contains($item['icon_url'], $domain . '/static/micro')){
+                    $sub_len = strlen($domain);
+                    $str_len = strlen($item['icon_url']);
+                    $item['icon_url'] = Str::substr($item['icon_url'], $sub_len, $str_len);
+                }
+            }
+            unset($item);
+            $data = [
+                'id' => $this->config_data['id'],
+                'shopid' => 0,
+                'footer' => json_encode($params)
+            ];
+            $result = $this->ConfigModel->edit($data);
+            if ($result){
+                Cache::set('MUUCMF_MICRO_CONFIG_DATA',null);
+                return $this->success('更新成功',null,'refresh');
+            }else{
+                return $this->error('网络异常，请稍后再试');
+            }
+        }else{
+            // 配置数据二次处理
+            $config_data = $this->config_data;
+            foreach($config_data['footer']['data'] as &$v){
+                if(!empty($v['link']['param']) && is_array($v['link']['param'])){
+                    $v['link']['param'] = json_encode($v['link']['param']);
+                }
+            }
+            unset($v);
+            View::assign('config_data', $config_data);
+            // 链接至参数
+            $link_list = $this->PageLogic->linkParams();
+            View::assign('link_list', $link_list);
+            // 获取系统图标
+            $icon_list = $this->PageLogic->getIconLists();
+            View::assign('icon_list', $icon_list);
+            //获取无图标路径
+            $no_icon = request()->domain() . '/micro/images/diy/noimg.png';
+            View::assign('no_icon', $no_icon);
+            // 设置title
+            $this->setTitle('移动端导航管理');
+            // 输出页面
+            return View::fetch();
+        }
+    }
 
 }

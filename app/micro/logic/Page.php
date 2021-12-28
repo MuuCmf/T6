@@ -22,11 +22,6 @@ class Page
         -1 => '已删除'
     ];
 
-    public function pannel()
-    {
-        
-    }
-
     /**
      * 连接至参数配置
      */
@@ -38,7 +33,7 @@ class Page
                 'sys_type' => 'detail',
                 'link_type' => 'micro_page',
                 'link_type_title' => '自定义页面',
-                'api' => url('classroom/admin.page/api')
+                'api' => url('micro/admin.page/api')
             ],[
                 'icon' => 'fa-bars',
                 'sys_type' => 'list',

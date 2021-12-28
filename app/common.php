@@ -6,7 +6,6 @@ use app\common\model\ActionLog;
 require_once(__DIR__ . '/common/function/attachment.php');
 require_once(__DIR__ . '/common/function/builder.php');
 require_once(__DIR__ . '/common/function/editor.php');
-require_once(__DIR__ . '/common/function/file.php');
 require_once(__DIR__ . '/common/function/member.php');
 require_once(__DIR__ . '/common/function/parse.php');
 require_once(__DIR__ . '/common/function/poster.php');
