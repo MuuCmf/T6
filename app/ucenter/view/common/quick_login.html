@@ -17,7 +17,7 @@
     <div class="clearfix"></div>
     <div class="wrapper">
         <div class="password-captcha">
-            <ul id="login" class="nav-tabs">
+            <ul id="myTab" class="nav-tabs">
                 <li class="login-method-captcha">
                     <a href="#captcha" data-toggle="tab">验证码登录</a>
                 </li>
@@ -131,9 +131,9 @@
         });
     });
 
-    $(function () {
-        $("#login li:eq(1) a").tab("show");
-    });
+    // $(function () {
+    //     $("#login li:eq(0) a").tab("show");
+    // });
 
     $(".input-group").on("click", ".see", function () {
         let type = $(this).data('type');

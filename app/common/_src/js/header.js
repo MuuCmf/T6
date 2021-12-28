@@ -23,14 +23,6 @@
     });
 }
 //下划线
-// $(document).ready(function(){
-//     $(".index-menu a").ench(function(){
-//         $this = $(this);
-//         if($this[0].href == String(window.location)){
-//             $this.addClass("main-active")
-//         }
-//     })
-// })
 // ----------------------------
 if (window.location.pathname != "/muu/index/index.html" &&
     window.location.pathname != "/muu/frame/index.html" &&
