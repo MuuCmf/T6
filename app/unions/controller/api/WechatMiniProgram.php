@@ -100,7 +100,7 @@ class WechatMiniProgram extends Base {
      */
     public function unlimitQrcode(){
         //小程序路径
-        $path = input('param.path','muu_'.Cache::get('module') . '/pages/index/index');
+        $path = input('param.path');
         //二维码url参数
         $scene = input('param.scene','');
         $width = input('param.width','500');

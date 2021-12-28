@@ -952,5 +952,15 @@ if (!function_exists('save_local_storage')) {
     }
 }
 
+if (!function_exists('get_module_name')) {
+    /**
+     * 获取当前模块名
+     */
+    function get_module_name()
+    {
+        return request()->param('app') ?? App('http')->getName();
+    }
+}
+
 
 

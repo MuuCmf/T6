@@ -52,14 +52,14 @@ class History extends Base
      * @param $info_id
      * @param $info_type
      */
-    public static function addLog($uid,$info_id ,$info_type){
+    public static function addLog($uid,$info_id ,$info_type,$shopid, $app){
         //写浏览记录
         $history_data = [
             'info_id' => $info_id,
             'info_type' => $info_type,
             'uid'=> $uid,
-            'shopid' => request()->param('shopid'),
-            'app' => request()->param('app'),
+            'shopid' => $shopid,
+            'app' => $app,
             'status' => 1
         ];
         (new History())->edit($history_data);

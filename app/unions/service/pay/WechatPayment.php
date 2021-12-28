@@ -13,7 +13,7 @@
  */
 namespace app\unions\service\pay;
 use app\common\model\Orders;
-use app\unions\model\MiniProgramConfig;
+use app\unions\model\WechatMpConfig;
 use EasyWeChat\Factory;
 use think\Exception;
 

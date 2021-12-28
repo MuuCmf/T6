@@ -13,7 +13,7 @@
  */
 namespace app\unions\service\wechat;
 
-use app\unions\model\MiniProgramConfig;
+use app\unions\model\WechatMpConfig;
 use EasyWeChat\Factory;
 use think\Exception;
 use think\facade\Cache;
@@ -36,17 +36,15 @@ class MiniProgram extends Wechat{
 
     public function initConfig(){
         $this->shopid = request()->param('shopid');
-        $this->module = request()->param('app');
         //获取配置信息
         $map = [
             ['shopid' ,'=' ,$this->shopid],
-            ['name' ,'=' , $this->module],
-            ['platform' ,'=' ,'wechat']
         ];
-        $data = (new MiniProgramConfig())->where($map)->find();
+        $data = (new WechatMpConfig())->where($map)->find();
         if (empty($data)){
             throw  new Exception('小程序配置信息不存在');
         }
+        $data = $data->toArray();
         return [
             'app_id' => $data['appid'],
             'secret' => $data['secret'],

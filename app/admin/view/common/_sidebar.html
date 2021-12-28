@@ -9,28 +9,6 @@
         <h3 class="title">{$MODULE.alias}</h3>
         <p class="version">版本：{$MODULE.version}</p>
       </div>
-        <!--小程序配置-->
-        {if $MODULE.weixin_mp == 1 || $MODULE.alipay_mp == 1 || $MODULE.bytedance_mp == 1 || $MODULE.baidu_mp}
-        <ul class="sidebar-menu menu-open" data-widget="tree">
-            <li class="treeview">
-                <a>
-                    <i class="fa fa-circle-o"></i>
-                    <span>小程序配置</span>
-                    <span class="pull-right-container">
-                  <i class="fa fa-angle-left pull-right"></i>
-                </span>
-                </a>
-                <ul class="treeview-menu menu-open">
-                    <li>
-                        <a href="{:url('unions/admin.miniProgram/shopIndex')}?module_name={$MODULE.name}">
-                            <i class="fa fa-cubes"></i>
-                            <span>小程序配置</span>
-                        </a>
-                    </li>
-                </ul>
-            </li>
-        </ul>
-        {/if}
       {/notempty}
       <!-- sidebar menu: : style can be found in sidebar.less -->
       {notempty name="ADMIN_MENU.child"}

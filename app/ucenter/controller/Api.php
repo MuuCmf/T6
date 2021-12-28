@@ -134,7 +134,7 @@ class Api extends ApiBase{
         }
         $data = [
             'shopid' => $this->shopid,
-            'app' => $this->module,
+            'app' => get_module_name(),
             'content' => $content,
             'images' => $images,
             'uid' => $uid,

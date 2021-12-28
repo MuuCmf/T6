@@ -19,7 +19,7 @@ use app\common\model\MemberSync;
 use app\common\model\Orders;
 use app\common\model\Orders as OrdersModel;
 use app\unions\facade\OfficialAccount;
-use app\unions\model\MiniProgramConfig;
+use app\unions\model\WechatMpConfig;
 use app\unions\model\WechatConfig;
 use think\Exception;
 use think\facade\Db;
@@ -87,7 +87,7 @@ class Pay extends Base {
 
     /**
      * 初始化渠道配置信息
-     * @return MiniProgramConfig|WechatConfig|array|\think\Model
+     * @return WechatMpConfig|WechatConfig|array|\think\Model
      */
     protected function initUnionConfig()
     {
@@ -105,10 +105,8 @@ class Pay extends Base {
                 //获取配置信息
                 $map = [
                     ['shopid' ,'=' , $this->params['shopid']],
-                    ['name' ,'=' , $this->params['app']],
-                    ['platform' ,'=' ,'wechat']
                 ];
-                $data = (new MiniProgramConfig())->where($map)->find();
+                $data = (new WechatMpConfig())->where($map)->find();
                 if (empty($data)){
                     throw  new Exception('小程序配置信息不存在');
                 }

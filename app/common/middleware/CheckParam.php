@@ -18,7 +18,6 @@ use think\Response;
 class CheckParam extends Api{
     protected $need_param = [
         'shopid' => '店铺ID',
-        'app' => '应用标识'
     ];
     /**
      * 参数鉴权
