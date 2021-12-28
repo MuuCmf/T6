@@ -174,7 +174,7 @@ class Common extends CommonCommon
                 $token = 'Bearer ' . $token;
                 $last_url = session('login_http_referer');
                 if(empty($last_url)){
-                    $last_url = url('index/index/index',[],true,true);
+                    $last_url = request()->domain();
                 }
                 return $this->success('登录成功',$token,$last_url);
             } else {
@@ -221,7 +221,7 @@ class Common extends CommonCommon
         if(is_login()){
             $commonMemberModel = new CommonMember;
             $commonMemberModel->logout(is_login());
-            return $this->success('退出成功','', url('index/index/index'));
+            return $this->success('退出成功','', request()->domain());
         } else {
             return $this->error('error');
         }
