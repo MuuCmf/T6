@@ -53,14 +53,6 @@ class OfficialAccount extends Wechat {
     }
 
     /**
-     * @title 获取回调地址
-     * @return string
-     */
-    public function callbackUrl(){
-        return request()->domain() . "unions{$this->separator}api.WechatOfficialAccount{$this->separator}callback";
-    }
-
-    /**
      * 公众号授权验证
      */
     public function serverOAath(){

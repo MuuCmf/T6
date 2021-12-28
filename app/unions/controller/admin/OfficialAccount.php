@@ -84,7 +84,8 @@ class OfficialAccount extends MuuAdmin {
             $data = $this->wechatConfigModel->getWechatConfigByShopId($this->shopid);
             if (!$data){
                 $data['id'] = 0;
-                $data['url'] = \app\unions\facade\OfficialAccount::callbackUrl();
+                $data['cover'] = "";
+                $data['url'] = $this->wechatConfigModel->callbackUrl();
             }
             View::assign('data', $data);
             return view();

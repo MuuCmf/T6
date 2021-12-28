@@ -42,4 +42,12 @@ class WechatConfig extends BaseModel{
         }
         return null;
     }
+
+    /**
+     * @title 获取回调地址
+     * @return string
+     */
+    public function callbackUrl(){
+        return request()->domain() . "/unions/api.WechatOfficialAccount/callback";
+    }
 }
