@@ -36,6 +36,6 @@ $(document).ready(function() {
     });
   });
 
-  $(function() {
-    $("#login li:eq(1) a").tab("show");
-  });
+  // $(function() {
+  //   $("#login li:eq(0) a").tab("show");
+  // });

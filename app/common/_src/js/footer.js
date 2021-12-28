@@ -18,9 +18,8 @@
     var mobile = document.getElementById("mobile").value;
     var myreg = /^[1][3,5,7,8,9][0-9]{9}$/;
     if (myreg.test(mobile)) {
-      alert("提交成功");
       $("#mobile").val("");
-      console.log(mobile)
+      console.log('手机号正确',mobile)
     } else {
       alert("手机号码不正确")
     }
@@ -31,7 +30,6 @@
     var email = document.getElementById("e-mail");
     email.select(); // 选择对象
     document.execCommand("Copy"); // 执行浏览器复制命令
-    // alert('复制成功')
     $('.prompt').css({"display":"block"})
     setTimeout("$('.prompt').css({'display':'none'})",2000);
   };
@@ -43,7 +41,6 @@
     document.execCommand("Copy");
     $('.getqq').css({"display":"inline-block"})
     setTimeout("$('.getqq').css({'display':'none'})",2000)
-    // alert('复制成功')
   };
   // 点击复制qq群号码
 
@@ -88,8 +85,6 @@
       document.addEventListener( 'mousemove', onDocumentMouseMove, false );
       document.addEventListener( 'touchstart', onDocumentTouchStart, false );
       document.addEventListener( 'touchmove', onDocumentTouchMove, false );
-
-      //
 
       window.addEventListener( 'resize', onWindowResize, false );
 

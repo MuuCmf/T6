@@ -270,7 +270,6 @@ body{
       width: 500px;
       padding: 45px 45px 0 0;
       margin: 0 auto;
-      // margin-left: auto;
     }
   }
 
@@ -300,7 +299,8 @@ body{
 
 // -----------------
 .modal-dialog{
-  width: 530px;
+  max-width: 530px;
+  // width: 530px;
   height: 530px;
   margin: 0 auto;
 }
@@ -310,17 +310,11 @@ body{
 .modal-body{
   max-width: 530px;
   height: 530px;
-}
+} 
 // ---------------
 .login-main {
-
-  // width: 530px;
   height: 520px;
-  min-width: 500px;
   background: #fff;
-
-  // padding: 5px 20px 0 0;
-  // padding: 0 55px;
   .login-box {
     text-align: right;
     -webkit-user-select: none;
@@ -347,7 +341,6 @@ body{
       .iconfont {
         font-size: 50px;
         color: #999;
-        // padding: 5px 20px 0 0;
         position: relative;
       }
 
