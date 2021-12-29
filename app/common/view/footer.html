@@ -68,7 +68,6 @@
 </div>
 <script>
   $(function () {
-
     //授权查询页 底部扫码领取方案不显示
     var address = "/muu/nslookup/index.html";
     if (window.location.pathname == address) {
@@ -83,41 +82,8 @@
         "display": "none"
       });
     }
-    // 领取方案
-    function mobile() {
-      var mobile = document.getElementById("mobile").value;
-      var myreg = /^[1][3,5,7,8,9][0-9]{9}$/;
-      if (myreg.test(mobile)) {
-        alert("提交成功");
-        $("#mobile").val("");
-        console.log(mobile)
-      } else {
-        alert("手机号码不正确")
-      }
-    }
-    // 领取方案
-    // 点击复制
-    function email() {
-      var email = document.getElementById("e-mail");
-      email.select(); // 选择对象
-      document.execCommand("Copy"); // 执行浏览器复制命令
-      // alert('复制成功')
-      $('.prompt').css({"display":"block"})
-      setTimeout("$('.prompt').css({'display':'none'})",2000);
-    };
-    // 点击复制
-    // 点击复制qq群号码
-    function groupnumber() {
-      var groupnumber = document.getElementById("groupnumber");
-      groupnumber.select();
-      document.execCommand("Copy");
-      $('.getqq').css({"display":"inline-block"})
-      setTimeout("$('.getqq').css({'display':'none'})",2000)
-      // alert('复制成功')
-    };
-    // 点击复制qq群号码
-
-    var SEPARATION = 60, AMOUNTX = 50, AMOUNTY = 50;
+//背景特效
+var SEPARATION = 60, AMOUNTX = 50, AMOUNTY = 50;
     var container;
     var camera, scene, renderer;
     var particles, particle, count = 0;
@@ -218,5 +184,34 @@
       renderer.render( scene, camera );
       count += 0.1;
     }
-  })
+  });
+    // 领取方案
+    function mobile() {
+      var mobile = document.getElementById("mobile").value;
+      var myreg = /^[1][3,5,7,8,9][0-9]{9}$/;
+      if (myreg.test(mobile)) {
+        $("#mobile").val("");
+        console.log('手机号正确',mobile)
+      } else {
+       console.log('手机号输入错误')
+      }
+    }
+    // 点击复制
+    function email() {
+      var email = document.getElementById("e-mail");
+      email.select(); // 选择对象
+      document.execCommand("Copy"); // 执行浏览器复制命令
+      $('.prompt').css({"display":"block"})
+      setTimeout("$('.prompt').css({'display':'none'})",2000);
+    };
+    // 点击复制qq群号码
+    function groupnumber() {
+      var groupnumber = document.getElementById("groupnumber");
+      groupnumber.select();
+      document.execCommand("Copy");
+      $('.getqq').css({"display":"inline-block"})
+      setTimeout("$('.getqq').css({'display':'none'})",2000)
+    };
+    
+  
 </script>
