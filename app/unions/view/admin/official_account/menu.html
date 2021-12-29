@@ -181,7 +181,7 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label class="col-sm-4" for="mini-url">页面地址</label>
+                                <label class="col-sm-4" for="mini-url">备用网页地址</label>
                                 <div class="col-sm-6">
                                     <input class="form-control" id="mini-url" placeholder="页面地址，当不支持小程序时会跳转此页面" type="text"
                                            v-model="selectedMenu.url">
@@ -436,6 +436,13 @@
             },
             //选择素材回调
             chooseMaterialCallback(material) {
+                //剔除无用数据
+                //素材
+                if (this.selectedMenu.material_type == 'news') {
+                    material.content.news_item.forEach(function (t) {
+                        t.content = null;
+                    })
+                }
                 this.selectedMenu.material = material;
                 this.selectedMenu.media_id = material.media_id;
                 this.$forceUpdate();

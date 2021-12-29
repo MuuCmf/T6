@@ -4,7 +4,7 @@ return [
     //模块名
     'name' => 'unions',
     //别名
-    'alias' => '渠道管理',
+    'alias' => '渠道',
     'logo' => 'xxxx',
     //版本号
     'version' => '1.0.0',
