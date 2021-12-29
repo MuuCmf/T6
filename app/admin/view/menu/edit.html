@@ -45,7 +45,7 @@
                 <label class="item-label">上级菜单<span class="check-tips">（所属的上级菜单）</span></label>
                 <div class="controls">
                     <select name="pid" class="form-select-size form-control">
-                        {volist name="menus" id="menu"}
+                        {volist name="Menus" id="menu"}
                         <option value="{$menu.id}" selected="{if $pid == $menu.id}selected{else}false{/if}">{:htmlspecialchars_decode($menu.title_show)}</option>
                         {/volist}
                     </select>
