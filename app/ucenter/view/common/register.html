@@ -10,8 +10,8 @@
             <!-- 注册{:config('system.WEB_SITE_NAME')}账号 -->
             <h3>
                 <a href="{:url('muu/index/index')}"><img src="__STATIC__/common/images/logo.png" alt=""></a>
-                    <span>注册</span>
-                </h3>
+                <span>注册</span>
+            </h3>
         </div>
         <div class="register-body clearfix">
             {if !empty($regSwitch)}
@@ -62,7 +62,7 @@
                                             <input type="text" class="form-control new-input pull-left" placeholder="请输入邮箱验证码" name="verify" {if $key != 0}disabled{/if}>
                                         </div>
                                         <div class="col-xs-4">
-                                            <button type="button" class="btn btn-block get-verify" data-role="getVerify"  data-type="email" data-url="{:url('api/verify/send')}" {if $key != 0}disabled{/if}>
+                                            <button type="button"  class="btn btn-block get-verify" data-role="getVerify"  data-type="email" data-url="{:url('api/verify/send')}" {if $key != 0}disabled{/if}>
                                                 获取验证码
                                             </button>
                                         </div> 
@@ -76,7 +76,6 @@
                                     <div class="form-group clearfix">
                                         <input type="text" id="mobile" class="form-control form_check new-input" check-type="UserMobile" check-url="{:url('ucenter/common/checkAccount')}" placeholder="请输入手机号" name="account" {if $key != 0}disabled{/if}>
                                     </div>
-
                                     <div class="form-group row clearfix">
                                         <div class="col-xs-8">
                                             <input type="text" class="form-control new-input pull-left" placeholder="请输入手机验证码" name="verify" {if $key != 0}disabled{/if}>
@@ -126,7 +125,6 @@
                             <div class="col-xs-12 Validform_checktip text-warning lg_lf_fm_tip"></div>
                         </div>
                         {/if}
-
                         <div class="form-group row clearfix service-agreement">
                             <div class="col-xs-12">
                                 <div class="checkbox-primary register-agreement">
@@ -149,6 +147,10 @@
 
             {/if}
         </div>
+        <div class="record">
+            <p class="company">Power&nbsp;by&nbsp;MuuCmf<span>|</span>Copyright ©2018-2022 北京火木科技有限公司</p>
+            <p class="recordnvarchar">京ICP备15012581号-2 <span>|</span>京ICP备2021025387号-1</p>
+        </div>
     </div>
 </div>
 {include file="../../common/view/js"/}
@@ -161,7 +163,6 @@
             var self = $("form");
             $.post(self.attr("action"), self.serialize(), success, "json");
             return false;
-
             function success(data) {
                 if (data.code) {
                     toast.success(data.msg + '页面即将跳转！', '温馨提示');
@@ -262,7 +263,7 @@
         dec_time : function(){
             if(this.time > 0){
                 this.time = this.time - 1
-                this.obj.text(this.time + 'S')
+                this.obj.text('重新获取' + this.time + 'S')
                 setTimeout("DecTime.dec_time()",1000)
             }else{
                 this.obj.text("获取验证码")
