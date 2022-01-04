@@ -9,7 +9,9 @@
             </div>
             <div class="navigation">
                 <ul class="index-menu">
-                    <li class="active"><a href="{:url('muu/index/index')}" class="active-item">首页</a></li>
+                    <li class="active"><a href="{:url('muu/index/index')}" class="active-item home">首页</a>
+                        <span class="home-underline"></span>
+                    </li>
                     <li class="active">
                         <a href="{:url('muu/product/index')}" class="active-item product">产品</a>
                         <span class="product-underline"></span>
@@ -20,7 +22,7 @@
                     {if condition="is_login()"}
                     <li class="dropdown">
                         <!-- 手机号 -->
-                        <!-- <p class="mobile">你好，<span id="item">13333289403</span></p> -->
+                        <!-- <p class="mobile">你好，<span id="item">13333289404</span></p> -->
                         <!-- 头像 -->
                         <div class="avatar">
                             <a role="button" class="dropdown-toggle dropdown-toggle-avatar" data-toggle="dropdown">
@@ -37,10 +39,10 @@
                         <!-- 弹框 -->
                         {if condition="$open_quick_login"}
                         <a data-login="quick_do_login" data-remote="{:url('ucenter/Common/quickLogin')}"
-                            data-show-header="false" data-toggle="modal">登陆</a>
+                            data-show-header="false" data-toggle="modal">登录</a>
                         {else/}
                         <!-- 单页 -->
-                        <a data-login="do_login" href="{$login_url}">登陆</a>
+                        <a data-login="do_login" href="{$login_url}">登录</a>
                         {/if}
                     </li>
                     <li class="member registration">

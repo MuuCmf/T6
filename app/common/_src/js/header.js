@@ -1,7 +1,6 @@
  // 首页顶部背景
  if (window.location.pathname == "/muu/index/index.html") {
     $(window).scroll(function () {
-        // console.log(222222)
         if ($(window).scrollTop() >= 750) {
             $(".header-container").css({
                 "background": "#fff"
@@ -28,7 +27,8 @@ if (window.location.pathname != "/muu/index/index.html" &&
     window.location.pathname != "/muu/frame/index.html" &&
     window.location.pathname != "/muu/nslookup/index.html" &&
     window.location.pathname != "/muu/about/index.html" &&
-    window.location.pathname != "/ucenter/Common/agreement.html") {
+    window.location.pathname != "/ucenter/Common/agreement.html" &&
+    window.location.pathname != "/") {
     $(".product").css({
         "color": "#358cc2"
     });
@@ -36,7 +36,32 @@ if (window.location.pathname != "/muu/index/index.html" &&
         'display': 'block'
     });
 }
-//---------------------------
+if(window.location.pathname =="/"){
+    $('.home').css({
+        "color":"#358cc2"
+    });
+    $(".home-underline").css({
+        'display':'block'
+    })
+    if($(window).scrollTop()>=750){
+
+    }else{
+        $(".header-container").css({
+        "background":"transparent"
+        })
+    }
+    $(window).scroll(function(){
+        if($(window).scrollTop() >= 750){
+          $(".header-container").css({
+              "background":"#fff"
+          })
+        }else{
+           $(".header-container").css({
+               "background":"transparent"
+           })
+        }
+    })
+}
 //手机号替换
 $('#item').each(function () {
     var text = $(this).text();

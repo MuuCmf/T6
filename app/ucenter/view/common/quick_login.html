@@ -19,7 +19,8 @@
         <div class="password-captcha">
             <ul id="myTab" class="nav-tabs">
                 <li class="login-method-captcha">
-                    <a href="#captcha" data-toggle="tab">验证码登录</a>
+                    <a href="#shortmessage" data-toggle="tab">验证码登录</a>
+                    <!-- <a href="#captcha" data-toggle="tab">验证码登录</a> -->
                 </li>
                 <li class="active login-method-password">
                     <a href="#password" data-toggle="tab">密码登录</a>
@@ -44,33 +45,40 @@
                                 <input type="password" id="inputPassword" class="form-control" placeholder="请输入密码"
                                     name="password">
                                 <!-- <div class="input-group-addon"><a class="change_show" href="javascript:void(0);">show</a></div> -->
-                                <span class="see iconfont input-group-addon" data-type="hidden">&#xe6b1;</span>
+                                <span class="see iconfont input-group-addon" deta-type="hidden">&#xe6b1;</span>
                             </div>
                         </div>
                     </div>
-                    <div id="captcha" class="form-group captcha clearfix tab-pane fade">
+                    <div id="shortmessage" class="form-group captcha shortmessage clearfix tab-pane fade">
                         <div class="col-xs-8">
-                            <input type="text" id="verifyCode" class="form-control" placeholder="验证码" datatype="*5-5"
-                                name="captcha">
+                            <input type="text" id="verifyCode" class="form-control" placeholder="请输入验证码" datatype="*5-5" name="captcha">
                         </div>
                         <div class="captcha-btn">
-                            <button class="">获取验证码</button>
+                            <button class="elicitcaptcha" onClick="elicitcaptcha()"><a href="#">获取验证码</a></button>
                         </div>
                     </div>
                     {if check_verify_open('login')}
+                    <div id="shortmessage" class="form-group captcha shortmessage clearfix tab-pane fade">
+                        <div class="col-xs-8">
+                            <input type="text" id="verifyCode" class="form-control" placeholder="请输入验证码" datatype="*5-5" name="captcha" >
+                        </div>
+                        <div class="captcha-btn">
+                            <button class="elicitcaptcha" onClick="elicitcaptcha()"><a href="#">获取验证码</a></button>
+                        </div>
+                    </div>
+                    {/if}
+                    <!-- {if check_verify_open('login')}
                     <div id="captcha" class="form-group clearfix tab-pane fade">
                         <label for="verifyCode" class=".sr-only col-xs-12" style="display: none"></label>
                         <div class="col-xs-8">
-                            <input type="text" id="verifyCode" class="form-control" placeholder="验证码" datatype="*5-5"
-                                name="captcha">
+                            <input type="text" id="verifyCode" class="form-control" placeholder="验证码" datatype="*5-5" name="captcha">
                         </div>
                         <div class="col-xs-4">
                             <img class="verifyimg reloadverify" alt="刷新验证码" src="{:captcha_src()}"
                                 style="cursor:pointer;height:43px;max-width: 100%">
                         </div>
                     </div>
-
-                    {/if}
+                    {/if} -->
                 </div>
                 <div class="clearfix form-group">
                     <div class="col-xs-6">
@@ -157,6 +165,27 @@
 
         });
     });
+    var validatecode = 60;
+function elicitcaptcha(){
+    if(validatecode === 1){
+      validatecode = 60;
+    $(".elicitcaptcha").text("获取验证码");
+    $(".elicitcaptcha").removeAttr("disabled");
+    $(".elicitcaptcha").css("pointer-events","all");
+    $(".elicitcaptcha").css({"border":"1px solid #03b8cf","color":"#03b8cf"})
+      return
+    }else{
+      validatecode--;
+    $(".elicitcaptcha").text("重新获取("+validatecode+")");
+    $(".elicitcaptcha").attr("disabled","true")
+    $(".elicitcaptcha").css("pointer-events","none");
+    $(".elicitcaptcha").css({"border":"1px solid #ababab","color":"#ababab"})
+    }
+    setTimeout(function(){
+      elicitcaptcha();
+    },1000)
+}
+
     // -----------------------------------
     $(function () {
 
