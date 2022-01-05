@@ -980,7 +980,7 @@ $html .= <<<EOF
         /*上传成功**/
         uploader_{$name}.on('uploadSuccess', function (file, data) {
             if (data.code) {
-                $("input[name='{$name}']").val(data.data.attachment);
+                $(".attach").val(data.data.attachment);
                 //重启webuploader,可多次上传
                 uploader_{$name}.reset();
             } else {
