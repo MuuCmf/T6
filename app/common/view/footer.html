@@ -96,7 +96,7 @@ var SEPARATION = 60, AMOUNTX = 50, AMOUNTY = 50;
     animate();
     function init() {
       container = document.createElement( 'div' );
-      document.getElementById('wemreceive').appendChild(container);
+      document.getElementById('wemreceive').appendChild(container)
       camera = new THREE.PerspectiveCamera( 75, window.innerWidth / 362, 1, 10000 );
       camera.position.z = 1000;
       scene = new THREE.Scene();
@@ -122,13 +122,9 @@ var SEPARATION = 60, AMOUNTX = 50, AMOUNTY = 50;
       renderer = new THREE.CanvasRenderer();
       renderer.setSize( window.innerWidth, 362 );
       container.appendChild( renderer.domElement );
-
-      document.addEventListener( 'mousemove', onDocumentMouseMove, false );
+      document.addEventListener('mousemove',onDocumentMouseMove,false);
       document.addEventListener( 'touchstart', onDocumentTouchStart, false );
       document.addEventListener( 'touchmove', onDocumentTouchMove, false );
-
-      //
-
       window.addEventListener( 'resize', onWindowResize, false );
 
     }
@@ -187,9 +183,11 @@ var SEPARATION = 60, AMOUNTX = 50, AMOUNTY = 50;
       count += 0.1;
     }
   });
+
+
     // 领取方案
     function mobile() {
-      var mobile = document.getElementById("mobile").value;
+      var mobile = $("#mobile").val();
       var myreg = /^[1][3,5,7,8,9][0-9]{9}$/;
       if (myreg.test(mobile)) {
         $("#mobile").val("");
@@ -202,22 +200,20 @@ var SEPARATION = 60, AMOUNTX = 50, AMOUNTY = 50;
        console.log('手机号输入错误')
       }
     }
-    // 点击复制
-    function email() {
-      var email = document.getElementById("e-mail");
-      email.select(); // 选择对象
-      document.execCommand("Copy"); // 执行浏览器复制命令
-      $('.prompt').css({"display":"block"})
-      setTimeout("$('.prompt').css({'display':'none'})",2000);
-    };
     // 点击复制qq群号码
     function groupnumber() {
-      var groupnumber = document.getElementById("groupnumber");
-      groupnumber.select();
-      document.execCommand("Copy");
+      var groupnumber = $('#groupnumber')
+      groupnumber.select();//选择对象
+      document.execCommand("Copy");//执行浏览器命令
       $('.getqq').css({"display":"inline-block"})
       setTimeout("$('.getqq').css({'display':'none'})",2000)
     };
-    
-  
+    //点击复制邮箱地址
+    function email(){
+      var email = $("#e-mail")
+      email.select();
+      document.execCommand('Copy');
+      $('.prompt').css({"display":"block"})
+      setTimeout("$('.prompt').css({'display':'none'})",2000)
+    };
 </script>
