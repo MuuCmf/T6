@@ -24,7 +24,7 @@ class Update extends Admin
     {
         parent::__construct();
         $this->_initialize();
-        $this->api = config('app.api').'/muucmf/update/';
+        $this->api = config('muucmf.cloud_api');
     }
     public function _initialize()
     {
@@ -38,40 +38,28 @@ class Update extends Admin
     public function index()
     {
         //读取本地版本号
-        $localVersion = $this->localVersion(); 
+        $localVersion = $this->version();
         //读取云端最新版本号
-        $cloudVersion = $this->cloudVersion();
-        if(empty($cloudVersion)){
-            $cloudVersion = '服务器返回错误~请稍后再试！';
-        }
-        
-        //读取云端可更新版本数据
-        $result = $this->checkVersion($localVersion);
-        if(empty($result)){
-            $result = [
-                'code' => 0,
-                'msg' => '服务器返回错误~'
-            ];
-        }
+        $cloudVersion = $this->cloudVersion()['data'];
+        $upgrade = $localVersion != $cloudVersion['version'] ? true : false;
         $this->setTitle('系统在线更新');
         View::assign('localVersion',$localVersion);
         View::assign('cloudVersion',$cloudVersion);
-        View::assign('result',$result);
+        View::assign('upgrade',$upgrade);
 
-        return View::fetch();
+        return \view();
     }
 
     /*开始在线更新数据*/
     public function start()
-    {   
-        if(request()->isPost()){
-            $this->setTitle('系统在线更新日志');
-            echo View::fetch();
-
-            $this->update();
-        }else{
-            return $this->error('错误的操作！');
-        }
+    {
+        $this->setTitle('在线更新');
+        View::assign([
+            'type'           => input('app_type',0),
+            'localVersion'   => $this->version(),
+            'upgradeVersion' => input('version')
+        ]);
+        return \view();
     }
 
     /**
@@ -184,46 +172,10 @@ class Update extends Admin
      */
     private function cloudVersion()
     {
-        $api = $this->api . 'version?v=T6';
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $api);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($ch, CURLOPT_HEADER, 0);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE); // https请求 不验证证书和hosts
-        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, FALSE);
-        $output = curl_exec($ch);
-        curl_close($ch);
-
+        $api = $this->api.'app/version';
+        $output = curl_request($api,[]);
         $result = json_decode($output,true);//转换为数组格式
         return $result;
-    }
-
-    /*
-    *检测云端可更新版本信息
-    */
-    private function checkVersion($localVersion='')
-    {   
-        $api = $this->api.'enable_version='.$localVersion;
-
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $api);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($ch, CURLOPT_HEADER, 0);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE); // https请求 不验证证书和hosts
-        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, FALSE);
-        $output = curl_exec($ch);
-        curl_close($ch);
-        
-        $result = json_decode($output,true);//转换为数组格式
-        return $result;
-    }
-
-    /*
-    *获取本地系统版本
-    */
-    private function localVersion()
-    {
-        return config('muucmf.version');
     }
 
     /**
@@ -321,23 +273,6 @@ class Update extends Admin
             }
         }
         unset($value);
-    }
-    /**
-     * 实时显示提示信息
-     * @param  string $msg 提示信息
-     * @param  string $class 输出样式（success:成功，error:失败）
-     * @author huajie <banhuajie@163.com>
-     */
-    private function showMsg($msg, $class = ''){
-        echo "<script type=\"text/javascript\">showmsg(\"{$msg}\",\"{$class}\")</script>";
-        flush();
-        ob_flush();
-    }
-    /**
-     * 生成更新文件夹名
-     */
-    private function getUpdateFolder($newVersion){
-        return 'update_'.$newVersion;
     }
 
 }

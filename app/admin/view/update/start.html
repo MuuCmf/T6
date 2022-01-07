@@ -1,56 +1,154 @@
 {extend name="common/main"/}
 {block name="style"}
-    <style>
-    .install-database {
-        padding:15px;
-        margin:15px;
-        border:1px #ccc solid;
-        border-radius: 5px;
-        background-color: #eee;
+<script src="__STATIC__/common/lib/vue/vue-2.6.14.js"></script>
+<style>
+    .main {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding-bottom: 80px !important;
     }
-    .install-database p {
-        font-size:14px;
-        color:#666;
+    .progress {
+        width: 600px;
     }
-    .install-database .title {
-        color:#000;
-        font-weight: bold;
+    .progress-bar {
+        background-color: #03b8cf;
     }
-    .install-database .success {
-        color:#38B03F;
+    .progress-info{
+        width: 600px;
+        display: flex;
+        justify-content: space-between;
     }
-    .install-database .error {
-        color:#EA644A;
+    .task{
+        color: #03b8cf;
     }
-    </style>
+    .task-error{
+        color: #EA644A;
+    }
+
+    .upgrade-icon {
+        width: 400px;
+    }
+    .btn-menu{
+        padding-top: 80px;
+    }
+    .btn-menu button{
+        width: 100px;
+    }
+</style>
 {/block}
 {block name="body"}
+<div class="update-warp" v-cloak>
     <div class="main-title">
-        <h2>系统在线更新</h2>
+        <h2>在线更新</h2>
     </div>
-    <div class="with-padding">
-        <div id="show-list" class="install-database">
-            <h2>系统在线更新即将开始！请勿关闭和刷新浏览器...</h2>
+    <div class="with-padding main ">
+        <div class="upgrade-icon">
+            <img alt="" src="__STATIC__/common/images/update.gif">
+        </div>
+        <!-- 进度条 -->
+        <div class="progress progress-striped" :class="{'active':status == 0}">
+            <div aria-valuemax="100" class="progress-bar" role="progressbar" :style="{width:`${progressVal}%`}"></div>
+        </div>
+        <!--进度描述-->
+        <div class="progress-info">
+            <div class="progress-title">{{progressTitle}}</div>
+            <div class="task" :class="{'task-error':status == -1}">{{task}}</div>
+            <div class="progress-num">{{progressVal}}%</div>
+        </div>
+
+        <div class="btn-menu">
+            <button class="btn btn-default" v-if="status == -1" @click="jump()">返回</button>
+            <button class="btn btn-primary" v-if="status == 1" @click="jump()">确定</button>
         </div>
     </div>
-{/block}   
+</div>
+{/block}
 {block name="script"}
-    <script type="text/javascript">
-        var list   = document.getElementById('show-list');
-        function showmsg(msg, classname){
-            var li = document.createElement('p'); 
-            li.innerHTML = msg;
-            classname && li.setAttribute('class', classname);
-            list.appendChild(li);
-            document.scrollTop += 30;
-        }
-        function setDownloaded(msg,total){
-            if(msg==total){
-                $('.downloadBox').html('下载完成 '+msg+'/'+total+' byte');
-            }else{
-                $('.downloadBox').html('下载中... '+msg+'/'+total+' byte');
+<script>
+    var vm = new Vue({
+        el: '.update-warp',
+        data: {
+            active: false,
+            progressVal:0,
+            status:0,
+            progressTitle:'获取信息中',
+            task:'',//进行任务
+            appid:'854D7E66EA60F03720B5E9A3093AEF4D',
+            appType:'{$type}',//应用类型 0系统 1应用
+            api:'{$Think.config.muucmf.cloud_api}',
+            localVersion:'{$version}',//本地版本
+            upgradeVersion: '{$upgradeVersion}',
+            package:null,//更新包
+            packageProgress:0,//更新包进度
+            packageTotal:0,//更新包总大小
+        },
+        created() {
+            this.getUpgradeInfo();
+        },
+        methods: {
+            /**
+             * @title 获取应用升级信息
+             */
+            getUpgradeInfo(){
+                let that = this;
+                let api = that.api + "upgrade/"
+                if (that.appType == 0){
+                    api += "system/version";
+                }else{
+                    api += "app/version";
+                }
+                $.get(api, {
+                    appid:that.appid,
+                    version:that.upgradeVersion,
+                }, function (res) {
+                    console.log(res);
+                    if (res.code == 200){
+                        that.progressTitle =  '升级中';
+                        that.package = res.data.data;
+                        that.packageTotal = res.data.total;
+                        that.start();
+                    }else{
+                        that.status = -1;
+                        that.progressTitle =  '请求成功';
+                        that.task = '没有获取到相应的版本信息'
+                    }
+                })
+            },
+            /**
+             * @title 开始更新
+             */
+            start(){
+                let that = this;
+                //计算百分比 步进值
+                let step = that.packageTotal / 100;
+                that.package.forEach(function (t,i) {
+                    that.upgrade().then(function () {
+                        that.progressVal = Math.floor(i / step);
+                        that.task = '下载中 ' + t.name;
+                        if ((i + 1) == that.packageTotal){
+                            that.status = 1;
+                            that.progressTitle = '升级完成';
+                        }
+                    })
+                });
+            },
+            async upgrade(){
+                let that = this;
+                return new Promise(function (resolve) {
+                    $.get(that.api + "upgrade/" +"system/version", {
+                        appid:that.appid,
+                        version:that.upgradeVersion,
+                    }, function (res) {
+                        resolve(res);
+                    })
+                })
+            },
+            jump(){
+                window.history.go(-1);
             }
         }
-    </script>
+    })
+</script>
 {/block}
 

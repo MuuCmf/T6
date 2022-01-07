@@ -316,6 +316,19 @@ class Admin extends Base
         View::assign('title',$title);
     }
 
+    /**
+     * 获取版本号
+     *
+     * @return     <type>  ( description_of_the_return_value )
+     */
+    public function version()
+    {
+        $path = PUBLIC_PATH . '/../data/version.ini';
+        $version = file_get_contents($path);
+
+        return $version;
+    }
+
         /**
      * 对数据表中的单行或多行记录执行修改 GET参数id为数字或逗号分隔的数字
      *
@@ -401,16 +414,4 @@ class Admin extends Base
         return $this->editRow($table, $data, $where, $msg);
     }
 
-    /**
-     * 获取版本号
-     *
-     * @return     <type>  ( description_of_the_return_value )
-     */
-    private function version()
-    {   
-        $path = PUBLIC_PATH . '/../data/version.ini';
-        $version = file_get_contents($path);
-
-        return $version;
-    }
 }
