@@ -1,6 +1,8 @@
 <?php
+
 namespace app\admin\controller;
 
+use think\Exception;
 use think\facade\Db;
 use think\facade\View;
 use think\File;
@@ -16,6 +18,7 @@ use muucmf\Database as MuucmfDb;
 class Update extends Admin
 {
     protected $api;
+
     /**
      * 构造方法
      * @access public
@@ -26,9 +29,10 @@ class Update extends Admin
         $this->_initialize();
         $this->api = config('muucmf.cloud_api');
     }
+
     public function _initialize()
     {
-        
+
     }
 
     /**
@@ -43,9 +47,9 @@ class Update extends Admin
         $cloudVersion = $this->cloudVersion()['data'];
         $upgrade = $localVersion != $cloudVersion['version'] ? true : false;
         $this->setTitle('系统在线更新');
-        View::assign('localVersion',$localVersion);
-        View::assign('cloudVersion',$cloudVersion);
-        View::assign('upgrade',$upgrade);
+        View::assign('localVersion', $localVersion);
+        View::assign('cloudVersion', $cloudVersion);
+        View::assign('upgrade', $upgrade);
 
         return \view();
     }
@@ -55,115 +59,89 @@ class Update extends Admin
     {
         $this->setTitle('在线更新');
         View::assign([
-            'type'           => input('app_type',0),
-            'localVersion'   => $this->version(),
+            'type' => input('app_type', 'system'),
+            'localVersion' => $this->version(),
             'upgradeVersion' => input('version')
         ]);
         return \view();
     }
 
-    /**
-     * 在线更新
-     */
-    private function update(){
-        
-        $localVersion = $this->localVersion(); //获取本地版本号
-            $this->showMsg('MuuCmf系统当前版本:' . $localVersion);
-            $this->showMsg('ThinkPHP系统版本:'. app()->version());
-            $this->showMsg('更新开始时间:'.date('Y-m-d H:i:s'));
-            $this->showMsg('==========================================================================');
-        $result = $this->checkVersion($localVersion); //获取远端数据
-        $newVersion = $result['data']['version'];//获取本次更新的版本号
-        if($localVersion == $newVersion){
-            $this->showMsg('这个版本已经更新过了,更新程序终止','error');
-            exit;
-        }
-        
-        /* 建立更新文件夹 */
-        $this->showMsg('开始创建更新文件夹...','title');
-        $folder = $this->getUpdateFolder($newVersion);
-        $update = config('UPDATE_PATH');
-        $folder_path = $update.$folder;
-        if(Filesystem::mk_dir($folder_path)){
-            $this->showMsg('更新文件夹创建成功');
-        }else{
-            $this->showMsg('更新文件夹创建失败', 'error');
-            exit;
+    public function upgrade()
+    {
+        $params = request()->param();
+        $path = $params['file'];//文件路径
+        $md5 = $params['md5'];
+        $appid = $params['appid'];//应用
+        $app_type = $params['app_type'];//应用类型
+        $version = $params['version'];//应用类型
+        $local_path = root_path() . $path;
+
+        //对比文件
+        if (file_exists($local_path)) {
+            $upgrade = !boolval($md5 == md5_file($local_path));
+        } else {
+            $upgrade = true;
         }
 
-        //备份重要文件
-        $this->showMsg('开始备份重要程序文件...','title');
-        $backupallPath = $folder_path . '/backupall.zip';
-        $zip = new \PclZip($backupallPath);
-        $zip->create('Application,ThinkPHP,admin.php,index.php');
-        $this->showMsg('成功完成重要程序备份,备份文件路径:<a href=\'' . ROOT_PATH . $backupallPath . '\'>' . $backupallPath . '</a>, 耗时:'.G('start1','stop1').'s','success');
-
-        sleep(1);
-        /* 获取更新包 */
-        //获取更新包地址
-        $updatedUrl = $this->cloud.'/downSysUpdate/id/'.$result['data']['id'];
-        if(empty($updatedUrl)){
-            $this->showMsg('未获取到更新包的下载地址', 'error');
-            exit;
-        }
-        //下载并保存
-        $this->showMsg('开始获取远程更新包...','title');
-        sleep(1);
-        $zipPath = $folder_path.'/update.zip';
-        $downZip = $this->getRemoteDate($updatedUrl);
-        if(empty($downZip)){
-            $this->showMsg('下载更新包出错，请重试！', 'error');
-            exit;
-        }
-        File::write_file($zipPath, $downZip);
-        $this->showMsg('获取远程更新包成功,更新包路径：<a href=\''.ROOT_PATH.ltrim($zipPath,'.').'\'>'.$zipPath.'</a>', 'success');
-        sleep(1);
-
-        /* 解压缩更新包 */ //TODO: 检查权限
-        $this->showMsg('开始更新包解压缩','title');
-        sleep(1);
-        $zip=new \ZipArchive();
-        $res = $zip->extract($folder_path.'/Data');
-        if($res === 0){
-            $this->showMsg('解压缩失败：'.$zip->errorInfo(true).'------更新终止', 'error');
-            exit;
-        }
-        $this->showMsg('更新包解压缩成功', 'success');
-        sleep(1);
-
-        $this->showMsg('开始复制文件','title');
-        $copyFile = File::copy_dir($folder_path.'/Data','./');//开始复制到更新目录
-        if($copyFile){
-            
-            $this->showMsg('文件复制成功', 'success');
-        }
-        //exit;//临时终止
-
-        /* 更新数据库 */
-        $updatesql = $folder_path.'/Data/sql/update.sql';
-        if(is_file($updatesql))
-        {
-            $this->showMsg('开始更新数据库','title');
-            if(file_exists($updatesql))
-            {
-                $this->updateTable($updatesql); //执行数据库更新
+        //md5不同，请求远端文件
+        if ($upgrade) {
+            $source = $this->api . "/upgrade/download?md5={$md5}&appid={$appid}&app_type={$app_type}&version={$version}";
+            try {
+                $this->downFile($source, $local_path);
+            } catch (Exception $e) {
+                return $this->error($e->getMessage());
             }
-            unlink($updatesql);
-            File::del_dir('./sql');//删除多余的sql文件夹
-            $this->showMsg('更新数据库完毕', 'success');
         }
+        return $this->success('success', 0);
+    }
 
-        /* 系统版本号更新 */
-        //$this->showMsg('开始更新系统版本号','title');
-        //$res = File::write_file(__ROOT__.'./Data/version.ini', $newVersion);
-        
-        $this->showMsg('系统版本号已更新至 '.$newVersion);
-        $this->showMsg('更新系统版本号成功', 'success');
-        
-        sleep(1);
+    private function downFile($source, $save_path = '')
+    {
+        $ch = curl_init();//初始化一个cURL会话
+        curl_setopt($ch, CURLOPT_URL, $source);//抓取url
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);//是否显示头信息
+        curl_setopt($ch, CURLOPT_SSLVERSION, 3);//传递一个包含SSL版本的长参数
+//        curl_setopt($ch, CURLOPT_HEADER, 1); //返回response头部信息
+        curl_setopt($ch, CURLINFO_HEADER_OUT, true); //TRUE 时追踪句柄的请求字符串，从 PHP 5.1.3 开始可用。这个很关键，就是允许你查看请求header
 
-        $this->showMsg('==========================================================================');
-        $this->showMsg('在线更新全部完成，如有备份，请及时将备份文件移动至非web目录下！', 'success');
+        $data = curl_exec($ch);// 执行一个cURL会话
+        $response = curl_getinfo($ch);
+        $error = curl_error($ch);//返回一条最近一次cURL操作明确的文本的错误信息。
+        curl_close($ch);//关闭一个cURL会话并且释放所有资源
+        //处理返回的错误信息
+        if ($response['content_type'] != 'application/octet-stream') {
+            $error = json_decode($data, true);
+            throw new Exception($error['msg']);
+        }
+        if ($error) {
+            throw new Exception($error);
+        }
+        //文件名
+        if (!file_exists($save_path)) {
+            @mkdir($save_path, 0777, true);
+            @chmod($save_path, 0777);
+        }
+        if (file_put_contents($save_path, $data)) {
+            return $save_path;
+        }
+        return false;
+    }
+
+    function httpHeaderToArr($header_str)
+    {
+        $header_list = explode("\n", $header_str);
+        $header_arr = [];
+        foreach ($header_list as $key => $value) {
+            if (strpos($value, ':') === false) {
+                continue;
+            }
+            list($header_key, $header_value) = explode(":", $value, 2);
+            $header_arr[$header_key] = trim($header_value);
+        }
+        if (isset($header_arr['Content-MD5'])) {
+            $header_arr['md5'] = bin2hex(base64_decode($header_arr['Content-MD5']));
+        }
+        return $header_arr;
     }
 
     /**
@@ -172,70 +150,16 @@ class Update extends Admin
      */
     private function cloudVersion()
     {
-        $api = $this->api.'app/version';
-        $output = curl_request($api,[]);
-        $result = json_decode($output,true);//转换为数组格式
+        $api = $this->api . 'app/version';
+        $output = curl_request($api, []);
+        $result = json_decode($output, true);//转换为数组格式
         return $result;
     }
 
-    /**
-     * 获取远程数据
-     */
-    private function getRemoteUrl($url = '', $method = '', $param = ''){
-        $opts = array(
-            CURLOPT_TIMEOUT        => 20,
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_URL            => $url,
-            CURLOPT_USERAGENT      => $_SERVER['HTTP_USER_AGENT'],
-        );
-        if($method === 'post'){
-            $opts[CURLOPT_POST] = 1;
-            $opts[CURLOPT_POSTFIELDS] = $param;
-        }
-
-        /* 初始化并执行curl请求 */
-        $ch = curl_init();
-        curl_setopt_array($ch, $opts);
-        $data  = curl_exec($ch);
-        $error = curl_error($ch);
-        curl_close($ch);
-        return $data;
-    }
-    /*获取远程数据*/
-    private function getRemoteDate($url = '')
-    {
-        $file = fopen ($url, "rb");
-        if ($file) {
-            //获取文件大小
-            $filesize = -1;
-            $headers = get_headers($url, 1);
-            if ((!array_key_exists("Content-Length", $headers))) $filesize=0;
-            $filesize = $headers["Content-Length"];
-            
-            //不是所有的文件都会先返回大小的，有些动态页面不先返回总大小，这样就无法计算进度了
-            if ($filesize != -1) {
-                $this->showMsg('更新包大小'.$filesize.'byte');//在前台显示文件大小
-            }
-                $this->showMsg('准备下载更新包','downloadBox');
-            $downlen=0;
-                while(!feof($file)) {
-                    $data=fread($file, 1024 * 8 );//默认获取8K
-                    $downlen+=strlen($data);//累计已经下载的字节数
-                    echo "<script>setDownloaded($downlen,$filesize);</script>";//在前台显示已经下载文件大小
-                    $result .= $data;
-                    ob_flush();
-                    flush();
-                }
-            if ($file) {
-                fclose($file);
-            }
-        }
-        return $result;
-    }
     /*
     *更新数据库
     */
-    private function updateTable($updatesql,$prefix = 'muucmf_')
+    private function updateTable($updatesql, $prefix = 'muucmf_')
     {
         $sql = File::read_file($updatesql);
         $sql = str_replace("\r\n", "\n", $sql);
@@ -244,32 +168,31 @@ class Update extends Admin
         //替换表前缀
         $orginal = config('database.prefix');
         $sql = str_replace(" `{$orginal}", " `{$prefix}", $sql);
-        foreach($sql as $value)
-        {
+        foreach ($sql as $value) {
             $value = trim($value);
             if (empty($value)) continue;
             if (substr($value, 0, 3) == 'SET') continue;
             if (substr($value, 0, 12) == 'CREATE TABLE') {
                 $name = preg_replace("/^CREATE TABLE IF NOT EXISTS `(\w+)` .*/s", "\\1", $value);
-                $msg = '创建数据表'.$name;
+                $msg = '创建数据表' . $name;
             }
             if (substr($value, 0, 10) == 'DROP TABLE') {
                 $name = preg_replace("/^DROP TABLE IF EXISTS `(\w+)` .*/s", "\\1", $value);
-                $msg = '删除数据表'.$name;
+                $msg = '删除数据表' . $name;
             }
             if (substr($value, 0, 11) == 'ALTER TABLE') {
                 $name = preg_replace("/^ALTER TABLE IF EXISTS `(\w+)` .*/s", "\\1", $value);
-                $msg = '更新数据表'.$name;
+                $msg = '更新数据表' . $name;
             }
             if (substr($value, 0, 11) == 'INSERT INTO') {
                 $name = preg_replace("/^INSERT INTO `(\w+)` .*/s", "\\1", $value);
-                $msg = '数据表'.$name.'写入数据';
+                $msg = '数据表' . $name . '写入数据';
             }
-            
-            if(Db::query(trim($value))){
-                $this->showMsg($msg .'...成功');
-            }else{
-                $this->showMsg($msg .'...失败','error');
+
+            if (Db::query(trim($value))) {
+                $this->showMsg($msg . '...成功');
+            } else {
+                $this->showMsg($msg . '...失败', 'error');
             }
         }
         unset($value);

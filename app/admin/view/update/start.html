@@ -93,7 +93,7 @@
             getUpgradeInfo(){
                 let that = this;
                 let api = that.api + "upgrade/"
-                if (that.appType == 0){
+                if (that.appType == 'system'){
                     api += "system/version";
                 }else{
                     api += "app/version";
@@ -107,7 +107,7 @@
                         that.progressTitle =  '升级中';
                         that.package = res.data.data;
                         that.packageTotal = res.data.total;
-                        that.start();
+                        that.upgrade();
                     }else{
                         that.status = -1;
                         that.progressTitle =  '请求成功';
@@ -115,33 +115,33 @@
                     }
                 })
             },
-            /**
-             * @title 开始更新
-             */
-            start(){
+            async upgrade(){
                 let that = this;
                 //计算百分比 步进值
                 let step = that.packageTotal / 100;
-                that.package.forEach(function (t,i) {
-                    that.upgrade().then(function () {
-                        that.progressVal = Math.floor(i / step);
-                        that.task = '下载中 ' + t.name;
-                        if ((i + 1) == that.packageTotal){
+                let item = that.package[that.packageProgress];
+                that.progressVal = Math.floor(that.packageProgress / step);
+                that.task = '下载中 ' + item.name;
+
+                $.post("{:url('upgrade')}", {
+                    appid:that.appid,
+                    app_type:that.appType,
+                    version:that.upgradeVersion,
+                    progress:that.packageProgress,
+                    file:item.name,
+                    md5:item.md5
+                }, function (res) {
+                    if (res.code == 200){
+                        console.log(res.data)
+                        that.packageProgress++;
+                        if (that.packageProgress == that.packageTotal){
                             that.status = 1;
                             that.progressTitle = '升级完成';
+                        }else{
+                            that.upgrade();
                         }
-                    })
-                });
-            },
-            async upgrade(){
-                let that = this;
-                return new Promise(function (resolve) {
-                    $.get(that.api + "upgrade/" +"system/version", {
-                        appid:that.appid,
-                        version:that.upgradeVersion,
-                    }, function (res) {
-                        resolve(res);
-                    })
+
+                    }
                 })
             },
             jump(){
