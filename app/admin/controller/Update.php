@@ -116,15 +116,13 @@ class Update extends Admin
         if ($error) {
             throw new Exception($error);
         }
-        //文件名
-        if (!file_exists($save_path)) {
-            @mkdir($save_path, 0777, true);
-            @chmod($save_path, 0777);
+        if($fp = fopen($save_path,'w')){
+            fwrite($fp,$data);
+            fclose($fp);
+            return true;
+        }else{
+            throw new Exception('创建文件失败');
         }
-        if (file_put_contents($save_path, $data)) {
-            return $save_path;
-        }
-        return false;
     }
 
     /**

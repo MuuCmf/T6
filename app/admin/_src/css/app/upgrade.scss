@@ -4,6 +4,27 @@
   -webkit-user-select:none;
   user-select:none;
   .main {
+    table thead,tbody tr,tfoot tr,thead tr {
+      display:table;
+      width:100%;
+      table-layout:fixed;
+    }
+
+    table tbody {
+      display:block;
+      max-height:500px;
+      overflow:scroll;
+      td{
+        white-space: nowrap;
+      }
+      .error-msg{
+        color: #ff9749;
+      }
+    }
+    ::-webkit-scrollbar {
+      width: 1px;
+    }
+
     display: flex;
     flex-direction: column;
     align-items: center;

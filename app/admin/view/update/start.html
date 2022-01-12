@@ -28,7 +28,6 @@
             </div>
             <div class="panel-body">
                 <table class="table table-borderless">
-                    <tbody>
                     <thead>
                     <tr>
                         <th>文件名</th>
@@ -38,7 +37,7 @@
                     <tbody>
                     <tr v-for="(item,index) in errPackage">
                         <td>{{item.data.name}}</td>
-                        <td>{{item.msg}}</td>
+                        <td class="error-msg">{{item.msg}}</td>
                     </tr>
                     </tbody>
                 </table>
