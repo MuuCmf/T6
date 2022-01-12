@@ -1,7 +1,7 @@
 <?php
 namespace app\common\service;
 
-class Dir {
+class Folder {
 
     private static $_values = array();
     public $error = "";
@@ -95,7 +95,7 @@ class Dir {
 
             if ($file != "." && $file != "..") {
                 is_dir("$directory/$file") ?
-                                Dir::delDir("$directory/$file") :
+                                Folder::delDir("$directory/$file") :
                                 @unlink("$directory/$file");
             }
         }
@@ -138,7 +138,7 @@ class Dir {
         while (false !== ($file = readdir($handle))) {
             if ($file != "." && $file != "..") {
                 if (is_dir("$source/$file")) {
-                    Dir::copyDir("$source/$file", "$destination/$file");
+                    Folder::copyDir("$source/$file", "$destination/$file");
                 } else {
                     copy("$source/$file", "$destination/$file");
                 }
