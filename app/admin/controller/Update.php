@@ -78,7 +78,7 @@ class Update extends Admin
 
         //对比文件
         if (file_exists($local_path)) {
-            $upgrade = !boolval($md5 == md5_file($local_path));
+            $upgrade = !boolval($md5 == @md5_file($local_path));
         } else {
             $upgrade = true;
         }
@@ -125,23 +125,6 @@ class Update extends Admin
             return $save_path;
         }
         return false;
-    }
-
-    function httpHeaderToArr($header_str)
-    {
-        $header_list = explode("\n", $header_str);
-        $header_arr = [];
-        foreach ($header_list as $key => $value) {
-            if (strpos($value, ':') === false) {
-                continue;
-            }
-            list($header_key, $header_value) = explode(":", $value, 2);
-            $header_arr[$header_key] = trim($header_value);
-        }
-        if (isset($header_arr['Content-MD5'])) {
-            $header_arr['md5'] = bin2hex(base64_decode($header_arr['Content-MD5']));
-        }
-        return $header_arr;
     }
 
     /**

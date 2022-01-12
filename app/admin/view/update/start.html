@@ -1,41 +1,6 @@
 {extend name="common/main"/}
 {block name="style"}
 <script src="__STATIC__/common/lib/vue/vue-2.6.14.js"></script>
-<style>
-    .main {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        padding-bottom: 80px !important;
-    }
-    .progress {
-        width: 600px;
-    }
-    .progress-bar {
-        background-color: #03b8cf;
-    }
-    .progress-info{
-        width: 600px;
-        display: flex;
-        justify-content: space-between;
-    }
-    .task{
-        color: #03b8cf;
-    }
-    .task-error{
-        color: #EA644A;
-    }
-
-    .upgrade-icon {
-        width: 400px;
-    }
-    .btn-menu{
-        padding-top: 80px;
-    }
-    .btn-menu button{
-        width: 100px;
-    }
-</style>
 {/block}
 {block name="body"}
 <div class="update-warp" v-cloak>
@@ -57,6 +22,29 @@
             <div class="progress-num">{{progressVal}}%</div>
         </div>
 
+        <div class="error-panel panel" v-if="errPackage.length > 0">
+            <div class="panel-heading">
+                <h4>错误信息</h4>
+            </div>
+            <div class="panel-body">
+                <table class="table table-borderless">
+                    <tbody>
+                    <thead>
+                    <tr>
+                        <th>文件名</th>
+                        <th>错误信息</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr v-for="(item,index) in errPackage">
+                        <td>{{item.data.name}}</td>
+                        <td>{{item.msg}}</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
         <div class="btn-menu">
             <button class="btn btn-default" v-if="status == -1" @click="jump()">返回</button>
             <button class="btn btn-primary" v-if="status == 1" @click="jump()">确定</button>
@@ -69,19 +57,19 @@
     var vm = new Vue({
         el: '.update-warp',
         data: {
-            active: false,
-            progressVal:0,
-            status:0,
-            progressTitle:'获取信息中',
+            progressVal:0,//进度值
+            status:0,//更新状态 -1异常 0 进行中 1 已完成
+            progressTitle:'获取信息中',//进度标题
             task:'',//进行任务
             appid:'854D7E66EA60F03720B5E9A3093AEF4D',
             appType:'{$type}',//应用类型 0系统 1应用
-            api:'{$Think.config.muucmf.cloud_api}',
+            api:'{$Think.config.muucmf.cloud_api}',//接口api
             localVersion:'{$version}',//本地版本
-            upgradeVersion: '{$upgradeVersion}',
+            upgradeVersion: '{$upgradeVersion}',//要升级的版本
             package:null,//更新包
             packageProgress:0,//更新包进度
             packageTotal:0,//更新包总大小
+            errPackage:[],//发生更新错误包
         },
         created() {
             this.getUpgradeInfo();
@@ -117,32 +105,51 @@
             },
             async upgrade(){
                 let that = this;
-                //计算百分比 步进值
-                let step = that.packageTotal / 100;
-                let item = that.package[that.packageProgress];
-                that.progressVal = Math.floor(that.packageProgress / step);
-                that.task = '下载中 ' + item.name;
-
+                let step = that.packageTotal / 100;//计算百分比 步进值
+                let item = that.package[that.packageProgress];//当前升级包
+                that.progressVal = Math.floor(that.packageProgress / step);//进度条
+                that.task = '下载中 ' + item.name;//任务名称
                 $.post("{:url('upgrade')}", {
                     appid:that.appid,
                     app_type:that.appType,
                     version:that.upgradeVersion,
-                    progress:that.packageProgress,
                     file:item.name,
                     md5:item.md5
                 }, function (res) {
-                    if (res.code == 200){
-                        console.log(res.data)
-                        that.packageProgress++;
-                        if (that.packageProgress == that.packageTotal){
-                            that.status = 1;
-                            that.progressTitle = '升级完成';
-                        }else{
+                    if (res.code != 200){
+                        //记录当前错误信息
+                        let err = {
+                            msg:res.msg,
+                            data:item
+                        };
+                        that.errPackage.push(err);
+                    }
+                    //继续执行
+                    that.packageProgress++;
+                    if (that.packageProgress >= that.packageTotal){
+                        //执行收尾工作
+                        that.finishUpgrade();
+                    }else{
+                        //执行下一个
+                        setTimeout(function () {
                             that.upgrade();
-                        }
-
+                        },200)
                     }
                 })
+            },
+            /**
+             * 问题包重试
+             */
+            errRetry(){
+
+            },
+            /**
+             * 执行收尾任务
+             */
+            finishUpgrade(){
+                let that = this;
+                that.status = 1;
+                that.progressTitle = '升级完成';
             },
             jump(){
                 window.history.go(-1);
