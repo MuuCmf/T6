@@ -32,7 +32,7 @@ class Upgrade{
      * @param string $app
      * @return string
      */
-    private function getAppRootPath($app = 'system'){
+    public function getAppRootPath($app = 'system'){
         if ($app == 'system'){
             $path = root_path();
         }else{
@@ -63,13 +63,13 @@ class Upgrade{
      * @return bool
      */
     public function checkIgnoreFile($path){
-        $ignore_paths = ['./.git','./runtime','./.idea','.gitignore','data/version.ini','info/info.php'];
+        $ignore_paths = ['./.git','./runtime','./.idea','.gitignore','data/version.ini','info/info.php','_src/css','_src/js','runtime/'];
         foreach ($ignore_paths as $item){
             if (strpos($path,$item) !== false){
-                return false;
+                return true;
             }
         }
-        return true;
+        return false;
     }
 
     /**

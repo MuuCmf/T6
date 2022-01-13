@@ -1,13 +1,17 @@
 {extend name="common/main"/}
 {block name="style"}
 <script src="__STATIC__/common/lib/vue/vue-2.6.14.js"></script>
+<!-- 引入样式 -->
+<link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+<!-- 引入组件库 -->
+<script src="https://unpkg.com/element-ui/lib/index.js"></script>
 {/block}
 {block name="body"}
-<div class="update-warp" v-cloak>
+<div class="update-warp " v-cloak>
     <div class="main-title">
         <h2>在线更新</h2>
     </div>
-    <div class="with-padding main ">
+    <div class="with-padding main">
         <div class="upgrade-icon">
             <img alt="" src="__STATIC__/common/images/update.gif">
         </div>
@@ -52,6 +56,24 @@
         </div>
     </div>
 </div>
+<!-- 备份对话框 -->
+<div class="modal fade" id="backupModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">关闭</span></button>
+                <h4 class="modal-title">升级前备份</h4>
+            </div>
+            <div class="modal-body">
+                <p>备份路径 ：{$backupPath}</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default cancel-backup">开始更新</button>
+                <button type="button" class="btn btn-primary backup" >备份</button>
+            </div>
+        </div>
+    </div>
+</div>
 {/block}
 {block name="script"}
 <script>
@@ -71,8 +93,9 @@
             packageProgress: 0,//更新包进度
             packageTotal: 0,//更新包总大小
             errPackage: [],//发生更新错误包
-            retrying: false,//重试
+            retrying: true,//重试
             versionPackage: null,//版本号升级文件
+            skipUpgradeVersion:false,//跳过更新版本号
         },
         created() {
             this.getUpgradeInfo();
@@ -95,10 +118,14 @@
                 }, function (res) {
                     console.log(res);
                     if (res.code == 200) {
-                        that.progressTitle = '升级中';
                         that.package = res.data.data;
                         that.packageTotal = res.data.total;
-                        that.upgrade();
+                        that.versionPackage = res.data.version;
+                        if (that.upgradeVersion != that.localVersion){
+                            $('#backupModal').modal('show', 'center')
+                        }else{
+                            that.sameVersion();
+                        }
                     } else {
                         that.status = -1;
                         that.progressTitle = '请求成功';
@@ -119,24 +146,38 @@
                     file: item.name,
                     md5: item.md5
                 }, function (res) {
-                    if (res.code != 200) {
-                        //记录当前错误信息
-                        let err = {
-                            msg: res.msg,
-                            data: item
-                        };
-                        that.errPackage.push(err);
+                    if (res.data == 'same_version'){
+                        that.sameVersion();
+                    }else{
+                        if (res.code != 200) {
+                            //记录当前错误信息
+                            let err = {
+                                msg: res.msg,
+                                data: item
+                            };
+                            that.errPackage.push(err);
+                        }
+                        //继续执行
+                        that.packageProgress++;
+                        if (that.packageProgress >= that.packageTotal) {
+                            //执行收尾工作
+                            that.finishUpgrade();
+                        } else {
+                            //执行下一个
+                            that.upgrade();
+                        }
                     }
-                    //继续执行
-                    that.packageProgress++;
-                    if (that.packageProgress >= that.packageTotal) {
-                        //执行收尾工作
-                        that.finishUpgrade();
-                    } else {
-                        //执行下一个
-                        that.upgrade();
-                    }
+
                 })
+            },
+            /**
+             * 无需升级
+             */
+            sameVersion(){
+                let that = this;
+                that.status = 1;
+                that.progressTitle = '已经是最新版本了';
+                that.progressVal = 100;
             },
             /**
              * 问题包重试
@@ -146,7 +187,7 @@
                 that.progressTitle = '重试中';
                 let len = that.errPackage.length;
                 if (i == len){
-                    that.retrying = true;
+                    that.retrying = false;
                     that.finishUpgrade();
                     return false;
                 }
@@ -158,6 +199,9 @@
                         file: item.name,
                         md5: item.md5
                     }, function (res) {
+                        if (res.code == 0){
+                            that.skipUpgradeVersion = true;
+                        }
                         that.errRetry(i + 1);
                     }
                 )
@@ -167,25 +211,63 @@
              */
             finishUpgrade() {
                 let that = this;
-                if (!that.retrying) {
+                if (that.retrying) {
                     that.errRetry();
                 }
                 $.post("{:url('finish')}", {
                     appid: that.appid,
                     app_name: that.appName,
                     version: that.upgradeVersion,
-                    file: item.name,
-                    md5: item.md5
+                    file: that.versionPackage.name,
+                    md5: that.versionPackage.md5,
+                    skip: that.skipUpgradeVersion ? 1 : 0,
                 }, function (res) {
                     that.status = 1;
                     that.progressTitle = '升级完成';
                     that.progressVal = 100;
                 })
             },
+            /**
+             * 备份
+             */
+            backup(){
+                let that = this;
+                $('#backupModal').modal('hide');
+                that.progressTitle = '备份中';
+                $.post("{:url('backup')}", {
+                    app_name: that.appName,
+                }, function (res) {
+                    if (res.code == 200){
+                        toast.success('备份成功');
+                        that.progressTitle = '开始升级';
+                        // that.upgrade();
+                    }else{
+                        toast.error(res.msg);
+                        setTimeout(function () {
+                            $('#backupModal').modal('show', 'center');
+                        },500)
+                    }
+                })
+            },
+            /**
+             *
+             */
+            cancelBackup(){
+                console.log(123213);
+                $('#backupModal').modal('hide');
+                this.progressTitle = '开始升级';
+                this.upgrade();
+            },
             jump() {
                 window.history.go(-1);
             }
         }
+    })
+    $('#backupModal').on('click','.backup',function () {
+        vm.backup();
+    })
+    $('#backupModal').on('click','.cancel-backup',function () {
+        vm.cancelBackup();
     })
 </script>
 {/block}
