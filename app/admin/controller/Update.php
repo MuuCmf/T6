@@ -2,12 +2,9 @@
 
 namespace app\admin\controller;
 
+use app\admin\lib\Upgrade as UpgradeServer;
 use think\Exception;
-use think\facade\Db;
 use think\facade\View;
-use think\File;
-use think\facade\Filesystem;
-use muucmf\Database as MuucmfDb;
 
 /**
  * 升级包制作规则
@@ -17,8 +14,8 @@ use muucmf\Database as MuucmfDb;
  */
 class Update extends Admin
 {
-    protected $api;
-
+    private $UpgradeServer;
+    private $app_name;//应用标识
     /**
      * 构造方法
      * @access public
@@ -26,13 +23,8 @@ class Update extends Admin
     public function __construct()
     {
         parent::__construct();
-        $this->_initialize();
-        $this->api = config('muucmf.cloud_api');
-    }
-
-    public function _initialize()
-    {
-
+        $this->UpgradeServer = new UpgradeServer();
+        $this->app_name = input('app_name','system');
     }
 
     /**
@@ -42,9 +34,9 @@ class Update extends Admin
     public function index()
     {
         //读取本地版本号
-        $localVersion = $this->version();
+        $localVersion = $this->UpgradeServer->version();
         //读取云端最新版本号
-        $cloudVersion = $this->cloudVersion()['data'];
+        $cloudVersion = $this->UpgradeServer->cloudVersion()['data'];
         $upgrade = $localVersion != $cloudVersion['version'] ? true : false;
         $this->setTitle('系统在线更新');
         View::assign('localVersion', $localVersion);
@@ -59,124 +51,74 @@ class Update extends Admin
     {
         $this->setTitle('在线更新');
         View::assign([
-            'type' => input('app_type', 'system'),
-            'localVersion' => $this->version(),
+            'appName' => $this->app_name,
+            'localVersion' => $this->UpgradeServer->version(),
             'upgradeVersion' => input('version')
         ]);
         return \view();
     }
 
+    /**
+     * @title 升级
+     * @return \think\Response|void
+     */
     public function upgrade()
     {
-        $params = request()->param();
-        $path = $params['file'];//文件路径
-        $md5 = $params['md5'];
-        $appid = $params['appid'];//应用
-        $app_type = $params['app_type'];//应用类型
-        $version = $params['version'];//应用类型
-        $local_path = root_path() . $path;
+        if (request()->isAjax()){
+            $params = request()->param();
+            $path = $params['file'];//文件路径
+            $md5 = $params['md5'];
+            $appid = $params['appid'];//应用
+            $app_name = $this->app_name;//应用类型
+            $version = $params['version'];//应用类型
+            $local_path = root_path() . $path;
 
-        //对比文件
-        if (file_exists($local_path)) {
-            $upgrade = !boolval($md5 == @md5_file($local_path));
-        } else {
-            $upgrade = true;
-        }
-
-        //md5不同，请求远端文件
-        if ($upgrade) {
-            $source = $this->api . "/upgrade/download?md5={$md5}&appid={$appid}&app_type={$app_type}&version={$version}";
             try {
-                $this->downFile($source, $local_path);
-            } catch (Exception $e) {
+                //检查忽略文件
+                $ignore = $this->UpgradeServer->checkIgnoreFile($path);
+                if ($ignore){
+                    return $this->success('success');
+                }
+                //对比文件
+                if (file_exists($local_path)) {
+                    $upgrade = !boolval($md5 == @md5_file($local_path));
+                } else {
+                    $upgrade = true;
+                }
+                //md5不同，请求远端文件
+                if ($upgrade) {
+                    $source = $this->UpgradeServer->api . "/upgrade/download?md5={$md5}&appid={$appid}&app_name={$app_name}&version={$version}";
+                    $this->UpgradeServer->downFile($source, $local_path);
+                }
+                return $this->success('success');
+            }catch (Exception $e) {
                 return $this->error($e->getMessage());
             }
-        }
-        return $this->success('success', 0);
-    }
-
-    private function downFile($source, $save_path = '')
-    {
-        $ch = curl_init();//初始化一个cURL会话
-        curl_setopt($ch, CURLOPT_URL, $source);//抓取url
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);//是否显示头信息
-        curl_setopt($ch, CURLOPT_SSLVERSION, 3);//传递一个包含SSL版本的长参数
-//        curl_setopt($ch, CURLOPT_HEADER, 1); //返回response头部信息
-        curl_setopt($ch, CURLINFO_HEADER_OUT, true); //TRUE 时追踪句柄的请求字符串，从 PHP 5.1.3 开始可用。这个很关键，就是允许你查看请求header
-
-        $data = curl_exec($ch);// 执行一个cURL会话
-        $response = curl_getinfo($ch);
-        $error = curl_error($ch);//返回一条最近一次cURL操作明确的文本的错误信息。
-        curl_close($ch);//关闭一个cURL会话并且释放所有资源
-        //处理返回的错误信息
-        if ($response['content_type'] != 'application/octet-stream') {
-            $error = json_decode($data, true);
-            throw new Exception($error['msg']);
-        }
-        if ($error) {
-            throw new Exception($error);
-        }
-        if($fp = fopen($save_path,'w')){
-            fwrite($fp,$data);
-            fclose($fp);
-            return true;
-        }else{
-            throw new Exception('创建文件失败');
         }
     }
 
     /**
-     * 获取云端最新系统版本
-     * @return [type] [description]
+     * @title 更新完成
+     * @return \think\Response|void
      */
-    private function cloudVersion()
-    {
-        $api = $this->api . 'app/version';
-        $output = curl_request($api, []);
-        $result = json_decode($output, true);//转换为数组格式
-        return $result;
-    }
-
-    /*
-    *更新数据库
-    */
-    private function updateTable($updatesql, $prefix = 'muucmf_')
-    {
-        $sql = File::read_file($updatesql);
-        $sql = str_replace("\r\n", "\n", $sql);
-        $sql = str_replace("\r", "\n", $sql);
-        $sql = explode(";\n", trim($sql));
-        //替换表前缀
-        $orginal = config('database.prefix');
-        $sql = str_replace(" `{$orginal}", " `{$prefix}", $sql);
-        foreach ($sql as $value) {
-            $value = trim($value);
-            if (empty($value)) continue;
-            if (substr($value, 0, 3) == 'SET') continue;
-            if (substr($value, 0, 12) == 'CREATE TABLE') {
-                $name = preg_replace("/^CREATE TABLE IF NOT EXISTS `(\w+)` .*/s", "\\1", $value);
-                $msg = '创建数据表' . $name;
-            }
-            if (substr($value, 0, 10) == 'DROP TABLE') {
-                $name = preg_replace("/^DROP TABLE IF EXISTS `(\w+)` .*/s", "\\1", $value);
-                $msg = '删除数据表' . $name;
-            }
-            if (substr($value, 0, 11) == 'ALTER TABLE') {
-                $name = preg_replace("/^ALTER TABLE IF EXISTS `(\w+)` .*/s", "\\1", $value);
-                $msg = '更新数据表' . $name;
-            }
-            if (substr($value, 0, 11) == 'INSERT INTO') {
-                $name = preg_replace("/^INSERT INTO `(\w+)` .*/s", "\\1", $value);
-                $msg = '数据表' . $name . '写入数据';
-            }
-
-            if (Db::query(trim($value))) {
-                $this->showMsg($msg . '...成功');
-            } else {
-                $this->showMsg($msg . '...失败', 'error');
+    public function finish(){
+        if (request()->isAjax()){
+            $params = request()->post();
+            try {
+                $local_path = root_path() . $params['path'];
+                //替换版本文件
+                $source = $this->UpgradeServer->api . "/upgrade/download?md5={$params['md5']}&appid={$params['appid']}&app_name={$this->app_name}&version={$params['version']}";
+                $this->UpgradeServer->downFile($source, $local_path);
+                if ($this->app_name != 'system'){
+                    //更新应用版本号
+                    \app\common\model\Module::where('name',$this->app_name)->update(['version' => $params['version']]);
+                }
+                //执行sql
+                $this->UpgradeServer->executeUpgradeSql($this->app_name);
+                return $this->success('升级完成');
+            }catch (Exception $e){
+                return $this->error($e->getMessage());
             }
         }
-        unset($value);
     }
-
 }

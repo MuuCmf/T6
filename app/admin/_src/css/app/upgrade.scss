@@ -4,6 +4,11 @@
   -webkit-user-select:none;
   user-select:none;
   .main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-bottom: 80px !important;
+
     table thead,tbody tr,tfoot tr,thead tr {
       display:table;
       width:100%;
@@ -16,19 +21,25 @@
       overflow:scroll;
       td{
         white-space: nowrap;
-      }
-      .error-msg{
-        color: #ff9749;
+        -moz-user-select:text;
+        -webkit-user-select:text;
+        user-select: text;
       }
     }
+
     ::-webkit-scrollbar {
       width: 1px;
     }
 
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding-bottom: 80px !important;
+    .error-panel{
+      .error-msg{
+        color: #ff9749;
+      }
+      .error-file{
+        overflow: hidden;
+        text-overflow:ellipsis;
+      }
+    }
     .upgrade-icon {
       width: 400px;
     }
