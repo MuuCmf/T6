@@ -113,7 +113,8 @@ if (!function_exists('copydirs')) {
             if ($item->isDir()) {
                 $sontDir = $dest . DIRECTORY_SEPARATOR . $iterator->getSubPathName();
                 if (!is_dir($sontDir)) {
-                    mkdir($sontDir, 0755, true);
+                    mkdir($sontDir, 0777, true);
+                    chmod($sontDir, 0777);
                 }
             } else {
                 copy($item, $dest . DIRECTORY_SEPARATOR . $iterator->getSubPathName());

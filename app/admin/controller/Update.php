@@ -27,7 +27,7 @@ class Update extends Admin
     {
         parent::__construct();
 
-        $this->app_name = input('app_name', 'system');
+        $this->app_name = input('app_name', 'system') ?: 'system';
         $this->UpgradeServer = new UpgradeServer($this->app_name);
     }
 
@@ -45,7 +45,6 @@ class Update extends Admin
         $this->setTitle('在线更新');
 
         //备份地址
-        $filename =  date('Y') . '-' . date('m') . '/' . date('d') . '/' . time() . '.zip';
         $backup_path = $this->app_name == 'system' ? '网站根目录->data->upgrade' : '网站根目录->app->' . $this->app_name . '->info->backup';
 
         View::assign('localVersion', $localVersion);

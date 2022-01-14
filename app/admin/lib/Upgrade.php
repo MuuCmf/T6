@@ -128,7 +128,15 @@ class Upgrade{
             $backup_path = $root_path . 'info' . DIRECTORY_SEPARATOR . 'backup' . DIRECTORY_SEPARATOR;
         }
         $backup_path .= date('Y') . '-' . date('m') . DIRECTORY_SEPARATOR . date('d') . DIRECTORY_SEPARATOR . time() . DIRECTORY_SEPARATOR;
-        copydirs($file,$backup_path);
+        $backup_path .= str_replace(root_path(),'',$file);
+        //创建目录
+        $filename = basename($backup_path);
+        $dirname = str_replace($filename ,'' ,$backup_path);
+        if (!file_exists($dirname)) {
+            mkdir($dirname, 0777, true);
+            chmod($dirname, 0777);
+        }
+        copy($file,$backup_path);
     }
 
     /**
