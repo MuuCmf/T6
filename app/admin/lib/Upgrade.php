@@ -80,6 +80,8 @@ class Upgrade{
      */
     public function downFile($source, $save_path = '')
     {
+        //地址追加授权域名
+        $source .= "&auth_code={$this->authCode()}";
         $ch = curl_init();//初始化一个cURL会话
         curl_setopt($ch, CURLOPT_URL, $source);//抓取url
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);//是否显示头信息
@@ -92,10 +94,14 @@ class Upgrade{
         //处理返回的错误信息
         if ($response['content_type'] != 'application/octet-stream') {
             $error = json_decode($data, true);
-            throw new Exception($error['msg']);
+            throw new Exception($error['msg'],$error['code']);
         }
         if ($error) {
             throw new Exception($error);
+        }
+        //备份文件
+        if (is_file($save_path)){
+            $this->backup($save_path);
         }
         //创建目录
         $filename = basename($save_path);
@@ -111,13 +117,28 @@ class Upgrade{
     }
 
     /**
+     * @title 备份
+     * @param $file
+     */
+    public function backup($file){
+        $root_path = $this->getAppRootPath($this->app);
+        if ($this->app == 'system'){
+            $backup_path = $root_path . 'data' . DIRECTORY_SEPARATOR . 'upgrade' . DIRECTORY_SEPARATOR;
+        }else{
+            $backup_path = $root_path . 'info' . DIRECTORY_SEPARATOR . 'backup' . DIRECTORY_SEPARATOR;
+        }
+        $backup_path .= date('Y') . '-' . date('m') . DIRECTORY_SEPARATOR . date('d') . DIRECTORY_SEPARATOR . time() . DIRECTORY_SEPARATOR;
+        copydirs($file,$backup_path);
+    }
+
+    /**
      * @title 获取云端最新系统版本
      * @return [type] [description]
      */
-    public function cloudVersion()
+    public function cloudVersion($params = [])
     {
         $api = $this->api . 'app/version';
-        $output = curl_request($api, []);
+        $output = curl_request($api, $params);
         $result = json_decode($output, true);//转换为数组格式
         return $result;
     }
@@ -144,4 +165,56 @@ class Upgrade{
         return true;
     }
 
+    /**
+     * 加密
+     * @param string $string     要加密或解密的字符串
+     * @param string $key        密钥，加密解密时保持一致
+     * @param int    $expiry 有效时长，单位：秒
+     * @return string
+     */
+    protected function encrypt_code($string, $expiry = 0, $key = '1234567890') {
+        $ckey_length = 1;
+        $key = md5($key ? $key : UC_KEY); //加密解密时这个是不变的
+        $keya = md5(substr($key, 0, 16)); //加密解密时这个是不变的
+        $keyb = md5(substr($key, 16, 16)); //加密解密时这个是不变的
+        $keyc = $ckey_length ?  substr(md5(microtime()), -$ckey_length) : '';
+        $cryptkey = $keya . md5($keya . $keyc); //64
+        $key_length = strlen($cryptkey); //64
+
+        $string =sprintf('%010d', $expiry ? $expiry + time() : 0) . substr(md5($string . $keyb), 0, 16) . $string;
+        $string_length = strlen($string);
+
+        $result = '';
+        $box = range(0, 255);
+
+        $rndkey = array();
+        for ($i = 0; $i <= 255; $i++) { //字母表 64位后重复 数列 范围为48~122
+            $rndkey[$i] = ord($cryptkey[$i % $key_length]);
+        }
+
+        for ($j = $i = 0; $i < 256; $i++) { //这里是一个打乱算法
+            $j = ($j + $box[$i] + $rndkey[$i]) % 256;
+            $tmp = $box[$i];
+            $box[$i] = $box[$j];
+            $box[$j] = $tmp;
+        }
+        for ($a = $j = $i = 0; $i < $string_length; $i++) {
+            $result .= chr(ord($string[$i]) ^ ($box[$i]));
+
+        }
+        $str =  $keyc . str_replace('=', '', base64_encode($result));
+        //  $str =htmlentities($str, ENT_QUOTES, "UTF-8"); // curl 访问出错
+        return $str ;
+    }
+
+    /**
+     * @title 生成授权码
+     * @return string
+     */
+    public function authCode(){
+        $web_domain = request()->host();
+        $web_host   = request()->ip();
+        $lock_str   = $web_domain . '|' . $web_host;
+        return $this->encrypt_code($lock_str ,6000,'muucmf_tp6');
+    }
 }

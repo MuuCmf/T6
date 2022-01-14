@@ -2,7 +2,19 @@
 
 {block name="style"}
 <style>
-    .action {
+    .action{
+        display: flex;
+
+    }
+    .action .go{
+        flex: 1;
+    }
+    .action .upgrade{
+        min-width: 50px;
+        margin-left: 10px;
+    }
+
+    .manage {
         margin-top: 5px; 
         display: flex;
         flex-wrap: wrap;
@@ -10,7 +22,7 @@
         align-content: flex-start;
         justify-content: space-between;
     }
-    .action .btn {
+    .manage .btn {
         
         width: 32%;
     }
@@ -68,9 +80,15 @@
                             <div class="card-actions clearfix">
                                 {if $vo['is_com'] == 1 || $vo['uninstall'] == 1}
                                     {if $vo['is_setup'] == 1}
-                                        <!--进入-->
-                                        <a class="btn btn-block btn-info" href="{:url($vo.entry)}">进入应用</a>
                                         <div class="action">
+                                            <!--进入-->
+                                            <a class="btn btn-info go" href="{:url($vo.entry)}">进入应用</a>
+                                            {if $vo['upgrade'] == 1}
+                                            <!--更新-->
+                                            <a class="btn btn-success upgrade" href="{:url('admin/Update/index',['appid' => $vo.appid ,'app_name' => $vo.name])}">更新</a>
+                                            {/if}
+                                        </div>
+                                        <div class="manage">
                                             <a class="btn btn-primary " href="{:url('edit', ['id' => $vo['id']])}">编辑</a>
                                             <a class="btn btn-warning" href="{:url('menu', ['app' => $vo['name']])}">权限菜单</a>
                                             <a class="btn btn-danger" href="{:url('uninstall', ['id' => $vo['id']])}">卸载</a>
@@ -78,7 +96,7 @@
                                     {else/}
                                         <!--进入-->
                                         <a class="btn btn-block btn-default disabled" href="{:url($vo.entry)}">进入应用</a>
-                                        <div class="action">
+                                        <div class="manage">
                                             <a class="btn btn-primary " href="{:url('edit', ['id' => $vo['id']])}">编辑</a>
                                             <a class="btn btn-warning" href="{:url('menu', ['app' => $vo['name']])}">权限菜单</a>
                                             <a class="btn  btn-success" href="{:url('install', ['name' => $vo['name']])}">安装</a>
@@ -86,7 +104,7 @@
                                     {/if}
                                 {else /}
                                     <a class="btn btn-block btn-info" href="{:url($vo.entry)}">进入应用</a>
-                                    <div class="action">
+                                    <div class="manage">
                                         <a class="btn btn-primary " href="{:url('edit', ['id' => $vo['id']])}">编辑</a>
                                         <a class="btn btn-warning" href="{:url('menu', ['app' => $vo['name']])}">权限菜单</a>
                                         <a disabled class="btn btn-default">系统应用</a>

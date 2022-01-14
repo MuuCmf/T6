@@ -4,5 +4,5 @@
 // +----------------------------------------------------------------------
 return [
     //云端api
-    'cloud_api' => "http://cloud.muucmf.cn/cloud/"
+    'cloud_api' => get_http_https() . "cloud.muucmf.cn/cloud/"
 ];

@@ -2,6 +2,7 @@
 
 namespace app\admin\controller;
 
+use app\admin\lib\Upgrade as UpgradeServer;
 use think\facade\Db;
 use think\facade\View;
 use app\common\service\Tree;
@@ -64,9 +65,23 @@ class Module extends Admin
             break;
         };
 
-        $modules = $this->ModuleModel->getListByPage($map,'sort desc,id desc','*',20);
+        $upgradeServer = new UpgradeServer();
+        $modules = $this->ModuleModel->getListByPage($map,'sort desc,id desc','*',20)->each(function ($item,$key) use($upgradeServer){
+            //获取云端版本
+            if ($item['is_com']){
+                $result = $upgradeServer->cloudVersion([
+                    'app_name' => $item['name'],
+                    'appid'    => $item['appid']
+                ]);
+                $item['new_version'] = isset($result['data']['version']) ? $result['data']['version'] : $item['version'];
+                $item['upgrade'] = get_upgrade_status($item['version'],$item['new_version']) ? 1 : 0;
+            }else{
+                $item['new_version'] = $item['version'];
+                $item['upgrade'] = 0;
+            }
+            return $item;
+        });
         $page = htmlspecialchars_decode($modules->render());
-        
         View::assign('page', $page);
         View::assign('modules', $modules);
         // 记录当前列表页的cookie

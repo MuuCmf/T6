@@ -1003,5 +1003,59 @@ if (!function_exists('get_module_name')) {
     }
 }
 
+if (!function_exists('version_contrast')) {
+    /**
+     * 版本号对比
+     */
+    function version_contrast($versionA,$versionB)
+    {
+        if ($versionA>2147483646 || $versionB>2147483646) {
+            throw new Exception('版本号,位数太大暂不支持!','101');
+        }
+        $dm = '.';
+        $verListA = explode($dm, (string)$versionA);
+        $verListB = explode($dm, (string)$versionB);
+
+        $len = max(count($verListA),count($verListB));
+        $i = -1;
+        while ($i++<$len) {
+            $verListA[$i] = intval(@$verListA[$i]);
+            if ($verListA[$i] <0 ) {
+                $verListA[$i] = 0;
+            }
+            $verListB[$i] = intval(@$verListB[$i]);
+            if ($verListB[$i] <0 ) {
+                $verListB[$i] = 0;
+            }
+
+            if ($verListA[$i]>$verListB[$i]) {
+                return $versionA;
+            } else if ($verListA[$i]<$verListB[$i]) {
+                return $versionB;
+            } else if ($i==($len-1)) {
+                return $versionA;
+            }
+        }
+    }
+}
+if (!function_exists('get_upgrade_status')) {
+    /**
+     * @title 可以升级
+     * @param $local_version
+     * @param $cloud_version
+     * @return bool
+     * @throws Exception
+     */
+    function get_upgrade_status($local_version,$cloud_version){
+        if ($local_version == $cloud_version){
+            return false;
+        }
+        $max_version = version_contrast($local_version,$cloud_version);
+        if ($max_version == $cloud_version){
+            return true;
+        }
+        return false;
+    }
+}
 
 

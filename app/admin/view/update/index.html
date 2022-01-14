@@ -1,7 +1,7 @@
 {extend name="common/main"/}
 {block name="body"}
     <div class="main-title">
-        <h2>系统在线更新</h2>
+        <h2>在线更新</h2>
     </div>
     <div class="clearfix with-padding">
 
@@ -10,22 +10,30 @@
                 <i class="icon-info-sign"></i>
                 <div class="content">更新时请注意备份网站数据和相关数据库文件！官方不强制要求用户跟随官方意愿进行更新尝试！</div>
             </div>
-
+            <div class="alert alert-primary-inverse with-icon">
+                <i class="icon-info-sign"></i>
+                <div class="content">每次升级自动备份原文件，路径 ：{$backupPath}</div>
+            </div>
             <div class="alert alert-danger-inverse with-icon">
                 <i class="icon-info-sign"></i>
-                <div class="content">在线系统升级需要在系统设置中关闭网站，<a class="alert-link" href="{:url('admin/config/group')}">点击这里关闭网站</a>！</div>
+                <div class="content">在线升级需要在系统设置中关闭网站，<a class="alert-link" href="{:url('admin/config/group',['id'=>4])}">点击这里关闭网站</a>！</div>
             </div>
 
             {if $upgrade}
 
+            <div class="alert alert-warning-inverse with-icon">
+                <i class="icon-info-sign"></i>
+                <div class="content">在线升级请先备份数据库，防止升级失败数据丢失<a class="alert-link" href="{:url('admin/Database/dataExport')}">点击这里备份数据库</a>！</div>
+            </div>
+
             <form id="migration" class="form-horizontal" role="form" method="post">
-                <legend>系统检测到有可升级的版本</legend>
+                <legend>检测到有可升级的版本</legend>
                 <div class="form-group">
                     <label class="col-md-2 control-label">版本</label>
                     <div class="col-md-10">
                         <div class="form-control-static">
-                            <p>系统当前版本{$version}</p>
-                            <p>云端最新版本{$cloudVersion['version']}</p>
+                            <p>当前版本{$localVersion}</p>
+                            <p>最新版本{$cloudVersion['version']}</p>
                         </div>
                     </div>
                 </div>
@@ -98,8 +106,8 @@
                 <div class="alert alert-info-inverse with-icon">
                     <i class="icon-info-sign"></i>
                     <div class="content">
-                        <h3>当前系统版本：<span id="localVer">{$version}</span></h3>
-                        <h3>云端最新版本：<span id="cloudVer">{$cloudVersion['version']}</span></h3>
+                        <h3>当前版本：<span id="localVer">{$localVersion}</span></h3>
+                        <h3>最新版本：<span id="cloudVer">{$cloudVersion['version']}</span></h3>
                     </div>
                 </div>
 
@@ -130,7 +138,7 @@
                 }
         });
         $('#yesupdate').click(function(){
-            window.location.href = "{:url('update/start')}?version={$cloudVersion['version']}"
+            window.location.href = "{:url('update/start',['version' => $cloudVersion['version'],'appid' => $appid ,'app_name' => $appName])}"
         });
         $('#checkVersion').click(function(){
             $('#checkVersion').html('检测中...页面即将跳转');

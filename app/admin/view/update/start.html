@@ -56,35 +56,18 @@
         </div>
     </div>
 </div>
-<!-- 备份对话框 -->
-<div class="modal fade" id="backupModal">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">关闭</span></button>
-                <h4 class="modal-title">升级前备份</h4>
-            </div>
-            <div class="modal-body">
-                <p>备份路径 ：{$backupPath}</p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default cancel-backup">开始更新</button>
-                <button type="button" class="btn btn-primary backup" >备份</button>
-            </div>
-        </div>
-    </div>
-</div>
 {/block}
 {block name="script"}
 <script>
     var vm = new Vue({
         el: '.update-warp',
         data: {
+            authCode:'{$authCode}',
             progressVal: 0,//进度值
             status: 0,//更新状态 -1异常 0 进行中 1 已完成
             progressTitle: '获取信息中',//进度标题
             task: '',//进行任务
-            appid: '854D7E66EA60F03720B5E9A3093AEF4D',
+            appid: '{$appid}',
             appName: '{$appName}',//应用类型 0系统 1应用
             api: '{$Think.config.muucmf.cloud_api}',//接口api
             localVersion: '{$version}',//本地版本
@@ -115,6 +98,7 @@
                 $.get(api, {
                     appid: that.appid,
                     version: that.upgradeVersion,
+                    auth_code:that.authCode
                 }, function (res) {
                     console.log(res);
                     if (res.code == 200) {
@@ -122,14 +106,15 @@
                         that.packageTotal = res.data.total;
                         that.versionPackage = res.data.version;
                         if (that.upgradeVersion != that.localVersion){
-                            $('#backupModal').modal('show', 'center')
+                            that.progressTitle = '开始升级';
+                            that.upgrade();
                         }else{
                             that.sameVersion();
                         }
                     } else {
                         that.status = -1;
                         that.progressTitle = '请求成功';
-                        that.task = '没有获取到相应的版本信息'
+                        that.task = res.msg
                     }
                 })
             },
@@ -139,6 +124,7 @@
                 let item = that.package[that.packageProgress];//当前升级包
                 that.progressVal = Math.floor(that.packageProgress / step);//进度条
                 that.task = '下载中 ' + item.name;//任务名称
+                that.progressTitle = '升级中';
                 $.post("{:url('upgrade')}", {
                     appid: that.appid,
                     app_name: that.appName,
@@ -157,15 +143,24 @@
                             };
                             that.errPackage.push(err);
                         }
-                        //继续执行
-                        that.packageProgress++;
-                        if (that.packageProgress >= that.packageTotal) {
-                            //执行收尾工作
-                            that.finishUpgrade();
-                        } else {
-                            //执行下一个
-                            that.upgrade();
+
+                        if (res.code != 401){
+                            //继续执行
+                            that.packageProgress++;
+                            if (that.packageProgress >= that.packageTotal) {
+                                //执行收尾工作
+                                that.finishUpgrade();
+                            } else {
+                                //执行下一个
+                                that.upgrade();
+                            }
+                        }else{
+                            that.task = '';
+                            that.status = -1;
+                            that.progressTitle = '未经授权,无法更新';
+                            that.task = '';
                         }
+
                     }
 
                 })
@@ -177,6 +172,7 @@
                 let that = this;
                 that.status = 1;
                 that.progressTitle = '已经是最新版本了';
+                that.task = '';
                 that.progressVal = 100;
             },
             /**
@@ -213,6 +209,7 @@
                 let that = this;
                 if (that.retrying) {
                     that.errRetry();
+                    return '';
                 }
                 $.post("{:url('finish')}", {
                     appid: that.appid,
@@ -224,50 +221,14 @@
                 }, function (res) {
                     that.status = 1;
                     that.progressTitle = '升级完成';
+                    that.task = '';
                     that.progressVal = 100;
                 })
-            },
-            /**
-             * 备份
-             */
-            backup(){
-                let that = this;
-                $('#backupModal').modal('hide');
-                that.progressTitle = '备份中';
-                $.post("{:url('backup')}", {
-                    app_name: that.appName,
-                }, function (res) {
-                    if (res.code == 200){
-                        toast.success('备份成功');
-                        that.progressTitle = '开始升级';
-                        // that.upgrade();
-                    }else{
-                        toast.error(res.msg);
-                        setTimeout(function () {
-                            $('#backupModal').modal('show', 'center');
-                        },500)
-                    }
-                })
-            },
-            /**
-             *
-             */
-            cancelBackup(){
-                console.log(123213);
-                $('#backupModal').modal('hide');
-                this.progressTitle = '开始升级';
-                this.upgrade();
             },
             jump() {
                 window.history.go(-1);
             }
         }
-    })
-    $('#backupModal').on('click','.backup',function () {
-        vm.backup();
-    })
-    $('#backupModal').on('click','.cancel-backup',function () {
-        vm.cancelBackup();
     })
 </script>
 {/block}
