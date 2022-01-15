@@ -2,7 +2,7 @@
 
 namespace app\admin\controller;
 
-use app\admin\lib\MakeZip;
+use app\admin\lib\Cloud;
 use app\admin\lib\Upgrade as UpgradeServer;
 use think\Exception;
 use think\facade\View;
@@ -67,7 +67,7 @@ class Update extends Admin
             'localVersion' => $this->UpgradeServer->version(),
             'upgradeVersion' => input('version'),
             'appid' => input('get.appid',''),
-            'authCode' => $this->UpgradeServer->authCode(),
+            'authCode' => Cloud::authCode(),
         ]);
         return \view();
     }
@@ -103,8 +103,13 @@ class Update extends Admin
                 }
                 //md5不同，请求远端文件
                 if ($upgrade) {
-                    $source = $this->UpgradeServer->api . "upgrade/download?md5={$md5}&appid={$appid}&app_name={$app_name}&version={$version}";
-                    $this->UpgradeServer->downFile($source, $local_path);
+                    $params = [
+                        'md5'   =>  $md5,
+                        'appid' =>  $appid,
+                        'app_name'  =>  $this->app_name,
+                        'version'   =>  $version
+                    ];
+                    $this->UpgradeServer->downFile($params, $local_path);
                 }
                 return $this->success('success');
             } catch (Exception $e) {
@@ -125,8 +130,13 @@ class Update extends Admin
                 $local_path = root_path() . $params['file'];
                 if ($params['skip'] == 0) {
                     //替换版本文件
-                    $source = $this->UpgradeServer->api . "/upgrade/download?md5={$params['md5']}&appid={$params['appid']}&app_name={$this->app_name}&version={$params['version']}";
-                    $this->UpgradeServer->downFile($source, $local_path);
+                    $params = [
+                        'md5'   => $params['md5'],
+                        'appid' => $params['appid'],
+                        'app_name' => $this->app_name,
+                        'version'  => $params['version']
+                    ];
+                    $this->UpgradeServer->downFile($params, $local_path);
                     if ($this->app_name != 'system') {
                         //更新应用版本号
                         \app\common\model\Module::where('name', $this->app_name)->update(['version' => $params['version']]);

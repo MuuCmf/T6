@@ -30,7 +30,6 @@ class SqlFile
 
         // 读取sql文件内容
         $handle = self::read_file($sql_file);
-
         // 分割语句
         $handle = self::parseSql($handle, $string, $replace);
 
@@ -46,81 +45,16 @@ class SqlFile
      */
     public static function parseSql($content = '', $string = false, $replace = [])
     {
-        // 纯sql内容
-        $pure_sql = '';
-        // 被替换的前缀
-        $from = '';
-        // 要替换的前缀
-        $to = '';
+        $sql = str_replace("\r", "\n", $content);
+        $sql = explode(";\n", $sql);
 
-        // 替换表前缀
-        if (!empty($replace)) {
-            $to   = current($replace);
-            $from = current(array_flip($replace));
+        if (!empty($replace)){
+            //替换表前缀
+            $orginal_prefix = array_key_first($replace);
+            $replace_prefix = $replace[$orginal_prefix];
+            $sql = str_replace(" `{$orginal_prefix}", " `{$replace_prefix}", $sql);
         }
-
-        if ($content != '') {
-            // 多行注释标记
-            $comment = false;
-
-            // 按行分割，兼容多个平台
-            $content = str_replace(["\r\n", "\r"], "\n", $content);
-            $content = explode("\n", trim($content));
-
-            // 循环处理每一行
-            foreach ($content as $key => $line) {
-                // 跳过空行
-                if ($line == '') {
-                    continue;
-                }
-
-                // 跳过以#或者--开头的单行注释
-                if (preg_match("/^(#|--)/", $line)) {
-                    continue;
-                }
-
-                // 跳过以/**/包裹起来的单行注释
-                if (preg_match("/^\/\*(.*?)\*\//", $line)) {
-                    continue;
-                }
-
-                // 多行注释开始
-                if (substr($line, 0, 2) == '/*') {
-                    $comment = true;
-                    continue;
-                }
-
-                // 多行注释结束
-                if (substr($line, -2) == '*/') {
-                    $comment = false;
-                    continue;
-                }
-
-                // 多行注释没有结束，继续跳过
-                if ($comment) {
-                    continue;
-                }
-
-                // 替换表前缀
-                if ($from != '') {
-                    $line = str_replace('`'.$from, '`'.$to, $line);
-                }
-
-                // sql语句
-                $pure_sql[] = $line;
-            }
-
-            // 只返回一条语句
-            if ($string) {
-                return implode($pure_sql, "");
-            }
-
-            // 以数组形式返回sql语句
-            $pure_sql = implode($pure_sql, "\n");
-            $pure_sql = explode(";\n", $pure_sql);
-        }
-
-        return $pure_sql;
+        return $sql;
     }
 
     /**

@@ -2,6 +2,7 @@
 
 namespace app\admin\controller;
 
+use app\admin\lib\Cloud;
 use think\facade\Db;
 use think\facade\View;
 use app\common\controller\Base;
@@ -58,6 +59,8 @@ class Admin extends Base
         // 当前应用模块信息
         $module_name = input('get.module_name');
         $module = $this->moduleModel->getModule($module_name ?? app('http')->getName());
+        //授权检测
+        $this->needAuthorization($module);
         View::assign('MODULE', $module);
         //当前管理菜单
         View::assign('ADMIN_MENU', $this->getMenus());
@@ -99,6 +102,16 @@ class Admin extends Base
         ]);
 
         return $all_module_list;
+    }
+
+    protected function needAuthorization($module){
+        if ($module){
+            $result = (new Cloud())->needAuthorization($module);
+            if (!$result){
+                $this->error('应用未授权',false,request()->domain());
+                exit();
+            }
+        }
     }
 
     /**
