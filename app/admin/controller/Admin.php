@@ -106,6 +106,12 @@ class Admin extends Base
 
     protected function needAuthorization($module){
         if ($module){
+            if (is_object($module)){
+                $module = $module->toArray();
+            }
+            if ($module['is_com'] == 0){
+                return false;
+            }
             $result = (new Cloud())->needAuthorization($module);
             if (!$result){
                 $this->error('应用未授权',false,request()->domain());

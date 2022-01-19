@@ -722,6 +722,9 @@ function curl_request($url, $post = '', $cookie = '', $returnCookie = 0)
     curl_setopt($curl, CURLOPT_FOLLOWLOCATION, 1);
     curl_setopt($curl, CURLOPT_AUTOREFERER, 1);
     curl_setopt($curl, CURLOPT_REFERER, "http://XXX");
+    curl_setopt($curl, CURLOPT_DNS_USE_GLOBAL_CACHE, false ); #使用DNS缓存
+    curl_setopt($curl, CURLOPT_DNS_CACHE_TIMEOUT, 2 );
+    curl_setopt($curl, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4 );#禁用IPV6
     if ($post) {
         curl_setopt($curl, CURLOPT_POST, 1);
         curl_setopt($curl, CURLOPT_POSTFIELDS, http_build_query($post));
