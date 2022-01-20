@@ -53,7 +53,7 @@
       {notempty name="ALL_MODULE_LIST"}
       {if($this_controller == 'index')}
       <!--常用应用-->
-      <ul class="sidebar-menu" data-widget="tree">
+      <ul class="sidebar-menu module-menu" data-widget="tree">
         <li class="treeview menu-open">
           <a>
               <i class="fa fa-circle-o"></i>
@@ -63,11 +63,11 @@
                 <i class="fa fa-angle-left pull-right"></i>
               </span>
           </a>
-          <ul class="treeview-menu menu-open">
+          <ul class="treeview-menu module-treeview-menu menu-open">
             {volist name="ALL_MODULE_LIST" id="vo"}
             <li>
                 <a href="{:url($vo.entry)}">
-                  <i class="fa fa-circle-o"></i>
+                  <img class="icon" src="{$vo.icon}" />
                   <span>{$vo.alias}</span>
               </a>
             </li>

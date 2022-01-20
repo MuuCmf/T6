@@ -28,11 +28,6 @@ class Module extends Base
 
         $list = $this->where($map)->order($order)->field($field)->paginate($r,false,['query'=>request()->param()]);
 
-        foreach ($list as &$val) {
-            $val['icon'] = $this->getIcon($val['name'], $val['icon']);
-        }
-        unset($val);
-
         return $list;
     }
 
@@ -43,10 +38,6 @@ class Module extends Base
     public function getAll($where = [])
     {
         $list = $this->where($where)->order('sort desc')->select()->toArray();
-        foreach ($list as &$val) {
-            $val['icon'] = $this->getIcon($val['name'], $val['icon']);
-        }
-        unset($val);
 
         return $list;
     }
@@ -275,10 +266,7 @@ class Module extends Base
         }
 
         $info = $this->where(['name'=>$name])->find();
-        if(!empty($info)){
-            $info['icon'] = $this->getIcon($info['name'], $info['icon']);
-        }
-        
+
         return $info;
     }
 
@@ -446,13 +434,12 @@ class Module extends Base
         return true;
     }
 
-    /*——————————————————————————私有域—————————————————————————————*/
     /**
      * 获取模块图标
      * @param  [type] $name [description]
      * @return [type]       [description]
      */
-    private function getIcon($name, $icon)
+    public function getIcon($name, $icon)
     {
         if(empty($icon)){
             //图标所在位置为模块静态目录下（推荐）

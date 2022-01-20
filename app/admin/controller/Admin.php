@@ -104,6 +104,10 @@ class Admin extends Base
             ['name', '<>','unions']
         ]);
 
+        foreach($all_module_list as &$val){
+            $val['icon'] = $this->moduleModel->getIcon($val['name'],$val['icon']);
+        }
+
         return $all_module_list;
     }
 
