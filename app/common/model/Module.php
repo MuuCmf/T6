@@ -1,7 +1,6 @@
 <?php
 namespace app\common\model;
 
-use think\Model;
 use think\facade\Db;
 
 class Module extends Base
@@ -280,17 +279,6 @@ class Module extends Base
             $info['icon'] = $this->getIcon($info['name'], $info['icon']);
         }
         
-        return $info;
-    }
-
-    public function getModuleByName($name)
-    {
-        if($name == 'admin'){
-            return false;
-        }
-
-        $info = $this->where(['name'=>$name])->find();
-
         return $info;
     }
 
