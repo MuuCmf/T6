@@ -52,6 +52,8 @@ class Admin extends Base
         // 判断登陆
         $this->needLogin();
         $this->setTitle();
+        // 当前系统域名
+        View::assign('this_domain',request()->domain());
         // 当前模块、控制器及方法名
         View::assign('this_module',strtolower(app('http')->getName()));
         View::assign('this_controller',strtolower(request()->controller()));
@@ -98,7 +100,8 @@ class Admin extends Base
     {
         $all_module_list = $this->moduleModel->getAll([
             ['is_setup', '=', 1],
-            ['name', '<>','ucenter']
+            ['name', '<>','ucenter'],
+            ['name', '<>','unions']
         ]);
 
         return $all_module_list;
