@@ -107,6 +107,7 @@ class Admin extends Base
         foreach($all_module_list as &$val){
             $val['icon'] = $this->moduleModel->getIcon($val['name'],$val['icon']);
         }
+        unset($val);
 
         return $all_module_list;
     }

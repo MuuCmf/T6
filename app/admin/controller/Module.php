@@ -66,7 +66,8 @@ class Module extends Admin
         };
 
         $upgradeServer = new UpgradeServer();
-        $modules = $this->ModuleModel->getListByPage($map,'sort desc,id desc','*',20)->each(function ($item,$key) use($upgradeServer){
+        $moduleModel = new ModuleModel();
+        $modules = $this->ModuleModel->getListByPage($map,'sort desc,id desc','*',20)->each(function ($item,$key) use($upgradeServer,$moduleModel){
             //获取云端版本
             if ($item['is_com']){
                 $result = $upgradeServer->cloudVersion([
@@ -79,6 +80,9 @@ class Module extends Admin
                 $item['new_version'] = $item['version'];
                 $item['upgrade'] = 0;
             }
+            //获取应用图标
+            $item['icon'] = $moduleModel->getIcon($item['name'],$item['icon']);
+            
             return $item;
         });
         $page = htmlspecialchars_decode($modules->render());
