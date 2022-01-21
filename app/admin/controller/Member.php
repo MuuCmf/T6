@@ -137,7 +137,8 @@ class Member extends Admin
         }
     }
 
-    /**用户资料详情修改
+    /**
+     * 用户资料详情修改
      * @param string $uid
      * @author 大蒙<59262424@qq.com>
      */
@@ -220,7 +221,7 @@ class Member extends Admin
             $uid = input('uid');
             $member = $this->memberModel->where('uid','=',$uid)->find()->toArray();
             
-            /**/
+            // 扩展资料
             $field_group = Db::name('field_group')->where('status', '=', 1)->select()->toArray();
             $field_group_ids = array_column($field_group, 'id');
             $map_profile[] = ['group_id', 'in', $field_group_ids];
@@ -239,7 +240,8 @@ class Member extends Admin
                 }
                 $member[$key] = $field_data;
             }
-
+            
+            // 权限组
             $auth = Db::name('auth_group_access')->where(['uid'=>$uid])->select();
             $auth_group = [];
             foreach($auth as $key=>$val){

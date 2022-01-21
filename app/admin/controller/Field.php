@@ -214,6 +214,9 @@ class Field extends Admin
             if ($data['field_name'] == '') {
                 return $this->error('字段名称不能为空！');
             }
+            if ($data['field_alias'] == '') {
+                return $this->error('字段描述不能为空！');
+            }
 
             //当表单类型为以下三种是默认值不能为空判断@MingYang
             $form_types = array('radio', 'checkbox', 'select');
@@ -277,7 +280,8 @@ class Field extends Admin
             $builder
             ->keyReadOnly("id", '标识')
             ->keyReadOnly('group_id', '分组ID')
-            ->keyText('field_name', '字段名称')
+            ->keyText('field_name', '字段名称','仅支持英文小写和"_"')
+            ->keyText('field_alias', '字段描述')
             ->keySelect('form_type', '表单类型', '', $type_default)
             ->keySelect('child_form_type', '二级表单类型', '', $child_type)
             ->keyTextArea('form_default_value', "多个值用'|'分割开,格式【字符串：男|女，数组：1:男|2:女，关联数据表：字段名|表名】开")
