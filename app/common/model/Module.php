@@ -20,18 +20,6 @@ class Module extends Base
     }
 
     /**
-     * 获取已安装模块分页列表
-     */
-    public function getListByPage($map,$order='create_time desc',$field='*',$r=20)
-    {
-        //$this->reload();
-
-        $list = $this->where($map)->order($order)->field($field)->paginate($r,false,['query'=>request()->param()]);
-
-        return $list;
-    }
-
-    /**
      * [getAll description]
      * @return [type] [description]
      */
@@ -88,7 +76,7 @@ class Module extends Base
                 $info = $this->getInfo($subdir);
                 
                 // 合并数据表内模块
-                $module_info = $this->getModuleByName($info['name']);
+                $module_info = $this->getModule($info['name']);
                 if($module_info){
                     $module_info = $module_info->toArray();
                     
