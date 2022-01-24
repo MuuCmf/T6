@@ -32,7 +32,9 @@ class Feedback extends Admin
     public function list()
     {
         $rows = 10;
-        $map = [];
+        $map = [
+            ['status', '>' , -1]
+        ];
         // 获取列表
         $lists = $this->FeedbackModel->getListByPage($map, 'id DESC', '*', $rows);
         $pager = $lists->render();
@@ -51,6 +53,32 @@ class Feedback extends Admin
         return View::fetch();
     }
 
+    /**
+     * 设置状态
+     */
+    public function status()
+    {   
+        $ids = input('ids/a');
+        !is_array($ids)&&$ids=explode(',',$ids);
+        $status = input('status', 0, 'intval');
+        $title = '更新';
+        if($status == 0){
+            $title = '设置未处理';
+        }
+        if($status == 1){
+            $title = '设置已处理';
+        }
+        if($status == -1){
+            $title = '删除';
+        }
+        $data['status'] = $status;
 
+        $res = $this->FeedbackModel->where('id', 'in', $ids)->update($data);
+        if($res){
+            return $this->success($title . '成功');
+        }else{
+            return $this->error($title . '失败');
+        }  
+    }
 
 }

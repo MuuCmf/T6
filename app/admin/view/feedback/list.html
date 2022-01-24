@@ -9,13 +9,13 @@
     <div class="button-box clearfix">
 
         <div class="col-md-6">
-            <button class="btn btn-success ajax-post confirm" url="{:url('status',array('method'=>'resume'))}" target-form="ids">
-                启用
+            <button class="btn btn-success ajax-post confirm" url="{:url('status', ['status'=> 1])}" target-form="ids">
+                已处理
             </button>
-            <button class="btn btn-warning ajax-post confirm" url="{:url('status',array('method'=>'forbid'))}" target-form="ids">
-                禁用
+            <button class="btn btn-warning ajax-post confirm" url="{:url('status', ['status'=> 0])}" target-form="ids">
+                未处理
             </button>
-            <button class="btn btn-danger ajax-post confirm" url="{:url('status',array('method'=>'delete'))}" arget-form="ids">
+            <button class="btn btn-danger ajax-post confirm" url="{:url('status', ['status'=> -1])}" arget-form="ids">
                 删除
             </button>
         </div>
@@ -43,8 +43,8 @@
             {volist name="lists.data" id="vo"}
                 <tr>
                     <td>
-                        <input class="ids" id="user-{$vo.uid}" type="checkbox" name="id[]" value="{$vo.uid}"/>
-                        <label for="user-{$vo.uid}"></label>
+                        <input class="ids" id="feedback-{$vo.id}" type="checkbox" name="ids[]" value="{$vo.id}"/>
+                        <label for="feedback-{$vo.id}"></label>
                     </td>
                     <td>{$vo.id}</td>
                     <td>
@@ -61,7 +61,7 @@
                         {$vo.status_str}
                     </td>
                     <td>
-                        <a class="btn btn-sm btn-danger ajax-post" href="{:url('status',['method'=>'delete', 'id'=>$vo['uid']])}" data-confirm="确认执行删除操作？">删除</a>
+                        <a class="btn btn-sm btn-danger ajax-post" href="{:url('status',['status'=>-1, 'ids'=>$vo['id']])}" data-confirm="确认执行删除操作？">删除</a>
                     </td>
                 </tr>
             {/volist}
