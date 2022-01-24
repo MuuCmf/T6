@@ -103,4 +103,6 @@ class Base extends Model{
     public function getAvg($map,$field = 'score'){
         return $this->where($map)->avg($field);
     }
+
+    
 }

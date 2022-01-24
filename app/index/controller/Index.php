@@ -19,5 +19,6 @@ class Index extends Common
     public function debug()
     {
         dump(config());
+        dump(query_user(is_login()));
     }
 }

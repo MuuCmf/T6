@@ -237,41 +237,38 @@ class Member extends Model
     
                 // 转回字符串
                 $fields = implode(',', $fields_arr);
+            }else{
+                $fields = '*';
             }
             
             // 查询用户数组
             $map['uid'] = $uid;
             $member = $this->where($map)->field($fields)->find();
-            if ($member){
+            if($member){
                 $member = $member->toArray();
             }
+
             if (is_array($member) && $member['status'] = 1) {
-                // 头像
-                if(empty($member['avatar'])){
-                    $member['avatar'] = $member['avatar64'] = $member['avatar128'] = $member['avatar256'] = $member['avatar512'] = request()->domain() . '/static/common/images/default_avatar.jpg';
-                }else{
-                    $member['avatar'] = get_attachment_src($member['avatar']);
-                    $member['avatar64'] = get_thumb_image($member['avatar'], 64, 64);
-                    $member['avatar128'] = get_thumb_image($member['avatar'], 128, 128);
-                    $member['avatar256'] = get_thumb_image($member['avatar'], 256, 256);
-                    $member['avatar512'] = get_thumb_image($member['avatar'], 512, 512);
+
+                if($fields == '*' || strpos($fields, 'avatar') !== false){
+                    // 头像
+                    if(empty($member['avatar'])){
+                        $member['avatar'] = $member['avatar64'] = $member['avatar128'] = $member['avatar256'] = $member['avatar512'] = request()->domain() . '/static/common/images/default_avatar.jpg';
+                    }else{
+                        $member['avatar'] = get_attachment_src($member['avatar']);
+                        $member['avatar64'] = get_thumb_image($member['avatar'], 64, 64);
+                        $member['avatar128'] = get_thumb_image($member['avatar'], 128, 128);
+                        $member['avatar256'] = get_thumb_image($member['avatar'], 256, 256);
+                        $member['avatar512'] = get_thumb_image($member['avatar'], 512, 512);
+                    }
                 }
 
-                // 余额
-                if (isset($member['balance'])){
-                    $member['balance'] = sprintf("%.2f",$member['balance'] / 100);
+                if($fields == '*' || strpos($fields, 'balance') !== false){
+                    // 余额
+                    if (isset($member['balance'])){
+                        $member['balance'] = sprintf("%.2f",$member['balance'] / 100);
+                    }
                 }
-
-                // 积分
-
-
-                // 权限组
-                $auth = Db::name('auth_group_access')->where(['uid'=>$uid])->select();
-                $auth_group = [];
-                foreach($auth as $key=>$val){
-                    $auth_group[] = $val['group_id'];
-                }
-                $member['auth_group'] = implode(',',$auth_group);
 
                 // 扩展字段
                 $field_group = Db::name('field_group')->where('status', '=', 1)->select()->toArray();
@@ -287,13 +284,12 @@ class Member extends Model
                     $field_data = Db::name('field')->where($map_field)->field('field_data')->find();
                     if ($field_data == null || $field_data == '') {
                         $member[$key] = '';
-                    } else {
-                        $member[$key] = $field_data;
-                    }
+                    } 
                     $member[$key] = $field_data;
                 }
 
                 return $member;
+
             } else {
                 return -1; //用户不存在或被禁用
             }

@@ -1,0 +1,86 @@
+{extend name="common/main"/}
+
+{block name="body"}
+<div class="member-list-section">
+    <!-- 标题栏 -->
+    <div class="main-title">
+        <h2>用户反馈列表</h2>
+    </div>
+    <div class="button-box clearfix">
+
+        <div class="col-md-6">
+            <button class="btn btn-success ajax-post confirm" url="{:url('status',array('method'=>'resume'))}" target-form="ids">
+                启用
+            </button>
+            <button class="btn btn-warning ajax-post confirm" url="{:url('status',array('method'=>'forbid'))}" target-form="ids">
+                禁用
+            </button>
+            <button class="btn btn-danger ajax-post confirm" url="{:url('status',array('method'=>'delete'))}" arget-form="ids">
+                删除
+            </button>
+        </div>
+
+    </div>
+    <!-- 数据列表 -->
+    <div class="data-table with-padding">
+        <table class="table table-bordered table-striped user-table muu-table">
+            <thead>
+            <tr>
+                <th class="row-selected row-selected">
+                    <input type="checkbox" class="check-all" id="check-all">
+                    <label for="check-all"></label>
+                </th>
+                <th class="">{:lang('ID')}</th>
+                <th class="">用户</th>
+                <th class="">内容</th>
+                <th class="">图片</th>
+                <th class="">状态</th>
+                <th class="">操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            {notempty name="lists.data"}
+            {volist name="lists.data" id="vo"}
+                <tr>
+                    <td>
+                        <input class="ids" id="user-{$vo.uid}" type="checkbox" name="id[]" value="{$vo.uid}"/>
+                        <label for="user-{$vo.uid}"></label>
+                    </td>
+                    <td>{$vo.id}</td>
+                    <td>
+                        <a href="{:url('admin/Member/detail',['uid'=>$vo['uid']])}">
+                            <div class="avatar">
+                                <img src="{$vo['user_info']['avatar64']}">
+                            </div>
+                            <div class="title text-ellipsis">{$vo.user_info.nickname|text}</div>
+                        </a>
+                    </td>
+                    <td>{$vo.content}</td>
+                    <td></td>
+                    <td>
+                        {$vo.status_str}
+                    </td>
+                    <td>
+                        <a class="btn btn-sm btn-danger ajax-post" href="{:url('status',['method'=>'delete', 'id'=>$vo['uid']])}" data-confirm="确认执行删除操作？">删除</a>
+                    </td>
+                </tr>
+            {/volist}
+            {else/}
+                <td colspan="13" class="text-center">空空如也~</td>
+            {/notempty}
+            </tbody>
+        </table>
+
+        <!-- 分页 -->
+        <div class="page">
+            {:htmlspecialchars_decode($pager)}
+        </div>
+        <!-- /分页-->
+    </div>
+</div>
+{/block}
+{block name="script"}
+<script>
+
+</script>   
+{/block}
