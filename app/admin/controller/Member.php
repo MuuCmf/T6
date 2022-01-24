@@ -154,17 +154,25 @@ class Member extends Admin
                     $data_score[$key] = $val;
                 }
             }
-            // 更新积分数据
-            $this->memberModel->where(['uid' => $uid])->update($data_score);
-            
             foreach ($data_score as $key => $val) {
-                $value = query_user($uid,array($key));
-                if ($val == $value[$key]) {
+                $user_score = query_user($uid,array($key));
+                // 值相同跳过
+                if (intval($val) == intval($user_score[$key])) {
                     continue;
+                }else{
+                    // 更新积分数据
+                    $this->memberModel->where(['uid' => $uid])->update($data_score);
+                    //写积分变化日志
+                    if (intval($val) > intval($user_score[$key])) {
+                        $action = 'inc';
+                        $value = intval($val) - intval($user_score[$key]);
+                    }else{
+                        $action = 'dec';
+                        $value = intval($user_score[$key]) - intval($val);
+                    }
+                    $scoreLogModel = new ScoreLogModel();
+                    $scoreLogModel->addScoreLog($uid, cut_str('score', $key, 'l'), $action, $value, '', 0, get_nickname(is_login()) . '后台调整');
                 }
-                $scoreLogModel = new ScoreLogModel();
-                //写积分变化日志
-                $scoreLogModel->addScoreLog($uid, cut_str('score', $key, 'l'), 'to', $val, '', 0, get_nickname(is_login()) . '后台调整');
             }
             /* 修改积分 end*/
 
@@ -213,7 +221,7 @@ class Member extends Admin
             // 用户名、邮箱、手机变成可编辑内容end
 
             // 清理用户缓存
-            // clean_query_user_cache($uid);
+            // 
             return $this->success('保存成功');
             
         } else {
@@ -240,15 +248,6 @@ class Member extends Admin
                 }
                 $member[$key] = $field_data;
             }
-            
-            // 权限组
-            $auth = Db::name('auth_group_access')->where(['uid'=>$uid])->select();
-            $auth_group = [];
-            foreach($auth as $key=>$val){
-                $auth_group[] = $val['group_id'];
-            }
-            $member['auth_group'] = implode(',',$auth_group);
-
             $builder = new AdminConfigBuilder();
             $builder->title('用户扩展资料详情');
             $builder->keyUid()
@@ -265,20 +264,27 @@ class Member extends Admin
                 $field_key[] = $vt['field_name'];
             }
 
-            $scoreTypeModel = new ScoreTypeModel();
             /* 积分设置 */
+            $scoreTypeModel = new ScoreTypeModel();
             $field = $scoreTypeModel->getTypeList([['status','=', 1]]);
             $score_key = [];
             foreach ($field as $vf) {
                 $score_key[] = 'score' . $vf['id'];
                 $builder->keyText('score' . $vf['id'], $vf['title']);
             }
-
-            $score_data = $this->memberModel->where('uid', '=', $uid)->field(implode(',', $score_key))->find()->toArray();
-            $member = array_merge($member, $score_data);
+            // $score_data = $this->memberModel->where('uid', '=', $uid)->field(implode(',', $score_key))->find()->toArray();
+            // $member = array_merge($member, $score_data);
             /*积分设置end*/
 
             /*权限组*/
+            // 用户拥有的权限组
+            $auth = Db::name('auth_group_access')->where(['uid'=>$uid])->select();
+            $auth_group = [];
+            foreach($auth as $key=>$val){
+                $auth_group[] = $val['group_id'];
+            }
+            $member['auth_group'] = implode(',',$auth_group);
+            // 系统设置启用的权限组
             $auth_group = Db::name('auth_group')->where('status', '=', 1)->select()->toArray();
             $auth_group_options = [];
             foreach ($auth_group as $val) {
@@ -288,7 +294,6 @@ class Member extends Admin
 
             /*权限组end*/
             $builder->data($member);
-            
             $builder
                 ->group('基础设置', implode(',', $field_key))
                 ->group('积分设置', implode(',', $score_key))

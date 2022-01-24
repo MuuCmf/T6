@@ -24,7 +24,7 @@ class ScoreLog extends Model
         $uid = is_array($uid) ? $uid : explode(',',$uid);
         foreach($uid as $v){
             $score =  Db::name('Member')->where(['uid'=>$v])->value('score'.$type);
-
+            
             $data['uid'] = $v;
             $data['ip'] = request()->ip(1);
             $data['type'] = $type;

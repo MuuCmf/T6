@@ -218,10 +218,10 @@ class Member extends Model
      * @param  boolean $is_username 是否使用用户名查询
      * @return array                用户信息
      */
-    public function info($uid, $fields = 'uid,username,nickname,email,mobile,avatar,status')
+    public function info($uid, $fields = '*')
     {
         if(!empty($uid)){
-            if(!empty($fields)){
+            if(!empty($fields) && $fields != '*'){
                 if(!is_array($fields)){
                     $fields_arr = explode(',', $fields);
                 }else{
@@ -262,7 +262,8 @@ class Member extends Model
                     $member['balance'] = sprintf("%.2f",$member['balance'] / 100);
                 }
 
-                // 扩展字段
+                // 积分
+
 
                 // 权限组
                 $auth = Db::name('auth_group_access')->where(['uid'=>$uid])->select();
@@ -271,6 +272,26 @@ class Member extends Model
                     $auth_group[] = $val['group_id'];
                 }
                 $member['auth_group'] = implode(',',$auth_group);
+
+                // 扩展字段
+                $field_group = Db::name('field_group')->where('status', '=', 1)->select()->toArray();
+                $field_group_ids = array_column($field_group, 'id');
+                $map_profile[] = ['group_id', 'in', $field_group_ids];
+                $map_profile[] = ['status', '=', 1];
+                $fields_list = Db::name('field_setting')->where($map_profile)->field('id,field_name,form_type')->select()->toArray();
+                $fields_list = array_combine(array_column($fields_list, 'field_name'), $fields_list);
+                $map_field['uid'] = $member['uid'];
+
+                foreach ($fields_list as $key => $val) {
+                    $map_field['field_id'] = $val['id'];
+                    $field_data = Db::name('field')->where($map_field)->field('field_data')->find();
+                    if ($field_data == null || $field_data == '') {
+                        $member[$key] = '';
+                    } else {
+                        $member[$key] = $field_data;
+                    }
+                    $member[$key] = $field_data;
+                }
 
                 return $member;
             } else {
@@ -333,8 +354,6 @@ class Member extends Model
         $res = $this->where('uid', get_uid())->save($data);
         if($res){
             //返回成功信息
-            // clean_query_user_cache(get_uid(), 'password');//删除缓存
-            // Db::name('user_token')->where('uid','=',get_uid())->delete();
             return true;
         }else{
             $this->error = '密码修改失败';
@@ -386,10 +405,10 @@ class Member extends Model
         $length = mb_strlen($nickname, 'utf8');
         if ($length == 0) {
             $this->error('请输入昵称');
-        } else if ($length > config('system.NICKNAME_MAX_LENGTH',32)) {
-            $this->error('昵称不能超过'. config('system.NICKNAME_MAX_LENGTH',32).'个字');
-        } else if ($length < config('system.NICKNAME_MIN_LENGTH',2)) {
-            $this->error('昵称不能少于' . config('system.NICKNAME_MIN_LENGTH',2) . '个字');
+        } else if ($length > Config::get('system.NICKNAME_MAX_LENGTH',32)) {
+            $this->error('昵称不能超过'. Config::get('system.NICKNAME_MAX_LENGTH',32).'个字');
+        } else if ($length < Config::get('system.NICKNAME_MIN_LENGTH',2)) {
+            $this->error('昵称不能少于' . Config::get('system.NICKNAME_MIN_LENGTH',2) . '个字');
         }
         $match = preg_match('/^(?!_|\s\')[A-Za-z0-9_\x80-\xff\s\']+$/', $nickname);
         if (!$match) {
@@ -398,12 +417,13 @@ class Member extends Model
         //验证唯一性
         $map_nickname[] = ['nickname', '=', $nickname];
         $map_nickname[] = ['uid','<>', $uid];
-        $had_nickname = Db::name('Member')->where($map_nickname)->count();
+        $had_nickname = $this->where($map_nickname)->count();
 
         if ($had_nickname) {
             $this->error('昵称已被人使用');
         }
-        $denyName = Db::name("config")->where(['name' => 'USER_NAME_BAOLIU'])->value('value');
+        //保留昵称
+        $denyName = Config::get('system.USER_NAME_BAOLIU');
         if ($denyName != '') {
             $denyName = explode(',', $denyName);
             foreach ($denyName as $val) {
