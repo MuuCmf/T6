@@ -1,0 +1,78 @@
+{extend name="common/main"/}
+
+{block name="body"}
+<div class="member-list-section">
+    <!-- 标题栏 -->
+    <div class="main-title">
+        <h2>用户反馈列表</h2>
+    </div>
+    <div class="button-box clearfix">
+
+        <div class="col-md-6">
+            <button class="btn btn-success ajax-post confirm" url="{:url('status', ['status'=> 1])}" target-form="ids">
+                启用
+            </button>
+            <button class="btn btn-warning ajax-post confirm" url="{:url('status', ['status'=> 0])}" target-form="ids">
+                禁用
+            </button>
+            <button class="btn btn-danger ajax-post confirm" url="{:url('status', ['status'=> -1])}" arget-form="ids">
+                删除
+            </button>
+        </div>
+
+    </div>
+    <!-- 数据列表 -->
+    <div class="data-table with-padding">
+        <table class="table table-bordered table-striped user-table muu-table">
+            <thead>
+            <tr>
+                <th class="row-selected row-selected">
+                    <input type="checkbox" class="check-all" id="check-all">
+                    <label for="check-all"></label>
+                </th>
+                <th class="">{:lang('ID')}</th>
+                <th class="">用户</th>
+                <th class="">内容</th>
+                <th class="">图片</th>
+                <th class="">状态</th>
+                <th class="">操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            {notempty name="list"}
+            {volist name="list" id="vo"}
+                <tr>
+                    <td>
+                        <input class="ids" id="feedback-{$vo.id}" type="checkbox" name="ids[]" value="{$vo.id}"/>
+                        <label for="feedback-{$vo.id}"></label>
+                    </td>
+                    
+                    <td>
+                        <div class="icon">
+                            <img src="{$vo['user_info']['avatar64']}">
+                        </div>
+                    </td>
+                    <td>{$vo.title}</td>
+                    <td>{$vo.description}</td>
+                    <td></td>
+                    <td>
+                        {$vo.status_str}
+                    </td>
+                    <td>
+                        <a class="btn btn-sm btn-danger ajax-post" href="{:url('status',['status'=>-1, 'ids'=>$vo['id']])}" data-confirm="确认执行删除操作？">删除</a>
+                    </td>
+                </tr>
+            {/volist}
+            {else/}
+                <td colspan="13" class="text-center">空空如也~</td>
+            {/notempty}
+            </tbody>
+        </table>
+    </div>
+</div>
+{/block}
+{block name="script"}
+<script>
+
+</script>   
+{/block}
