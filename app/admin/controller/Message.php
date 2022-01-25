@@ -1,9 +1,8 @@
 <?php
 namespace app\admin\controller;
 
-use app\admin\builder\AdminListBuilder;
-use app\admin\builder\AdminConfigBuilder;
 use think\facade\View;
+use app\common\model\MessageContent as MessageContentModel;
 use app\common\model\MessageType as MessageTypeModel;
 use app\common\model\Message as MessageModel;
 use think\exception\ValidateException;
@@ -14,6 +13,7 @@ use think\exception\ValidateException;
 class Message extends Admin
 {
     protected $MessageModel;
+    protected $MessageContentModel;
     protected $MessageTypeModel;
 
     /**
@@ -24,8 +24,14 @@ class Message extends Admin
     public function __construct()
     {
         parent::__construct();
+        // 消息发送列表
         $this->MessageModel = new MessageModel();
+        // 消息内容
+        $this->MessageContentModel = new MessageContentModel();
+        // 消息类型
         $this->MessageTypeModel = new MessageTypeModel();
+        // 设置页面title
+        $this->setTitle('消息管理');
     }
 
     /**
@@ -50,7 +56,7 @@ class Message extends Admin
     /**
      * 类型编辑、新增
      */
-    public function edit()
+    public function typeEdit()
     {
         $id = input('id', 0, 'intval');
         $title = $id ? "编辑" : "新建";
@@ -92,7 +98,118 @@ class Message extends Admin
      */
     public function send()
     {
+        // 消息类型ID
+        $type_id = input('type_id', 0, 'intval');
+
+        if (request()->isPost()) {
+
+
+        }else{
+            // 获取消息类型
+            $type = $this->MessageTypeModel->getDataById($type_id);
+            $type = $this->MessageTypeModel->formatData($type);
+            View::assign('type', $type);
+            
+
+            // 输出模板
+            return View::fetch();
+        }
+    }
+
+    /**
+     * 消息类型状态管理
+     */
+    public function typeStatus()
+    {
+        $ids = input('ids/a');
+        !is_array($ids)&&$ids=explode(',',$ids);
+        $status = input('status', 0, 'intval');
+        $title = '更新';
+        if($status == 0){
+            $title = '禁用';
+        }
+        if($status == 1){
+            $title = '启用';
+        }
+        if($status == -1){
+            $title = '删除';
+        }
+        $data['status'] = $status;
+
+        $res = $this->MessageTypeModel->where('id', 'in', $ids)->update($data);
+        if($res){
+            return $this->success($title . '成功');
+        }else{
+            return $this->error($title . '失败');
+        }  
+    }
+
+    /**
+     * 消息内容列表
+     */
+    public function content()
+    {
+        // 查询条件
+        $map = [
+
+        ];
+
+        $fields = '*';
+        $lists = $this->MessageContentModel->getListByPage($map, 'create_time desc', $fields, 20);
+        $pager = $lists->render();
+        $lists = $lists->toArray();
         
+        foreach($lists['data'] as &$val){
+            $val = $this->MessageContentModel->formatData($val);
+        }
+        unset($val);
+
+        View::assign('pager',$pager);
+        View::assign('lists',$lists);
+        // 记录当前列表页的cookie
+        cookie('__forward__', $_SERVER['REQUEST_URI']);
+        // 输出模板
+        return View::fetch();
+
+    }
+
+    /**
+     * 消息内容新增、编辑
+     */
+    public function contentEdit()
+    {
+        $id = input('id', 0, 'intval');
+        $title = $id ? "编辑" : "新建";
+        View::assign('title',$title);
+
+        if (request()->isPost()) {
+            $data = input();
+            // 数据验证
+
+            $res = $this->MessageContentModel->edit($data);
+            
+            if ($res) {
+                $this->success($title.'成功', $res, Cookie('__forward__'));
+            } else {
+                $this->error($title.'失败');
+            }
+
+        }else{
+            if(!empty($id)){
+                $data = $this->MessageContentModel->getDataById($id);
+            }else{
+                // 初始化数据
+                $data = [];
+                $data['id'] = 0;
+                $data['title'] = '';
+                $data['content'] = '';
+                $data['status'] = 1;
+            }
+            
+            View::assign('data', $data);
+            // 输出模板
+            return View::fetch();
+        }
     }
 
 

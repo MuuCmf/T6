@@ -9,16 +9,16 @@
     <div class="button-box clearfix">
 
         <div class="col-md-6">
-            <a type="button" class="btn btn-info" href="{:url('edit')}">
+            <a type="button" class="btn btn-info" href="{:url('typeEdit')}">
                 新增
             </a>
-            <button class="btn btn-success ajax-post confirm" url="{:url('status', ['status'=> 1])}" target-form="ids">
+            <button class="btn btn-success ajax-post confirm" url="{:url('typeStatus', ['status'=> 1])}" target-form="ids">
                 启用
             </button>
-            <button class="btn btn-warning ajax-post confirm" url="{:url('status', ['status'=> 0])}" target-form="ids">
+            <button class="btn btn-warning ajax-post confirm" url="{:url('typeStatus', ['status'=> 0])}" target-form="ids">
                 禁用
             </button>
-            <button class="btn btn-danger ajax-post confirm" url="{:url('status', ['status'=> -1])}" arget-form="ids">
+            <button class="btn btn-danger ajax-post confirm" url="{:url('typeStatus', ['status'=> -1])}" arget-form="ids">
                 删除
             </button>
         </div>
@@ -26,6 +26,7 @@
 
     <!-- 数据列表 -->
     <div class="data-table with-padding">
+        {notempty name="list"}
         <table class="table table-bordered table-striped muu-table">
             <thead>
             <tr>
@@ -41,7 +42,6 @@
             </tr>
             </thead>
             <tbody>
-            {notempty name="list"}
             {volist name="list" id="vo"}
                 <tr>
                     <td>
@@ -60,16 +60,23 @@
                         {$vo.status_str}
                     </td>
                     <td>
-                        <a class="btn btn-sm btn-info" href="{:url('edit',['id'=>$vo['id']])}">编辑</a>
-                        <a class="btn btn-sm btn-danger ajax-post" href="{:url('status',['status'=>-1, 'ids'=>$vo['id']])}" data-confirm="确认执行删除操作？">删除</a>
+                        <button type="button" class="btn btn-sm btn-primary">发送消息</button>
+                        <a class="btn btn-sm btn-info" href="{:url('typeEdit',['id'=>$vo['id']])}">编辑</a>
+                        {if $vo.status == 1}
+                        <a class="btn btn-sm btn-warning ajax-post" href="{:url('typeStatus',['status'=>0, 'ids'=>$vo['id']])}">禁用</a>
+                        {/if}
+                        {if $vo.status == 0}
+                        <a class="btn btn-sm btn-success ajax-post" href="{:url('typeStatus',['status'=>1, 'ids'=>$vo['id']])}">启用</a>
+                        {/if}
+                        <a class="btn btn-sm btn-danger ajax-post" href="{:url('typeStatus',['status'=>-1, 'ids'=>$vo['id']])}" data-confirm="确认执行删除操作？">删除</a>
                     </td>
                 </tr>
             {/volist}
-            {else/}
-                <td colspan="13" class="text-center">空空如也~</td>
-            {/notempty}
             </tbody>
         </table>
+        {else/}
+        {include file="common/_empty"/}
+        {/notempty}
     </div>
 </div>
 {/block}
