@@ -24,6 +24,7 @@ class AdminConfigBuilder extends AdminBuilder
 
     public function title($title)
     {
+        $title = empty($title)? '': $title;
         $this->_title = $title;
 
         return $this;

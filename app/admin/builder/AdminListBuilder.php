@@ -665,23 +665,17 @@ class AdminListBuilder extends AdminBuilder
         });
 
         //image转换为图片
-        //大蒙 <修复无图片ID时默认判断为图片路径的BUG>
         $this->convertKey('image', 'html', function ($value, $key, $item) {
 
-            if (is_numeric($value)) {//value是图片id
-                if($value===0 || $value==='0'){
-                    $html = '<div class="popup-gallery"><img src="/static/common/images/nopic.png" style="width:80px;height:80px"></div>';
-                    return $html;
-                }
-                $value = htmlspecialchars($value);
-                $sc_src = get_cover($value, 'path');
-                $src = getThumbImageById($value, 80, 80);
-                $sc_src = $sc_src == '' ? $src : $sc_src;
-                $html = "<div class='popup-gallery'><a title=\"" . '查看大图' . "\" href=\"$sc_src\"><img src=\"$sc_src\"/ style=\"width:80px;height:80px\"></a></div>";
-            } else {//value是图片路径
-                $sc_src = $value;
-                $html = "<div class='popup-gallery'><a title=\"" . '查看大图' . "\" href=\"$sc_src\"><img src=\"$sc_src\"/ style=\"width:80px;height:80px\"></a></div>";
+            if(empty($value)){
+                $html = '<div class="popup-gallery"><img src="/static/common/images/nopic.png" style="width:80px;height:80px"></div>';
+                return $html;
             }
+            $value = htmlspecialchars($value);
+            $src = get_thumb_image($value, 80, 80);
+            $sc_src = $src;
+            $html = "<div class='popup-gallery'><a title=\"" . '查看大图' . "\" href=\"$sc_src\"><img src=\"$sc_src\"/ style=\"width:80px;height:80px\"></a></div>";
+            
             return $html;
         });
 
