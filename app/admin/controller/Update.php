@@ -50,7 +50,6 @@ class Update extends Admin
         View::assign('localVersion', $localVersion);
         View::assign('cloudVersion', $cloudVersion);
         View::assign('upgrade', $upgrade);
-        View::assign('appid', input('get.appid',''));
         View::assign('appName', input('get.app_name',''));
         View::assign('backupPath', $backup_path);
 
@@ -66,7 +65,6 @@ class Update extends Admin
             'appName' => $this->app_name,
             'localVersion' => $this->UpgradeServer->version(),
             'upgradeVersion' => input('version'),
-            'appid' => input('get.appid',''),
             'authCode' => Cloud::authCode(),
         ]);
         return \view();
@@ -81,13 +79,12 @@ class Update extends Admin
         if (request()->isAjax()) {
             $params = request()->param();
             $path = $params['file'];//文件路径
-            $md5 = $params['md5'];
-            $appid = $params['appid'];//应用
-            $app_name = $this->app_name;//应用类型
+            $md5 = $params['md5'];//文件md5
+            $app_name = $this->app_name;//应用标识
             $version = $params['version'];//应用类型
             $local_path = root_path() . $path;
-            $local_version = $this->UpgradeServer->version($app_name);
-            $upgrade = get_upgrade_status($local_version ,$version);
+            $local_version = $this->UpgradeServer->version($app_name);//本地版本
+            $upgrade = get_upgrade_status($local_version ,$version);//版本号对比
             if (!$upgrade) $this->success('无需升级', 'same_version');
             try {
                 //检查忽略文件
@@ -105,7 +102,6 @@ class Update extends Admin
                 if ($upgrade) {
                     $params = [
                         'md5'   =>  $md5,
-                        'appid' =>  $appid,
                         'app_name'  =>  $this->app_name,
                         'version'   =>  $version
                     ];
@@ -132,7 +128,6 @@ class Update extends Admin
                     //替换版本文件
                     $params = [
                         'md5'   => $params['md5'],
-                        'appid' => $params['appid'],
                         'app_name' => $this->app_name,
                         'version'  => $params['version']
                     ];

@@ -13,6 +13,7 @@
  */
 namespace app\admin\lib;
 use app\common\model\Module;
+use think\facade\Cache;
 
 class Cloud{
     public $api;
@@ -25,7 +26,6 @@ class Cloud{
         $url = $this->api . 'app/authorization';
         $result = curl_request($url,[
             'app_name'  =>  $module['name'],
-            'appid'     =>  $module['appid'],
             'auth_code' =>  self::authCode()
         ]);
         $result = json_decode($result,true);
@@ -43,7 +43,14 @@ class Cloud{
         $web_domain = request()->host();
         $web_host   = request()->ip();
         $lock_str   = $web_domain . '|' . $web_host;
-        return self::encrypt_code($lock_str ,6000,'muucmf_tp6');
+        $code = Cache::get('cloud_auth');
+        if (!$code || $code['time'] < time()){
+            $code = self::encrypt_code($lock_str ,6000,'muu');
+            Cache::set('cloud_auth',['time' => time() + 60 * 30 ,'code' => $code]);
+        }else{
+            $code = $code['code'];
+        }
+        return $code;
     }
 
     /**

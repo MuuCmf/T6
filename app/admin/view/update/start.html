@@ -67,7 +67,6 @@
             status: 0,//更新状态 -1异常 0 进行中 1 已完成
             progressTitle: '获取信息中',//进度标题
             task: '',//进行任务
-            appid: '{$appid}',
             appName: '{$appName}',//应用类型 0系统 1应用
             api: '{$Think.config.muucmf.cloud_api}',//接口api
             localVersion: '{$version}',//本地版本
@@ -96,9 +95,9 @@
                     api += "app/version";
                 }
                 $.get(api, {
-                    appid: that.appid,
                     version: that.upgradeVersion,
-                    auth_code:that.authCode
+                    auth_code:that.authCode,
+                    app_name:that.appName,
                 }, function (res) {
                     console.log(res);
                     if (res.code == 200) {
@@ -126,7 +125,6 @@
                 that.task = '下载中 ' + item.name;//任务名称
                 that.progressTitle = '升级中';
                 $.post("{:url('upgrade')}", {
-                    appid: that.appid,
                     app_name: that.appName,
                     version: that.upgradeVersion,
                     file: item.name,
@@ -189,7 +187,6 @@
                 }
                 let item = that.errPackage[i]['data'];
                 $.post("{:url('upgrade')}", {
-                        appid: that.appid,
                         app_name: that.appName,
                         version: that.upgradeVersion,
                         file: item.name,
@@ -212,7 +209,6 @@
                     return '';
                 }
                 $.post("{:url('finish')}", {
-                    appid: that.appid,
                     app_name: that.appName,
                     version: that.upgradeVersion,
                     file: that.versionPackage.name,

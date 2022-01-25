@@ -138,7 +138,7 @@
                 }
         });
         $('#yesupdate').click(function(){
-            window.location.href = "{:url('update/start',['version' => $cloudVersion['version'],'appid' => $appid ,'app_name' => $appName])}"
+            window.location.href = "{:url('update/start',['version' => $cloudVersion['version'],'app_name' => $appName])}"
         });
         $('#checkVersion').click(function(){
             $('#checkVersion').html('检测中...页面即将跳转');
