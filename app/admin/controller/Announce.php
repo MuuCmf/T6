@@ -4,6 +4,9 @@ namespace app\admin\controller;
 use think\facade\View;
 use app\common\model\Module as ModuleModel;
 use app\common\model\Announce as AnnounceModel;
+
+use app\admin\validate\Common;
+use think\exception\ValidateException;
 /**
  * 公告控制器
  */
@@ -33,7 +36,8 @@ class Announce extends Admin
     {
         // 查询条件
         $map = [
-            ['status', '>', -1]
+            ['status', '>', -1],
+            ['shopid', '=', 0]
         ];
 
         $fields = '*';
@@ -66,6 +70,15 @@ class Announce extends Admin
         if (request()->isPost()) {
             $data = input();
             // 数据验证
+            try {
+                validate(Common::class)->scene('announce')->check([
+                    'title'  => $data['title'],
+                    'content'  => $data['content'],
+                ]);
+            } catch (ValidateException $e) {
+                // 验证失败 输出错误信息
+                return $this->error($e->getError());
+            }
             $res = $this->AnnounceModel->edit($data);
             
             if ($res) {

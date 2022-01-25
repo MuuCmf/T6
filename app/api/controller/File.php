@@ -10,7 +10,7 @@ use app\common\model\Attachment;
 
 class File extends Base
 {
-    protected $upload;
+    protected $Attachment;
     /**
      * 构造方法
      * @access public
@@ -19,7 +19,7 @@ class File extends Base
     {
         parent::__construct();
 
-        $this->upload = new Attachment();
+        $this->Attachment = new Attachment();
     }
 
     /* 通用文件上传 */
@@ -31,7 +31,7 @@ class File extends Base
             return $this->error('未选择文件');
         }
 
-        $result = $this->upload->upload($files,'file');
+        $result = $this->Attachment->upload($files,'file');
 
         if(is_array($result)){
             return $this->result(200, '上传成功', $result);
@@ -66,7 +66,7 @@ class File extends Base
             return json($return);
         }
         
-        $arr = $this->upload->upload($files,'avatar','avatar',$aUid);
+        $arr = $this->Attachment->upload($files,'avatar','avatar',$aUid);
 
         if(is_array($arr)){
             $return['code'] = 1;
@@ -74,7 +74,7 @@ class File extends Base
             $return['data'] = $arr;
         }else{
             $return['code'] = 1;
-            $return['msg'] =$this->upload->getError();
+            $return['msg'] =$this->Attachment->getError();
         }
 
         return json($return);
@@ -100,7 +100,7 @@ class File extends Base
                     return json($return);
                 }
 
-                $res = $this->upload->upload($files,'file');
+                $res = $this->Attachment->upload($files,'file');
                 
                 $result['state'] ='SUCCESS';
                 $result['url'] = $res['url'];
@@ -115,7 +115,7 @@ class File extends Base
                     return json($return);
                 }
 
-                $arr = $this->upload->upload($files,'base64');
+                $arr = $this->Attachment->Attachment($files,'base64');
                 
                 $result['state'] ='SUCCESS';
                 $result['url'] = $arr['url'];
@@ -132,15 +132,15 @@ class File extends Base
                     return json($return);
                 }
 
-                $arr = $this->upload->upload($files,'file');
+                $arr = $this->Attachment->upload($files,'file');
 
                 if(is_array($arr)){
                     $result['state'] ='SUCCESS';
                     $result['url'] = $arr['url'];
-                    $result['original'] = $arr[0]['filename'];
+                    $result['original'] = $arr['filename'];
                 }else{
                     $result['state'] = 'error';
-                    $result['msg'] = $this->upload->getError();
+                    $result['msg'] = $this->Attachment->getError();
                 }
                 return json($result);
 
@@ -155,7 +155,7 @@ class File extends Base
                     return json($return);
                 }
 
-                $arr = $this->upload->upload($files,'file');
+                $arr = $this->Attachment->upload($files,'file');
 
                 if(is_array($arr)){
                     $result['state'] ='SUCCESS';
@@ -163,7 +163,7 @@ class File extends Base
                     $result['original'] = $arr['filename'];
                 }else{
                     $result['state'] = 'error';
-                    $result['msg'] = $this->upload->getError();
+                    $result['msg'] = $this->Attachment->getError();
                 }
                 return json($result);
 
@@ -182,7 +182,7 @@ class File extends Base
     {
         $data = input('post.');
 
-        $res = $this->upload->edit($data);
+        $res = $this->Attachment->edit($data);
         if($res){
             return $this->success('success');
         }else{
