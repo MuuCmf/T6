@@ -21,6 +21,7 @@ class Common extends Validate
     ];
 
     protected $scene = [
+        // 公告
         'announce'  =>  ['title','content'],
     ];    
     
