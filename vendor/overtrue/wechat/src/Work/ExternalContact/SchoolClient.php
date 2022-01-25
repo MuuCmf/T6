@@ -20,7 +20,6 @@ use EasyWeChat\Kernel\BaseClient;
  */
 class SchoolClient extends BaseClient
 {
-
     /**
      * 创建部门
      * @see https://work.weixin.qq.com/api/doc/90000/90135/92340
@@ -421,19 +420,6 @@ class SchoolClient extends BaseClient
     public function getTeacherViewMode()
     {
         return $this->httpGet('cgi-bin/school/get_teacher_view_mode');
-    }
-
-    /**
-     * 外部联系人OPENID转换
-     * @param string $userId
-     * @return array|\EasyWeChat\Kernel\Support\Collection|object|\Psr\Http\Message\ResponseInterface|string
-     * @throws \EasyWeChat\Kernel\Exceptions\InvalidConfigException
-     */
-    public function convertOpenid(string $userId)
-    {
-        return $this->httpGet('cgi-bin/externalcontact/convert_to_openid',[
-            'external_userid'   => $userId
-        ]);
     }
 
     /**

@@ -23,6 +23,10 @@ class ContactWayClient extends BaseClient
     /**
      * 配置客户联系「联系我」方式.
      *
+     * @param int   $type
+     * @param int   $scene
+     * @param array $config
+     *
      * @return array|\EasyWeChat\Kernel\Support\Collection|object|\Psr\Http\Message\ResponseInterface|string
      *
      * @throws \EasyWeChat\Kernel\Exceptions\InvalidConfigException
@@ -41,6 +45,8 @@ class ContactWayClient extends BaseClient
     /**
      * 获取企业已配置的「联系我」方式.
      *
+     * @param string $configId
+     *
      * @return array|\EasyWeChat\Kernel\Support\Collection|object|\Psr\Http\Message\ResponseInterface|string
      *
      * @throws \EasyWeChat\Kernel\Exceptions\InvalidConfigException
@@ -55,6 +61,9 @@ class ContactWayClient extends BaseClient
 
     /**
      * 更新企业已配置的「联系我」方式.
+     *
+     * @param string $configId
+     * @param array  $config
      *
      * @return array|\EasyWeChat\Kernel\Support\Collection|object|\Psr\Http\Message\ResponseInterface|string
      *
@@ -73,6 +82,8 @@ class ContactWayClient extends BaseClient
     /**
      * 删除企业已配置的「联系我」方式.
      *
+     * @param string $configId
+     *
      * @return array|\EasyWeChat\Kernel\Support\Collection|object|\Psr\Http\Message\ResponseInterface|string
      *
      * @throws \EasyWeChat\Kernel\Exceptions\InvalidConfigException
@@ -83,5 +94,33 @@ class ContactWayClient extends BaseClient
         return $this->httpPostJson('cgi-bin/externalcontact/del_contact_way', [
             'config_id' => $configId,
         ]);
+    }
+
+    /**
+     * 获取企业已配置的「联系我」列表，注意，该接口仅可获取2021年7月10日以后创建的「联系我」
+     *
+     * @param string $cursor 分页查询使用的游标，为上次请求返回的 next_cursor
+     * @param int $limit 每次查询的分页大小，默认为100条，最多支持1000条
+     * @param int|null $startTime 「联系我」创建起始时间戳, 不传默认为90天前
+     * @param int|null $endTime 「联系我」创建结束时间戳, 不传默认为当前时间
+     *
+     * @return array|\EasyWeChat\Kernel\Support\Collection|object|\Psr\Http\Message\ResponseInterface|string
+     *
+     * @throws \EasyWeChat\Kernel\Exceptions\InvalidConfigException
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function list(string $cursor = '', int $limit = 100, int $startTime = null, int $endTime = null)
+    {
+        $data = [
+            'cursor' => $cursor,
+            'limit' => $limit,
+        ];
+        if ($startTime) {
+            $data['start_time'] = $startTime;
+        }
+        if ($endTime) {
+            $data['end_time'] = $endTime;
+        }
+        return $this->httpPostJson('cgi-bin/externalcontact/list_contact_way', $data);
     }
 }

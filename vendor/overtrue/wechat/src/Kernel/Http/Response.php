@@ -36,6 +36,8 @@ class Response extends GuzzleResponse
     }
 
     /**
+     * @param \Psr\Http\Message\ResponseInterface $response
+     *
      * @return \EasyWeChat\Kernel\Http\Response
      */
     public static function buildFromPsrResponse(ResponseInterface $response)
@@ -108,6 +110,8 @@ class Response extends GuzzleResponse
     }
 
     /**
+     * @param string $content
+     *
      * @return string
      */
     protected function removeControlCharacters(string $content)

@@ -1,182 +1,114 @@
 <?php
 
-/*
- * This file is part of the overtrue/socialite.
- *
- * (c) overtrue <i@overtrue.me>
- *
- * This source file is subject to the MIT license that is bundled
- * with this source code in the file LICENSE.
- */
-
 namespace Overtrue\Socialite;
 
 use ArrayAccess;
 use JsonSerializable;
+use Overtrue\Socialite\Contracts\ProviderInterface;
+use Overtrue\Socialite\Contracts\UserInterface;
+use Overtrue\Socialite\Traits\HasAttributes;
 
-/**
- * Class User.
- */
 class User implements ArrayAccess, UserInterface, JsonSerializable, \Serializable
 {
     use HasAttributes;
 
     /**
-     * User constructor.
-     *
-     * @param array $attributes
+     * @var \Overtrue\Socialite\Contracts\ProviderInterface|null
      */
-    public function __construct(array $attributes)
+    protected ?ProviderInterface $provider;
+
+    public function __construct(array $attributes, ProviderInterface $provider = null)
     {
         $this->attributes = $attributes;
+        $this->provider = $provider;
     }
 
-    /**
-     * Get the unique identifier for the user.
-     *
-     * @return string
-     */
     public function getId()
     {
-        return $this->getAttribute('id');
+        return $this->getAttribute('id') ?? $this->getEmail();
     }
 
-    /**
-     * Get the username for the user.
-     *
-     * @return string
-     */
-    public function getUsername()
+    public function getNickname(): ?string
     {
-        return $this->getAttribute('username', $this->getId());
+        return $this->getAttribute('nickname') ?? $this->getName();
     }
 
-    /**
-     * Get the nickname / username for the user.
-     *
-     * @return string
-     */
-    public function getNickname()
-    {
-        return $this->getAttribute('nickname');
-    }
-
-    /**
-     * Get the full name of the user.
-     *
-     * @return string
-     */
-    public function getName()
+    public function getName(): ?string
     {
         return $this->getAttribute('name');
     }
 
-    /**
-     * Get the e-mail address of the user.
-     *
-     * @return string
-     */
-    public function getEmail()
+    public function getEmail(): ?string
     {
         return $this->getAttribute('email');
     }
 
-    /**
-     * Get the avatar / image URL for the user.
-     *
-     * @return string
-     */
-    public function getAvatar()
+    public function getAvatar(): ?string
     {
         return $this->getAttribute('avatar');
     }
 
-    /**
-     * Set the token on the user.
-     *
-     * @param \Overtrue\Socialite\AccessTokenInterface $token
-     *
-     * @return $this
-     */
-    public function setToken(AccessTokenInterface $token)
+    public function setAccessToken(string $token): self
     {
-        $this->setAttribute('token', $token->getToken());
-        $this->setAttribute('access_token', $token->getToken());
-
-        if (\is_callable([$token, 'getRefreshToken'])) {
-            $this->setAttribute('refresh_token', $token->getRefreshToken());
-        }
+        $this->setAttribute('access_token', $token);
 
         return $this;
     }
 
-    /**
-     * @param string $provider
-     *
-     * @return $this
-     */
-    public function setProviderName($provider)
+    public function getAccessToken(): ?string
     {
-        $this->setAttribute('provider', $provider);
+        return $this->getAttribute('access_token');
+    }
+
+    public function setRefreshToken(?string $refreshToken): self
+    {
+        $this->setAttribute('refresh_token', $refreshToken);
 
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getProviderName()
-    {
-        return $this->getAttribute('provider');
-    }
-
-    /**
-     * Get the authorized token.
-     *
-     * @return \Overtrue\Socialite\AccessToken
-     */
-    public function getToken()
-    {
-        return new AccessToken([
-            'access_token' => $this->getAccessToken(),
-            'refresh_token' => $this->getAttribute('refresh_token')
-        ]);
-    }
-
-    /**
-     * Get user access token.
-     *
-     * @return string
-     */
-    public function getAccessToken()
-    {
-        return $this->getAttribute('token') ?: $this->getAttribute('access_token');
-    }
-
-    /**
-     * Get user refresh token.
-     *
-     * @return string
-     */
-    public function getRefreshToken()
+    public function getRefreshToken(): ?string
     {
         return $this->getAttribute('refresh_token');
     }
 
-    /**
-     * Get the original attributes.
-     *
-     * @return array
-     */
-    public function getOriginal()
+    public function setExpiresIn(int $expiresIn): self
     {
-        return $this->getAttribute('original');
+        $this->setAttribute('expires_in', $expiresIn);
+
+        return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function jsonSerialize()
+    public function getExpiresIn(): ?int
+    {
+        return $this->getAttribute('expires_in');
+    }
+
+    public function setRaw(array $user): self
+    {
+        $this->setAttribute('raw', $user);
+
+        return $this;
+    }
+
+    public function getRaw(): array
+    {
+        return $this->getAttribute('raw');
+    }
+
+    public function setTokenResponse(array $response)
+    {
+        $this->setAttribute('token_response', $response);
+
+        return $this;
+    }
+
+    public function getTokenResponse()
+    {
+        return $this->getAttribute('token_response');
+    }
+
+    public function jsonSerialize(): array
     {
         return $this->attributes;
     }
@@ -186,19 +118,28 @@ class User implements ArrayAccess, UserInterface, JsonSerializable, \Serializabl
         return serialize($this->attributes);
     }
 
-    /**
-     * Constructs the object.
-     *
-     * @see  https://php.net/manual/en/serializable.unserialize.php
-     *
-     * @param string $serialized <p>
-     *                           The string representation of the object.
-     *                           </p>
-     *
-     * @since 5.1.0
-     */
     public function unserialize($serialized)
     {
         $this->attributes = unserialize($serialized) ?: [];
+    }
+
+    /**
+     * @return \Overtrue\Socialite\Contracts\ProviderInterface
+     */
+    public function getProvider(): \Overtrue\Socialite\Contracts\ProviderInterface
+    {
+        return $this->provider;
+    }
+
+    /**
+     * @param \Overtrue\Socialite\Contracts\ProviderInterface $provider
+     *
+     * @return $this
+     */
+    public function setProvider(\Overtrue\Socialite\Contracts\ProviderInterface $provider)
+    {
+        $this->provider = $provider;
+
+        return $this;
     }
 }

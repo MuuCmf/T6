@@ -24,6 +24,8 @@ class Client extends BaseClient
     /**
      * Client constructor.
      * 三方接口有三个access_token，这里用的是suite_access_token.
+     *
+     * @param \EasyWeChat\Kernel\ServiceContainer $app
      */
     public function __construct(ServiceContainer $app)
     {
@@ -35,6 +37,7 @@ class Client extends BaseClient
      *
      * @param string $preAuthCode 预授权码
      * @param string $redirectUri 回调地址
+     * @param string $state
      *
      * @return string
      *
@@ -44,7 +47,7 @@ class Client extends BaseClient
     {
         $redirectUri || $redirectUri = $this->app->config['redirect_uri_install'];
         $preAuthCode || $preAuthCode = $this->getPreAuthCode()['pre_auth_code'];
-        $state || $state = rand();
+        $state || $state = random_bytes(64);
 
         $params = [
             'suite_id' => $this->app['config']['suite_id'],
@@ -71,6 +74,9 @@ class Client extends BaseClient
     /**
      * 设置授权配置.
      * 该接口可对某次授权进行配置.
+     *
+     * @param string $preAuthCode
+     * @param array  $sessionInfo
      *
      * @return mixed
      *
@@ -109,6 +115,9 @@ class Client extends BaseClient
     /**
      * 获取企业授权信息.
      *
+     * @param string $authCorpId
+     * @param string $permanentCode
+     *
      * @return mixed
      *
      * @throws \EasyWeChat\Kernel\Exceptions\InvalidConfigException
@@ -126,6 +135,9 @@ class Client extends BaseClient
 
     /**
      * 获取应用的管理员列表.
+     *
+     * @param string $authCorpId
+     * @param string $agentId
      *
      * @return mixed
      *
@@ -145,12 +157,16 @@ class Client extends BaseClient
     /**
      * 获取登录url.
      *
+     * @param string      $redirectUri
+     * @param string      $scope
+     * @param string|null $state
+     *
      * @return string
      */
     public function getOAuthRedirectUrl(string $redirectUri = '', string $scope = 'snsapi_userinfo', string $state = null)
     {
         $redirectUri || $redirectUri = $this->app->config['redirect_uri_oauth'];
-        $state || $state = rand();
+        $state || $state = random_bytes(64);
         $params = [
             'appid' => $this->app['config']['suite_id'],
             'redirect_uri' => $redirectUri,
@@ -164,6 +180,8 @@ class Client extends BaseClient
 
     /**
      * 第三方根据code获取企业成员信息.
+     *
+     * @param string $code
      *
      * @return mixed
      *
@@ -180,6 +198,8 @@ class Client extends BaseClient
 
     /**
      * 第三方使用user_ticket获取成员详情.
+     *
+     * @param string $userTicket
      *
      * @return array|\EasyWeChat\Kernel\Support\Collection|object|\Psr\Http\Message\ResponseInterface|string
      *

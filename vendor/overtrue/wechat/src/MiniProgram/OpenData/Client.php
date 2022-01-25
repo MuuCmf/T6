@@ -21,12 +21,11 @@ use EasyWeChat\Kernel\BaseClient;
 class Client extends BaseClient
 {
     /**
-     * @var string
-     */
-    protected $baseUri = 'https://api.weixin.qq.com/wxa/';
-
-    /**
      * removeUserStorage.
+     *
+     * @param string $openid
+     * @param string $sessionKey
+     * @param array  $key
      *
      * @return array|\EasyWeChat\Kernel\Support\Collection|object|\Psr\Http\Message\ResponseInterface|string
      *
@@ -42,11 +41,15 @@ class Client extends BaseClient
             'signature' => hash_hmac('sha256', json_encode($data), $sessionKey),
         ];
 
-        return $this->httpPostJson('remove_user_storage', $data, $query);
+        return $this->httpPostJson('wxa/remove_user_storage', $data, $query);
     }
 
     /**
      * setUserStorage.
+     *
+     * @param string $openid
+     * @param string $sessionKey
+     * @param array  $kvList
      *
      * @return array|\EasyWeChat\Kernel\Support\Collection|object|\Psr\Http\Message\ResponseInterface|string
      *
@@ -64,10 +67,12 @@ class Client extends BaseClient
             'signature' => hash_hmac('sha256', json_encode($data), $sessionKey),
         ];
 
-        return $this->httpPostJson('set_user_storage', $data, $query);
+        return $this->httpPostJson('wxa/set_user_storage', $data, $query);
     }
 
     /**
+     * @param array $params
+     *
      * @return array
      */
     protected function formatKVLists(array $params)
