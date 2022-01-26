@@ -5,6 +5,8 @@ use think\facade\View;
 use app\common\model\MessageContent as MessageContentModel;
 use app\common\model\MessageType as MessageTypeModel;
 use app\common\model\Message as MessageModel;
+
+use app\admin\validate\Common;
 use think\exception\ValidateException;
 
 /**
@@ -198,7 +200,16 @@ class Message extends Admin
         if (request()->isPost()) {
             $data = input();
             // 数据验证
-
+            try {
+                validate(Common::class)->scene('message')->check([
+                    'title'  => $data['title'],
+                    'description'  => $data['description'],
+                    'content'  => $data['content'],
+                ]);
+            } catch (ValidateException $e) {
+                // 验证失败 输出错误信息
+                return $this->error($e->getError());
+            }
             $res = $this->MessageContentModel->edit($data);
             
             if ($res) {
