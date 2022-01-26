@@ -13,6 +13,7 @@
  */
 namespace app\unions\controller\admin;
 use app\admin\controller\Admin as MuuAdmin;
+use app\unions\logic\TemplateMessage;
 use app\unions\model\WechatAutoReply;
 use app\unions\model\WechatConfig;
 use think\facade\Config;
@@ -207,5 +208,37 @@ class OfficialAccount extends MuuAdmin {
             }
             return $this->error('请检查公众号配置');
         }
+    }
+
+    /**
+     * @title 模板消息通知
+     * @return \think\response\View
+     */
+    public function templateMessage(){
+        if (request()->isAjax()){
+            $params = request()->post();
+            $data = [
+                'switch'      => $params['switch'],
+                'to'          => $params['to'],
+                'manager_uid' => $params['manager_uid'],
+                'tmplmsg'     => $params['tmplmsg']
+            ];
+            $data = json_encode($data);
+            $result = $this->wechatConfigModel->where('shopid',$this->shopid)->save(['tmplmsg' => $data]);
+            if ($result){
+                $this->success('保存成功');
+            }
+            $this->error('保存失败，请稍后再试');
+        }
+        $type = 'weixin_h5';//当前模板消息类型
+        $TemplateMessageLogic = new TemplateMessage();
+        $detail = $this->wechatConfigModel->where('shopid',$this->shopid)->value('tmplmsg');
+        $detail = $TemplateMessageLogic->_formatData($detail);//格式化原始数据
+        View::assign([
+            'type' => $type,
+            'element' => $TemplateMessageLogic->oauth_type[$type],
+            'data' => $detail
+        ]);
+        return \view('admin/common/template_message');
     }
 }

@@ -402,6 +402,12 @@ class Member extends Admin
         }
     }
 
+
+    /**
+     * Modal 选择用户信息
+     * @return \think\response\View
+     * @throws \think\db\exception\DbException
+     */
     function chooseUser(){
         $search = input('search','','text');
         $oauth_type = input('oauth_type','','text');//授权条件
@@ -447,8 +453,12 @@ class Member extends Admin
                 $list_arr[$key]['avatar512'] = get_thumb_image($list_arr[$key]['avatar'], 512, 512);
             }
         }
-        View::assign('pager',$pager);
-        View::assign('_list', $list_arr);
+        View::assign([
+            'pager' => $pager,
+            '_list' => $list_arr,
+            'oauth_type' => $oauth_type,
+            'search' => $search
+        ]);
         return \view('_choose_user');
     }
 

@@ -15,15 +15,17 @@ namespace app\unions\controller\admin;
 use app\admin\builder\AdminConfigBuilder;
 use app\admin\controller\Admin as MuuAdmin;
 use app\common\model\Module;
+use app\unions\logic\TemplateMessage;
 use app\unions\model\WechatMpConfig;
+use think\facade\View;
 
 class WechatMiniProgram extends MuuAdmin{
-    private $miniProgramModel;
+    private $MiniProgramModel;
     private $shopid;
     function __construct()
     {
         parent::__construct();
-        $this->miniProgramModel = new WechatMpConfig();
+        $this->MiniProgramModel = new WechatMpConfig();
         $this->shopid = 0;
     }
 
@@ -48,16 +50,16 @@ class WechatMiniProgram extends MuuAdmin{
             $map = [
                 ['shopid' ,'=' ,$this->shopid],
             ];
-            $id = $this->miniProgramModel->where($map)->value('id');
+            $id = $this->MiniProgramModel->where($map)->value('id');
             if ($id){
                 $data['id'] = $id;
             }
-            $this->miniProgramModel->edit($data);
+            $this->MiniProgramModel->edit($data);
             $this->success('保存成功');
         }else{
             //查询分组数据
             //查询数据
-            $config = $this->miniProgramModel->where([
+            $config = $this->MiniProgramModel->where([
                 ['shopid' ,'=' ,$this->shopid],
 
             ])->find()->toArray();
@@ -81,5 +83,36 @@ class WechatMiniProgram extends MuuAdmin{
             $builder->buttonSubmit();
             $builder->display();
         }
+    }
+    /**
+     * @title 模板消息通知
+     * @return \think\response\View
+     */
+    public function templateMessage(){
+        if (request()->isAjax()){
+            $params = request()->post();
+            $data = [
+                'switch'      => $params['switch'],
+                'to'          => $params['to'],
+                'manager_uid' => $params['manager_uid'],
+                'tmplmsg'     => $params['tmplmsg']
+            ];
+            $data = json_encode($data);
+            $result = $this->MiniProgramModel->where('shopid',$this->shopid)->save(['tmplmsg' => $data]);
+            if ($result){
+                $this->success('保存成功');
+            }
+            $this->error('保存失败，请稍后再试');
+        }
+        $type = 'weixin_app';//当前模板消息类型
+        $TemplateMessageLogic = new TemplateMessage();
+        $detail = $this->MiniProgramModel->where('shopid',$this->shopid)->value('tmplmsg');
+        $detail = $TemplateMessageLogic->_formatData($detail);//格式化原始数据
+        View::assign([
+            'type' => $type,
+            'element' => $TemplateMessageLogic->oauth_type[$type],
+            'data' => $detail
+        ]);
+        return \view('admin/common/template_message');
     }
 }

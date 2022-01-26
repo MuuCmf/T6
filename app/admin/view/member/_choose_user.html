@@ -22,7 +22,7 @@
         <div class="input-group">
             <div class="input-control search-box has-icon-left has-icon-right">
                 <input type="hidden" name="api">
-                <input id="inputSearch" type="search" class="form-control search-input empty" name="keyword" placeholder="用户昵称/UID">
+                <input id="inputSearch" type="search" class="form-control search-input empty" value="{$search}" name="keyword" placeholder="用户昵称/UID">
                 <label for="inputSearch" class="input-control-icon-left search-icon"><i class="icon icon-search"></i></label>
             </div>
             <span class="input-group-btn">
@@ -72,7 +72,7 @@
         $("#search").click(function () {
             var url = $(this).attr('url');
             var query = $('#inputSearch').val();
-            window.location.href = url + '?search=' + query;
+            window.location.href = url + '?oauth_type={$oauth_type}&search=' + query;
         });
         //回车搜索
         $(".search-input").keyup(function (e) {
