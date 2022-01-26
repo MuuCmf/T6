@@ -402,4 +402,53 @@ class Member extends Admin
         }
     }
 
+    function chooseUser(){
+        $search = input('search','','text');
+        $oauth_type = input('oauth_type','','text');//授权条件
+        if(is_numeric($search)) {
+            //UID查询
+            $map[] = ['m.uid','=',$search];
+        }else{
+            $nickname = $search;
+            //用户名或昵称查询
+            if($nickname){
+                $mapNickname = ['nickname' ,'like', '%' . $nickname . '%'];
+                $uid = Db::name('member')->where($mapNickname)->value('id');
+                if($uid){
+                    $map[] = ['m.uid','=',$search];
+                }else{
+                    $map[] = ['m.nickname' ,'like', '%' . (string)$search . '%'];
+                }
+            }
+        }
+        $map[] = ['m.status','>=', 0];
+        // 每页显示数量
+        $rows = input('rows', 15, 'intval');
+        if (empty($oauth_type)){
+            $list = $this->memberModel->alias('m')->where($map)->order('uid','desc')->paginate($rows);
+        }else{
+            $map[] = ['ms.type','=',$oauth_type];
+            $list = $this->memberModel->alias('m')->join('member_sync ms','m.uid = ms.uid')->where($map)->order('m.uid','desc')->paginate($rows);
+        }
+
+        $pager = $list->render();
+        $list = $list->toArray();
+        $list_arr = $list['data'];
+
+        foreach($list_arr as $key=>$v){
+            //处理用户头像
+            if(empty($list_arr[$key]['avatar'])){
+                $list_arr[$key]['avatar'] = $list_arr[$key]['avatar64'] = $list_arr[$key]['avatar128'] = $list_arr[$key]['avatar256'] = $list_arr[$key]['avatar512'] = request()->domain() . '/static/common/images/default_avatar.jpg';
+            }else{
+                $list_arr[$key]['avatar64'] = get_thumb_image($list_arr[$key]['avatar'], 64, 64);
+                $list_arr[$key]['avatar128'] = get_thumb_image($list_arr[$key]['avatar'], 128, 128);
+                $list_arr[$key]['avatar256'] = get_thumb_image($list_arr[$key]['avatar'], 256, 256);
+                $list_arr[$key]['avatar512'] = get_thumb_image($list_arr[$key]['avatar'], 512, 512);
+            }
+        }
+        View::assign('pager',$pager);
+        View::assign('_list', $list_arr);
+        return \view('_choose_user');
+    }
+
 }

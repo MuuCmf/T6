@@ -29,5 +29,6 @@ return [
         '__CSS__' => '/static/unions/css',
         '__JS__' => '/static/unions/js',
         '__IMG__' => '/static/unions/images',
+        '__COMMON__' => '/static/common/',
     ],
 ];
