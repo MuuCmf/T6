@@ -15,49 +15,54 @@
             margin-top: 5px;;
         }
     </style>
-    <form id="migration" action="{:url()}" method="post" class="ajax-form">
+    <form id="migration" action="{:url()}" method="post" class="form-horizontal ajax-form">
 
-        {empty name="users"}
-        <div>
-            <input type="checkbox" id="systemMessage" value="systemMessage" name="sendType[]" checked>
-            <label for="systemMessage">系统消息</label>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">类型</label>
+			<div class="form-controls col-sm-8">
+                <input type="checkbox" id="systemMessage" value="systemMessage" name="sendType[]" checked>
+                <label for="systemMessage">站内消息</label>
 
-            <input type="checkbox" id="systemEmail" value="systemEmail" name="sendType[]">
-            <label for="systemEmail">邮件</label>
-        </div>
+                <input type="checkbox" id="systemEmail" value="systemEmail" name="sendType[]">
+                <label for="systemEmail">邮件</label>
 
-        {else /}
-        <div>
-            <input type="checkbox" id="systemMessage" value="systemMessage" name="sendType[]" checked>
-            <label for="systemMessage">系统消息</label>
+                <input type="checkbox" id="systemEmail" value="systemEmail" name="sendType[]">
+                <label for="systemEmail">短信</label>
 
-            <input type="checkbox" id="systemEmail" value="systemEmail" name="sendType[]">
-            <label for="systemEmail">Email</label>
-
-            {volist name="users" id="one_user"}
-                <label style="margin-right: 10px">
-                       [{$one_user['uid']}]{$one_user['nickname']}
-                </label>
-            {/volist}
-            <input type="hidden" name="uids" value="{$uids}">
-        </div>
-
-        {/empty}
-        <div class="form-group clearfix">
-            <input type="text" name="title" class="form-control" placeholder="{:lang('_THE_TITLE_OF_AN_INCOMING_MESSAGE_WITH_DOUBLE_')}">
-        </div>
-
-        <div class="form-group clearfix">
-            <input type="text" name="url" class="form-control " placeholder="{:lang('_URL_LINK_TO_ENTER_A_MESSAGE_WITH_DOUBLE_')}">
+                <input type="checkbox" id="systemEmail" value="systemEmail" name="sendType[]">
+                <label for="systemEmail">模板消息</label>
+            </div>
         </div>
 
         <div class="form-group">
-            <textarea class="content"></textarea>
+            <label class="col-sm-2 control-label">用户</label>
+            <div class="form-controls col-sm-8">
+                <div class="margin-bottom">
+                    <button type="button" class="btn btn-sm btn-primary" role="button" data-toggle="modal" data-target="#chooseUserModal" data-api="{:url('admin/member/index')}">选择用户</button>
+                </div>
+                <div class="choose-user clearfix">
+                    <input type="checkbox" id="systemMessage" value="systemMessage" name="sendType[]" checked>
+                    <label for="systemMessage">所有用户</label>
+                </div>
+            </div>
         </div>
 
-        <div style="width: 100%;text-align: center;">
-            <a class="btn btn-primary" data-role="submit">{:lang("_SEND_OUT_")}</a>
-            <a onclick="$('.close').click();" class="btn btn-default">取消</a>
+        <div class="form-group">
+            <label class="col-sm-2 control-label">内容</label>
+            <div class="form-controls col-sm-8">
+                <div class="margin-bottom">
+                    <button type="button" class="btn btn-sm btn-primary" role="button" data-toggle="modal" data-api="{:url('admin/member/index')}">选择消息内容</button>
+                </div>
+                
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-2 control-label"></label>
+            <div class="form-controls col-sm-8">
+                <button type="button" class="btn btn-success" data-role="submit">发送消息</button>
+                <button type="button" onclick="$('.close').click();" class="btn btn-default">取消</button>
+            </div>
         </div>
     </form>
 </div>

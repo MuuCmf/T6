@@ -39,9 +39,16 @@ class Announce extends Admin
             ['status', '>', -1],
             ['shopid', '=', 0]
         ];
+        // 搜索关键字
+        $keyword = input('keyword', '', 'text');
+        View::assign('keyword',$keyword);
+        if(!empty($keyword)){
+            $map[] = ['title', 'like', '%' . $keyword . '%'];
+        }
 
         $fields = '*';
-        $lists = $this->AnnounceModel->getListByPage($map, 'sort desc,create_time desc', $fields, 20);
+        $rows = input('rows', 20, 'intval');
+        $lists = $this->AnnounceModel->getListByPage($map, 'sort desc,create_time desc', $fields, $rows);
         $pager = $lists->render();
         $lists = $lists->toArray();
         
