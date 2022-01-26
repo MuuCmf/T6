@@ -151,7 +151,8 @@ class Message extends Admin
     {
         // 查询条件
         $map = [
-
+            ['status', '>', -1],
+            ['shopid', '=', 0],
         ];
 
         $fields = '*';
@@ -163,6 +164,11 @@ class Message extends Admin
             $val = $this->MessageContentModel->formatData($val);
         }
         unset($val);
+
+        // ajax请求返回
+        if (request()->isAjax()){
+            return $this->success('success',$lists);
+        }
 
         View::assign('pager',$pager);
         View::assign('lists',$lists);
@@ -198,10 +204,10 @@ class Message extends Admin
             if(!empty($id)){
                 $data = $this->MessageContentModel->getDataById($id);
             }else{
-                // 初始化数据
-                $data = [];
+                // 初始化数据结构
                 $data['id'] = 0;
                 $data['title'] = '';
+                $data['description'] = '';
                 $data['content'] = '';
                 $data['status'] = 1;
             }
@@ -210,6 +216,34 @@ class Message extends Admin
             // 输出模板
             return View::fetch();
         }
+    }
+
+    /**
+     * 消息内容状态管理
+     */
+    public function contentStatus()
+    {
+        $ids = input('ids/a');
+        !is_array($ids) && $ids = explode(',',$ids);
+        $status = input('status', 0, 'intval');
+        $title = '更新';
+        if($status == 0){
+            $title = '禁用';
+        }
+        if($status == 1){
+            $title = '启用';
+        }
+        if($status == -1){
+            $title = '删除';
+        }
+        $data['status'] = $status;
+
+        $res = $this->MessageContentModel->where('id', 'in', $ids)->update($data);
+        if($res){
+            return $this->success($title . '成功');
+        }else{
+            return $this->error($title . '失败');
+        }  
     }
 
 

@@ -41,7 +41,7 @@ class Announce extends Admin
         ];
 
         $fields = '*';
-        $lists = $this->AnnounceModel->getListByPage($map, 'create_time desc', $fields, 20);
+        $lists = $this->AnnounceModel->getListByPage($map, 'sort desc,create_time desc', $fields, 20);
         $pager = $lists->render();
         $lists = $lists->toArray();
         
@@ -100,8 +100,10 @@ class Announce extends Admin
                 $data['cover'] = '';
                 $data['status'] = 1;
             }
-            
             View::assign('data', $data);
+
+            // 获取自定义页面应用是否安装
+
             
             // 输出模板
             return View::fetch();

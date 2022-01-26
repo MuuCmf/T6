@@ -59,13 +59,37 @@
 
             <div class="builder_item">
                 <label class="item-label">
+                    排序
+                    <span class="check-tips">（数字越大，越靠前，最大999。）</span>
+                </label>
+                <div class="controls">
+                    <input type="number" class="form-control" name="sort" value="{$data['sort']}" placeholder="排序" max="999">
+                </div>
+            </div>
+
+            <div class="builder_item">
+                <label class="item-label">
                     描述
                     <span class="check-tips">（请填写公告简短描述）</span>
                 </label>
-                <div class="">
+                <div class="editor">
                     {:ueditor('content', 'content', $data['content'])}
                 </div>
             </div>
+
+            <!--安装了自定义页面后可调用该方式做公告链接-->
+            <div class="builder_item this-page" data-this-page="announce">
+                <label class="item-label">
+                    公告链接至
+                    <span class="check-tips">（点击公告弹出信息链接到的页面）</span>
+                </label>
+                <div class="form-controls clearfix">
+                    <div class="link-to">
+                        {include file="../../micro/view/admin/common/_link_btn"/}
+                    </div>
+                </div>
+            </div>
+            <!--END-->
             
             <div class="builder_item">
             
@@ -85,6 +109,8 @@
                     {/if}
                 </div>
             </div>
+
+
                 
             <div class="builder_item">
                 <label class="item-label"></label>
