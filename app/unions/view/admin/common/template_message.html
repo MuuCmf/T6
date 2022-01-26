@@ -59,7 +59,7 @@
 
             {foreach $element.template as $t}
             <div class="form-item builder_item">
-                <label class="item-label">{$t.title} <i class="icon icon-question-sign" data-toggle="tooltip" data-placement="right" title="选择行业为：“IT科技 - 互联网|电子商务”，添加标题为：”{$t.title}“，编号为：“{$t.id}”的模板后将模板ID输入文本框中。"></i></label>
+                <label class="item-label">{$t.title} <i class="icon icon-question-sign" data-toggle="tooltip" data-placement="right" title="{$t['tips']}"></i></label>
                 <div class="controls">
                     <input type="text" class="text input-large form-control" name="tmplmsg[{$t.input_name}]" style="width: 400px" value="{$data['tmplmsg'][$t['input_name']]|default=''}">
                 </div>
