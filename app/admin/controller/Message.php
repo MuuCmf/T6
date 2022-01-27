@@ -41,7 +41,9 @@ class Message extends Admin
      */
     public function type()
     {
-        $map = [];
+        // 查询条件
+        $map[] = ['shopid', '=', 0];
+        $map[] = ['status', '>', -1];
         $list = $this->MessageTypeModel->getList($map);
         foreach($list as &$val){
             $val = $this->MessageTypeModel->formatData($val);
@@ -240,8 +242,18 @@ class Message extends Admin
                 $data['content'] = '';
                 $data['status'] = 1;
             }
-            
             View::assign('data', $data);
+
+            // 消息类型列表
+            $type = $this->MessageTypeModel->getList([
+                ['shopid', '=', 0],
+                ['status', '=', 1]
+            ]);
+            foreach($type as &$val){
+                $val = $this->MessageTypeModel->formatData($val);
+            }
+            unset($val);
+            View::assign('type', $type);
             // 输出模板
             return View::fetch();
         }
