@@ -151,11 +151,15 @@ class Message extends Admin
      */
     public function content()
     {
+        // 列表页面显示风格
+        $mode = input('mode', 'all', 'text');
         // 查询条件
-        $map = [
-            ['status', '>', -1],
-            ['shopid', '=', 0],
-        ];
+        $map[] = ['shopid', '=', 0];
+        if($mode != 'all'){
+            $map[] = ['status', '>', -1];
+        }else{
+            $map[] = ['status', '=', 1];
+        }
         // 搜索关键字
         $keyword = input('keyword', '', 'text');
         View::assign('keyword',$keyword);
@@ -181,10 +185,17 @@ class Message extends Admin
 
         View::assign('pager',$pager);
         View::assign('lists',$lists);
+
         // 记录当前列表页的cookie
         cookie('__forward__', $_SERVER['REQUEST_URI']);
-        // 输出模板
-        return View::fetch();
+        
+        if($mode == 'all'){
+            // 输出模板
+            return View::fetch('content');
+        }else{
+            return View::fetch('_content');
+        }
+        
 
     }
 

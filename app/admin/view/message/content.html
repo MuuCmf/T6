@@ -1,7 +1,7 @@
 {extend name="common/main"/}
 
 {block name="body"}
-<div class="message-type-list-section">
+<div class="message-content-list-section">
     <!-- 标题栏 -->
     <div class="main-title">
         <h2>消息内容管理</h2>
@@ -90,6 +90,12 @@
         {include file="common/_empty"/}
         {/notempty}
     </div>
+
+    <!-- 分页 -->
+    <div class="page">
+        {:htmlspecialchars_decode($pager)}
+    </div>
+    <!-- /分页-->
 </div>
 {/block}
 {block name="script"}

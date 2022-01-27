@@ -38,11 +38,12 @@
             <label class="col-sm-2 control-label">用户</label>
             <div class="form-controls col-sm-8">
                 <div class="margin-bottom">
-                    <button type="button" class="btn btn-sm btn-primary" role="button" data-toggle="modal" data-target="#chooseUserModal" data-api="{:url('admin/member/index')}">选择用户</button>
+                    <button type="button" class="btn btn-sm btn-primary" role="button" data-name="chooseUserModal" data-iframe="{:url('admin/member/chooseUser')}" data-toggle="modal" data-scroll-inside="true" data-height="600px">选择用户</button>
                 </div>
-                <div class="choose-user clearfix">
-                    <input type="checkbox" id="systemMessage" value="systemMessage" name="sendType[]" checked>
-                    <label for="systemMessage">所有用户</label>
+                <div class="choose-user clearfix" id="choose-user-cb">
+                    <input type="hidden" name="manager_uid" id="choose-user-uid" value="{$data['manager_info']['uid']|default='0'}">
+                    <img src="{$data['manager_info']['avatar64']|default=''}" alt="" id="choose-user-avatar">
+                    <span id="choose-user-nickname">{$data['manager_info']['nickname']|default=''}</span>
                 </div>
             </div>
         </div>
@@ -51,7 +52,10 @@
             <label class="col-sm-2 control-label">内容</label>
             <div class="form-controls col-sm-8">
                 <div class="margin-bottom">
-                    <button type="button" class="btn btn-sm btn-primary" role="button" data-toggle="modal" data-api="{:url('admin/member/index')}">选择消息内容</button>
+                    <button type="button" class="btn btn-sm btn-primary" role="button" data-name="chooseMessageContentModal" data-iframe="{:url('admin/message/content',['mode'=>'list'])}" data-toggle="modal" data-scroll-inside="true" data-height="600px">选择消息内容</button>
+                </div>
+                <div class="message-content clearfix" id="messageContent">
+                    
                 </div>
                 
             </div>
