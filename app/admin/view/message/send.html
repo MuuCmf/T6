@@ -31,11 +31,23 @@
                 </div>
             </div>
         </div>
+        {else}
+        <!--用户组-->
+        <div class="form-group">
+            <label class="col-sm-2 control-label">接收用户</label>
+			<div class="form-controls col-sm-8" style="padding-top: 6px;">
+                {volist name="groups" id="one_group"}
+                <input type="checkbox" id="user_group_{$one_group['id']}" name="user_group[]" value="{$one_group['id']}">
+                <label for="user_group_{$one_group['id']}">{$one_group['value']}</label>
+                {/volist}
+            </div>
+        </div>
+        
         {/if}
 
         <div class="form-group">
             <label class="col-sm-2 control-label">发送类型</label>
-			<div class="form-controls col-sm-8">
+			<div class="form-controls col-sm-8" style="padding-top: 6px;">
                 <input type="checkbox" id="systemMessage" value="msg" name="send_type[]" checked>
                 <label for="systemMessage">站内消息</label>
 
@@ -46,7 +58,7 @@
 
         <div class="form-group">
             <label class="col-sm-2 control-label">消息类型</label>
-            <div class="form-controls col-sm-8">
+            <div class="form-controls col-sm-8" style="padding-top: 6px;">
                 <div class="message-type clearfix">
                     {volist name="type" id="vo" }
                     {if $type_id == $vo.id}

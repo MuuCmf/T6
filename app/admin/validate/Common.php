@@ -11,18 +11,22 @@ class Common extends Validate
     protected $rule = [
         'title'  =>  'require',
         'description' => 'require',
-        'content' => 'require'
+        'content' => 'require',
+        'icon' => 'require'
     ];
     
     protected $message = [
         'title'  =>  '标题不能为空',
         'description' => '简短描述不能为空',
-        'content' => '内容不能为空'
+        'content' => '内容不能为空',
+        'icon' => '图标未上传'
     ];
 
     protected $scene = [
         // 公告
         'announce'  =>  ['title', 'content'],
+        // 消息类型
+        'message_type'   =>  ['title', 'description', 'icon'],
         // 消息内容
         'message'   =>  ['title', 'description', 'content']
     ];    

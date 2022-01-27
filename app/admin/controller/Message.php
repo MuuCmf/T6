@@ -2,6 +2,7 @@
 namespace app\admin\controller;
 
 use think\facade\View;
+use app\admin\model\AuthGroup;
 use app\common\model\MessageContent as MessageContentModel;
 use app\common\model\MessageType as MessageTypeModel;
 use app\common\model\Message as MessageModel;
@@ -69,7 +70,16 @@ class Message extends Admin
         if (request()->isPost()) {
             $data = input();
             // 数据验证
-
+            try {
+                validate(Common::class)->scene('message_type')->check([
+                    'title'  => $data['title'],
+                    'description'  => $data['description'],
+                    'icon'  => $data['icon'],
+                ]);
+            } catch (ValidateException $e) {
+                // 验证失败 输出错误信息
+                return $this->error($e->getError());
+            }
             $res = $this->MessageTypeModel->edit($data);
             
             if ($res) {
@@ -122,7 +132,6 @@ class Message extends Admin
                 'content' => $data['content']
             ];
             $content_id = $this->MessageContentModel->edit($content_data);
-            dump($content_id);exit;
             // 处理发送类型
             $send_type = is_array($data['send_type']) ? implode(',',$data['send_type']) : $data['send_type'];
 
@@ -152,6 +161,14 @@ class Message extends Admin
                 $to_user = query_user($to_uid);
                 View::assign('to_user', $to_user);
             }
+            if (empty($to_uid)) {
+                $group = (new AuthGroup)->getGroups();
+                $groups = array();
+                foreach ($group as $v) {
+                    array_push($groups, array('id' => $v['id'], 'value' => $v['title']));
+                }
+                View::assign('groups', $groups);
+            }
             
             // 获取消息类型
             $map[] = ['shopid', '=', 0];
@@ -162,6 +179,7 @@ class Message extends Admin
             }
             unset($val);
             View::assign('type', $type);
+            
 
             // 输出模板
             return View::fetch();
