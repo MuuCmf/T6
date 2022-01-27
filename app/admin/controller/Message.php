@@ -5,6 +5,8 @@ use think\facade\View;
 use app\common\model\MessageContent as MessageContentModel;
 use app\common\model\MessageType as MessageTypeModel;
 use app\common\model\Message as MessageModel;
+
+use app\admin\validate\Common;
 use think\exception\ValidateException;
 
 /**
@@ -39,7 +41,9 @@ class Message extends Admin
      */
     public function type()
     {
-        $map = [];
+        // 查询条件
+        $map[] = ['shopid', '=', 0];
+        $map[] = ['status', '>', -1];
         $list = $this->MessageTypeModel->getList($map);
         foreach($list as &$val){
             $val = $this->MessageTypeModel->formatData($val);
@@ -149,14 +153,25 @@ class Message extends Admin
      */
     public function content()
     {
+        // 列表页面显示风格
+        $mode = input('mode', 'all', 'text');
         // 查询条件
-        $map = [
-            ['status', '>', -1],
-            ['shopid', '=', 0],
-        ];
+        $map[] = ['shopid', '=', 0];
+        if($mode != 'all'){
+            $map[] = ['status', '>', -1];
+        }else{
+            $map[] = ['status', '=', 1];
+        }
+        // 搜索关键字
+        $keyword = input('keyword', '', 'text');
+        View::assign('keyword',$keyword);
+        if(!empty($keyword)){
+            $map[] = ['title', 'like', '%' . $keyword . '%'];
+        }
 
         $fields = '*';
-        $lists = $this->MessageContentModel->getListByPage($map, 'create_time desc', $fields, 20);
+        $rows = input('rows', 20, 'intval');
+        $lists = $this->MessageContentModel->getListByPage($map, 'create_time desc', $fields, $rows);
         $pager = $lists->render();
         $lists = $lists->toArray();
         
@@ -172,10 +187,17 @@ class Message extends Admin
 
         View::assign('pager',$pager);
         View::assign('lists',$lists);
+
         // 记录当前列表页的cookie
         cookie('__forward__', $_SERVER['REQUEST_URI']);
-        // 输出模板
-        return View::fetch();
+        
+        if($mode == 'all'){
+            // 输出模板
+            return View::fetch('content');
+        }else{
+            return View::fetch('_content');
+        }
+        
 
     }
 
@@ -191,7 +213,16 @@ class Message extends Admin
         if (request()->isPost()) {
             $data = input();
             // 数据验证
-
+            try {
+                validate(Common::class)->scene('message')->check([
+                    'title'  => $data['title'],
+                    'description'  => $data['description'],
+                    'content'  => $data['content'],
+                ]);
+            } catch (ValidateException $e) {
+                // 验证失败 输出错误信息
+                return $this->error($e->getError());
+            }
             $res = $this->MessageContentModel->edit($data);
             
             if ($res) {
@@ -211,8 +242,18 @@ class Message extends Admin
                 $data['content'] = '';
                 $data['status'] = 1;
             }
-            
             View::assign('data', $data);
+
+            // 消息类型列表
+            $type = $this->MessageTypeModel->getList([
+                ['shopid', '=', 0],
+                ['status', '=', 1]
+            ]);
+            foreach($type as &$val){
+                $val = $this->MessageTypeModel->formatData($val);
+            }
+            unset($val);
+            View::assign('type', $type);
             // 输出模板
             return View::fetch();
         }

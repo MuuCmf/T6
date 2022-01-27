@@ -1,14 +1,14 @@
 {extend name="common/main"/}
 
 {block name="body"}
-<div class="message-type-list-section">
+<div class="message-content-list-section">
     <!-- 标题栏 -->
     <div class="main-title">
         <h2>消息内容管理</h2>
     </div>
     <div class="button-box row clearfix">
 
-        <div class="col-md-6">
+        <div class="col-md-8">
             <a type="button" class="btn btn-info" href="{:url('contentEdit')}">
                 新增
             </a>
@@ -21,6 +21,17 @@
             <button class="btn btn-danger ajax-post confirm" url="{:url('contentStatus', ['status'=> -1])}" arget-form="ids">
                 删除
             </button>
+        </div>
+        <!-- 高级搜索 -->
+        <div class="search-form col-md-4">
+            <form method="get" class="form-horizontal">
+                <div class="input-group">
+                    <input type="text" name="keyword" class="form-control" value="{$keyword}">
+                    <span class="input-group-btn">
+                    <button class="btn btn-default" type="submit">搜索</button>
+                    </span>
+                </div>
+            </form>
         </div>
     </div>
 
@@ -79,6 +90,12 @@
         {include file="common/_empty"/}
         {/notempty}
     </div>
+
+    <!-- 分页 -->
+    <div class="page">
+        {:htmlspecialchars_decode($pager)}
+    </div>
+    <!-- /分页-->
 </div>
 {/block}
 {block name="script"}

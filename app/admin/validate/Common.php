@@ -22,7 +22,9 @@ class Common extends Validate
 
     protected $scene = [
         // 公告
-        'announce'  =>  ['title','content'],
+        'announce'  =>  ['title', 'content'],
+        // 消息内容
+        'message'   =>  ['title', 'description', 'content']
     ];    
     
 }
