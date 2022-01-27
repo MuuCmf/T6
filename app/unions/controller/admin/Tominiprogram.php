@@ -11,33 +11,36 @@
  *                                  | 登山则情满于山,观海则意溢于海
  * +----------------------------------------------------------------------
  */
-namespace app\admin\controller;
-use think\facade\Db;
+namespace app\unions\controller\admin;
 use think\facade\View;
-use app\common\logic\Tominiprogram as TominiprogramLogic;
-use app\common\model\Tominiprogram as TominiprogramModel;
+use app\admin\controller\Admin as MuuAdmin;
+use app\unions\logic\Tominiprogram as TominiprogramLogic;
+use app\unions\model\Tominiprogram as TominiprogramModel;
 
 /**
  * @title 跳转小程序
  * Class Tominiprogram
  * @package app\admin\controller
  */
-class Tominiprogram extends Admin{
+class Tominiprogram extends MuuAdmin{
     protected $TominiprogramModel;
     protected $TominiprogramLogic;
     protected $shopid;
+    protected $type;
     public function __construct()
     {
         parent::__construct();
         $this->TominiprogramLogic = new TominiprogramLogic();
         $this->TominiprogramModel = new TominiprogramModel();
         $this->shopid = request()->param('shopid') ?? 0;
+        $this->type = request()->param('type') ?? 'weixin_app';
     }
 
     public function index(){
         $rows = 10;
         $map = [
-            ['shopid' ,'=' ,$this->shopid]
+            ['shopid' ,'=' ,$this->shopid],
+            ['type' ,'=',$this->type]
         ];
         // 获取列表
         $lists = $this->TominiprogramModel->getListByPage($map, 'id DESC', '*', $rows);
@@ -47,7 +50,11 @@ class Tominiprogram extends Admin{
             $val = $this->TominiprogramLogic->_formatData($val);
         }
         unset($val);
-        View::assign('page',$pager);
+        View::assign([
+            'page' => $pager,
+            'lists' => $lists['data'],
+            'type'  => $this->type
+        ]);
         View::assign('lists', $lists['data']);
         $this->setTitle('跳转小程序');
         return view();
@@ -79,7 +86,8 @@ class Tominiprogram extends Admin{
             $data = [];
         }
         View::assign([
-           'data' => $data
+           'data' => $data,
+           'type' => input('type','weixin_app')
         ]);
         return \view();
     }

@@ -1,4 +1,4 @@
-{extend name="common/main"/}
+{extend name="../../admin/view/common/main"/}
 
 {block name="style"}
 <!--上传-->
@@ -48,9 +48,9 @@
                         <label class="col-sm-2 control-label">小程序类型</label>
                         <div class="form-controls col-sm-8">
                             <select name="type" readonly="" class="form-select-size form-control">
-                                <option value="weixin_app" selected>微信小程序</option>
-                                <option value="">支付宝小程序</option>
-                                <option value="">百度小程序</option>
+                                {if $type == 'weixin_app'}<option value="weixin_app" selected>微信小程序</option>{/if}
+                                {if $type == 'alipay_app'}<option value="weixin_app" selected>支付宝小程序</option>{/if}
+                                {if $type == 'baidu_app'}<option value="weixin_app" selected>百度小程序</option>{/if}
                             </select>
                             <div class="help-block">封面建议尺寸：800*800px</div>
                         </div>

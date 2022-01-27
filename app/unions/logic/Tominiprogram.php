@@ -11,7 +11,7 @@
  *                                  | 登山则情满于山,观海则意溢于海
  * +----------------------------------------------------------------------
  */
-namespace app\common\logic;
+namespace app\unions\logic;
 class Tominiprogram {
 
     protected $_type = [

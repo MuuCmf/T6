@@ -11,8 +11,10 @@
  *                                  | 登山则情满于山,观海则意溢于海
  * +----------------------------------------------------------------------
  */
-namespace app\common\model;
+namespace app\unions\model;
 
-class Tominiprogram extends Base {
+use app\common\model\BaseModel;
+
+class Tominiprogram extends BaseModel {
 
 }

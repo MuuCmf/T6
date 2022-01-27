@@ -1,4 +1,4 @@
-{extend name="common/main"/}
+{extend name="../../admin/view/common/main"/}
 
 {block name="body"}
 <!-- 标题栏 -->
@@ -8,7 +8,7 @@
 <div class="button-box clearfix">
 
     <div class="col-md-6">
-        <a type="button" class="btn btn-info" href="{:url('edit')}">新增</a>
+        <a type="button" class="btn btn-info" href="{:url('edit',['type' => $type])}">新增</a>
         <button class="btn btn-danger ajax-post confirm" url="{:url('del')}" target-form="ids">
             删除
         </button>
@@ -46,8 +46,8 @@
             </td>
             <td>{$vo.type_str}</td>
             <td>
-                <a class="btn btn-warning" href="{:url('admin/tominiprogram/edit',['id'=>$vo['id']])}" >编辑</a>
-                <a class="btn btn-danger  ajax-post confirm" href="{:url('admin/tominiprogram/del',['id'=>$vo['id']])}" >删除</a>
+                <a class="btn btn-warning" href="{:url('edit',['id'=>$vo['id'],'type' => $type])}" >编辑</a>
+                <a class="btn btn-danger  ajax-post confirm" href="{:url('del',['id'=>$vo['id']])}" >删除</a>
             </td>
         </tr>
         {/volist}
