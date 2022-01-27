@@ -102,18 +102,66 @@ class Message extends Admin
      */
     public function send()
     {
-        // 消息类型ID
-        $type_id = input('type_id', 0, 'intval');
-
         if (request()->isPost()) {
+            $data = input();
+            // 数据验证
+            try {
+                validate(Common::class)->scene('message')->check([
+                    'title'  => $data['title'],
+                    'description'  => $data['description'],
+                    'content'  => $data['content'],
+                ]);
+            } catch (ValidateException $e) {
+                // 验证失败 输出错误信息
+                return $this->error($e->getError());
+            }
+            // 写入消息内容
+            $content_data = [
+                'title' => $data['title'],
+                'description' => $data['description'],
+                'content' => $data['content']
+            ];
+            $content_id = $this->MessageContentModel->edit($content_data);
+            dump($content_id);exit;
+            // 处理发送类型
+            $send_type = is_array($data['send_type']) ? implode(',',$data['send_type']) : $data['send_type'];
 
+            // 写入消息发送记录表
+            $message_data = [
+                'uid' => 0, // 约定发送方uid为0时属系统发送
+                'to_uid' => $data['to_uid'],
+                'type_id' => $data['type_id'],
+                'content_id' => $content_id,
+                'send_type' => $send_type 
+            ];
+            $res = $this->MessageModel->edit($message_data);
+            if ($res) {
+                $this->success('消息发送成功', $res, Cookie('__forward__'));
+            } else {
+                $this->error('消息发送失败');
+            }
 
         }else{
-            // 获取消息类型
-            $type = $this->MessageTypeModel->getDataById($type_id);
-            $type = $this->MessageTypeModel->formatData($type);
-            View::assign('type', $type);
+            // 消息类型ID
+            $type_id = input('type_id', 0, 'intval');
+            View::assign('type_id', $type_id);
+            // 发送至用户
+            $to_uid = input('to_uid', 0,'intval');
+            View::assign('to_uid', $to_uid);
+            if(!empty($to_uid)){
+                $to_user = query_user($to_uid);
+                View::assign('to_user', $to_user);
+            }
             
+            // 获取消息类型
+            $map[] = ['shopid', '=', 0];
+            $map[] = ['status', '=', 1];
+            $type = $this->MessageTypeModel->getList($map);
+            foreach($type as &$val){
+                $val = $this->MessageTypeModel->formatData($val);
+            }
+            unset($val);
+            View::assign('type', $type);
 
             // 输出模板
             return View::fetch();
@@ -153,15 +201,10 @@ class Message extends Admin
      */
     public function content()
     {
-        // 列表页面显示风格
-        $mode = input('mode', 'all', 'text');
         // 查询条件
         $map[] = ['shopid', '=', 0];
-        if($mode != 'all'){
-            $map[] = ['status', '>', -1];
-        }else{
-            $map[] = ['status', '=', 1];
-        }
+        $map[] = ['status', '>', -1];
+
         // 搜索关键字
         $keyword = input('keyword', '', 'text');
         View::assign('keyword',$keyword);
@@ -171,7 +214,7 @@ class Message extends Admin
 
         $fields = '*';
         $rows = input('rows', 20, 'intval');
-        $lists = $this->MessageContentModel->getListByPage($map, 'create_time desc', $fields, $rows);
+        $lists = $this->MessageContentModel->getListByPage($map, 'id desc,create_time desc', $fields, $rows);
         $pager = $lists->render();
         $lists = $lists->toArray();
         
@@ -191,14 +234,8 @@ class Message extends Admin
         // 记录当前列表页的cookie
         cookie('__forward__', $_SERVER['REQUEST_URI']);
         
-        if($mode == 'all'){
-            // 输出模板
-            return View::fetch('content');
-        }else{
-            return View::fetch('_content');
-        }
-        
-
+        // 输出模板
+        return View::fetch('content');
     }
 
     /**
@@ -244,16 +281,6 @@ class Message extends Admin
             }
             View::assign('data', $data);
 
-            // 消息类型列表
-            $type = $this->MessageTypeModel->getList([
-                ['shopid', '=', 0],
-                ['status', '=', 1]
-            ]);
-            foreach($type as &$val){
-                $val = $this->MessageTypeModel->formatData($val);
-            }
-            unset($val);
-            View::assign('type', $type);
             // 输出模板
             return View::fetch();
         }

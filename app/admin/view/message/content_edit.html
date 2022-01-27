@@ -37,24 +37,6 @@
 
             <div class="builder_item">
                 <label class="item-label">
-                    消息类型
-                </label>
-                <div class="controls">
-                    <select name="category_id" class="form-control">
-                        <option value="">请选择消息类型</option>
-                        {volist name="$type" id="v"}
-                        {if $data['type_id'] == $v['id']}
-                        <option value="{$v['id']}" selected><b>{$v['title']}</b></option>
-                        {else}
-                        <option value="{$v['id']}"><b>{$v['title']}</b></option>
-                        {/if}
-                        {/volist}
-                    </select>
-                </div>
-            </div>
-
-            <div class="builder_item">
-                <label class="item-label">
                     消息内容
                     <span class="check-tips">（请填写消息详细内容）</span>
                 </label>

@@ -12,3 +12,19 @@
         }
     }
 }
+
+.send-message-section {
+    padding: 20px;
+    padding-bottom: 80px;
+    .send-button-section {
+        background-color: #fff;
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 999;
+        text-align: center;
+        padding: 10px 0;
+        border-top: 1px solid #e5e5e5;
+    }
+}

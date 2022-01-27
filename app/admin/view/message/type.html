@@ -1,5 +1,9 @@
 {extend name="common/main"/}
-
+{block name="style"}
+<!--图片上传-->
+<script type="text/javascript" charset="utf-8" src="__STATIC__/common/lib/webuploader/js/webuploader.js"></script>
+<link href="__STATIC__/common/lib/webuploader/css/webuploader.css" type="text/css" rel="stylesheet">
+{/block}
 {block name="body"}
 <div class="message-type-list-section">
     <!-- 标题栏 -->
@@ -60,7 +64,7 @@
                         {$vo.status_str}
                     </td>
                     <td>
-                        <button type="button" class="btn btn-sm btn-primary" data-remote="{:url('send')}" data-toggle="modal">发送消息</button>
+                        <button type="button" class="btn btn-sm btn-primary" data-name="sendMessageModal" data-iframe="{:url('send',['type_id' => $vo['id']])}" data-toggle="modal" data-size="lg" data-height="600px">发送消息</button>
                         <a class="btn btn-sm btn-info" href="{:url('typeEdit',['id'=>$vo['id']])}">编辑</a>
                         {if $vo.status == 1}
                         <a class="btn btn-sm btn-warning ajax-post" href="{:url('typeStatus',['status'=>0, 'ids'=>$vo['id']])}">禁用</a>

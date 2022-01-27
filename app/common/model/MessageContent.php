@@ -11,7 +11,7 @@ class MessageContent extends Base
         '0'  => '禁用',
         '-1' => '删除',
     ];
-    
+
     /**
      * 数据处理
      */

@@ -1,91 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>选择用户</title>
+    <!-- Tell the browser to be responsive to screen width -->
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <!-- BOOTSTRAP or ZUI -->
+    <link href="__STATIC__/common/lib/zui/css/zui.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="__STATIC__/common/lib/font-awesome-4.7.0/css/font-awesome.min.css">
+    <!-- Muu BASE style -->
+    <link href="__STATIC__/admin/css/main.min.css" rel="stylesheet">
+    <script src="__STATIC__/common/lib/zui/lib/jquery/jquery.js"></script>
 
-
-<div>
-    <style>
-        .modal-dialog {
-            width: 600px;
-        }
-        .select_box_this {
-            margin: 10px 0 20px;
-            width: 100%;
-            text-align: right;
-            font-size: 16px;
-        }
-        .select_box_this .form-group {
-            margin-top: 5px;;
-        }
-    </style>
-    <form id="migration" action="{:url()}" method="post" class="form-horizontal ajax-form">
+</head>
+<body>
+<div class="with-padding send-message-section">
+    <form action="{:url()}" method="post" class="form-horizontal">
+        <input type="hidden" name="type_id" value="{$type_id}">
+        {if !empty($to_uid)}
+        <div class="form-group">
+            <label class="col-sm-2 control-label">接收用户</label>
+			<div class="form-controls col-sm-8">
+                <input type="hidden" value="{$to_uid}" name="to_uid">
+                <div class="user-avatar">
+                    <img src="{$to_user['avatar64']}" />
+                </div>
+                <div class="user-nickname">
+                    {$to_user['nickname']}
+                </div>
+            </div>
+        </div>
+        {/if}
 
         <div class="form-group">
-            <label class="col-sm-2 control-label">类型</label>
+            <label class="col-sm-2 control-label">发送类型</label>
 			<div class="form-controls col-sm-8">
-                <input type="checkbox" id="systemMessage" value="systemMessage" name="sendType[]" checked>
+                <input type="checkbox" id="systemMessage" value="msg" name="send_type[]" checked>
                 <label for="systemMessage">站内消息</label>
 
-                <input type="checkbox" id="systemEmail" value="systemEmail" name="sendType[]">
+                <input type="checkbox" id="systemEmail" value="email" name="send_type[]">
                 <label for="systemEmail">邮件</label>
-
-                <input type="checkbox" id="systemEmail" value="systemEmail" name="sendType[]">
-                <label for="systemEmail">短信</label>
-
-                <input type="checkbox" id="systemEmail" value="systemEmail" name="sendType[]">
-                <label for="systemEmail">模板消息</label>
             </div>
         </div>
 
         <div class="form-group">
-            <label class="col-sm-2 control-label">用户</label>
+            <label class="col-sm-2 control-label">消息类型</label>
             <div class="form-controls col-sm-8">
-                <div class="margin-bottom">
-                    <button type="button" class="btn btn-sm btn-primary" role="button" data-name="chooseUserModal" data-iframe="{:url('admin/member/chooseUser')}" data-toggle="modal" data-scroll-inside="true" data-height="600px">选择用户</button>
-                </div>
-                <div class="choose-user clearfix" id="choose-user-cb">
-                    <input type="hidden" name="manager_uid" id="choose-user-uid" value="{$data['manager_info']['uid']|default='0'}">
-                    <img src="{$data['manager_info']['avatar64']|default=''}" alt="" id="choose-user-avatar">
-                    <span id="choose-user-nickname">{$data['manager_info']['nickname']|default=''}</span>
+                <div class="message-type clearfix">
+                    {volist name="type" id="vo" }
+                    {if $type_id == $vo.id}
+                    <input type="radio" id="type-{$vo.id}" value="{$vo.id}" name="type_id" checked>
+                    {else}
+                    <input type="radio" id="type-{$vo.id}" value="{$vo.id}" name="type_id">
+                    {/if}
+                    <label for="type-{$vo.id}">{$vo.title}</label>
+                    {/volist}
                 </div>
             </div>
         </div>
 
         <div class="form-group">
-            <label class="col-sm-2 control-label">内容</label>
+            <label class="col-sm-2 control-label">消息内容</label>
             <div class="form-controls col-sm-8">
-                <div class="margin-bottom">
-                    <button type="button" class="btn btn-sm btn-primary" role="button" data-name="chooseMessageContentModal" data-iframe="{:url('admin/message/content',['mode'=>'list'])}" data-toggle="modal" data-scroll-inside="true" data-height="600px">选择消息内容</button>
+                <div class="form-group">
+                    <input type="text" class="form-control" name="title" placeholder="消息标题">
                 </div>
-                <div class="message-content clearfix" id="messageContent">
-                    
+                <div class="form-group">
+                    <textarea class="form-control" rows="3" name="description" placeholder="简短描述"></textarea>
                 </div>
-                
+                <div class="form-group">
+                    {:ueditor('content', 'content', '消息详情', 'mini')}
+                </div>
             </div>
         </div>
 
-        <div class="form-group">
-            <label class="col-sm-2 control-label"></label>
-            <div class="form-controls col-sm-8">
-                <button type="button" class="btn btn-success" data-role="submit">发送消息</button>
-                <button type="button" onclick="$('.close').click();" class="btn btn-default">取消</button>
-            </div>
+        <div class="send-button-section">
+            <button type="button" class="btn btn-lg btn-success" data-role="submit">发送消息</button>
+            <button type="button" onclick="$('.close').click();" class="btn btn-lg btn-default">取消</button>
         </div>
     </form>
 </div>
+
+<script src="__STATIC__/common/lib/zui/js/zui.min.js"></script>
+<script src="__STATIC__/admin/js/main.min.js"></script>
 <script>
-    $(function () {
-        $('[data-role="submit"]').click(function () {
-            var query = $('#migration').serialize();
-            var url = $('#migration').attr('action');
-            $.post(url, query, function (msg) {
-                if (msg.status) {
-                    toast.success({:lang('_MESSAGE_SENDING_SUCCESS_WITH_SINGLE_')});
-                    setTimeout(function () {
-                        location.reload()
-                       // window.location.href = msg.url;
-                    }, 1500);
-                } else {
-                    handleAjax(msg);
+    
+    $(function(){
+        var parentElem = $('#sendMessageModal',window.parent.document);
+
+        $('[data-role="submit"]').click(function(){
+            var query = $('form').serialize();
+            var url = $('form').attr('action');
+            $.post(url,query,function(res){
+                if(res.code == 200){
+                    toast.success('操作成功！');
+                    setTimeout(function(){
+                       
+                    },1500);
+                }else{
+                    toast.error(res.msg);
                 }
-            }, 'json');
+            },'json');
         });
-    });
+    })
 </script>
+</body>
+</html>

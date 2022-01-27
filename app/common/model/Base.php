@@ -25,8 +25,8 @@ class Base extends Model{
         }else{
             $res = $this->save($data);
         }
-        if($res){
-            return $res;
+        if(!empty($this->id)){
+            return $this->id;
         }else{
             return $res;
         }
