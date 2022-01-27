@@ -32,7 +32,11 @@
           </a>
           <ul class="treeview-menu menu-open">
               {volist name="sub_menu.child" id="c_menu"}
+              {if strtolower($c_menu.url) == ($this_module.'/'.$this_controller.'/'.$this_action)}
+              <li data-id="{$c_menu.id}" data-url="{$c_menu.url|url}" class="active">
+              {else /}
               <li data-id="{$c_menu.id}" data-url="{$c_menu.url|url}">
+              {/if}
                   <a href="{$c_menu.url|url}">
                     {notempty name="c_menu.icon"}
                         <i class="fa fa-{$c_menu.icon}"></i>
