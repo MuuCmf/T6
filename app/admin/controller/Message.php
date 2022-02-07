@@ -143,8 +143,6 @@ class Message extends Admin
             }
             // 发送消息
             $res = $this->MessageModel->sendMessage(0, 0, $to_uid, $data['title'], $data['description'], $data['content'], $data['type_id']);
-            dump($data);
-            exit();
 
             if ($res) {
                 return $this->success('消息发送成功', $res);

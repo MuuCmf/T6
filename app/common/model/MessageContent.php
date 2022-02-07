@@ -15,7 +15,7 @@ class MessageContent extends Base
     /**
      * 写入消息内容
      */
-    public function addMessageContent($shopid, $title, $description, $content, $args)
+    public function addMessageContent($shopid = 0, $title, $description, $content, $args = '')
     {
         // 写入消息内容
         $content_data = [

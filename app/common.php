@@ -644,7 +644,7 @@ function getSubByKey($pArray, $pKey = "", $pCondition = "")
                 $temp_array = (array)$temp_array;
             }
             if (("" != $pCondition && $temp_array[$pCondition[0]] == $pCondition[1]) || "" == $pCondition) {
-                $result[] = ("" == $pKey) ? $temp_array : isset($temp_array[$pKey]) ? $temp_array[$pKey] : "";
+                $result[] = (("" == $pKey) ? $temp_array : isset($temp_array[$pKey])) ? $temp_array[$pKey] : "";
             }
         }
         return $result;
@@ -901,15 +901,6 @@ function deep_in_array($value, $array) {
         }  
     }
     return false;   
-}
-
-/**
- * 获取网站的根Url
- * @return string
- */
-function get_root_url()
-{
-    return get_http_https().$_SERVER['SERVER_NAME'] . '/attachment/';
 }
 
 /**
