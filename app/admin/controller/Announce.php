@@ -106,6 +106,7 @@ class Announce extends Admin
                 $data['content'] = '';
                 $data['cover'] = '';
                 $data['status'] = 1;
+                $data['sort'] = 0;
             }
             View::assign('data', $data);
 

@@ -13,6 +13,29 @@ class MessageContent extends Base
     ];
 
     /**
+     * 写入消息内容
+     */
+    public function addMessageContent($shopid, $title, $description, $content, $args)
+    {
+        // 写入消息内容
+        $content_data = [
+            'shopid' => $shopid,
+            'title' => $title,
+            'description' => $description,
+            'content' => $content,
+            'args' => $args
+        ];
+        // 返回主键ID
+        $this->save($content_data);
+        if(!empty($this->id)){
+            // 返回主键ID
+            return $this->id;
+        }
+        
+        return false;
+    }
+
+    /**
      * 数据处理
      */
     public function formatData($data)

@@ -18,29 +18,52 @@
 <div class="with-padding send-message-section">
     <form action="{:url()}" method="post" class="form-horizontal">
         <input type="hidden" name="type_id" value="{$type_id}">
+        <!--发送指定用户-->
         {if !empty($to_uid)}
         <div class="form-group">
             <label class="col-sm-2 control-label">接收用户</label>
 			<div class="form-controls col-sm-8">
                 <input type="hidden" value="{$to_uid}" name="to_uid">
-                <div class="user-avatar">
-                    <img src="{$to_user['avatar64']}" />
-                </div>
-                <div class="user-nickname">
-                    {$to_user['nickname']}
+                <div class="user-info">
+                    <div class="user-avatar">
+                        <img src="{$to_user['avatar64']}" />
+                    </div>
+                    <div class="user-nickname">
+                        {$to_user['nickname']}
+                    </div>
                 </div>
             </div>
         </div>
         {else}
-        <!--用户组-->
-        <div class="form-group">
+        <!--选择用户-->
+        <div class="form-group choose-user-sec">
             <label class="col-sm-2 control-label">接收用户</label>
 			<div class="form-controls col-sm-8" style="padding-top: 6px;">
-                {volist name="groups" id="one_group"}
-                <input type="checkbox" id="user_group_{$one_group['id']}" name="user_group[]" value="{$one_group['id']}">
-                <label for="user_group_{$one_group['id']}">{$one_group['value']}</label>
-                {/volist}
+                <input type="radio" id="chooseAll" value="all" name="send_user" checked>
+                <label for="chooseAll">所有用户</label>
+                <input type="radio" id="chooseGroup" value="group" name="send_user">
+                <label for="chooseGroup">用户组</label>
+                <!--所有用户-->
+
+                <!--遍历用户组-->
+                <div class="user-group-sec hidden">
+                    {volist name="groups" id="one_group"}
+                    <input type="checkbox" id="user_group_{$one_group['id']}" name="user_group[]" value="{$one_group['id']}">
+                    <label for="user_group_{$one_group['id']}">{$one_group['value']}</label>
+                    {/volist}
+                </div>
             </div>
+            <script>
+                $(function(){
+                    $('.choose-user-sec input[name="send_user"]').on("click",function () {
+                        if($('input[name="send_user"]:checked').val() == "group"){
+                            $('.user-group-sec').removeClass('hidden');
+                        }else{
+                            $('.user-group-sec').addClass('hidden');
+                        }
+                    })
+                })
+            </script>
         </div>
         
         {/if}
@@ -48,10 +71,10 @@
         <div class="form-group">
             <label class="col-sm-2 control-label">发送类型</label>
 			<div class="form-controls col-sm-8" style="padding-top: 6px;">
-                <input type="checkbox" id="systemMessage" value="msg" name="send_type[]" checked>
+                <input type="checkbox" id="systemMessage" value="msg" name="send_type" checked>
                 <label for="systemMessage">站内消息</label>
 
-                <input type="checkbox" id="systemEmail" value="email" name="send_type[]">
+                <input type="checkbox" id="systemEmail" value="email" name="send_type">
                 <label for="systemEmail">邮件</label>
             </div>
         </div>
@@ -115,7 +138,8 @@
                 }
             },'json');
         });
-    })
+    });
+
 </script>
 </body>
 </html>

@@ -125,29 +125,31 @@ class Message extends Admin
                 // 验证失败 输出错误信息
                 return $this->error($e->getError());
             }
-            // 写入消息内容
-            $content_data = [
-                'title' => $data['title'],
-                'description' => $data['description'],
-                'content' => $data['content']
-            ];
-            $content_id = $this->MessageContentModel->edit($content_data);
-            // 处理发送类型
-            $send_type = is_array($data['send_type']) ? implode(',',$data['send_type']) : $data['send_type'];
 
-            // 写入消息发送记录表
-            $message_data = [
-                'uid' => 0, // 约定发送方uid为0时属系统发送
-                'to_uid' => $data['to_uid'],
-                'type_id' => $data['type_id'],
-                'content_id' => $content_id,
-                'send_type' => $send_type 
-            ];
-            $res = $this->MessageModel->edit($message_data);
+            // 处理接收用户
+            if(!empty($data['to_uid'])){
+                $to_uid = intval($data['to_uid']);
+
+            }else{
+                // 发送至所有用户
+                if($data['send_user'] == 'all'){
+                    $to_uid = 0;
+                }
+                // 发送至用户组
+                if($data['send_user'] == 'group'){
+                    $to_users = $data['user_group'];
+
+                }
+            }
+            // 发送消息
+            $res = $this->MessageModel->sendMessage(0, 0, $to_uid, $data['title'], $data['description'], $data['content'], $data['type_id']);
+            dump($data);
+            exit();
+
             if ($res) {
-                $this->success('消息发送成功', $res, Cookie('__forward__'));
+                return $this->success('消息发送成功', $res);
             } else {
-                $this->error('消息发送失败');
+                return $this->error('消息发送失败');
             }
 
         }else{
@@ -161,6 +163,7 @@ class Message extends Admin
                 $to_user = query_user($to_uid);
                 View::assign('to_user', $to_user);
             }
+            // 获取用户组数据
             if (empty($to_uid)) {
                 $group = (new AuthGroup)->getGroups();
                 $groups = array();

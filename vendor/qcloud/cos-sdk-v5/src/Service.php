@@ -3477,6 +3477,10 @@ class Service {
                                     'type' => 'string',
                                     'location' => 'xml',
                                 ),
+                                'Url' => array(
+                                    'type' => 'string',
+                                    'location' => 'xml',
+                                ),
                             ),
                         ),
                         'Conf' => array(
@@ -3655,6 +3659,9 @@ class Service {
                     ),
                 ),
                 'CreateMediaTranscodeJobs' => Descriptions::CreateMediaTranscodeJobs(), // 媒体转码
+                'CreateMediaJobs' => Descriptions::CreateMediaJobs(), // 媒体任务
+                'DescribeMediaJob' => Descriptions::DescribeMediaJob(),
+                'DescribeMediaJobs' => Descriptions::DescribeMediaJobs(),
                 'CreateMediaSnapshotJobs' => Descriptions::CreateMediaSnapshotJobs(), // 媒体截图
                 'CreateMediaConcatJobs' => Descriptions::CreateMediaConcatJobs(), // 媒体拼接
                 'DetectAudio' => Descriptions::DetectAudio(), // 音频审核
@@ -3670,6 +3677,11 @@ class Service {
                 'GetDescribeDocProcessJobs' => Descriptions::GetDescribeDocProcessJobs(), // 拉取符合条件的文档转码任务
                 'DetectImage' => Descriptions::DetectImage(), // 图片审核
                 'DetectImages' => Descriptions::DetectImages(), // 图片审核-批量
+                'DetectVirus' => Descriptions::DetectVirus(), // 云查毒
+                'GetDetectVirusResult' => Descriptions::GetDetectVirusResult(), // 查询病毒检测任务结果
+                'GetDetectImageResult' => Descriptions::GetDetectImageResult(), // 主动获取图片审核结果
+                'CreateMediaVoiceSeparateJobs' => Descriptions::CreateMediaVoiceSeparateJobs(), // 提交人声分离任务
+                'DescribeMediaVoiceSeparateJob' => Descriptions::DescribeMediaVoiceSeparateJob(), // 查询指定的人声分离任务
             ),
             'models' => array(
                 'AbortMultipartUploadOutput' => array(
@@ -7022,6 +7034,9 @@ class Service {
                     )
                 ),
                 'CreateMediaTranscodeJobsOutput' => Descriptions::CreateMediaTranscodeJobsOutput(),
+                'DescribeMediaJobOutput' => Descriptions::DescribeMediaJobOutput(),
+                'DescribeMediaJobsOutput' => Descriptions::DescribeMediaJobsOutput(),
+                'CreateMediaJobsOutput' => Descriptions::CreateMediaJobsOutput(),
                 'CreateMediaSnapshotJobsOutput' => Descriptions::CreateMediaSnapshotJobsOutput(),
                 'CreateMediaConcatJobsOutput' => Descriptions::CreateMediaConcatJobsOutput(),
                 'DetectAudioOutput' => Descriptions::DetectAudioOutput(),
@@ -7037,6 +7052,11 @@ class Service {
                 'GetDescribeDocProcessJobsOutput' => Descriptions::GetDescribeDocProcessJobsOutput(),
                 'DetectImageOutput' => Descriptions::DetectImageOutput(),
                 'DetectImagesOutput' => Descriptions::DetectImagesOutput(),
+                'DetectVirusOutput' => Descriptions::DetectVirusOutput(),
+                'GetDetectVirusResultOutput' => Descriptions::GetDetectVirusResultOutput(),
+                'GetDetectImageResultOutput' => Descriptions::GetDetectImageResultOutput(),
+                'CreateMediaVoiceSeparateJobsOutput' => Descriptions::CreateMediaVoiceSeparateJobsOutput(),
+                'DescribeMediaVoiceSeparateJobOutput' => Descriptions::DescribeMediaVoiceSeparateJobOutput(),
             )
         );
     }
