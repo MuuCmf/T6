@@ -12,42 +12,62 @@ class Message extends Base
     protected $autoWriteTimestamp = true; 
 
     /**
-     * 发送消息
+     * 发送消息至用户
      * 
     */
-    public function sendMessage($shopid = 0, $uid = 0, $to_uids, $title = '您有新的消息', $description = '', $content = '', $type_id = 1, $send_type = 'msg')
+    public function sendMessageToUid($shopid = 0, $uid = 0, $to_uids, $title = '您有新的消息', $description = '', $content = '', $type_id = 1, $send_type = 'msg')
     {
         // 指定用户ID
         $to_uids = is_array($to_uids) ? $to_uids : explode(',', $to_uids);
-        // 排除流失用户
-        $to_uids = $this->_removeOldUser($to_uids);
         if(!count($to_uids)){
             return false;
         }
-
-        $uid == 0 && $uid = is_login();
         
         // 写入消息内容
         $content_id = (new MessageContent())->addMessageContent($shopid, $title, $description, $content);
-        // 组装传递的参数
-        $data = [
+
+        // 发送至消息队列
+        $isPushed = Queue::push('\app\common\queue\Message@sendToUids', [
             'shopid' => $shopid,
             'uid' => $uid,
             'to_uids' => $to_uids,
             'type_id' => $type_id,
             'content_id' => $content_id,
             'send_type' => $send_type
-        ];
-        
+        ]);
 
-        // 发送消息
-        // 仅针对用户组方式使用消息队列
-        // # 建议开发测试时使用
-        //php think queue:listen
-        // # 建议生产环境使用
-        //php think queue:work --daemon（不加--daemon为执行单个任务）
-        $isPushed = Queue::push('\app\common\queue\Message@send', $data);
-        if( $isPushed !== false ){  
+        if( $isPushed !== false ){
+            return true;
+        }
+        
+        return false;
+    }
+
+    /**
+     * 发送消息至用户组
+    */
+    public function sendMessageToGroup($shopid = 0, $uid = 0, $to_groud_ids, $title = '您有新的消息', $description = '', $content = '', $type_id = 1, $send_type = 'msg')
+    {
+        // 指定用户ID
+        $to_groud_ids = is_array($to_groud_ids) ? $to_groud_ids : explode(',', $to_groud_ids);
+        if(!count($to_groud_ids)){
+            return false;
+        }
+        
+        // 写入消息内容
+        $content_id = (new MessageContent())->addMessageContent($shopid, $title, $description, $content);
+
+        // 发送至消息队列
+        $isPushed = Queue::push('\app\common\queue\Message@sendToGroups', [
+            'shopid' => $shopid,
+            'uid' => $uid,
+            'to_groud_ids' => $to_groud_ids,
+            'type_id' => $type_id,
+            'content_id' => $content_id,
+            'send_type' => $send_type
+        ]);
+        
+        if( $isPushed !== false ){
             return true;
         }
         
@@ -59,7 +79,7 @@ class Message extends Base
      * @param $to_uids
      * @return array
      */
-    private function _removeOldUser($to_uids)
+    public function _removeOldUser($to_uids)
     {
         $to_uids = is_array($to_uids) ? implode(',',$to_uids) : $to_uids;
         if(!empty($to_uids)){

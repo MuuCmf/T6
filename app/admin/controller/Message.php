@@ -1,6 +1,7 @@
 <?php
 namespace app\admin\controller;
 
+use think\facade\Db;
 use think\facade\View;
 use app\admin\model\AuthGroup;
 use app\common\model\MessageContent as MessageContentModel;
@@ -128,22 +129,17 @@ class Message extends Admin
 
             // 处理接收用户
             if(!empty($data['to_uid'])){
-                $to_uid = intval($data['to_uid']);
+                $to_uids = intval($data['to_uid']);
+                // 发送消息
+                $res = $this->MessageModel->sendMessageToUid(0, 0, $to_uids, $data['title'], $data['description'], $data['content'], $data['type_id']);
 
             }else{
-                // 发送至所有用户
-                if($data['send_user'] == 'all'){
-                    $to_uid = 0;
-                }
                 // 发送至用户组
-                if($data['send_user'] == 'group'){
-                    $to_users = $data['user_group'];
-
-                }
+                $to_group_ids = $data['user_group'];
+                // 发送消息
+                $res = $this->MessageModel->sendMessageToGroup(0, 0, $to_group_ids, $data['title'], $data['description'], $data['content'], $data['type_id']);
             }
-            // 发送消息
-            $res = $this->MessageModel->sendMessage(0, 0, $to_uid, $data['title'], $data['description'], $data['content'], $data['type_id']);
-
+            
             if ($res) {
                 return $this->success('消息发送成功', $res);
             } else {
