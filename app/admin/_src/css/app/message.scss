@@ -13,6 +13,31 @@
     }
 }
 
+/*消息发送列表*/
+.message-send-list-section {
+
+    .user-info {
+        .avatar {
+            float: left;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            overflow: hidden;
+            img {
+                width: 60px;
+                height: 60px;
+            }
+        }
+        .nickname {
+            margin-left: 60px;
+            padding-left: 10px;
+            line-height: 60px;
+        }
+    }
+}
+
+
+/*消息发送页*/
 .send-message-section {
     padding: 20px;
     padding-bottom: 80px;

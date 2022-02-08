@@ -219,10 +219,39 @@ class Message extends Admin
 
         // 记录当前列表页的cookie
         cookie('__forward__', $_SERVER['REQUEST_URI']);
-
+        $this->setTitle('消息发送记录');
         // 输出模板
         return View::fetch('list');
     }
+
+    /**
+     * 消息状态管理
+     */
+    public function messageStatus()
+    {
+        $ids = input('ids/a');
+        !is_array($ids) && $ids = explode(',',$ids);
+        $status = input('status', 0, 'intval');
+        $title = '更新';
+        if($status == 0){
+            $title = '禁用';
+        }
+        if($status == 1){
+            $title = '启用';
+        }
+        if($status == -1){
+            $title = '删除';
+        }
+        $data['status'] = $status;
+
+        $res = $this->MessageModel->where('id', 'in', $ids)->update($data);
+        if($res){
+            return $this->success($title . '成功');
+        }else{
+            return $this->error($title . '失败');
+        }  
+    }
+
 
     /**
      * 消息类型状态管理

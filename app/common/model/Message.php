@@ -11,12 +11,18 @@ class Message extends Base
     //自动写入创建和更新的时间戳字段
     protected $autoWriteTimestamp = true; 
     public $_status  = [
-        '1'  => '启用',
-        '0'  => '禁用',
-        '-1' => '删除',
+        1  => '启用',
+        0  => '禁用',
+        -1 => '删除',
     ];
+    public $_is_read = [
+        0 => '未读',
+        1 => '已读'
+    ];
+
     /**
      * 发送消息至用户
+     * send_type array msg站内信 email邮件 sms短信
      * 
     */
     public function sendMessageToUid($shopid = 0, $uid = 0, $to_uids, $title = '您有新的消息', $description = '', $content = '', $type_id = 1, $send_type = ['msg','email'])
@@ -83,6 +89,40 @@ class Message extends Base
      */
     public function formatData($data)
     {
+        // 发送用户
+        if($data['uid'] == 0){
+            // uid为0时属系统信息
+            $data['form_user'] = [
+                'nickname' => '系统',
+                'avatar' => get_attachment_src(config('system.WEB_SITE_LOGO')),
+                'avatar64' => get_attachment_src(config('system.WEB_SITE_LOGO')),
+                'avatar128' => get_attachment_src(config('system.WEB_SITE_LOGO')),
+                'avatar256' => get_attachment_src(config('system.WEB_SITE_LOGO')),
+                'avatar512' => get_attachment_src(config('system.WEB_SITE_LOGO')),
+            ];
+        }else{
+            // 包含uid时为用户之间互动消息
+            $data['form_user'] = query_user($data['uid'], ['nickname','avatar']);
+        }
+
+        // 接收用户
+        $data['to_user'] = query_user($data['to_uid'], ['nickname','avatar']);
+        
+        // 获取消息类型数据
+        $type = (new MessageType())->find($data['type_id']);
+        if(!$type->isEmpty()){
+            $data['type']['title'] = $type->title;
+            $data['type']['icon'] = get_attachment_src($type->icon);
+        }
+        // 获取消息内容
+        $content = (new MessageContent())->find($data['content_id']);
+        if(!$content->isEmpty()){
+            $data['content']['title'] = $content->title;
+            $data['content']['description'] = $content->description;
+            $data['content']['content'] = $content->content;
+        }
+        // 状态
+        $data['is_read_str'] = $this->_is_read[$data['is_read']];
         $data['status_str'] = $this->_status[$data['status']];
         //时间戳格式化
         $data['create_time_str'] = time_format($data['create_time']);

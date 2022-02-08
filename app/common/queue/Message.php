@@ -36,7 +36,6 @@ class Message
                 $msg['to_uid'] = $to_uid;
                 $msg['type_id'] = $data['type_id'];
                 $msg['content_id'] = $data['content_id'];
-                $msg['send_type'] = $data['send_type'];
                 $msg['status'] = 1;
                 (new MessageModel())->save($msg);
             }
@@ -90,7 +89,6 @@ class Message
                 $msg['to_uid'] = $to_uid;
                 $msg['type_id'] = $data['type_id'];
                 $msg['content_id'] = $data['content_id'];
-                $msg['send_type'] = $data['send_type'];
                 $msg['status'] = 1;
                 (new MessageModel())->save($msg);
             }
