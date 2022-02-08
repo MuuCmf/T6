@@ -76,16 +76,32 @@ class Message
         $to_uids = array_unique(array_column($user_list, 'uid'));
         // 排除流失用户
         $to_uids = (new MessageModel())->_removeOldUser($to_uids);
-        // 开始写表
+        // 发送类型
+        $send_type = $data['send_type'];
+        if(in_array('email', $send_type)){
+            $content = (new MessageContentModel())->find($data['content_id']);
+        }
+        // 开始发送
         foreach($to_uids as $to_uid){
-            $msg['shopid'] = $data['shopid'];
-            $msg['uid'] = $data['uid'];
-            $msg['to_uid'] = $to_uid;
-            $msg['type_id'] = $data['type_id'];
-            $msg['content_id'] = $data['content_id'];
-            $msg['send_type'] = $data['send_type'];
-            $msg['status'] = 1;
-            (new MessageModel())->save($msg);
+            // 发送站内信
+            if(in_array('msg', $send_type)){
+                $msg['shopid'] = $data['shopid'];
+                $msg['uid'] = $data['uid'];
+                $msg['to_uid'] = $to_uid;
+                $msg['type_id'] = $data['type_id'];
+                $msg['content_id'] = $data['content_id'];
+                $msg['send_type'] = $data['send_type'];
+                $msg['status'] = 1;
+                (new MessageModel())->save($msg);
+            }
+
+            // 发送邮件
+            if(in_array('email', $send_type)){
+                $user = query_user($to_uid,['email']);
+                if(!empty($user) && !empty($user['email'])){
+                    (new Mail())->sendMailLocal($user['email'], $content['title'], $content['content']);
+                }
+            }
         }
         //如果任务执行成功后 记得删除任务，不然这个任务会重复执行，直到达到最大重试次数后失败后，执行failed方法
         $job->delete();
