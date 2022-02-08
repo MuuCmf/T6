@@ -30,12 +30,11 @@
                     <input type="checkbox" class="check-all" id="check-all">
                     <label for="check-all"></label>
                 </th>
-                <th class="">{:lang('ID')}</th>
-                <th class="">用户</th>
-                <th class="">内容</th>
-                <th class="">图片</th>
-                <th class="">状态</th>
-                <th class="">操作</th>
+                <th>用户</th>
+                <th>内容</th>
+                <th>图片</th>
+                <th>状态</th>
+                <th width="200">操作</th>
             </tr>
             </thead>
             <tbody>
@@ -46,7 +45,6 @@
                         <input class="ids" id="feedback-{$vo.id}" type="checkbox" name="ids[]" value="{$vo.id}"/>
                         <label for="feedback-{$vo.id}"></label>
                     </td>
-                    <td>{$vo.id}</td>
                     <td>
                         <a href="{:url('admin/Member/detail',['uid'=>$vo['uid']])}">
                             <div class="avatar">
@@ -58,9 +56,16 @@
                     <td>{$vo.content}</td>
                     <td></td>
                     <td>
-                        {$vo.status_str}
+                        {if $vo.status == 1}
+                        <span class="label label-success">{$vo.status_str}</span>
+                        {/if}
+                        {if $vo.status == 0}
+                        <span class="label label-warning">{$vo.status_str}</span>
+                        {/if}
                     </td>
                     <td>
+                        <a type="button" class="btn btn-sm btn-success" data-iframe="{:url('admin/Message/send',['to_uid' => $vo['uid']])}" data-toggle="modal" data-size="lg" data-height="600px">发送消息</a>
+                        <a class="btn btn-sm btn-info ajax-post" href="{:url('status',['status'=>1, 'ids'=>$vo['id']])}" data-confirm="确认已处理操作？">已处理</a>
                         <a class="btn btn-sm btn-danger ajax-post" href="{:url('status',['status'=>-1, 'ids'=>$vo['id']])}" data-confirm="确认执行删除操作？">删除</a>
                     </td>
                 </tr>
