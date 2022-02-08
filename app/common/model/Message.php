@@ -10,19 +10,23 @@ class Message extends Base
 {
     //自动写入创建和更新的时间戳字段
     protected $autoWriteTimestamp = true; 
-
+    public $_status  = [
+        '1'  => '启用',
+        '0'  => '禁用',
+        '-1' => '删除',
+    ];
     /**
      * 发送消息至用户
      * 
     */
-    public function sendMessageToUid($shopid = 0, $uid = 0, $to_uids, $title = '您有新的消息', $description = '', $content = '', $type_id = 1, $send_type = 'msg')
+    public function sendMessageToUid($shopid = 0, $uid = 0, $to_uids, $title = '您有新的消息', $description = '', $content = '', $type_id = 1, $send_type = ['msg','email'])
     {
         // 指定用户ID
         $to_uids = is_array($to_uids) ? $to_uids : explode(',', $to_uids);
         if(!count($to_uids)){
             return false;
         }
-        
+
         // 写入消息内容
         $content_id = (new MessageContent())->addMessageContent($shopid, $title, $description, $content);
 
@@ -46,7 +50,7 @@ class Message extends Base
     /**
      * 发送消息至用户组
     */
-    public function sendMessageToGroup($shopid = 0, $uid = 0, $to_groud_ids, $title = '您有新的消息', $description = '', $content = '', $type_id = 1, $send_type = 'msg')
+    public function sendMessageToGroup($shopid = 0, $uid = 0, $to_groud_ids, $title = '您有新的消息', $description = '', $content = '', $type_id = 1, $send_type = ['msg','email'])
     {
         // 指定用户ID
         $to_groud_ids = is_array($to_groud_ids) ? $to_groud_ids : explode(',', $to_groud_ids);
@@ -72,6 +76,18 @@ class Message extends Base
         }
         
         return false;
+    }
+
+    /**
+     * 处理消息数据
+     */
+    public function formatData($data)
+    {
+        $data['status_str'] = $this->_status[$data['status']];
+        //时间戳格式化
+        $data['create_time_str'] = time_format($data['create_time']);
+        $data['update_time_str'] = time_format($data['update_time']);
+        return $data;
     }
 
     /**

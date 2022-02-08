@@ -117,27 +117,25 @@ class Message extends Admin
             $data = input();
             // 数据验证
             try {
-                validate(Common::class)->scene('message')->check([
-                    'title'  => $data['title'],
-                    'description'  => $data['description'],
-                    'content'  => $data['content'],
-                ]);
+                validate(Common::class)->scene('message')->check($data);
             } catch (ValidateException $e) {
                 // 验证失败 输出错误信息
                 return $this->error($e->getError());
             }
+            // 处理发送的类型
+            $send_type = $data['send_type'];
 
             // 处理接收用户
             if(!empty($data['to_uid'])){
                 $to_uids = intval($data['to_uid']);
                 // 发送消息
-                $res = $this->MessageModel->sendMessageToUid(0, 0, $to_uids, $data['title'], $data['description'], $data['content'], $data['type_id']);
+                $res = $this->MessageModel->sendMessageToUid(0, 0, $to_uids, $data['title'], $data['description'], $data['content'], $data['type_id'], $send_type);
 
             }else{
                 // 发送至用户组
                 $to_group_ids = $data['user_group'];
                 // 发送消息
-                $res = $this->MessageModel->sendMessageToGroup(0, 0, $to_group_ids, $data['title'], $data['description'], $data['content'], $data['type_id']);
+                $res = $this->MessageModel->sendMessageToGroup(0, 0, $to_group_ids, $data['title'], $data['description'], $data['content'], $data['type_id'], $send_type);
             }
             
             if ($res) {
@@ -147,6 +145,7 @@ class Message extends Admin
             }
 
         }else{
+            
             // 消息类型ID
             $type_id = input('type_id', 0, 'intval');
             View::assign('type_id', $type_id);
@@ -181,6 +180,48 @@ class Message extends Admin
             // 输出模板
             return View::fetch();
         }
+    }
+
+    /**
+     * 消息发送列表
+     */
+    public function list()
+    {
+        // 查询条件
+        $map[] = ['shopid', '=', 0];
+        $map[] = ['status', '>', -1];
+
+        // 搜索关键字
+        $keyword = input('keyword', '', 'text');
+        View::assign('keyword',$keyword);
+        if(!empty($keyword)){
+            $map[] = ['title', 'like', '%' . $keyword . '%'];
+        }
+
+        $fields = '*';
+        $rows = input('rows', 20, 'intval');
+        $lists = $this->MessageModel->getListByPage($map, 'id desc,create_time desc', $fields, $rows);
+        $pager = $lists->render();
+        $lists = $lists->toArray();
+
+        foreach($lists['data'] as &$val){
+            $val = $this->MessageModel->formatData($val);
+        }
+        unset($val);
+
+        // ajax请求返回
+        if (request()->isAjax()){
+            return $this->success('success',$lists);
+        }
+
+        View::assign('pager',$pager);
+        View::assign('lists',$lists);
+
+        // 记录当前列表页的cookie
+        cookie('__forward__', $_SERVER['REQUEST_URI']);
+
+        // 输出模板
+        return View::fetch('list');
     }
 
     /**

@@ -9,9 +9,6 @@
     <div class="button-box row clearfix">
 
         <div class="col-md-8">
-            <a type="button" class="btn btn-info" href="{:url('contentEdit')}">
-                新增
-            </a>
             <button class="btn btn-success ajax-post confirm" url="{:url('contentStatus', ['status'=> 1])}" target-form="ids">
                 启用
             </button>
@@ -73,7 +70,6 @@
                         {/if}
                     </td>
                     <td>
-                        <a class="btn btn-sm btn-info" href="{:url('contentEdit',['id'=>$vo['id']])}">编辑</a>
                         {if $vo.status == 1}
                         <a class="btn btn-sm btn-warning ajax-post" href="{:url('contentStatus',['status'=>0, 'ids'=>$vo['id']])}">禁用</a>
                         {/if}
