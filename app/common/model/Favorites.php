@@ -30,7 +30,7 @@ class Favorites extends Base
     /**
      * 判断用户是否收藏
      */
-    public function yesFavorites($shopid = 0, $app, $uid, $info_id, $info_type)
+    public function yesFavorites($uid, $info_id, $info_type , $app ,$shopid = 0)
     {
         if(!empty($shopid) && $shopid != 0){
             $map[] = ['shopid', '=', $shopid];
@@ -42,8 +42,9 @@ class Favorites extends Base
         $map[] = ['status', '=', 1];
         //判断是否收藏
         $data = $this->getDataByMap($map);
-        
+
         return $data;
     }
+
 
 }
