@@ -22,13 +22,13 @@ class Mobile extends MicroAdmin
         $this->PageModel = new PageModel();
 
         // 获取各应用配置项
-        // 获取classroom模块
-        $classroom_config_data = (new \app\classroom\model\ClassroomConfig())->getDataByMap(['shopid' => 0]);
-        $classroom_config_data = (new \app\classroom\logic\Config())->formatData($classroom_config_data);
-        View::assign('classroom_config_data', $classroom_config_data);
-        //获取分类树
-        $classroom_category_tree = (new \app\classroom\model\ClassroomCategory())->getTree(1);
-        View::assign('classroom_category_tree', $classroom_category_tree);
+        // // 获取classroom模块
+        // $classroom_config_data = (new \app\classroom\model\ClassroomConfig())->getDataByMap(['shopid' => 0]);
+        // $classroom_config_data = (new \app\classroom\logic\Config())->formatData($classroom_config_data);
+        // View::assign('classroom_config_data', $classroom_config_data);
+        // //获取分类树
+        // $classroom_category_tree = (new \app\classroom\model\ClassroomCategory())->getTree(1);
+        // View::assign('classroom_category_tree', $classroom_category_tree);
         
     }
 
@@ -80,7 +80,8 @@ class Mobile extends MicroAdmin
      */
     public function diy()
     {
-        $id = input('id',0);
+        $id = input('id',0, 'intval');
+
         if (request()->isAjax()){
             $params = input('post.');
             $id = empty($params['id'])? 0 : $params['id'];
@@ -111,21 +112,22 @@ class Mobile extends MicroAdmin
                 return $this->error( '保存失败');
             }
         }else{
+            // 应用列表
             $app_list = $this->ModuleModel->getAll();
-            //dump($app_list);
+            
             //获取分类树
-            $category_tree = (new \app\classroom\model\ClassroomCategory())->getTree(0);
-            View::assign('category_tree', $category_tree);
+            // $category_tree = (new \app\classroom\model\ClassroomCategory())->getTree(0);
+            // View::assign('category_tree', $category_tree);
             //获取文章模块分类
-            $article_plugin_setup = $this->ModuleModel->checkInstalled('articles');
-            $article_category_tree = [];
-            if($article_plugin_setup){
-                $article_category_tree = (new \app\articles\model\ArticlesCategory())->getTree(1);
-            }
-            View::assign('article_category_tree', $article_category_tree);
+            // $article_plugin_setup = $this->ModuleModel->checkInstalled('articles');
+            // $article_category_tree = [];
+            // if($article_plugin_setup){
+            //     $article_category_tree = (new \app\articles\model\ArticlesCategory())->getTree(1);
+            // }
+            // View::assign('article_category_tree', $article_category_tree);
 
             //页面数据
-            $page_data = $this->PageModel->find($id);
+            $page_data = $this->PageModel->where('status', '>', -1)->find($id);
             if (!empty($page_data)){
                 $page_data = $page_data->toArray();
                 $page_data = $this->PageLogic->formatData($page_data);

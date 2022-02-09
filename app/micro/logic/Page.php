@@ -3,6 +3,7 @@ namespace app\micro\logic;
 
 use app\common\logic\Base;
 use think\helper\Str;
+use app\common\model\module;
 
 class Page 
 {
@@ -291,16 +292,16 @@ class Page
                     case 'column_list':
                         $val = $this->columnList($val,$shopid);
                     break;
-                     // 资料下载列表
-                     case 'material_list':
+                    // 资料下载列表
+                    case 'material_list':
                         $val = $this->materialList($val,$shopid);
                     break;
-                     // 线下课列表
-                     case 'offline_list':
+                    // 线下课列表
+                    case 'offline_list':
                         $val = $this->offlineList($val,$shopid);
                     break;
-                     // 直播课列表
-                     case 'live_list':
+                    // 直播课列表
+                    case 'live_list':
                         $val = $this->liveList($val,$shopid);
                     break;
                     // 老师列表
@@ -311,7 +312,7 @@ class Page
                     case 'minishop_goods_list':
                         $val = $this->minishopGoodsList($val,$shopid);
                     break;
-                    //积分商城商品数据
+                    // 积分商城商品数据
                     case 'scoreshop_goods_list':
                         $val = $this->scoreshopGoodsList($val,$shopid);
                     break;
@@ -423,7 +424,7 @@ class Page
         if(!empty($list)){
             $list->toArray();
             foreach($list as &$v){
-                $v =  (new \app\common\logic\Announce())->formatData($v);
+                $v =  (new \app\common\model\Announce())->formatData($v);
             }
             $data['data']['list'] = $list;
         }
@@ -776,6 +777,12 @@ class Page
     {
         // 默认给文章模块分类数据
         $app = !empty($data['data']['app'])?$data['data']['app']:'articles';
+        // 判断APP是否安装并启用
+        $installed = (new module())->checkInstalled($app);
+        // 应用已安装
+        if($installed){
+
+        }
 
         return $data;
     }
