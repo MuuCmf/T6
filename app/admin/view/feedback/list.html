@@ -64,7 +64,7 @@
                         {/if}
                     </td>
                     <td>
-                        <a type="button" class="btn btn-sm btn-success" data-iframe="{:url('admin/Message/send',['to_uid' => $vo['uid']])}" data-toggle="modal" data-size="lg" data-height="600px">发送消息</a>
+                        <a type="button" class="btn btn-sm btn-primary" data-iframe="{:url('admin/Message/send',['to_uid' => $vo['uid']])}" data-toggle="modal" data-size="lg" data-height="600px">发送消息</a>
                         <a class="btn btn-sm btn-info ajax-post" href="{:url('status',['status'=>1, 'ids'=>$vo['id']])}" data-confirm="确认已处理操作？">已处理</a>
                         <a class="btn btn-sm btn-danger ajax-post" href="{:url('status',['status'=>-1, 'ids'=>$vo['id']])}" data-confirm="确认执行删除操作？">删除</a>
                     </td>

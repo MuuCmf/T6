@@ -93,7 +93,7 @@
 
         <div class="send-button-section">
             <button type="button" class="btn btn-lg btn-success" data-role="submit">发送消息</button>
-            <button type="button" onclick="$('.close').click();" class="btn btn-lg btn-default">取消</button>
+            <button type="button" class="btn btn-lg btn-default" data-role="close">取消</button>
         </div>
     </form>
 </div>
@@ -110,15 +110,22 @@
             var url = $('form').attr('action');
             $.post(url,query,function(res){
                 if(res.code == 200){
-                    toast.success('操作成功！');
+                    toast.success(res.msg);
                     setTimeout(function(){
-                       
-                    },1500);
+                       //关闭ZUI弹窗
+                        parent.$('#sendMessageModal').find('[data-dismiss="modal"]').click();
+                    },1000);
                 }else{
                     toast.error(res.msg);
                 }
             },'json');
         });
+
+
+        $('[data-role="close"]').on('click','',function () {
+            //关闭ZUI弹窗
+            parent.$('#sendMessageModal').find('[data-dismiss="modal"]').click();
+        })
     });
 
 </script>
