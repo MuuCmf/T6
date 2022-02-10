@@ -8,17 +8,6 @@ class Module extends Base
     public $error = '';
     protected $moduleName = '';
 
-    public function edit($data)
-    {
-        if(!empty($data['id'])){
-            $res = $this->update($data);
-        }else{
-            $res = $this->save($data);
-        }
-
-        return $res;
-    }
-
     /**
      * [getAll description]
      * @return [type] [description]
@@ -254,7 +243,10 @@ class Module extends Base
         }
 
         $info = $this->where(['name'=>$name])->find();
-
+        if(!empty($info)){
+            $info->icon = $this->getIcon($name, $info->icon);
+        }
+        
         return $info;
     }
 
@@ -427,7 +419,7 @@ class Module extends Base
      * @param  [type] $name [description]
      * @return [type]       [description]
      */
-    public function getIcon($name, $icon)
+    public function getIcon($name, $icon = '')
     {
         if(empty($icon)){
             //图标所在位置为模块静态目录下（推荐）
