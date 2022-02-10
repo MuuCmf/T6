@@ -3,11 +3,8 @@
  */
 $(function(){
 
-	var html_text = '';
 	//初始化组件索引
 	var object_index;
-	//初始化组件类型
-    var object_type;
     //列表数据接口
     var list_api = $('.btn-object[data-type="column_list"]').data('list-api');
     //分类数据接口
@@ -121,11 +118,6 @@ $(function(){
 			$(this).find('.diy-preview-controller').addClass('show');
 		}
 
-		object_index = $(this).data('object-index');
-		object_type = $(this).data('type');
-		//以上部分写死就可以，先low着，以后在搞
-		/******************************************************************************/
-
 		//控制区确认按钮
 		$('.page-diy-section').on('click','[data-object-index="'+object_index+'"] .btn',function(){
 			
@@ -191,25 +183,12 @@ $(function(){
     $('.page-diy-section .object-lists').on("click",'.btn-object[data-type="column_list"]',function(){
 
         let type = $(this).data('type');
-        let open = $(this).data('open');
-        //console.log(open);
-        if(open == false) {
-            toast.error('该组件完善中...','danger');
-            return;
-        }
-
         let html = $('[data-object-type="'+type+'"]').html();
-        //console.log(type);
-        //console.log(html);
         $('.preview-target').append(html);
-        //为新增元素添加编号索引，避免多次引入冲突
-        let object_index='';
-
         $('.preview-target .object-item').each(function(index){
-            var this_type = $(this).data('type');
             //为所有已显示组件元素DOM编号索引，避免多次引入冲突
-            $(this).attr('data-object-index',this_type+'-'+index);
-            object_index = this_type+'-'+index;
+            $(this).attr('data-object-index',type+'-'+index);
+            object_index = type+'-'+index;
         });
         if(type=='column_list'){
             column_list_loader(2,0,'create_time','ASC',1,'[data-object-index='+object_index+']');

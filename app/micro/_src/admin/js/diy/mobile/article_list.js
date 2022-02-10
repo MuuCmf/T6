@@ -179,10 +179,9 @@ $(function(){
         var object_index='';
 
         $('.preview-target .object-item').each(function(index){
-            var this_type = $(this).data('type');
             //为所有已显示组件元素DOM编号索引，避免多次引入冲突
-            $(this).attr('data-object-index',this_type+'-'+index);
-            object_index = this_type+'-'+index;
+            $(this).attr('data-object-index',type+'-'+index);
+            object_index = type+'-'+index;
         });
         //console.log(object_index);
         //获取初始列表数据

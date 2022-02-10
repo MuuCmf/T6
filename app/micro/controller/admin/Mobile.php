@@ -59,7 +59,6 @@ class Mobile extends MicroAdmin
             $item = $this->PageLogic->formatData($item);
         }
         unset($item);
-
         if (request()->isAjax()){
             return $this->success('success',$lists);
         }
@@ -122,7 +121,7 @@ class Mobile extends MicroAdmin
             }else{
                 $page_data = [];
             }
-
+            
             View::assign([
                 'page_data' => $page_data,
                 'icon_list' => $this->PageLogic->getIconLists()

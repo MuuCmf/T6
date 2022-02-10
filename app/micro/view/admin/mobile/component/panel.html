@@ -37,7 +37,9 @@
 				<div class="panel-body object-lists">
 					{notempty name="v.panel"}
 					{foreach $v.panel as $c_v}
-					<div class="btn-object" data-type="{$c_v['type']}"
+					<div class="btn-object" 
+					data-app="{$v.info.name}" 
+					data-type="{$c_v['type']}"
 					data-list-api="{$c_v['list_api']}" 
 					data-category-api="{$c_v['category_api']}">
 						<div class="object-item">

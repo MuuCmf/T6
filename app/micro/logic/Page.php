@@ -334,7 +334,7 @@ class Page
                     break;
                 }
             }
-            $data['url'] = '';
+            
         }
 
         if($data['port_type'] == 'pc'){
@@ -352,6 +352,8 @@ class Page
                 $data['header']['logo'] = '';
             }
         }
+
+        $data['url'] = '';
         
         $data = $this->setStatusAttr($data);
         $data = $this->setTimeAttr($data);
@@ -428,6 +430,40 @@ class Page
             }
             $data['data']['list'] = $list;
         }
+        
+        return $data;
+    }
+
+        /**
+     * 分类&筛选组件数据处理
+     */
+    public function category($data,$shopid = 0)
+    {
+        $category_tree = [];
+        // 默认给文章模块分类数据
+        $app = !empty($data['data']['app'])?$data['data']['app']:'articles';
+        // 判断APP是否安装并启用
+        $installed = (new module())->checkInstalled($app);
+        // 应用已安装
+        if($installed){
+            // 绑定到容器
+            bind($app . '\\category_tree', 'app\\' . $app . '\\model\\' .ucwords($app).  'Category');
+
+            if(app($app . '\\category_tree')){
+                $category_tree = app($app . '\\category_tree')->getTree(1);
+                $data['tree'] = $category_tree;
+            }
+        }
+
+        return $data;
+    }
+
+    /**
+     * 关注微信公众号
+     */
+    public function weixin($data,$shopid = 0)
+    {
+        if(empty($data['style'])) $data['style'] = 0; //样式默认为0
         
         return $data;
     }
@@ -766,40 +802,6 @@ class Page
             unset($v);
             $data['data']['list'] = $list;
         }
-        
-        return $data;
-    }
-
-    /**
-     * 分类&筛选组件数据处理
-     */
-    public function category($data,$shopid = 0)
-    {
-        $category_tree = [];
-        // 默认给文章模块分类数据
-        $app = !empty($data['data']['app'])?$data['data']['app']:'articles';
-        // 判断APP是否安装并启用
-        $installed = (new module())->checkInstalled($app);
-        // 应用已安装
-        if($installed){
-            // 绑定到容器
-            bind($app . '\\category_tree', 'app\\' . $app . '\\model\\' .ucwords($app).  'Category');
-
-            if(app($app . '\\category_tree')){
-                $category_tree = app($app . '\\category_tree')->getTree(1);
-                $data['tree'] = $category_tree;
-            }
-        }
-
-        return $data;
-    }
-
-    /**
-     * 关注微信公众号
-     */
-    public function weixin($data,$shopid = 0)
-    {
-        if(empty($data['style'])) $data['style'] = 0; //样式默认为0
         
         return $data;
     }
