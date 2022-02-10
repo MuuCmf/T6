@@ -90,6 +90,18 @@ $(function(){
         return obj;
 	}
 
+	//分类&筛选组件
+	var category = function(element){
+		var obj = {};
+		obj.title = '分类';
+		obj.type = 'category';
+		obj.data = {
+			'app' : $(element).find('select[name="app"]').val(),
+			'sub_show' : $(element).find('select[name="sub_show"]').val(),
+		}
+		return obj;
+	}
+
 	//图文导航
 	var category_nav = function(element){
 		var obj = {};
@@ -150,23 +162,22 @@ $(function(){
 		return obj;
 	}
 
-	//专栏列表组件
-	var column_list = function(element){
+	//关注公众号
+	var weixin = function(element){
 		var obj = {};
-		obj.title = '专栏列表';
-        obj.type = 'column_list';
+		obj.title = '关注公众号';
+		obj.type = 'weixin';
+		obj.style = $(element).find('[name="style"]').val(); //样式
         //为了兼任性，经单图或其它单独调用链接至组件的组件写入数组内
-        obj.data = {
-			'title': $(element).find('[name="title"]').val(),
-			'sub_title': $(element).find('[name="sub_title"]').val(),
-        	'rows': $(element).find('[name="rows"]').val(),
-        	'category_id': $(element).find('[name="category_id"]').val(),
-        	'order_field': $(element).find('[name="order_field"]').val(),
-        	'order_type': $(element).find('[name="order_type"]').val(),
-			'rank': $(element).find('[name="rank"]').val(),
-			'style': $(element).find('[name="style"]').val(),
-        };
         return obj;
+	}
+
+	//会员块
+	var member = function(element){
+		var obj = {};
+		obj.title = '会员';
+	    obj.type = 'member';
+	    return obj;
 	}
 
 	//课程列表组件
@@ -180,6 +191,25 @@ $(function(){
 			'sub_title': $(element).find('[name="sub_title"]').val(),
         	'rows': $(element).find('[name="rows"]').val(),
         	'type': $(element).find('[name="type"]').val(),
+        	'category_id': $(element).find('[name="category_id"]').val(),
+        	'order_field': $(element).find('[name="order_field"]').val(),
+        	'order_type': $(element).find('[name="order_type"]').val(),
+			'rank': $(element).find('[name="rank"]').val(),
+			'style': $(element).find('[name="style"]').val(),
+        };
+        return obj;
+	}
+
+	//专栏列表组件
+	var column_list = function(element){
+		var obj = {};
+		obj.title = '专栏列表';
+        obj.type = 'column_list';
+        //为了兼任性，经单图或其它单独调用链接至组件的组件写入数组内
+        obj.data = {
+			'title': $(element).find('[name="title"]').val(),
+			'sub_title': $(element).find('[name="sub_title"]').val(),
+        	'rows': $(element).find('[name="rows"]').val(),
         	'category_id': $(element).find('[name="category_id"]').val(),
         	'order_field': $(element).find('[name="order_field"]').val(),
         	'order_type': $(element).find('[name="order_type"]').val(),
@@ -205,23 +235,6 @@ $(function(){
         	'rank': $(element).find('[name="rank"]').val(),
         };
         return obj;
-	}
-	//关注公众号
-	var weixin = function(element){
-		var obj = {};
-		obj.title = '关注公众号';
-		obj.type = 'weixin';
-		obj.style = $(element).find('[name="style"]').val(); //样式
-        //为了兼任性，经单图或其它单独调用链接至组件的组件写入数组内
-        return obj;
-	}
-
-	//会员块
-	var member = function(element){
-		var obj = {};
-		obj.title = '会员';
-	    obj.type = 'member';
-	    return obj;
 	}
 
 	//积分商品
@@ -385,17 +398,6 @@ $(function(){
         	'style': $(element).find('[name="style"]').val(),
         };
         return obj;
-	}
-
-	//分类&筛选组件
-	var category = function(element){
-		var obj = {};
-		obj.title = '分类';
-		obj.type = 'category';
-		obj.data = {
-			'sub_show' : $(element).find('select[name="sub_show"]').val(),
-		}
-		return obj;
 	}
 
 	//社群列表

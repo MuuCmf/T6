@@ -775,13 +775,20 @@ class Page
      */
     public function category($data,$shopid = 0)
     {
+        $category_tree = [];
         // 默认给文章模块分类数据
         $app = !empty($data['data']['app'])?$data['data']['app']:'articles';
         // 判断APP是否安装并启用
         $installed = (new module())->checkInstalled($app);
         // 应用已安装
         if($installed){
+            // 绑定到容器
+            bind($app . '\\category_tree', 'app\\' . $app . '\\model\\' .ucwords($app).  'Category');
 
+            if(app($app . '\\category_tree')){
+                $category_tree = app($app . '\\category_tree')->getTree(1);
+                $data['tree'] = $category_tree;
+            }
         }
 
         return $data;

@@ -11,18 +11,21 @@
 
                 <div class="category-list swiper-category-container">
                     <div class="swiper-wrapper">
-                        {foreach $classroom_category_tree as $k => $v}
+                        {notempty name="category_tree"}
+                        {foreach $category_tree as $k => $v}
                         <div class="item swiper-slide" data-id="{$v['id']}">
                             {$v['title']}
                             <hr />
                         </div>
                         {/foreach}
+                        {/notempty}
                     </div>
                 </div>
             </div>
             {if $vo['data']['sub_show'] == 1}
             <div class="sub-box">
-                {foreach $classroom_category_tree as $k => $v}
+                {notempty name="category_tree"}
+                {foreach $category_tree as $k => $v}
                     <div class="sub-items swiper-category-container" data-id="{$v['id']}">
                         <div class="swiper-wrapper">
                             {if !empty($v['_child'])}
@@ -33,6 +36,7 @@
                         </div>
                     </div>
                 {/foreach}
+                {/notempty}
             </div>
             {/if}
         </div>

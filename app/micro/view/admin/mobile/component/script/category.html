@@ -40,7 +40,9 @@
 						    <label class="col-sm-3 control-label">选择应用</label>
 						    <div class="col-sm-9">
 							    <select class="form-control" name="app">
-									<option value="classroom" selected>云课堂</option>
+									{foreach $app_list as $v}
+									<option value="{$v.name}">{$v.alias}</option>
+									{/foreach}
 								</select>
 						    </div>
 					  	</div>
@@ -56,7 +58,7 @@
 					  	<div class="form-group">
 						    <label class="col-sm-3 control-label"></label>
 						    <div class="col-sm-9">
-						      <button class="btn btn-primary">确认</button>
+						      <button class="btn btn-primary btn-submit" data-role="submit">确认</button>
 						    </div>
 					  	</div>
 			    	</div>

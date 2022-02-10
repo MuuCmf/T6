@@ -5,18 +5,21 @@
 	min-height:600px;
 
 	.object-box {
-		width:212px;
+		width:208px;
 		position:fixed;
-		height: 78%;
-    	overflow-x: hidden;
-    	overflow-y: auto;
 		z-index: 810;
-		&::-webkit-scrollbar {/*滚动条整体样式*/
-			width: 2px;     /*高宽分别对应横竖滚动条的尺寸*/
-			height: 1px;
-		}
+		
 		.panel-group {
 			margin-bottom: 10px;
+			height: 600px;
+			overflow-x: hidden;
+    		overflow-y: auto;
+			border-top: 1px solid #ddd;
+			border-bottom: 1px solid #ddd;
+			&::-webkit-scrollbar {/*滚动条整体样式*/
+				width: 2px;     /*高宽分别对应横竖滚动条的尺寸*/
+				height: 1px;
+			}
 			.panel-body {
 				padding:0px;
 				.btn-object {
@@ -24,14 +27,17 @@
 					background-color: #fff;
 					display:block;
 					float:left;
-					width:100px;
+					width:102px;
 					font-size: 13px;
 					text-align: center;
 					cursor: pointer;
 					border:1px;
 					border-right: 1px solid #ddd;
 					border-bottom: 1px solid #ddd;
-		
+					&:last-child {
+						border-bottom: 0;
+					}
+					
 					&:active,&:hover {
 						background-color: #eee;
 						background-image: none;
@@ -128,6 +134,8 @@
 			margin: 0;
 			border-bottom: 1px solid #f2f2f2;
 			cursor:pointer;
+
+			
 
 			.config-controller {
 				position: absolute;

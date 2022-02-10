@@ -8,6 +8,7 @@ use app\micro\controller\admin\Admin as MicroAdmin;
 use app\common\model\Module;
 use app\micro\model\MicroPage as PageModel;
 use app\micro\logic\Page as PageLogic;
+use app\micro\logic\Pannel as PannelLogic;
 
 
 class Mobile extends MicroAdmin
@@ -112,21 +113,7 @@ class Mobile extends MicroAdmin
                 return $this->error( '保存失败');
             }
         }else{
-            // 应用列表
-            $app_list = $this->ModuleModel->getAll();
-            
-            //获取分类树
-            // $category_tree = (new \app\classroom\model\ClassroomCategory())->getTree(0);
-            // View::assign('category_tree', $category_tree);
-            //获取文章模块分类
-            // $article_plugin_setup = $this->ModuleModel->checkInstalled('articles');
-            // $article_category_tree = [];
-            // if($article_plugin_setup){
-            //     $article_category_tree = (new \app\articles\model\ArticlesCategory())->getTree(1);
-            // }
-            // View::assign('article_category_tree', $article_category_tree);
-
-            //页面数据
+            // 页面数据
             $page_data = $this->PageModel->where('status', '>', -1)->find($id);
             if (!empty($page_data)){
                 $page_data = $page_data->toArray();
@@ -135,11 +122,20 @@ class Mobile extends MicroAdmin
             }else{
                 $page_data = [];
             }
-            
+
             View::assign([
                 'page_data' => $page_data,
                 'icon_list' => $this->PageLogic->getIconLists()
             ]);
+
+            // 应用列表
+            $app_list = $this->ModuleModel->getAll();
+            View::assign('app_list', $app_list);
+
+            // 面板列表
+            $pannel = (new PannelLogic())->getList();
+            View::assign('pannel', $pannel);
+
             // 链接至参数
             $link_list = $this->PageLogic->linkParams();
             View::assign('link_list', $link_list);
