@@ -53,7 +53,7 @@ class OfficialAccount extends Wechat {
     }
 
     /**
-     * 公众号授权验证
+     * @title 公众号授权验证
      */
     public function serverOAath(){
         $response = $this->app->server->serve();
@@ -62,7 +62,7 @@ class OfficialAccount extends Wechat {
     }
 
     /**
-     * 获取微信服务器IP
+     * @title 获取微信服务器IP
      * @return mixed
      */
     public function getWechatServerIps(){
@@ -70,7 +70,7 @@ class OfficialAccount extends Wechat {
     }
 
     /**
-     * 读取（查询）已设置菜单
+     * @title 读取（查询）已设置菜单
      * @return mixed
      */
     public function getMenu(){
@@ -78,7 +78,7 @@ class OfficialAccount extends Wechat {
     }
 
     /**
-     * 获取当前菜单
+     * @title 获取当前菜单
      * @return mixed
      */
     public function currentMenu(){
@@ -86,7 +86,7 @@ class OfficialAccount extends Wechat {
     }
 
     /**
-     * 设置菜单
+     * @title 设置菜单
      * @param $menu
      * @return mixed
      */
@@ -97,7 +97,7 @@ class OfficialAccount extends Wechat {
     }
 
     /**
-     * 处理菜单数据
+     * @title 处理菜单数据
      */
     protected function handleMenu($menu){
         $new_menu = [];
@@ -128,7 +128,7 @@ class OfficialAccount extends Wechat {
     }
 
     /**
-     * 获取当前设置的回复规则
+     * @title 获取当前设置的回复规则
      * @return mixed
      */
     public function currentMessage(){
@@ -147,7 +147,7 @@ class OfficialAccount extends Wechat {
     }
 
     /**
-     * 根据素材id获取详情
+     * @title 根据素材id获取详情
      * @param $media_id
      * @return mixed
      */
@@ -156,7 +156,7 @@ class OfficialAccount extends Wechat {
     }
 
     /**
-     * 网页授权
+     * @title 网页授权
      * @param string $target_url
      * @throws Exception
      */
@@ -175,7 +175,7 @@ class OfficialAccount extends Wechat {
     }
 
     /**
-     * 获取access token
+     * @title 获取access token
      * @return mixed
      */
     public function getToken(){
@@ -183,7 +183,7 @@ class OfficialAccount extends Wechat {
     }
 
     /**
-     * 创建二维码
+     * @title 创建二维码
      *
      * @param $content 内容
      * @param $expiration_time 过期时间
@@ -199,7 +199,7 @@ class OfficialAccount extends Wechat {
     }
 
     /**
-     * 获取qrcode
+     * @title 获取qrcode
      * @param $ticket
      * @return mixed
      */
@@ -208,7 +208,7 @@ class OfficialAccount extends Wechat {
     }
 
     /**
-     * 发送模板消息
+     * @title 发送模板消息
      * @param $data
      * @return mixed
      */

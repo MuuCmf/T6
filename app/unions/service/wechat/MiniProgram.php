@@ -55,7 +55,7 @@ class MiniProgram extends Wechat{
     }
 
     /**
-     * code获取用户信息
+     * @title code获取用户信息
      * @param $code
      * @return mixed
      */
@@ -64,7 +64,7 @@ class MiniProgram extends Wechat{
     }
 
     /**
-     * 解密
+     * @title 解密
      * @param $session
      * @param $iv
      * @param $encryptedData
@@ -74,7 +74,22 @@ class MiniProgram extends Wechat{
         return $this->app->encryptor->decryptData($session, $iv, $encryptedData);
     }
 
+    /**
+     * @title 生成小程序码
+     * @param $scene
+     * @param array $optional
+     * @return mixed
+     */
     public function unlimitQrcode($scene ,$optional = []){
         return $this->app->app_code->getUnlimit($scene,$optional);
+    }
+
+    /**
+     * @title 发送模板消息
+     * @param $data
+     * @return mixed
+     */
+    public function sendTemplateMsg($data){
+        return $this->app->template_message->send($data);
     }
 }
