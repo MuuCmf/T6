@@ -1,219 +1,200 @@
 <div class="object-box">
 	<div class="panel-group" id="accordionPanels" aria-multiselectable="true">
 		<div class="panel panel-default">
-		<div class="panel-heading" id="headingOne">
-		  <h4 class="panel-title">
-		    <a data-toggle="collapse" data-parent="#accordionPanels" href="#collapseOne">
-		      	页面元素
-		    </a>
-		  </h4>
-		</div>
-		<div id="collapseOne" class="panel-collapse collapse in">
-		  	<div class="panel-body object-lists">
-		  		<div class="btn-object" data-type="search">
-		  			<div class="object-item">
-						<i class="fa fa-search" aria-hidden="true"></i>
-				        <p>搜索</p>
-				    </div>
-			    </div>
-			    <div class="btn-object" data-type="announce">
-			    	<div class="object-item">
-						<i class="fa fa-bullhorn" aria-hidden="true"></i>
-				        <p>公告</p>
-				    </div>
-			    </div>
-		        <div class="btn-object" data-type="slideshow">
-		        	<div class="object-item">
-						<i class="fa fa-file-powerpoint-o" aria-hidden="true"></i>
-				        <p>轮播图</p>
-				    </div>
+			<div class="panel-heading" id="headingOne">
+			<h4 class="panel-title">
+				<a data-toggle="collapse" data-parent="#accordionPanels" href="#collapseOne">
+					页面元素
+				</a>
+			</h4>
+			</div>
+			<div id="collapseOne" class="panel-collapse collapse in">
+				<div class="panel-body object-lists">
+					{foreach $pannel.system as $v}
+					<div class="btn-object" data-type="{$v['type']}">
+						<div class="object-item">
+							<i class="fa fa-{$v['icon']}" aria-hidden="true"></i>
+							<p>{$v['title']}</p>
+						</div>
+					</div>
+					{/foreach}
 				</div>
-				<div class="btn-object" data-type="category">
-		        	<div class="object-item">
-			        	<i class="fa fa-exchange" aria-hidden="true"></i>
-			        	<p>分类</p>
-			        </div>
-		        </div>
-			    <div class="btn-object" data-type="category_nav">
-			    	<div class="object-item">
-				    	<i class="fa fa-th" aria-hidden="true"></i>
-			        	<p>图文导航</p>
-			        </div>
-		        </div>
-		        <div class="btn-object" data-type="single_img">
-		        	<div class="object-item">
-			        	<i class="fa fa-image" aria-hidden="true"></i>
-			        	<p>单图广告</p>
-			        </div>
-		        </div>
-		        <div class="btn-object" data-type="custom_text">
-		        	<div class="object-item">
-			        	<i class="fa fa-edit" aria-hidden="true"></i>
-			        	<p>自定义文本</p>
-			        </div>
-		        </div>
-		        <div class="btn-object" data-type="weixin">
-		        	<div class="object-item">
-			        	<i class="fa fa-weixin" aria-hidden="true"></i>
-			        	<p>关注公众号</p>
-			        </div>
-		        </div>
-		        <div class="btn-object" data-type="member" data-open="true">
-		        	<div class="object-item">
-			        	<i class="fa fa-user-plus" aria-hidden="true"></i>
-			        	<p>会员服务</p>
-			        </div>
-		        </div>
-		  	</div>
+			</div>
 		</div>
-		</div>
+		{foreach $pannel.app as $v}
 		<div class="panel panel-default">
-		<div class="panel-heading" id="headingTwo">
-		  <h4 class="panel-title">
-			<a class="collapsed" data-toggle="collapse" data-parent="#accordionPanels" href="#collapseTwo">
-			 	内容列表
-			</a>
-		  </h4>
+			<div class="panel-heading" id="headingOne">
+			<h4 class="panel-title">
+				<a data-toggle="collapse" data-parent="#accordionPanels" href="#collapseOne">
+					{$v.info.alias}
+				</a>
+			</h4>
+			</div>
+			<div id="collapseOne" class="panel-collapse collapse in">
+				<div class="panel-body object-lists">
+					{foreach $v.pannel as $c_v}
+					<div class="btn-object" data-type="{$c_v['type']}"
+					data-list-api="{$c_v['list_api']}" 
+					data-category-api="{$c_v['category_api']}">
+						<div class="object-item">
+							<i class="fa fa-{$c_v['icon']}" aria-hidden="true"></i>
+							<p>{$c_v['title']}</p>
+						</div>
+					</div>
+					{/foreach}
+				</div>
+			</div>
 		</div>
-		<div id="collapseTwo" class="panel-collapse collapse in">
-		  	<div class="panel-body object-lists">
-		  		<div class="btn-object" data-type="knowledge_list" 
-				  data-list-api="{:url('classroom/admin.knowledge/lists')}" 
-				  data-category-api="{:url('classroom/admin.category/tree')}"
-				  >
-		  			<div class="object-item">
-			        	<i class="fa fa-list-alt" aria-hidden="true"></i>
-			        	<p>课程列表</p>
-			        </div>
-		        </div>
-		        <div class="btn-object" data-type="column_list" 
-				data-list-api="{:url('classroom/admin.column/lists')}" 
-				data-category-api="{:url('classroom/admin.category/tree')}"
-				>
-		        	<div class="object-item">
-			        	<i class="fa fa-th-list" aria-hidden="true"></i>
-			        	<p>专栏列表</p>
-			        </div>
-		        </div>
-		        <div class="btn-object" data-type="live_list" 
-				data-plugin-name="livecourse" 
-				data-plugin-url="{:url('api/module/enable',['name'=>'livecourse'])}" 
-		        data-list-api="{:url('livecourse/admin.room/lists')}"
-				data-category-api="{:url('classroom/admin.category/tree')}"
-				>
-		        	<div class="object-item">
-			        	<i class="fa fa-video-camera" aria-hidden="true"></i>
-			        	<p>直播课列表</p>
-			        </div>
+		{/foreach}
+
+
+		<div class="panel panel-default">
+			<div class="panel-heading" id="headingTwo">
+				<h4 class="panel-title">
+					<a class="collapsed" data-toggle="collapse" data-parent="#accordionPanels" href="#collapseTwo">
+						内容列表
+					</a>
+				</h4>
+			</div>
+			<div id="collapseTwo" class="panel-collapse collapse in">
+				<div class="panel-body object-lists">
+					<div class="btn-object" data-type="knowledge_list" 
+					data-list-api="{:url('classroom/admin.knowledge/lists')}" 
+					data-category-api="{:url('classroom/admin.category/tree')}"
+					>
+						<div class="object-item">
+							<i class="fa fa-list-alt" aria-hidden="true"></i>
+							<p>课程列表</p>
+						</div>
+					</div>
+					<div class="btn-object" data-type="column_list" 
+					data-list-api="{:url('classroom/admin.column/lists')}" 
+					data-category-api="{:url('classroom/admin.category/tree')}"
+					>
+						<div class="object-item">
+							<i class="fa fa-th-list" aria-hidden="true"></i>
+							<p>专栏列表</p>
+						</div>
+					</div>
+					<div class="btn-object" data-type="live_list" 
+					data-plugin-name="livecourse" 
+					data-plugin-url="{:url('api/module/enable',['name'=>'livecourse'])}" 
+					data-list-api="{:url('livecourse/admin.room/lists')}"
+					data-category-api="{:url('classroom/admin.category/tree')}"
+					>
+						<div class="object-item">
+							<i class="fa fa-video-camera" aria-hidden="true"></i>
+							<p>直播课列表</p>
+						</div>
+					</div>
+
+					<div class="btn-object" data-type="miniprogram_live_list" 
+					data-plugin-name="livecourse"   
+					data-list-api="{:url('live/admin.miniprogram/lists')}"
+					>
+						<div class="object-item">
+							<i class="fa fa-mobile" aria-hidden="true"></i>
+							<p>小直播列表</p>
+						</div>
+					</div>
+					
+					<div class="btn-object" data-type="offline_list" 
+					data-list-api="{:url('classroom/admin.offline/lists')}" 
+					data-category-api="{:url('classroom/admin.category/tree')}"
+					>
+						<div class="object-item">
+							<i class="fa fa-map-signs" aria-hidden="true"></i>
+							<p>线下课列表</p>
+						</div>
+					</div>
+
+					<div class="btn-object" data-type="material_list" 
+					data-list-api="{:url('classroom/admin.material/lists')}" 
+					data-category-api="{:url('classroom/admin.category/tree')}"
+					>
+						<div class="object-item">
+							<i class="fa fa-download" aria-hidden="true"></i>
+							<p>资料列表</p>
+						</div>
+					</div>
+
+					<div class="btn-object" data-type="exam_paper_list" data-plugin-name="exam" 
+					data-plugin-url="{:url('api/module/enable',['name'=>'exam'])}" 
+					data-list-api="{:url('exam/admin.paper/lists')}"
+					data-category-api="{:url('classroom/admin.category/tree')}"
+					>
+						<div class="object-item">
+							<i class="fa fa-sticky-note-o" aria-hidden="true"></i>
+							<p>试卷列表</p>
+						</div>
+					</div>
+
+					<div class="btn-object" data-type="teacher_list" 
+					data-list-api="{:url('classroom/admin.teacher/lists')}"
+					>
+						<div class="object-item">
+							<i class="fa fa-group" aria-hidden="true"></i>
+							<p>讲师列表</p>
+						</div>
+					</div>
+
+					<div class="btn-object" data-type="article_list" data-plugin-name="article" 
+					data-plugin-url="{:url('api/module/enable',['name'=>'articles'])}"
+					data-list-api="{:url('articles/admin.articles/lists')}" 
+					data-category-api="{:url('articles/admin.category/tree')}"
+					>
+						<div class="object-item">
+							<i class="fa fa-th-list" aria-hidden="true"></i>
+							<p>文章列表</p>
+						</div>
+					</div>
+
+					<!--积分插件扩展-->
+					<div class="btn-object" data-type="scoreshop_goods_list" data-plugin-name="scoreshop" 
+					data-plugin-url="{:url('api/module/enable',['name'=>'scoreshop'])}" 
+					data-list-api="{:url('scoreshop/admin.goods/lists')}"
+					data-category-api="{:url('scoreshop/admin.category/tree')}"
+					>
+						<div class="object-item">
+							<i class="fa fa-database" aria-hidden="true"></i>
+							<p>积分商品</p>
+						</div>
+					</div>
+
+					<div class="btn-object" data-type="activity_list" data-plugin-name="muu_activity" 
+					data-plugin-url="{:url('api/module/enable',['name'=>'activity'])}"  
+					data-list-api="{:url('activity/admin.activity/lists')}"
+					data-category-api="{:url('activity/admin.category/tree')}"
+					>
+						<div class="object-item">
+							<i class="fa fa-map-marker" aria-hidden="true"></i>
+							<p>线下活动</p>
+						</div>
+					</div>
+
+					<div class="btn-object" data-type="minishop_goods_list" data-plugin-name="minishop" 
+					data-plugin-url="{:url('api/module/enable',['name'=>'minishop'])}" 
+					data-list-api="{:url('minishop/admin.goods/lists')}"
+					data-category-api="{:url('minishop/admin.category/tree')}"
+					>
+						<div class="object-item">
+							<i class="fa fa-shopping-cart" aria-hidden="true"></i>
+							<p>云小店商品</p>
+						</div>
+					</div>
+
+					<div class="btn-object" data-type="forum_list" data-plugin-name="forum" 
+					data-plugin-url="{:url('api/module/enable',['name'=>'forum'])}" 
+					data-list-api="{:url('forum/admin.forum/lists')}"
+					data-category-api="{:url('forum/admin.category/tree')}"
+					>
+						<div class="object-item">
+							<i class="fa fa-comments" aria-hidden="true"></i>
+							<p>社群列表</p>
+						</div>
+					</div>
 				</div>
-
-				<div class="btn-object" data-type="miniprogram_live_list" 
-				data-plugin-name="livecourse"   
-		        data-list-api="{:url('live/admin.miniprogram/lists')}"
-				>
-		        	<div class="object-item">
-			        	<i class="fa fa-mobile" aria-hidden="true"></i>
-			        	<p>小直播列表</p>
-			        </div>
-				</div>
-				
-				<div class="btn-object" data-type="offline_list" 
-				data-list-api="{:url('classroom/admin.offline/lists')}" 
-				data-category-api="{:url('classroom/admin.category/tree')}"
-				>
-		        	<div class="object-item">
-			        	<i class="fa fa-map-signs" aria-hidden="true"></i>
-			        	<p>线下课列表</p>
-			        </div>
-				</div>
-
-				<div class="btn-object" data-type="material_list" 
-				data-list-api="{:url('classroom/admin.material/lists')}" 
-				data-category-api="{:url('classroom/admin.category/tree')}"
-				>
-		        	<div class="object-item">
-			        	<i class="fa fa-download" aria-hidden="true"></i>
-			        	<p>资料列表</p>
-			        </div>
-		        </div>
-
-				<div class="btn-object" data-type="exam_paper_list" data-plugin-name="exam" 
-		        data-plugin-url="{:url('api/module/enable',['name'=>'exam'])}" 
-		        data-list-api="{:url('exam/admin.paper/lists')}"
-				data-category-api="{:url('classroom/admin.category/tree')}"
-				>
-		        	<div class="object-item">
-			        	<i class="fa fa-sticky-note-o" aria-hidden="true"></i>
-			        	<p>试卷列表</p>
-			        </div>
-		        </div>
-
-		        <div class="btn-object" data-type="teacher_list" 
-				data-list-api="{:url('classroom/admin.teacher/lists')}"
-				>
-		        	<div class="object-item">
-			        	<i class="fa fa-group" aria-hidden="true"></i>
-			        	<p>讲师列表</p>
-			        </div>
-				</div>
-
-				<div class="btn-object" data-type="article_list" data-plugin-name="article" 
-		        data-plugin-url="{:url('api/module/enable',['name'=>'articles'])}"
-		        data-list-api="{:url('articles/admin.articles/lists')}" 
-				data-category-api="{:url('articles/admin.category/tree')}"
-				>
-		        	<div class="object-item">
-			        	<i class="fa fa-th-list" aria-hidden="true"></i>
-			        	<p>文章列表</p>
-			        </div>
-		        </div>
-
-		        <!--积分插件扩展-->
-		        <div class="btn-object" data-type="scoreshop_goods_list" data-plugin-name="scoreshop" 
-		        data-plugin-url="{:url('api/module/enable',['name'=>'scoreshop'])}" 
-		        data-list-api="{:url('scoreshop/admin.goods/lists')}"
-				data-category-api="{:url('scoreshop/admin.category/tree')}"
-				>
-		        	<div class="object-item">
-			        	<i class="fa fa-database" aria-hidden="true"></i>
-			        	<p>积分商品</p>
-			        </div>
-		        </div>
-
-		        <div class="btn-object" data-type="activity_list" data-plugin-name="muu_activity" 
-		        data-plugin-url="{:url('api/module/enable',['name'=>'activity'])}"  
-		        data-list-api="{:url('activity/admin.activity/lists')}"
-				data-category-api="{:url('activity/admin.category/tree')}"
-				>
-		        	<div class="object-item">
-			        	<i class="fa fa-map-marker" aria-hidden="true"></i>
-			        	<p>线下活动</p>
-			        </div>
-		        </div>
-
-		        <div class="btn-object" data-type="minishop_goods_list" data-plugin-name="minishop" 
-		        data-plugin-url="{:url('api/module/enable',['name'=>'minishop'])}" 
-		        data-list-api="{:url('minishop/admin.goods/lists')}"
-				data-category-api="{:url('minishop/admin.category/tree')}"
-				>
-		        	<div class="object-item">
-			        	<i class="fa fa-shopping-cart" aria-hidden="true"></i>
-			        	<p>云小店商品</p>
-			        </div>
-		        </div>
-
-				<div class="btn-object" data-type="forum_list" data-plugin-name="forum" 
-		        data-plugin-url="{:url('api/module/enable',['name'=>'forum'])}" 
-		        data-list-api="{:url('forum/admin.forum/lists')}"
-				data-category-api="{:url('forum/admin.category/tree')}"
-				>
-		        	<div class="object-item">
-			        	<i class="fa fa-comments" aria-hidden="true"></i>
-			        	<p>社群列表</p>
-			        </div>
-		        </div>
-		  	</div>
-		</div>
+			</div>
 		</div>
 	</div>
 

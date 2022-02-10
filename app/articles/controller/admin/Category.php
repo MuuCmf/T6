@@ -18,7 +18,7 @@ class Category extends Admin
         $this->CategoryLogic = new CategoryLogic(); //分类逻辑
     }
 
-        /**
+    /**
      * 分类管理页
      */
     public function lists()
