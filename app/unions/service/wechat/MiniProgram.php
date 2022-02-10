@@ -92,4 +92,21 @@ class MiniProgram extends Wechat{
     public function sendTemplateMsg($data){
         return $this->app->template_message->send($data);
     }
+
+    /**
+     * @title 获取小程序直播间列表
+     * @return mixed
+     */
+    public function getLiveRooms(){
+        return $this->app->live->getRooms();
+    }
+
+    /**
+     * @title 获取小程序直播回放视频
+     * @param int $roomid
+     * @return mixed
+     */
+    public function getLivePlaybacks(int $roomid){
+        return $this->app->live->getPlaybacks($roomid);
+    }
 }
