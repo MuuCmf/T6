@@ -13,8 +13,8 @@
  */
 
 namespace app\unions\model;
-use app\common\model\BaseModel;
+use app\common\model\Base;
 
-class WechatMpConfig extends BaseModel{
+class WechatMpConfig extends Base{
 
 }

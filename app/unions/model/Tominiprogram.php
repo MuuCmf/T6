@@ -13,8 +13,8 @@
  */
 namespace app\unions\model;
 
-use app\common\model\BaseModel;
+use app\common\model\Base;
 
-class Tominiprogram extends BaseModel {
+class Tominiprogram extends Base {
 
 }

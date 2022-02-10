@@ -12,14 +12,14 @@
  * +----------------------------------------------------------------------
  */
 namespace app\unions\model;
-use app\common\model\BaseModel;
+use app\common\model\Base;
 
 /**
  * 公众号配置表
  * Class WechatConfig
  * @package app\unions\model
  */
-class WechatConfig extends BaseModel{
+class WechatConfig extends Base{
 
     /**
      * @title 根据shopid获取公众号配置
