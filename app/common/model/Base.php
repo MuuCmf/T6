@@ -104,5 +104,23 @@ class Base extends Model{
         return $this->where($map)->avg($field);
     }
 
+    public function setStatus($ids ,$status){
+        $map = [];
+        if (is_array($ids)){
+            $map[] = ['id' ,'in' ,$ids];
+        }else{
+            $map[] = ['id' ,'=' ,$ids];
+        }
+        $data = [
+            'status' => $status,
+            'update_time' => time()
+        ];
+        $result = $this->where($map)->update($data);
+        if ($result !== false){
+            return true;
+        }
+        return false;
+    }
+
     
 }
