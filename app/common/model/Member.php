@@ -58,7 +58,7 @@ class Member extends Model
                 $actionLog->add('reg','member',1,$uid);
                 return $uid;
             }
-            
+
         } else {
             return -1;
         }
@@ -125,8 +125,8 @@ class Member extends Model
     public function login(int $uid)
     {
         if($uid )
-        /* 检测是否在当前应用注册 */
-        $user = $this->where('uid','=',$uid)->find();
+            /* 检测是否在当前应用注册 */
+            $user = $this->where('uid','=',$uid)->find();
 
         if ($user['status'] !== 1) {
             $this->error = '用户已禁用'; //应用级别禁用
@@ -145,7 +145,7 @@ class Member extends Model
 
         session('user_auth', $auth);
         session('user_auth_sign', data_auth_sign($auth));
-        
+
         //记录行为
         $actionLog = new ActionLog();
         $actionLog->add('user_login', 'member', $uid, $uid);
@@ -234,13 +234,13 @@ class Member extends Model
                 if(!in_array('status',$fields_arr)){
                     array_push($fields_arr, 'status');
                 }
-    
+
                 // 转回字符串
                 $fields = implode(',', $fields_arr);
             }else{
                 $fields = '*';
             }
-            
+
             // 查询用户数组
             $map['uid'] = $uid;
             $member = $this->where($map)->field($fields)->find();
@@ -284,7 +284,7 @@ class Member extends Model
                     $field_data = Db::name('field')->where($map_field)->field('field_data')->find();
                     if ($field_data == null || $field_data == '') {
                         $member[$key] = '';
-                    } 
+                    }
                     $member[$key] = $field_data;
                 }
 
@@ -356,7 +356,7 @@ class Member extends Model
             return false;
         }
     }
-    
+
     /**
      * 随机生成一个邮箱地址
      */
@@ -517,15 +517,11 @@ class Member extends Model
         }else{
             $value = bcsub($value,$num,2);
         }
-        if ($value >= 0){
-            $result = Member::where('uid',$uid)->update([
-                $field => $value
-            ]);
-            if ($result !== false){
-                $result = true;
-            }
-        }else{
-            $result = false;
+        $result = Member::where('uid',$uid)->update([
+            $field => $value
+        ]);
+        if ($result !== false){
+            $result = true;
         }
         return $result;
     }

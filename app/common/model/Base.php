@@ -122,5 +122,27 @@ class Base extends Model{
         return false;
     }
 
+    /**
+     * @title 字段递增
+     * @param $map
+     * @param $field
+     * @param int $value
+     * @return mixed
+     */
+    public function setInc($map ,$field ,$value = 1){
+        return $this->where($map)->inc($field ,$value);
+    }
+
+    /**
+     * @title 字段递减
+     * @param $map
+     * @param $field
+     * @param int $value
+     * @return mixed
+     */
+    public function setDec($map ,$field ,$value = 1){
+        return $this->where($map)->update([ $field => $value]);
+    }
+
     
 }
