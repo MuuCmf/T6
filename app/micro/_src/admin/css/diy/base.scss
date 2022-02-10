@@ -20,8 +20,15 @@
 				width: 2px;     /*高宽分别对应横竖滚动条的尺寸*/
 				height: 1px;
 			}
+			.panel {
+				&:first-child {
+					margin-top: -1px;
+				}
+			}
 			.panel-body {
 				padding:0px;
+				
+				margin-bottom: -1px;
 				.btn-object {
 					color: #353535;
 					background-color: #fff;
@@ -34,9 +41,6 @@
 					border:1px;
 					border-right: 1px solid #ddd;
 					border-bottom: 1px solid #ddd;
-					&:last-child {
-						border-bottom: 0;
-					}
 					
 					&:active,&:hover {
 						background-color: #eee;
@@ -52,6 +56,7 @@
 					}
 		
 				}
+
 				.btn-object:nth-child(even) {
 					border-right: 0;
 				}

@@ -5,7 +5,7 @@ return [
         'name' => 'articles',
         'alias' => '文章'
     ],
-    'pannel' => [
+    'panel' => [
         [
             'type' => 'article_list',
             'title' => '文章列表',
