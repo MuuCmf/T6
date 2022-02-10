@@ -2,7 +2,7 @@
 /**
  * +----------------------------------------------------------------------
  *                                  |
- *     __     __  __     __  __     | FILE: WechatMiniProgram.php
+ *     __     __  __     __  __     | FILE: MiniProgram.php
  *    /\ \   /\_\_\_\   /\_\_\_\    | AUTHOR: 季骁宣
  *   _\_\ \  \/_/\_\/_  \/_/\_\/_   | EMAIL: jxx0410@sina.com
  *  /\_____\   /\_\/\_\   /\_\/\_\  | QQ: 516036855
@@ -21,7 +21,7 @@ use think\facade\Cache;
 
 /**
  * 微信小程序服务类
- * Class WechatMiniProgram
+ * Class MiniProgram
  * @package app\unions\controller\service
  */
 class WechatMiniProgram extends Base {

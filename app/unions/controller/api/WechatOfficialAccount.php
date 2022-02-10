@@ -18,7 +18,7 @@ use app\common\controller\Base;
 use app\common\model\Member;
 use app\common\model\QrcodeLogin;
 use app\unions\model\WechatAutoReply;
-use app\unions\facade\OfficialAccount;
+use app\unions\facade\wechat\OfficialAccount;
 use EasyWeChat\Kernel\Messages\Image;
 use EasyWeChat\Kernel\Messages\Media;
 use EasyWeChat\Kernel\Messages\News;

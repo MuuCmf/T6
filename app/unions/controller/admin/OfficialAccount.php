@@ -55,7 +55,7 @@ class OfficialAccount extends MuuAdmin {
         if (request()->isAjax()){
             $json = input('post.json');
             $menu = json_decode($json,true);
-            $res = \app\unions\facade\OfficialAccount::createMenu($menu);
+            $res = \app\unions\facade\wechat\OfficialAccount::createMenu($menu);
             if ($res['errcode'] != 0){
                 $this->error($res['errmsg']);
             }
@@ -200,7 +200,7 @@ class OfficialAccount extends MuuAdmin {
         if (request()->isAjax()){
             $params = input('post.');
             $page = ($params['page'] - 1) * 20;
-            $data = \app\unions\facade\OfficialAccount::getMaterialList($params['type'], $page,20);
+            $data = \app\unions\facade\wechat\OfficialAccount::getMaterialList($params['type'], $page,20);
             if (isset($data['item'])){
                 return  $this->success('success',$data);
             }elseif (isset($data['errmsg'])){

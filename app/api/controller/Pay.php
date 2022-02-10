@@ -18,7 +18,7 @@ use app\common\model\Member;
 use app\common\model\MemberSync;
 use app\common\model\Orders;
 use app\common\model\Orders as OrdersModel;
-use app\unions\facade\OfficialAccount;
+use app\unions\facade\wechat\OfficialAccount;
 use app\unions\model\WechatMpConfig;
 use app\unions\model\WechatConfig;
 use think\Exception;
