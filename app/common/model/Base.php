@@ -141,7 +141,7 @@ class Base extends Model{
      * @return mixed
      */
     public function setDec($map ,$field ,$value = 1){
-        return $this->where($map)->update([ $field => $value]);
+        return $this->where($map)->dec($field ,$value);
     }
 
     
