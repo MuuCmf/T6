@@ -13,6 +13,7 @@
  */
 namespace app\common\model;
 use think\Exception;
+use think\facade\Db;
 
 /**
  * Class MemberWallet 用户钱包
@@ -33,7 +34,7 @@ class MemberWallet extends Base{
             ['shopid' ,'=' ,$shopid]
         ];
         $wallet = $this->where($map)->count();//查询当前用户钱包
-        if ($wallet < 1){
+        if ($wallet > 0){
             return false;
         }
         $data = [
@@ -65,11 +66,11 @@ class MemberWallet extends Base{
             ['uid' ,'=' ,$uid],
             ['shopid' ,'=' ,$shopid]
         ];
-        $wallet = $this->where($map)->lock(true)->find();//查询当前用户钱包
-        $wallet->balance = ['exp' ,"balance + {$money}"];
+        $wallet = $this->where($map)->find();//查询当前用户钱包
+        $wallet->balance = Db::raw("balance + {$money}");
         //计入收益
-        if ($revenue) $wallet->revenue = ['exp' ,"revenue + {$money}"];
-        $result = $this->save();
+        if ($revenue) $wallet->revenue = Db::raw("revenue + {$money}");
+        $result = $wallet->save();
         if ($result !== false){
             $this->commit();
             return true;
@@ -100,15 +101,15 @@ class MemberWallet extends Base{
             if ($wallet->balance < $money){
                 throw new Exception('用户余额不足');
             }
-            $wallet->balance = ['exp' ,"balance - {$money}"];
+            $wallet->balance = Db::raw("balance - {$money}");
 
             //扣除冻结金额
             if ($freeze && $wallet->freeze < $money){
                 throw new Exception('冻结资金不足');
             }
-            $wallet->freeze = ['exp' ,"freeze - {$money}"];
+            $wallet->freeze = Db::raw("freeze - {$money}");
 
-            $result = $this->save();
+            $result = $wallet->save();
             if ($result === false){
                 throw new Exception('钱包写入失败');
             }
@@ -137,18 +138,17 @@ class MemberWallet extends Base{
             ];
             $wallet = $this->where($map)->lock(true)->find();//查询当前用户钱包
             //用户余额是否足够冻结
-            if ($wallet->balane < $money){
-                $this->rollback();
-                return false;
+            if ($type == 1 && $wallet->balane < $money){
+                throw new Exception('用户余额不足,无法冻结');
             }
 
             if ($type == 1){
-                $wallet->freeze = ['exp' ,"freeze + {$money}"];
+                $wallet->freeze = Db::raw("freeze + {$money}");
             }else{
                 if ($wallet->freeze < $money) throw new Exception('冻结资金不足,无法恢复余额');
-                $wallet->freeze = ['exp' ,"freeze - {$money}"];
+                $wallet->freeze = Db::raw("freeze - {$money}");
             }
-            $result = $this->save();
+            $result = $wallet->save();
             if ($result === false){
                 throw new Exception('钱包写入失败');
             }
