@@ -267,72 +267,42 @@ class Page
         $data['data'] = json_decode($data['data'],true);
         if(!empty($data['data'])){
             foreach($data['data'] as &$val){
-                switch ($val['type']){
-                    // 单图组件处理
-                    case 'single_img':
-                        $val = $this->singleImg($val,$shopid);
-                    break;
-                    // 轮播图组件处理
-                    case 'slideshow':
-                        $val = $this->slideshow($val,$shopid);
-                    break;
-                    // 图文导航组件处理
-                    case 'category_nav':
-                        $val = $this->categoryNav($val,$shopid);
-                    break;
-                    // 公告组件处理
-                    case 'announce':
-                        $val = $this->announce($val,$shopid);
-                    break;
-                    // 课程列表
-                    case 'knowledge_list':
-                        $val = $this->knowledgeList($val,$shopid);
-                    break;
-                    // 专栏列表
-                    case 'column_list':
-                        $val = $this->columnList($val,$shopid);
-                    break;
-                    // 资料下载列表
-                    case 'material_list':
-                        $val = $this->materialList($val,$shopid);
-                    break;
-                    // 线下课列表
-                    case 'offline_list':
-                        $val = $this->offlineList($val,$shopid);
-                    break;
-                    // 直播课列表
-                    case 'live_list':
-                        $val = $this->liveList($val,$shopid);
-                    break;
-                    // 老师列表
-                    case 'teacher_list':
-                        $val = $this->teacherList($val,$shopid);
-                    break;
-                    // 云小店商品列表
-                    case 'minishop_goods_list':
-                        $val = $this->minishopGoodsList($val,$shopid);
-                    break;
-                    // 积分商城商品数据
-                    case 'scoreshop_goods_list':
-                        $val = $this->scoreshopGoodsList($val,$shopid);
-                    break;
-                    //自定义HTML
-                    // case 'custom_html':
-                    //     $val['data']['content'] = htmlspecialchars_decode($val['data']['content']);
-                    // break;
-                    //文章列表数据处理
-                    case 'article_list':
-                        $val = $this->articleList($val,$shopid);
-                    break;
-                    //分类&筛选数据处理
-                    case 'category':
-                        $val = $this->category($val,$shopid);
-                    break;
-                    //关注微信公众号数据处理
-                    case 'weixin':
-                        $val = $this->weixin($val,$shopid);
-                    break;
+                
+                if($val['app'] == 'micro'){
+                    switch ($val['type']){
+                        // 单图组件处理
+                        case 'single_img':
+                            $val = $this->singleImg($val,$shopid);
+                        break;
+                        // 轮播图组件处理
+                        case 'slideshow':
+                            $val = $this->slideshow($val,$shopid);
+                        break;
+                        // 图文导航组件处理
+                        case 'category_nav':
+                            $val = $this->categoryNav($val,$shopid);
+                        break;
+                        // 公告组件处理
+                        case 'announce':
+                            $val = $this->announce($val,$shopid);
+                        break;
+                        //自定义HTML
+                        // case 'custom_html':
+                        //     $val['data']['content'] = htmlspecialchars_decode($val['data']['content']);
+                        // break;
+                        //分类&筛选数据处理
+                        case 'category':
+                            $val = $this->category($val,$shopid);
+                        break;
+                        //关注微信公众号数据处理
+                        case 'weixin':
+                            $val = $this->weixin($val,$shopid);
+                        break;
+                    }
+                }else{
+                    $val = $this->appList($val,$shopid);
                 }
+                
             }
             
         }
@@ -358,6 +328,27 @@ class Page
         $data = $this->setStatusAttr($data);
         $data = $this->setTimeAttr($data);
 
+        return $data;
+    }
+
+    /**
+     * 各应用在自定义页的列表数据
+     */
+    public function appList($data, $shopid)
+    {
+        // 应用
+        $path = APP_PATH . $data['app'] . '/config/panel.php';
+        if(file_exists($path)){
+            $config = require($path);
+            // 绑定到容器
+            $name = $config['panel'][$data['type']]['type'];
+            $class = $config['panel'][$data['type']]['bind']['class'];
+            $action = $config['panel'][$data['type']]['bind']['action'];
+            bind($name, $class);
+            if(app($name)){
+                $data = app($name)->$action($data, $shopid);
+            }
+        }
         return $data;
     }
 
@@ -465,363 +456,6 @@ class Page
     {
         if(empty($data['style'])) $data['style'] = 0; //样式默认为0
         
-        return $data;
-    }
-
-    /**
-     * 点播课列表
-     */
-    public function knowledgeList($data, $shopid)
-    {    
-        // 应用
-        $path = APP_PATH . $data['app'] . '/config/panel.php';
-        if(file_exists($path)){
-            $config = require($path);
-            // 绑定到容器
-            $name = $config['panel'][$data['type']]['type'];
-            $class = $config['panel'][$data['type']]['bind']['class'];
-            $action = $config['panel'][$data['type']]['bind']['action'];
-            bind($name, $class);
-            if(app($name)){
-                $data = app($name)->$action($data, $shopid);
-            }
-        }
-        return $data;
-    }
-
-    /**
-     * 专栏列表
-     */
-    public function columnList($data,$shopid)
-    {
-        if(!isset($data['data']['rank'])){
-            $data['data']['rank'] = 1;
-        }
-
-        $category_id = intval($data['data']['category_id']);
-        $attribute_ids = empty($data['data']['attribute_ids'])? '' : $data['data']['attribute_ids'];
-        // 获取查询条件
-        $map = (new \app\classroom\logic\Column())->getMap($shopid,'',$category_id,$attribute_ids,'',1);
-        
-        $rows = $data['data']['rows'];
-        $order = $data['data']['order_field'].' '.$data['data']['order_type'];
-        $list = (new \app\classroom\model\ClassroomColumn())->getList($map, $rows, $order);
-        if(!empty($list) && is_object($list)){
-            $list = $list->toArray();
-            foreach($list as &$v){
-                $v = (new \app\classroom\logic\Column())->formatData($v, false);
-            }
-            unset($v);
-            $data['data']['list'] = $list;
-        }
-        
-        return $data;
-    }
-
-    /**
-     * 老师列表
-     */
-    public function teacherList($data, $shopid = 0)
-    {
-        if(!isset($data['data']['rank'])) $data['data']['rank'] = 1;
-        $map[] = ['status', '=', 1];
-        if(!empty($shopid)){
-            $map[] = ['shopid', '=', $shopid];
-        }
-        if(empty($data['data']['order_field'])){
-            $data['data']['order_type'] = 'sort';
-        }
-        $order = $data['data']['order_field'].' '.$data['data']['order_type'];
-        $rows = $data['data']['rows'];
-
-        $list = (new \app\classroom\model\ClassroomTeacher())->getList($map, $rows, $order);
-        if(!empty($list) && is_object($list)){
-            $list = $list->toArray();
-            foreach($list as &$v){
-                $v = (new \app\classroom\logic\Teacher())->formatData($v);
-            }
-            unset($v);
-            $data['data']['list'] = $list;
-        }
-        
-        return $data;
-    }
-
-    /**
-     * 线下活动（独立应用）列表
-     * @param  [type] $data    [description]
-     * @param  [type] $uniacid [description]
-     * @return [type]          [description]
-     */
-    public function activityList($data, $shopid = 0)
-    {
-        if(!isset($data['data']['rank'])) $data['data']['rank'] = 1;
-        $where = ' WHERE `uniacid` = '. $uniacid . ' AND `status` = 1';
-        //分类id
-        if(!empty(intval($data['data']['category_id']))){
-            $category_ids = load_class('logic/ActivityCategoryLogic','muu_activity')->yesParent(intval($data['data']['category_id'])); 
-            if(!empty($category_ids)){
-                $category_ids = implode(',',$category_ids);
-                $where .= ' AND `category_id` IN (' . $category_ids .')';
-            }else{
-                $where .= ' AND `category_id` = ' . intval($data['data']['category_id']);
-            }
-        }
-        if(empty($data['data']['order_field'])){
-            $data['data']['order_type'] = 'sort';
-        }
-        $order = $data['data']['order_field'].' '.$data['data']['order_type'];
-
-        $rows = $data['data']['rows'];
-        $list = (new \app\activity\model\ClassroomTeacher())->getList($where, $rows, 'ORDER BY '.$order);
-        if(!empty($list)){
-            $list = $list->toArray();
-            foreach($list as &$v){
-                $v = (new \app\activity\model\ClassroomTeacher())->handling($v);
-            }
-            unset($v);
-            $data['data']['list'] = $list;
-        }
-        
-        return $data;
-    }
-
-    /**
-     * 直播课列表
-     * @param  [type] $data    [description]
-     * @param  [type] $uniacid [description]
-     * @return [type]          [description]
-     */
-    public function liveList($data, $shopid = 0)
-    {
-        if(!isset($data['data']['rank'])) $data['data']['rank'] = 1;
-        $category_id = intval($data['data']['category_id']);
-        $attribute_ids = empty($data['data']['attribute_ids'])? '' : $data['data']['attribute_ids'];
-
-        // 获取查询条件
-        $map = (new \app\livecourse\logic\Room())->getMap($shopid,'',$category_id,$attribute_ids,'',1);
-
-        $order = $data['data']['order_field'].' '.$data['data']['order_type'];
-        $rows = $data['data']['rows'];
-        $list = (new \app\livecourse\model\ClassroomLivecourseRoom())->getList($map, $rows, $order);
-        if(!empty($list) && is_object($list)){
-            $list = $list->toArray();
-            foreach($list as &$v){
-                $v = (new \app\livecourse\logic\Room())->formatData($v);
-            }
-            unset($v);
-            $data['data']['list'] = $list;
-        }
-        
-        return $data;
-    }
-
-    /**
-     * 小程序直播组件列表
-     */
-    public function miniprogramLiveList($data, $shopid = 0)
-    {
-        if(!isset($data['data']['rank'])) $data['data']['rank'] = 1;
-        
-        $rows = $data['data']['rows'];
-        //获取access_token
-	    $access_token = load_plugin_class('logic/MiniprogramLiveLogic','muu_classroom_plugin_livecourse')->getAccessToken();
-        list($total, $lists, $pager) = load_plugin_class('logic/MiniprogramLiveLogic','muu_classroom_plugin_livecourse')->roomPageList(1, $rows, $access_token['access_token']);
-        
-        $data['data']['list'] = $lists;
-        
-        return $data;
-    }
-
-    /**
-     * 线下课列表
-     * @param  [type] $data    [description]
-     * @param  [type] $uniacid [description]
-     * @return [type]          [description]
-     */
-    public function offlineList($data, $shopid = 0)
-    {
-        if(!isset($data['data']['rank'])) $data['data']['rank'] = 1;
-        $category_id = intval($data['data']['category_id']);
-        $attribute_ids = empty($data['data']['attribute_ids'])? '' : $data['data']['attribute_ids'];
-
-        // 获取查询条件
-        $map = (new \app\classroom\logic\Offline())->getMap($shopid,'',$category_id,$attribute_ids,'',1);
-        
-        $order = $data['data']['order_field'].' '.$data['data']['order_type'];
-        $rows = $data['data']['rows'];
-        $list = (new \app\classroom\model\ClassroomOffline())->getList($map, $rows, $order);
-        if(!empty($list) && is_object($list)){
-            $list = $list->toArray();
-            foreach($list as &$v){
-                $v = (new \app\classroom\logic\Offline())->formatData($v);
-            }
-            unset($v);
-            $data['data']['list'] = $list;
-        }
-        
-        return $data;
-    }
-
-    /**
-     * 资料下载列表
-     * @param  [type] $data    [description]
-     * @param  [type] $uniacid [description]
-     * @return [type]          [description]
-     */
-    public function materialList($data, $shopid = 0)
-    {
-        if(!isset($data['data']['rank'])) $data['data']['rank'] = 1;
-        $category_id = intval($data['data']['category_id']);
-        $attribute_ids = empty($data['data']['attribute_ids'])? '' : $data['data']['attribute_ids'];
-
-        // 获取查询条件
-        $map = (new \app\classroom\logic\Material())->getMap($shopid,'',$category_id,$attribute_ids,'',1);
-        
-        $order = $data['data']['order_field'].' '.$data['data']['order_type'];
-        $rows = $data['data']['rows'];
-        $list = (new \app\classroom\model\ClassroomMaterial())->getList($map, $rows, $order);
-        if(!empty($list) && is_object($list)){
-            $list = $list->toArray();
-            foreach($list as &$v){
-                $v = (new \app\classroom\logic\Material())->formatData($v);
-            }
-            unset($v);
-            $data['data']['list'] = $list;
-        }
-        
-        return $data;
-    }
-
-    /**
-     * 试卷列表
-     * @param  [type] $data    [description]
-     * @param  [type] $uniacid [description]
-     * @return [type]          [description]
-     */
-    public function examPaperList($data,$uniacid,$rewrite_switch)
-    {
-        if(!isset($data['data']['rank'])) $data['data']['rank'] = 1;
-        $where = ' WHERE `uniacid` = '. $uniacid . ' AND `status` = 1';
-        //分类id
-        if(!empty(intval($data['data']['category_id']))){
-            $category_ids = load_main_class('logic/CategoryLogic')->yesParent(intval($data['data']['category_id'])); 
-            if(!empty($category_ids)){
-                $category_ids = implode(',',$category_ids);
-                $where .= ' AND `category_id` IN (' . $category_ids .')';
-            }else{
-                $where .= ' AND `category_id` = ' . intval($data['data']['category_id']);
-            }
-        }
-        if(empty($data['data']['order_field'])){
-            $data['data']['order_type'] = 'sort';
-        }
-        $order = $data['data']['order_field'].' '.$data['data']['order_type'];
-
-        $rows = $data['data']['rows'];
-
-        $list = load_plugin_class('model/ExamPaperModel','muu_classroom_plugin_exam')->getList($where, $rows, 'ORDER BY '.$order);
-        foreach($list as &$v){
-            $v = load_plugin_class('logic/ExamPaperLogic','muu_classroom_plugin_exam')->handling($v);
-        }
-        unset($v);
-
-        $data['data']['list'] = $list;
-        
-        return $data;
-    }
-
-    /**
-     * 云小店商品列表
-     */
-    public function minishopGoodsList($data,$shopid)
-    {
-        $map = [
-            ['shopid','=',$shopid],
-            ['status','=',1],
-        ];
-        if(!isset($data['data']['category_id'])){
-            $data['data']['category_id'] = 0;
-        }
-        if(!empty(intval($data['data']['category_id']))){
-            $category_id = $data['data']['category_id'];
-            $category_ids = (new \app\minishop\model\MinishopCategory())->yesParent($category_id);
-            if(!empty($category_ids)){
-                $category_ids = implode(',',$category_ids);
-                $map[] = ['category_id','in',$category_ids];
-            }else{
-                $map[] = ['category_id','=',$data['data']['category_id']];
-            }
-        }
-        $order = $data['data']['order_field'].' '.$data['data']['order_type'];
-        $rows = $data['data']['rows'];
-        $list = (new \app\minishop\model\MinishopGoods())->getList($map, $rows ,$order);
-        $minishopLogic = new \app\minishop\logic\Goods();
-        foreach($list as &$v){
-            $v = $minishopLogic->_formatData($v);
-        }
-        $data['data']['list'] = $list;
-        if(!isset($data['data']['rank'])){
-            $data['data']['rank'] = 1;
-        }
-
-        return $data;
-    }
-
-    /**
-     * 文章列表
-     * @param  [type] $data    [description]
-     * @param  [type] $uniacid [description]
-     * @return [type]          [description]
-     */
-    public function articleList($data, $shopid = 0)
-    {
-        if(!isset($data['data']['rank'])) $data['data']['rank'] = 1;
-        $category_id = intval($data['data']['category_id']);
-
-        // 获取查询条件
-        $map = (new \app\articles\logic\Articles())->getMap($shopid, '', $category_id, 1);
-        
-        $order = $data['data']['order_field'].' '.$data['data']['order_type'];
-        $rows = $data['data']['rows'];
-        $list = (new \app\articles\model\ArticlesArticles())->getList($map, $rows, $order);
-        if(!empty($list) && is_object($list)){
-            $list = $list->toArray();
-            foreach($list as &$v){
-                $v = (new \app\articles\logic\Articles())->formatData($v);
-            }
-            unset($v);
-            $data['data']['list'] = $list;
-        }
-        
-        return $data;
-    }
-
-    /**
-     * 积分商品列表
-     * @param  [type] $data    [description]
-     * @param  [type] $uniacid [description]
-     * @return [type]          [description]
-     */
-    public function scoreshopGoodsList($data,$shopid = 0)
-    {
-//        if($data['type'] == 'scoreshop_goods_list'){
-//            if(!isset($data['data']['rank'])) $data['data']['rank'] = 1;
-//            $where = ' WHERE `uniacid` = '. $uniacid . ' AND `status` = 1';
-//            if(empty($data['data']['order_field'])){
-//                $data['data']['order_type'] = 'sort';
-//            }
-//            $order = $data['data']['order_field'].' '.$data['data']['order_type'];
-//
-//            $rows = $data['data']['rows'];
-//            $list = load_class('plugin/ScoreshopGoodsPlugin')->getList($where, $rows, 'ORDER BY '.$order);
-//            foreach($list as &$v){
-//                $v = load_class('plugin/ScoreshopGoodsPlugin')->handling($v);
-//            }
-//            unset($v);
-//            $data['data']['list'] = $list;
-//        }
-        $data['data']['list'] = [];
         return $data;
     }
 
