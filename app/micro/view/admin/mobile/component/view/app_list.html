@@ -1,7 +1,7 @@
-{if $vo['type'] == 'knowledge_list'}
-<!--课程列表-->
-<div class="object-item preview knowledge-list" data-type="knowledge_list" data-object-index="knowledge_list-{$key}">
-	<div class="knowledge-list-preview">
+{if $vo['app'] !== 'micro'}
+<!--应用数据通用列表-->
+<div class="object-item preview {$vo['type']}" data-type="{$vo['type']}" data-object-index="$vo['type']-{$key}">
+	<div class="app-list-preview">
         <div class="title clearfix">
         	<h3>{$vo['data']['title']}</h3>
         	<small class="more">查看更多 </small>
@@ -22,24 +22,22 @@
 						<div class="description text-ellipsis">{$v['description']}</div>
 						<div class="info">
 							<div class="type text-ellipsis">
-							{if $classroom_config_data['show_view'] == 1}
-								<div class="view">
-								<i class="fa fa-eye" aria-hidden="true"></i> {$v['handling_view']}
-								</div>
-							{/if}
 							
-							{if $classroom_config_data['show_sale'] == 1}
+								<div class="view">
+									<i class="fa fa-eye" aria-hidden="true"></i> 
+									<span class="view-num">{$v['handling_view']}</span>
+								</div>
+							
 								<div class="shopping">
-								<i class="fa fa-shopping-bag" aria-hidden="true"></i> {$v['handling_sales']}
+									<i class="fa fa-shopping-bag" aria-hidden="true"></i> 
+									<span class="sales-num">{$v['handling_sales']}</span>
 								</div>
-							{/if}
 
-							{if $classroom_config_data['show_favorites'] == 1}
 								<div class="favorites">
-								<i class="fa fa-star-o" aria-hidden="true"></i>
-								<span class="favorites-num">{$v['handling_favorites']}</span>
+									<i class="fa fa-star-o" aria-hidden="true"></i>
+									<span class="favorites-num">{$v['handling_favorites']}</span>
 								</div>
-							{/if}
+
 							</div>
 							<div class="price">￥ {if $v['price'] == 0}免费{else}{$v['price']}{/if}</div>
 						</div>
@@ -58,24 +56,20 @@
 						<div class="description text-ellipsis">{$v['description']}</div>
 						<div class="info">
 				            <div class="type text-ellipsis">
-				            {if $classroom_config_data['show_view'] == 1}
-				            	<div class="view">
-							    <i class="fa fa-eye" aria-hidden="true"></i> {$v['handling_view']}
-							    </div>
-				            {/if}
-						    
-						    {if $classroom_config_data['show_sale'] == 1}
-						    	<div class="shopping">
-						    	<i class="fa fa-shopping-bag" aria-hidden="true"></i> {$v['handling_sales']}
-						    	</div>
-						    {/if}
+								<div class="view">
+									<i class="fa fa-eye" aria-hidden="true"></i> 
+									<span class="view-num">{$v['handling_view']}</span>
+								</div>
+							
+								<div class="shopping">
+									<i class="fa fa-shopping-bag" aria-hidden="true"></i> 
+									<span class="sales-num">{$v['handling_sales']}</span>
+								</div>
 
-						    {if $classroom_config_data['show_favorites'] == 1}
-							    <div class="favorites">
-							    <i class="fa fa-star-o" aria-hidden="true"></i>
-							    <span class="favorites-num">{$v['handling_favorites']}</span>
-							    </div>
-							{/if}
+								<div class="favorites">
+									<i class="fa fa-star-o" aria-hidden="true"></i>
+									<span class="favorites-num">{$v['handling_favorites']}</span>
+								</div>
 							</div>
 				            <div class="price">￥ {if $v['price'] == 0}免费{else}{$v['price']}{/if}</div>
 				        </div>
@@ -94,24 +88,20 @@
 						<div class="info">
 							<div class="price">￥ {if $v['price'] == 0}免费{else}{$v['price']}{/if}</div>
 				            <div class="type text-ellipsis">
-				            {if $classroom_config_data['show_view'] == 1}
-				            	<div class="view">
-							    <i class="fa fa-eye" aria-hidden="true"></i> {$v['handling_view']}
-							    </div>
-				            {/if}
-						    
-						    {if $classroom_config_data['show_sale'] == 1}
-						    	<div class="shopping">
-						    	<i class="fa fa-shopping-bag" aria-hidden="true"></i> {$v['handling_sales']}
-						    	</div>
-						    {/if}
+								<div class="view">
+									<i class="fa fa-eye" aria-hidden="true"></i> 
+									<span class="view-num">{$v['handling_view']}</span>
+								</div>
+							
+								<div class="shopping">
+									<i class="fa fa-shopping-bag" aria-hidden="true"></i> 
+									<span class="sales-num">{$v['handling_sales']}</span>
+								</div>
 
-						    {if $classroom_config_data['show_favorites'] == 1}
-							    <div class="favorites">
-							    <i class="fa fa-star-o" aria-hidden="true"></i>
-							    <span class="favorites-num">{$v['handling_favorites']}</span>
-							    </div>
-							{/if}
+								<div class="favorites">
+									<i class="fa fa-star-o" aria-hidden="true"></i>
+									<span class="favorites-num">{$v['handling_favorites']}</span>
+								</div>
 							</div>
 				        </div>
 					</div>
@@ -121,5 +111,5 @@
 		</div>
 	</div>
 </div>
-<!--课程列表END-->
+<!--应用数据通用列表END-->
 {/if}

@@ -1,11 +1,11 @@
-<!--试卷列表-->
-<script type="text/html" data-object-type="exam_paper_list">
+<!--课程列表-->
+<script type="text/html" data-object-type="app_list">
 	
-	<div class="object-item" data-type="exam_paper_list" data-category-api="{:url('classroom/admin.category/tree')}">
-		<div class="object-drag exam-paper-list">
-			<div class="exam-paper-list-preview">
+	<div class="object-item" data-type="app_list">
+		<div class="object-drag app-list">
+			<div class="app-list-preview">
                 <div class="title clearfix">
-                	<h3>试卷</h3>
+                	<h3>课程</h3>
                 	<small class="more">查看更多 </small>
                 </div>
                 <div class="list clearfix">
@@ -16,20 +16,33 @@
 			<div class="up-btn"><i class="fa fa-chevron-circle-up fa-2x"></i></div>
 			<div class="down-btn"><i class="fa fa-chevron-circle-down fa-2x"></i></div>
 		</div>
-		<div class="diy-preview-controller exam-paper-list">
+		<div class="diy-preview-controller knowledge-list">
 			<div class="panel panel-info">
 			 	<div class="panel-heading">
-			    	试卷列表
+			    	列表
 			 	</div>
 			 	<div class="panel-body">
 					<div class="form-horizontal">
+						<input type="hidden" name="app" value="classroom">
 						<div class="form-group">
 							<label class="col-sm-3 control-label">标题</label>
 							<div class="col-sm-9">
-								<input type="text" class="form-control" name="title" value="试卷">
+								<input type="text" class="form-control" name="title" value="课程">
 							</div>
 						</div>
 						
+						<div class="form-group">
+							<label class="col-sm-3 control-label">类型</label>
+							<div class="col-sm-9">
+								<select class="form-control wide" name="type">
+									<option value="all">所有</option>
+									<option value="image_text">图文</option>
+									<option value="audio">音频</option>
+									<option value="video">视频</option>
+								</select>
+							</div>
+						</div>
+
 						<div class="form-group">
 							<label class="col-sm-3 control-label">分类</label>
 							<div class="col-sm-9">
@@ -67,17 +80,16 @@
 								</select>
 							</div>
 						</div>
-
 						<div class="form-group">
-							<label class="col-sm-3">排列布局</label>
+							<label class="col-sm-3 control-label">排列布局</label>
 							<div class="col-sm-9">
 								<select class="form-control wide" name="rank">
-									<option value="0" selected>横排</option>
-									<option value="1">竖排</option>
+									<option value="0">横排</option>
+									<option value="1" selected>竖排</option>
 								</select>
 							</div>
 						</div>
-						<div class="form-group style-chonse">
+						<div class="form-group">
 							<label class="col-sm-3">样式选择</label>
 							<div class="col-sm-9">
 								<select class="form-control wide" name="style">
@@ -89,14 +101,14 @@
 						<div class="form-group">
 							<label class="col-sm-3"></label>
 							<div class="col-sm-9">
-								<button class="btn btn-primary">确认</button>
+							<button class="btn btn-primary">确认</button>
 							</div>
 						</div>
-					</div>
+					</div>	
 				</div>
 			</div>
 		</div>
 	</div>
 	
 </script>
-<!--试卷列表END-->
+<!--课程列表END-->

@@ -1,152 +1,134 @@
-{if $vo['type'] == 'exam_paper_list'}
-<!--资料下载列表-->
-<div class="object-item" data-type="exam_paper_list" data-object-index="exam_paper_list-{$key}" data-category-api="{:url('classroom/admin.category/tree')}">
-	<div class="object-drag exam-paper-list">
-		<div class="exam-paper-list-preview">
-            <div class="exam-paper-list-preview">
-                <div class="title clearfix">
-                	<h3>{$vo['data']['title']}</h3>
-                	<small class="more">查看更多 </small>
-                </div>
-                <div class="list rank{$vo['data']['rank']} clearfix">
-				<!--竖排-->
-				{if $vo['data']['rank'] == 1}
-				{foreach $vo['data']['list'] as $key=>$data}
-				{if $vo['data']['style'] == 0}
-				<div class="item small" data-type="exam_paper_list_item" data-id="{$data['id']}">
+{if $vo['app'] !== 'micro'}
+<!--课程列表-->
+<div class="object-item app-list" data-type="{$vo['type']}" data-object-index="{$vo['type']}-{$key}" data-category-api="{:url('classroom/admin.category/tree')}">
+	<div class="object-drag app-list">
+		<div class="app-list-preview">
+			<div class="title clearfix">
+				<h3>{$vo['data']['title']}</h3>
+				<small class="more">查看更多 </small>
+			</div>
+			<div class="list rank{$vo['data']['rank']} clearfix">
+			{if $vo['data']['rank'] == 1}
+			{foreach $vo['data']['list'] as $key=>$data}
+			{if $vo['data']['style'] == 0}
+				<div class="item small" data-type="knowledge_list_item" data-id="{$data['id']}">
 					<div class="image">
-						<img src="{$data['cover_400']}" />
+						<img src="{$data['cover_200']}" />
+						<div class="type-container">{$data['type_str']}</div>
 					</div>
 					<div class="content">
 						<div class="title h3 text-ellipsis-2">{$data['title']}</div>
+						<div class="description text-ellipsis">{$data['description']}</div>
 						<div class="info">
-							<div class="type">
-							{if $classroom_config_data['show_view'] == 1}
-							<div class="view">
-								<i class="fa fa-eye" aria-hidden="true"></i> 
-								<span class="view-num">{$data['handling_view']}</span>
-							</div>
-							{/if}
-							
-							{if $classroom_config_data['show_sale'] == 1}
-							<div class="shopping">
-								<i class="fa fa-shopping-bag" aria-hidden="true"></i> 
-								<span class="shopping-num">{$data['handling_sales']}</span>
-							</div>
-							{/if}
-
-							{if $classroom_config_data['show_favorites'] == 1}
-							<div class="favorites">
-								<i class="fa fa-star-o" aria-hidden="true"></i>
-								<span class="favorites-num">{$data['handling_favorites']}</span>
-							</div>
-							{/if}
-
-							<div class="download">
-								<i class="fa fa-download" aria-hidden="true"></i>
-								<span class="download-num">{$data['handling_download']}</span> 
-							</div>
-							</div>
-							<div class="price">￥ {if $data['price'] == 0}免费{else}{$data['price']}{/if}</div>
-						</div>
-					</div>
-				</div>
-				{/if}
-
-				{if $vo['data']['style'] == 1}
-				<div class="item big" data-type="exam_paper_list_item" data-id="{$data['id']}">
-					<div class="image">
-						<img src="{$data['cover_400']}" />
-					</div>
-					<div class="content">
-						<div class="title h3 text-ellipsis-2">{$data['title']}</div>
-						<div class="info">
-							<div class="type">
-							{if $classroom_config_data['show_view'] == 1}
-							<div class="view">
-								<i class="fa fa-eye" aria-hidden="true"></i> 
-								<span class="view-num">{$data['handling_view']}</span>
-							</div>
-							{/if}
-							
-							{if $classroom_config_data['show_sale'] == 1}
-							<div class="shopping">
-								<i class="fa fa-shopping-bag" aria-hidden="true"></i> 
-								<span class="shopping-num">{$data['handling_sales']}</span>
-							</div>
-							{/if}
-
-							{if $classroom_config_data['show_favorites'] == 1}
-							<div class="favorites">
-								<i class="fa fa-star-o" aria-hidden="true"></i>
-								<span class="favorites-num">{$data['handling_favorites']}</span>
-							</div>
-							{/if}
-
-							<div class="download">
-								<i class="fa fa-download" aria-hidden="true"></i>
-								<span class="download-num">{$data['handling_download']}</span> 
-							</div>
-							</div>
-							<div class="price">￥ {if $data['price'] == 0}免费{else}{$data['price']}{/if}</div>
-						</div>
-					</div>
-				</div>
-				{/if}
-				{/foreach}
-				{/if}
-				
-				<!--横排-->
-				{if $vo['data']['rank'] == 0}
-				{foreach $vo['data']['list'] as $key=>$data}
-					<div class="item" data-type="exam_paper_list_item" data-id="{$data['id']}">
-						<div class="image">
-							<img src="{$data['cover_400']}" />
-						</div>
-						<div class="content">
-							<div class="title h3 text-ellipsis-2">{$data['title']}</div>
-							<div class="info">
-					            <div class="type">
-					            {if $classroom_config_data['show_view'] == 1}
+							<div class="type text-ellipsis">
+							{if $vo['config']['show_view'] == 1}
 								<div class="view">
-									<i class="fa fa-eye" aria-hidden="true"></i> 
-									<span class="view-num">{$data['handling_view']}</span>
-							    </div>
-					            {/if}
-							    
-							    {if $classroom_config_data['show_sale'] == 1}
+								<i class="fa fa-eye" aria-hidden="true"></i> {$data['view']}
+								</div>
+							{/if}
+							
+							{if $vo['config']['show_sale'] == 1}
 								<div class="shopping">
-									<i class="fa fa-shopping-bag" aria-hidden="true"></i> 
-									<span class="shopping-num">{$data['handling_sales']}</span>
-						    	</div>
-							    {/if}
+								<i class="fa fa-shopping-bag" aria-hidden="true"></i> {$data['sales']}
+								</div>
+							{/if}
 
-							    {if $classroom_config_data['show_favorites'] == 1}
+							{if $vo['config']['show_favorites'] == 1}
 								<div class="favorites">
-								    <i class="fa fa-star-o" aria-hidden="true"></i>
-								    <span class="favorites-num">{$data['handling_favorites']}</span>
+								<i class="fa fa-star-o" aria-hidden="true"></i>
+								<span class="favorites-num">{$data['favorites']}</span>
 								</div>
-								{/if}
-
-								<div class="download">
-									<i class="fa fa-download" aria-hidden="true"></i>
-									<span class="download-num">{$data['handling_download']}</span> 
-								</div>
-								</div>
-					            <div class="price">￥ {if $data['price'] == 0}免费{else}{$data['price']}{/if}</div>
-					        </div>
+							{/if}
+							</div>
+							<div class="price">￥ {if $data['price'] == 0}免费{else}{$data['price']}{/if}</div>
 						</div>
 					</div>
-				{/foreach}
-				{/if}
+					
 				</div>
+				{/if}
+				{if $vo['data']['style'] == 1}
+				<div class="item big" data-type="knowledge_list_item" data-id="{$data['id']}">
+					<div class="image">
+						<img src="{$data['cover_800']}" />
+						<div class="type-container">{$data['type_str']}</div>
+					</div>
+					<div class="content">
+						<div class="title h3 text-ellipsis-2">{$data['title']}</div>
+						
+						<div class="info">
+							
+							<div class="type">
+							{if $vo['config']['show_view'] == 1}
+								<div class="view">
+								<i class="fa fa-eye" aria-hidden="true"></i> {$data['view']}
+								</div>
+							{/if}
+							
+							{if $vo['config']['show_sale'] == 1}
+								<div class="shopping">
+								<i class="fa fa-shopping-bag" aria-hidden="true"></i> {$data['sales']}
+								</div>
+							{/if}
+
+							{if $vo['config']['show_favorites'] == 1}
+								<div class="favorites">
+								<i class="fa fa-star-o" aria-hidden="true"></i>
+								<span class="favorites-num">{$data['favorites']}</span>
+								</div>
+							{/if}
+							</div>
+							<div class="price">￥ {if $data['price'] == 0}免费{else}{$data['price']}{/if}</div>
+						</div>
+					</div>
+				</div>
+				{/if}
+			{/foreach}
+			{/if}
+
+			{if $vo['data']['rank'] == 0}
+			{foreach $vo['data']['list'] as $key=>$data}
+				<div class="item" data-type="knowledge_list_item" data-id="{$data['id']}">
+					
+					<div class="image">
+						<img src="{$data['cover_200']}" />
+						<div class="type-container">{$data['type_str']}</div>
+					</div>
+					<div class="content">
+						<div class="title h3 text-ellipsis-2">{$data['title']}</div>
+						<div class="info">
+							<div class="price">￥ {if $data['price'] == 0}免费{else}{$data['price']}{/if}</div>
+							<div class="type">
+							{if $vo['config']['show_view'] == 1}
+								<div class="view">
+								<i class="fa fa-eye" aria-hidden="true"></i> {$data['view']}
+								</div>
+							{/if}
+							
+							{if $vo['config']['show_sale'] == 1}
+								<div class="shopping">
+								<i class="fa fa-shopping-bag" aria-hidden="true"></i> {$data['sales']}
+								</div>
+							{/if}
+
+							{if $vo['config']['show_favorites'] == 1}
+								<div class="favorites">
+								<i class="fa fa-star-o" aria-hidden="true"></i>
+								<span class="favorites-num">{$data['favorites']}</span>
+								</div>
+							{/if}
+							</div>
+						</div>
+					</div>
+				</div>
+			{/foreach}
+			{/if}
 			</div>
 		</div>
 	</div>
-	<div class="diy-preview-controller exam-paper-list">
+	<div class="diy-preview-controller {$vo['type']}">
 		<div class="panel panel-info">
 		 	<div class="panel-heading">
-		    资料下载列表
+		    课程列表
 		 	</div>
 		 	<div class="panel-body">
 		 		<div class="form-horizontal">
@@ -158,26 +140,40 @@
 				  	</div>
 			 		
 				  	<div class="form-group">
-					    <label class="col-sm-3">分类</label>
+					    <label class="col-sm-3">课程类型</label>
+					    <div class="col-sm-9">
+						    <select class="form-control wide" name="type">
+								{if $vo['data']['type'] == 'all'}
+								<option value="all" selected>所有</option>
+								{else}
+								<option value="all">所有</option>
+								{/if}
+
+								{if $vo['data']['type'] == 'image_text'}
+								<option value="image_text" selected>图文</option>
+								{else}
+								<option value="image_text">图文</option>
+								{/if}
+
+								{if $vo['data']['type'] == 'audio'}
+								<option value="audio" selected>音频</option>
+								{else}
+								<option value="audio">音频</option>
+								{/if}
+
+								{if $vo['data']['type'] == 'video'}
+								<option value="video" selected>视频</option>
+								{else}
+								<option value="video">视频</option>
+								{/if}
+							</select>
+					    </div>
+				  	</div>
+				  	<div class="form-group">
+					    <label class="col-sm-3">课程分类</label>
 					    <div class="col-sm-9">
 						   <select class="form-control wide" name="category_id" data-category-id="{$vo['data']['category_id']}">
 						   		<option value="0">所有</option>
-								{foreach $category_tree as $key=>$cate}
-								{if $vo['data']['category_id']==$cate['id']}
-								<option value="{$cate['id']}" selected>{$cate['title']}</option>
-								{else}
-								<option value="{$cate['id']}">{$cate['title']}</option>
-								{/if}
-								{if !empty($cate['_child'])}
-								{foreach $cate['_child'] as $child}
-									{if $vo['data']['category_id']==$child['id']}
-									<option value="{$child['id']}" selected>{$child['title']}</option>
-									{else}
-									<option value="{$child['id']}">{$child['title']}</option>
-									{/if}
-								{/foreach}
-								{/if}
-								{/foreach}
 							</select>
 					    </div>
 				  	</div>
@@ -242,8 +238,7 @@
 							</select>
 					    </div>
 				  	</div>
-
-					<div class="form-group">
+				  	<div class="form-group">
 					    <label class="col-sm-3">排列布局</label>
 					    <div class="col-sm-9">
 						    <select class="form-control wide" name="rank">
@@ -279,7 +274,6 @@
 							</select>
 					    </div>
 				  	</div>
-
 				  	<div class="form-group">
 					    <label class="col-sm-3"></label>
 					    <div class="col-sm-9">
@@ -295,5 +289,5 @@
 	<div class="down-btn"><i class="fa fa-chevron-circle-down fa-2x"></i></div>
 </div>
 
-<!--资料下载列表END-->
+<!--课程列表END-->
 {/if}

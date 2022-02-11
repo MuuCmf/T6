@@ -82,6 +82,9 @@ $(function(){
                     //写入DOM
                     $(element).find('.article-list-preview .list').html(html_text);
                 }
+            }else{
+                toast.error(data.msg,'danger');
+                return false;
             }
         });
     }
@@ -170,30 +173,19 @@ $(function(){
 
         let type = $(this).data('type');
 
-        let url = $(this).data('plugin-url');
-        //异步验证应用可用性
-        $.get(url, function($res){
-            //console.log($res);
-            if($res.code == 200){
-                var html = $('[data-object-type="'+type+'"]').html();
-                $('.preview-target').append(html);
-                //为新增元素添加编号索引，避免多次引入冲突
-                var object_index='';
+        var html = $('[data-object-type="'+type+'"]').html();
+        $('.preview-target').append(html);
+        //为新增元素添加编号索引，避免多次引入冲突
+        var object_index='';
 
-                $('.preview-target .object-item').each(function(index){
-                    var this_type = $(this).data('type');
-                    //为所有已显示组件元素DOM编号索引，避免多次引入冲突
-                    $(this).attr('data-object-index',this_type+'-'+index);
-                    object_index = this_type+'-'+index;
-                });
-                //console.log(object_index);
-                //获取初始列表数据
-                article_list_loader(2,0,'create_time','ASC',0,'[data-object-index='+object_index+']');
-            }else{
-                toast.error('该组件需安装文章营销插件','danger');
-                return;
-            }
+        $('.preview-target .object-item').each(function(index){
+            //为所有已显示组件元素DOM编号索引，避免多次引入冲突
+            $(this).attr('data-object-index',type+'-'+index);
+            object_index = type+'-'+index;
         });
+        //console.log(object_index);
+        //获取初始列表数据
+        article_list_loader(2,0,'create_time','ASC',0,'[data-object-index='+object_index+']');
 
     });
 

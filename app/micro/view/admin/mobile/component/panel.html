@@ -3,14 +3,15 @@
 		<div class="panel panel-default">
 			<div class="panel-heading" id="headingOne">
 			<h4 class="panel-title">
-				<a data-toggle="collapse" data-parent="#accordionPanels" href="#collapseOne">
+				<a data-toggle="collapse" data-parent="#accordionPanels" href="#collapse_system">
 					页面元素
 				</a>
 			</h4>
 			</div>
-			<div id="collapseOne" class="panel-collapse collapse in">
+			<div id="collapse_system" class="panel-collapse collapse in">
 				<div class="panel-body object-lists">
-					{foreach $pannel.system as $v}
+					{notempty name="panel.common"}
+					{foreach $panel.common as $v}
 					<div class="btn-object" data-type="{$v['type']}">
 						<div class="object-item">
 							<i class="fa fa-{$v['icon']}" aria-hidden="true"></i>
@@ -18,22 +19,27 @@
 						</div>
 					</div>
 					{/foreach}
+					{/notempty}
 				</div>
 			</div>
 		</div>
-		{foreach $pannel.app as $v}
+		{notempty name="panel.app"}
+		{foreach $panel.app as $v}
 		<div class="panel panel-default">
 			<div class="panel-heading" id="headingOne">
 			<h4 class="panel-title">
-				<a data-toggle="collapse" data-parent="#accordionPanels" href="#collapseOne">
+				<a data-toggle="collapse" data-parent="#accordionPanels" href="#collapse_{$v.info.name}">
 					{$v.info.alias}
 				</a>
 			</h4>
 			</div>
-			<div id="collapseOne" class="panel-collapse collapse in">
+			<div id="collapse_{$v.info.name}" class="panel-collapse collapse in">
 				<div class="panel-body object-lists">
-					{foreach $v.pannel as $c_v}
-					<div class="btn-object" data-type="{$c_v['type']}"
+					{notempty name="v.panel"}
+					{foreach $v.panel as $c_k => $c_v}
+					<div class="btn-object" 
+					data-app="{$v.info.name}" 
+					data-type="{$c_k}"
 					data-list-api="{$c_v['list_api']}" 
 					data-category-api="{$c_v['category_api']}">
 						<div class="object-item">
@@ -42,11 +48,12 @@
 						</div>
 					</div>
 					{/foreach}
+					{/notempty}
 				</div>
 			</div>
 		</div>
 		{/foreach}
-
+		{/notempty}
 
 		<div class="panel panel-default">
 			<div class="panel-heading" id="headingTwo">
