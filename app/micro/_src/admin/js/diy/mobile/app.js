@@ -1,24 +1,34 @@
 /**
- * 资料下载组件
+ * 通用应用列表组件
  */
  $(function(){
 
 	//初始化组件索引
-    var object_index;
-    //初始化组件类型
-    var object_type;
-    //列表数据接口
-    var list_api = $('.btn-object[data-type="exam_paper_list"]').data('list-api');
+	var object_index;
+	//初始化组件类型
+    var type;
+    //列表接口
+    var list_api;
     //分类数据接口
-    var category_api = $('.btn-object[data-type="exam_paper_list"]').data('category-api');
-    //课程列表加载初始数据
-    let exam_paper_list_loader = function(rows=2, order_field= 'create_time', order_type= 'ASC', category_id= 0, rank = 1, style = 0, element){
+    var category_api;
+    //列表加载初始数据
+    let list_loader = function(params = {
+        'rows': 2, 
+        'order_field':  'create_time', 
+        'order_type': 'DESC', 
+        'type': 'all', 
+        'category_id': 0, 
+        'rank' : 1, 
+        'style' : 0
+    },element){
         var show_view = $('input#show_view').val();
         var show_sale = $('input#show_sale').val();
         var show_marking_price = $('input#show_marking_price').val();
         var show_favorites = $('input#show_favorites').val();
+        // 转url参数
+        var url_params = queryParams(params);
         //默认加载接口数据
-        let url = list_api + '&category_id='+category_id+'&rows='+rows+'&order_field='+order_field+'&order_type='+order_type;
+        let url = list_api + url_params;
         let html_text = '';
         $.get(url,function(data){
             //console.log(data);
@@ -29,38 +39,33 @@
                             n.price = '免费';
                         }
                         //竖排DOM
-                        if(rank == 1){
+                        if(params.rank == 1){
                             //小图显示
-                            if(style == 0){
+                            if(params.style == 0){
                                 html_text += '<div class="item small">';
-                                html_text += '<div class="image"><img src="'+ n.cover_200+'" /></div>';
+                                html_text += '<div class="image"><img src="'+ n.cover_200+'" /><div class="type-container">'+ n.type_str+'</div></div>';
                                 html_text += '<div class="content">';
                                 html_text += '<div class="title h3 text-ellipsis-2">'+ n.title +'</div>';
+                                html_text += '<div class="description text-ellipsis">'+ n.description +'</div>';
                                 html_text += '<div class="info">';
-                                html_text += '<div class="type">';
+                                html_text += '<div class="type text-ellipsis">';
 
                                 if(show_view == 1){
                                     html_text += '<div class="view">';
-                                    html_text += '    <i class="fa fa-eye" aria-hidden="true"></i> ';
-                                    html_text += '    <span class="view-num">' + n.handling_view + '</span>';
+                                    html_text += '    <i class="fa fa-eye" aria-hidden="true"></i> ' + n.view;
                                     html_text += '</div>';
                                 }
                                 if(show_sale == 1){
                                     html_text += '<div class="shopping">';
-                                    html_text += '   <i class="fa fa-shopping-bag" aria-hidden="true"></i> ';
-                                    html_text += '    <span class="shopping-num">' +n.handling_sales + '</span>';
+                                    html_text += '   <i class="fa fa-shopping-bag" aria-hidden="true"></i> ' + n.sales;
                                     html_text += ' </div>';
                                 }
-                                if(show_favorites == 1){
-                                    html_text += '<div class="favorites">';
+                                    if(show_favorites == 1){
+                                    html_text += ' <div class="favorites">';
                                     html_text += '   <i class="fa fa-star-o" aria-hidden="true"></i> ';
-                                    html_text += '   <span class="favorites-num">' + n.handling_favorites + '</span>'; 
+                                    html_text += '   <span class="favorites-num">' + n.favorites + '</span>'; 
                                     html_text += '</div>';
                                 }
-                                    html_text += '<div class="download">';
-                                    html_text += '  <i class="fa fa-download" aria-hidden="true"></i> ';
-                                    html_text += '  <span class="download-num">' + n.handling_download + '</span> ';
-                                    html_text += '</div>';
                                 html_text += '</div>';
 
                                 html_text += '<div class="price">￥ '+ n.price +'</div>';
@@ -69,9 +74,9 @@
                                 html_text += '</div>';
                             }
                             //大图显示
-                            if(style == 1){
+                            if(params.style == 1){
                                 html_text += '<div class="item big">';
-                                html_text += '<div class="image"><img src="'+ n.cover_400+'" /></div>';
+                                html_text += '<div class="image"><img src="'+ n.cover_200+'" /><div class="type-container">'+ n.type_str+'</div></div>';
                                 html_text += '<div class="content">';
                                 html_text += '<div class="title h3 text-ellipsis">'+ n.title +'</div>';
                                 html_text += '<div class="description text-ellipsis">'+ n.description +'</div>';
@@ -102,18 +107,16 @@
                                 html_text += '</div>';
                             }
                         }
-
                         //横排DOM
-                        if(rank == 0){
+                        if(params.rank == 0){
                             html_text += '<div class="item">';
-                            html_text += '<div class="image"><img src="'+ n.cover_200+'" /></div>';
+                            html_text += '<div class="image"><img src="'+ n.cover_200+'" /><div class="type-container">'+ n.type_str+'</div></div>';
                             html_text += '<div class="content">';
                             html_text += '<div class="title h3 text-ellipsis-2">'+ n.title +'</div>';
-
+                            html_text += '<div class="description text-ellipsis">'+ n.description +'</div>';
                             html_text += '<div class="info">';
                             html_text += '<div class="price">￥ '+ n.price +'</div>';
                             html_text += '<div class="type">';
-
                             if(show_view == 1){
                                 html_text += '<div class="view">';
                                 html_text += '    <i class="fa fa-eye" aria-hidden="true"></i> ' + n.view;
@@ -140,50 +143,50 @@
                     });
                 }
 
-                if(rank == 1){
-                    $(element).find('.exam-paper-list-preview .list').removeClass('rank0');
-                    $(element).find('.exam-paper-list-preview .list').addClass('rank1');
+                if(params.rank == 1){
+                    $(element).find('.app-list-preview .list').removeClass('rank0');
+                    $(element).find('.app-list-preview .list').addClass('rank1');
                 }else{
-                    $(element).find('.exam-paper-list-preview .list').removeClass('rank1');
-                    $(element).find('.exam-paper-list-preview .list').addClass('rank0');
+                    $(element).find('.app-list-preview .list').removeClass('rank1');
+                    $(element).find('.app-list-preview .list').addClass('rank0');
                 }
 
-                $(element).find('.exam-paper-list-preview .list').html(html_text);
+                $(element).find('.app-list-preview .list').html(html_text);
             }
         });
     }
 
 	//点击显示列表控制区
-	$('.page-diy-section').on("click",'[data-type="exam_paper_list"]',function(e){
-
-		//已经显示的不再触发
-		if($(this).find('.diy-preview-controller').hasClass('show')){
-			return;
-		}else{
-			$('.object-item').find('.diy-preview-controller').removeClass('show');
-			$(this).find('.diy-preview-controller').addClass('show');
-		}
-
-		object_index = $(this).data('object-index');
-		object_type = $(this).data('type');
-		//以上部分写死就可以，先low着，以后在搞
+	$('.page-diy-section').on("click",'[data-type="app_list"]',function(e){
+        
+        $('.object-item').find('.diy-preview-controller').removeClass('show');
+        $(this).find('.diy-preview-controller').addClass('show');
 		/******************************************************************************/
 
 		//点击确认按钮后的数据重新加载
-		$('.page-diy-section').on('click','[data-object-index="'+object_index+'"] .btn',function(){
+		$('.page-diy-section').on('click','[data-object-index="'+object_index+'"] .btn',function(e){
+            e.stopPropagation();
 			//点击确认按钮后的数据重新加载
 			var rows = $('[data-object-index="'+object_index+'"] input[name="rows"]').val();
 			var order_field = $('[data-object-index="'+object_index+'"] select[name="order_field"]').val();
 			var order_type = $('[data-object-index="'+object_index+'"] select[name="order_type"]').val();
+			var type = $('[data-object-index="'+object_index+'"] select[name="type"]').val();
 			var category_id = $('[data-object-index="'+object_index+'"] select[name="category_id"]').val();
-			var rank = $('[data-object-index="'+object_index+'"] select[name="rank"]').val();
+            var rank = $('[data-object-index="'+object_index+'"] select[name="rank"]').val();
             //样式选择小图：0 大图：1
             var style = $('[data-object-index="'+object_index+'"] select[name="style"]').val();
-			console.log(rank);
+			//console.log(rank);
 			//执行重新加载ajax数据
-			exam_paper_list_loader(rows,order_field,order_type,category_id,rank,style,'[data-object-index='+object_index+']');
-		});
-
+			list_loader({
+                'rows': rows, 
+                'order_field':  order_field, 
+                'order_type': order_type, 
+                'category_id': category_id, 
+                'rank' : rank, 
+                'style' : style
+            },'[data-object-index='+object_index+']');
+        });
+        
 		//标题框数据绑定
 		$('.page-diy-section').on('input propertychange','[data-object-index="'+object_index+'"] input[name="title"]',function(){
 			$('[data-object-index="'+object_index+'"] .title h3').html($(this).val());
@@ -194,8 +197,7 @@
             e.stopPropagation();
         });
 
-		//分类数据获取
-		//console.log(url);
+		//课程分类数据获取
 		var category_html = '';
 		$.get(category_api, function(data){
 			if(data.code){
@@ -225,15 +227,6 @@
 				});
 				$('[data-object-index="'+object_index+'"] select[name="category_id"]').html(category_html);
 			}
-        });
-        
-        //排列布局选项选择触发事件
-		$('.page-diy-section').on('change','[data-object-index="'+object_index+'"] [name="rank"]',function(){
-            //alert('排列布局选择');
-            var rank = $(this).val();
-            if(rank == 1){
-                //alert('选择了竖排');
-            }
 		});
 	});
 
@@ -242,35 +235,89 @@
      * @param  {[type]} ){                     let type [description]
      * @return {[type]}     [description]
      */
-    $('.page-diy-section .object-lists').on("click",'.btn-object[data-type="exam_paper_list"]',function(){
+    $('.page-diy-section .object-lists').on("click",'.btn-object',function(){
 
-        var _this = $(this);
-        let type = _this.data('type');
-        let url = $(this).data('plugin-url');
-        
-        //异步验证插件可用性
-        $.get(url, function($res){
-            //console.log($res);
-            if($res.code == 200){
-                var html = $('[data-object-type="'+type+'"]').html();
-                $('.preview-target').append(html);
-                //为新增元素添加编号索引，避免多次引入冲突
-                var object_index='';
+        type = $(this).data('type');
+        list_api = $(this).data('list-api');
+        console.log(list_api);
+        //分类数据接口
+        category_api = $(this).data('category-api');
 
-                $('.preview-target .object-item').each(function(index){
-                    var this_type = $(this).data('type');
-                    //为所有已显示组件元素DOM编号索引，避免多次引入冲突
-                    $(this).attr('data-object-index',this_type+'-'+index);
-                    object_index = this_type+'-'+index;
-                });
-                //console.log(object_index);
-                //获取初始列表数据
-                exam_paper_list_loader(2,'create_time','ASC',0,1,0,'[data-object-index='+object_index+']');
-            }else{
-                toast.error('该组件需安装题库考试插件','danger');
-                return;
-            }
+        var html = $('[data-object-type="app_list"]').html();
+        $('.preview-target').append(html);
+
+        $('.preview-target .object-item').each(function(index){
+            //为所有已显示组件元素DOM编号索引，避免多次引入冲突
+            $(this).attr('data-object-index',type+'-'+index);
+            object_index = type+'-'+index;
         });
+        // 初始加载列表数据
+        list_loader({
+            'rows': 2, 
+            'order_field':  'create_time', 
+            'order_type': 'DESC', 
+            'category_id': 0, 
+            'rank' : 1, 
+            'style' : 0
+        },'[data-object-index='+object_index+']');
+        
     });
+
+    /**
+     * 对象转url参数
+     * @param {*} data,对象
+     * @param {*} isPrefix,是否自动加上"?"
+     */
+    function queryParams(data = {}, isPrefix = true, arrayFormat = 'brackets') {
+        let prefix = isPrefix ? '?' : ''
+        let _result = []
+        if (['indices', 'brackets', 'repeat', 'comma'].indexOf(arrayFormat) == -1) arrayFormat = 'brackets';
+        for (let key in data) {
+            let value = data[key]
+            // 去掉为空的参数
+            if (['', undefined, null].indexOf(value) >= 0) {
+                continue;
+            }
+            // 如果值为数组，另行处理
+            if (value.constructor === Array) {
+                // e.g. {ids: [1, 2, 3]}
+                switch (arrayFormat) {
+                    case 'indices':
+                        // 结果: ids[0]=1&ids[1]=2&ids[2]=3
+                        for (let i = 0; i < value.length; i++) {
+                            _result.push(key + '[' + i + ']=' + value[i])
+                        }
+                        break;
+                    case 'brackets':
+                        // 结果: ids[]=1&ids[]=2&ids[]=3
+                        value.forEach(_value => {
+                            _result.push(key + '[]=' + _value)
+                        })
+                        break;
+                    case 'repeat':
+                        // 结果: ids=1&ids=2&ids=3
+                        value.forEach(_value => {
+                            _result.push(key + '=' + _value)
+                        })
+                        break;
+                    case 'comma':
+                        // 结果: ids=1,2,3
+                        let commaStr = "";
+                        value.forEach(_value => {
+                            commaStr += (commaStr ? "," : "") + _value;
+                        })
+                        _result.push(key + '=' + commaStr)
+                        break;
+                    default:
+                        value.forEach(_value => {
+                            _result.push(key + '[]=' + _value)
+                        })
+                }
+            } else {
+                _result.push(key + '=' + value)
+            }
+        }
+        return _result.length ? prefix + _result.join('&') : ''
+    }
 
 });

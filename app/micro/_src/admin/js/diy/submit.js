@@ -188,8 +188,8 @@ $(function(){
 	    return obj;
 	}
 
-	//课程列表组件
-	var knowledge_list = function(element){
+	//通用应用列表组件
+	var app_list = function(element){
 		var obj = {};
 		obj.title = '课程列表';
         obj.type = 'knowledge_list';
@@ -204,236 +204,6 @@ $(function(){
         	'order_field': $(element).find('[name="order_field"]').val(),
         	'order_type': $(element).find('[name="order_type"]').val(),
 			'rank': $(element).find('[name="rank"]').val(),
-			'style': $(element).find('[name="style"]').val(),
-        };
-        return obj;
-	}
-
-	//专栏列表组件
-	var column_list = function(element){
-		var obj = {};
-		obj.title = '专栏列表';
-        obj.type = 'column_list';
-		obj.app = 'classroom';
-        //为了兼任性，经单图或其它单独调用链接至组件的组件写入数组内
-        obj.data = {
-			'title': $(element).find('[name="title"]').val(),
-			'sub_title': $(element).find('[name="sub_title"]').val(),
-        	'rows': $(element).find('[name="rows"]').val(),
-        	'category_id': $(element).find('[name="category_id"]').val(),
-        	'order_field': $(element).find('[name="order_field"]').val(),
-        	'order_type': $(element).find('[name="order_type"]').val(),
-			'rank': $(element).find('[name="rank"]').val(),
-			'style': $(element).find('[name="style"]').val(),
-        };
-        return obj;
-	}
-
-	//讲师列表组件
-	var teacher_list = function(element){
-		var obj = {};
-		obj.title = '讲师列表';
-        obj.type = 'teacher_list';
-		obj.app = 'classroom';
-        //为了兼任性，经单图或其它单独调用链接至组件的组件写入数组内
-        obj.data = {
-			'title': $(element).find('[name="title"]').val(),
-			'sub_title': $(element).find('[name="sub_title"]').val(),
-        	'rows': $(element).find('[name="rows"]').val(),
-        	'rank': $(element).find('[name="rank"]').val(),
-        	'order_field': $(element).find('[name="order_field"]').val(),
-        	'order_type': $(element).find('[name="order_type"]').val(),
-        	'rank': $(element).find('[name="rank"]').val(),
-        };
-        return obj;
-	}
-
-	//线下课列表组件
-	var offline_list = function(element){
-		var obj = {};
-		obj.title = '线下课列表';
-		obj.type = 'offline_list';
-		obj.app = 'classroom';
-		//为了兼任性，经单图或其它单独调用链接至组件的组件写入数组内
-		obj.data = {
-			'title': $(element).find('[name="title"]').val(),
-			'rows': $(element).find('[name="rows"]').val(),
-			'category_id': $(element).find('[name="category_id"]').val(),
-			'order_field': $(element).find('[name="order_field"]').val(),
-			'order_type': $(element).find('[name="order_type"]').val(),
-			'rank': $(element).find('[name="rank"]').val(),
-			'style': $(element).find('[name="style"]').val(),
-		};
-		return obj;
-	}
-
-	//资料下载列表组件
-	var material_list = function(element){
-		var obj = {};
-		obj.title = '资料下载列表';
-		obj.type = 'material_list';
-		obj.app = 'classroom';
-		//为了兼任性，经单图或其它单独调用链接至组件的组件写入数组内
-		obj.data = {
-			'title': $(element).find('[name="title"]').val(),
-			'sub_title': $(element).find('[name="sub_title"]').val(),
-			'rows': $(element).find('[name="rows"]').val(),
-			'category_id': $(element).find('[name="category_id"]').val(),
-			'order_field': $(element).find('[name="order_field"]').val(),
-			'order_type': $(element).find('[name="order_type"]').val(),
-			'rank': $(element).find('[name="rank"]').val(),
-			'style': $(element).find('[name="style"]').val(),
-		};
-		return obj;
-	}
-
-	//积分商品
-	var scoreshop_goods_list = function(element){
-		var obj = {};
-		obj.title = '积分商品';
-        obj.type = 'scoreshop_goods_list';
-		obj.app = 'scoreshop';
-        //为了兼任性，经单图或其它单独调用链接至组件的组件写入数组内
-        obj.data = {
-			'title': $(element).find('[name="title"]').val(),
-			'sub_title': $(element).find('[name="sub_title"]').val(),
-        	'rows': $(element).find('[name="rows"]').val(),
-        	'type': $(element).find('[name="type"]').val(),
-        	'category_id': $(element).find('[name="category_id"]').val(),
-        	'order_field': $(element).find('[name="order_field"]').val(),
-        	'order_type': $(element).find('[name="order_type"]').val(),
-        	'rank': $(element).find('[name="rank"]').val(),
-        };
-        return obj;
-	}
-
-	//云小店商品
-	var minishop_goods_list = function(element){
-		var obj = {};
-		obj.title = '云小店商品';
-        obj.type = 'minishop_goods_list';
-		obj.app = 'minishop';
-        //为了兼任性，经单图或其它单独调用链接至组件的组件写入数组内
-        obj.data = {
-			'title': $(element).find('[name="title"]').val(),
-			'sub_title': $(element).find('[name="sub_title"]').val(),
-        	'rows': $(element).find('[name="rows"]').val(),
-        	'category_id': $(element).find('[name="category_id"]').val(),
-        	'order_field': $(element).find('[name="order_field"]').val(),
-        	'order_type': $(element).find('[name="order_type"]').val(),
-        	'rank': $(element).find('[name="rank"]').val(),
-        };
-        return obj;
-	}
-
-	//线下活动
-	var activity_list = function(element){
-		var obj = {};
-		obj.title = '线下活动';
-		obj.type = 'activity_list';
-		obj.app = 'activity';
-		//为了兼任性，经单图或其它单独调用链接至组件的组件写入数组内
-		obj.data = {
-			'title': $(element).find('[name="title"]').val(),
-			'sub_title': $(element).find('[name="sub_title"]').val(),
-			'rows': $(element).find('[name="rows"]').val(),
-			'category_id': $(element).find('[name="category_id"]').val(),
-			'order_field': $(element).find('[name="order_field"]').val(),
-			'order_type': $(element).find('[name="order_type"]').val(),
-			'rank': $(element).find('[name="rank"]').val(),
-			'style': $(element).find('[name="style"]').val(),
-		};
-		return obj;
-	}
-
-	//直播课列表组件
-	var live_list = function(element){
-		var obj = {};
-		obj.title = '直播课列表';
-        obj.type = 'live_list';
-		obj.app = 'livecourse';
-        //为了兼任性，经单图或其它单独调用链接至组件的组件写入数组内
-        obj.data = {
-        	'title': $(element).find('[name="title"]').val(),
-        	'rows': $(element).find('[name="rows"]').val(),
-        	'category_id': $(element).find('[name="category_id"]').val(),
-        	'order_field': $(element).find('[name="order_field"]').val(),
-        	'order_type': $(element).find('[name="order_type"]').val(),
-        	'rank': $(element).find('[name="rank"]').val(),
-        	'style': $(element).find('[name="style"]').val(),
-        };
-        return obj;
-	}
-
-	//小程序直播组件列表组件
-	var miniprogram_live_list = function(element){
-		var obj = {};
-		obj.title = '小程序直播组件';
-        obj.type = 'miniprogram_live_list';
-		obj.app = 'livecourse';
-        //为了兼任性，经单图或其它单独调用链接至组件的组件写入数组内
-        obj.data = {
-        	'title': $(element).find('[name="title"]').val(),
-        	'rows': $(element).find('[name="rows"]').val(),
-        	'rank': $(element).find('[name="rank"]').val(),
-        	'style': $(element).find('[name="style"]').val(),
-        };
-        return obj;
-	}
-
-	//试卷列表组件
-	var exam_paper_list = function(element){
-		var obj = {};
-		obj.title = '试卷列表';
-		obj.type = 'exam_paper_list';
-		//为了兼任性，经单图或其它单独调用链接至组件的组件写入数组内
-		obj.data = {
-			'title': $(element).find('[name="title"]').val(),
-			'sub_title': $(element).find('[name="sub_title"]').val(),
-			'rows': $(element).find('[name="rows"]').val(),
-			'category_id': $(element).find('[name="category_id"]').val(),
-			'order_field': $(element).find('[name="order_field"]').val(),
-			'order_type': $(element).find('[name="order_type"]').val(),
-			'rank': $(element).find('[name="rank"]').val(),
-			'style': $(element).find('[name="style"]').val(),
-		};
-		return obj;
-	}
-
-	//文章列表组件
-	var articles_list = function(element){
-		var obj = {};
-		obj.title = '文章列表';
-        obj.type = 'articles_list';
-		obj.app = 'articles';
-        //为了兼任性，经单图或其它单独调用链接至组件的组件写入数组内
-        obj.data = {
-        	'title': $(element).find('[name="title"]').val(),
-			'sub_title': $(element).find('[name="sub_title"]').val(),
-        	'rows': $(element).find('[name="rows"]').val(),
-        	'category_id': $(element).find('[name="category_id"]').val(),
-        	'order_field': $(element).find('[name="order_field"]').val(),
-        	'order_type': $(element).find('[name="order_type"]').val(),
-        	'style': $(element).find('[name="style"]').val(),
-        };
-        return obj;
-	}
-
-	//社群列表
-	var forum_list = function(element){
-		var obj = {};
-		obj.title = '社群列表';
-        obj.type = 'forum_list';
-        //为了兼任性，经单图或其它单独调用链接至组件的组件写入数组内
-        obj.data = {
-			'title': $(element).find('[name="title"]').val(),
-			'sub_title': $(element).find('[name="sub_title"]').val(),
-			'expense': $(element).find('[name="expense"]').val(),
-			'category_id': $(element).find('[name="category_id"]').val(),
-        	'rows': $(element).find('[name="rows"]').val(),
-        	'order_field': $(element).find('[name="order_field"]').val(),
-        	'order_type': $(element).find('[name="order_type"]').val(),
-        	'rank': $(element).find('[name="rank"]').val(),
 			'style': $(element).find('[name="style"]').val(),
         };
         return obj;
@@ -462,33 +232,17 @@ $(function(){
 	            case ('single_img')://单图广告
 	                obj = single_img(element);
 	            break;
-
 	            case ('slideshow'):
 	            	obj = slideshow(element);
 	            break;
-
 	            case ('category_nav'):
 	            	obj = category_nav(element);
 	            break;
-
 	            case ('custom_text'):
 	            	obj = custom_text(element);
 	            break;
-
 				case ('custom_html'):
 	            	obj = custom_html(element);
-	            break;
-
-	            case ('column_list'):
-	            	obj = column_list(element);
-	            break;
-
-	            case ('knowledge_list'):
-	            	obj = knowledge_list(element);
-	            break;
-
-	            case ('teacher_list'):
-	            	obj = teacher_list(element);
 	            break;
 	            case ('weixin'):
 	            	obj = weixin(element);
@@ -496,38 +250,11 @@ $(function(){
 	            case ('member'):
 	            	obj = member(element);
 	            break;
-	            case ('scoreshop_goods_list'):
-	            	obj = scoreshop_goods_list(element);
-				break;
-				case ('minishop_goods_list'):
-	            	obj = minishop_goods_list(element);
-				break;
-				case ('activity_list'):
-	            	obj = activity_list(element);
-	            break;
-	           	case ('live_list'):
-	            	obj = live_list(element);
-				break;
-				case ('miniprogram_live_list'):
-	            	obj = miniprogram_live_list(element);
-				break;
-				case ('offline_list'):
-	            	obj = offline_list(element);
-				break;
-				case ('material_list'):
-	            	obj = material_list(element);
-				break;
-				case ('exam_paper_list'):
-	            	obj = exam_paper_list(element);
-				break;
-				case ('articles_list'):
-	            	obj = article_list(element);
-				break;
-				case ('forum_list'):
-	            	obj = forum_list(element);
-				break;
 				case ('category'):
 	            	obj = category(element);
+	            break;
+				case ('app_list'):
+	            	obj = app_list(element);
 	            break;
 	        }
 	        data.push(obj);
