@@ -473,28 +473,19 @@ class Page
      */
     public function knowledgeList($data, $shopid)
     {    
-        if(!isset($data['data']['rank'])){
-            $data['data']['rank'] = 1;
-        }
-        
-        $type = !empty($data['data']['type']) ? strtolower($data['data']['type']) : 'all';
-        $category_id = intval($data['data']['category_id']);
-        $attribute_ids = empty($data['data']['attribute_ids'])? '' : $data['data']['attribute_ids'];
-
-        $map = (new \app\classroom\logic\Knowledge())->getMap($shopid,'',$category_id,$attribute_ids,$type,'',1,1);
-        $rows = $data['data']['rows'];
-        $order = $data['data']['order_field'].' '.$data['data']['order_type'];
-        $list = (new \app\classroom\model\ClassroomKnowledge())->getList($map, $rows, $order);
-
-        if(!empty($list)){
-            $list = $list->toArray();
-            foreach($list as &$v){
-                $v = (new \app\classroom\logic\Knowledge())->formatData($v);
+        // 应用
+        $path = APP_PATH . $data['app'] . '/config/panel.php';
+        if(file_exists($path)){
+            $config = require($path);
+            // 绑定到容器
+            $name = $config['panel'][$data['type']]['type'];
+            $class = $config['panel'][$data['type']]['bind']['class'];
+            $action = $config['panel'][$data['type']]['bind']['action'];
+            bind($name, $class);
+            if(app($name)){
+                $data = app($name)->$action($data, $shopid);
             }
-            unset($v);
-            $data['data']['list'] = $list;
         }
-        
         return $data;
     }
 

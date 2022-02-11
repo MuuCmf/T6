@@ -16,6 +16,7 @@ $(function(){
 		var obj = {};
 		obj.title = '搜索';
 	    obj.type = 'search';
+		obj.app = 'micro';
 	    return obj;
 	}
 
@@ -24,7 +25,7 @@ $(function(){
 		var obj = {};
 		obj.title = '公告';
 	    obj.type = 'announce';
-
+		obj.app = 'micro';
 	    obj.data = {
 	    	rows : $(element).find('[name="rows"]').val(),
 	    };
@@ -41,6 +42,7 @@ $(function(){
 		var obj = {};
 			obj.title = '单图广告';
 			obj.type = 'single_img';
+			obj.app = 'micro';
 			obj.style = $(element).find('[name="style"]').val(), //样式
 	        //为了兼任性，经单图或其它单独调用链接至组件的组件写入数组内
 	        obj.data = [{
@@ -64,6 +66,7 @@ $(function(){
 		var obj = {};
 		obj.title = '轮播';
 		obj.type = 'slideshow';
+		obj.app = 'micro';
 		obj.style = $(element).find('[name="style"]').val(), //样式
         obj.data = new Array();
         //
@@ -95,6 +98,7 @@ $(function(){
 		var obj = {};
 		obj.title = '分类';
 		obj.type = 'category';
+		obj.app = 'micro';
 		obj.data = {
 			'app' : $(element).find('select[name="app"]').val(),
 			'sub_show' : $(element).find('select[name="sub_show"]').val(),
@@ -107,7 +111,7 @@ $(function(){
 		var obj = {};
 		obj.title = '图文导航';
         obj.type = 'category_nav';
-		
+		obj.app = 'micro';
 		obj.data_title = $(element).find('[name="title"]').val(), //数据标题
 		obj.data_sub_title = $(element).find('[name="sub_title"]').val(), //数据标题
 		obj.data_title_show = $(element).find('[name="title_show"]').val(), //是否显示数据标题
@@ -145,6 +149,7 @@ $(function(){
 		var obj = {};
 		obj.title = '自定义文本';
 		obj.type = 'custom_text';
+		obj.app = 'micro';
 		obj.data = {
 			'content' : $(element).find('textarea[name="content"]').val(),
 		}
@@ -156,6 +161,7 @@ $(function(){
 		var obj = {};
 		obj.title = '自定义Html';
 		obj.type = 'custom_html';
+		obj.app = 'micro';
 		obj.data = {
 			'content' : $(element).find('textarea[name="content"]').val(),
 		}
@@ -167,6 +173,7 @@ $(function(){
 		var obj = {};
 		obj.title = '关注公众号';
 		obj.type = 'weixin';
+		obj.app = 'micro';
 		obj.style = $(element).find('[name="style"]').val(); //样式
         //为了兼任性，经单图或其它单独调用链接至组件的组件写入数组内
         return obj;
@@ -177,6 +184,7 @@ $(function(){
 		var obj = {};
 		obj.title = '会员';
 	    obj.type = 'member';
+		obj.app = 'micro';
 	    return obj;
 	}
 
@@ -185,6 +193,7 @@ $(function(){
 		var obj = {};
 		obj.title = '课程列表';
         obj.type = 'knowledge_list';
+		obj.app = 'classroom';
         //为了兼任性，经单图或其它单独调用链接至组件的组件写入数组内
         obj.data = {
 			'title': $(element).find('[name="title"]').val(),
@@ -205,6 +214,7 @@ $(function(){
 		var obj = {};
 		obj.title = '专栏列表';
         obj.type = 'column_list';
+		obj.app = 'classroom';
         //为了兼任性，经单图或其它单独调用链接至组件的组件写入数组内
         obj.data = {
 			'title': $(element).find('[name="title"]').val(),
@@ -224,6 +234,7 @@ $(function(){
 		var obj = {};
 		obj.title = '讲师列表';
         obj.type = 'teacher_list';
+		obj.app = 'classroom';
         //为了兼任性，经单图或其它单独调用链接至组件的组件写入数组内
         obj.data = {
 			'title': $(element).find('[name="title"]').val(),
@@ -237,11 +248,51 @@ $(function(){
         return obj;
 	}
 
+	//线下课列表组件
+	var offline_list = function(element){
+		var obj = {};
+		obj.title = '线下课列表';
+		obj.type = 'offline_list';
+		obj.app = 'classroom';
+		//为了兼任性，经单图或其它单独调用链接至组件的组件写入数组内
+		obj.data = {
+			'title': $(element).find('[name="title"]').val(),
+			'rows': $(element).find('[name="rows"]').val(),
+			'category_id': $(element).find('[name="category_id"]').val(),
+			'order_field': $(element).find('[name="order_field"]').val(),
+			'order_type': $(element).find('[name="order_type"]').val(),
+			'rank': $(element).find('[name="rank"]').val(),
+			'style': $(element).find('[name="style"]').val(),
+		};
+		return obj;
+	}
+
+	//资料下载列表组件
+	var material_list = function(element){
+		var obj = {};
+		obj.title = '资料下载列表';
+		obj.type = 'material_list';
+		obj.app = 'classroom';
+		//为了兼任性，经单图或其它单独调用链接至组件的组件写入数组内
+		obj.data = {
+			'title': $(element).find('[name="title"]').val(),
+			'sub_title': $(element).find('[name="sub_title"]').val(),
+			'rows': $(element).find('[name="rows"]').val(),
+			'category_id': $(element).find('[name="category_id"]').val(),
+			'order_field': $(element).find('[name="order_field"]').val(),
+			'order_type': $(element).find('[name="order_type"]').val(),
+			'rank': $(element).find('[name="rank"]').val(),
+			'style': $(element).find('[name="style"]').val(),
+		};
+		return obj;
+	}
+
 	//积分商品
 	var scoreshop_goods_list = function(element){
 		var obj = {};
 		obj.title = '积分商品';
         obj.type = 'scoreshop_goods_list';
+		obj.app = 'scoreshop';
         //为了兼任性，经单图或其它单独调用链接至组件的组件写入数组内
         obj.data = {
 			'title': $(element).find('[name="title"]').val(),
@@ -261,6 +312,7 @@ $(function(){
 		var obj = {};
 		obj.title = '云小店商品';
         obj.type = 'minishop_goods_list';
+		obj.app = 'minishop';
         //为了兼任性，经单图或其它单独调用链接至组件的组件写入数组内
         obj.data = {
 			'title': $(element).find('[name="title"]').val(),
@@ -279,6 +331,7 @@ $(function(){
 		var obj = {};
 		obj.title = '线下活动';
 		obj.type = 'activity_list';
+		obj.app = 'activity';
 		//为了兼任性，经单图或其它单独调用链接至组件的组件写入数组内
 		obj.data = {
 			'title': $(element).find('[name="title"]').val(),
@@ -298,6 +351,7 @@ $(function(){
 		var obj = {};
 		obj.title = '直播课列表';
         obj.type = 'live_list';
+		obj.app = 'livecourse';
         //为了兼任性，经单图或其它单独调用链接至组件的组件写入数组内
         obj.data = {
         	'title': $(element).find('[name="title"]').val(),
@@ -316,49 +370,13 @@ $(function(){
 		var obj = {};
 		obj.title = '小程序直播组件';
         obj.type = 'miniprogram_live_list';
+		obj.app = 'livecourse';
         //为了兼任性，经单图或其它单独调用链接至组件的组件写入数组内
         obj.data = {
         	'title': $(element).find('[name="title"]').val(),
         	'rows': $(element).find('[name="rows"]').val(),
         	'rank': $(element).find('[name="rank"]').val(),
         	'style': $(element).find('[name="style"]').val(),
-        };
-        return obj;
-	}
-
-	//线下课列表组件
-	var offline_list = function(element){
-		var obj = {};
-		obj.title = '线下课列表';
-        obj.type = 'offline_list';
-        //为了兼任性，经单图或其它单独调用链接至组件的组件写入数组内
-        obj.data = {
-        	'title': $(element).find('[name="title"]').val(),
-        	'rows': $(element).find('[name="rows"]').val(),
-        	'category_id': $(element).find('[name="category_id"]').val(),
-        	'order_field': $(element).find('[name="order_field"]').val(),
-        	'order_type': $(element).find('[name="order_type"]').val(),
-        	'rank': $(element).find('[name="rank"]').val(),
-        	'style': $(element).find('[name="style"]').val(),
-        };
-        return obj;
-	}
-
-	//资料下载列表组件
-	var material_list = function(element){
-		var obj = {};
-		obj.title = '资料下载列表';
-        obj.type = 'material_list';
-        //为了兼任性，经单图或其它单独调用链接至组件的组件写入数组内
-        obj.data = {
-        	'title': $(element).find('[name="title"]').val(),
-			'sub_title': $(element).find('[name="sub_title"]').val(),
-        	'rows': $(element).find('[name="rows"]').val(),
-        	'category_id': $(element).find('[name="category_id"]').val(),
-        	'order_field': $(element).find('[name="order_field"]').val(),
-        	'order_type': $(element).find('[name="order_type"]').val(),
-			'rank': $(element).find('[name="rank"]').val(),
-			'style': $(element).find('[name="style"]').val(),
         };
         return obj;
 	}
@@ -383,10 +401,11 @@ $(function(){
 	}
 
 	//文章列表组件
-	var article_list = function(element){
+	var articles_list = function(element){
 		var obj = {};
 		obj.title = '文章列表';
-        obj.type = 'article_list';
+        obj.type = 'articles_list';
+		obj.app = 'articles';
         //为了兼任性，经单图或其它单独调用链接至组件的组件写入数组内
         obj.data = {
         	'title': $(element).find('[name="title"]').val(),
@@ -501,7 +520,7 @@ $(function(){
 				case ('exam_paper_list'):
 	            	obj = exam_paper_list(element);
 				break;
-				case ('article_list'):
+				case ('articles_list'):
 	            	obj = article_list(element);
 				break;
 				case ('forum_list'):

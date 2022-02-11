@@ -1,4 +1,8 @@
 <?php
+// +----------------------------------------------------------------------
+// | MuuCmf
+// | panel通用面板功能数据处理
+// +----------------------------------------------------------------------
 namespace app\micro\logic;
 
 use app\common\model\Module;
@@ -9,17 +13,20 @@ class Panel
     {
         // 初始化空数据
         $panel = [];
-        $system_panel = config('panel');
-        $panel['system'] = $system_panel;
+        // 获取公共部分
+        $panel['common'] = config('panel');
+
+        // 获取应用部分
         $panel['app'] = [];
-        // 获取应用面板按钮
         $module_list = (new Module)->getAll([['is_setup', '=', 1]]);
         foreach($module_list as $v){
-            $path = APP_PATH . $v['name'] . '/config/panel.php';
-            $panel_arr = [];
-            if(file_exists($path)){
-                $panel_arr = require($path);
-                $panel['app'][$v['name']] = $panel_arr;
+            if($v['name'] != 'micro'){
+                $path = APP_PATH . $v['name'] . '/config/panel.php';
+                $panel_arr = [];
+                if(file_exists($path)){
+                    $panel_arr = require($path);
+                    $panel['app'][$v['name']] = $panel_arr;
+                }
             }
         }
 

@@ -134,7 +134,7 @@ class Mobile extends MicroAdmin
             // 面板列表
             $panel = (new PanelLogic())->getList();
             View::assign('panel', $panel);
-
+            
             // 链接至参数
             $link_list = $this->PageLogic->linkParams();
             View::assign('link_list', $link_list);

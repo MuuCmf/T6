@@ -10,37 +10,37 @@
 
 			<div class="list rank{$vo['data']['rank']} clearfix">
             	{if $vo['data']['rank'] == 1}
-				{foreach $vo['data']['list'] as $column_key=>$column_data}
-				<div class="item" data-type="column_list_item" data-id="{$column_data['id']}">
+				{foreach $vo['data']['list'] as $key=>$data}
+				<div class="item" data-type="column_list_item" data-id="{$data['id']}">
 					
 					<div class="image">
-						<img src="{$column_data['cover_200']}" />
+						<img src="{$data['cover_200']}" />
 					</div>
 					<div class="content">
-						<div class="title h3 text-ellipsis-2">{$column_data['title']}</div>
-						<div class="description text-ellipsis">{$column_data['description']}</div>
+						<div class="title h3 text-ellipsis-2">{$data['title']}</div>
+						<div class="description text-ellipsis">{$data['description']}</div>
 						<div class="info">
 				            <div class="type text-ellipsis">
-				            {if $classroom_config_data['show_view'] == 1}
+				            {if $vo['data']['config']['show_view'] == 1}
 				            	<div class="view">
-							    <i class="fa fa-eye" aria-hidden="true"></i> {$column_data['view']}
+							    <i class="fa fa-eye" aria-hidden="true"></i> {$data['view']}
 							    </div>
 				            {/if}
 						    
-						    {if $classroom_config_data['show_sale'] == 1}
+						    {if $vo['data']['config']['show_sale'] == 1}
 						    	<div class="shopping">
-						    	<i class="fa fa-shopping-bag" aria-hidden="true"></i> {$column_data['sales']}
+						    	<i class="fa fa-shopping-bag" aria-hidden="true"></i> {$data['sales']}
 						    	</div>
 						    {/if}
 
-						    {if $classroom_config_data['show_favorites'] == 1}
+						    {if $vo['data']['config']['show_favorites'] == 1}
 							    <div class="favorites">
 							    <i class="fa fa-star-o" aria-hidden="true"></i>
-							    <span class="favorites-num">{$column_data['favorites']}</span>
+							    <span class="favorites-num">{$data['favorites']}</span>
 							    </div>
 							{/if}
 							</div>
-				            <div class="price">￥ {if $column_data['price'] == 0}免费{else}{$column_data['price']}{/if}</div>
+				            <div class="price">￥ {if $data['price'] == 0}免费{else}{$data['price']}{/if}</div>
 				        </div>
 					</div>
 				</div>
@@ -48,30 +48,30 @@
 				{/if}
 
 				{if $vo['data']['rank'] == 0}
-				{foreach $vo['data']['list'] as $column_key=>$column_data}
-				<div class="item" data-type="column_list_item" data-id="{$column_data['id']}">
-					<div class="image"><img src="{$column_data['cover_200']}" /></div>
+				{foreach $vo['data']['list'] as $key=>$data}
+				<div class="item" data-type="column_list_item" data-id="{$data['id']}">
+					<div class="image"><img src="{$data['cover_200']}" /></div>
 					<div class="content">
-						<div class="title h3 text-ellipsis-2">{$column_data['title']}</div>
+						<div class="title h3 text-ellipsis-2">{$data['title']}</div>
 						<div class="info">
-							<div class="price">￥ {if $column_data['price'] == 0}免费{else}{$column_data['price']}{/if}</div>
+							<div class="price">￥ {if $data['price'] == 0}免费{else}{$data['price']}{/if}</div>
 				            <div class="type">
-				            {if $classroom_config_data['show_view'] == 1}
+				            {if $vo['data']['config']['show_view'] == 1}
 				            	<div class="view">
-							    <i class="fa fa-eye" aria-hidden="true"></i> {$column_data['view']}
+							    <i class="fa fa-eye" aria-hidden="true"></i> {$data['view']}
 							    </div>
 				            {/if}
 						    
-						    {if $classroom_config_data['show_sale'] == 1}
+						    {if $vo['data']['config']['show_sale'] == 1}
 						    	<div class="shopping">
-						    	<i class="fa fa-shopping-bag" aria-hidden="true"></i> {$column_data['sales']}
+						    	<i class="fa fa-shopping-bag" aria-hidden="true"></i> {$data['sales']}
 						    	</div>
 						    {/if}
 
-						    {if $classroom_config_data['show_favorites'] == 1}
+						    {if $vo['data']['config']['show_favorites'] == 1}
 							    <div class="favorites">
 							    <i class="fa fa-star-o" aria-hidden="true"></i>
-							    <span class="favorites-num">{$column_data['favorites']}</span>
+							    <span class="favorites-num">{$data['favorites']}</span>
 							    </div>
 							{/if}
 							</div>
@@ -101,24 +101,6 @@
 					    <div class="col-sm-9">
 						   <select class="form-control wide" name="category_id" data-category-id="{$vo['data']['category_id']}">
 						   		<option value="0">所有</option>
-								{notempty name="$category_tree"} 
-						   		{foreach $category_tree as $key=>$cate}
-						   		{if $vo['data']['category_id']==$cate['id']}
-						   		<option value="{$cate['id']}" selected>{$cate['title']}</option>
-						   		{else}
-						   		<option value="{$cate['id']}">{$cate['title']}</option>
-						   		{/if}
-									{notempty name="$cate['_child']"}
-									{foreach $cate['_child'] as $child}
-						   			{if $vo['data']['category_id']==$child['id']}
-							   		<option value="{$child['id']}" selected>{$child['title']}</option>
-							   		{else}
-							   		<option value="{$child['id']}">{$child['title']}</option>
-							   		{/if}
-						   			{/foreach}
-									{/notempty}
-						   		{/foreach}
-								{/notempty}
 							</select>
 					    </div>
 				  	</div>
