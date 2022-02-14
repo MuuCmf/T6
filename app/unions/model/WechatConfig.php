@@ -48,6 +48,6 @@ class WechatConfig extends Base{
      * @return string
      */
     public function callbackUrl(){
-        return request()->domain() . "/unions/api.WechatOfficialAccount/callback";
+        return request()->domain() . "/unions/official/callback";
     }
 }
