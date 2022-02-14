@@ -4,33 +4,55 @@
         <div class="navbar-header">
             <div class="logo">
                 <h1>
-                    <img src="__STATIC__/common/images/logo.png" alt="">
+                    <img alt="" src="__STATIC__/common/images/logo.png">
                 </h1>
             </div>
             <div class="navigation">
                 <ul class="index-menu">
-                    <li class="active"><a href="{:url('muu/index/index')}" class="active-item home">首页</a>
+                    <li class="active"><a class="active-item home" href="{:url('muu/index/index')}">首页</a>
                         <span class="home-underline"></span>
                     </li>
                     <li class="active">
-                        <a href="{:url('muu/product/index')}" class="active-item product">产品</a>
+                        <a class="active-item product" href="{:url('muu/product/index')}">产品</a>
                         <span class="product-underline"></span>
                     </li>
-                    <li class="active"><a href="{:url('muu/frame/index')}" class="active-item">下载开源框架</a></li>
-                    <li class="active"><a href="{:url('muu/nslookup/index')}" class="active-item">授权查询</a></li>
-                    <li class="active"><a href="{:url('muu/about/index')}" class="active-item">关于我们</a></li>
+                    <li class="active"><a class="active-item" href="{:url('muu/frame/index')}">下载开源框架</a></li>
+                    <li class="active"><a class="active-item" href="{:url('muu/nslookup/index')}">授权查询</a></li>
+                    <li class="active"><a class="active-item" href="{:url('muu/about/index')}">关于我们</a></li>
                     {if condition="is_login()"}
                     <li class="dropdown">
                         <!-- 手机号 -->
                         <!-- <p class="mobile">你好，<span id="item">13333289404</span></p> -->
                         <!-- 头像 -->
                         <div class="avatar">
-                            <a role="button" class="dropdown-toggle dropdown-toggle-avatar" data-toggle="dropdown">
-                                <img src="{$common_header_user.avatar64}" class="avatar img-circle" />
+                            <a class="dropdown-toggle dropdown-toggle-avatar" data-toggle="dropdown" role="button">
+                                <img class="avatar img-circle" src="{$common_header_user.avatar64}"/>
                                 {$common_header_user.nickname}
                             </a>
+                            <ul class="dropdown-menu pull-right" role="menu">
+                                {volist name="user_nav" id="vo"}
+                                <li>
+                                    <a href="{:get_nav_url($vo['url'])}"
+                                       target="{eq name='vo.target' value='1'}_blank{else/}_self{/eq}">
+                                        <span>{$vo.title}</span>
+                                    </a>
+                                </li>
+                                {/volist}
+                                {if condition="check_auth('admin/Index/index')"}
+                                <li>
+                                    <a href="{:url('admin/Index/index')}" target="_blank">
+                                        管理后台
+                                    </a>
+                                </li>
+                                {/if}
+                                <li>
+                                    <a data-url="{:url('ucenter/Common/logout')}" event-node="logout">
+                                        退出
+                                    </a>
+                                </li>
+                            </ul>
                         </div>
-                        <a class="logout" event-node="logout" data-url="{:url('ucenter/Common/logout')}">
+                        <a class="logout" data-url="{:url('ucenter/Common/logout')}" event-node="logout">
                             【退出】
                         </a>
                     </li>
@@ -39,14 +61,15 @@
                         <!-- 弹框 -->
                         {if condition="$open_quick_login"}
                         <a data-login="quick_do_login" data-remote="{:url('ucenter/Common/quickLogin')}"
-                            data-show-header="false" data-toggle="modal">登录</a>
+                           data-show-header="false" data-toggle="modal">登录</a>
                         {else/}
                         <!-- 单页 -->
                         <a data-login="do_login" href="{$login_url}">登录</a>
                         {/if}
                     </li>
                     <li class="member registration">
-                        <a data-role="do_register" href="{:url('ucenter/Common/register',['forward'=> $_SERVER['REQUEST_URI']])}">注册</a>
+                        <a data-role="do_register"
+                           href="{:url('ucenter/Common/register',['forward'=> $_SERVER['REQUEST_URI']])}">注册</a>
                     </li>
                     {/if}
                 </ul>
@@ -55,10 +78,10 @@
     </div>
 </div>
 <script>
-    $(window).ready(function (){
-        $(".index-menu a").each(function(){
+    $(window).ready(function () {
+        $(".index-menu a").each(function () {
             $this = $(this);
-            if($this[0].href == String(window.location)){
+            if ($this[0].href == String(window.location)) {
                 $this.addClass("main-active")
             }
         })

@@ -34,24 +34,9 @@
             .scan-status{
                 color: #c4c4c4;
             }
-        }
-        .user{
-            display: none;
-            padding: 65px 0 0 10px;
-            .user-info{
-                padding-bottom: 20px;
-                .wx-avatar{
-                    width: 50px;
-                    height: 50px;
-                    border-radius: 50%;
-                    margin-right: 10px;
-                }
-                .wx-nickname{
-                    color: #222222;
-                }
-            }
             .confirm{
-                margin-left: 30px;
+                margin-top: 10px;
+                display: none;
             }
         }
     }
