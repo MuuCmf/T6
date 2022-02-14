@@ -299,7 +299,7 @@ class Page
                         break;
                     }
                 }else{
-                    $val = $this->appList($val,$shopid);
+                    $val = $this->appComponent($val,$shopid);
                 }
                 
             }
@@ -333,19 +333,17 @@ class Page
     /**
      * 各应用在自定义页的列表数据
      */
-    public function appList($data, $shopid)
+    public function appComponent($data, $shopid)
     {
         // 应用
         
         // 绑定到容器
-        $name = $data['app'] . '\\' . Str::camel($data['type']);
-        $class = 'app\\' . $data['app'] . '\\service\\Micro';
-        
+        $name = $data['app'] . '\\' . Str::studly($data['type']);
+        $class = 'app\\' . $data['app'] . '\\micro\\' . Str::studly($data['type']);
         bind($name, $class);
         try {
-            // 获取数据方法
-            $action = app($name)->config['component'][$data['type']]['action'];
-            $data = app($name)->$action($data, $shopid);
+            // 约定数据处理方法为 handle
+            $data = app($name)->handle($data, $shopid);
         } catch (\Exception $e) {
             return $data;
             //throw new \think\Exception('异常消息', 10006);

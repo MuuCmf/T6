@@ -131,10 +131,10 @@ class Mobile extends MicroAdmin
             $app_list = $this->ModuleModel->getAll();
             View::assign('app_list', $app_list);
 
-            // 面板列表
-            $panel = (new DiyService())->getPanel();
-            View::assign('panel', $panel);
-            
+            // 自定义DIY组件列表
+            $diy_params_config = (new DiyService())->getConfig();
+            View::assign('diy_params_config', $diy_params_config);
+            dump($diy_params_config);
             // 链接至参数
             $link_list = $this->PageLogic->linkParams();
             View::assign('link_list', $link_list);

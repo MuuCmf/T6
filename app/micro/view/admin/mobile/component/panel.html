@@ -10,8 +10,8 @@
 			</div>
 			<div id="collapse_system" class="panel-collapse collapse in">
 				<div class="panel-body object-lists">
-					{notempty name="panel.common"}
-					{foreach $panel.common as $v}
+					{notempty name="diy_params_config.common"}
+					{foreach $diy_params_config.common as $v}
 					<div class="btn-object" data-type="{$v['type']}">
 						<div class="object-item">
 							<i class="fa fa-{$v['icon']}" aria-hidden="true"></i>
@@ -23,23 +23,24 @@
 				</div>
 			</div>
 		</div>
-		{notempty name="panel.app"}
-		{foreach $panel.app as $v}
+		{notempty name="diy_params_config.app"}
+		{foreach $diy_params_config.app as $v}
 		<div class="panel panel-default">
 			<div class="panel-heading" id="headingOne">
 			<h4 class="panel-title">
-				<a data-toggle="collapse" data-parent="#accordionPanels" href="#collapse_{$v.info.name}">
-					{$v.info.alias}
+				<a data-toggle="collapse" data-parent="#accordionPanels" href="#collapse_{$v.name}">
+					{$v.alias}
 				</a>
 			</h4>
 			</div>
-			<div id="collapse_{$v.info.name}" class="panel-collapse collapse in">
+			<div id="collapse_{$v.name}" class="panel-collapse collapse in">
 				<div class="panel-body object-lists">
-					{notempty name="v.component"}
-					{foreach $v.component as $c_k => $c_v}
+					{notempty name="v.list"}
+					{foreach $v.list as $c_k => $c_v}
 					<div class="btn-object" 
-					data-app="{$v.info.name}" 
-					data-type="{$c_k}"
+					data-app="{$v.name}" 
+					data-title="{$c_v.title}"
+					data-type="{$c_v.type}"
 					data-list-api="{$c_v['api']['list']|default=''}" 
 					data-category-api="{$c_v['api']['category']|default=''}">
 						<div class="object-item">
