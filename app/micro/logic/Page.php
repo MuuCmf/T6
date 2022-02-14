@@ -1,7 +1,6 @@
 <?php
 namespace app\micro\logic;
 
-use app\common\logic\Base;
 use think\helper\Str;
 use app\common\model\module;
 
@@ -341,9 +340,10 @@ class Page
         if(file_exists($path)){
             $config = require($path);
             // 绑定到容器
-            $name = $config['panel'][$data['type']]['type'];
-            $class = $config['panel'][$data['type']]['bind']['class'];
-            $action = $config['panel'][$data['type']]['bind']['action'];
+            $name = $data['app'] . '\\' . Str::camel($config['panel'][$data['type']]['type']);
+            $class = 'app\\' . $data['app'] . '\\service\\Micro';
+            // 获取数据方法
+            $action = $config['panel'][$data['type']]['action'];
             bind($name, $class);
             if(app($name)){
                 $data = app($name)->$action($data, $shopid);

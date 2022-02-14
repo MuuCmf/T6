@@ -1,6 +1,6 @@
-{if $vo['app'] !== 'micro'}
-<!--课程列表-->
-<div class="object-item app-list" data-type="{$vo['type']}" data-object-index="{$vo['type']}-{$key}" data-category-api="{:url('classroom/admin.category/tree')}">
+{if $vo['app'] != 'micro'}
+<!--列表-->
+<div class="object-item app-list" data-type="app_list" data-object-index="{$vo['type']}-{$key}">
 	<div class="object-drag app-list">
 		<div class="app-list-preview">
 			<div class="title clearfix">
@@ -43,7 +43,6 @@
 							<div class="price">￥ {if $data['price'] == 0}免费{else}{$data['price']}{/if}</div>
 						</div>
 					</div>
-					
 				</div>
 				{/if}
 				{if $vo['data']['style'] == 1}
@@ -128,7 +127,7 @@
 	<div class="diy-preview-controller {$vo['type']}">
 		<div class="panel panel-info">
 		 	<div class="panel-heading">
-		    课程列表
+		    列表
 		 	</div>
 		 	<div class="panel-body">
 		 		<div class="form-horizontal">
@@ -140,37 +139,7 @@
 				  	</div>
 			 		
 				  	<div class="form-group">
-					    <label class="col-sm-3">课程类型</label>
-					    <div class="col-sm-9">
-						    <select class="form-control wide" name="type">
-								{if $vo['data']['type'] == 'all'}
-								<option value="all" selected>所有</option>
-								{else}
-								<option value="all">所有</option>
-								{/if}
-
-								{if $vo['data']['type'] == 'image_text'}
-								<option value="image_text" selected>图文</option>
-								{else}
-								<option value="image_text">图文</option>
-								{/if}
-
-								{if $vo['data']['type'] == 'audio'}
-								<option value="audio" selected>音频</option>
-								{else}
-								<option value="audio">音频</option>
-								{/if}
-
-								{if $vo['data']['type'] == 'video'}
-								<option value="video" selected>视频</option>
-								{else}
-								<option value="video">视频</option>
-								{/if}
-							</select>
-					    </div>
-				  	</div>
-				  	<div class="form-group">
-					    <label class="col-sm-3">课程分类</label>
+					    <label class="col-sm-3">分类</label>
 					    <div class="col-sm-9">
 						   <select class="form-control wide" name="category_id" data-category-id="{$vo['data']['category_id']}">
 						   		<option value="0">所有</option>
