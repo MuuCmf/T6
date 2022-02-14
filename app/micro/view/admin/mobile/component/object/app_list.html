@@ -9,6 +9,7 @@
 			</div>
 			<div class="list rank{$vo['data']['rank']} clearfix">
 			{if $vo['data']['rank'] == 1}
+			{notempty name="vo['data']['list']"}
 			{foreach $vo['data']['list'] as $key=>$data}
 			{if $vo['data']['style'] == 0}
 				<div class="item small" data-type="knowledge_list_item" data-id="{$data['id']}">
@@ -82,9 +83,11 @@
 				</div>
 				{/if}
 			{/foreach}
+			{/notempty}
 			{/if}
 
 			{if $vo['data']['rank'] == 0}
+			{notempty name="vo['data']['list']"}
 			{foreach $vo['data']['list'] as $key=>$data}
 				<div class="item" data-type="knowledge_list_item" data-id="{$data['id']}">
 					
@@ -120,6 +123,7 @@
 					</div>
 				</div>
 			{/foreach}
+			{/notempty}
 			{/if}
 			</div>
 		</div>
