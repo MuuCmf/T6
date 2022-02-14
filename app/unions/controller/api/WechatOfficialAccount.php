@@ -16,6 +16,7 @@ namespace app\unions\controller\api;
 
 use app\common\controller\Base;
 use app\common\model\Member;
+use app\common\model\MemberSync;
 use app\common\model\QrcodeLogin;
 use app\unions\model\WechatAutoReply;
 use app\unions\facade\wechat\OfficialAccount;
@@ -173,7 +174,7 @@ class WechatOfficialAccount extends Base
      * @param $scene_key
      * @return \think\response\Json
      */
-    public static function loginQrcode($scene_key, $params = array()){
+    public static function loginQrcode($scene_key){
         //模板调用
         $access_token = OfficialAccount::getToken();
         $qrcode_url = 'https://api.weixin.qq.com/cgi-bin/qrcode/create?access_token=' . $access_token['access_token'];
@@ -182,7 +183,35 @@ class WechatOfficialAccount extends Base
         $result = OfficialAccount::createQrcode($qrcode_url , 60 * 60);
         $ticket = $result['ticket'];
         $qrcode = OfficialAccount::getQrcodeUrl($ticket);
-        return $qrcode;
+        $fp = fopen($qrcode, 'rb');
+        fpassthru($fp);
+    }
+
+    /**
+     * @title 扫码登录
+     * @return \think\Response|void
+     */
+    public function scanLogin(){
+        if (request()->isPost()){
+            $openid = input('openid');
+            $map = [
+                ['openid' ,'=' ,$openid],
+                ['type' ,'=' ,'weixin_h5']
+            ];
+            $uid = MemberSync::where($map)->value('uid');
+            if (!$uid) $this->error('请在个人中心绑定微信后，尝试扫码登录');
+            //登录
+            $res = (new Member())->login($uid);
+            if ($res) {
+                $token = JWTAuth::builder(['uid' => $uid]); //参数为用户认证的信息，请自行添加
+                $token = 'Bearer ' . $token;
+                $last_url = session('login_http_referer');
+                if(empty($last_url)){
+                    $last_url = request()->domain();
+                }
+                return $this->success('登录成功',$token,$last_url);
+            }
+        }
     }
 
     /**

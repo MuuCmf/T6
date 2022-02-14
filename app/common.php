@@ -903,13 +903,14 @@ function deep_in_array($value, $array) {
     return false;   
 }
 
-/**
- * 生成唯一标识符
- * @return string
- */
-function create_unique(){
-    $data = $_SERVER['HTTP_USER_AGENT'].$_SERVER['REMOTE_ADDR'].time().rand();
-    return sha1($data);
+if (!function_exists('create_unique')) {
+    /**
+     * 生成唯一标识符
+     */
+    function create_unique(){
+        $data = $_SERVER['HTTP_USER_AGENT'].$_SERVER['REMOTE_ADDR'].time().rand();
+        return sha1($data);
+    }
 }
 
 if (!function_exists('is_weixin')) {

@@ -24,7 +24,7 @@
                         {else /}
                         <div class="no-bind">
                             <div class="col-md-6 qrcode">
-                                <img src="{$qrcode}" alt="">
+                                <img class="wechat-qrcode" src="" alt="">
                                 <div class="scan-status">未扫码</div>
                                 <button class="btn btn-info confirm btn-bind" type="button">绑定</button>
                             </div>
@@ -43,27 +43,18 @@
 <script src="__STATIC__/ucenter/js/main.min.js"></script>
 <script>
     $(function () {
-        var sceneKey = '{$scene_key}';
-        var userInfo = null;
-        hasScan();
-        function hasScan() {
-            $.get('{:url("unions/api.wechat_official_account/hasScan")}',{scene_key:sceneKey},function (res) {
-                if (res.code == 200){
-                    $('.scan-status').text('已扫码');
-                    userInfo = res.data;
-                    $('.qrcode .btn-bind').show();
-                }else{
-                    setTimeout(function () {
-                        hasScan()
-                    },3000)
-                }
-            })
+        //扫码回调
+        scan_login.callback = function(){
+            scan_login.login();
         }
+
+        //扫码登录
+        scan_login.initWechatQrcode('.wechat-qrcode');
 
         $('.btn-bind').on('click','',function () {
             $.post("./wechat",{
-                openid:userInfo.openid,
-                unionid:userInfo.unionid,
+                openid:scan_login.userInfo.openid,
+                unionid:scan_login.userInfo.unionid,
             },function (res) {
                 if (res.code == 200){
                     window.location.reload();

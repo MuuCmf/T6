@@ -17,50 +17,52 @@
     <div class="clearfix"></div>
     <div class="wrapper">
         <div class="password-captcha">
-            <ul id="myTab" class="nav-tabs">
+            <ul class="nav-tabs" id="myTab">
                 <li class="login-method-captcha">
-                    <a href="#shortmessage" data-toggle="tab">验证码登录</a>
+                    <a data-toggle="tab" href="#shortmessage">验证码登录</a>
                     <!-- <a href="#captcha" data-toggle="tab">验证码登录</a> -->
                 </li>
                 <li class="active login-method-password">
-                    <a href="#password" data-toggle="tab">密码登录</a>
+                    <a data-toggle="tab" href="#password">密码登录</a>
                 </li>
             </ul>
         </div>
-        <form action="{:url('ucenter/Common/login')}" method="post" class="ajax_form">
+        <form action="{:url('ucenter/Common/login')}" class="ajax_form" method="post">
             <div class="row">
                 <div class="form-group">
-                    <label for="loginMainAccount" class=".sr-only col-xs-12"></label>
+                    <label class=".sr-only col-xs-12" for="loginMainAccount"></label>
                     <div class="col-xs-12">
-                        <input type="text" id="loginMainAccount" class="form-control" placeholder="{$ph}"
-                            name="account">
+                        <input class="form-control" id="loginMainAccount" name="account" placeholder="{$ph}"
+                               type="text">
                     </div>
                     <div class="clearfix"></div>
                 </div>
                 <div class="tab-content" id="myTabContent">
-                    <div id="password" class="form-group clearfix tab-pane fade in active">
-                        <label for="inputPassword" class=".sr-only col-xs-12"></label>
+                    <div class="form-group clearfix tab-pane fade in active" id="password">
+                        <label class=".sr-only col-xs-12" for="inputPassword"></label>
                         <div class="col-xs-12 ">
-                            <div id="password_block" class="input-group">
-                                <input type="password" id="inputPassword" class="form-control" placeholder="请输入密码"
-                                    name="password">
+                            <div class="input-group" id="password_block">
+                                <input class="form-control" id="inputPassword" name="password" placeholder="请输入密码"
+                                       type="password">
                                 <!-- <div class="input-group-addon"><a class="change_show" href="javascript:void(0);">show</a></div> -->
                                 <span class="see iconfont input-group-addon" deta-type="hidden">&#xe6b1;</span>
                             </div>
                         </div>
                     </div>
-                    <div id="shortmessage" class="form-group captcha shortmessage clearfix tab-pane fade">
+                    <div class="form-group captcha shortmessage clearfix tab-pane fade" id="shortmessage">
                         <div class="col-xs-8">
-                            <input type="text" id="verifyCode" class="form-control" placeholder="请输入验证码" datatype="*5-5" name="captcha">
+                            <input class="form-control" datatype="*5-5" id="verifyCode" name="captcha" placeholder="请输入验证码"
+                                   type="text">
                         </div>
                         <div class="captcha-btn">
                             <button class="elicitcaptcha" onClick="elicitcaptcha()"><a href="#">获取验证码</a></button>
                         </div>
                     </div>
                     {if check_verify_open('login')}
-                    <div id="shortmessage" class="form-group captcha shortmessage clearfix tab-pane fade">
+                    <div class="form-group captcha shortmessage clearfix tab-pane fade" id="shortmessage">
                         <div class="col-xs-8">
-                            <input type="text" id="verifyCode" class="form-control" placeholder="请输入验证码" datatype="*5-5" name="captcha" >
+                            <input class="form-control" datatype="*5-5" id="verifyCode" name="captcha" placeholder="请输入验证码"
+                                   type="text">
                         </div>
                         <div class="captcha-btn">
                             <button class="elicitcaptcha" onClick="elicitcaptcha()"><a href="#">获取验证码</a></button>
@@ -88,7 +90,7 @@
                     <div class="col-xs-6 text-right">
                         <div class="with-padding">
                             <a class="" href="{:url('ucenter/Common/mi')}"
-                                style="color: #666666;font-size: 14px;">忘记密码</a>
+                               style="color: #666666;font-size: 14px;">忘记密码</a>
                         </div>
                     </div>
                 </div>
@@ -103,88 +105,52 @@
             {/php}
             <input name="from" type="hidden" value="{$referer}">
             <div class="form-group">
-                <button type="submit" class="btn btn-block btn-login btn-lg"> 登 录 </button>
+                <button class="btn btn-block btn-login btn-lg" type="submit"> 登 录</button>
             </div>
         </form>
     </div>
     <div class="ewm-login">
         <h3>微信扫码登录</h3>
         <div>
-             <img src="__STATIC__/common/images/login.png" alt="" />
+            <img alt="" class="wechat-qrcode" src=""/>
+            <div class="blur hidden">
+                <img alt="" src="__STATIC__/common/images/check_success.png">
+                <span>扫码成功</span>
+            </div>
         </div>
-        <p>请使用微信扫描二维码登录</p>
+        <p class="scan-status">请使用微信扫描二维码登录</p>
+        <a class="reset-qrcode hidden">重新生成</a>
     </div>
     <div class="register-section">
-        还没有账号? <a href="{:url('ucenter/common/register',array('type'=>'mobile'))}" class="">立即注册</a>
+        还没有账号? <a class="" href="{:url('ucenter/common/register',array('type'=>'mobile'))}">立即注册</a>
     </div>
 
 </div>
 <div class="clearfix"></div>
 
 <script type="text/javascript">
-    //切换登录方式
-    $(document).ready(function () {
-        $("#password-login").click(function () {
-            $(".ewm").show();
-            $(".wrapper").show();
-            $(".password-login").hide();
-            $(".ewm-login").hide();
-        });
-        $("#ewm").click(function () {
-            $(".ewm").hide();
-            $(".wrapper").hide();
-            $(".password-login").show();
-            $(".ewm-login").show();
 
-        });
-    });
-
-    // $(function () {
-    //     $("#login li:eq(0) a").tab("show");
-    // });
-
-    $(".input-group").on("click", ".see", function () {
-        let type = $(this).data('type');
-        if (type == 'hidden') {
-            $(this).data('type', 'show');
-            $(this).html('&#xe67a;');
-            $(this).prev().attr("type", "text");
-        } else {
-            $(this).data('type', 'hidden');
-            $(this).html('&#xe6b1;');
-            $(this).prev().attr("type", "password");
-        }
-    });
-
-    $(document).ready(function () {
-        $(".login-method-password").click(function () {
-            $(".text-right").show();
-        });
-        $(".login-method-captcha").click(function () {
-            $(".text-right").hide();
-
-        });
-    });
     var validatecode = 60;
-function elicitcaptcha(){
-    if(validatecode === 1){
-      validatecode = 60;
-    $(".elicitcaptcha").text("获取验证码");
-    $(".elicitcaptcha").removeAttr("disabled");
-    $(".elicitcaptcha").css("pointer-events","all");
-    $(".elicitcaptcha").css({"border":"1px solid #03b8cf","color":"#03b8cf"})
-      return
-    }else{
-      validatecode--;
-    $(".elicitcaptcha").text("重新获取("+validatecode+")");
-    $(".elicitcaptcha").attr("disabled","true")
-    $(".elicitcaptcha").css("pointer-events","none");
-    $(".elicitcaptcha").css({"border":"1px solid #ababab","color":"#ababab"})
+
+    function elicitcaptcha() {
+        if (validatecode === 1) {
+            validatecode = 60;
+            $(".elicitcaptcha").text("获取验证码");
+            $(".elicitcaptcha").removeAttr("disabled");
+            $(".elicitcaptcha").css("pointer-events", "all");
+            $(".elicitcaptcha").css({"border": "1px solid #03b8cf", "color": "#03b8cf"})
+            return
+        } else {
+            validatecode--;
+            $(".elicitcaptcha").text("重新获取(" + validatecode + ")");
+            $(".elicitcaptcha").attr("disabled", "true")
+            $(".elicitcaptcha").css("pointer-events", "none");
+            $(".elicitcaptcha").css({"border": "1px solid #ababab", "color": "#ababab"})
+        }
+        setTimeout(function () {
+            elicitcaptcha();
+        }, 1000)
     }
-    setTimeout(function(){
-      elicitcaptcha();
-    },1000)
-}
 
     // -----------------------------------
     $(function () {
@@ -268,6 +234,59 @@ function elicitcaptcha(){
             } else {
                 $(".verifyimg").attr("src", verifyimg.replace(/\?.*$/, '') + '?' + Math.random());
             }
+        });
+
+        //扫码回调
+        scan_login.callback = function () {
+            $('.ewm-login .blur').removeClass('hidden');
+            $('.ewm-login .reset-qrcode').removeClass('hidden');
+            scan_login.login();
+        }
+        $("#password-login").click(function () {
+            $(".ewm").show();
+            $(".wrapper").show();
+            $(".password-login").hide();
+            $(".ewm-login").hide();
+        });
+        $("#ewm").click(function () {
+            $('.ewm-login .blur').addClass('hidden');
+            $('.ewm-login .reset-qrcode').addClass('hidden');
+            $(".ewm").hide();
+            $(".wrapper").hide();
+            $(".password-login").show();
+            $(".ewm-login").show();
+            //扫码登录
+            scan_login.initWechatQrcode('.wechat-qrcode');
+        });
+
+        $('.ewm-login .reset-qrcode').click(function () {
+            //扫码登录
+            scan_login.initWechatQrcode('.wechat-qrcode');
+            $('.ewm-login .blur').addClass('hidden');
+            $('.ewm-login .reset-qrcode').addClass('hidden');
+        })
+
+        $(".input-group").on("click", ".see", function () {
+            let type = $(this).data('type');
+            if (type == 'hidden') {
+                $(this).data('type', 'show');
+                $(this).html('&#xe67a;');
+                $(this).prev().attr("type", "text");
+            } else {
+                $(this).data('type', 'hidden');
+                $(this).html('&#xe6b1;');
+                $(this).prev().attr("type", "password");
+            }
+        });
+
+        $(document).ready(function () {
+            $(".login-method-password").click(function () {
+                $(".text-right").show();
+            });
+            $(".login-method-captcha").click(function () {
+                $(".text-right").hide();
+
+            });
         });
     });
 </script>

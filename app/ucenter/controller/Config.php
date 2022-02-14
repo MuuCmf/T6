@@ -318,14 +318,14 @@ class Config extends Common
             //是否绑定过其他账号
             $bind_map =[];
             $bind_map[] = ['openid','=', $params['openid']];
-            $bind_map[] = ['type','=',1];
+            $bind_map[] = ['type','=','weixin_h5'];
             $has_bind = boolval((new MemberSync())->where($bind_map)->count());
             if ($has_bind) $this->error('当前微信已绑定了其他账号');
             $data = [
                 'uid'     => get_uid(),
                 'openid'  => $params['openid'],
                 'unionid' => $params['unionid'] ?? '',
-                'type'    => 1
+                'type'    => 'weixin_h5'
             ];
             $res = (new MemberSync())->edit($data);
             if ($res){
@@ -337,16 +337,12 @@ class Config extends Common
         $self = query_user($uid, array('nickname','avatar' ,'score1', 'score2', 'score3', 'score4'));
         //是否绑定微信
         $bind_map =[];
-        $bind_map[] = ['uid','=',$uid];
-        $bind_map[] = ['type','=',1];
+        $bind_map[] = ['uid'    ,'=',  $uid];
+        $bind_map[] = ['type'   ,'=',  'weixin_h5'];
         $has_bind = boolval((new MemberSync())->where($bind_map)->count());
-        //异步扫码key
-        $scene_key = create_unique();
         View::assign([
             'user'      => $self,
             'has_bind'  => boolval($has_bind),
-            'qrcode'    => WechatOfficialAccount::loginQrcode($scene_key),
-            'scene_key' => $scene_key
         ]);
         return View::fetch();
     }

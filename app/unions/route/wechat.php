@@ -18,4 +18,7 @@ use think\facade\Route;
 Route::group('official',function (){
     Route::rule('callback' ,'unions/api.WechatOfficialAccount/callback');
     Route::rule('oauthCallback' ,'unions/api.WechatOfficialAccount/oauthCallback');
+    Route::rule('loginQrcode' ,'unions/api.WechatOfficialAccount/loginQrcode');
+    Route::rule('hasScan' ,'unions/api.WechatOfficialAccount/hasScan');
+    Route::rule('scanLogin' ,'unions/api.WechatOfficialAccount/scanLogin');
 });
