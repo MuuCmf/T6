@@ -336,19 +336,21 @@ class Page
     public function appList($data, $shopid)
     {
         // 应用
-        $path = APP_PATH . $data['app'] . '/config/panel.php';
-        if(file_exists($path)){
-            $config = require($path);
-            // 绑定到容器
-            $name = $data['app'] . '\\' . Str::camel($config['panel'][$data['type']]['type']);
-            $class = 'app\\' . $data['app'] . '\\service\\Micro';
+        
+        // 绑定到容器
+        $name = $data['app'] . '\\' . Str::camel($data['type']);
+        $class = 'app\\' . $data['app'] . '\\service\\Micro';
+        
+        bind($name, $class);
+        try {
             // 获取数据方法
-            $action = $config['panel'][$data['type']]['action'];
-            bind($name, $class);
-            if(app($name)){
-                $data = app($name)->$action($data, $shopid);
-            }
+            $action = app($name)->config['component'][$data['type']]['action'];
+            $data = app($name)->$action($data, $shopid);
+        } catch (\Exception $e) {
+            return $data;
+            //throw new \think\Exception('异常消息', 10006);
         }
+        
         return $data;
     }
 

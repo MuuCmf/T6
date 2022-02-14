@@ -8,7 +8,7 @@ use app\micro\controller\admin\Admin as MicroAdmin;
 use app\common\model\Module;
 use app\micro\model\MicroPage as PageModel;
 use app\micro\logic\Page as PageLogic;
-use app\micro\logic\Panel as PanelLogic;
+use app\micro\service\Diy as DiyService;
 
 
 class Mobile extends MicroAdmin
@@ -132,7 +132,7 @@ class Mobile extends MicroAdmin
             View::assign('app_list', $app_list);
 
             // 面板列表
-            $panel = (new PanelLogic())->getList();
+            $panel = (new DiyService())->getPanel();
             View::assign('panel', $panel);
             
             // 链接至参数

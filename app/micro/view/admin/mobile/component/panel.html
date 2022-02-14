@@ -35,13 +35,13 @@
 			</div>
 			<div id="collapse_{$v.info.name}" class="panel-collapse collapse in">
 				<div class="panel-body object-lists">
-					{notempty name="v.panel"}
-					{foreach $v.panel as $c_k => $c_v}
+					{notempty name="v.component"}
+					{foreach $v.component as $c_k => $c_v}
 					<div class="btn-object" 
 					data-app="{$v.info.name}" 
 					data-type="{$c_k}"
-					data-list-api="{$c_v['list_api']}" 
-					data-category-api="{$c_v['category_api']}">
+					data-list-api="{$c_v['api']['list']|default=''}" 
+					data-category-api="{$c_v['api']['category']|default=''}">
 						<div class="object-item">
 							<i class="fa fa-{$c_v['icon']}" aria-hidden="true"></i>
 							<p>{$c_v['title']}</p>
