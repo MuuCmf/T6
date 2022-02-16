@@ -8,3 +8,16 @@
 {include file="admin/mobile/component/script/member" /}
 {include file="admin/mobile/component/script/category" /}
 {include file="admin/mobile/component/script/app_list" /}
+<!--加载各应用自定义组件START-->
+{foreach diy_params_config.app as $k=>$v}
+{notempty name="v.list"}
+{foreach $v.list as $c_k=>$c_v}
+{php}
+if(file_exists($c_v['tmpl']['script'])){
+    include_once($c_v['tmpl']['script']);
+}
+{/php}
+{/foreach}
+{/notempty}
+{/foreach}
+<!--加载各应用自定义组件END-->
