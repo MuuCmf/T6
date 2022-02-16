@@ -151,32 +151,40 @@ class Common extends CommonCommon
              //获取参数
             $account = input('post.account', '', 'text'); // 账号
             $password = input('post.password', '', 'text'); // 密码
-            $captcha = input('post.captcha', '', 'text'); // 图形验证码
-
+            $captcha = input('post.captcha', '', 'text'); // 验证码
+            $login_type = input('post.login_type','password');//登录类型
 
             if(empty($account)) return $this->error('账号不能为空');
-            if(empty($password)) return $this->error('密码不能为空');
-            // 检测图形验证码
-            if (check_verify_open('login')) {
-                if (!captcha_check($captcha)) {
-                    return $this->error('图形验证码错误');
-                }
-            }
-            // 验证账号和密码
             $commonMemberModel = new CommonMember;
-            $uid = $commonMemberModel->verifyUserPassword($account, $password);
-            if($uid == -1) return $this->error('用户不存在或被禁用');
-            if($uid == -2) return $this->error('密码错误');
+
+            if ($login_type == 'password'){
+                //密码登录
+                if(empty($password)) return $this->error('密码不能为空');
+                // 检测图形验证码
+                if (check_verify_open('login')) {
+                    if (!captcha_check($captcha)) {
+                        return $this->error('图形验证码错误');
+                    }
+                }
+                // 验证账号和密码
+                $uid = $commonMemberModel->verifyUserPassword($account, $password);
+                if($uid == -1) return $this->error('用户不存在或被禁用');
+                if($uid == -2) return $this->error('密码错误');
+            }else{
+                //验证码登录
+                $uid = $commonMemberModel->verifyUserCaptcha($account, $captcha);
+                if($uid == -1) return $this->error('用户不存在或被禁用');
+                if($uid == -2) return $this->error('验证码错误');
+            }
+
             //登录
             $res = $commonMemberModel->login($uid);
             if ($res) {
-                $token = JWTAuth::builder(['uid' => $uid]); //参数为用户认证的信息，请自行添加
-                $token = 'Bearer ' . $token;
                 $last_url = session('login_http_referer');
                 if(empty($last_url)){
                     $last_url = request()->domain();
                 }
-                return $this->success('登录成功',$token,$last_url);
+                return $this->success('登录成功','',$last_url);
             } else {
                 return $this->error($commonMemberModel->getError());
             }
@@ -187,11 +195,14 @@ class Common extends CommonCommon
                 $this->redirect($url);
             }
             // 允许的登录类型
-            $ph = [];
+            $ph = $ph_account = [];
             check_login_type('username') && $ph[] = '用户名';
-            check_login_type('email') && $ph[] = '邮箱';
-            check_login_type('mobile') && $ph[] = '手机';
-            View::assign('ph', implode('/', $ph));
+            check_login_type('email') && $ph_account[] = $ph[] = '邮箱';
+            check_login_type('mobile') && $ph_account[] = $ph[] = '手机';
+            View::assign([
+                'ph' => implode('/', $ph),
+                'ph_account' => implode('/', $ph_account)
+            ]);
 
             return View::fetch();
         }
@@ -203,11 +214,14 @@ class Common extends CommonCommon
     public function quickLogin()
     {
         // 允许的登录类型
-        $ph = [];
+        $ph = $ph_account = [];
         check_login_type('username') && $ph[] = '用户名';
-        check_login_type('email') && $ph[] = '邮箱';
-        check_login_type('mobile') && $ph[] = '手机';
-        View::assign('ph', implode('/', $ph));
+        check_login_type('email') && $ph_account[] = $ph[] = '邮箱';
+        check_login_type('mobile') && $ph_account[] = $ph[] = '手机';
+        View::assign([
+            'ph' => implode('/', $ph),
+            'ph_account' => implode('/', $ph_account)
+        ]);
 
         // 输出页面
         return View::fetch();

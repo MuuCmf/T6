@@ -1,98 +1,69 @@
 <div class="login-main">
-    <!-- <div class="header">
-        <h2><span>[</span> 用户登录 <span>]</span></h2>
-    </div> -->
     <div class="login-box">
-        <div class="ewm login-method">
+        <div class="ewm login-method"  data-type="scan">
             <div>微信扫码登录</div>
             <span class="iconfont" id="ewm">&#xe678;</span>
         </div>
         <div class="password-login">
-            <div class=" login-method">
+            <div class=" login-method" data-type="normal">
                 <div>密码登录</div>
-                <span class="iconfont" id="password-login">&#xe679;</span>
+                <span class="iconfont" id="password-login" >&#xe679;</span>
             </div>
         </div>
     </div>
-    <div class="clearfix"></div>
-    <div class="wrapper">
-        <div class="password-captcha">
-            <ul class="nav-tabs" id="myTab">
-                <li class="login-method-captcha">
-                    <a data-toggle="tab" href="#shortmessage">验证码登录</a>
-                    <!-- <a href="#captcha" data-toggle="tab">验证码登录</a> -->
-                </li>
-                <li class="active login-method-password">
-                    <a data-toggle="tab" href="#password">密码登录</a>
-                </li>
-            </ul>
-        </div>
-        <form action="{:url('ucenter/Common/login')}" class="ajax_form" method="post">
-            <div class="row">
-                <div class="form-group">
-                    <label class=".sr-only col-xs-12" for="loginMainAccount"></label>
-                    <div class="col-xs-12">
-                        <input class="form-control" id="loginMainAccount" name="account" placeholder="{$ph}"
-                               type="text">
+    <div class="normal-login need-captcha">
+        <ul class="nav nav-tabs">
+            <li class="active login-method-password">
+                <a data-toggle="tab" href="#password" data-login-type="password">密码登录</a>
+                <div class="underline active"></div>
+            </li>
+            <li class="login-method-captcha">
+                <a data-toggle="tab" href="#shortmessage" data-login-type="captcha">验证码登录</a>
+                <div class="underline"></div>
+            </li>
+
+        </ul>
+        <form action="{:url('ucenter/Common/login')}" class="ajax_form" method="post" autocomplete="off">
+            <input type="hidden" name="login_type" value="password">
+            <div class="tab-content">
+                <div class="tab-pane active" id="password">
+                    <div class="login-group">
+                        <input class="login-input login-account" name="account" placeholder="{$ph}" type="text">
                     </div>
-                    <div class="clearfix"></div>
-                </div>
-                <div class="tab-content" id="myTabContent">
-                    <div class="form-group clearfix tab-pane fade in active" id="password">
-                        <label class=".sr-only col-xs-12" for="inputPassword"></label>
-                        <div class="col-xs-12 ">
-                            <div class="input-group" id="password_block">
-                                <input class="form-control" id="inputPassword" name="password" placeholder="请输入密码"
-                                       type="password">
-                                <!-- <div class="input-group-addon"><a class="change_show" href="javascript:void(0);">show</a></div> -->
-                                <span class="see iconfont input-group-addon" deta-type="hidden">&#xe6b1;</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-group captcha shortmessage clearfix tab-pane fade" id="shortmessage">
-                        <div class="col-xs-8">
-                            <input class="form-control" datatype="*5-5" id="verifyCode" name="captcha" placeholder="请输入验证码"
-                                   type="text">
-                        </div>
-                        <div class="captcha-btn">
-                            <button class="elicitcaptcha" onClick="elicitcaptcha()"><a href="#">获取验证码</a></button>
-                        </div>
+                    <div class="login-group password-group">
+                        <input class="login-input"  name="password" placeholder="请输入密码" type="password">
+                        <i class="iconfont" data-type="hidden">&#xe67a;</i>
                     </div>
                     {if check_verify_open('login')}
-                    <div class="form-group captcha shortmessage clearfix tab-pane fade" id="shortmessage">
-                        <div class="col-xs-8">
-                            <input class="form-control" datatype="*5-5" id="verifyCode" name="captcha" placeholder="请输入验证码"
-                                   type="text">
-                        </div>
-                        <div class="captcha-btn">
-                            <button class="elicitcaptcha" onClick="elicitcaptcha()"><a href="#">获取验证码</a></button>
-                        </div>
+                    <div class="login-group captcha-img">
+                        <input type="text"  class="login-input" placeholder="验证码" datatype="*5-5" name="captcha">
+                        <img class="verifyimg reloadverify" alt="刷新验证码" src="{:captcha_src()}"
+                             style="cursor:pointer;height:43px;max-width: 100%">
                     </div>
                     {/if}
-                    <!-- {if check_verify_open('login')}
-                    <div id="captcha" class="form-group clearfix tab-pane fade">
-                        <label for="verifyCode" class=".sr-only col-xs-12" style="display: none"></label>
-                        <div class="col-xs-8">
-                            <input type="text" id="verifyCode" class="form-control" placeholder="验证码" datatype="*5-5" name="captcha">
-                        </div>
-                        <div class="col-xs-4">
-                            <img class="verifyimg reloadverify" alt="刷新验证码" src="{:captcha_src()}"
-                                style="cursor:pointer;height:43px;max-width: 100%">
-                        </div>
-                    </div>
-                    {/if} -->
                 </div>
-                <div class="clearfix form-group">
-                    <div class="col-xs-6">
-                        <input type="checkbox">
-                        记住我
+
+                <div class="tab-pane" id="shortmessage">
+                    <div class="login-group">
+                        <input class="login-input" name="account" placeholder="{$ph_account}"
+                               type="text">
                     </div>
-                    <div class="col-xs-6 text-right">
-                        <div class="with-padding">
-                            <a class="" href="{:url('ucenter/Common/mi')}"
-                               style="color: #666666;font-size: 14px;">忘记密码</a>
-                        </div>
+                    <div class="login-group captcha-sms">
+                        <input class="login-input" name="captcha" placeholder="请输入验证码"
+                               type="text">
+                        <button class="captcha-code margin-bottom-10" type="button" >获取验证码</button>
                     </div>
+                </div>
+            </div>
+
+            <div class="login-opt clearfix">
+                <div class="remember-me">
+                    <input type="checkbox" name="remember" class="remember">
+                    记住我
+                </div>
+                <div class="forget text-right">
+                    <a class="" href="{:url('ucenter/Common/mi')}"
+                       style="color: #666666;font-size: 14px;">忘记密码</a>
                 </div>
             </div>
             {php}
@@ -109,6 +80,7 @@
             </div>
         </form>
     </div>
+
     <div class="ewm-login">
         <h3>微信扫码登录</h3>
         <div>
@@ -124,73 +96,27 @@
     <div class="register-section">
         还没有账号? <a class="" href="{:url('ucenter/common/register',array('type'=>'mobile'))}">立即注册</a>
     </div>
-
 </div>
-<div class="clearfix"></div>
 
 <script type="text/javascript">
-
-    var validatecode = 60;
-
-    function elicitcaptcha() {
-        if (validatecode === 1) {
-            validatecode = 60;
-            $(".elicitcaptcha").text("获取验证码");
-            $(".elicitcaptcha").removeAttr("disabled");
-            $(".elicitcaptcha").css("pointer-events", "all");
-            $(".elicitcaptcha").css({"border": "1px solid #03b8cf", "color": "#03b8cf"})
-            return
-        } else {
-            validatecode--;
-            $(".elicitcaptcha").text("重新获取(" + validatecode + ")");
-            $(".elicitcaptcha").attr("disabled", "true")
-            $(".elicitcaptcha").css("pointer-events", "none");
-            $(".elicitcaptcha").css({"border": "1px solid #ababab", "color": "#ababab"})
-        }
-        setTimeout(function () {
-            elicitcaptcha();
-        }, 1000)
-    }
-
-    // -----------------------------------
     $(function () {
-
-        $(document)
-            .ajaxStart(function () {
-                $("button:submit").addClass("log-in").attr("disabled", true);
-            })
-            .ajaxStop(function () {
-                $("button:submit").removeClass("log-in").attr("disabled", false);
-            });
-
-        $('.login-main').on("click", '.change_show', function () {
-            change_show($(this));
+        //登录方式切换
+        $('.nav-tabs').on('shown.zui.tab', function(e) {
+            //更改下划线位置
+            $(e.currentTarget).children('.underline').removeClass('active');
+            $(e.target).parent().children('.underline').addClass('active')
+            //更新登录类型
+            var loginType = $(e.target).data('login-type');
+            $('[name="login_type"]').val(loginType);
         });
 
-        function change_show(obj) {
-            if ($(obj).text().trim() == 'show') {
-                var value = $('#inputPassword').val().trim();
-                var html = '<input type="text" value="' + value +
-                    '" id="inputPassword" class="form-control input-lg new-input" placeholder="' + "请输入密码" +
-                    '" name="password">' +
-                    '<div class="input-group-addon"><a class="change_show" href="javascript:void(0);">hide</a></div>';
-                $('#password_block').html(html);
-            } else {
-                var value = $('#inputPassword').val().trim();
-                var html = '<input type="password" value="' + value +
-                    '" id="inputPassword" class="form-control input-lg new-input" placeholder="' + "请输入密码" +
-                    '" name="password">' +
-                    '<div class="input-group-addon"><a class="change_show" href="javascript:void(0);">show</a></div>';
-                $('#password_block').html(html);
-            }
-        }
-    });
-
-
-    $(function () {
+        /**
+         * 登录
+         */
         $("form").submit(function (e) {
             e.preventDefault();
             toast.showLoading();
+            $('form').find('div:hidden').find(':input').attr('disabled', 'disabled');
             var self = $(this);
             $.post(self.attr("action"), self.serialize(), success, "json");
             return false;
@@ -198,9 +124,6 @@
             function success(data) {
                 if (data.code == 200) {
                     toast.success(data.msg);
-                    if (data.data) {
-                        localStorage.setItem('user_token', data.data)
-                    }
                     if (data.url == undefined && quickLogin == "quickLogin") {
                         $('[data-role="login_info"]').append(data.msg);
                         setTimeout(function () {
@@ -244,7 +167,7 @@
         }
         $("#password-login").click(function () {
             $(".ewm").show();
-            $(".wrapper").show();
+            $(".normal-login").show();
             $(".password-login").hide();
             $(".ewm-login").hide();
         });
@@ -252,7 +175,7 @@
             $('.ewm-login .blur').addClass('hidden');
             $('.ewm-login .reset-qrcode').addClass('hidden');
             $(".ewm").hide();
-            $(".wrapper").hide();
+            $(".normal-login").hide();
             $(".password-login").show();
             $(".ewm-login").show();
             //扫码登录
@@ -266,26 +189,72 @@
             $('.ewm-login .reset-qrcode').addClass('hidden');
         })
 
-        $(".input-group").on("click", ".see", function () {
+        //控制密码显示/隐藏
+        $(".password-group").on("click", ".iconfont", function () {
             let type = $(this).data('type');
+            console.log(type)
             if (type == 'hidden') {
                 $(this).data('type', 'show');
-                $(this).html('&#xe67a;');
+                $(this).html('&#xe6b1;');
                 $(this).prev().attr("type", "text");
             } else {
                 $(this).data('type', 'hidden');
-                $(this).html('&#xe6b1;');
+                $(this).html('&#xe67a;');
                 $(this).prev().attr("type", "password");
             }
         });
+        /**
+         * 获取验证码
+         */
+        $('.need-captcha').on('click','.captcha-code',function () {
+            var isIng = $(this).hasClass('ing');//是否获取中
+            var s = 60;//重新获取时常
+            var elem = $(this);
+            if (!isIng){
+                var account = $(this).parents('.tab-pane').find('[name="account"]').val();
+                var type = isEmailAvailable(account) ? 'emall' : 'mobile';
+                $.post('{:url("api/verify/send")}' ,{type:type ,account:account} ,function (result) {
+                    if (result.code == 200){
+                        $(elem).addClass('ing');
+                        var timer = setInterval(function () {
+                            if (s > 0){
+                                $(elem).text(`重新获取(${s}s)`)
+                                s--;
+                            }else{
+                                $(elem).removeClass('ing');
+                                clearInterval(timer)
+                                s = 60;
+                                $(elem).text(`重新获取`)
+                            }
+                        },1000)
+                    }else{
+                        if (typeof result.msg == "object"){
+                            toast.error(result.msg.Message);
+                        }else{
+                            toast.error(result.msg);
+                        }
+                    }
+                })
+            }
+        })
 
-        $(document).ready(function () {
-            $(".login-method-password").click(function () {
-                $(".text-right").show();
+        function isEmailAvailable(emailInput) {
+            var myreg = /^([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+@([a-zA-Z0-9]+[_|\_|\.]?)*[a-zA-Z0-9]+\.[a-zA-Z]{2,3}$/;
+            if (!myreg.test(emailInput)) {
+                return false;
+            }
+            else {
+                return true;
+            }
+        }
+
+        //忘记密码
+        $(document).ready(function() {
+            $(".login-method-captcha").click(function() {
+                $("#forgetpassword").hide();
             });
-            $(".login-method-captcha").click(function () {
-                $(".text-right").hide();
-
+            $(".login-method-password").click(function() {
+                $("#forgetpassword").show();
             });
         });
     });

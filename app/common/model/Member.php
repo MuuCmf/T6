@@ -70,7 +70,7 @@ class Member extends Model
      * @param  string  $password 用户密码
      * @return integer           登录成功-用户ID，登录失败-错误编号
      */
-    public function verifyUserPassword($account, $password)
+    public function verifyUserPassword($account ,$password)
     {
         $type = check_account_type($account);
         $map = [];
@@ -114,6 +114,56 @@ class Member extends Model
             }
         }
         $this->error = '用户不存在或被禁用';
+        return -1; //用户不存在或被禁用
+    }
+
+    /**
+     * 验证账号和验证码是否正确
+     * @param  string  $account 账号
+     * @param  string  $captcha 验证码
+     * @return integer           登录成功-用户ID，登录失败-错误编号
+     */
+    public function verifyUserCaptcha($account ,$captcha)
+    {
+        $type = check_account_type($account);
+        $map = [];
+        switch ($type) {
+            case 'username':
+                $map['username'] = $account;
+                break;
+            case 'email':
+                $map['email'] = $account;
+                break;
+            case 'mobile':
+                $map['mobile'] = $account;
+                break;
+            case 'uid':
+                $map['uid'] = $account;
+                break;
+            default:
+                return 0; //参数错误
+        }
+        // 获取用户数据
+        $user = $this->where($map)->find();
+        if($user){
+            // 行为限制
+            $actionLimit = new ActionLimit();
+            $return = $actionLimit->checkActionLimit('input_password','member',$user['uid'],$user['uid']);
+
+            if($return && !$return['code']){
+                return $return['msg'];
+            }
+
+            if ($user['uid'] && $user['status']) {
+                /* 验证用户验证码 */
+                $verifyModel = new Verify();
+                if (!$verifyModel->checkVerify($account, $type, $captcha)) {
+                    return -2;
+                }else{
+                    return $user['uid']; //返回用户ID
+                }
+            }
+        }
         return -1; //用户不存在或被禁用
     }
 
