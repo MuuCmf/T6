@@ -55,13 +55,24 @@
 				</div>
 				<section class="preview-target {$config_data['style']|default='Blue'}">
 					{if !empty($page_data['data'])}
-					{foreach $page_data['data'] as $key=>$vo}
-					{include file="admin/mobile/component/object" /}
-					{/foreach}
+					<!--加载各应用自定义组件START-->
+					{:htmlspecialchars_decode($app_object_tmpl)}
+					<!--加载各应用自定义组件END-->
 					{/if}
 				</section>
 				<section class="diy-script">
-					{include file="admin/mobile/component/script" /}
+					{include file="admin/mobile/component/script/announce" /}
+					{include file="admin/mobile/component/script/search" /}
+					{include file="admin/mobile/component/script/single_img" /}
+					{include file="admin/mobile/component/script/slideshow" /}
+					{include file="admin/mobile/component/script/category_nav" /}
+					{include file="admin/mobile/component/script/custom_text" /}
+					{include file="admin/mobile/component/script/weixin" /}
+					{include file="admin/mobile/component/script/member" /}
+					{include file="admin/mobile/component/script/category" /}
+					<!--加载各应用自定义组件START-->
+					{:htmlspecialchars_decode($app_script_tmpl)}
+					<!--加载各应用自定义组件END-->
 				</section>
 				<div class="page-footer">
 					<div class="config-preview">

@@ -112,20 +112,6 @@ class Mobile extends MicroAdmin
                 return $this->error( '保存失败');
             }
         }else{
-            // 页面数据
-            $page_data = $this->PageModel->where('status', '>', -1)->find($id);
-            if (!empty($page_data)){
-                $page_data = $page_data->toArray();
-                $page_data = $this->PageLogic->formatData($page_data);
-                $page_data = $this->PageLogic->handlingNoParamJson($page_data);
-            }else{
-                $page_data = [];
-            }
-            
-            View::assign([
-                'page_data' => $page_data,
-                'icon_list' => $this->PageLogic->getIconLists()
-            ]);
 
             // 应用列表
             $app_list = $this->ModuleModel->getAll();
@@ -134,7 +120,41 @@ class Mobile extends MicroAdmin
             // 自定义DIY组件列表
             $diy_params_config = (new DiyService())->getConfig();
             View::assign('diy_params_config', $diy_params_config);
-            dump($diy_params_config);
+            //dump($diy_params_config);
+            // 页面数据
+            // object 组件数据
+            $app_object_tmpl = '';
+            $page_data = $this->PageModel->where('status', '>', -1)->find($id);
+            if (!empty($page_data)){
+                $page_data = $page_data->toArray();
+                $page_data = $this->PageLogic->formatData($page_data);
+                $page_data = $this->PageLogic->handlingNoParamJson($page_data);
+                // 处理数据模板
+                foreach($page_data['data'] as $key => $vo){
+                    if($vo['app'] == 'micro'){
+                        $app_object_tmpl .= View::fetch('admin/mobile/component/object/' . $vo['type'],[
+                            'key' => $key,
+                            'data' => $vo
+                        ]);
+                    }else{
+                        $tmpl = $diy_params_config['app'][$vo['app']]['list'][$vo['type']]['tmpl']['object'];
+                        $app_object_tmpl .= View::fetch($tmpl, [
+                            'key' => $key,
+                            'data' => $vo
+                        ]);
+                    }
+                }
+            }else{
+                $page_data = [];
+            }
+            //dump($app_object_tmpl);
+            View::assign('app_object_tmpl', $app_object_tmpl);
+            
+            View::assign([
+                'page_data' => $page_data,
+                'icon_list' => $this->PageLogic->getIconLists()
+            ]);
+
             // 链接至参数
             $link_list = $this->PageLogic->linkParams();
             View::assign('link_list', $link_list);
@@ -142,10 +162,22 @@ class Mobile extends MicroAdmin
             // 获取无图标路径
             $no_icon = request()->domain() . '/static/common/images/diy/noimg.png';
             View::assign('no_icon', $no_icon);
+
+            // 页面SCRIPT
+            $app_script_tmpl = '';
+            foreach($diy_params_config['app'] as $k=>$v){
+                foreach($v['list'] as $c_k=>$c_v){
+                    if(file_exists($c_v['tmpl']['script'])){
+                        $app_script_tmpl .= View::fetch($c_v['tmpl']['script']);
+                    }
+                }
+            }
+            View::assign('app_script_tmpl', $app_script_tmpl);
+            
             // 设置title
             $this->setTitle('移动端自定义页面DIY');
             // 输出页面
-            return view();
+            return View::fetch();
         }
     }
 
