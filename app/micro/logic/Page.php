@@ -1,7 +1,7 @@
 <?php
 namespace app\micro\logic;
 
-use think\helper\Str;
+use app\micro\service\Diy;
 use app\common\model\module;
 
 class Page 
@@ -266,44 +266,8 @@ class Page
         $data['data'] = json_decode($data['data'],true);
         if(!empty($data['data'])){
             foreach($data['data'] as &$val){
-                
-                if($val['app'] == 'micro'){
-                    switch ($val['type']){
-                        // 单图组件处理
-                        case 'single_img':
-                            $val = $this->singleImg($val,$shopid);
-                        break;
-                        // 轮播图组件处理
-                        case 'slideshow':
-                            $val = $this->slideshow($val,$shopid);
-                        break;
-                        // 图文导航组件处理
-                        case 'category_nav':
-                            $val = $this->categoryNav($val,$shopid);
-                        break;
-                        // 公告组件处理
-                        case 'announce':
-                            $val = $this->announce($val,$shopid);
-                        break;
-                        //自定义HTML
-                        // case 'custom_html':
-                        //     $val['data']['content'] = htmlspecialchars_decode($val['data']['content']);
-                        // break;
-                        //分类&筛选数据处理
-                        case 'category':
-                            $val = $this->category($val,$shopid);
-                        break;
-                        //关注微信公众号数据处理
-                        case 'weixin':
-                            $val = $this->weixin($val,$shopid);
-                        break;
-                    }
-                }else{
-                    $val = $this->appComponent($val,$shopid);
-                }
-                
+                $val = (new Diy())->handle($val,$shopid);
             }
-            
         }
 
         if($data['port_type'] == 'pc'){
@@ -330,27 +294,7 @@ class Page
         return $data;
     }
 
-    /**
-     * 各应用在自定义页的列表数据
-     */
-    public function appComponent($data, $shopid)
-    {
-        // 应用
-        
-        // 绑定到容器
-        $name = $data['app'] . '\\' . Str::studly($data['type']);
-        $class = 'app\\' . $data['app'] . '\\micro\\' . Str::studly($data['type']);
-        bind($name, $class);
-        try {
-            // 约定数据处理方法为 handle
-            $data = app($name)->handle($data, $shopid);
-        } catch (\Exception $e) {
-            return $data;
-            //throw new \think\Exception('异常消息', 10006);
-        }
-        
-        return $data;
-    }
+    
 
     /**
      * 单图广告

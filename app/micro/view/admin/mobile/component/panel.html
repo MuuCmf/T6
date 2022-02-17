@@ -1,30 +1,8 @@
 <div class="object-box">
 	<div class="panel-group" id="accordionPanels" aria-multiselectable="true">
-		<div class="panel panel-default">
-			<div class="panel-heading" id="headingOne">
-			<h4 class="panel-title">
-				<a data-toggle="collapse" data-parent="#accordionPanels" href="#collapse_system">
-					页面元素
-				</a>
-			</h4>
-			</div>
-			<div id="collapse_system" class="panel-collapse collapse in">
-				<div class="panel-body object-lists">
-					{notempty name="diy_params_config.common"}
-					{foreach $diy_params_config.common as $v}
-					<div class="btn-object" data-type="{$v['type']}">
-						<div class="object-item">
-							<i class="fa fa-{$v['icon']}" aria-hidden="true"></i>
-							<p>{$v['title']}</p>
-						</div>
-					</div>
-					{/foreach}
-					{/notempty}
-				</div>
-			</div>
-		</div>
-		{notempty name="diy_params_config.app"}
-		{foreach $diy_params_config.app as $v}
+
+		{notempty name="diy_params_config"}
+		{foreach $diy_params_config as $v}
 		<div class="panel panel-default">
 			<div class="panel-heading" id="headingOne">
 			<h4 class="panel-title">

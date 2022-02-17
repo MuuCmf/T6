@@ -1,0 +1,44 @@
+
+<div class="object-item preview category" data-type="category" data-object-index="category-{$key}">
+	<div class="category-preview">
+        <!--一级分类&筛选按钮-->
+        <div class="category-box">
+            <div class="main-box clearfix">
+                <div class="recommend-btn title active swiper-slide">
+                    推荐
+                    <hr />
+                </div>
+
+                <div class="category-list swiper-category-container">
+                    <div class="swiper-wrapper">
+                        {notempty name="category_tree"}
+                        {foreach $category_tree as $k => $v}
+                        <div class="item swiper-slide" data-id="{$v['id']}">
+                            {$v['title']}
+                            <hr />
+                        </div>
+                        {/foreach}
+                        {/notempty}
+                    </div>
+                </div>
+            </div>
+            {if $vo['data']['sub_show'] == 1}
+            <div class="sub-box">
+                {notempty name="category_tree"}
+                {foreach $category_tree as $k => $v}
+                    <div class="sub-items swiper-category-container" data-id="{$v['id']}">
+                        <div class="swiper-wrapper">
+                            {if !empty($v['_child'])}
+                            {foreach $v['_child'] as $c_v}
+                            <div class="sub-item swiper-slide">{$c_v['title']}</div>
+                            {/foreach}
+                            {/if}
+                        </div>
+                    </div>
+                {/foreach}
+                {/notempty}
+            </div>
+            {/if}
+        </div>
+    </div>
+</div>

@@ -1,0 +1,15 @@
+
+<div class="object-item preview announce" data-type="announce" data-object-index="announce-{$key}">
+	<div class="announce-preview">
+		<div class="announce-lists-box swiper-announce-container">
+			<div class="announce-left">公告</div>
+			<ul class="announce-list swiper-wrapper">
+				{notempty name="$vars['data']['data']['list']"}
+				{foreach $vars['data']['data']['list'] as $vo}
+			    <li class="text-ellipsis" data-type="{$vo['type']}" data-id="{$vo['id']}">{$vo['title']}</li>
+			    {/foreach}
+				{/notempty}
+		    </ul>
+		</div>
+	</div>
+</div>
