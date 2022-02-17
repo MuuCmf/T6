@@ -1,10 +1,10 @@
-{if $vo['type'] == 'slideshow'}
-<section class="object-item preview slideshow" data-type="slideshow" data-object-index="slideshow-{$key}">
+
+<section class="object-item preview slideshow" data-type="slideshow" data-object-index="slideshow-{$vars['key']}">
 	<div class="slideshow-preview">
-		<div class="swiper-container swiper-slideshow-container style-{$vo['style']}">
+		<div class="swiper-container swiper-slideshow-container style-{$vars['data']['style']}">
             <div class="swiper-wrapper">
             	{if $vo['data'] != ''}
-            	{foreach $vo['data'] as $k => $v}
+            	{foreach $vars['data']['data'] as $k => $v}
 				<div class="swiper-slide">
 	                <img src="{$v['img_url']}" class="img-responsive">
 	            </div>
@@ -21,4 +21,3 @@
         </div>
 	</div>
 </section>
-{/if}

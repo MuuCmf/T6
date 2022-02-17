@@ -147,7 +147,7 @@ class Mobile extends MicroAdmin
             View::assign('icon_list', $this->PageLogic->getIconLists());
 
             // 链接至参数
-            $link_list = $this->PageLogic->linkParams();
+            $link_list = (new DiyService())->linkParams();
             View::assign('link_list', $link_list);
             
             // 获取无图标路径

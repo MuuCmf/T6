@@ -1,10 +1,10 @@
-<div class="object-item" data-type="slideshow" data-object-index="slideshow-{$key}">
+<div class="object-item" data-type="slideshow" data-object-index="slideshow-{$vars['key']}">
 	<div class="object-drag slideshow">
 		<div class="slideshow-preview">
-			<div class="swiper-container swiper-slideshow-container style-{$vo['style']}">
+			<div class="swiper-container swiper-slideshow-container style-{$vars['data']['style']}">
                 <div class="swiper-wrapper">
-                	{if !empty($vo['data'])}
-		 			{foreach $vo['data'] as $key=>$vo_pre_data}
+                	{if !empty($vars['data']['data'])}
+		 			{foreach $vars['data']['data'] as $key=>$vo_pre_data}
 					<div class="swiper-slide">
 		                <img src="{$vo_pre_data['img_url']}" class="img-responsive">
 		            </div>
@@ -34,8 +34,8 @@
 		 		<input type="hidden" name="title" value="轮播"/>
 		 		<input type="hidden" name="type" value="slideshow"/>
 		 		<div class="slideshow-img-box">
-		 			{if !empty($vo['data'])}
-		 			{foreach $vo['data'] as $key => $vo_data}
+		 			{if !empty($vars['data']['data'])}
+		 			{foreach $vars['data']['data'] as $key => $vo_data}
 					<div class="form-horizontal slideshow-form-item" data-rule="object-controller-item">
 						<input type="hidden" name="img_url" value="{$vo_data['img_url']}">
 						<div class="form-group">
@@ -83,12 +83,12 @@
 					<div class="form-group">
 						<label class="">样式选择</label>
 						<select class="form-control wide" name="style">
-							{if $vo['style'] == 0}
+							{if $vars['data']['style'] == 0}
 							<option value="0" selected>通栏</option>
 							<option value="1">圆角留边</option>
 							{/if}
 
-							{if $vo['style'] == 1}
+							{if $vars['data']['style'] == 1}
 							<option value="0">通栏</option>
 							<option value="1" selected>圆角留边</option>
 							{/if}

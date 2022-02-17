@@ -1,7 +1,7 @@
-{if $vo['type'] == 'single_img'}
-<section class="object-item preview single-img" data-type="single_img" data-object-index="single_img-{$key}">
+
+<section class="object-item preview single-img" data-type="single_img" data-object-index="single_img-{$vars['key']}">
 	<div class="single-img-preview preview style-{$vo['style']}">
-		{foreach $vo['data'] as $k => $v}
+		{foreach $vars['data']['data'] as $k => $v}
 			{if isset($v['img_url']) && !empty($v['img_url'])}
 	    		<img src="{$v['img_url']}" />
 	    	{else}
@@ -10,4 +10,3 @@
 		{/foreach}
 	</div>
 </section>
-{/if}
