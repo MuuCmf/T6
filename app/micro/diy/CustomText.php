@@ -16,19 +16,30 @@ class CustomText
         'view' =>  APP_PATH . 'micro/view/diy/custom_text/view.html',
     ];
     // 静态资源
-    public $_static = [
-        'css' => '',
-        'js' => ''
-    ];
+    public $_static = [];
     // API接口
     public $_api = [];
 
-    /**
+/**
      * 构造方法
      */
     public function __construct()
     {
-        
+        $this->_static = $this->setStatic();
+    }
+
+    public function setStatic()
+    {
+        return [
+            'mobile' => [
+                'css' => request()->domain() . '/static/micro/diy/mobile/custom_text.min.css',
+                'js' => request()->domain() . '/static/micro/diy/mobile/custom_text.min.js',
+            ],
+            'pc' => [
+                'css' => '',
+                'js' => ''
+            ]
+        ];
     }
 
     /**

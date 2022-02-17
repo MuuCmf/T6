@@ -18,10 +18,7 @@ class Slideshow
         'view' =>  APP_PATH . 'micro/view/diy/slideshow/view.html',
     ];
     // 静态资源
-    public $_static = [
-        'css' => '',
-        'js' => ''
-    ];
+    public $_static = [];
     // API接口
     public $_api = [];
 
@@ -30,7 +27,21 @@ class Slideshow
      */
     public function __construct()
     {
-        
+        $this->_static = $this->setStatic();
+    }
+
+    public function setStatic()
+    {
+        return [
+            'mobile' => [
+                'css' => request()->domain() . '/static/micro/diy/mobile/slideshow.min.css',
+                'js' => request()->domain() . '/static/micro/diy/mobile/slideshow.min.js',
+            ],
+            'pc' => [
+                'css' => '',
+                'js' => ''
+            ]
+        ];
     }
 
     /**
@@ -38,13 +49,14 @@ class Slideshow
      */
     public function handle($data, $shopid)
     {   
-        foreach($data['data'] as &$v){
-            $v['img_url'] = get_attachment_src($v['img_url']);
-            if(!empty($v['link'])){
-                $v['link']['url'] = (new Diy())->linkToUrl($v['link']);
+        if(!empty($data['data'])){//数据不为空时执行
+            foreach($data['data'] as &$v){
+                $v['img_url'] = get_attachment_src($v['img_url']);
+                if(!empty($v['link'])){
+                    $v['link']['url'] = (new Diy())->linkToUrl($v['link']);
+                }
             }
         }
-
         return $data;
     }
 }

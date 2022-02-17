@@ -16,10 +16,7 @@ class Weixin
         'view' =>  APP_PATH . 'micro/view/diy/weixin/view.html',
     ];
     // 静态资源
-    public $_static = [
-        'css' => '',
-        'js' => ''
-    ];
+    public $_static = [];
     // API接口
     public $_api = [];
 
@@ -28,14 +25,29 @@ class Weixin
      */
     public function __construct()
     {
-        
+        $this->_static = $this->setStatic();
+    }
+
+    public function setStatic()
+    {
+        return [
+            'mobile' => [
+                'css' => request()->domain() . '/static/micro/diy/mobile/weixin.min.css',
+                'js' => request()->domain() . '/static/micro/diy/mobile/weixin.min.js',
+            ],
+            'pc' => [
+                'css' => '',
+                'js' => ''
+            ]
+        ];
     }
 
     /**
      * 约定数据处理方法
      */
     public function handle($data, $shopid)
-    {    
+    {   
+        if(empty($data['style'])) $data['style'] = 0; //样式默认为0
         return $data;
     }
 }

@@ -16,10 +16,7 @@ class Member
         'view' =>  APP_PATH . 'micro/view/diy/member/view.html',
     ];
     // 静态资源
-    public $_static = [
-        'css' => '',
-        'js' => ''
-    ];
+    public $_static = [];
     // API接口
     public $_api = [];
 
@@ -28,7 +25,21 @@ class Member
      */
     public function __construct()
     {
-        
+        $this->_static = $this->setStatic();
+    }
+
+    public function setStatic()
+    {
+        return [
+            'mobile' => [
+                'css' => request()->domain() . '/static/micro/diy/mobile/member.min.css',
+                'js' => request()->domain() . '/static/micro/diy/mobile/member.min.js',
+            ],
+            'pc' => [
+                'css' => '',
+                'js' => ''
+            ]
+        ];
     }
 
     /**

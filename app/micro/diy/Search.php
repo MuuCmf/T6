@@ -28,7 +28,21 @@ class Search
      */
     public function __construct()
     {
-        
+        $this->_static = $this->setStatic();
+    }
+
+    public function setStatic()
+    {
+        return [
+            'mobile' => [
+                'css' => request()->domain() . '/static/micro/diy/mobile/search.min.css',
+                'js' => request()->domain() . '/static/micro/diy/mobile/search.min.js',
+            ],
+            'pc' => [
+                'css' => '',
+                'js' => ''
+            ]
+        ];
     }
 
     /**

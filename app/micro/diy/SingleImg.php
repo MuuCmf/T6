@@ -18,10 +18,7 @@ class SingleImg
         'view' =>  APP_PATH . 'micro/view/diy/single_img/view.html',
     ];
     // 静态资源
-    public $_static = [
-        'css' => '',
-        'js' => ''
-    ];
+    public $_static = [];
     // API接口
     public $_api = [];
 
@@ -30,7 +27,21 @@ class SingleImg
      */
     public function __construct()
     {
-        
+        $this->_static = $this->setStatic();
+    }
+
+    public function setStatic()
+    {
+        return [
+            'mobile' => [
+                'css' => request()->domain() . '/static/micro/diy/mobile/single_img.min.css',
+                'js' => request()->domain() . '/static/micro/diy/mobile/single_img.min.js',
+            ],
+            'pc' => [
+                'css' => '',
+                'js' => ''
+            ]
+        ];
     }
 
     /**

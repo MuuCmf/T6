@@ -21,26 +21,29 @@
 			    	公告
 			 	</div>
 			 	<div class="panel-body">
-			 		<input type="hidden" name="title" value="公告"/>
-					<input type="hidden" name="type" value="announce_block"/>
-			 		<div class="form-horizontal announce-item" data-rule="object-controller-item">
-			    		<div class="form-group">
-						    <label class="col-sm-3 control-label">显示条数</label>
-						    <div class="col-sm-9">
-							    <select class="form-control" name="rank">
-									<option value="1">1</option>
-									<option value="2" selected>2</option>
-									<option value="3" selected>3</option>
-								</select>
-						    </div>
-					  	</div>
-					  	<div class="form-group">
-						    <label class="col-sm-3 control-label"></label>
-						    <div class="col-sm-9">
-						      <button class="btn btn-primary">确认</button>
-						    </div>
-					  	</div>
-			    	</div>
+					<form data-type="announce">
+						<input type="hidden" name="app" value="micro"/>
+						<input type="hidden" name="title" value="公告"/>
+						<input type="hidden" name="type" value="announce"/>
+						<div class="form-horizontal announce-item" data-rule="object-controller-item">
+							<div class="form-group">
+								<label class="col-sm-3 control-label">显示条数</label>
+								<div class="col-sm-9">
+									<select class="form-control" name="rows">
+										<option value="1">1</option>
+										<option value="2" selected>2</option>
+										<option value="3" selected>3</option>
+									</select>
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-3 control-label"></label>
+								<div class="col-sm-9">
+									<button type="button" class="btn btn-primary">确认</button>
+								</div>
+							</div>
+						</div>
+					</form>
 			 	</div>
 			</div>
 		</div>

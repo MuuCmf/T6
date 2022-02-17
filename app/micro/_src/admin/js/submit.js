@@ -211,7 +211,7 @@ $(function(){
 
 	//点击提交按钮处理提交数据
 	
-	$('[data-rule="diy_page_submit"]').click(function(e){
+	$('[type="button"][data-rule="diy_page_submit"]').click(function(e){
 		e.preventDefault();
 		var id = $(this).data('id');
 		var type = $(this).data('type');
@@ -221,44 +221,47 @@ $(function(){
 			//console.log(element);
 			var obj = {};
 			var type = $(this).data('type');
-			//根据组件类型获取数据
-			switch (type) {
-				case ('search'):
-					obj = search(element);
-				break;
-				case ('announce'):
-					obj = announce(element);
-				break;
-	            case ('single_img')://单图广告
-	                obj = single_img(element);
-	            break;
-	            case ('slideshow'):
-	            	obj = slideshow(element);
-	            break;
-	            case ('category_nav'):
-	            	obj = category_nav(element);
-	            break;
-	            case ('custom_text'):
-	            	obj = custom_text(element);
-	            break;
-				case ('custom_html'):
-	            	obj = custom_html(element);
-	            break;
-	            case ('weixin'):
-	            	obj = weixin(element);
-	            break;
-	            case ('member'):
-	            	obj = member(element);
-	            break;
-				case ('category'):
-	            	obj = category(element);
-	            break;
-				case ('app_list'):
-	            	obj = app_list(element);
-	            break;
-	        }
+			obj = $(this).find('form[data-type="'+type+'"]').serializeArray();
+			// //根据组件类型获取数据
+			// switch (type) {
+			// 	case ('search'):
+			// 		obj = search(element);
+			// 	break;
+			// 	case ('announce'):
+			// 		obj = announce(element);
+			// 	break;
+	        //     case ('single_img')://单图广告
+	        //         obj = single_img(element);
+	        //     break;
+	        //     case ('slideshow'):
+	        //     	obj = slideshow(element);
+	        //     break;
+	        //     case ('category_nav'):
+	        //     	obj = category_nav(element);
+	        //     break;
+	        //     case ('custom_text'):
+	        //     	obj = custom_text(element);
+	        //     break;
+			// 	case ('custom_html'):
+	        //     	obj = custom_html(element);
+	        //     break;
+	        //     case ('weixin'):
+	        //     	obj = weixin(element);
+	        //     break;
+	        //     case ('member'):
+	        //     	obj = member(element);
+	        //     break;
+			// 	case ('category'):
+	        //     	obj = category(element);
+	        //     break;
+			// 	case ('app_list'):
+	        //     	obj = app_list(element);
+	        //     break;
+	        // }
 	        data.push(obj);
 		});
+		console.log(data);
+		return false;
 		var header = {
 			'style': $('.public-header .config-controller select[name="style"]').val(),
 			'logo' : $('.public-header .config-controller input[name="logo"]').val(),

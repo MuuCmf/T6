@@ -84,6 +84,7 @@ class Mobile extends MicroAdmin
 
         if (request()->isAjax()){
             $params = input('post.');
+            dump($params);exit;
             $id = empty($params['id'])? 0 : $params['id'];
             if(!empty($params['data'])){
                 //反编译无需转义的组件内容
@@ -120,7 +121,7 @@ class Mobile extends MicroAdmin
             // 自定义DIY组件列表
             $diy_params_config = (new DiyService())->getConfig();
             View::assign('diy_params_config', $diy_params_config);
-
+            //dump($diy_params_config);
             // 页面数据
             // block 数据块
             $app_block_tmpl = '';
@@ -140,7 +141,7 @@ class Mobile extends MicroAdmin
             }else{
                 $page_data = [];
             }
-
+            
             View::assign('app_block_tmpl', $app_block_tmpl);
             View::assign('page_data', $page_data);
             // 内置图标列表
@@ -164,7 +165,20 @@ class Mobile extends MicroAdmin
                 }
             }
             View::assign('app_script_tmpl', $app_script_tmpl);
-            
+
+            // 页面元素静态资源
+            $app_static_tmpl = '';
+            foreach($diy_params_config as $k=>$v){
+                foreach($v['list'] as $c_k=>$c_v){
+                    if(!empty($c_v['static']['mobile']['css'])){
+                        $app_static_tmpl .= '<link href="'.$c_v['static']['mobile']['css'].'" rel="stylesheet" type="text/css"/>';
+                    }
+                    if(!empty($c_v['static']['mobile']['js'])){
+                        $app_static_tmpl .= '<script type="text/javascript" src="'.$c_v['static']['mobile']['js'].'"></script>';
+                    }
+                }
+            }
+            View::assign('app_static_tmpl', $app_static_tmpl);
             // 设置title
             $this->setTitle('移动端自定义页面DIY');
             // 输出页面

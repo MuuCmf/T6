@@ -42,8 +42,13 @@ class Diy
                             $config[$v['name']]['list'][$type]['title'] = app($name)->_title;
                             $config[$v['name']]['list'][$type]['type'] = app($name)->_type;
                             $config[$v['name']]['list'][$type]['icon'] = app($name)->_icon;
+                            
                             $config[$v['name']]['list'][$type]['api'] = app($name)->_api;
                             $config[$v['name']]['list'][$type]['tmpl'] = app($name)->_template;
+                            if(isset(app($name)->_static)) {
+                                $config[$v['name']]['list'][$type]['static'] = app($name)->_static;
+                            }
+                            
                         }
                     }
                     //关闭

@@ -14,8 +14,11 @@
 		    自定义文本
 		 	</div>
 		 	<div class="panel-body">
+				<input type="hidden" name="app" value="micro"/>
+				<input type="hidden" name="title" value="自定义文本"/>
+				<input type="hidden" name="type" value="custom_text"/>
 		 		<textarea class="hidden" name="content">{:htmlspecialchars_decode($vo['data']['content'])}</textarea>
-		 		<button class="btn btn-block btn-primary" data-toggle="modal" data-target="#customTextEditorModal">富文本编辑器</button>
+		 		<button type="button" class="btn btn-block btn-primary" data-toggle="modal" data-target="#customTextEditorModal">富文本编辑器</button>
 
 			</div>
 		</div>

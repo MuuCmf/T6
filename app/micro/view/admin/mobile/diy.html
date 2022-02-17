@@ -6,6 +6,8 @@
 <link rel="stylesheet" href="__COMMON__/lib/Swiper-3.4.2/css/swiper.min.css">
 <script type="text/javascript" src="__COMMON__/lib/Swiper-3.4.2/js/swiper.min.js"></script>
 <link href="__ADMIN_CSS__/main.min.css" rel="stylesheet" type="text/css"/>
+<!--DIY组件依赖静态资源-->
+{:htmlspecialchars_decode($app_static_tmpl)}
 {/block}
 
 {block name="body"}
@@ -22,6 +24,7 @@
 	</li>
 </ol>
 <section class="page-diy-section this-page" data-role="page_diy_section" data-this-page="page">
+	
 	{include file="admin/mobile/_panel" /}
 	<section class="page-diy-content">
 		<section class="page-diy-item">
@@ -38,17 +41,17 @@
 
 						<div class="config-controller">
 							<div class="panel panel-info">
-							 	<div class="panel-heading">
-							    	基础信息
-							 	</div>
-							 	<div class="panel-body">
-							 		<div class="form-group">
-								 		<input type="text" name="title" class="form-control" value="{$page_data['title']|default=''}" placeholder="页面标题" />
-								 	</div>
-								 	<div class="form-group">
-								 		<textarea class="form-control" rows="3" name="description" placeholder="简单描述">{$page_data['description']|default=''}</textarea>
-								 	</div>
-							 	</div>
+								<div class="panel-heading">
+									基础信息
+								</div>
+								<div class="panel-body">
+									<div class="form-group">
+										<input type="text" name="title" class="form-control" value="{$page_data['title']|default=''}" placeholder="页面标题" />
+									</div>
+									<div class="form-group">
+										<textarea class="form-control" rows="3" name="description" placeholder="简单描述">{$page_data['description']|default=''}</textarea>
+									</div>
+								</div>
 							</div>
 						</div>
 					</div>
@@ -71,11 +74,11 @@
 					</div>
 					<div class="config-controller">
 						<div class="panel panel-info">
-							 <div class="panel-heading">
+							<div class="panel-heading">
 								底部导航设置
-							 </div>
-							 <div class="panel-body">
-								 <div class="form-group">
+							</div>
+							<div class="panel-body">
+								<div class="form-group">
 									<select class="form-control" name="footer_show">
 										{if isset($page_data['footer_show']) && $page_data['footer_show'] == 1}
 										<option value="1" selected>显示</option>
@@ -85,14 +88,15 @@
 										<option value="0" selected>隐藏</option>
 										{/if}
 									</select>
-								 </div>
-							 </div>
+								</div>
+							</div>
 						</div>
 					</div>
 				</div>
 			</div>
 		</section>
 	</section>
+	
 </section>
 {include file="admin/_modal" /}
 {include file="admin/common/_api" /}

@@ -38,6 +38,16 @@ gulp.task('pc_scss', function(){
         .pipe(gulp.dest(dist + '/pc/css'));
 })
 
+gulp.task('diy_scss', function(){
+    gulp.src([
+            src + 'diy/**/*.scss',
+        ])
+        .pipe(sass())
+        .pipe(rename({suffix: '.min'}))//rename压缩后的文件名
+        .pipe(minifyCss())
+        .pipe(gulp.dest(dist + '/diy'));
+})
+
 // 编译模块js 并压缩不合并
 gulp.task('admin_js', function() {
       gulp.src([
@@ -70,6 +80,20 @@ gulp.task('pc_js', function() {
       .pipe(gulp.dest(dist + '/pc/js'));
 });
 
+// 编译模块js 并压缩不合并
+gulp.task('diy_js', function() {
+    gulp.src([
+          src + 'diy/**/*.js'
+      ])
+      .pipe(plumber())
+      .pipe(babel({
+        presets: ['es2015']
+      }))
+      .pipe(rename({suffix: '.min'}))//rename压缩后的文件名
+      .pipe(uglify())
+      .pipe(gulp.dest(dist + '/diy'));
+});
+
 // 图片文件直接copy
 gulp.task('images', function () {
     gulp.src(src + 'images/**/*')
@@ -96,9 +120,11 @@ gulp.task('server', function() {
     // 监听scss文件编译
     gulp.watch(src + 'admin/css/**/*.scss', ['admin_scss']);
     gulp.watch(src + 'pc/css/**/*.scss', ['pc_scss']);
+    gulp.watch(src + 'diy/**/*.scss', ['diy_scss']);
     // 监听js文件编译
     gulp.watch(src + 'admin/js/**/*.js', ['admin_js']);
     gulp.watch(src + 'pc/js/**/*.js', ['pc_js']);
+    gulp.watch(src + 'diy/**/*.js', ['diy_js']);
     // 监听其他不编译的文件 有变化直接copy
     gulp.watch(src + 'images/**/*.!(jpg|jpeg|png|gif|bmp|svg)', ['images']);
     gulp.watch(src + 'lib/**/*.!(jpg|jpeg|png|gif|bmp|svg|css|js)', ['lib']);   
@@ -107,4 +133,4 @@ gulp.task('server', function() {
 });
 
 // 监听事件
-gulp.task('default', ['admin_scss','pc_scss', 'admin_js', 'pc_js', 'images', 'lib', 'server'])
+gulp.task('default', ['admin_scss','pc_scss', 'diy_scss', 'admin_js', 'pc_js', 'diy_js', 'images', 'lib', 'server'])
