@@ -337,6 +337,19 @@
 	}
 }
 
+/* 列表显示区隐藏组件控制 */
+.page-list-mobile-section {
+	.object-item {
+		.diy-preview-controller {
+			display: none;
+		}
+		.action {
+			display: none;
+		}
+	}
+}
+
+
 
 /** PC端DIY样式**/
 .page-diy-pc-section {
@@ -494,7 +507,6 @@
 			    	z-index: 20;
 			    	top:-14px;
 			    	right:-14px;
-			    	display:none;
 			    	cursor: pointer;
 			    	i {
 			    		color:#999;
@@ -509,7 +521,6 @@
 			    	z-index: 20;
 			    	top:-14px;
 			    	left:50%;
-			    	display:none;
 			    	cursor: pointer;
 			    	i {
 			    		color:#999;
@@ -524,7 +535,6 @@
 			    	z-index: 20;
 			    	bottom:-14px;
 			    	left:50%;
-			    	display:none;
 			    	cursor: pointer;
 			    	i {
 			    		color:#999;

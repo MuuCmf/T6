@@ -1,20 +1,29 @@
-<!--会员块START-->
-<div class="object-item preview member" data-type="member" data-object-index="member-{$vars['key']}">
+
+<div class="object-item" data-type="member">
 	<div class="object-drag member">
 		<div class="member-block-preview">
 			<div class="member-block-item">
 				<a href="#" class="clearfix">
-			    	<div class="vip-icon">
-			    		<img src="__IMG__/VIP.png" />
-			    	</div>
-			    	<div class="desc">
-			    		<p class="title">{:config('system.WEB_SITE_TITLE')}会员</p>
-				    	<p class="info">尊享专属会员权益</p>
-				    </div>
-			    	<div class="action"><i class="fa fa-angle-right"></i></div>
-		    	</a>
+					<div class="vip-icon">
+						<img src="__IMG__/VIP.png" />
+					</div>
+					<div class="desc">
+						<p class="title">{:config('system.WEB_SITE_TITLE')}会员</p>
+						<p class="info">尊享专属会员权益</p>
+					</div>
+					<div class="action"><i class="fa fa-angle-right"></i></div>
+				</a>
 			</div>
 		</div>
 	</div>
+	<div class="action">
+		<div class="del-btn"><i class="fa fa-times-circle fa-2x"></i></div>
+		<div class="up-btn"><i class="fa fa-chevron-circle-up fa-2x"></i></div>
+		<div class="down-btn"><i class="fa fa-chevron-circle-down fa-2x"></i></div>
+	</div>
+	<form class="form-horizontal" data-type="member">
+		<input type="hidden" name="app" value="micro"/>
+		<input type="hidden" name="title" value="会员"/>
+		<input type="hidden" name="type" value="member"/>
+	</form>
 </div>
-<!--会员块END-->

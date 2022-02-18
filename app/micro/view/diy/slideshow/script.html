@@ -29,52 +29,54 @@
 			    轮播广告
 			 	</div>
 			 	<div class="panel-body">
-					<input type="hidden" name="app" value="micro"/>
-			 		<input type="hidden" name="title" value="轮播"/>
-			 		<input type="hidden" name="type" value="slideshow"/>
-			 		<div class="slideshow-img-box"></div>
-					<div class="uploadImgBtn btn btn-primary">上传图片</div>
-					<div class="tip">建议尺寸750*280像素</div>
-			    	<div class="form-group link-box hidden">
-						<div class="clearfix" data-rule="links_list">
-							<label for="" class="col-xs-3">
-								<div class="dropdown">
-								  	<button class="btn" type="button" data-toggle="modal" data-target="#linkTypeModal">
-								  		选择链接
-								  	</button>
+					<form data-type="slideshow">
+						<input type="hidden" name="app" value="micro"/>
+						<input type="hidden" name="title" value="轮播"/>
+						<input type="hidden" name="type" value="slideshow"/>
+						<div class="slideshow-img-box"></div>
+						<div class="uploadImgBtn btn btn-primary">上传图片</div>
+						<div class="tip">建议尺寸750*280像素</div>
+						<div class="form-group link-box hidden">
+							<div class="clearfix" data-rule="links_list">
+								<label for="" class="col-xs-3">
+									<div class="dropdown">
+										<button class="btn" type="button" data-toggle="modal" data-target="#linkTypeModal">
+											选择链接
+										</button>
+									</div>
+								</label>
+								<div class="col-xs-9">
+									<div class="link_title">
+										<ol class="breadcrumb">
+										<li></li>
+										<li class="active"></li>
+										</ol>
+									</div>
 								</div>
-							</label>
-							<div class="col-xs-9">
-								<div class="link_title">
-									<ol class="breadcrumb">
-									  <li></li>
-									  <li class="active"></li>
-									</ol>
-								</div>
+								<!--链接至隐藏域START-->
+								<input type="hidden" name="link_sys_type" >
+								<input type="hidden" name="link_title" >
+								<input type="hidden" name="link_type" >
+								<input type="hidden" name="link_type_title" >
+								<input type="hidden" name="link_url" >
+								<textarea type="hidden" name="link_param" class="hidden"></textarea>
+								<!--链接至隐藏域END-->
 							</div>
-							<!--链接至隐藏域START-->
-							<input type="hidden" name="link_sys_type" >
-							<input type="hidden" name="link_title" >
-							<input type="hidden" name="link_type" >
-							<input type="hidden" name="link_type_title" >
-							<input type="hidden" name="link_url" >
-							<textarea type="hidden" name="link_param" class="hidden"></textarea>
-							<!--链接至隐藏域END-->
 						</div>
-					</div>
-					<div class="" style="margin-top: 10px;">
-						<div class="form-group">
-							<label class="">样式选择</label>
-							<select class="form-control wide" name="style">
-								<option value="0" selected>通栏</option>
-								<option value="1">圆角留边</option>
-							</select>
+						<div class="" style="margin-top: 10px;">
+							<div class="form-group">
+								<label class="">样式选择</label>
+								<select class="form-control wide" name="style">
+									<option value="0" selected>通栏</option>
+									<option value="1">圆角留边</option>
+								</select>
+							</div>
+		
+							<div class="form-group">
+								<button type="button" class="btn btn-primary">预览</button>
+							</div>
 						</div>
-	
-						<div class="form-group">
-							<button class="btn btn-primary">预览</button>
-						</div>
-					</div>
+					</form>
 				</div>
 			</div>
 		</div>

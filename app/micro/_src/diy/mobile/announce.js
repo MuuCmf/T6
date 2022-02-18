@@ -7,8 +7,8 @@ $(function(){
 	//初始化组件类型
 	var object_type;
 
-	//点击显示单图控制区
-	$('.page-diy-section').on("click",'[data-type="announce"]',function(){
+	//点击显示控制区
+	$('.page-diy-section').on("click",'.object-item',function(){
 		//已经显示的不再触发
 		if($(this).find('.diy-preview-controller').hasClass('show')){
 			return;
@@ -19,9 +19,9 @@ $(function(){
 
 		object_index = $(this).data('object-index');
 		object_type = $(this).data('type');
-		//以上部分写死就可以，先low着，以后在搞
 		/******************************************************************************/
 		$('.page-diy-section').on('click','[data-object-index="'+object_index+'"] .btn',function(){
+            e.stopPropagation();
 			//点击确认按钮后的数据重新加载
 			var rows = $('[data-object-index="'+object_index+'"] select[name="rows"]').val();
 			var order_field = $('[data-object-index="'+object_index+'"] select[name="order_field"]').val();
@@ -80,12 +80,6 @@ $(function(){
     $('.page-diy-section .object-lists').on("click",'.btn-object[data-type="announce"]',function(){
 
         let type = $(this).data('type');
-        let open = $(this).data('open');
-        //console.log(open);
-        if(open == false) {
-            toast.error('该组件完善中...','danger');
-            return;
-        }
 
         let html = $('[data-object-type="'+type+'"]').html();
         console.log(type);

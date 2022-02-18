@@ -2,10 +2,11 @@
 // +----------------------------------------------------------------------
 // | 微页应用 MuuCmf_micro V1.0.0
 // | 多应用Diy组件数据处理
-// | TODO: 在多应用目录下创建micro目录
+// | TODO: 在多应用目录下创建diy目录
 // +----------------------------------------------------------------------
 namespace app\micro\service;
 
+use think\facade\View;
 use think\helper\Str;
 use app\common\model\Module;
 
@@ -59,6 +60,66 @@ class Diy
         
         return $config;
 
+    }
+
+    /**
+     * 获取DIY组件控制和显示的模板
+     */
+    public function getViewTmpl($page_data = [])
+    {
+        $diy_params_config = $this->getConfig();
+        $view_tmpl = '';
+        if (!empty($page_data)){
+            // 处理数据块数据模板
+            foreach($page_data['data'] as $key => $vo){
+                $tmpl = $diy_params_config[$vo['app']]['list'][$vo['type']]['tmpl']['view'];
+                $view_tmpl .= View::fetch($tmpl, [
+                    'key' => $key,
+                    'data' => $vo
+                ]);
+            }
+        }
+
+        return $view_tmpl;
+    }
+
+    /**
+     * 获取DIY组件初始内容
+     */
+    public function getScriptTmpl()
+    {
+        $diy_params_config = $this->getConfig();
+        $app_script_tmpl = '';
+        foreach($diy_params_config as $k=>$v){
+            foreach($v['list'] as $c_k=>$c_v){
+                if(file_exists($c_v['tmpl']['script'])){
+                    $app_script_tmpl .= View::fetch($c_v['tmpl']['script']);
+                }
+            }
+        }
+
+        return $app_script_tmpl;
+    }
+
+    /**
+     * 获取DIY组件静态资源模板内容
+     */
+    public function getStaticTmpl()
+    {
+        $diy_params_config = $this->getConfig();
+        $app_static_tmpl = '';
+        foreach($diy_params_config as $k=>$v){
+            foreach($v['list'] as $c_k=>$c_v){
+                if(!empty($c_v['static']['mobile']['css'])){
+                    $app_static_tmpl .= '<link href="'.$c_v['static']['mobile']['css'].'" rel="stylesheet" type="text/css"/>';
+                }
+                if(!empty($c_v['static']['mobile']['js'])){
+                    $app_static_tmpl .= '<script type="text/javascript" src="'.$c_v['static']['mobile']['js'].'"></script>';
+                }
+            }
+        }
+
+        return $app_static_tmpl;
     }
 
     /**

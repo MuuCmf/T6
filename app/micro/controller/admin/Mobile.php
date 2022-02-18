@@ -57,18 +57,21 @@ class Mobile extends MicroAdmin
         $lists = $lists->toArray();
         foreach ($lists['data'] as &$item){
             $item = $this->PageLogic->formatData($item);
+            // 页面元素View
+            $app_view_tmpl = (new DiyService())->getViewTmpl($item);
+            $item['app_view_tmpl'] = $app_view_tmpl;
         }
         unset($item);
         if (request()->isAjax()){
             return $this->success('success',$lists);
         }
+
         View::assign('lists',$lists);
-        // 获取分类树
-        // $category_tree = $this->CategoryModel->getTree(0);
-        // View::assign('category_tree', $category_tree);
-        View::assign([
-            'channel' => 'mobile'
-        ]);
+        // 页面元素Static
+        $app_static_tmpl = (new DiyService())->getStaticTmpl();
+        View::assign('app_static_tmpl', $app_static_tmpl);
+        View::assign('channel', 'mobile');
+
         // 设置title
         $this->setTitle('移动端自定义页面管理');
         // 输出页面
@@ -124,25 +127,16 @@ class Mobile extends MicroAdmin
             //dump($diy_params_config);
             // 页面数据
             // block 数据块
-            $app_block_tmpl = '';
+            $app_view_tmpl = '';
             $page_data = $this->PageModel->where('status', '>', -1)->find($id);
             if (!empty($page_data)){
                 $page_data = $page_data->toArray();
                 $page_data = $this->PageLogic->formatData($page_data);
                 $page_data = $this->PageLogic->handlingNoParamJson($page_data);
-                // 处理数据块数据模板
-                foreach($page_data['data'] as $key => $vo){
-                    $tmpl = $diy_params_config[$vo['app']]['list'][$vo['type']]['tmpl']['block'];
-                    $app_block_tmpl .= View::fetch($tmpl, [
-                        'key' => $key,
-                        'data' => $vo
-                    ]);
-                }
+
             }else{
                 $page_data = [];
             }
-            
-            View::assign('app_block_tmpl', $app_block_tmpl);
             View::assign('page_data', $page_data);
             // 内置图标列表
             View::assign('icon_list', $this->PageLogic->getIconLists());
@@ -155,30 +149,16 @@ class Mobile extends MicroAdmin
             $no_icon = request()->domain() . '/static/common/images/diy/noimg.png';
             View::assign('no_icon', $no_icon);
             
-            // 页面元素SCRIPT
-            $app_script_tmpl = '';
-            foreach($diy_params_config as $k=>$v){
-                foreach($v['list'] as $c_k=>$c_v){
-                    if(file_exists($c_v['tmpl']['script'])){
-                        $app_script_tmpl .= View::fetch($c_v['tmpl']['script']);
-                    }
-                }
-            }
+            // 页面元素View
+            $app_view_tmpl = (new DiyService())->getViewTmpl($page_data);
+            View::assign('app_view_tmpl', $app_view_tmpl);
+            // 页面元素Script
+            $app_script_tmpl = (new DiyService())->getScriptTmpl();
             View::assign('app_script_tmpl', $app_script_tmpl);
-
-            // 页面元素静态资源
-            $app_static_tmpl = '';
-            foreach($diy_params_config as $k=>$v){
-                foreach($v['list'] as $c_k=>$c_v){
-                    if(!empty($c_v['static']['mobile']['css'])){
-                        $app_static_tmpl .= '<link href="'.$c_v['static']['mobile']['css'].'" rel="stylesheet" type="text/css"/>';
-                    }
-                    if(!empty($c_v['static']['mobile']['js'])){
-                        $app_static_tmpl .= '<script type="text/javascript" src="'.$c_v['static']['mobile']['js'].'"></script>';
-                    }
-                }
-            }
+            // 页面元素Static
+            $app_static_tmpl = (new DiyService())->getStaticTmpl();
             View::assign('app_static_tmpl', $app_static_tmpl);
+
             // 设置title
             $this->setTitle('移动端自定义页面DIY');
             // 输出页面

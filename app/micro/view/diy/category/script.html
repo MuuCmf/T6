@@ -22,9 +22,6 @@
 					</div>
 				</div>
 			</div>
-			<div class="del-btn"><i class="fa fa-times-circle fa-2x"></i></div>
-			<div class="up-btn"><i class="fa fa-chevron-circle-up fa-2x"></i></div>
-			<div class="down-btn"><i class="fa fa-chevron-circle-down fa-2x"></i></div>
 		</div>
         
 		<div class="diy-preview-controller category">
@@ -33,38 +30,45 @@
 			    	分类&筛选
 			 	</div>
 			 	<div class="panel-body">
-					<input type="hidden" name="app" value="micro"/>
-			 		<input type="hidden" name="title" value="分类&筛选"/>
-					<input type="hidden" name="type" value="category"/>
-			 		<div class="form-horizontal category-item" data-rule="object-controller-item">
-						<div class="form-group">
-						    <label class="col-sm-3 control-label">选择应用</label>
-						    <div class="col-sm-9">
-							    <select class="form-control" name="app">
-									{foreach $app_list as $v}
-									<option value="{$v.name}">{$v.alias}</option>
-									{/foreach}
-								</select>
-						    </div>
-					  	</div>
-			    		<div class="form-group">
-						    <label class="col-sm-3 control-label">显示子分类</label>
-						    <div class="col-sm-9">
-							    <select class="form-control" name="sub_show">
-									<option value="0">不显示</option>
-									<option value="1" selected>显示</option>
-								</select>
-						    </div>
-					  	</div>
-					  	<div class="form-group">
-						    <label class="col-sm-3 control-label"></label>
-						    <div class="col-sm-9">
-								<button type="button" class="btn btn-primary btn-submit" data-role="submit">确认</button>
-						    </div>
-					  	</div>
-			    	</div>
+					<form class="form-horizontal" data-type="category">
+						<input type="hidden" name="app" value="micro"/>
+						<input type="hidden" name="title" value="分类&筛选"/>
+						<input type="hidden" name="type" value="category"/>
+						<div class="category-item" data-rule="object-controller-item">
+							<div class="form-group">
+								<label class="col-sm-3 control-label">选择应用</label>
+								<div class="col-sm-9">
+									<select class="form-control" name="app">
+										{foreach $app_list as $v}
+										<option value="{$v.name}">{$v.alias}</option>
+										{/foreach}
+									</select>
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-3 control-label">显示子分类</label>
+								<div class="col-sm-9">
+									<select class="form-control" name="sub_show">
+										<option value="0">不显示</option>
+										<option value="1" selected>显示</option>
+									</select>
+								</div>
+							</div>
+							<div class="form-group">
+								<label class="col-sm-3 control-label"></label>
+								<div class="col-sm-9">
+									<button type="button" class="btn btn-primary btn-submit" data-role="submit">确认</button>
+								</div>
+							</div>
+						</div>
+					</form>
 			 	</div>
 			</div>
+		</div>
+		<div class="action">
+			<div class="del-btn"><i class="fa fa-times-circle fa-2x"></i></div>
+			<div class="up-btn"><i class="fa fa-chevron-circle-up fa-2x"></i></div>
+			<div class="down-btn"><i class="fa fa-chevron-circle-down fa-2x"></i></div>
 		</div>
     </div>
     
