@@ -11,7 +11,7 @@ $(function(){
 	var object_type;
 
 	//点击显示控制区
-	$('[data-role="page_diy_section"]').on("click",'[data-type="weixin"]',function(){
+	$('[data-role="page_diy_section"]').on("click",'.object-item[data-type="weixin"]',function(){
 		//已经显示的不再触发
 		if($(this).find('.diy-preview-controller').hasClass('show')){
 			return;
@@ -82,12 +82,6 @@ $(function(){
     $('.page-diy-section .object-lists').on("click",'.btn-object[data-type="weixin"]',function(){
 
         let type = $(this).data('type');
-        let open = $(this).data('open');
-        if(open == false) {
-            toast.error('该组件完善中...','danger');
-            return;
-        }
-
         let html = $('[data-object-type="'+type+'"]').html();
         //console.log(type);
         //console.log(html);
@@ -100,7 +94,7 @@ $(function(){
             object_index = this_type+'-'+index;
         });
         //数据默认加载
-        weixin_loader('[data-object-index='+object_index+']');
+        //weixin_loader('[data-object-index='+object_index+']');
         
     });
 

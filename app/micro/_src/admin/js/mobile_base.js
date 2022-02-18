@@ -89,30 +89,6 @@
         });
     }
 
-    let append_action_btn = function(){
-        $('.page-diy-section').on("mouseover",'.object-item',function(){
-            
-            var html = '<div class="action">' +
-                '<div class="del-btn"><i class="fa fa-times-circle fa-2x"></i></div>' +
-                '<div class="up-btn"><i class="fa fa-chevron-circle-up fa-2x"></i></div>' +
-                '<div class="down-btn"><i class="fa fa-chevron-circle-down fa-2x"></i></div>' +
-                '</div>';
-                if($(this).find('.action').length > 0){
-                
-                }else{
-                    $(this).append(html);
-                }
-        });
-    }
-    
-    let remove_action_btn = function(){
-        $('.page-diy-section').on("mouseout",'.object-item',function(){
-            if($(this).find('.action').length > 0){
-                $(this).find('.action').remove();
-            }
-        });
-    }
-
     /**
      * 移除dom
      *
@@ -189,8 +165,6 @@
         header();
         footer();
         sortable();
-        //append_action_btn();
-        //remove_action_btn();
         remove_object();
         close_header_fooder();
         up_object();

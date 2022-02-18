@@ -10,7 +10,7 @@ class SingleImg
     // 类型（唯一标识）
     public $_type    = 'single_img';
     // 图标
-    public $_icon    = 'list-alt';
+    public $_icon    = 'image';
     // 模板文件
     public $_template     = [
         'script' =>  APP_PATH . 'micro/view/diy/single_img/script.html',
@@ -49,12 +49,12 @@ class SingleImg
      */
     public function handle($data, $shopid)
     {   
-        foreach($data['data'] as &$v){
-            $v['img_url'] = get_attachment_src($v['img_url']);
-            if(!empty($v['link'])){
-                $v['link']['url'] = (new Diy())->linkToUrl($v['link']);
-            }
+        
+        $data['data']['img_url'] = get_attachment_src($data['data']['img_url']);
+        if(!empty($data['data']['link'])){
+            $data['data']['link']['url'] = (new Diy())->linkToUrl($data['data']['link']);
         }
+        
 
         return $data;
     }

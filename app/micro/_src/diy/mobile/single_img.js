@@ -5,7 +5,7 @@ $(function(){
 	//初始化组件类型
     var object_type;
 	//点击显示单图控制区
-	$('.page-diy-section').on("click",'[data-type="single_img"]',function(){
+	$('.page-diy-section').on("click",'.object-item[data-type="single_img"]',function(){
 		//console.log('显示单图控制区');
 		//显示
 		$('.object-item').find('.diy-preview-controller').removeClass('show');

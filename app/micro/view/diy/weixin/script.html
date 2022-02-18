@@ -5,9 +5,11 @@
 			<div class="weixin-preview preview">
 				<div class="weixin-lists-box">
 					<div class="content clearfix">
-						<div class="logo"></div>
+						<div class="logo">
+							<img src="{:get_attachment_src(config('system.WEB_SITE_LOGO'))}" />
+						</div>
 						<div class="info">
-							<div class="title">{:config('system.WEB_SITE_TITLE')}</div>
+							<div class="title">{:config('system.WEB_SITE_NAME')}</div>
 							<div class="desc">{:config('system.WEB_SITE_DESCRIPTION')}</div>
 						</div>
 					</div>

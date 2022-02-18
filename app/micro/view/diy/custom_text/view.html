@@ -1,10 +1,10 @@
 
 <!--自定义文本组件-->
-<div class="object-item" data-type="custom_text" data-object-index="custom_text-{$key}">
+<div class="object-item" data-type="custom_text" data-object-index="custom_text-{$vars['key']}">
 	<div class="object-drag custom-text">
 		<div class="custom-text-preview">
             <div class="content">
-                {:htmlspecialchars_decode($vo['data']['content'])}
+                {:htmlspecialchars_decode($vars['data']['data']['content'])}
             </div>
 		</div>
 	</div>
@@ -18,7 +18,7 @@
                     <input type="hidden" name="app" value="micro"/>
                     <input type="hidden" name="title" value="自定义文本"/>
                     <input type="hidden" name="type" value="custom_text"/>
-                    <textarea class="hidden" name="content">{:htmlspecialchars_decode($vo['data']['content'])}</textarea>
+                    <textarea class="hidden" name="content">{:htmlspecialchars_decode($vars['data']['data']['content'])}</textarea>
                     <button type="button" class="btn btn-block btn-primary" data-toggle="modal" data-target="#customTextEditorModal">富文本编辑器</button>
                  </form>
 			</div>

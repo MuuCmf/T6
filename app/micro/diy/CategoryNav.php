@@ -10,7 +10,7 @@ class CategoryNav
     // 类型（唯一标识）
     public $_type    = 'category_nav';
     // 图标
-    public $_icon    = 'list-alt';
+    public $_icon    = 'th';
     // 模板文件
     public $_template     = [
         'script' =>  APP_PATH . 'micro/view/diy/category_nav/script.html',

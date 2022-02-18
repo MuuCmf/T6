@@ -6,7 +6,7 @@ $(function(){
 	//初始化组件类型
 	var object_type;
 	//点击显示控制区
-	$('.page-diy-section').on("click",'[data-type="category_nav"]',function(){
+	$('.page-diy-section').on("click",'.object-item[data-type="category_nav"]',function(){
 		//已经显示的不再触发
 		if($(this).find('.diy-preview-controller').hasClass('show')){
 			return;
@@ -16,8 +16,6 @@ $(function(){
 		}
 		object_index = $(this).data('object-index');
 		object_type = $(this).data('type');
-
-		//以上部分写死就可以，先low着，以后在搞
 		/******************************************************************************/
 		//链接选择区
 		$('[data-object-index="'+object_index+'"] .dropdown-menu a').attr('data-name',object_index);

@@ -1,6 +1,6 @@
 
 <!--分类&筛选组件-->
-<div class="object-item" data-type="category" data-object-index="category-{$key}">
+<div class="object-item" data-type="category" data-object-index="category-{$vars['key']}">
 	<div class="object-drag category">
 		<div class="category-preview">
             <!--一级分类&筛选按钮-->
@@ -13,8 +13,8 @@
     
                     <div class="category-list swiper-category-container">
                         <div class="swiper-wrapper">
-                            {notempty name="vo.tree"}
-                            {foreach $vo.tree as $k=>$v}
+                            {notempty name="vars.data.data.tree"}
+                            {foreach $vars.data.data.tree as $k=>$v}
                             <div class="item swiper-slide" data-id="{$v['id']}">
                                 {$v['title']}
                                 <hr />
@@ -24,9 +24,10 @@
                         </div>
                     </div>
                 </div>
+                {if $vars.data.data.sub_show == 1}
                 <div class="sub-box">
-                    {notempty name="vo.tree"}
-                    {foreach $vo.tree as $k=>$v}
+                    {notempty name="vars.data.data.tree"}
+                    {foreach $vars.data.data.tree as $k=>$v}
                     <div class="sub-items swiper-category-container" data-id="{$v['id']}">
                         <div class="swiper-wrapper">
                             {notempty name="$v['_child']"}
@@ -39,6 +40,7 @@
                     {/foreach}
                     {/notempty}
                 </div>
+                {/if}
             </div>
         </div>
 	</div> 
@@ -59,7 +61,7 @@
                             <div class="col-sm-9">
                                 <select class="form-control" name="app">
                                     {foreach $app_list as $v}
-                                    {if $vo.data.app == $v.name}
+                                    {if $vars.data.data.app == $v.name}
                                     <option value="{$v.name}" selected>{$v.alias}</option>
                                     {else}
                                     <option value="{$v.name}">{$v.alias}</option>
@@ -72,8 +74,13 @@
                             <label class="col-sm-3 control-label">显示子分类</label>
                             <div class="col-sm-9">
                                 <select class="form-control" name="sub_show">
+                                    {if $vars.data.data.sub_show == 1}
                                     <option value="0">不显示</option>
                                     <option value="1" selected>显示</option>
+                                    {else}
+                                    <option value="0" selected>不显示</option>
+                                    <option value="1">显示</option>
+                                    {/if}
                                 </select>
                             </div>
                         </div>

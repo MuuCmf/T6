@@ -8,11 +8,10 @@ class Announce
     // 类型（唯一标识）
     public $_type    = 'announce';
     // 图标
-    public $_icon    = 'list-alt';
+    public $_icon    = 'bullhorn';
     // 模板文件
     public $_template     = [
         'script' =>  APP_PATH . 'micro/view/diy/announce/script.html',
-        'block' =>  APP_PATH . 'micro/view/diy/announce/block.html',
         'view' =>  APP_PATH . 'micro/view/diy/announce/view.html',
     ];
     // 静态资源

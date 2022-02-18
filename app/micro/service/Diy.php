@@ -69,7 +69,7 @@ class Diy
     {
         $diy_params_config = $this->getConfig();
         $view_tmpl = '';
-        if (!empty($page_data)){
+        if (!empty($page_data['data'])){
             // 处理数据块数据模板
             foreach($page_data['data'] as $key => $vo){
                 $tmpl = $diy_params_config[$vo['app']]['list'][$vo['type']]['tmpl']['view'];
@@ -142,6 +142,61 @@ class Diy
         }
         
         return $data;
+    }
+
+    /**
+     * 获取系统图标列表
+     *
+     * @return     array  The icon lists.
+     */
+    public function getIconLists()
+    {
+        //获取系统图标
+        //取得系统图标所在目录
+        $dir  =  PUBLIC_PATH . '/static/micro/images/icon';
+        //初始化空数组
+        $file_arr = array();
+        //判断目标目录是否是文件夹
+        if(is_dir($dir)){
+            //打开
+            if($dh = @opendir($dir)){
+                //读取
+                while(($file = readdir($dh)) !== false){
+
+                    if($file != '.' && $file != '..'){
+
+                        $file_arr[] = $file;
+                    }
+                }
+                //关闭
+                closedir($dh);
+            }
+        }
+
+        $icon_arr = array();
+        foreach($file_arr as $val){
+            $icon_dir = $dir .'/'.$val;
+
+            if($dh = @opendir($icon_dir)){
+                //读取
+                while(($file = readdir($dh)) !== false){
+
+                    if($file != '.' && $file != '..'){
+
+                        $icon_arr_item = array(
+                            'title' => $file,
+                            'url' => request()->domain() . '/static/micro/images/icon/' . $val .'/'. $file,
+                        );
+                        $icon_arr[$val][] = $icon_arr_item;
+                    }
+                }
+                //关闭
+                closedir($dh);
+            }
+
+        }
+
+        return $icon_arr;
     }
 
     /**

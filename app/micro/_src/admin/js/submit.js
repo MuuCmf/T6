@@ -43,10 +43,9 @@ $(function(){
 			obj.title = '单图广告';
 			obj.type = 'single_img';
 			obj.app = 'micro';
-			obj.style = $(element).find('[name="style"]').val(), //样式
+			obj.style = $(element).find('[name="style"]').val(); //样式
 	        //为了兼任性，经单图或其它单独调用链接至组件的组件写入数组内
-	        obj.data = [{
-	        	img_id : $(element).find('[name="img_id"]').val(),
+	        obj.data = {
 	        	img_url : $(element).find('[name="img_url"]').val(),
 	        	link : {
 	        		sys_type : $(element).find('[name="link_sys_type"]').val(),
@@ -56,7 +55,7 @@ $(function(){
 		            module : $(element).find('[name="link_module"]').val(),
 	            	param : param,
 	        	}
-	        }];
+	        };
 
         return obj;
 	}
@@ -188,26 +187,26 @@ $(function(){
 	    return obj;
 	}
 
-	//通用应用列表组件
-	var app_list = function(element){
-		var obj = {};
-		obj.title = '课程列表';
-        obj.type = 'knowledge_list';
-		obj.app = 'classroom';
-        //为了兼任性，经单图或其它单独调用链接至组件的组件写入数组内
-        obj.data = {
-			'title': $(element).find('[name="title"]').val(),
-			'sub_title': $(element).find('[name="sub_title"]').val(),
-        	'rows': $(element).find('[name="rows"]').val(),
-        	'type': $(element).find('[name="type"]').val(),
-        	'category_id': $(element).find('[name="category_id"]').val(),
-        	'order_field': $(element).find('[name="order_field"]').val(),
-        	'order_type': $(element).find('[name="order_type"]').val(),
-			'rank': $(element).find('[name="rank"]').val(),
-			'style': $(element).find('[name="style"]').val(),
-        };
-        return obj;
-	}
+	// //通用应用列表组件
+	// var app_list = function(element){
+	// 	var obj = {};
+	// 	obj.title = '课程列表';
+    //     obj.type = 'knowledge_list';
+	// 	obj.app = 'classroom';
+    //     //为了兼任性，经单图或其它单独调用链接至组件的组件写入数组内
+    //     obj.data = {
+	// 		'title': $(element).find('[name="title"]').val(),
+	// 		'sub_title': $(element).find('[name="sub_title"]').val(),
+    //     	'rows': $(element).find('[name="rows"]').val(),
+    //     	'type': $(element).find('[name="type"]').val(),
+    //     	'category_id': $(element).find('[name="category_id"]').val(),
+    //     	'order_field': $(element).find('[name="order_field"]').val(),
+    //     	'order_type': $(element).find('[name="order_type"]').val(),
+	// 		'rank': $(element).find('[name="rank"]').val(),
+	// 		'style': $(element).find('[name="style"]').val(),
+    //     };
+    //     return obj;
+	// }
 
 	//点击提交按钮处理提交数据
 	
@@ -220,48 +219,52 @@ $(function(){
 		$('.preview-target .object-item').each(function(index,element){
 			//console.log(element);
 			var obj = {};
-			var type = $(this).data('type');
-			obj = $(this).find('form[data-type="'+type+'"]').serializeArray();
-			// //根据组件类型获取数据
-			// switch (type) {
-			// 	case ('search'):
-			// 		obj = search(element);
-			// 	break;
-			// 	case ('announce'):
-			// 		obj = announce(element);
-			// 	break;
-	        //     case ('single_img')://单图广告
-	        //         obj = single_img(element);
-	        //     break;
-	        //     case ('slideshow'):
-	        //     	obj = slideshow(element);
-	        //     break;
-	        //     case ('category_nav'):
-	        //     	obj = category_nav(element);
-	        //     break;
-	        //     case ('custom_text'):
-	        //     	obj = custom_text(element);
-	        //     break;
-			// 	case ('custom_html'):
-	        //     	obj = custom_html(element);
-	        //     break;
-	        //     case ('weixin'):
-	        //     	obj = weixin(element);
-	        //     break;
-	        //     case ('member'):
-	        //     	obj = member(element);
-	        //     break;
-			// 	case ('category'):
-	        //     	obj = category(element);
-	        //     break;
-			// 	case ('app_list'):
-	        //     	obj = app_list(element);
-	        //     break;
-	        // }
+			var otype = $(this).data('type');
+			
+			//根据组件类型获取数据
+			switch (otype) {
+				case ('search'):
+					obj = search(element);
+				break;
+				case ('announce'):
+					obj = announce(element);
+				break;
+	            case ('single_img')://单图广告
+	                obj = single_img(element);
+	            break;
+	            case ('slideshow'):
+	            	obj = slideshow(element);
+	            break;
+				case ('category'):
+	            	obj = category(element);
+	            break;
+	            case ('category_nav'):
+	            	obj = category_nav(element);
+	            break;
+	            case ('custom_text'):
+	            	obj = custom_text(element);
+	            break;
+				case ('custom_html'):
+	            	obj = custom_html(element);
+	            break;
+	            case ('weixin'):
+	            	obj = weixin(element);
+	            break;
+	            case ('member'):
+	            	obj = member(element);
+	            break;
+
+				default: 
+					obj = $(this).find('form[data-type="'+type+'"]').serializeArray();
+					var formData = {};
+					$.each(obj, function() {
+						formData[this.name] = this.value;
+					});
+					obj = formData;
+	        }
 	        data.push(obj);
 		});
-		console.log(data);
-		return false;
+
 		var header = {
 			'style': $('.public-header .config-controller select[name="style"]').val(),
 			'logo' : $('.public-header .config-controller input[name="logo"]').val(),

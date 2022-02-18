@@ -8,7 +8,7 @@ class Search
     // 类型（唯一标识）
     public $_type    = 'search';
     // 图标
-    public $_icon    = 'list-alt';
+    public $_icon    = 'search';
     // 模板文件
     public $_template     = [
         'script' =>  APP_PATH . 'micro/view/diy/search/script.html',

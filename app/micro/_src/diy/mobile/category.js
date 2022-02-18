@@ -48,7 +48,7 @@ $(function(){
     }
     
 	//点击显示控制区
-	$('.page-diy-section').on("click",'[data-type="category"]',function(){
+	$('.page-diy-section').on("click",'.object-item[data-type="category"]',function(){
 		//已经显示的不再触发
 		if($(this).find('.diy-preview-controller').hasClass('show')){
 			return;

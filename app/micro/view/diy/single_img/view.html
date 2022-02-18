@@ -1,15 +1,13 @@
 
 <div class="object-item" data-type="single_img" data-object-index="single_img-{$vars['key']}">
 	<div class="object-drag single-img">
-		<div class="single-img-preview preview style-{$vo['style']}">
-    		{foreach $vars['data']['data'] as $k => $vo}
-    			{if isset($vo['img_url']) && !empty($vo['img_url'])}
-		    		<img src="{$vo_data['img_url']}" />
-		    	{else}
-		    		<p>单图片广告组件</p>
-		    		<p>（建议宽度不低于900px的jpg、png、gif）</p>
-		 		{/if}
-    		{/foreach}
+		<div class="single-img-preview preview style-{$vars['data']['style']}">
+			{if isset($vars['data']['data']['img_url']) && !empty($vars['data']['data']['img_url'])}
+				<img src="{$vars['data']['data']['img_url']}" />
+			{else}
+				<p>单图片广告组件</p>
+				<p>（建议宽度不低于900px的jpg、png、gif）</p>
+			{/if}
 		</div>
 	</div>
 	<div class="diy-preview-controller single-img">
@@ -24,7 +22,7 @@
 					<input type="hidden" name="type" value="single-img"/>
 					<div class="single-img-item" data-rule="object-controller-item">
 						<div class="form-group add">
-							<input type="hidden" name="img_url" value="{$vo_data['img_url']}"/>
+							<input type="hidden" name="img_url" value="{$vars['data']['data']['img_url']}"/>
 							<div class="uploadImgBtn btn btn-primary">上传图片</div>
 						</div>
 						<div class="form-group">
@@ -36,12 +34,12 @@
 						<div class="form-group">
 							<label class="">样式选择</label>
 							<select class="form-control wide" name="style">
-								{if $vo['data']['style'] == 0}
+								{if $vars['data']['style'] == 0}
 								<option value="0" selected>通栏</option>
 								<option value="1">圆角留边</option>
 								{/if}
 
-								{if $vo['data']['style'] == 1}
+								{if $vars['data']['style'] == 1}
 								<option value="0">通栏</option>
 								<option value="1" selected>圆角留边</option>
 								{/if}

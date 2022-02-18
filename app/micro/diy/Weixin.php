@@ -8,7 +8,7 @@ class Weixin
     // 类型（唯一标识）
     public $_type    = 'weixin';
     // 图标
-    public $_icon    = 'list-alt';
+    public $_icon    = 'weixin';
     // 模板文件
     public $_template     = [
         'script' =>  APP_PATH . 'micro/view/diy/weixin/script.html',
@@ -48,6 +48,10 @@ class Weixin
     public function handle($data, $shopid)
     {   
         if(empty($data['style'])) $data['style'] = 0; //样式默认为0
+        $data['data']['title'] = config('system.WEB_SITE_NAME');
+        $data['data']['desc'] = config('system.WEB_SITE_DESCRIPTION');
+        $data['data']['logo'] = get_attachment_src(config('system.WEB_SITE_LOGO'));
+
         return $data;
     }
 }

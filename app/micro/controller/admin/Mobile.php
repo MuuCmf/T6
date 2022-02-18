@@ -70,6 +70,9 @@ class Mobile extends MicroAdmin
         // 页面元素Static
         $app_static_tmpl = (new DiyService())->getStaticTmpl();
         View::assign('app_static_tmpl', $app_static_tmpl);
+        // 获取无图标路径
+        $no_icon = request()->domain() . '/static/micro/images/diy/noimg.png';
+        View::assign('no_icon', $no_icon);
         View::assign('channel', 'mobile');
 
         // 设置title
@@ -83,11 +86,8 @@ class Mobile extends MicroAdmin
      */
     public function diy()
     {
-        $id = input('id',0, 'intval');
-
         if (request()->isAjax()){
             $params = input('post.');
-            dump($params);exit;
             $id = empty($params['id'])? 0 : $params['id'];
             if(!empty($params['data'])){
                 //反编译无需转义的组件内容
@@ -116,7 +116,7 @@ class Mobile extends MicroAdmin
                 return $this->error( '保存失败');
             }
         }else{
-
+            $id = input('id',0, 'intval');
             // 应用列表
             $app_list = $this->ModuleModel->getAll();
             View::assign('app_list', $app_list);
@@ -124,7 +124,7 @@ class Mobile extends MicroAdmin
             // 自定义DIY组件列表
             $diy_params_config = (new DiyService())->getConfig();
             View::assign('diy_params_config', $diy_params_config);
-            //dump($diy_params_config);
+
             // 页面数据
             // block 数据块
             $app_view_tmpl = '';
@@ -137,16 +137,17 @@ class Mobile extends MicroAdmin
             }else{
                 $page_data = [];
             }
+
             View::assign('page_data', $page_data);
             // 内置图标列表
-            View::assign('icon_list', $this->PageLogic->getIconLists());
+            View::assign('icon_list', (new DiyService())->getIconLists());
 
             // 链接至参数
             $link_list = (new DiyService())->linkParams();
             View::assign('link_list', $link_list);
             
             // 获取无图标路径
-            $no_icon = request()->domain() . '/static/common/images/diy/noimg.png';
+            $no_icon = request()->domain() . '/static/micro/images/diy/noimg.png';
             View::assign('no_icon', $no_icon);
             
             // 页面元素View

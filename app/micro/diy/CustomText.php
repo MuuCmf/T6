@@ -8,7 +8,7 @@ class CustomText
     // 类型（唯一标识）
     public $_type    = 'custom_text';
     // 图标
-    public $_icon    = 'list-alt';
+    public $_icon    = 'edit';
     // 模板文件
     public $_template     = [
         'script' =>  APP_PATH . 'micro/view/diy/custom_text/script.html',

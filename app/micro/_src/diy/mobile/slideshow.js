@@ -5,7 +5,7 @@ $(function(){
 	//初始化组件类型
     var object_type;
 	//点击显示轮播控制区
-	$('.page-diy-section').on("click",'[data-type="slideshow"]',function(){
+	$('.page-diy-section').on("click",'.object-item[data-type="slideshow"]',function(){
 		$('.object-item').find('.diy-preview-controller').removeClass('show');
 		$(this).find('.diy-preview-controller').addClass('show');
 		

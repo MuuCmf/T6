@@ -10,7 +10,7 @@ class Category
     // 类型（唯一标识）
     public $_type    = 'category';
     // 图标
-    public $_icon    = 'list-alt';
+    public $_icon    = 'exchange';
     // 模板文件
     public $_template     = [
         'script' =>  APP_PATH . 'micro/view/diy/category/script.html',
@@ -60,8 +60,12 @@ class Category
             bind($app . '\\category_tree', 'app\\' . $app . '\\model\\' .ucwords($app).  'Category');
 
             if(app($app . '\\category_tree')){
-                $category_tree = app($app . '\\category_tree')->getTree(1);
-                $data['tree'] = $category_tree;
+                //$category_tree = app($app . '\\category_tree')->getTree(1);
+                $map[] = ['status', '=', 1];
+                $list = app($app . '\\category_tree')->getList($map, 999, 'sort desc,create_time desc');
+                $list = $list->toArray();
+                $list = list_to_tree($list);
+                $data['data']['tree'] = $list;
             }
         }
         return $data;

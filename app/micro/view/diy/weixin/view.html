@@ -2,12 +2,14 @@
 <div class="object-item" data-type="weixin" data-object-index="weixin-{$vars['key']}">
 	<div class="object-drag weixin">
 		<div class="weixin-preview preview">
-			<div class="weixin-lists-box style-{$vo['style']}">
+			<div class="weixin-lists-box style-{$vars['data']['style']}">
 				<div class="content clearfix">
-					<div class="logo"></div>
+					<div class="logo">
+						<img src="{$vars.data.data.logo}" />
+					</div>
 					<div class="info">
-						<div class="title">{:config('system.WEB_SITE_TITLE')}</div>
-						<div class="desc">{:config('system.WEB_SITE_DESCRIPTION')}</div>
+						<div class="title">{$vars.data.data.title}</div>
+						<div class="desc">{$vars.data.data.desc}</div>
 					</div>
 				</div>
 				<div class="follow-btn">
@@ -42,7 +44,7 @@
 						<div class="form-group">
 							<label class="col-sm-3"></label>
 							<div class="col-sm-9">
-							<button class="btn btn-primary">确认</button>
+							<button type="button" class="btn btn-primary">确认</button>
 							</div>
 						</div>
 					</div>

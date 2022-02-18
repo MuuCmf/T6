@@ -8,7 +8,7 @@ class Member
     // 类型（唯一标识）
     public $_type    = 'member';
     // 图标
-    public $_icon    = 'list-alt';
+    public $_icon    = 'user-plus';
     // 模板文件
     public $_template     = [
         'script' =>  APP_PATH . 'micro/view/diy/member/script.html',

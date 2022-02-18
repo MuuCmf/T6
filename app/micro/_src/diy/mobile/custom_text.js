@@ -8,7 +8,7 @@ $(function(){
 	var object_type;
 	
 	//点击显示控制区
-	$('.page-diy-section').on("click",'[data-type="custom_text"]',function(){
+	$('.page-diy-section').on("click",'.object-item[data-type="custom_text"]',function(){
 		//已经显示的不再触发
 		$('.object-item').find('.diy-preview-controller').removeClass('show');
 		$(this).find('.diy-preview-controller').addClass('show');

@@ -8,7 +8,7 @@ $(function(){
 	var object_type;
 
 	//点击显示控制区
-	$('.page-diy-section').on("click",'.object-item',function(){
+	$('.page-diy-section').on("click",'.object-item[data-type="announce"]',function(){
 		//已经显示的不再触发
 		if($(this).find('.diy-preview-controller').hasClass('show')){
 			return;
@@ -20,7 +20,7 @@ $(function(){
 		object_index = $(this).data('object-index');
 		object_type = $(this).data('type');
 		/******************************************************************************/
-		$('.page-diy-section').on('click','[data-object-index="'+object_index+'"] .btn',function(){
+		$('.page-diy-section').on('click','[data-object-index="'+object_index+'"] .btn-submit',function(e){
             e.stopPropagation();
 			//点击确认按钮后的数据重新加载
 			var rows = $('[data-object-index="'+object_index+'"] select[name="rows"]').val();

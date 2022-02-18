@@ -10,7 +10,7 @@ class Slideshow
     // 类型（唯一标识）
     public $_type    = 'slideshow';
     // 图标
-    public $_icon    = 'list-alt';
+    public $_icon    = 'file-powerpoint-o';
     // 模板文件
     public $_template     = [
         'script' =>  APP_PATH . 'micro/view/diy/slideshow/script.html',
