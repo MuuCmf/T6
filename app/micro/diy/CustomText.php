@@ -32,8 +32,8 @@ class CustomText
     {
         return [
             'mobile' => [
-                'css' => request()->domain() . '/static/micro/diy/mobile/custom_text.min.css',
-                'js' => request()->domain() . '/static/micro/diy/mobile/custom_text.min.js',
+                'css' => PUBLIC_PATH . '/static/micro/diy/mobile/custom_text.min.css',
+                'js' => PUBLIC_PATH . '/static/micro/diy/mobile/custom_text.min.js',
             ],
             'pc' => [
                 'css' => '',

@@ -34,8 +34,8 @@ class Category
     {
         return [
             'mobile' => [
-                'css' => request()->domain() . '/static/micro/diy/mobile/category.min.css',
-                'js' => request()->domain() . '/static/micro/diy/mobile/category.min.js',
+                'css' => PUBLIC_PATH . '/static/micro/diy/mobile/category.min.css',
+                'js' => PUBLIC_PATH . '/static/micro/diy/mobile/category.min.js',
             ],
             'pc' => [
                 'css' => '',

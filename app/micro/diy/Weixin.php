@@ -32,8 +32,8 @@ class Weixin
     {
         return [
             'mobile' => [
-                'css' => request()->domain() . '/static/micro/diy/mobile/weixin.min.css',
-                'js' => request()->domain() . '/static/micro/diy/mobile/weixin.min.js',
+                'css' => PUBLIC_PATH . '/static/micro/diy/mobile/weixin.min.css',
+                'js' => PUBLIC_PATH . '/static/micro/diy/mobile/weixin.min.js',
             ],
             'pc' => [
                 'css' => '',

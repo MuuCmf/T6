@@ -32,8 +32,8 @@ class Member
     {
         return [
             'mobile' => [
-                'css' => request()->domain() . '/static/micro/diy/mobile/member.min.css',
-                'js' => request()->domain() . '/static/micro/diy/mobile/member.min.js',
+                'css' => PUBLIC_PATH . '/static/micro/diy/mobile/member.min.css',
+                'js' => PUBLIC_PATH . '/static/micro/diy/mobile/member.min.js',
             ],
             'pc' => [
                 'css' => '',

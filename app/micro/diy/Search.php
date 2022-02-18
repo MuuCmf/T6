@@ -35,8 +35,8 @@ class Search
     {
         return [
             'mobile' => [
-                'css' => request()->domain() . '/static/micro/diy/mobile/search.min.css',
-                'js' => request()->domain() . '/static/micro/diy/mobile/search.min.js',
+                'css' => PUBLIC_PATH . '/static/micro/diy/mobile/search.min.css',
+                'js' => PUBLIC_PATH . '/static/micro/diy/mobile/search.min.js',
             ],
             'pc' => [
                 'css' => '',

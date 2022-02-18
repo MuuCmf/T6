@@ -34,8 +34,8 @@ class SingleImg
     {
         return [
             'mobile' => [
-                'css' => request()->domain() . '/static/micro/diy/mobile/single_img.min.css',
-                'js' => request()->domain() . '/static/micro/diy/mobile/single_img.min.js',
+                'css' => PUBLIC_PATH . '/static/micro/diy/mobile/single_img.min.css',
+                'js' => PUBLIC_PATH . '/static/micro/diy/mobile/single_img.min.js',
             ],
             'pc' => [
                 'css' => '',

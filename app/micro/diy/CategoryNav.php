@@ -34,8 +34,8 @@ class CategoryNav
     {
         return [
             'mobile' => [
-                'css' => request()->domain() . '/static/micro/diy/mobile/category_nav.min.css',
-                'js' => request()->domain() . '/static/micro/diy/mobile/category_nav.min.js',
+                'css' => PUBLIC_PATH . '/static/micro/diy/mobile/category_nav.min.css',
+                'js' => PUBLIC_PATH . '/static/micro/diy/mobile/category_nav.min.js',
             ],
             'pc' => [
                 'css' => '',

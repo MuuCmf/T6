@@ -69,7 +69,7 @@
 				position:relative;
 
 				.slideshow-item {
-
+					margin-bottom: 6px;
 					img {
 						max-width: 100%;
 						display: block;
@@ -78,11 +78,11 @@
 
 				.del-item-btn {
 					position:absolute;
-					width: 16px;
-					height: 16px;
+					width: 20px;
+					height: 20px;
 					z-index: 20;
-					top: -8px;
-					right: -8px;
+					top: -10px;
+					right: 0px;
 					cursor: pointer;
 
 					i {

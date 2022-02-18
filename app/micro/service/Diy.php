@@ -107,20 +107,47 @@ class Diy
     public function getStaticTmpl()
     {
         $diy_params_config = $this->getConfig();
-        $app_static_tmpl = '';
+        $style = '';
+        $script = '';
         foreach($diy_params_config as $k=>$v){
             foreach($v['list'] as $c_k=>$c_v){
                 if(!empty($c_v['static']['mobile']['css'])){
-                    $app_static_tmpl .= '<link href="'.$c_v['static']['mobile']['css'].'" rel="stylesheet" type="text/css"/>';
+
+                    $style .= file_get_contents($c_v['static']['mobile']['css']);
                 }
                 if(!empty($c_v['static']['mobile']['js'])){
-                    $app_static_tmpl .= '<script type="text/javascript" src="'.$c_v['static']['mobile']['js'].'"></script>';
+                    //$app_static_tmpl .= '<script type="text/javascript" src="'.$c_v['static']['mobile']['js'].'"></script>';
+                    $script .= file_get_contents($c_v['static']['mobile']['js']);
                 }
             }
         }
-
+        $style='<style>' .$style. '</style>';
+        $script = '<script>' .$script. '</script>';
+        $app_static_tmpl = $style . $script;
+        //dump($style);
         return $app_static_tmpl;
     }
+
+    // /**
+    //  * 获取DIY组件静态资源模板内容
+    //  */
+    // public function getStaticTmpl()
+    // {
+    //     $diy_params_config = $this->getConfig();
+    //     $app_static_tmpl = '';
+    //     foreach($diy_params_config as $k=>$v){
+    //         foreach($v['list'] as $c_k=>$c_v){
+    //             if(!empty($c_v['static']['mobile']['css'])){
+    //                 $app_static_tmpl .= '<link href="'.$c_v['static']['mobile']['css'].'" rel="stylesheet" type="text/css"/>';
+    //             }
+    //             if(!empty($c_v['static']['mobile']['js'])){
+    //                 $app_static_tmpl .= '<script type="text/javascript" src="'.$c_v['static']['mobile']['js'].'"></script>';
+    //             }
+    //         }
+    //     }
+
+    //     return $app_static_tmpl;
+    // }
 
     /**
      * 各应用在自定义页的数据处理

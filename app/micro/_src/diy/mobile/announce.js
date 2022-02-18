@@ -80,18 +80,15 @@ $(function(){
     $('.page-diy-section .object-lists').on("click",'.btn-object[data-type="announce"]',function(){
 
         let type = $(this).data('type');
-
         let html = $('[data-object-type="'+type+'"]').html();
-        console.log(type);
         $('.preview-target').append(html);
-        //为新增元素添加编号索引，避免多次引入冲突
-        let object_index='';
 
-        $('.preview-target .object-item').each(function(index){
-            var this_type = $(this).data('type');
+        //为新增元素添加编号索引，避免多次引入冲突
+		$('.preview-target .object-item').each(function(index){
+        	object_type = $(this).data('type');
             //为所有已显示组件元素DOM编号索引，避免多次引入冲突
-            $(this).attr('data-object-index',this_type+'-'+index);
-            object_index = this_type+'-'+index;
+            $(this).attr('data-object-index',object_type+'-'+index);
+            object_index = object_type +'-'+ index;
         });
         //公告接口默认数据加载
         if(type == 'announce'){

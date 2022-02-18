@@ -34,8 +34,8 @@ class Slideshow
     {
         return [
             'mobile' => [
-                'css' => request()->domain() . '/static/micro/diy/mobile/slideshow.min.css',
-                'js' => request()->domain() . '/static/micro/diy/mobile/slideshow.min.js',
+                'css' => PUBLIC_PATH . '/static/micro/diy/mobile/slideshow.min.css',
+                'js' => PUBLIC_PATH . '/static/micro/diy/mobile/slideshow.min.js',
             ],
             'pc' => [
                 'css' => '',

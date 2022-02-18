@@ -7,50 +7,16 @@ $(function(){
 	//点击显示单图控制区
 	$('.page-diy-section').on("click",'.object-item[data-type="single_img"]',function(){
 		//console.log('显示单图控制区');
-		//显示
-		$('.object-item').find('.diy-preview-controller').removeClass('show');
-		$(this).find('.diy-preview-controller').addClass('show');
+		if($(this).find('.diy-preview-controller').hasClass('show')){
+			return;
+		}else{
+			//显示
+			$('.object-item').find('.diy-preview-controller').removeClass('show');
+			$(this).find('.diy-preview-controller').addClass('show');
+		}
 		
 		object_index = $(this).data('object-index');
 		object_type = $(this).data('type');
-		/******************************************************************************/
-		//链接选择区
-		$('[data-object-index="'+object_index+'"] .dropdown-menu a').attr('data-name',object_index);
-
-		//控制区确认预览按钮
-		$('.page-diy-section').on('click','[data-object-index="'+object_index+'"] .btn',function(){
-			var style = $(this).parent().parent().find('select[name="style"]').val();
-			//console.log(style);
-			if(style == 0){
-				$('[data-object-index="'+object_index+'"]').find('.single-img-preview').removeClass('style-1');
-				$('[data-object-index="'+object_index+'"]').find('.single-img-preview').addClass('style-0');
-			}
-			if(style == 1){
-				$('[data-object-index="'+object_index+'"]').find('.single-img-preview').removeClass('style-0');
-				$('[data-object-index="'+object_index+'"]').find('.single-img-preview').addClass('style-1');
-			}
-		});
-	});
-
-	$('.page-diy-section .object-lists').on("click",'.btn-object[data-type="single_img"]',function(){
-
-        let type = $(this).data('type');
-        let open = $(this).data('open');
-        if(open == false) {
-            toast.error('该组件完善中...','danger');
-            return;
-        }
-
-        let html = $('[data-object-type="'+type+'"]').html();
-
-        $('.preview-target').append(html);
-        //为新增元素添加编号索引，避免多次引入冲突
-		$('.preview-target .object-item').each(function(index){
-            var this_type = $(this).data('type');
-            //为所有已显示组件元素DOM编号索引，避免多次引入冲突
-            $(this).attr('data-object-index',this_type+'-'+index);
-            object_index = this_type+'-'+index;
-        });
 		// 上传接口
 		var upload_api = $('input[name="upload_api"]').val();
 		// 实例上传组件
@@ -101,5 +67,37 @@ $(function(){
 			}
 			toast.hideLoading();
 		});
+		/******************************************************************************/
+		//链接选择区
+		$('[data-object-index="'+object_index+'"] .dropdown-menu a').attr('data-name',object_index);
+
+		//控制区确认预览按钮
+		$('.page-diy-section').on('click','[data-object-index="'+object_index+'"] .btn',function(){
+			var style = $(this).parent().parent().find('select[name="style"]').val();
+			//console.log(style);
+			if(style == 0){
+				$('[data-object-index="'+object_index+'"]').find('.single-img-preview').removeClass('style-1');
+				$('[data-object-index="'+object_index+'"]').find('.single-img-preview').addClass('style-0');
+			}
+			if(style == 1){
+				$('[data-object-index="'+object_index+'"]').find('.single-img-preview').removeClass('style-0');
+				$('[data-object-index="'+object_index+'"]').find('.single-img-preview').addClass('style-1');
+			}
+		});
+	});
+
+	$('.page-diy-section .object-lists').on("click",'.btn-object[data-type="single_img"]',function(){
+
+        let type = $(this).data('type');
+        let html = $('[data-object-type="'+type+'"]').html();
+
+        $('.preview-target').append(html);
+        //为新增元素添加编号索引，避免多次引入冲突
+		$('.preview-target .object-item').each(function(index){
+        	object_type = $(this).data('type');
+            //为所有已显示组件元素DOM编号索引，避免多次引入冲突
+            $(this).attr('data-object-index',object_type+'-'+index);
+            object_index = object_type +'-'+ index;
+        });
     });
 });

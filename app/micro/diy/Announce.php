@@ -31,8 +31,8 @@ class Announce
     {
         return [
             'mobile' => [
-                'css' => request()->domain() . '/static/micro/diy/mobile/announce.min.css',
-                'js' => request()->domain() . '/static/micro/diy/mobile/announce.min.js',
+                'css' => PUBLIC_PATH . '/static/micro/diy/mobile/announce.min.css',
+                'js' => PUBLIC_PATH . '/static/micro/diy/mobile/announce.min.js',
             ],
             'pc' => [
                 'css' => '',
