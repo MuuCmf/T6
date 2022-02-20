@@ -27,7 +27,6 @@ use think\facade\View;
 class OfficialAccount extends MuuAdmin {
     private $wechatConfigModel;
     private $autoReplyModel;
-    private $shopid = 0;
     function __construct()
     {
         parent::__construct();

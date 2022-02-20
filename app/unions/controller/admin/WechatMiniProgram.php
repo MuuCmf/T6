@@ -21,12 +21,10 @@ use think\facade\View;
 
 class WechatMiniProgram extends MuuAdmin{
     private $MiniProgramModel;
-    private $shopid;
     function __construct()
     {
         parent::__construct();
         $this->MiniProgramModel = new WechatMpConfig();
-        $this->shopid = 0;
     }
 
     /**

@@ -25,7 +25,6 @@ use app\unions\model\Tominiprogram as TominiprogramModel;
 class Tominiprogram extends MuuAdmin{
     protected $TominiprogramModel;
     protected $TominiprogramLogic;
-    protected $shopid;
     protected $type;
     public function __construct()
     {
