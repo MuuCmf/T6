@@ -40,7 +40,7 @@ class Member extends Admin
         $search = input('search','','text');
         if(is_numeric($search)) {
             //UID查询
-            $map['uid'] = $search;
+            $map[] = ['uid' ,'=' ,$search];
         }else{
             $username = $search;
             $aUnType = 0;
@@ -50,9 +50,9 @@ class Member extends Admin
                 $mapUsername['username'] = ['like', '%' . $username . '%'];
                 $uid = Db::name('member')->where($mapUsername)->value('id');
                 if($uid){
-                    $map['uid'] = $uid;
+                    $map[] = ['uid' ,'=' ,$search];
                 }else{
-                    $map['nickname'] = ['like', '%' . (string)$search . '%'];
+                    $map[] = ['nickname' ,'like' ,'%' . (string)$search . '%'];
                 }
             }
         }
