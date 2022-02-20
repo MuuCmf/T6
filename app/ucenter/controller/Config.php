@@ -51,7 +51,7 @@ class Config extends Common
 
         } else {
             //调用基本信息
-            $user = query_user(is_login(),['nickname', 'signature', 'email', 'mobile', 'avatar', 'sex']);
+            $user = query_user(is_login(),['username','nickname', 'signature', 'email', 'mobile', 'avatar', 'sex']);
             //显示页面
             View::assign('user', $user);
             // $this->_getExpandInfo();

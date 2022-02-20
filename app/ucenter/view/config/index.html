@@ -42,12 +42,12 @@
                                                             <label for="aUsername" class="col-xs-2 control-label">用户名</label>
                         
                                                             <div class="col-xs-10">
-                                                                {php}if($user['username']){{/php}
-                                                                    <span class="lh32">{$accountInfo['username']}</span>
-                                                                {php}}else{{/php}
+                                                                {if $user['nickname']}
+                                                                    <span class="lh32">{$user['username']}</span>
+                                                                {else /}
                                                                     <input type="text" class="form-control pull-left" id="aUsername" value="" placeholder="{:lang('_USER_NAME_NOT_SET_')}{:lang('_WAVE_')}">
                                                                     <a class="pull-left lh32 saveUsername" style="margin-left: 10px">修改</a>
-                                                                {php}}{/php}
+                                                                {/if}
                                                             </div>
                                                         </div>
                                                         {php}}{/php}
