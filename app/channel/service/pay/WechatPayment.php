@@ -71,7 +71,13 @@ class WechatPayment extends PayService{
         $res = $this->app->jssdk->sdkConfig($res['prepay_id']);
         return $res;
     }
-    
+
+    /**
+     * @title 退款
+     * @param $refund_info
+     * @return bool
+     * @throws Exception
+     */
     public function refund($refund_info)
     {
         // TODO: Implement refund() method.
@@ -87,6 +93,12 @@ class WechatPayment extends PayService{
         throw new Exception($result['return_msg']);
 
     }
+
+    /**
+     * @title 回调
+     * @param $params
+     * @return bool
+     */
     public function notify($params)
     {
         // TODO: Implement notify() method.
@@ -95,7 +107,31 @@ class WechatPayment extends PayService{
         }
         return false;
     }
+
+    /**
+     * @title 商户订单号查询订单
+     * @param $order_no
+     * @return mixed
+     */
     public function queryByOutTradeNumber($order_no){
         return $this->app->order->queryByOutTradeNumber($order_no);
+    }
+
+    /**
+     * @title 企业付款到零钱
+     * @param $data
+     * @return mixed
+     */
+    public function toBalance($data){
+//        $data = [
+//            'partner_trade_no' => '1233455', // 商户订单号，需保持唯一性(只能是字母或者数字，不能包含有符号)
+//            'openid' => 'oxTWIuGaIt6gTKsQRLau2M0yL16E',
+//            'check_name' => 'FORCE_CHECK', // NO_CHECK：不校验真实姓名, FORCE_CHECK：强校验真实姓名
+//            're_user_name' => '王小帅', // 如果 check_name 设置为FORCE_CHECK，则必填用户真实姓名
+//            'amount' => 10000, // 企业付款金额，单位为分
+//            'desc' => '理赔', // 企业付款操作说明信息。必填
+//        ];
+        return $this->app->transfer->toBalance($data);
+
     }
 }

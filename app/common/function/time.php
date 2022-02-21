@@ -149,3 +149,15 @@ function get_time_unit($key = null){
 
     return empty($key)?$array:$array[$key];
 }
+/**
+ * 获取今日起始和结束时间戳
+ *
+ * @return     <type>  ( description_of_the_return_value )
+ */
+function dayTime()
+{
+    $beginToday = mktime(0,0,0,date('m'),date('d'),date('Y'));
+    $endToday = mktime(0,0,0,date('m'),date('d')+1,date('Y'))-1;
+
+    return array($beginToday, $endToday);
+}
