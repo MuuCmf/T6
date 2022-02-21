@@ -19,15 +19,27 @@
         <form action="{:url('index')}" method="post" class="form-horizontal ajax-form">
             <input type="hidden" name="id" value="{$data.id}">
             <div class="form-item builder_item">
+                <label class="item-label">公众号封面<span class="check-tips">（公众号封面）</span>
+                </label>
+                {:single_image_upload('cover', $data['cover'])}
+            </div>
+            <div class="form-item builder_item">
                 <label class="item-label">公众号名称<span class="check-tips">（公众号名称）</span>
                 </label>
                 <input type="text" class="text input-large form-control" name="title" style="width: 400px"
                        value="{$data.title|default=''}">
             </div>
             <div class="form-item builder_item">
-                <label class="item-label">公众号封面<span class="check-tips">（公众号封面）</span>
+                <label class="item-label">公众号描述<span class="check-tips">（公众号描述）</span>
                 </label>
-                {:single_image_upload('cover', $data['cover'])}
+                <div class="controls textarea">
+                    <textarea name="desc" cols="30" rows="10" class="form-control">{$data.desc}</textarea>
+                </div>
+            </div>
+            <div class="form-item builder_item">
+                <label class="item-label">公众号二维码<span class="check-tips">（公众号二维码）</span>
+                </label>
+                {:single_image_upload('qrcode', $data['qrcode'])}
             </div>
             <div class="form-item builder_item">
                 <label class="item-label">APPID<span class="check-tips">（应用的独立标识）</span>
