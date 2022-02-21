@@ -12,6 +12,8 @@
  * +----------------------------------------------------------------------
  */
 namespace app\api\controller;
+use app\channel\facade\channel\Channel as ChannelServer;
+use app\channel\facade\channel\Pay as PayServer;
 use app\common\controller\Base;
 use app\common\model\CapitalFlow;
 use app\common\model\Member;
@@ -19,11 +21,8 @@ use app\common\model\MemberSync;
 use app\common\model\Orders;
 use app\common\model\Orders as OrdersModel;
 use app\channel\facade\wechat\OfficialAccount;
-use app\channel\model\WechatMpConfig;
-use app\channel\model\WechatConfig;
 use think\Exception;
 use think\facade\Db;
-use think\facade\Log;
 use think\Request;
 
 class Pay extends Base {
@@ -43,7 +42,7 @@ class Pay extends Base {
         //中间件加载完成后执行
         $this->initParams();//参数赋值
         if ($request->action() != 'payCallback'){
-            $this->initPayService();//初始化支付服务
+            $this->initService();//初始化支付服务
             $this->initOrderLogic();
         }
         $this->OrderModel = new OrdersModel();
@@ -66,53 +65,12 @@ class Pay extends Base {
         $this->OrderLogic = new $order_namespace;
     }
 
-
-
     /**
      * 初始化支付
      */
-    protected function initPayService(){
-        //服务类
-        $className = [
-            'weixin_h5' => 'WechatPayment',
-            'weixin_app' => 'WechatPayment',
-            'alipay' => 'AlipayPayment',
-        ];
-        //获取实例化的服务
-        $pay_namespace = "app\\channel\\service\\pay\\{$className[$this->params['channel']]}";
-        $config = $this->initUnionConfig();
-        $this->PayService = new $pay_namespace($config['appid']);
-    }
-
-
-    /**
-     * 初始化渠道配置信息
-     * @return WechatMpConfig|WechatConfig|array|\think\Model
-     */
-    protected function initUnionConfig()
-    {
-
-        switch ($this->params['channel']){
-            //微信公众号
-            case 'weixin_h5':
-                $data = (new WechatConfig())->getWechatConfigByShopId($this->params['shopid']);
-                if (empty($data)){
-                    throw  new Exception('公众号配置文件不存在');
-                }
-                break;
-            //微信小程序
-            case 'weixin_app':
-                //获取配置信息
-                $map = [
-                    ['shopid' ,'=' , $this->params['shopid']],
-                ];
-                $data = (new WechatMpConfig())->where($map)->find();
-                if (empty($data)){
-                    throw  new Exception('小程序配置信息不存在');
-                }
-                break;
-        }
-        return $data;
+    protected function initService(){
+        $config = ChannelServer::config($this->params['channel'] ,$this->params['shopid']);
+        $this->PayService = PayServer::init($config['appid'],$this->params['channel'],$this->params['shopid']);
     }
 
     public function pay(){
@@ -143,7 +101,7 @@ class Pay extends Base {
                     $notify_url .= "/app/{$this->params['app']}";
                     $pay_data['notify_url'] = $notify_url;
                 }
-                $pay = $this->PayService->pay($pay_data);
+                $pay = $this->PayService->server->pay($pay_data);
                 //更改支付渠道标识
                 $channel_map = [
                     'id' => $order_data['id'],
@@ -211,7 +169,7 @@ class Pay extends Base {
                             $result = Member::updateAmount($refund_info['uid'],'balance',$refund_info['refund_fee']);
                         }else{
                             //退款至付款账户
-                            $result = $this->PayService->refund($refund_info);
+                            $result = $this->PayService->server->refund($refund_info);
                         }
                         if (!$result){
                             throw new Exception('网络异常，请稍后再试');
@@ -245,8 +203,8 @@ class Pay extends Base {
         $jsonxml = json_encode(simplexml_load_string($notify_xml, 'SimpleXMLElement', LIBXML_NOCDATA));
         $notify = json_decode($jsonxml, true);
         //实例化支付服务
-        $this->initPayService();
-        $order_no = $this->PayService->notify($notify);
+        $this->initService();
+        $order_no = $this->PayService->server->notify($notify);
         //判断订单是否已支付
         if (!$order_no){
             $this->payXmlMsg('FAIL','通信失败，请稍后再通知我');

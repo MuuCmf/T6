@@ -12,19 +12,23 @@
  * +----------------------------------------------------------------------
  */
 namespace app\api\controller;
+use app\channel\facade\channel\Channel as ChannelServer;
+use app\channel\facade\channel\Pay as PayServer;
 use app\common\controller\Base;
+use app\common\model\CapitalFlow as CapitalFlowModel;
+use app\common\model\Withdraw as WithdrawModel;
 use think\Exception;
 use think\Request;
 
 class Withdraw extends Base {
 
     private $PayService;//支付服务
-    private $OrderModel;//订单模型
-    private $OrderLogic;//订单模型
+    private $WithdrawModel;//订单模型
+    private $WithdrawLogic;//订单模型
     private $CapitalFlowModel;
     private $params;//参数
     protected $middleware = [
-        'app\\common\\middleware\\CheckAuth',
+//        'app\\common\\middleware\\CheckAuth',
     ];
 
     function __construct(Request $request)
@@ -32,12 +36,9 @@ class Withdraw extends Base {
         parent::__construct();
         //中间件加载完成后执行
         $this->initParams();//参数赋值
-        if ($request->action() != 'payCallback'){
-            $this->initPayService();//初始化支付服务
-            $this->initOrderLogic();
-        }
-        $this->OrderModel = new OrdersModel();
-        $this->CapitalFlowModel = new CapitalFlow();
+        $this->initService();//初始化支付服务
+        $this->WithdrawModel = new WithdrawModel();
+        $this->CapitalFlowModel = new CapitalFlowModel();
     }
 
 
@@ -49,60 +50,16 @@ class Withdraw extends Base {
     }
 
     /**
-     * 初始化订单业务
-     */
-    protected function initOrderLogic(){
-        $order_namespace = "app\\{$this->params['app']}\\logic\\Orders";
-        $this->OrderLogic = new $order_namespace;
-    }
-
-
-
-    /**
      * 初始化支付
      */
-    protected function initPayService(){
-        //服务类
-        $className = [
-            'weixin_h5' => 'WechatPayment',
-            'weixin_app' => 'WechatPayment',
-            'alipay' => 'AlipayPayment',
-        ];
-        //获取实例化的服务
-        $pay_namespace = "app\\channel\\service\\pay\\{$className[$this->params['channel']]}";
-        $config = $this->initUnionConfig();
-        $this->PayService = new $pay_namespace($config['appid']);
+    protected function initService(){
+        $config = ChannelServer::config($this->params['channel'] ,$this->params['shopid']);
+        $this->PayService = PayServer::init($config['appid'],$this->params['channel'],$this->params['shopid']);
     }
 
-
-    /**
-     * 初始化渠道配置信息
-     * @return WechatMpConfig|WechatConfig|array|\think\Model
-     */
-    protected function initUnionConfig()
-    {
-
-        switch ($this->params['channel']){
-            //微信公众号
-            case 'weixin_h5':
-                $data = (new WechatConfig())->getWechatConfigByShopId($this->params['shopid']);
-                if (empty($data)){
-                    throw  new Exception('公众号配置文件不存在');
-                }
-                break;
-            //微信小程序
-            case 'weixin_app':
-                //获取配置信息
-                $map = [
-                    ['shopid' ,'=' , $this->params['shopid']],
-                ];
-                $data = (new WechatMpConfig())->where($map)->find();
-                if (empty($data)){
-                    throw  new Exception('小程序配置信息不存在');
-                }
-                break;
-        }
-        return $data;
+    public function test(){
+        dump($this->PayService);
+        echo 123;
     }
 
 }
