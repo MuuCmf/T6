@@ -1,7 +1,8 @@
 <?php
-namespace app\micro\diy;
+namespace app\micro\service\diy;
 
 use app\micro\service\Diy;
+use app\micro\service\Link;
 
 class CategoryNav
 {
@@ -57,7 +58,7 @@ class CategoryNav
                 $v['icon_url'] = get_attachment_src($v['icon_url']);
             }
             if(!empty($v['link'])){
-                $v['link']['url'] = (new Diy())->linkToUrl($v['link']);
+                $v['link']['url'] = (new Link())->linkToUrl($v['link']);
             }
 
         }

@@ -1,25 +1,35 @@
 #linkTypeModal {
-	.link-type-ul {
-		margin: 0;
-		padding: 0;
-		list-style: none;
-
-		li {
-			margin: 6px 0;
-			padding: 0 6px;
-			a {
-				padding: 10px 0 10px 0;
-				display: block;
-				text-align: center;
-				color: #666;
-				background-color: #f2f2f2;
-				border: 1px solid #ddd;
-				i {
-					font-size:22px;
-				}
-				p {
-					margin: 2px 0 0 0;
+	.links-items {
+		height: 500px;
+		overflow-x: hidden;
+		overflow-y: auto;
+		.title {
+			font-size: 16px;
+			font-weight: 600;
+			color: #000;
+		}
+		.link-type-ul {
+			margin: 0;
+			padding: 0;
+			list-style: none;
+	
+			li {
+				margin: 6px 0;
+				padding: 0 6px;
+				a {
+					padding: 10px 0 10px 0;
 					display: block;
+					text-align: center;
+					color: #666;
+					background-color: #f2f2f2;
+					border: 1px solid #ddd;
+					i {
+						font-size:22px;
+					}
+					p {
+						margin: 2px 0 0 0;
+						display: block;
+					}
 				}
 			}
 		}

@@ -7,70 +7,66 @@
 	        <h4 class="modal-title">选择连接类型</h4>
 	    	</div>
 	      	<div class="modal-body">
-	      		<ul class="link-type-ul clearfix">
-					{foreach $link_list as $key => $list_vo}
-					<li class="col-xs-3">
-						<!--详情类-->
-						{if $list_vo['sys_type'] == 'detail'}
-						<a 
-						data-api="{$list_vo['api']|default=''}" 
-						data-category-api="{$list_vo['category_api']|default=''}" 
-						data-link-type="{$list_vo['link_type']|default=''}" 
-						data-link-type-title="{$list_vo['link_type_title']|default=''}" 
-						data-target="#detailLinkModal" 
-						data-toggle="modal">
-							<i class="fa {$list_vo['icon']|default=''}"></i>
-							<p>
-								{$list_vo['link_type_title']}
-							</p>
-						</a>
-						{/if}
-						<!--列表类-->
-						{if $list_vo['sys_type'] == 'list'}
-						<a 
-						data-api="{$list_vo['api']|default=''}" 
-						data-category-api="{$list_vo['category_api']|default=''}" 
-						data-link-type="{$list_vo['link_type']}" 
-						data-link-type-title="{$list_vo['link_type_title']}" 
-						data-target="#listLinkModal" 
-						data-toggle="modal">
-							<i class="fa {$list_vo['icon']}"></i>
-							<p>
-								{$list_vo['link_type_title']}
-							</p>
-						</a>
-						{/if}
-						<!--直链类-->
-						{if $list_vo['sys_type'] == 'direct'}
-						<a 
-						data-api="" 
-						data-link-type="{$list_vo['link_type']|default=''}" 
-						data-link-type-title="{$list_vo['link_type_title']}" >
-							<i class="fa {$list_vo['icon']}"></i>
-							<p>
-								{$list_vo['link_type_title']}
-							</p>
-						</a>
-						{/if}
-					</li>
+				<input type="hidden" id="objectIndex" value="" />
+				<input type="hidden" id="linkIndex" value="" />
+				<div class="links-items">
+					{foreach $links as $k => $vo}
+					<ul class="link-type-ul clearfix">
+						{notempty name="vo.links"}
+						<div class="title">{$vo.alias}</div>
+						{foreach $vo.links as $key => $list_vo}
+						<li class="col-xs-3">
+							<!--详情类-->
+							
+							<a 
+							data-api="{$list_vo['api']|default=''}" 
+							data-category-api="{$list_vo['category_api']|default=''}" 
+							data-link-type="{$list_vo['link_type']|default=''}" 
+							data-link-type-title="{$list_vo['link_type_title']|default=''}" 
+							data-target="#linkToModal" 
+							data-toggle="modal">
+								<i class="fa fa-{$list_vo['icon']|default=''}"></i>
+								<p>
+									{$list_vo['link_type_title']}
+								</p>
+							</a>
+							
+						</li>
+						{/foreach}
+						{/notempty}
+					</ul>
 					{/foreach}
-					<li class="col-xs-3">
-						<a 
-						data-link-type="out_url" 
-						data-link-type-title="自定义链接" 
-						data-target="#linkOutUrlModal" 
-						data-toggle="modal">
-							<i class="fa fa-link"></i>
-							<p>
-								自定义链接
-							</p>
-						</a>
-					</li>
-				</ul>
+				</div>
 	      	</div>
 	    </div>
 	</div>
 </div>
+
+<!--内部页面列表 链接至模态框-->
+<div class="modal fade" id="linkToModal">
+	<div class="modal-dialog">
+	    <div class="modal-content">
+	    	<div class="modal-header">
+	        	<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">关闭</span></button>
+	        	<h4 class="modal-title">链接至</h4>
+	    	</div>
+	      	<div class="modal-body">
+
+	      		<div class="link-section">
+
+	        	</div>
+				<div class="link-page">
+                    <ul class="pager" data-ride="pager" data-elements="prev,nav,next"></ul>
+                </div>
+	      	</div>
+	      	<div class="modal-footer">
+	            <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+	            <button type="button" data-rule="list-link-submit" class="btn btn-primary submit">确认</button>
+	        </div>
+	    </div>
+	</div>
+</div>
+<!--链接至模态框 END-->
 
 <!--图标选择模态框-->
 <div class="modal fade" id="iconModal">
@@ -82,12 +78,13 @@
 	    	</div>
 	      	<div class="modal-body">
 	      		<div class="upload-icon">
-					<div class="btn btn-primary uploadImgBtn">上传自定义图标</div>
+					<button class="btn uploadImgBtn">上传自定义图标</button>
 	      		</div>
 	      		<div class="upload-list"></div>
 	      		<h3>系统图标</h3>
 
 	      		<ul class="nav nav-tabs" role="tablist">
+					{notempty name="icon_list"}
 					{foreach $icon_list as $k=>$vo}
 					{if $k == $config_data['style']}
 					<li role="presentation"  class="active">
@@ -99,9 +96,11 @@
 					</li>
 					{/if}
 					{/foreach}
+					{/notempty}
 				</ul>
 				
 				<div class="tab-content">
+					{notempty name="icon_list"}
 					{foreach $icon_list as $k=>$vo}
 					<div role="tabpanel" class="tab-pane {if $k == $config_data['style']} active{/if}" id="{$k}">
 						<div class="icon-section">
@@ -113,6 +112,7 @@
 						</div>
 					</div>
 					{/foreach}
+					{/notempty}
 				</div>
 	      	</div>
 	    </div>
@@ -155,28 +155,7 @@
 </div>
 <!--链接至模态框 END-->
 
-<!--内部页面列表 链接至模态框-->
-<div class="modal fade" id="listLinkModal">
-	<div class="modal-dialog">
-	    <div class="modal-content">
-	    	<div class="modal-header">
-	        	<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">关闭</span></button>
-	        	<h4 class="modal-title">链接至内部列表页</h4>
-	    	</div>
-	      	<div class="modal-body">
 
-	      		<div class="link-section">
-
-	        	</div>
-	      	</div>
-	      	<div class="modal-footer">
-	            <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-	            <button type="button" data-rule="list-link-submit" class="btn btn-primary submit">确认</button>
-	        </div>
-	    </div>
-	</div>
-</div>
-<!--链接至模态框 END-->
 
 <!--链接至外部链接模态框-->
 <div class="modal fade" id="linkOutUrlModal">

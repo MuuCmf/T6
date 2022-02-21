@@ -1,6 +1,7 @@
 <?php
 namespace app\micro\logic;
 
+use app\micro\service\Diy;
 /*
  * Config 配置数据逻辑层
  */
@@ -143,7 +144,7 @@ class Config {
             if(!empty($navtar_arr['head_nav']) && isset($navtar_arr['head_nav'])){
                 foreach($navtar_arr['head_nav'] as &$v){
                     if(!empty($v['link'])){
-                        $v['link']['url'] = (new \app\micro\logic\Page())->linkToUrl($v['link'], 'pc');
+                        $v['link']['url'] = (new Diy())->linkToUrl($v['link'], 'pc');
                     }
                     if($v['link']['sys_type'] == 'out_url'){
                         if(isset($v['link']['param']['url'])){

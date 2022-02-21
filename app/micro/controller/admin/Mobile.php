@@ -9,6 +9,7 @@ use app\common\model\Module;
 use app\micro\model\MicroPage as PageModel;
 use app\micro\logic\Page as PageLogic;
 use app\micro\service\Diy as DiyService;
+use app\micro\service\Link as LinkService;
 
 
 class Mobile extends MicroAdmin
@@ -38,6 +39,10 @@ class Mobile extends MicroAdmin
      */
     public function lists()
     {
+        // 应用列表
+        $app_list = $this->ModuleModel->getAll();
+        View::assign('app_list', $app_list);
+        
         $keyword = input('get.keyword','');
         View::assign('keyword', $keyword);
         // 初始化查询条件
@@ -55,6 +60,7 @@ class Mobile extends MicroAdmin
         $pager = $lists->render();
         View::assign('pager',$pager);
         $lists = $lists->toArray();
+
         foreach ($lists['data'] as &$item){
             $item = $this->PageLogic->formatData($item);
             // 页面元素View
@@ -62,6 +68,8 @@ class Mobile extends MicroAdmin
             $item['app_view_tmpl'] = $app_view_tmpl;
         }
         unset($item);
+
+        //dump($lists);exit;
         if (request()->isAjax()){
             return $this->success('success',$lists);
         }
@@ -70,11 +78,8 @@ class Mobile extends MicroAdmin
         // 页面元素Static
         $app_static_tmpl = (new DiyService())->getStaticTmpl();
         View::assign('app_static_tmpl', $app_static_tmpl);
-        // 获取无图标路径
-        $no_icon = request()->domain() . '/static/micro/images/diy/noimg.png';
-        View::assign('no_icon', $no_icon);
-        View::assign('channel', 'mobile');
 
+        View::assign('channel', 'mobile');
         // 设置title
         $this->setTitle('移动端自定义页面管理');
         // 输出页面
@@ -120,14 +125,16 @@ class Mobile extends MicroAdmin
             // 应用列表
             $app_list = $this->ModuleModel->getAll();
             View::assign('app_list', $app_list);
+            
+            // 链接至配置参数
+            $links = (new LinkService())->getAllLinks();
+            View::assign('links', $links);
 
             // 自定义DIY组件列表
             $diy_params_config = (new DiyService())->getConfig();
             View::assign('diy_params_config', $diy_params_config);
 
             // 页面数据
-            // block 数据块
-            $app_view_tmpl = '';
             $page_data = $this->PageModel->where('status', '>', -1)->find($id);
             if (!empty($page_data)){
                 $page_data = $page_data->toArray();
@@ -142,10 +149,6 @@ class Mobile extends MicroAdmin
             // 内置图标列表
             View::assign('icon_list', (new DiyService())->getIconLists());
 
-            // 链接至参数
-            $link_list = (new DiyService())->linkParams();
-            View::assign('link_list', $link_list);
-            
             // 获取无图标路径
             $no_icon = request()->domain() . '/static/micro/images/diy/noimg.png';
             View::assign('no_icon', $no_icon);
@@ -260,14 +263,10 @@ class Mobile extends MicroAdmin
             unset($v);
             View::assign('config_data', $config_data);
             // 链接至参数
-            $link_list = $this->PageLogic->linkParams();
-            View::assign('link_list', $link_list);
+            $links = (new LinkService())->getAllLinks();
+            View::assign('links', $links);
             // 获取系统图标
-            $icon_list = $this->PageLogic->getIconLists();
-            View::assign('icon_list', $icon_list);
-            //获取无图标路径
-            $no_icon = request()->domain() . '/micro/images/diy/noimg.png';
-            View::assign('no_icon', $no_icon);
+            View::assign('icon_list', (new DiyService())->getIconLists());
             // 设置title
             $this->setTitle('移动端导航管理');
             // 输出页面

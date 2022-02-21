@@ -2,7 +2,6 @@
 namespace app\micro\logic;
 
 use app\micro\service\Diy;
-use app\common\model\module;
 
 class Page 
 {
@@ -84,19 +83,7 @@ class Page
         }
 
         if($data['port_type'] == 'pc'){
-            //通用头部配置数据
-            if(!empty($data['header'])){
-                $data['header'] = json_decode($data['header'],true);
-                if(!empty($data['header']['logo'])){
-                    $data['header']['logo'] = get_attachment_src($data['header']['logo']);
-                }else{
-                    $data['header']['logo'] = '';
-                }
-            }else{
-                $data['header'] = json_decode($data['header'],true);
-                $data['header']['style'] = 1;
-                $data['header']['logo'] = '';
-            }
+            
         }
 
         $data['url'] = '';

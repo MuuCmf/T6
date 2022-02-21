@@ -1,5 +1,5 @@
 <?php
-namespace app\micro\diy;
+namespace app\micro\service\diy;
 
 class Announce
 {

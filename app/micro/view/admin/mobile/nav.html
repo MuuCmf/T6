@@ -40,7 +40,7 @@
 	<section class="footer-manage-section">
 		<!--底部导航-->
 		<div class="page-footer">
-            {include file="admin/mobile/component/_footer"/}
+            {include file="admin/mobile/_footer"/}
 		</div>
 		<!--底部导航end-->
 		
@@ -89,7 +89,7 @@
 									    <input type="hidden" name="icon_id" value="{$vo_data['icon_id']|default=0}">
 									    <input type="hidden" name="icon_url" value="{$vo_data['icon_url']|default=''}">
 									    <button class="btn btn-primary" data-toggle="modal" data-target="#iconModal">
-									    	图标
+									    	选择图标
 									    </button>
 									</div>
 								</div>
@@ -110,7 +110,7 @@
 										<input type="hidden" name="icon_id" value="{$vo_data['icon_id']|default=0}">
 									    <input type="hidden" name="icon_url" value="{$vo_data['icon_url']|default=''}">
 									    <button class="btn btn-primary" data-toggle="modal" data-target="#iconModal">
-									    	图标
+									    	选择图标
 									    </button>
 									</div>
 								</div>
@@ -157,7 +157,7 @@
 			    <input type="hidden" name="icon_id" value="0">
 			    <input type="hidden" name="icon_url" >
 			    <button class="btn btn-primary" data-toggle="modal" data-target="#iconModal">
-			    	图标
+			    	选择图标
 			    </button>
 			</div>
 		</div>
@@ -199,6 +199,7 @@
 </script>
 
 {include file="admin/common/_modal" /}
+{include file="admin/common/_api" /}
 {/block}
 
 {block name="script"}
