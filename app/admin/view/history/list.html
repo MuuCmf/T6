@@ -45,6 +45,7 @@
                 <input class="check-all" id="check-all" type="checkbox">
                 <label for="check-all"></label>
             </th>
+            <th>ID</th>
             <th>产品</th>
             <th>用户</th>
             <th>应用</th>
@@ -59,6 +60,7 @@
                 <input class="ids" id="see_{$v['id']}" name="ids[]" type="checkbox" value="{$v['id']}">
                 <label for="see_{$v['id']}"></label>
             </td>
+            <td>{$v['id']}</td>
             <td class="products" style="width: 600px">
                 <div class="cover">
                     <img src="{$v['products']['cover_100']}">
@@ -82,7 +84,7 @@
             <td>{$v['module_name']}</td>
             <td>{$v['create_time_str']}</td>
             <td style="width: 150px">
-                <button class="btn btn-danger" data-target="#withdraw-{$v['id']}-Modal" data-toggle="modal">删除</button>
+                <a href="{:url('status',['ids'=>$v['id'], 'status'=> -1])}" data-confirm="确认执行删除操作？" class="btn btn-sm btn-danger ajax-get"><i class="fa fa-times"></i> 删除</a>
             </td>
         </tr>
         {/foreach}

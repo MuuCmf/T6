@@ -30,7 +30,8 @@ class History extends Admin{
         $app = input('get.app','all');
         $uid = input('get.uid','');
         $map = [
-            ['shopid','=',$this->shopid]
+            ['shopid' ,'=' ,$this->shopid],
+            ['status' ,'=' ,1]
         ];
         if ($app != 'all')  $map[] = ['app' ,'=' ,$app];//标识
         if (!empty($uid))  $map[] = ['uid' ,'=' ,$uid];
@@ -57,5 +58,27 @@ class History extends Admin{
             'app'   =>  $app
         ]);
         return view();
+    }
+
+    /**
+     * 设置状态
+     */
+    public function status()
+    {
+        $ids = input('ids/a');
+        !is_array($ids)&&$ids=explode(',',$ids);
+        $status = input('status', 0, 'intval');
+        $title = '更新';
+        if($status == -1){
+            $title = '删除';
+        }
+        $data['status'] = $status;
+
+        $res = $this->HistoryModel->where('id', 'in', $ids)->update($data);
+        if($res){
+            return $this->success($title . '成功');
+        }else{
+            return $this->error($title . '失败');
+        }
     }
 }
