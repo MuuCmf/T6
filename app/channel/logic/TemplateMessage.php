@@ -40,7 +40,7 @@ class TemplateMessage{
     /**
      * @title 格式化数据
      */
-    public function _formatData($data){
+    public function formatData($data){
         if (!empty($data)){
             $data = json_decode($data,true);
             $data['manager_info'] = query_user($data['manager_uid']);

@@ -50,7 +50,7 @@ class Withdraw extends Admin{
         $pager = $lists->render();
         $lists = $lists->toArray();
         foreach ($lists['data'] as &$item){
-            $item = $this->WithdrawLogic->_formatData($item);
+            $item = $this->WithdrawLogic->formatData($item);
         }
         $lists = $lists['data'];
         View::assign([

@@ -46,7 +46,7 @@ class Tominiprogram extends MuuAdmin{
         $pager = $lists->render();
         $lists = $lists->toArray();
         foreach($lists['data'] as &$val){
-            $val = $this->TominiprogramLogic->_formatData($val);
+            $val = $this->TominiprogramLogic->formatData($val);
         }
         unset($val);
         View::assign([
@@ -80,7 +80,7 @@ class Tominiprogram extends MuuAdmin{
         $data = $this->TominiprogramModel->where('id',$id)->where('shopid',$this->shopid)->find();
         if ($data){
             $data = $data->toArray();
-            $data = $this->TominiprogramLogic->_formatData($data);
+            $data = $this->TominiprogramLogic->formatData($data);
         }else{
             $data = [];
         }

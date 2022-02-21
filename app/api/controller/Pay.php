@@ -81,7 +81,7 @@ class Pay extends Base {
                 if (!$order_data){
                     throw new Exception('订单不存在');
                 }
-                $order_data = $this->OrderLogic->_formatData($order_data);
+                $order_data = $this->OrderLogic->formatData($order_data);
                 $order_data['openid'] = MemberSync::where([
                     ['uid' , '=', request()->uid],
                     ['type', '=', $this->params['channel']]

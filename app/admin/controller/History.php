@@ -1,0 +1,61 @@
+<?php
+/**
+ * +----------------------------------------------------------------------
+ *                                  |
+ *     __     __  __     __  __     | FILE: History.php
+ *    /\ \   /\_\_\_\   /\_\_\_\    | AUTHOR: 季骁宣
+ *   _\_\ \  \/_/\_\/_  \/_/\_\/_   | EMAIL: jxx0410@sina.com
+ *  /\_____\   /\_\/\_\   /\_\/\_\  | QQ: 516036855
+ *  \/_____/   \/_/\/_/   \/_/\/_/  | DATETIME: 2022/2/21
+ *                                  |-------------------------------------
+ *                                  | 登山则情满于山,观海则意溢于海
+ * +----------------------------------------------------------------------
+ */
+namespace app\admin\controller;
+use app\common\model\History as HistoryModel;
+use app\common\logic\History as HistoryLogic;
+use think\facade\View;
+
+class History extends Admin{
+    protected $HistoryModel;
+    protected $HistoryLogic;
+
+    public function __construct()
+    {
+        parent::__construct();
+        $this->HistoryModel = new HistoryModel();
+        $this->HistoryLogic = new HistoryLogic();
+    }
+    function list(){
+        $app = input('get.app','all');
+        $uid = input('get.uid','');
+        $map = [
+            ['shopid','=',$this->shopid]
+        ];
+        if ($app != 'all')  $map[] = ['app' ,'=' ,$app];//标识
+        if (!empty($uid))  $map[] = ['uid' ,'=' ,$uid];
+        // 获取分页列表
+        $lists = $this->HistoryModel->getListByPage($map, 'id desc create_time desc', '*', 20);
+        // 分页按钮
+        $pager = $lists->render();
+        // 格式化数据
+        $lists = $lists->toArray();
+        foreach($lists['data'] as &$val){
+            $val = $this->HistoryLogic->formatData($val);
+        }
+        //全部应用
+        $module_map =[
+            ['is_com' ,'=' ,1]
+        ];
+        $all_module = (new \app\common\model\Module())->getAll($module_map);
+        unset($val);
+        View::assign([
+            'lists' =>  $lists['data'],
+            'pager' =>  $pager,
+            'uid'   =>  $uid,
+            'all_module' => $all_module,
+            'app'   =>  $app
+        ]);
+        return view();
+    }
+}

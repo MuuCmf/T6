@@ -30,7 +30,7 @@ class Withdraw extends Base{
         1 => '失败'
     ];
 
-    public function _formatData($data){
+    public function formatData($data){
         //用户数据
         $data['price'] = sprintf("%.2f",$data['price']/100);
         $data['paid_str'] = $this->_paid[$data['paid']];

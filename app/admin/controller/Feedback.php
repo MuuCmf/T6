@@ -41,7 +41,7 @@ class Feedback extends Admin
         $lists = $lists->toArray();
         
         foreach($lists['data'] as &$val){
-            $val = $this->FeedbackLogic->_formatData($val);
+            $val = $this->FeedbackLogic->formatData($val);
         }
         unset($val);
 

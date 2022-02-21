@@ -22,7 +22,7 @@ class Tominiprogram {
     /**
      * @title 格式化数据
      */
-    public function _formatData($data){
+    public function formatData($data){
         $data['type_str'] = $this->_type[$data['type']];
         $data['qrcode'] = get_attachment_src($data['qrcode']);
         $data = $this->setTimeAttr($data);

@@ -1,14 +1,15 @@
 <?php
-namespace app\common\model;
+namespace app\common\logic;
 
-/**
- * 用户反馈模型
+/*
+ * MuuCmf
+ * 用户反馈逻辑层
  */
-class Feedback extends Base
+
+use app\common\model\Module;
+
+class Feedback
 {
-    //自动写入创建和更新的时间戳字段
-    protected $autoWriteTimestamp = true;
-    
     public $_status  = [
         '1'  => '已处理',
         '0'  => '未处理',
@@ -39,4 +40,6 @@ class Feedback extends Base
         $data['update_time_str'] = time_format($data['update_time']);
         return $data;
     }
+
+
 }

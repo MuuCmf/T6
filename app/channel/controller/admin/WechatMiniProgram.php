@@ -105,7 +105,7 @@ class WechatMiniProgram extends MuuAdmin{
         $type = 'weixin_app';//当前模板消息类型
         $TemplateMessageLogic = new TemplateMessage();
         $detail = $this->MiniProgramModel->where('shopid',$this->shopid)->value('tmplmsg');
-        $detail = $TemplateMessageLogic->_formatData($detail);//格式化原始数据
+        $detail = $TemplateMessageLogic->formatData($detail);//格式化原始数据
         View::assign([
             'type' => $type,
             'element' => $TemplateMessageLogic->oauth_type[$type],

@@ -730,7 +730,7 @@ class Page
         $list = (new \app\minishop\model\MinishopGoods())->getList($map, $rows ,$order);
         $minishopLogic = new \app\minishop\logic\Goods();
         foreach($list as &$v){
-            $v = $minishopLogic->_formatData($v);
+            $v = $minishopLogic->formatData($v);
         }
         $data['data']['list'] = $list;
         if(!isset($data['data']['rank'])){
