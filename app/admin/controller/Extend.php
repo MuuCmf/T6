@@ -122,7 +122,7 @@ class Extend extends Admin
             $list = $this->extendConfigModel->lists();
             $builder = new AdminConfigBuilder();
             $builder->title('支付配置')->suggest('基于第三方支付各项参数配置');
-            // 阿里云短信参数配置
+            // 微信支付参数配置
             $builder
                 ->keyText('WX_PAY_MCH_ID', 'MchID', 'Mch ID是您微信商户的商 户ID，请您妥善保管.')
                 ->keyText('WX_PAY_KEY_SECRET', 'KeySecret', 'Key Secret是您微信商户的API密钥，请您妥善保管.')
@@ -132,6 +132,22 @@ class Extend extends Admin
                 ]);
 
             // 支付宝支付参数配置
+
+            // 提现参数配置
+            $opt = [0 => '关闭' ,1 => '开启'];
+            $builder
+                ->keySelect('WITHDRAW_STATUS', '提现开关', '如有特殊情况，可暂时关闭提现',$opt)
+                ->keyText('WITHDRAW_TAX_RATE', '提现税率', '默认千分之五（千分比）')
+                ->keyText('WITHDRAW_DAY_NUM', '每日可提现次数', '一天最多可提现多少次')
+                ->keyText('WITHDRAW_MIN_PRICE', '单次最小提现金额', '一次最少提现金额')
+                ->keyText('WITHDRAW_MAX_PRICE', '单次最大提现金额', '一次最大提现金额')
+                ->group('提现配置', [
+                    'WITHDRAW_STATUS',
+                    'WITHDRAW_TAX_RATE',
+                    'WITHDRAW_DAY_NUM',
+                    'WITHDRAW_MIN_PRICE',
+                    'WITHDRAW_MAX_PRICE',
+                ]);
 
             $builder->data($list);
             $builder->buttonSubmit();
