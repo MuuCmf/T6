@@ -16,7 +16,7 @@ use app\common\controller\Api as ApiBase;
 use app\common\model\Feedback;
 use app\common\model\Member;
 use app\common\model\Verify;
-use app\unions\service\wechat\MiniProgram;
+use app\channel\service\wechat\MiniProgram;
 use think\Request;
 
 class Api extends ApiBase{

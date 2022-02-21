@@ -4,7 +4,7 @@ declare (strict_types = 1);
 namespace app\ucenter\controller;
 
 use app\common\model\MemberSync;
-use app\unions\controller\api\WechatOfficialAccount;
+use app\channel\controller\api\WechatOfficialAccount;
 use think\facade\Db;
 use think\facade\View;
 use app\common\controller\Common;

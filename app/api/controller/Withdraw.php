@@ -69,7 +69,7 @@ class Withdraw extends Base {
             'alipay' => 'AlipayPayment',
         ];
         //获取实例化的服务
-        $pay_namespace = "app\\unions\\service\\pay\\{$className[$this->params['channel']]}";
+        $pay_namespace = "app\\channel\\service\\pay\\{$className[$this->params['channel']]}";
         $config = $this->initUnionConfig();
         $this->PayService = new $pay_namespace($config['appid']);
     }

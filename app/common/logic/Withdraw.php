@@ -12,7 +12,7 @@
  * +----------------------------------------------------------------------
  */
 namespace app\common\logic;
-use app\unions\logic\Channel;
+use app\channel\logic\Channel;
 
 /**
  * @title 提现逻辑类

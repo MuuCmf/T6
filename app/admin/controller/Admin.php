@@ -103,7 +103,7 @@ class Admin extends Base
         $all_module_list = $this->moduleModel->getAll([
             ['is_setup', '=', 1],
             ['name', '<>','ucenter'],
-            ['name', '<>','unions']
+            ['name', '<>','channel']
         ]);
 
         foreach($all_module_list as &$val){

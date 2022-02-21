@@ -19,7 +19,7 @@ var scan_login = {
      */
     initWechatQrcode(elem){
         this.createSceneKey();
-        let qrCodeSrc = `${this.apiHost}/unions/official/loginQrcode?scene_key=${this.sceneKey}`;
+        let qrCodeSrc = `${this.apiHost}/channel/official/loginQrcode?scene_key=${this.sceneKey}`;
         $(elem).attr('src', qrCodeSrc);
         //查询扫码状态
         this.hasScan();
@@ -29,7 +29,7 @@ var scan_login = {
      */
     hasScan(){
         let that = this;
-        $.get( `${this.apiHost}/unions/official/hasScan`,{scene_key:this.sceneKey},function (res) {
+        $.get( `${this.apiHost}/channel/official/hasScan`,{scene_key:this.sceneKey},function (res) {
             if (res.code == 200){
                 that.userInfo = res.data;
                 typeof that.callback == 'function' && that.callback();
@@ -46,7 +46,7 @@ var scan_login = {
     login(){
         let that = this;
         console.log(12312312);
-        $.post( `${this.apiHost}/unions/official/scanLogin`,{openid:this.userInfo.openid},function (data) {
+        $.post( `${this.apiHost}/channel/official/scanLogin`,{openid:this.userInfo.openid},function (data) {
             if (data.code == 200) {
                 toast.success(data.msg);
                 if (data.data) {

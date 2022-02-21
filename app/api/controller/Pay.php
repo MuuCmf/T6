@@ -18,9 +18,9 @@ use app\common\model\Member;
 use app\common\model\MemberSync;
 use app\common\model\Orders;
 use app\common\model\Orders as OrdersModel;
-use app\unions\facade\wechat\OfficialAccount;
-use app\unions\model\WechatMpConfig;
-use app\unions\model\WechatConfig;
+use app\channel\facade\wechat\OfficialAccount;
+use app\channel\model\WechatMpConfig;
+use app\channel\model\WechatConfig;
 use think\Exception;
 use think\facade\Db;
 use think\facade\Log;
@@ -79,7 +79,7 @@ class Pay extends Base {
             'alipay' => 'AlipayPayment',
         ];
         //获取实例化的服务
-        $pay_namespace = "app\\unions\\service\\pay\\{$className[$this->params['channel']]}";
+        $pay_namespace = "app\\channel\\service\\pay\\{$className[$this->params['channel']]}";
         $config = $this->initUnionConfig();
         $this->PayService = new $pay_namespace($config['appid']);
     }
