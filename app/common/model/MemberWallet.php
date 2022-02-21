@@ -102,7 +102,6 @@ class MemberWallet extends Base{
                 throw new Exception('用户余额不足');
             }
             $wallet->balance = Db::raw("balance - {$money}");
-
             //扣除冻结金额
             if ($freeze && $wallet->freeze < $money){
                 throw new Exception('冻结资金不足');

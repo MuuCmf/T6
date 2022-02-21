@@ -35,6 +35,8 @@ class Admin extends Base
      */
     protected $menu = [];
 
+    public $shopid = 0;//店铺Id，sass平台拓展
+
     /**
      * 构造方法
      * @access public
