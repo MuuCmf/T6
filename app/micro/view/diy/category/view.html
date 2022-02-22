@@ -60,6 +60,7 @@
                             <label class="col-sm-3 control-label">选择应用</label>
                             <div class="col-sm-9">
                                 <select class="form-control" name="app">
+                                    {notempty name="$app_list"}
                                     {foreach $app_list as $v}
                                     {if $vars.data.data.app == $v.name}
                                     <option value="{$v.name}" selected>{$v.alias}</option>
@@ -67,6 +68,7 @@
                                     <option value="{$v.name}">{$v.alias}</option>
                                     {/if}
                                     {/foreach}
+                                    {/notempty}
                                 </select>
                             </div>
                         </div>

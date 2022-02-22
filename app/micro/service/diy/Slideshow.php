@@ -1,7 +1,8 @@
 <?php
-namespace app\micro\diy;
+namespace app\micro\service\diy;
 
 use app\micro\service\Diy;
+use app\micro\service\Link;
 
 class Slideshow
 {
@@ -53,7 +54,7 @@ class Slideshow
             foreach($data['data'] as &$v){
                 $v['img_url'] = get_attachment_src($v['img_url']);
                 if(!empty($v['link'])){
-                    $v['link']['url'] = (new Diy())->linkToUrl($v['link']);
+                    $v['link']['url'] = (new Link())->linkToUrl($v['link']);
                 }
             }
         }

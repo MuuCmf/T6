@@ -1,22 +1,25 @@
 <?php
-namespace app\micro\diy;
+namespace app\micro\service\diy;
 
-class Member
+class Search
 {
     // 名称
-    public $_title   = '会员';
+    public $_title   = '搜索';
     // 类型（唯一标识）
-    public $_type    = 'member';
+    public $_type    = 'search';
     // 图标
-    public $_icon    = 'user-plus';
+    public $_icon    = 'search';
     // 模板文件
     public $_template     = [
-        'script' =>  APP_PATH . 'micro/view/diy/member/script.html',
-        'block' =>  APP_PATH . 'micro/view/diy/member/block.html',
-        'view' =>  APP_PATH . 'micro/view/diy/member/view.html',
+        'script' =>  APP_PATH . 'micro/view/diy/search/script.html',
+        'block' =>  APP_PATH . 'micro/view/diy/search/block.html',
+        'view' =>  APP_PATH . 'micro/view/diy/search/view.html',
     ];
     // 静态资源
-    public $_static = [];
+    public $_static = [
+        'css' => '',
+        'js' => ''
+    ];
     // API接口
     public $_api = [];
 
@@ -32,8 +35,8 @@ class Member
     {
         return [
             'mobile' => [
-                'css' => PUBLIC_PATH . '/static/micro/diy/mobile/member.min.css',
-                'js' => PUBLIC_PATH . '/static/micro/diy/mobile/member.min.js',
+                'css' => PUBLIC_PATH . '/static/micro/diy/mobile/search.min.css',
+                'js' => PUBLIC_PATH . '/static/micro/diy/mobile/search.min.js',
             ],
             'pc' => [
                 'css' => '',

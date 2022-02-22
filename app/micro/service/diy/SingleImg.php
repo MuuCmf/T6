@@ -1,7 +1,8 @@
 <?php
-namespace app\micro\diy;
+namespace app\micro\service\diy;
 
 use app\micro\service\Diy;
+use app\micro\service\Link;
 
 class SingleImg
 {
@@ -52,7 +53,7 @@ class SingleImg
         
         $data['data']['img_url'] = get_attachment_src($data['data']['img_url']);
         if(!empty($data['data']['link'])){
-            $data['data']['link']['url'] = (new Diy())->linkToUrl($data['data']['link']);
+            $data['data']['link']['url'] = (new Link())->linkToUrl($data['data']['link']);
         }
         
 

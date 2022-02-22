@@ -1,5 +1,5 @@
 <?php
-namespace app\micro\diy;
+namespace app\micro\service\diy;
 
 use app\common\model\module;
 
@@ -49,8 +49,7 @@ class Category
      */
     public function handle($data, $shopid)
     {    
-        $category_tree = [];
-        // 默认给文章模块分类数据
+        // 默认给模块分类数据
         $app = !empty($data['data']['app'])?$data['data']['app']:'articles';
         // 判断APP是否安装并启用
         $installed = (new module())->checkInstalled($app);
