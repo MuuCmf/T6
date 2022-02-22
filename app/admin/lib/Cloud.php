@@ -23,7 +23,7 @@ class Cloud{
     }
 
     public function needAuthorization($module){
-        $url = $this->api . 'app/authorization';
+        $url = $this->api . 'authorization/app';
         $result = curl_request($url,[
             'app_name'  =>  $module,
             'auth_code' =>  self::authCode()
