@@ -63,8 +63,6 @@ class Admin extends Base
         // 当前应用模块信息
         $module_name = input('get.module_name');
         $module = $this->moduleModel->getModule($module_name ?? app('http')->getName());
-        //授权检测
-        $this->needAuthorization($module);
         View::assign('MODULE', $module);
         //当前管理菜单
         View::assign('ADMIN_MENU', $this->getMenus());
@@ -112,22 +110,6 @@ class Admin extends Base
         unset($val);
 
         return $all_module_list;
-    }
-
-    protected function needAuthorization($module){
-        if ($module){
-            if (is_object($module)){
-                $module = $module->toArray();
-            }
-            if ($module['is_com'] == 0){
-                return false;
-            }
-            $result = (new Cloud())->needAuthorization($module);
-            if (!$result){
-                $this->error('应用未授权',false,request()->domain());
-                exit();
-            }
-        }
     }
 
     /**

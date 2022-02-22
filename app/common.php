@@ -1054,4 +1054,31 @@ if (!function_exists('get_upgrade_status')) {
     }
 }
 
+if (!function_exists('need_authorization')){
+    /**
+     * @title 检测授权
+     * @throws HttpResponseException
+     */
+    function need_authorization(){
+        $module = get_module_name();
+        $result = (new \app\admin\lib\Cloud())->needAuthorization($module);
+        if (!$result){
+            $result = [
+                'code' => 0,
+                'msg'  => '应用未授权',
+                'data' => [],
+                'url'  => request()->domain(),
+                'wait' => 3,
+            ];
+            $type = (request()->isJson() || request()->isAjax()) ? 'json' : 'html';
+            if ($type == 'html') {
+                $response = view(app('config')->get('app.dispatch_error_tmpl'), $result);
+            } else if ($type == 'json') {
+                $response = json($result);
+            }
+            throw new \think\exception\HttpResponseException($response);
+        }
+    }
+}
+
 
