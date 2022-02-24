@@ -23,8 +23,7 @@
 							data-category-api="{$list_vo['category_api']|default=''}" 
 							data-link-type="{$list_vo['link_type']|default=''}" 
 							data-link-type-title="{$list_vo['link_type_title']|default=''}" 
-							data-target="#linkToModal" 
-							data-toggle="modal">
+							>
 								<i class="fa fa-{$list_vo['icon']|default=''}"></i>
 								<p>
 									{$list_vo['link_type_title']}
@@ -43,7 +42,7 @@
 </div>
 
 <!--内部页面列表 链接至模态框-->
-<div class="modal fade" id="linkToModal">
+<div class="modal fade" id="linkConfigModal">
 	<div class="modal-dialog">
 	    <div class="modal-content">
 	    	<div class="modal-header">

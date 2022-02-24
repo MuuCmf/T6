@@ -26,45 +26,35 @@ class Page
      * @return [type] [description]
      */
     public function handlingNoParamJson($data){
-        //页面装修数据的二次处理
+        //页面连接至参数的二次处理
         if(!empty($data) && !empty($data['data'])){
 
             foreach($data['data'] as &$v){
+
+                // 轮播图
                 if(isset($v['data']) && $v['type'] == 'slideshow' && is_array($v['data']) ){
-                    foreach($v['data'] as &$b){
-                        if(!empty($b['link']['param'])){
-                            $b['link']['param'] = json_encode($b['link']['param']);
-                        }
+                    if(!empty($v['data']['link']['param'])){
+                        $v['data']['link']['param'] = json_encode($v['data']['link']['param']);
                     }
-                    unset($b);
                 }
 
                 //图文导航数据处理
                 if($v['type'] == 'category_nav' && is_array($v['data'])){
-                    foreach($v['data'] as &$c){
-                        //外部链接类型增加url参数
-                        if($c['link']['sys_type'] == 'out_url'){
-                            $c['link']['url'] = $c['link']['param']['url'];
-                        }
-                        if(!empty($c['link']['param'])){
-                            $c['link']['param'] = json_encode($c['link']['param']);
-                        }
+                    if(!empty($v['data']['link']['param'])){
+                        $v['data']['link']['param'] = json_encode($v['data']['link']['param']);
                     }
-                    unset($c);
                 }
                 //单图链接至数据处理
                 if($v['type'] == 'single_img' && is_array($v['data'])){
-                    foreach($v['data'] as &$s){
-                        if(!empty($s['link']['param'])){
-                            $s['link']['param'] = json_encode($s['link']['param']);
-                        }
+                    //dump($v['data']);
+                    //dump($v['data']['link']['param']);
+                    if(!empty($v['data']['link']['param'])){
+                        $v['data']['link']['param'] = json_encode($v['data']['link']['param']);
                     }
-                    unset($s);
                 }
             }
             unset($v);
         }
-
         return $data;
     }
 

@@ -10,17 +10,17 @@
 	<div class="col-xs-9">
 		<div class="link_title">
 			<ol class="breadcrumb">
-			  <li>{if !empty($vo_data['link']['type_title'])}{$vo_data['link']['type_title']}{/if}</li>
-			  <li class="active">{if !empty($vo_data['link']['title'])}{$vo_data['link']['title']}{/if}</li>
+			  <li>{if !empty($vars['data']['data']['link']['type_title'])}{$vars['data']['data']['link']['type_title']}{/if}</li>
+			  <li class="active">{if !empty($vars['data']['data']['link']['title'])}{$vars['data']['data']['link']['title']}{/if}</li>
 			</ol>
 		</div>
 	</div>
 	<!--链接至隐藏域START-->
-	<input type="hidden" name="link_sys_type" value="{$vo_data['link']['sys_type']|default=''}">
-	<input type="hidden" name="link_title" value="{$vo_data['link']['title']|default=''}">
-	<input type="hidden" name="link_type" value="{$vo_data['link']['type']|default=''}">
-	<input type="hidden" name="link_type_title" value="{$vo_data['link']['type_title']|default=''}">
-	<textarea type="hidden" name="link_param" class="hidden">{$vo_data['link']['param']|default=''}</textarea>
+	<input type="hidden" name="link_sys_type" value="{$vars['data']['data']['link']['sys']|default=''}">
+	<input type="hidden" name="link_title" value="{$vars['data']['data']['link']['title']|default=''}">
+	<input type="hidden" name="link_type" value="{$vars['data']['data']['link']['type']|default=''}">
+	<input type="hidden" name="link_type_title" value="{$vars['data']['data']['link']['type_title']|default=''}">
+	<textarea type="hidden" name="link_param" class="hidden">{$vars['data']['data']['link']['param']|default=''}</textarea>
 	<!--链接至隐藏域END-->
 </div>
 
