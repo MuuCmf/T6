@@ -73,7 +73,7 @@ $(function(){
 
 		//控制区确认预览按钮
 		$('.page-diy-section').on('click','[data-object-index="'+object_index+'"] .btn',function(){
-			var style = $(this).parent().parent().find('select[name="style"]').val();
+			var style = $('[data-object-index="'+object_index+'"]').find('select[name="style"]').val();
 			//console.log(style);
 			if(style == 0){
 				$('[data-object-index="'+object_index+'"]').find('.single-img-preview').removeClass('style-1');

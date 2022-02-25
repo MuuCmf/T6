@@ -55,7 +55,7 @@ class Mobile extends MicroAdmin
             $map[] = ['title','like',"%{$keyword}%"];
         }
         // 每页显示数量
-        $r = input('r', 15, 'intval');
+        $r = input('r', 8, 'intval');
         $lists = $this->PageModel->getListByPage($map,'id desc,create_time desc', '*', $r);
         $pager = $lists->render();
         View::assign('pager',$pager);
@@ -108,7 +108,7 @@ class Mobile extends MicroAdmin
                 'shopid' => 0,
                 'title' => !empty($params['title'])?$params['title']:'页面标题未填写',
                 'description' => !empty($params['description'])?$params['description']:'页面描述未填写',
-                'data' => json_encode($params['data']),
+                'data' => !empty($params['data']) ? json_encode($params['data']): '',
                 'port_type' => 'mobile',
                 'footer_show' => intval($params['footer_show']),
                 'type' => 0,
@@ -165,6 +165,8 @@ class Mobile extends MicroAdmin
             $link_static_tmpl = (new LinkService())->getStaticTmpl();
             View::assign('link_static_tmpl', $link_static_tmpl);
             // dump($link_static_tmpl);
+            // 端类型
+            View::assign('port_type', 'mobile');
             // 设置title
             $this->setTitle('移动端自定义页面DIY');
             // 输出页面
@@ -228,7 +230,7 @@ class Mobile extends MicroAdmin
     /**
      * 移动端底部导航
      */
-    public function nav()
+    public function tabbar()
     {
         //post 提交处理
         if (request()->isPost()) {

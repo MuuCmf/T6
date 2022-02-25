@@ -50,7 +50,7 @@ $(function(){
 					html_item += '<div class="slideshow-form-item" data-rule="object-controller-item">';
 					html_item += '<input type="hidden" name="img_url" value="'+data.data.attachment+'"/>';
 					html_item += '<div class="form-group clearfix">';
-					html_item += '	<div class="col-xs-12 slideshow-item"><img src="'+data.data.url+'"/></div>';
+					html_item += '	<div class="slideshow-item"><img src="'+data.data.url+'"/></div>';
 					html_item += '</div>';
 					html_item += '<div class="form-group link-item">'+link_html+'</div>';
 					html_item += '<div class="del-item-btn"><i class="icon icon-remove-sign"></i></div>';
