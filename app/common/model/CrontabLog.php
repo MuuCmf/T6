@@ -13,5 +13,13 @@
  */
 namespace app\common\model;
 class CrontabLog extends Base{
-
+    public static function addLog($params){
+        $data = [
+            'shopid'    =>  $params['shopid'],
+            'cid'       =>  $params['cid'],
+            'description'   =>  $params['description'],
+            'status'    =>  1,
+        ];
+        return (new self())->edit($data);
+    }
 }

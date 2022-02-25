@@ -73,7 +73,7 @@ class Crontab extends Command{
         $map = [
             ['status','=',1]
         ];
-        $task_list = $this->CrontabModel->where($map)->field('id,execute,cycle,day,hour,minute')->select()->toArray();
+        $task_list = $this->CrontabModel->where($map)->field('id,shopid,execute,cycle,day,hour,minute')->select()->toArray();
         foreach ($task_list as $index => $task){
             //格式化天
             $d = $task['day'];
@@ -109,7 +109,7 @@ class Crontab extends Command{
                             break;
                     }
                     Timer::add($time_interval, function () use ($task){
-                        (new $task['execute'])->handle();//处理任务
+                        (new $task['execute'])->handle($task['shopid'],$task['id']);//处理任务
                     });
                     $rule = false;
                     break;
@@ -118,7 +118,7 @@ class Crontab extends Command{
             if ($rule){
                 //加载任务
                 new \Workerman\Crontab\Crontab($rule, function() use ($task){
-                    (new $task['execute'])->handle();//处理任务
+                    (new $task['execute'])->handle($task['shopid'],$task['id']);//处理任务
                 });
             }
         }
