@@ -1,0 +1,147 @@
+{extend name="common/main"/}
+
+{block name="body"}
+<div class="main-title">
+    <h2>新增、编辑任务</h2>
+</div>
+
+<div class="with-padding">
+    <div class="crontab-edit-section">
+        <form action="" class="form-horizontal ajax-form" method="post" role="form">
+            <input name="id" type="hidden" value="{$data['id']|default=0}">
+
+            <div class="builder_item">
+                <label class="item-label">
+                    标题
+                    <span class="check-tips">（请填写消息类型标题）</span>
+                </label>
+                <div class="controls">
+                    <input class="form-control" name="title" placeholder="请填写任务标题" type="text"
+                           value="{$data['title']|default=''}">
+                </div>
+            </div>
+
+            <div class="builder_item">
+                <label class="item-label">
+                    描述
+                    <span class="check-tips">（请填写任务简短描述）</span>
+                </label>
+                <div class="controls textarea">
+                    <textarea class="form-control" name="description">{$data['description']|default=''}</textarea>
+                </div>
+            </div>
+
+            <div class="builder_item">
+                <label class="item-label">
+                    执行路径
+                    <span class="check-tips">（请填写任务执行路径）</span>
+                </label>
+                <div class="controls">
+                    <input class="form-control" name="execute" placeholder="请填写执行路径" type="text"
+                           value="{$data['execute']|default=''}">
+                </div>
+            </div>
+
+            <div class="builder_item">
+                <label class="item-label">
+                    执行周期
+                    <span class="check-tips">（请选择执行周期）</span>
+                </label>
+                <div class="controls cycle" data-cycle="{$data['cycle']|default='minute-n'}">
+                    <select class="form-control cycle-item" name="cycle">
+                        <option value="hour">每小时</option>
+                        <option value="day">每天</option>
+                        <option value="month">每月</option>
+                        <option value="minute-n">N分钟</option>
+                        <option value="hour-n">N小时</option>
+                        <option value="day-n">N天</option>
+                    </select>
+
+                    <div class="input-group cycle-item cycle-item-day">
+                        <input type="number" name="day" class="form-control" value="{$data['day']|default=1}">
+                        <span class="input-group-addon">天</span>
+                    </div>
+
+                    <div class="input-group cycle-item cycle-item-hour">
+                        <input type="number" name="hour" class="form-control" value="{$data['hour']|default=1}">
+                        <span class="input-group-addon">小时</span>
+                    </div>
+
+                    <div class="input-group cycle-item cycle-item-minute">
+                        <input type="number" name="minute" class="form-control" value="{$data['minute']|default=1}">
+                        <span class="input-group-addon">分钟</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="builder_item">
+
+                <label class="item-label">状态设置</label>
+                <div class="controls status-section">
+                    {if isset($data['status']) && $data['status'] == 1}
+                    <input checked id="is_status-1" name="status" type="radio" value="1">
+                    <label class="radio-inline" for="is_status-1">启用</label>
+                    <input id="is_status-0" name="status" type="radio" value="0">
+                    <label class="radio-inline" for="is_status-0"> 禁用</label>
+                    {else /}
+                    <input id="is_status-1" name="status" type="radio" value="1">
+                    <label class="radio-inline" for="is_status-1">启用</label>
+                    <input checked id="is_status-0" name="status" type="radio" value="0">
+                    <label class="radio-inline" for="is_status-0"> 禁用</label>
+                    {/if}
+                </div>
+            </div>
+
+
+            <div class="builder_item">
+                <label class="item-label"></label>
+                <div class="form-controls">
+                    <button class="btn btn-lg btn-primary" type="submit">确认提交</button>
+                </div>
+            </div>
+
+        </form>
+    </div>
+
+</div>
+
+
+{/block}
+{block name="script"}
+<script>
+    $(function () {
+        //默认选中
+        $("[name='cycle']").val($('.cycle').data('cycle'));
+        cycleItmeChange();
+        //选择框变化
+        $('.cycle-item').change(function () {
+            cycleItmeChange()
+        })
+
+        function cycleItmeChange() {
+            let cycle = $("[name='cycle'] option:selected").val();
+            switch (cycle) {
+                case 'minute-n':
+                case 'hour':
+                    $('.cycle-item-minute').show();
+                    $('.cycle-item-hour').hide();
+                    $('.cycle-item-day').hide();
+                    break
+                case 'day':
+                case 'hour-n':
+                    $('.cycle-item-minute').show();
+                    $('.cycle-item-hour').show();
+                    $('.cycle-item-day').hide();
+                    break;
+                case 'month':
+                case 'day-n':
+                    $('.cycle-item-minute').show();
+                    $('.cycle-item-hour').show();
+                    $('.cycle-item-day').show();
+                    break;
+            }
+        }
+    });
+</script>
+
+{/block}
