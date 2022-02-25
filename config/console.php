@@ -5,6 +5,6 @@
 return [
     // 指令定义
     'commands' => [
-        'task' => 'app\common\command\Task',
+        'crontab' => 'app\common\command\Crontab',
     ],
 ];
