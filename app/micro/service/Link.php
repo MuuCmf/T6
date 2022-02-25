@@ -12,6 +12,58 @@ use app\common\model\Module;
 class Link
 {
     /**
+     * 连接至参数配置
+     */
+    public function links()
+    {
+        return [
+            'micro_page' => [
+                'icon' => 'desktop',
+                'sys_type' => 'detail',
+                'link_type' => 'micro_page',
+                'link_type_title' => '自定义页面',
+                'api' => url('micro/admin.api/pages'),
+                'static' => [
+                    'css' => PUBLIC_PATH . '/static/micro/diy/link/micro_page.min.css',
+                    'js' => PUBLIC_PATH . '/static/micro/diy/link/micro_page.min.js',
+                ]
+            ],
+            'category' => [
+                'icon' => 'indent',
+                'sys_type' => 'direct',
+                'link_type' => 'category',
+                'link_type_title' => '分类页',
+                'api' => url('micro/admin.api/applist'),
+                'static' => [
+                    'css' => PUBLIC_PATH . '/static/micro/diy/link/category.min.css',
+                    'js' => PUBLIC_PATH . '/static/micro/diy/link/category.min.js',
+                ]
+            ],
+            'member' => [
+                'icon' => 'user',
+                'sys_type' => 'direct',
+                'link_type' => 'member',
+                'link_type_title' => '会员服务',
+                //'api' => url('micro/admin.vip/lists'),
+                'static' => [
+                    'css' => '',
+                    'js' => PUBLIC_PATH . '/static/micro/diy/link/member.min.js',
+                ]
+            ],
+            'out_url' => [
+                'icon' => 'link',
+                'sys_type' => 'direct',
+                'link_type' => 'out_url',
+                'link_type_title' => '自定义链接',
+                'static' => [
+                    'css' => '',
+                    'js' => PUBLIC_PATH . '/static/micro/diy/link/out_url.min.js',
+                ]
+            ]
+        ];
+    }
+
+    /**
      * 获取所有应用支持的连接至配置参数
      */
     public function getAllLinks()
@@ -37,57 +89,6 @@ class Link
         }
 
         return $data;
-    }
-    /**
-     * 连接至参数配置
-     */
-    public function links()
-    {
-        return [
-            'micro_page' => [
-                'icon' => 'desktop',
-                'sys_type' => 'detail',
-                'link_type' => 'micro_page',
-                'link_type_title' => '自定义页面',
-                'api' => url('micro/admin.api/pages'),
-                'static' => [
-                    'css' => PUBLIC_PATH . '/static/micro/diy/link/micro_page.min.css',
-                    'js' => PUBLIC_PATH . '/static/micro/diy/link/micro_page.min.js',
-                ]
-            ],
-            'category' => [
-                'icon' => 'indent',
-                'sys_type' => 'direct',
-                'link_type' => 'category',
-                'link_type_title' => '分类页',
-                'api' => url('exam/admin.category/lists'),
-                'static' => [
-                    'css' => '',
-                    'js' => ''
-                ]
-            ],
-            'member' => [
-                'icon' => 'user',
-                'sys_type' => 'direct',
-                'link_type' => 'member',
-                'link_type_title' => '会员服务',
-                'api' => url('exam/admin.vip/lists'),
-                'static' => [
-                    'css' => '',
-                    'js' => ''
-                ]
-            ],
-            'out_url' => [
-                'icon' => 'link',
-                'sys_type' => 'direct',
-                'link_type' => 'out_url',
-                'link_type_title' => '自定义链接',
-                'static' => [
-                    'css' => '',
-                    'js' => ''
-                ]
-            ]
-        ];
     }
 
     public function linkToUrl($linkParam = [], $channel = 'mobile'){

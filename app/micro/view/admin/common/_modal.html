@@ -9,6 +9,8 @@
 	      	<div class="modal-body">
 				<input type="hidden" id="objectIndex" value="" />
 				<input type="hidden" id="linkIndex" value="" />
+				<!--端类型，需要后端赋值-->
+				<input type="hidden" id="portType" value="{$port_type|default='mobile'}" />
 				<div class="links-items">
 					{foreach $links as $k => $vo}
 					<ul class="link-type-ul clearfix">

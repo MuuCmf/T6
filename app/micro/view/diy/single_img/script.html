@@ -15,14 +15,16 @@
 			    	单图片广告
 			 	</div>
 			 	<div class="panel-body">
-					<form data-type="single_img">
+					<form class="form-horizontal" data-type="single_img">
 						<input type="hidden" name="app" value="micro"/>
 						<input type="hidden" name="title" value="单图广告"/>
 						<input type="hidden" name="type" value="single-img"/>
 						<div class="single-img-item" data-rule="object-controller-item">
 							<div class="form-group add">
-								<input type="hidden" name="img_url" />
-								<div class="uploadImgBtn btn btn-primary">上传图片</div>
+								<div class="col-sm-12">
+									<input type="hidden" name="img_url" />
+									<div class="uploadImgBtn btn btn-primary">上传图片</div>
+								</div>
 							</div>
 							<div class="form-group">
 								<div class="clearfix" data-rule="links_list">
@@ -53,15 +55,19 @@
 							</div>
 							<div class="" style="margin-top: 10px;">
 								<div class="form-group">
-									<label class="">样式选择</label>
-									<select class="form-control wide" name="style">
-										<option value="0" selected>通栏</option>
-										<option value="1">圆角留边</option>
-									</select>
+									<div class="col-sm-12">
+										<label class="">样式选择</label>
+										<select class="form-control wide" name="style">
+											<option value="0" selected>通栏</option>
+											<option value="1">圆角留边</option>
+										</select>
+									</div>
 								</div>
 			
 								<div class="form-group">
-									<button type="button" class="btn btn-primary">预览</button>
+									<div class="col-sm-12">
+										<button type="button" class="btn btn-primary">预览</button>
+									</div>
 								</div>
 							</div>
 						</div>

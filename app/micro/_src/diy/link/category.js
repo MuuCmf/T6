@@ -11,7 +11,7 @@ $(function(){
     //初始化列表页码
     var page = 1;
     // 打开连接至设置模特框
-    $('body').on('click','#linkTypeModal [data-link-type="micro_page"]',function(){
+    $('body').on('click','#linkTypeModal [data-link-type="category"]',function(){
         link_type = $(this).data();
         object_index = $('#objectIndex').val();
         link_index = $('#linkIndex').val();
@@ -37,21 +37,17 @@ $(function(){
             onPageChange: function(state, oldState) {
                 if (state.page !== oldState.page) {
                     getList(api, state.page);
-                    //console.log('页码从', oldState.page, '变更为', state.page);
                 }
             }
         });
         
         getList(api, page);
-        //hideLoading();
     });
 
     // 列表点击选择事件
-    $('body').on('click','#linkConfigModal [data-link-type="micro_page"]',function(){
+    $('body').on('click','#linkConfigModal [data-link-type="category"]',function(){
         var data = {};
             data.link_title = $(this).data('link-title');
-            //获取link_id
-            data.link_id = $(this).data('link-id');
             //获取link_type
             data.link_type = $(this).data('link-type');
             //获取链接类型的标题
@@ -60,21 +56,14 @@ $(function(){
             data.link_url = $(this).data('link-url');
             //链接参数名
         var param = {
-            id: $(this).data('link-id'),
-            title: $(this).data('link-title')
+            app: $(this).data('link-name'),
         };
-        //console.log(param);
-        //返回数据有两种情况，1：DIY页面 2：底部导航设置页面
-        //两者的dom结构不同需要单独处理
-        //var this_ele = $('[data-object-index="'+object_index+'"] [data-rule="links_list"]:eq('+link_index+')');
-            
+
         //DIY页面数据返回
         element.find('input[name="link_title"]').val(data.link_title);
         element.find('input[name="link_type"]').val(data.link_type);
         element.find('input[name="link_type_title"]').val(data.link_type_title);
-        element.find('input[name="link_url"]').val(data.link_url);
         element.find('[name="link_param"]').val(JSON.stringify(param));
-
         //按钮右侧链接文字
         element.find('.link_title li:eq(0)').html(data.link_type_title);
         element.find('.link_title li:eq(1)').html(data.link_title);
@@ -83,29 +72,27 @@ $(function(){
         $('#linkConfigModal').modal('hide');
     });
 
+    /**
+     * 获取数据
+     * @param {*} api 
+     * @param {*} page 
+     */
     var getList = function(api, page){
         page = page || 1;
-        api = api + '?r=5&page=' + page;
+        api = api + '?r=9&page=' + page;
         $.get(api,function(res){
             console.log(res);
             var html_str = '';
             
-            html_str += '<table class="table">';
-            html_str +='<theader>';
-            html_str +='<tr>';
-            html_str +='<th>ID</th><th>标题</th><th>端</th><th>更新时间</th>';
-            html_str +='</tr>';
-            html_str +='</theader>';
-            html_str +='<tbody>';
+            html_str += '<div class="applist clearfix">';
+            
             $.each(res.data.data,function(i,n){
-                html_str += '<tr data-rule="link_param" data-link-id='+n.id+' data-link-title='+n.title+' data-link-type='+link_type.linkType+' data-link-type-title='+link_type.linkTypeTitle+' data-link-module='+link_type.module+' data-link-url='+link_type.url+' data-link-param='+link_type.param+'>';
-                html_str += '<td>'+n.id+'</td>';
-                html_str += '<td>'+n.title+'</td>';
-                html_str += '<td>'+n.port_type+'</td>';
-                html_str += '<td>'+n.update_time_str+'</td>';
-                html_str += '</tr>'; 
+                html_str += '<div class="item" data-rule="link_param" data-link-name='+n.name+' data-link-title='+n.alias+' data-link-type='+link_type.linkType+' data-link-type-title='+link_type.linkTypeTitle+'>';
+                html_str += '<div class="icon"><img src="'+n.icon+'" /></div>';
+                html_str += '<div class="alias">'+n.alias+'</div>';
+                html_str += '</div>'; 
             });
-            html_str += '</tbody></table>';
+            html_str += '</div>';
 
             $('#linkConfigModal .link-section').html(html_str);
             // 获取分页器实例对象
