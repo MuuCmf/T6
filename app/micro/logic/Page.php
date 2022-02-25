@@ -33,24 +33,32 @@ class Page
 
                 // 轮播图
                 if(isset($v['data']) && $v['type'] == 'slideshow' && is_array($v['data']) ){
-                    if(!empty($v['data']['link']['param'])){
-                        $v['data']['link']['param'] = json_encode($v['data']['link']['param']);
+                    foreach($v['data'] as &$b){
+                        if(!empty($b['link']['param'])){
+                            $b['link']['param'] = json_encode($b['link']['param']);
+                        }
                     }
+                    unset($b);
                 }
 
                 //图文导航数据处理
                 if($v['type'] == 'category_nav' && is_array($v['data'])){
-                    if(!empty($v['data']['link']['param'])){
-                        $v['data']['link']['param'] = json_encode($v['data']['link']['param']);
+                    foreach($v['data'] as &$c){
+                        if(!empty($c['link']['param'])){
+                            $c['link']['param'] = json_encode($c['link']['param']);
+                        }
                     }
+                    unset($c);
                 }
                 //单图链接至数据处理
                 if($v['type'] == 'single_img' && is_array($v['data'])){
-                    //dump($v['data']);
-                    //dump($v['data']['link']['param']);
-                    if(!empty($v['data']['link']['param'])){
-                        $v['data']['link']['param'] = json_encode($v['data']['link']['param']);
+                    
+                    foreach($v['data'] as &$s){
+                        if(!empty($s['link']['param'])){
+                            $s['link']['param'] = json_encode($s['link']['param']);
+                        }
                     }
+                    unset($s);
                 }
             }
             unset($v);

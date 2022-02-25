@@ -2,11 +2,15 @@
 <div class="object-item" data-type="single_img" data-object-index="single_img-{$vars['key']}">
 	<div class="object-drag single-img">
 		<div class="single-img-preview preview style-{$vars['data']['style']}">
-			{if isset($vars['data']['data']['img_url']) && !empty($vars['data']['data']['img_url'])}
-				<img src="{$vars['data']['data']['img_url']}" />
+			{if !empty($vars['data']['data'])}
+			{foreach $vars['data']['data'] as $key=>$vo}
+			<img src="{$vo['img_url']}" />
+			{/foreach}
 			{else}
+			<div class="title-preview">
 				<p>单图片广告组件</p>
 				<p>（建议宽度不低于900px的jpg、png、gif）</p>
+			</div>
 			{/if}
 		</div>
 	</div>
@@ -22,11 +26,13 @@
 					<input type="hidden" name="type" value="single-img"/>
 					<div class="single-img-item" data-rule="object-controller-item">
 						<div class="form-group add">
-							<input type="hidden" name="img_url" value="{$vars['data']['data']['img_url']}"/>
+							<input type="hidden" name="img_url" value="{$vars['data']['data'][0]['img_url']}"/>
 							<div class="uploadImgBtn btn btn-primary">上传图片</div>
 						</div>
 						<div class="form-group">
+							{foreach $vars['data']['data'] as $key => $vo}
 							{include file="admin/common/_link_btn" }
+							{/foreach}
 						</div>
 					</div>
 					
