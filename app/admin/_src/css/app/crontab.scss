@@ -20,3 +20,17 @@
     }
   }
 }
+
+/**
+ *@title 计划任务记录
+ */
+.crontab-log-body{
+  .log-item{
+    display: flex;
+    justify-content: space-between;
+    padding: 20px;
+  }
+  .page{
+    padding: 20px;
+  }
+}

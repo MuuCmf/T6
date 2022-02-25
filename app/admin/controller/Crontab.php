@@ -15,6 +15,7 @@ namespace app\admin\controller;
 use app\common\model\Crontab as CrontabModel;
 use app\common\logic\Crontab as CrontabLogic;
 use app\common\model\CrontabLog as CrontabLogModel;
+use think\facade\Cache;
 use think\facade\View;
 
 class Crontab extends Admin{
@@ -85,18 +86,50 @@ class Crontab extends Admin{
     }
 
     public function log(){
+        $cid = input('cid',0);
         $map = [
-            ['status' ,'between' ,[0,1]],
-            ['shopid' ,'=' ,$this->shopid]
+            ['status', 'between', [0,1]],
+            ['shopid', '=', $this->shopid],
+            ['cid', '=', $cid]
         ];
-        $list = $this->CrontabModel->getListByPage($map,'id DESC');
+        $rows = input('rows',10);
+        $list = $this->CrontabLogModel->getListByPage($map,'id DESC','*',$rows);
         $pager = $list->render();
         $list = $list->toArray();
         unset($item);
         View::assign([
             'pager' => $pager,
-            'list' => $list['data']
+            'list'  => $list['data'],
+            'cid'   => $cid
         ]);
         return view();
+    }
+
+    /**
+     * 设置状态
+     */
+    public function status(int $status = 0)
+    {
+        $ids = input('ids/a');
+        !is_array($ids)&&$ids=explode(',',$ids);
+        $status = input('status', 0, 'intval');
+        $title = '更新';
+        if($status == 0){
+            $title = '禁用';
+        }
+        if($status == 1){
+            $title = '启用';
+        }
+        if($status == -1){
+            $title = '删除';
+        }
+        $data['status'] = $status;
+
+        $res = $this->CrontabModel->where('id', 'in', $ids)->update($data);
+        if($res){
+            return $this->success($title . '成功');
+        }else{
+            return $this->error($title . '失败');
+        }
     }
 }

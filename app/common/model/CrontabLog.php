@@ -18,7 +18,7 @@ class CrontabLog extends Base{
             'shopid'    =>  $params['shopid'],
             'cid'       =>  $params['cid'],
             'description'   =>  $params['description'],
-            'status'    =>  1,
+            'status'    =>  isset($params['status']) ? $params['status'] : 1,
         ];
         return (new self())->edit($data);
     }
