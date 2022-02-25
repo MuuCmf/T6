@@ -20,11 +20,11 @@ $(function(){
     $('body').on('click','[data-target="#linkTypeModal"]',function(){
         object_index = $(this).parents('.object-item').attr('data-object-index');
         link_index = $('[data-object-index="'+object_index+'"]').find('[data-rule="object-controller-item"]').index($(this).closest('[data-rule="object-controller-item"]'));
-        console.log(object_index);
-        console.log(link_index);
+        //console.log(object_index);
+        //console.log(link_index);
         //赋值到模态框
-        $('#linkToModal').find('#objectIndex').val(object_index);
-        $('#linkToModal').find('#linkIndex').val(link_index);
+        $('#linkTypeModal').find('#objectIndex').val(object_index);
+        $('#linkTypeModal').find('#linkIndex').val(link_index);
     });
 
     // 打开连接至设置模特框

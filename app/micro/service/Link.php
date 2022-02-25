@@ -49,27 +49,43 @@ class Link
                 'sys_type' => 'detail',
                 'link_type' => 'micro_page',
                 'link_type_title' => '自定义页面',
-                'api' => url('micro/admin.page/api')
+                'api' => url('micro/admin.api/pages'),
+                'static' => [
+                    'css' => PUBLIC_PATH . '/static/micro/diy/link/micro_page.min.css',
+                    'js' => PUBLIC_PATH . '/static/micro/diy/link/micro_page.min.js',
+                ]
             ],
             'category' => [
                 'icon' => 'indent',
                 'sys_type' => 'direct',
                 'link_type' => 'category',
                 'link_type_title' => '分类页',
-                'api' => url('exam/admin.category/lists')
+                'api' => url('exam/admin.category/lists'),
+                'static' => [
+                    'css' => '',
+                    'js' => ''
+                ]
             ],
             'member' => [
                 'icon' => 'user',
                 'sys_type' => 'direct',
                 'link_type' => 'member',
                 'link_type_title' => '会员服务',
-                'api' => url('exam/admin.vip/lists')
+                'api' => url('exam/admin.vip/lists'),
+                'static' => [
+                    'css' => '',
+                    'js' => ''
+                ]
             ],
             'out_url' => [
                 'icon' => 'link',
                 'sys_type' => 'direct',
                 'link_type' => 'out_url',
                 'link_type_title' => '自定义链接',
+                'static' => [
+                    'css' => '',
+                    'js' => ''
+                ]
             ]
         ];
     }
@@ -92,11 +108,11 @@ class Link
         foreach($links_params_config as $k=>$v){
             if(!empty($v['links'])){
                 foreach($v['links'] as $c_k=>$c_v){
+                    if(!empty($c_v['static']['css']) && file_exists($c_v['static']['css']))
+                    $style .= file_get_contents($c_v['static']['css']);
                     
-                    $style .= file_get_contents($c_v['static']['link']['css']);
-                    
-                    if(!empty($c_v['static']['link']['js'])){
-                        $script .= file_get_contents($c_v['static']['link']['js']);
+                    if(!empty($c_v['static']['js']) && file_exists($c_v['static']['js'])){
+                        $script .= file_get_contents($c_v['static']['js']);
                     }
                 }
             }

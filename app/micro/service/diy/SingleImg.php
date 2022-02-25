@@ -50,13 +50,14 @@ class SingleImg
      */
     public function handle($data, $shopid)
     {   
-        
-        $data['data']['img_url'] = get_attachment_src($data['data']['img_url']);
-        if(!empty($data['data']['link'])){
-            $data['data']['link']['url'] = (new Link())->linkToUrl($data['data']['link']);
+        if(!empty($data['data'])){//数据不为空时执行
+            foreach($data['data'] as &$v){
+                $v['img_url'] = get_attachment_src($v['img_url']);
+                if(!empty($v['link'])){
+                    $v['link']['url'] = (new Link())->linkToUrl($v['link']);
+                }
+            }
         }
-        
-
         return $data;
     }
 }

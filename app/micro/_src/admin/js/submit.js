@@ -45,17 +45,38 @@ $(function(){
 			obj.app = 'micro';
 			obj.style = $(element).find('[name="style"]').val(); //样式
 	        //为了兼任性，经单图或其它单独调用链接至组件的组件写入数组内
-	        obj.data = {
-	        	img_url : $(element).find('[name="img_url"]').val(),
-	        	link : {
-	        		sys_type : $(element).find('[name="link_sys_type"]').val(),
-		            type : $(element).find('[name="link_type"]').val(),
-		            title : $(element).find('[name="link_title"]').val(),
-		            type_title : $(element).find('[name="link_type_title"]').val(),
-		            module : $(element).find('[name="link_module"]').val(),
-	            	param : param,
-	        	}
-	        };
+			obj.data = new Array();
+	        // obj.data = {
+	        // 	img_url : $(element).find('[name="img_url"]').val(),
+	        // 	link : {
+	        // 		sys_type : $(element).find('[name="link_sys_type"]').val(),
+		    //         type : $(element).find('[name="link_type"]').val(),
+		    //         title : $(element).find('[name="link_title"]').val(),
+		    //         type_title : $(element).find('[name="link_type_title"]').val(),
+		    //         module : $(element).find('[name="link_module"]').val(),
+	        //     	param : param,
+	        // 	}
+	        // };
+
+			$(element).find('[data-rule="object-controller-item"]').each(function(){
+				var param = $(this).find('[name="link_param"]').val();
+					if(isJsonString(param)){
+						param = $.parseJSON(param);
+					}
+				//console.log(param);
+				var tmp_data = {
+					img_url : $(this).find('[name="img_url"]').val(),
+					link : {
+						sys_type : $(this).find('[name="link_sys_type"]').val(),
+						type : $(this).find('[name="link_type"]').val(),
+						title : $(this).find('[name="link_title"]').val(),
+						type_title : $(this).find('[name="link_type_title"]').val(),
+						module : $(this).find('[name="link_module"]').val(),
+						param : param,
+					}
+				};
+				obj.data.push(tmp_data);
+			});
 
         return obj;
 	}
@@ -76,7 +97,6 @@ $(function(){
 				}
 			//console.log(param);
         	var tmp_data = {
-        		img_id : $(this).find('[name="img_id"]').val(),
             	img_url : $(this).find('[name="img_url"]').val(),
             	link : {
             		sys_type : $(this).find('[name="link_sys_type"]').val(),

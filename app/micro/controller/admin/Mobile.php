@@ -63,13 +63,13 @@ class Mobile extends MicroAdmin
 
         foreach ($lists['data'] as &$item){
             $item = $this->PageLogic->formatData($item);
+            $item = $this->PageLogic->handlingNoParamJson($item);
             // 页面元素View
             $app_view_tmpl = (new DiyService())->getViewTmpl($item);
             $item['app_view_tmpl'] = $app_view_tmpl;
         }
         unset($item);
 
-        //dump($lists);exit;
         if (request()->isAjax()){
             return $this->success('success',$lists);
         }
@@ -140,11 +140,10 @@ class Mobile extends MicroAdmin
                 $page_data = $page_data->toArray();
                 $page_data = $this->PageLogic->formatData($page_data);
                 $page_data = $this->PageLogic->handlingNoParamJson($page_data);
-
             }else{
                 $page_data = [];
             }
-
+            //dump($page_data);
             View::assign('page_data', $page_data);
             // 内置图标列表
             View::assign('icon_list', (new DiyService())->getIconLists());
@@ -153,16 +152,19 @@ class Mobile extends MicroAdmin
             $no_icon = request()->domain() . '/static/micro/images/diy/noimg.png';
             View::assign('no_icon', $no_icon);
             
-            // 页面元素View
+            // DIY组件页面元素View
             $app_view_tmpl = (new DiyService())->getViewTmpl($page_data);
             View::assign('app_view_tmpl', $app_view_tmpl);
-            // 页面元素Script
+            // DIY组件页面元素Script
             $app_script_tmpl = (new DiyService())->getScriptTmpl();
             View::assign('app_script_tmpl', $app_script_tmpl);
-            // 页面元素Static
+            // DIY组件页面元素Static
             $app_static_tmpl = (new DiyService())->getStaticTmpl();
             View::assign('app_static_tmpl', $app_static_tmpl);
-
+            // 链接至依赖静态资源
+            $link_static_tmpl = (new LinkService())->getStaticTmpl();
+            View::assign('link_static_tmpl', $link_static_tmpl);
+            // dump($link_static_tmpl);
             // 设置title
             $this->setTitle('移动端自定义页面DIY');
             // 输出页面
