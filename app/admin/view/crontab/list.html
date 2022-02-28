@@ -67,7 +67,7 @@
                     {/if}
                 </td>
                 <td>
-                    <a class="btn btn-sm btn-success" data-height="600px" data-name="crontab-log-Modal" data-iframe="{:url('admin/Crontab/log')}" data-toggle="modal" data-scroll-inside="true" >查看日志</a>
+                    <a class="btn btn-sm btn-success" data-height="600px" data-name="crontab-log-Modal" data-iframe="{:url('admin/Crontab/log',['cid' => $vo['id']])}" data-toggle="modal" data-scroll-inside="true" >查看日志</a>
                     <a class="btn btn-sm btn-primary" href="{:url('edit',['id'=>$vo['id']])}" >编辑</a>
                     <a class="btn btn-sm btn-danger ajax-post" href="{:url('status',['status'=>-1, 'ids'=>$vo['id']])}" data-confirm="确认执行删除操作？">删除</a>
                 </td>

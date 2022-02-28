@@ -6,6 +6,7 @@ namespace app\common\model;
  */
 class Vip extends Base
 {
+    protected $autoWriteTimestamp = true;
 
     public $_status  = [
         '1'  => '启用',

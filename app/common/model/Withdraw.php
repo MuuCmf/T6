@@ -13,6 +13,8 @@
  */
 namespace app\common\model;
 class Withdraw extends Base{
+    protected $autoWriteTimestamp = true;
+
     /**
      * 生成订单号
      * @return [type] [description]
