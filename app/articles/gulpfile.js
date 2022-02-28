@@ -16,22 +16,43 @@ var gulp        = require('gulp'),
 var src='./_src/',
     dist='../../public/static/articles';
 // 编译全部scss 并压缩
-gulp.task('scss', function(){
+gulp.task('admin_scss', function(){
     gulp.src([
-            src + 'css/**/*.scss',
+            src + 'admin/css/**/*.scss',
         ])
         .pipe(sass())
         .pipe(concat('main.css'))//合并css
         .pipe(rename({suffix: '.min'}))//rename压缩后的文件名
         .pipe(minifyCss())
-        .pipe(gulp.dest(dist + '/css'));
+        .pipe(gulp.dest(dist + '/admin/css'));
+})
+
+gulp.task('pc_scss', function(){
+    gulp.src([
+            src + 'pc/css/**/*.scss',
+        ])
+        .pipe(sass())
+        .pipe(concat('main.css'))//合并css
+        .pipe(rename({suffix: '.min'}))//rename压缩后的文件名
+        .pipe(minifyCss())
+        .pipe(gulp.dest(dist + '/pc/css'));
+})
+
+gulp.task('diy_scss', function(){
+    gulp.src([
+            src + 'diy/**/*.scss',
+        ])
+        .pipe(sass())
+        .pipe(rename({suffix: '.min'}))//rename压缩后的文件名
+        .pipe(minifyCss())
+        .pipe(gulp.dest(dist + '/diy'));
 })
 
 // 编译模块js 并压缩不合并
-gulp.task('mod_js', function() {
+gulp.task('admin_js', function() {
       gulp.src([
             //'js/lib/*.js',//先打包类库
-            src + 'js/**/*.js'
+            src + 'admin/js/**/*.js'
         ])
         .pipe(plumber())
         .pipe(babel({
@@ -40,7 +61,37 @@ gulp.task('mod_js', function() {
         .pipe(concat('main.js'))//合并js
         .pipe(rename({suffix: '.min'}))//rename压缩后的文件名
         .pipe(uglify())
-        .pipe(gulp.dest(dist + '/js'));
+        .pipe(gulp.dest(dist + '/admin/js'));
+});
+
+// 编译模块js 并压缩不合并
+gulp.task('pc_js', function() {
+    gulp.src([
+          //'js/lib/*.js',//先打包类库
+          src + 'pc/js/**/*.js'
+      ])
+      .pipe(plumber())
+      .pipe(babel({
+        presets: ['es2015']
+      }))
+      .pipe(concat('main.js'))//合并js
+      .pipe(rename({suffix: '.min'}))//rename压缩后的文件名
+      .pipe(uglify())
+      .pipe(gulp.dest(dist + '/pc/js'));
+});
+
+// 编译模块js 并压缩不合并
+gulp.task('diy_js', function() {
+    gulp.src([
+          src + 'diy/**/*.js'
+      ])
+      .pipe(plumber())
+      .pipe(babel({
+        presets: ['es2015']
+      }))
+      .pipe(rename({suffix: '.min'}))//rename压缩后的文件名
+      .pipe(uglify())
+      .pipe(gulp.dest(dist + '/diy'));
 });
 
 // 图片文件直接copy
@@ -67,9 +118,13 @@ gulp.task('server', function() {
     });
     */
     // 监听scss文件编译
-    gulp.watch(src + 'css/**/*.scss', ['scss']);
+    gulp.watch(src + 'admin/css/**/*.scss', ['admin_scss']);
+    gulp.watch(src + 'pc/css/**/*.scss', ['pc_scss']);
+    gulp.watch(src + 'diy/**/*.scss', ['diy_scss']);
     // 监听js文件编译
-    gulp.watch(src + 'js/**/*.js', ['mod_js']);
+    gulp.watch(src + 'admin/js/**/*.js', ['admin_js']);
+    gulp.watch(src + 'pc/js/**/*.js', ['pc_js']);
+    gulp.watch(src + 'diy/**/*.js', ['diy_js']);
     // 监听其他不编译的文件 有变化直接copy
     gulp.watch(src + 'images/**/*.!(jpg|jpeg|png|gif|bmp|svg)', ['images']);
     gulp.watch(src + 'lib/**/*.!(jpg|jpeg|png|gif|bmp|svg|css|js)', ['lib']);   
@@ -78,4 +133,4 @@ gulp.task('server', function() {
 });
 
 // 监听事件
-gulp.task('default', ['scss', 'mod_js', 'images', 'lib', 'server'])
+gulp.task('default', ['admin_scss','pc_scss', 'diy_scss', 'admin_js', 'pc_js', 'diy_js', 'images', 'lib', 'server'])

@@ -118,14 +118,13 @@ class Diy
         $diy_params_config = $this->getConfig();
         $style = '';
         $script = '';
-        foreach($diy_params_config as $k=>$v){
-            foreach($v['list'] as $c_k=>$c_v){
-                if(!empty($c_v['static']['mobile']['css'])){
+        foreach($diy_params_config as $v){
+            foreach($v['list'] as $c_v){
+                if(!empty($c_v['static']['mobile']['css']) && file_exists($c_v['static']['mobile']['css'])){
 
                     $style .= file_get_contents($c_v['static']['mobile']['css']);
                 }
-                if(!empty($c_v['static']['mobile']['js'])){
-                    //$app_static_tmpl .= '<script type="text/javascript" src="'.$c_v['static']['mobile']['js'].'"></script>';
+                if(!empty($c_v['static']['mobile']['js']) && file_exists($c_v['static']['mobile']['js'])){
                     $script .= file_get_contents($c_v['static']['mobile']['js']);
                 }
             }
@@ -133,7 +132,7 @@ class Diy
         $style='<style>' .$style. '</style>';
         $script = '<script>' .$script. '</script>';
         $app_static_tmpl = $style . $script;
-        //dump($style);
+        
         return $app_static_tmpl;
     }
 

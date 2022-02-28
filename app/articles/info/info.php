@@ -15,7 +15,7 @@ return [
     //开发者网站
     'website' => 'http://www.muucmf.com',
     //后台入口
-    'entry' => 'articles/Admin/index',
+    'entry' => 'articles/admin.articles/lists',
     //允许卸载
     'uninstall' => 1,
 ];
