@@ -13,6 +13,8 @@
  */
 namespace app\common\model;
 class CrontabLog extends Base{
+    protected $autoWriteTimestamp = true;
+
     public static function addLog($params){
         $data = [
             'shopid'    =>  $params['shopid'],

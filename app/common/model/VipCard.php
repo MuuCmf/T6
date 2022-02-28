@@ -6,6 +6,6 @@ namespace app\common\model;
  */
 class VipCard extends Base
 {
-    
+    protected $autoWriteTimestamp = true;
 
 }
