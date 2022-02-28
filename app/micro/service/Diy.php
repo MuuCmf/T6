@@ -20,6 +20,15 @@ class Diy
         // 获取应用部分
         $config = [];
         $module_list = (new Module)->getAll([['is_setup', '=', 1]]);
+
+        // 数组排序更改，将micro模块放置在第一位
+        $micro_arr = [];
+        foreach($module_list as $v){
+            if($v['name'] == 'micro'){
+                $micro_arr[] = $v;
+            }
+        }
+        $module_list = array_unique(array_merge($micro_arr, $module_list), SORT_REGULAR);
         foreach($module_list as $v){
             // 获取约定的目录是否存在
             $dir = APP_PATH . $v['name'] . '/service/' . 'diy';
