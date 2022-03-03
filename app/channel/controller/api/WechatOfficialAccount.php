@@ -193,15 +193,37 @@ class WechatOfficialAccount extends Base
      */
     public function scanLogin(){
         if (request()->isPost()){
-            $openid = input('openid');
+            $openid = input('post.openid');
+            $scene_key = input('post.scene_key');
             $map = [
                 ['openid' ,'=' ,$openid],
                 ['type' ,'=' ,'weixin_h5']
             ];
             $uid = MemberSync::where($map)->value('uid');
-            if (!$uid) $this->error('请在个人中心绑定微信后，尝试扫码登录');
-            //登录
-            $res = (new Member())->login($uid);
+            $MemberModel = new Member();
+            //初次扫码注册
+            if (!$uid) {
+                $oauth_info = (new QrcodeLogin())->where('scene_key',$scene_key)->value('metadata');
+                if (!$oauth_info){
+                    return $this->error('没有授权信息');
+                }
+                $oauth_info = json_decode($oauth_info,true);
+                //处理用户数据
+                $data = [
+                    'openid'    =>  $oauth_info['openid'],
+                    'unionid'   =>  $oauth_info['unionid'],
+                    'sex'       =>  $oauth_info['sex'],
+                    'oauth_type'    =>  'weixin_h5',
+                    'shopid'    =>  Cache::get('shopid'),
+                    'avatar'    =>  '',
+                    'nickname'  =>  $MemberModel->createRandNickname()
+                ];
+                $user = $MemberModel->oauth($data);
+                $MemberModel->updateLogin($user['uid']);
+                $uid = $user->uid;
+            }
+            //登录+
+            $res = $MemberModel->login($uid);
             if ($res) {
                 $token = JWTAuth::builder(['uid' => $uid]); //参数为用户认证的信息，请自行添加
                 $token = 'Bearer ' . $token;
@@ -258,12 +280,12 @@ class WechatOfficialAccount extends Base
         // 获取 OAuth 授权结果用户信息
         $user = $oauth->user()->getOriginal();
         //处理用户数据
-        $memberModel = new Member();
+        $MemberModel = new Member();
         $user['oauth_type'] = 'weixin_h5';//1为公众号授权
         $user['shopid'] = Cache::get('shopid');//1为公众号授权
         $user['avatar'] = $user['headimgurl'];
-        $user = $memberModel->oauth($user);
-        $memberModel->updateLogin($user['uid']);
+        $user = $MemberModel->oauth($user);
+        $MemberModel->updateLogin($user['uid']);
         //生成token
         $token = JWTAuth::builder(['uid' => $user['uid']]);
         $token = 'Bearer ' . $token;

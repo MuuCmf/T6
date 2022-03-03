@@ -106,11 +106,6 @@ class Auth{
     );
 
     public function __construct() {
-        $prefix = config('database.prefix');
-        $this->_config['auth_group'] = $prefix.$this->_config['auth_group'];
-        $this->_config['auth_rule'] = $prefix.$this->_config['auth_rule'];
-        $this->_config['auth_user'] = $prefix.$this->_config['auth_user'];
-        $this->_config['auth_group_access'] = $prefix.$this->_config['auth_group_access'];
         if (config('auth.auth_config')) {
             //可设置配置项 auth_config, 此配置项为数组。
             $this->_config = array_merge($this->_config, config('auth.auth_config'));
@@ -175,7 +170,7 @@ class Auth{
         static $groups = array();
         if (isset($groups[$uid]))
             return $groups[$uid];
-        $user_groups = \think\facade\Db::table($this->_config['auth_group_access'])
+        $user_groups = \think\facade\Db::name($this->_config['auth_group_access'])
             ->alias('a')
             ->where("a.uid='$uid' and g.status='1'")
             ->join($this->_config['auth_group'].' g','a.group_id=g.id')
@@ -215,7 +210,7 @@ class Auth{
         $map[] = ['type','=',$type];
         $map[] = ['status','=',1];
         //读取用户组所有权限规则
-        $rules = \think\facade\Db::table($this->_config['auth_rule'])->where($map)->field('condition,name')->select();
+        $rules = \think\facade\Db::name($this->_config['auth_rule'])->where($map)->field('condition,name')->select();
 
         //循环规则，判断结果。
         $authList = array();   //
@@ -248,7 +243,7 @@ class Auth{
     protected function getUserInfo($uid) {
         static $userinfo=array();
         if(!isset($userinfo[$uid])){
-            $userinfo[$uid]=\think\facade\Db::table($this->_config['auth_user'])->where('uid',$uid)->find();
+            $userinfo[$uid]=\think\facade\Db::name($this->_config['auth_user'])->where('uid',$uid)->find();
         }
         return $userinfo[$uid];
     }

@@ -46,7 +46,7 @@ var scan_login = {
     login(){
         let that = this;
         console.log(12312312);
-        $.post( `${this.apiHost}/channel/official/scanLogin`,{openid:this.userInfo.openid},function (data) {
+        $.post( `${this.apiHost}/channel/official/scanLogin`,{openid:this.userInfo.openid,scene_key:this.sceneKey},function (data) {
             if (data.code == 200) {
                 toast.success(data.msg);
                 if (data.data) {
