@@ -113,6 +113,7 @@ class Mobile extends MicroAdmin
                 'footer_show' => intval($params['footer_show']),
                 'type' => 0,
             ];
+            
             // 写入数据
             $result = $this->PageModel->edit($data);
             if($result){

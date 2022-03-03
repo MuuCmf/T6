@@ -275,7 +275,7 @@ $(function(){
 	            break;
 
 				default: 
-					obj = $(this).find('form[data-type="'+type+'"]').serializeArray();
+					obj = $(this).find('form[data-type="'+otype+'"]').serializeArray();
 					var formData = {};
 					$.each(obj, function() {
 						formData[this.name] = this.value;
