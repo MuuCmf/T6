@@ -69,7 +69,7 @@ class Mobile extends MicroAdmin
             $item['app_view_tmpl'] = $app_view_tmpl;
         }
         unset($item);
-
+        
         if (request()->isAjax()){
             return $this->success('success',$lists);
         }
@@ -144,7 +144,7 @@ class Mobile extends MicroAdmin
             }else{
                 $page_data = [];
             }
-            //dump($page_data);
+            
             View::assign('page_data', $page_data);
             // 内置图标列表
             View::assign('icon_list', (new DiyService())->getIconLists());

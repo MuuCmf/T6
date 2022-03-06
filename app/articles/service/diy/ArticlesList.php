@@ -72,26 +72,27 @@ class ArticlesList
      */
     public function handle($data, $shopid)
     {    
-        if(!isset($data['data']['rank'])){
-            $data['data']['rank'] = 1;
-        }
-        $category_id = intval($data['data']['category_id']);
-        $map = $this->ArticlesLogic->getMap(0, '', $category_id, 1);
-        $rows = $data['data']['rows'];
-        $order = $data['data']['order_field'].' '.$data['data']['order_type'];
-        $list = $this->ArticlesModel->getList($map, $rows, $order);
 
+        if(!isset($data['rank'])){
+            $data['rank'] = 1;
+        }
+        $category_id = intval($data['category_id']);
+        $map = $this->ArticlesLogic->getMap(0, '', $category_id, 1);
+        $rows = $data['rows'];
+        $order = $data['order_field'].' '.$data['order_type'];
+        $list = $this->ArticlesModel->getList($map, $rows, $order);
         if(!empty($list)){
             $list = $list->toArray();
+            
             foreach($list as &$v){
                 $v = $this->ArticlesLogic->formatData($v);
             }
             unset($v);
-            $data['data']['list'] = $list;
+            $data['list'] = $list;
         }
 
         $data['config'] = $this->getAppConfig();
-        
+
         return $data;
     }
 }
