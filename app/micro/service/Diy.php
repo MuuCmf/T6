@@ -81,11 +81,13 @@ class Diy
         if (!empty($page_data['data'])){
             // 处理数据块数据模板
             foreach($page_data['data'] as $key => $vo){
-                $tmpl = $diy_params_config[$vo['app']]['list'][$vo['type']]['tmpl']['view'];
-                $view_tmpl .= View::fetch($tmpl, [
-                    'key' => $key,
-                    'data' => $vo
-                ]);
+                if(array_key_exists($vo['type'], $diy_params_config[$vo['app']]['list'])){
+                    $tmpl = $diy_params_config[$vo['app']]['list'][$vo['type']]['tmpl']['view'];
+                    $view_tmpl .= View::fetch($tmpl, [
+                        'key' => $key,
+                        'data' => $vo
+                    ]);
+                }
             }
         }
 

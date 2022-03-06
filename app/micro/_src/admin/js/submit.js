@@ -14,7 +14,7 @@ $(function(){
 	//搜索块
 	var search = function(element){
 		var obj = {};
-		obj.title = '搜索';
+		obj.type_title = '搜索';
 	    obj.type = 'search';
 		obj.app = 'micro';
 	    return obj;
@@ -23,7 +23,7 @@ $(function(){
 	//公告块
 	var announce = function(element){
 		var obj = {};
-		obj.title = '公告';
+		obj.type_title = '公告';
 	    obj.type = 'announce';
 		obj.app = 'micro';
 	    obj.data = {
@@ -40,7 +40,7 @@ $(function(){
 		}
 
 		var obj = {};
-			obj.title = '单图广告';
+			obj.type_title = '单图广告';
 			obj.type = 'single_img';
 			obj.app = 'micro';
 			obj.style = $(element).find('[name="style"]').val(); //样式
@@ -84,7 +84,7 @@ $(function(){
 	var slideshow = function(element){
 		
 		var obj = {};
-		obj.title = '轮播';
+		obj.type_title = '轮播';
 		obj.type = 'slideshow';
 		obj.app = 'micro';
 		obj.style = $(element).find('[name="style"]').val(), //样式
@@ -115,7 +115,7 @@ $(function(){
 	//分类&筛选组件
 	var category = function(element){
 		var obj = {};
-		obj.title = '分类';
+		obj.type_title = '分类';
 		obj.type = 'category';
 		obj.app = 'micro';
 		obj.data = {
@@ -128,7 +128,7 @@ $(function(){
 	//图文导航
 	var category_nav = function(element){
 		var obj = {};
-		obj.title = '图文导航';
+		obj.type_title = '图文导航';
         obj.type = 'category_nav';
 		obj.app = 'micro';
 		obj.data_title = $(element).find('[name="title"]').val(), //数据标题
@@ -166,7 +166,7 @@ $(function(){
 	//自定义文本组件
 	var custom_text = function(element){
 		var obj = {};
-		obj.title = '自定义文本';
+		obj.type_title = '自定义文本';
 		obj.type = 'custom_text';
 		obj.app = 'micro';
 		obj.data = {
@@ -178,7 +178,7 @@ $(function(){
 	//自定义Html组件
 	var custom_html = function(element){
 		var obj = {};
-		obj.title = '自定义Html';
+		obj.type_title = '自定义Html';
 		obj.type = 'custom_html';
 		obj.app = 'micro';
 		obj.data = {
@@ -190,7 +190,7 @@ $(function(){
 	//关注公众号
 	var weixin = function(element){
 		var obj = {};
-		obj.title = '关注公众号';
+		obj.type_title = '关注公众号';
 		obj.type = 'weixin';
 		obj.app = 'micro';
 		obj.style = $(element).find('[name="style"]').val(); //样式
@@ -201,7 +201,7 @@ $(function(){
 	//会员块
 	var member = function(element){
 		var obj = {};
-		obj.title = '会员';
+		obj.type_title = '会员';
 	    obj.type = 'member';
 		obj.app = 'micro';
 	    return obj;
