@@ -2,40 +2,11 @@
 namespace app\micro\logic;
 
 use app\micro\service\Diy;
+use app\micro\service\Link;
 /*
  * Config 配置数据逻辑层
  */
 class Config {
-
-    public $_status = [
-
-        '1'  => '正在营业中',
-        '0'  => '店铺已打烊',
-    ];
-
-    public $_show_view = [
-
-        '1'  => '显示',
-        '0'  => '隐藏',
-    ];
-
-    public $_show_sale = [
-
-        '1'  => '显示',
-        '0'  => '隐藏',
-    ];
-
-    public $_show_marking_price = [
-
-        '1'  => '显示',
-        '0'  => '隐藏',
-    ];
-
-    public $_show_favorites = [
-
-        '1'  => '显示',
-        '0'  => '隐藏',
-    ];
 
     /**
      * 店铺风格
@@ -144,7 +115,7 @@ class Config {
             if(!empty($navtar_arr['head_nav']) && isset($navtar_arr['head_nav'])){
                 foreach($navtar_arr['head_nav'] as &$v){
                     if(!empty($v['link'])){
-                        $v['link']['url'] = (new Diy())->linkToUrl($v['link'], 'pc');
+                        $v['link']['url'] = (new Link())->linkToUrl($v['link'], 'pc');
                     }
                     if($v['link']['sys_type'] == 'out_url'){
                         if(isset($v['link']['param']['url'])){
