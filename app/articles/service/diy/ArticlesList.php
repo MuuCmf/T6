@@ -68,11 +68,10 @@ class ArticlesList
     }
 
     /**
-     * 微页获取列表数据
+     * 微页约定获取列表数据处理方法
      */
     public function handle($data, $shopid)
     {    
-
         if(!isset($data['rank'])){
             $data['rank'] = 1;
         }
