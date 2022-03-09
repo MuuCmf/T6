@@ -1,12 +1,14 @@
 {extend name="../../common/view/main"/}
 {block name="style"}
 <link href="__STATIC__/ucenter/css/main.min.css" rel="stylesheet">
+<link rel="stylesheet" href="__STATIC__/ucenter/lib/paging/my-page.css">
+<link rel="stylesheet" href="__STATIC__/ucenter/lib/paging/pagination.css">
 {/block}
 {block name="body"}
 <div class="main-wrapper">
 
     <!--用户设置顶部-->
-    {include file="config/_header"/}
+    <!-- {include file="config/_header"/} -->
     <!--用户设置顶部end-->
 
     <div id="main-container" class="container user-config">
@@ -14,46 +16,82 @@
             <div class="col-xs-3">
                 {include file="config/_slide"/}
             </div>
-            <div class="col-xs-9">
+            <div class="col-xs-9 integral">
                 <div id="center">
-                    <div id="center_base">
-                        <ul class="nav nav-secondary">
-                            <li class="active"><a href="#base" data-toggle="tab">我的积分</a></li>
-                            <li>
-                                <a href="#level" data-toggle="tab">等级</a>
-                            </li>
-                            <li>
-                                <a href="#rule" data-toggle="tab">积分规则</a>
-                            </li>
-                        </ul>
-                        <div class="tab-content">
-                            <div class="tab-pane active" id="base">
-                                <div class="with-padding" style="padding: 20px">
-                                    <div class="col-xs-8">
-                                        <div class="panel">
-                                            <div class="panel-heading">我的积分</div>
-                                            <ul class="list-group">
-                                                {volist name="scores" id="vo"}
-                                                    <li class="list-group-item">{$vo.title}：{$vo.value} {$vo.unit}</li>
-                                                {/volist}
-                                            </ul>
-                                        </div>
-            
-                                    </div>
-            
+                    <div class="integral-content">
+                        <h4 class="integral-title">我的积分</h4>
+                        <div class="">
+                            <div class="integrate">
+                                <div class="gold-coin"><img src="__STATIC__/ucenter/images/species.png" alt=""></div>
+                                <div class="quantity">
+                                    <p>现有积分</p>
+                                    <span class="">001122</span>
+                                    <!-- {volist name="scores" id="vo"}
+                                    <span class="">{$vo.value}</span>
+                                    {/volist} -->
                                 </div>
                             </div>
-                            <div class="tab-pane" id="level">
-                                <div class="with-padding" style="padding: 20px">
-                                    
-                                </div>
-                            </div>
-                            <div class="tab-pane" id="rule">
-                                <div class="with-padding" style="padding: 20px">
-                                    
+                            <div class="Mspecimen">
+                                <div class="gold-coin"><img src="__STATIC__/ucenter/images/species.png" alt=""></div>
+                                <div class="quantity">
+                                    <p>现有M币</p>
+                                    <span class="">001122</span>
                                 </div>
                             </div>
                         </div>
+                    </div>
+                    <div class="integral-detail">
+                        <div class="integral-detail-header">
+                            <h4 class="detail-title">积分明细</h4>
+                            <div class="score-acquire-rule"><a href="{:url('scorerule')}">积分获取规则<i class="iconfont">&#xe661;</i></a></div>
+                        </div>
+                        <div class="integral-detail-body">
+                            <div class="detail-header">
+                                <span class="integrate-type">类型</span>
+                                <span class="change-integrate">变更积分</span>
+                                <span class="acquire-manner">获取方式</span>
+                                <span class="acquire-time">获取时间</span>
+                            </div>
+                            <ul class="detail">
+                                <li>
+                                    <span class="integrate-type">积分</span>
+                                    <span class="change-integrate">+20</span>
+                                    <span class="acquire-manner">论坛添加帖子</span>
+                                    <span class="acquire-time">2022-03-04 11:32</span>
+                                </li>
+                                <li>
+                                    <span class="integrate-type">M币</span>
+                                    <span class="change-integrate">+200</span>
+                                    <span class="acquire-manner">网站登录</span>
+                                    <span class="acquire-time">2022-03-04<span>11:32</span></span>
+                                </li>
+                                <li>
+                                    <span class="integrate-type">积分</span>
+                                    <span class="change-integrate">+2</span>
+                                    <span class="acquire-manner">论坛回复帖子</span>
+                                    <span class="acquire-time">2022-03-04 11:32</span>
+                                </li>
+                                <li>
+                                    <span class="integrate-type">M币</span>
+                                    <span class="change-integrate">+20</span>
+                                    <span class="acquire-manner">论坛添加帖子</span>
+                                    <span class="acquire-time">2022-03-04 11:32</span>
+                                </li>
+                                <li>
+                                    <span class="integrate-type">积分</span>
+                                    <span class="change-integrate">+20</span>
+                                    <span class="acquire-manner">论坛回复帖子</span>
+                                    <span class="acquire-time">2022-03-04<span>14:27</span></span>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="paging">
+                        <div class="box" id="wrap1"></div>
+                           <!-- <div style="text-align:center;">
+                                <div class="my-page">
+                                </div>
+                            </div> -->
+                        </div> 
                     </div>
                 </div>
             </div>
@@ -65,11 +103,35 @@
 
 {block name="script"}
 <script src="__STATIC__/ucenter/js/main.min.js"></script>
+<script src="__STATIC__/ucenter/lib/paging/my-page.js"></script>
+<script src="__STATIC__/ucenter/lib/paging/pagination.js"></script>
 <script>
-    $(function(){
+    $(function () {
         // 设置当前高亮菜单
         $("#{$tab}").addClass('active');
-    })
+    });
+
+var onPagechange = function(page){
+			    console.log('当前点击页码',page);
+			}
+			var obj = {
+			    wrapid:'wrap1', //页面显示分页器容器id
+			    total:9990,//总条数
+			    pagesize:10,//每页显示10条
+			    currentPage:1,//当前页
+			    onPagechange:onPagechange,
+			    //btnCount:7 页数过多时，显示省略号的边界页码按钮数量，可省略，且值是大于5的奇数
+			}
+			pagination.init(obj);
+
+    // myPageInit({
+    //         pages: 10,
+    //         currentPage: 1,
+    //         element: '.my-page',
+    //         callback: function (page) {
+    //             console.log("当前页:", page);
+    //         }
+    //     });
 </script>
 
 

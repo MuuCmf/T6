@@ -1,0 +1,70 @@
+{extend name="../../common/view/main"/}
+{block name="style"}
+<link href="__STATIC__/ucenter/css/main.min.css" rel="stylesheet">
+{/block}
+{block name="body"}
+<div class="main-wrapper">
+
+    <!--用户设置顶部-->
+    <!-- {include file="config/_header"/} -->
+    <!--用户设置顶部end-->
+
+    <div id="main-container" class="container user-config">
+        <div class="row">
+            <div class="col-xs-3">
+                {include file="config/_slide"/}
+            </div>
+            <div class="col-xs-9 scorerule">
+                <div id="center">
+                    <div class="scorerule-content">
+                        <h4 class="scorerule-title">积分获取规则</h4>
+                        <div class="integrate-etails">
+                            <div class="system">
+                                <h4>系统</h4>
+                                <ul>
+                                    <li>
+                                        <p>1、用户登录</p>
+                                        <span>用户登录一次，每次[积分][+10]分，每[24]小时最多[1]次</span>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="forum">
+                                <h4>论坛</h4>
+                                <ul>
+                                    <li>
+                                        <p>1、添加帖子</p>
+                                        <span>每添加一次帖子，每次[积分][+3]分，每[1]小时最多[1]次</span>
+                                    </li>
+                                    <li>
+                                        <p>2、论坛帖子回复</p>
+                                        <span>每回复一次帖子，每次[积分][+1]分，每[0.05]小时最多[1]次</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="expiry-date">
+                        <h4>积分有效期</h4>
+                        <ul>
+                            <li>积分长期有效(不确定)</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="clearfix"></div>
+        </div>
+    </div>
+</div>
+{/block}
+
+{block name="script"}
+<script src="__STATIC__/ucenter/js/main.min.js"></script>
+<script>
+    $(function(){
+        // 设置当前高亮菜单
+        $("#{$tab}").addClass('active');
+    })
+</script>
+
+
+{/block}

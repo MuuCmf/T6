@@ -6,7 +6,7 @@
 <div class="main-wrapper" style="padding-bottom: 40px">
 
     <!--用户设置顶部-->
-    {include file="config/_header"/}
+    <!-- {include file="config/_header"/} -->
     <!--用户设置顶部end-->
 
     <div id="main-container" class="container user-config">
@@ -15,7 +15,116 @@
                 {include file="config/_slide"/}
             </div>
             <div class="col-xs-9">
-                <div id="usercenter-content-td ">
+                <div id="usercenter-content-td" >
+                    <div class="bind-wechat col-md-12">
+                        <h4 class="wechat-title">绑定微信</h4>
+                        <div>
+                            <div class="wechat-avatar">
+                            <img src="__STATIC__/ucenter/images/default-minerva-man.png" alt="">
+                            <!-- <img src="__STATIC__/ucenter/images/default-minerva-she.png" alt=""> -->
+                            </div>
+                            <p class="wechat-nickname">微信昵称</p>
+                            <div class="to-bind">
+                                <span class="wechat_upload_btn" data-toggle="modal" data-target="#wechat-modal">去绑定<i class="iconfont">&#xe661;</i></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal fade wechat-modal" id="wechat-modal">
+                            <div class="modal-dialog modal-lg">
+                                <div class="modal-content">
+                                    <div class="wechat-header">
+                                        <h4>绑定微信</h4>
+                                        <button class="close"data-dismiss="modal">×</button>
+                                    </div>
+                                    <div class="wechat-body">
+                                        <div class="schedule">
+                                            <ul class="progress-part">
+                                                <li class="finish">1</li>
+                                                <li class="progress-line"></li>
+                                                <li>2</li>
+                                                <li class="progress-line"></li>
+                                                <li><i class="iconfont">&#xe7a3;</i></li>
+                                            </ul>
+                                            <ul class="progress-prompt">
+                                                <li class="finish">身份验证</li>
+                                                <li>微信扫码绑定</li>
+                                                <li>完成</li>
+                                            </ul>
+                                        </div>
+                                        <div class="col-xs-8">
+                                            <form action="{:url('ucenter/config/wechat')}">
+                                                <div class="form-group">
+                                                    <label for="verify" class="col-xs-2">验证码</label>
+                                                    <div class="col-xs-10">
+                                                        <input type="text" name="" id="" placeholder="请输入手机验证码">
+                                                        <a href="">获取验证码</a>
+                                                    </div>
+                                                </div>
+                                                <div class="captcha-prompt">验证码已发送至管理员绑定手机号<span>{$user.email|default='未设置'}</span> ，请注意查收</div>
+                                                <div class="operating">
+                                                    <button class="save">保存</button>
+                                                    <button class="close" data-dismiss="modal">取消</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                    <!-- <div class="wechat-body part-two">
+                                            <div class="schedule ">
+                                                <ul class="progress-part">
+                                                    <li class="finish">1</li>
+                                                    <li class="progress-line"></li>
+                                                    <li class="finish">2</li>
+                                                    <li class="progress-line"></li>
+                                                    <li><i class="iconfont">&#xe7a3;</i></li>
+                                                </ul>
+                                                <ul class="progress-prompt">
+                                                    <li class="finish">身份验证</li>
+                                                    <li class="finish">微信扫码绑定</li>
+                                                    <li>完成</li>
+                                                </ul>
+                                            </div>
+                                            <div class="col-xs-8">
+                                                <div class="no-bind">
+                                                    <div class="col-md-6 qrcode">
+                                                        <img class="wechat-qrcode" src="" alt="">
+                                                        <div class="scan-status">未扫码</div>
+                                                        <button class="btn btn-info confirm btn-bind" type="button">绑定</button>
+                                                    </div>
+                                                </div>
+                                                <p class="description">使用微信扫码，绑定账号</p>
+                                            </div>
+                                    </div> -->
+                                    <!-- <div class="wechat-body part-three">
+                                            <div class="schedule">
+                                                <ul class="progress-part">
+                                                    <li class="finish">1</li>
+                                                    <li class="progress-line"></li>
+                                                    <li class="finish">2</li>
+                                                    <li class="progress-line"></li>
+                                                    <li class="finish"><i class="iconfont">&#xe7a3;</i></li>
+                                                </ul>
+                                                <ul class="progress-prompt">
+                                                    <li class="finish">身份验证</li>
+                                                    <li class="finish">微信扫码绑定</li>
+                                                    <li class="finish">完成</li>
+                                                </ul>
+                                            </div>
+                                            <div class="col-xs-8">
+                                                <div class="prompt">
+                                                    <div><img src="__STATIC__/ucenter/images/countermeasure.png" alt=""></div>
+                                                    <p>绑定成功</p>
+                                                </div>
+                                                <div class="operating">
+                                                    <button class="back">上一步</button>
+                                                    <button class="close" data-dismiss="modal">完成</button>
+                                                </div>
+                                            </div>
+                                    </div> -->
+                                </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- <div id="usercenter-content-td ">
                     <div class="bind-wechat col-md-12">
                         {if $has_bind}
                         <div class="bind">
@@ -31,7 +140,7 @@
                         </div>
                         {/if}
                     </div>
-                </div>
+                </div> -->
             </div>
             <div class="clearfix"></div>
         </div>
@@ -43,6 +152,8 @@
 <script src="__STATIC__/ucenter/js/main.min.js"></script>
 <script>
     $(function () {
+        // 设置当前高亮菜单
+        $("#{$tab}").addClass('active');
         //扫码回调
         scan_login.callback = function(){
             scan_login.login();

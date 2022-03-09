@@ -311,6 +311,109 @@ class Config extends Common
         return View::fetch();
     }
 
+
+    public function scorerule()
+    {
+        $scoreModel = new ScoreType();
+
+        $scores = $scoreModel->getTypeList(['status'=>1]);
+        foreach ($scores as &$v) {
+            $v['value'] = $scoreModel->getUserScore(is_login(), $v['id']);
+        }
+        unset($v);
+        View::assign('scores', $scores);
+
+        $level = config('system.USER_LEVEL');
+        View::assign('level', $level);
+
+        $self = query_user(get_uid(), array('nickname','avatar' ,'score1', 'score2', 'score3', 'score4'));
+
+        View::assign('user', $self);
+
+        $actionModel = new Action();
+        $action = $actionModel->getAction(['status' => 1]);
+        $action_module = [];
+        
+        foreach ($action as &$v) {
+            $v['rule_array'] = unserialize($v['rule']);
+            if(is_array($v['rule_array'])){
+                foreach ($v['rule_array'] as &$o) {
+                    if (is_numeric($o['rule'])) {
+                        $o['rule'] = $o['rule'] > 0 ? '+' . intval($o['rule']) : $o['rule'];
+                    }
+                    $o['score'] = $scoreModel->getType(['id' => $o['field']]);
+                }
+            }
+            if ($v['rule_array'] != false) {
+                $action_module[$v['module']]['action'][] = $v;
+            }
+        }
+        unset($v);
+
+        // foreach ($action_module as $key => &$a) {
+        //     if (empty($a['action'])) {
+        //         unset($action_module[$key]);
+        //     }
+        //     $a['module'] = model('common/Module')->getModule($key);
+        // }
+        // unset($a);
+        View::assign('action_module', $action_module);
+        
+        View::assign('tab', 'scorerule');
+        return View::fetch();
+    }
+
+    public function score_estate()
+    {
+        $scoreModel = new ScoreType();
+
+        $scores = $scoreModel->getTypeList(['status'=>1]);
+        foreach ($scores as &$v) {
+            $v['value'] = $scoreModel->getUserScore(is_login(), $v['id']);
+        }
+        unset($v);
+        View::assign('scores', $scores);
+
+        $level = config('system.USER_LEVEL');
+        View::assign('level', $level);
+
+        $self = query_user(get_uid(), array('nickname','avatar' ,'score1', 'score2', 'score3', 'score4'));
+
+        View::assign('user', $self);
+
+        $actionModel = new Action();
+        $action = $actionModel->getAction(['status' => 1]);
+        $action_module = [];
+        
+        foreach ($action as &$v) {
+            $v['rule_array'] = unserialize($v['rule']);
+            if(is_array($v['rule_array'])){
+                foreach ($v['rule_array'] as &$o) {
+                    if (is_numeric($o['rule'])) {
+                        $o['rule'] = $o['rule'] > 0 ? '+' . intval($o['rule']) : $o['rule'];
+                    }
+                    $o['score'] = $scoreModel->getType(['id' => $o['field']]);
+                }
+            }
+            if ($v['rule_array'] != false) {
+                $action_module[$v['module']]['action'][] = $v;
+            }
+        }
+        unset($v);
+
+        // foreach ($action_module as $key => &$a) {
+        //     if (empty($a['action'])) {
+        //         unset($action_module[$key]);
+        //     }
+        //     $a['module'] = model('common/Module')->getModule($key);
+        // }
+        // unset($a);
+        View::assign('action_module', $action_module);
+        
+        View::assign('tab', 'score_estate');
+        return View::fetch();
+    }
+
     public function wechat(){
         if (request()->isAjax()){
             //绑定用户信息
@@ -344,6 +447,7 @@ class Config extends Common
             'user'      => $self,
             'has_bind'  => boolval($has_bind),
         ]);
+        View::assign('tab', 'wechat');
         return View::fetch();
     }
 
