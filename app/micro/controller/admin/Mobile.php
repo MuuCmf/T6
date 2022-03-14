@@ -267,11 +267,14 @@ class Mobile extends MicroAdmin
             }
             unset($v);
             View::assign('config_data', $config_data);
+            // 获取系统图标
+            View::assign('icon_list', (new DiyService())->getIconLists());
             // 链接至参数
             $links = (new LinkService())->getAllLinks();
             View::assign('links', $links);
-            // 获取系统图标
-            View::assign('icon_list', (new DiyService())->getIconLists());
+            // 链接至依赖静态资源
+            $link_static_tmpl = (new LinkService())->getStaticTmpl();
+            View::assign('link_static_tmpl', $link_static_tmpl);
             // 设置title
             $this->setTitle('移动端导航管理');
             // 输出页面

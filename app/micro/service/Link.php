@@ -118,7 +118,7 @@ class Link
                 }
             }
         }
-        $style='<style>' .$style. '</style>';
+        $style='<style>' .$style. '</style>' . "\r\n";
         $script = '<script>' .$script. '</script>';
         $link_static_tmpl = $style . $script;
         //dump($style);
