@@ -27,10 +27,10 @@ $(function(){
         $('#linkTypeModal').find('#linkIndex').val(link_index);
     });
 
-    // 打开连接至设置模特框
+    // 打开连接至设置框
     $('body').on('click','[data-target="#linkToModal"]',function(){
 
-        //关闭模态框
+        //关闭选择模态框
         $('#linkTypeModal [data-dismiss="modal"]').click();
     });
 
