@@ -39,7 +39,7 @@
 <!-- 底部导航装修页面 -->
 <section class="footer-content clearfix" style="background-color: #fff;padding: 10px;height: 833px;">
 	
-	<section class="footer-manage-section">
+	<section class="footer-manage-section" id="pageType" data-page-type="tabbar">
 		<!--底部导航-->
 		<div class="page-footer">
             {include file="admin/mobile/_footer"/}
@@ -78,18 +78,19 @@
 							    </div>
 							</div>
 							
-                            {foreach $config_data['footer']['data'] as  $k=>$vo_data}
+							{notempty name="$config_data['footer']['data']"}
+                            {foreach $config_data['footer']['data'] as  $k=>$vo}
 							{if $k != 0 && $k != ($config_data['footer']['colume']-1)}
 							<div class="form-horizontal footer-nav-form-item enable custom">
 					    		<div class="form-group">
 								    <div class="col-sm-12">
-									    <input type="text" name="nav_title" class="form-control" value="{$vo_data['nav_title']}" >
+									    <input type="text" name="nav_title" class="form-control" value="{$vo['nav_title']}" >
 									</div>
 								</div>
 								<div class="form-group">
 								    <div for="" class="col-sm-3 control-label">
-									    <input type="hidden" name="icon_id" value="{$vo_data['icon_id']|default=0}">
-									    <input type="hidden" name="icon_url" value="{$vo_data['icon_url']|default=''}">
+									    <input type="hidden" name="icon_id" value="{$vo['icon_id']|default=0}">
+									    <input type="hidden" name="icon_url" value="{$vo['icon_url']|default=''}">
 									    <button class="btn btn-primary" data-toggle="modal" data-target="#iconModal">
 									    	选择图标
 									    </button>
@@ -104,13 +105,13 @@
 							<div class="form-horizontal footer-nav-form-item enable system">
 					    		<div class="form-group">
 					    			<div class="col-sm-12">
-										<input type="text" name="nav_title" class="form-control" value="{$vo_data['nav_title']|default=''}" >
+										<input type="text" name="nav_title" class="form-control" value="{$vo['nav_title']|default=''}" >
 									</div>
 								</div>
 								<div class="form-group">
 								    <div for="" class="col-sm-3">
-										<input type="hidden" name="icon_id" value="{$vo_data['icon_id']|default=0}">
-									    <input type="hidden" name="icon_url" value="{$vo_data['icon_url']|default=''}">
+										<input type="hidden" name="icon_id" value="{$vo['icon_id']|default=0}">
+									    <input type="hidden" name="icon_url" value="{$vo['icon_url']|default=''}">
 									    <button class="btn btn-primary" data-toggle="modal" data-target="#iconModal">
 									    	选择图标
 									    </button>
@@ -131,6 +132,7 @@
 							</div>
 							{/if}
 							{/foreach}
+							{/notempty}
 						</div>
 				 	</div>
 				</div>

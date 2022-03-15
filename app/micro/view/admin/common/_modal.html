@@ -7,8 +7,6 @@
 	        <h4 class="modal-title">选择连接类型</h4>
 	    	</div>
 	      	<div class="modal-body">
-				<input type="hidden" id="objectIndex" value="" />
-				<input type="hidden" id="linkIndex" value="" />
 				<!--端类型，需要后端赋值-->
 				<input type="hidden" id="portType" value="{$port_type|default='mobile'}" />
 				<div class="links-items">
@@ -119,77 +117,6 @@
 	    </div>
 	</div>
 </div>
-
-<!--内部页面详情类 链接至模态框-->
-<div class="modal fade" id="detailLinkModal">
-	<div class="modal-dialog">
-	    <div class="modal-content">
-	    	<div class="modal-header">
-	        	<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">关闭</span></button>
-	        <h4 class="modal-title">链接至内部详情页</h4>
-	    	</div>
-	      	<div class="modal-body">
-	      		<div class="link-search">
-		      		<div class="input-group">
-				        <div class="input-control search-box has-icon-left has-icon-right">
-				        	<input type="hidden" name="api">
-				        	<input id="inputSearch" type="search" class="form-control search-input empty" name="keyword" placeholder="搜索">
-				        	<label for="inputSearch" class="input-control-icon-left search-icon"><i class="icon icon-search"></i></label>
-				        </div>
-				        <span class="input-group-btn">
-				        	<button class="btn btn-primary" type="button">搜索</button>
-				        </span>
-				    </div>
-				</div>
-	      		<div class="link-section">
-
-	        	</div>
-	        	<div class="link-page">
-                    <ul class="pager" data-ride="pager" data-elements="prev,nav,next"></ul>
-                </div>
-	      	</div>
-	      	<div class="modal-footer">
-	            <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-	        </div>
-	    </div>
-	</div>
-</div>
-<!--链接至模态框 END-->
-
-
-
-<!--链接至外部链接模态框-->
-<div class="modal fade" id="linkOutUrlModal">
-	<div class="modal-dialog">
-	    <div class="modal-content">
-	    	<div class="modal-header">
-	        	<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">关闭</span></button>
-	        <h4 class="modal-title">外部链接</h4>
-	    	</div>
-	      	<div class="modal-body">
-	      		<div class="form-horizontal">
-					<div class="form-group">
-					    <label class="col-sm-2">链接标题</label>
-					    <div class="col-sm-10">
-						    <input type="text" class="form-control" data-rule="data-link-title" placeholder="链接标题">
-						</div>
-					 </div>
-					 <div class="form-group">
-					    <label class="col-sm-2">链接URL</label>
-					    <div class="col-sm-10">
-						    <input type="text" class="form-control"  data-rule="data-link-url" placeholder="http://">
-						</div>
-					 </div>
-	        	</div>
-	      	</div>
-	      	<div class="modal-footer">
-				<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-        		<button type="button" data-rule="outurl-link-submit" class="btn btn-primary submit">确认</button>
-	      	</div>
-	    </div>
-	</div>
-</div>
-<!--链接至外部链接模态框 END-->
 
 <!--富文本编辑器模态框-->
 <div class="modal fade" id="customTextEditorModal">

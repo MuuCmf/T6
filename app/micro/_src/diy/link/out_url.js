@@ -1,33 +1,11 @@
 $(function(){
-    var link_type;
-    //初始化组件索引
-	var object_index;
-	//初始化链接内容区索引
-	var link_index = 0;
     //触发的元素
     var element;
-    //端类型
-    var port_type;
     //初始化列表页码
     // 打开连接至设置模特框
     $('body').on('click','#linkTypeModal [data-link-type="out_url"]',function(){
-        link_type = $(this).data();
-        object_index = $('#objectIndex').val();
-        link_index = $('#linkIndex').val();
-        port_type = $('#portType').val();
-        element = $('[data-object-index="'+object_index+'"] [data-rule="links_list"]:eq('+link_index+')');
-        //DIY页面数据返回
-        if(port_type == 'mobile'){
-            element = $('[data-object-index="'+object_index+'"] [data-rule="links_list"]:eq('+link_index+')');
-        }
-        //底部导航
-        if(port_type == 'tabbar'){
-            //底部导航设置页数据返回
-            element = $('.footer-content .footer-nav-form-item:eq('+footer_link_index+')');
-        }
-        //console.log(object_index)
-        //console.log(link_index)
-        //console.log(link_type)
+
+        element = window.linkEelment;
         // 打开模态框
         $('#linkConfigModal').modal('show');
         // 关闭类型选择模态框
