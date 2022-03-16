@@ -114,11 +114,9 @@ $(function(){
         		icon_id : $(this).find('[name="icon_id"]').val(),
             	icon_url : $(this).find('[name="icon_url"]').val(),
             	link : {
-            		sys_type : $(this).find('[name="link_sys_type"]').val(),
 		            type : $(this).find('[name="link_type"]').val(),
 		            title : $(this).find('[name="link_title"]').val(),
 		            type_title : $(this).find('[name="link_type_title"]').val(),
-		            module : $(this).find('[name="link_module"]').val(),
 	            	param : param,
             	}
         	};

@@ -1,9 +1,4 @@
 $(function(){
-    var link_type;
-    //初始化组件索引
-	var object_index;
-	//初始化链接内容区索引
-	var link_index = 0;
     //触发的元素
     var element;
     //列表数据接口
@@ -12,10 +7,8 @@ $(function(){
     var page = 1;
     // 打开连接至设置模特框
     $('body').on('click','#linkTypeModal [data-link-type="micro_page"]',function(){
-        link_type = $(this).data();
-        object_index = $('#objectIndex').val();
-        link_index = $('#linkIndex').val();
-        element = $('[data-object-index="'+object_index+'"] [data-rule="links_list"]:eq('+link_index+')');
+
+        element = window.linkEelment;
         api = $(this).data('api');
 
         // 打开模态框
@@ -98,7 +91,7 @@ $(function(){
             html_str +='</theader>';
             html_str +='<tbody>';
             $.each(res.data.data,function(i,n){
-                html_str += '<tr data-rule="link_param" data-link-id='+n.id+' data-link-title='+n.title+' data-link-type='+link_type.linkType+' data-link-type-title='+link_type.linkTypeTitle+' data-link-module='+link_type.module+' data-link-url='+link_type.url+' data-link-param='+link_type.param+'>';
+                html_str += '<tr data-rule="link_param" data-link-id='+n.id+' data-link-title='+n.title+' data-link-type="micro_page" data-link-type-title="自定义页面">';
                 html_str += '<td>'+n.id+'</td>';
                 html_str += '<td>'+n.title+'</td>';
                 html_str += '<td>'+n.port_type+'</td>';
