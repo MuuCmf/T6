@@ -14,30 +14,30 @@
     <div class="">
       <div class="support">
         <h3>MuuCmf</h3>
-        <div>
+        <div>扫码加我微信
           <p>技术支持邮箱</p>
           <div class="E-mailAddress">
-            <textarea readonly="readonly" onClick="email()" id="e-mail" title="点击复制">suppart@hoomuu.cn</textarea>
+            <textarea readonly="readonly" onClick="email()" id="e-mail" title="点击复制">{$Think.config.system.SERVICE_CONSULT}</textarea>
             <span class="prompt">复制成功</span>
             <i class="iconfont">&#xe671;</i>
           </div>
         </div>
         <p class="qqCluster">官方技术售前交流QQ群：<textarea readonly=readonly onClick="groupnumber()" id="groupnumber"
             title="点击复制">2134567890</textarea> <span class="getqq">复制成功</span></p>
-        <p class="company"><span>Power&nbsp;by&nbsp;MuuCmf</span>Copuright©2018-2022北京火木科技有限公司</p>
-        <p class="recordnVarchar"><span>京ICP备15012581号-2</span>京ICP备2021025387号-1</p>
+        <p class="company">{$Think.config.system.WEB_SITE_COPY_RIGHT|raw|htmlspecialchars_decode}</p>
+        <p class="recordnVarchar"><span>{$Think.config.system.WEB_SITE_ICP}</span>{$Think.config.system.WEB_SITE_GICP}</p>
       </div>
       <div class="contactUs">
         <h3 class="contactUs-item">联系我们</h3>
         <p>联系电话</p>
-        <h3>18618380435</h3>
+        <h3>{$Think.config.system.SERVICE_TEL}</h3>
         <div>
           <div>
             <img src="__IMG__/Demostation.png" alt="">
             <p>扫一扫，查看演示站</p>
           </div>
           <div>
-            <img src="__IMG__/CS-Manager.png" alt="">
+            <img src="{:get_attachment_src($Think.config.system.SERVICE_QRCODE)}" alt="">
             <p>扫码添加客服经理微信</p>
           </div>
         </div>
@@ -61,11 +61,11 @@
    <p >您好，我是您的专属客服</p>
    <p class="ldptingke">扫码加我微信</p>
    <div>
-     <img src="__STATIC__/common/images/enterprise-wechat.png" alt="">
+     <img src="{:get_attachment_src($Think.config.system.SERVICE_QRCODE)}" alt="">
    </div>
    <p class="solution">0元领取<br/>专属解决方案</p>
    <button>在线咨询</button>
-   <p class="mobile"><span class="iconfont">&#xe692;</span> 18618380435</p>
+   <p class="mobile"><span class="iconfont">&#xe692;</span> {$Think.config.system.SERVICE_TEL}</p>
   </div>
 </div>
 <script>
