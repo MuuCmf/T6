@@ -1,6 +1,4 @@
 $(function(){
-    //触发的元素
-    var element;
     //列表数据接口
     var api = '';
     //初始化列表页码
@@ -8,7 +6,6 @@ $(function(){
     // 打开连接至设置模特框
     $('body').on('click','#linkTypeModal [data-link-type="micro_page"]',function(){
 
-        element = window.linkEelment;
         api = $(this).data('api');
 
         // 打开模态框
@@ -62,15 +59,15 @@ $(function(){
         //var this_ele = $('[data-object-index="'+object_index+'"] [data-rule="links_list"]:eq('+link_index+')');
             
         //DIY页面数据返回
-        element.find('input[name="link_title"]').val(data.link_title);
-        element.find('input[name="link_type"]').val(data.link_type);
-        element.find('input[name="link_type_title"]').val(data.link_type_title);
-        element.find('input[name="link_url"]').val(data.link_url);
-        element.find('[name="link_param"]').val(JSON.stringify(param));
+        window.linkEelment.find('input[name="link_title"]').val(data.link_title);
+        window.linkEelment.find('input[name="link_type"]').val(data.link_type);
+        window.linkEelment.find('input[name="link_type_title"]').val(data.link_type_title);
+        window.linkEelment.find('input[name="link_url"]').val(data.link_url);
+        window.linkEelment.find('[name="link_param"]').val(JSON.stringify(param));
 
         //按钮右侧链接文字
-        element.find('.link_title li:eq(0)').html(data.link_type_title);
-        element.find('.link_title li:eq(1)').html(data.link_title);
+        window.linkEelment.find('.link_title li:eq(0)').html(data.link_type_title);
+        window.linkEelment.find('.link_title li:eq(1)').html(data.link_title);
         
         // 关闭类型选择模态框
         $('#linkConfigModal').modal('hide');

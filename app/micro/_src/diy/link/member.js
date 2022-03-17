@@ -1,10 +1,6 @@
 $(function(){
-    //触发的元素
-    var element;
     // 打开连接至设置模特框
     $('body').on('click','#linkTypeModal [data-link-type="member"]',function(){
-        element = window.linkEelment;
-
         // 关闭类型选择模态框
         $('#linkTypeModal').modal('hide');
 
@@ -19,14 +15,14 @@ $(function(){
             title: $(this).data('link-type-title')
         };
 
-        element.find('input[name="link_title"]').val(data.link_title);
-        element.find('input[name="link_type"]').val(data.link_type);
-        element.find('input[name="link_type_title"]').val(data.link_type_title);
-        element.find('[name="link_param"]').val(JSON.stringify(param));
+        window.linkEelment.find('input[name="link_title"]').val(data.link_title);
+        window.linkEelment.find('input[name="link_type"]').val(data.link_type);
+        window.linkEelment.find('input[name="link_type_title"]').val(data.link_type_title);
+        window.linkEelment.find('[name="link_param"]').val(JSON.stringify(param));
 
         //按钮右侧链接文字
-        element.find('.link_title li:eq(0)').html(data.link_type_title);
-        element.find('.link_title li:eq(1)').html(data.link_title);
+        window.linkEelment.find('.link_title li:eq(0)').html(data.link_type_title);
+        window.linkEelment.find('.link_title li:eq(1)').html(data.link_title);
     });
 
 });

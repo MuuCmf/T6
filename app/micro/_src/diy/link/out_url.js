@@ -1,11 +1,9 @@
 $(function(){
     //触发的元素
-    var element;
     //初始化列表页码
     // 打开连接至设置模特框
     $('body').on('click','#linkTypeModal [data-link-type="out_url"]',function(){
 
-        element = window.linkEelment;
         // 打开模态框
         $('#linkConfigModal').modal('show');
         // 关闭类型选择模态框
@@ -29,27 +27,25 @@ $(function(){
 
         $('#linkConfigModal .modal-body').html(html_str);
 
-        
+        // 确认按钮点击选择事件
+        $('#linkConfigModal').on('click','button.submit',function(){
+            
+            var title = $('#linkConfigModal [data-rule="data-link-title"]').val();
+            var url = $('#linkConfigModal [data-rule="data-link-url"]').val();
+            //DIY页面数据返回
+            window.linkEelment.find('input[name="link_title"]').val(title);
+            window.linkEelment.find('input[name="link_type"]').val('out_url');
+            window.linkEelment.find('input[name="link_type_title"]').val('自定义链接');
+            window.linkEelment.find('input[name="link_url"]').val(url);
+            //element.find('[name="link_param"]').val(JSON.stringify(param));
+
+            //按钮右侧链接文字
+            window.linkEelment.find('.link_title li:eq(0)').html('自定义链接');
+            window.linkEelment.find('.link_title li:eq(1)').html(title);
+            
+            // 关闭类型选择模态框
+            $('#linkConfigModal').modal('hide');
+        });
     });
 
-    // 确认按钮点击选择事件
-    $('body').on('click','#linkConfigModal button.submit',function(){
-        
-        var title = $('#linkConfigModal [data-rule="data-link-title"]').val();
-        var url = $('#linkConfigModal [data-rule="data-link-url"]').val();
-        //DIY页面数据返回
-        element.find('input[name="link_title"]').val(title);
-        element.find('input[name="link_type"]').val('out_url');
-        element.find('input[name="link_type_title"]').val('自定义链接');
-        element.find('input[name="link_url"]').val(url);
-        //element.find('[name="link_param"]').val(JSON.stringify(param));
-
-        //按钮右侧链接文字
-        element.find('.link_title li:eq(0)').html('自定义链接');
-        element.find('.link_title li:eq(1)').html(title);
-        
-        // 关闭类型选择模态框
-        $('#linkConfigModal').modal('hide');
-    });
-    
 });

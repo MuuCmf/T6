@@ -1,15 +1,10 @@
 $(function(){
-
-    //触发的元素
-    var element;
     //列表数据接口
     var api = '';
     //初始化列表页码
     var page = 1;
     // 打开连接至设置模特框
     $('body').on('click','#linkTypeModal [data-link-type="category"]',function(){
-
-        element = window.linkEelment;
         api = $(this).data('api');
         //console.log(element)
         // 打开模态框
@@ -53,13 +48,13 @@ $(function(){
         };
 
         //DIY页面数据返回
-        element.find('input[name="link_title"]').val(link_title);
-        element.find('input[name="link_type"]').val(link_type);
-        element.find('input[name="link_type_title"]').val(link_type_title);
-        element.find('[name="link_param"]').val(JSON.stringify(param));
+        window.linkEelment.find('input[name="link_title"]').val(link_title);
+        window.linkEelment.find('input[name="link_type"]').val(link_type);
+        window.linkEelment.find('input[name="link_type_title"]').val(link_type_title);
+        window.linkEelment.find('[name="link_param"]').val(JSON.stringify(param));
         //按钮右侧链接文字
-        element.find('.link_title li:eq(0)').html(link_type_title);
-        element.find('.link_title li:eq(1)').html(link_title);
+        window.linkEelment.find('.link_title li:eq(0)').html(link_type_title);
+        window.linkEelment.find('.link_title li:eq(1)').html(link_title);
         
         // 关闭类型选择模态框
         $('#linkConfigModal').modal('hide');
