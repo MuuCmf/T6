@@ -14,7 +14,7 @@ $(function(){
         $('#linkTypeModal').modal('hide');
         // 清空dom
         $('#linkConfigModal .modal-body').html();
-        var base_html = '\<div class="link-section">\
+        var base_html = '\<div class="link-section micro-page-list">\
                         </div>\
                         <div class="link-page" style="text-align: center">\
                             <ul class="pager" data-ride="pager" data-elements="prev,nav,next"></ul>\
@@ -80,7 +80,7 @@ $(function(){
             console.log(res);
             var html_str = '';
             
-            html_str += '<table class="table">';
+            html_str += '<table class="table table-hover">';
             html_str +='<theader>';
             html_str +='<tr>';
             html_str +='<th>ID</th><th>标题</th><th>端</th><th>更新时间</th>';
