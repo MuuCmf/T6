@@ -5,6 +5,7 @@ namespace app\index\controller;
 
 use think\facade\View;
 use app\common\controller\Common;
+use app\common\logic\Config;
 
 class Index extends Common
 {
@@ -18,7 +19,9 @@ class Index extends Common
 
     public function debug()
     {
-        dump(config());
+        //dump(config());
+        $config = (new Config())->handle();
+        dump($config);
         dump(query_user(is_login()));
     }
 }
