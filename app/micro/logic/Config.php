@@ -3,6 +3,8 @@ namespace app\micro\logic;
 
 use app\micro\service\Diy;
 use app\micro\service\Link;
+use think\helper\Str;
+
 /*
  * Config 配置数据逻辑层
  */
@@ -74,6 +76,8 @@ class Config {
             foreach($footer_arr['data'] as &$v){
                 if(empty($v['icon_url']) || $v['icon_url'] == ''){
                     $v['icon_url'] = request()->domain() . '/static/micro/images/diy/noimg.png';
+                }else if (!Str::contains($v['icon_url'],request()->host())){
+                    $v['icon_url'] = request()->domain() . $v['icon_url'];
                 }
             }
             unset($v);
