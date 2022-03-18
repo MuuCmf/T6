@@ -57,6 +57,7 @@ class ComposerStaticInitbde435928c820c82e3ad724d7f427ac5
         ),
         'T' => 
         array (
+            'Tencent\\' => 8,
             'TencentCloud\\' => 13,
         ),
         'S' => 
@@ -189,6 +190,10 @@ class ComposerStaticInitbde435928c820c82e3ad724d7f427ac5
         'Workerman\\' => 
         array (
             0 => __DIR__ . '/..' . '/workerman/workerman',
+        ),
+        'Tencent\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/tencent/tls-sig-api-v2/src',
         ),
         'TencentCloud\\' => 
         array (
@@ -406,6 +411,7 @@ class ComposerStaticInitbde435928c820c82e3ad724d7f427ac5
 
     public static $classMap = array (
         'Attribute' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/Attribute.php',
+        'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
         'JsonException' => __DIR__ . '/..' . '/symfony/polyfill-php73/Resources/stubs/JsonException.php',
         'Stringable' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/Stringable.php',
         'UnhandledMatchError' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/UnhandledMatchError.php',
