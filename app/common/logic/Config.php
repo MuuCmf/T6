@@ -1,13 +1,75 @@
 <?php
 /**
- * 系统配置项数据处理
+ * +----------------------------------------------------------------------
+ *                                  |
+ *     __     __  __     __  __     | FILE: Config.php
+ *    /\ \   /\_\_\_\   /\_\_\_\    | AUTHOR: 季骁宣
+ *   _\_\ \  \/_/\_\/_  \/_/\_\/_   | EMAIL: jxx0410@sina.com
+ *  /\_____\   /\_\/\_\   /\_\/\_\  | QQ: 516036855
+ *  \/_____/   \/_/\/_/   \/_/\/_/  | DATETIME: 2022/3/16
+ *                                  |-------------------------------------
+ *                                  | 登山则情满于山,观海则意溢于海
+ * +----------------------------------------------------------------------
  */
 namespace app\common\logic;
+use app\micro\model\MicroConfig;
 
-class config
-{
+class Config extends Base{
+    //前端所需参数
+    protected $_frontend_params = [
+        //站点基础配置
+        'SITE_CLOSE',
+        'SITE_CLOSE_HINT',
+        'WEB_SITE_STYLE',
+        'WEB_SITE_NAME',
+        'WEB_SITE_DESCRIPTION',
+        'WEB_SITE_ICP',
+        'WEB_SITE_LOGO',
+        'WEB_SITE_GICP',
+        'WEB_SITE_COPY_RIGHT',
+        //客服信息
+        'SERVICE_TEL',
+        'SERVICE_CONSULT',
+        'SERVICE_BUSINESS',
+        'SERVICE_QRCODE',
+        'SERVICE_WEIXINKF',
+        //提现
+        'WITHDRAW_STATUS',
+        'WITHDRAW_TAX_RATE',
+        'WITHDRAW_DAY_NUM',
+        'WITHDRAW_MIN_PRICE',
+        'WITHDRAW_MAX_PRICE',
+    ];
+
+
+    public function frontend($shopid){
+        $config = [];
+        //获取自定义导航
+        $footer_map = [
+            ['shopid', '=', $shopid]
+        ];
+        $config += (new MicroConfig())->where($footer_map)->field('style,footer,navtar,search')->find()->toArray();
+        $config = (new \app\micro\logic\Config())->formatData($config);
+        //获取基础配置
+        $base_config = $this->handle()['system'];
+        foreach ($this->_frontend_params as $key){
+            if (array_key_exists($key,$base_config)){
+                $config[$key] = $base_config[$key];
+            }
+        }
+        //获取提现配置
+        $withdraw_config = config('extend');
+        foreach ($this->_frontend_params as $key){
+            if (array_key_exists($key,$withdraw_config)){
+                $config[$key] = $withdraw_config[$key];
+            }
+        }
+
+        return $config;
+    }
+
     public function handle()
-    {   
+    {
         $config = config();
         if(!empty($config['system']['WEB_SITE_LOGO'])){
             $width = 100;
@@ -28,7 +90,7 @@ class config
             $config['system']['SERVICE_QRCODE_400'] = get_thumb_image($config['system']['SERVICE_QRCODE'], intval($width*4), intval($height*4));
             $config['system']['SERVICE_QRCODE_800'] = get_thumb_image($config['system']['SERVICE_QRCODE'], intval($width*8), intval($height*8));
         }
-        
+
 
         return $config;
     }
