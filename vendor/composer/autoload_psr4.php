@@ -17,6 +17,7 @@ return array(
     'app\\' => array($baseDir . '/app'),
     'Workerman\\Crontab\\' => array($vendorDir . '/workerman/crontab/src'),
     'Workerman\\' => array($vendorDir . '/workerman/workerman'),
+    'Tencent\\' => array($vendorDir . '/tencent/tls-sig-api-v2/src'),
     'TencentCloud\\' => array($vendorDir . '/tencentcloud/common/src/TencentCloud', $vendorDir . '/tencentcloud/sms/src/TencentCloud'),
     'Symfony\\Polyfill\\Php80\\' => array($vendorDir . '/symfony/polyfill-php80'),
     'Symfony\\Polyfill\\Php73\\' => array($vendorDir . '/symfony/polyfill-php73'),

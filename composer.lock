@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "f5709c9176e88ee9487615296453745f",
+    "content-hash": "2975fd5944385471653cd7f7f98b1075",
     "packages": [
         {
             "name": "adbario/php-dot-notation",
@@ -3476,6 +3476,53 @@
             "time": "2022-01-02T09:53:40+00:00"
         },
         {
+            "name": "tencent/tls-sig-api-v2",
+            "version": "v1.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/tencentyun/tls-sig-api-v2-php.git",
+                "reference": "cae9aa1f6ef04c64b451ef72cdbc004b87a800d4"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/tencentyun/tls-sig-api-v2-php/zipball/cae9aa1f6ef04c64b451ef72cdbc004b87a800d4",
+                "reference": "cae9aa1f6ef04c64b451ef72cdbc004b87a800d4",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Tencent\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "weijunyi",
+                    "email": "weijunyi@tencent.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "tls-sig-api-v2 适用于腾讯云通信生成用户账号签名。",
+            "homepage": "https://github.com/tencentyun/tls-sig-api-v2-php",
+            "keywords": [
+                "im",
+                "tencent",
+                "trtc"
+            ],
+            "support": {
+                "issues": "https://github.com/tencentyun/tls-sig-api-v2-php/issues",
+                "source": "https://github.com/tencentyun/tls-sig-api-v2-php/tree/v1.1"
+            },
+            "time": "2020-12-02T07:22:57+00:00"
+        },
+        {
             "name": "tencentcloud/common",
             "version": "3.0.569",
             "source": {
@@ -4560,5 +4607,6 @@
     "platform": {
         "php": ">=7.4.0"
     },
-    "platform-dev": []
+    "platform-dev": [],
+    "plugin-api-version": "2.1.0"
 }
