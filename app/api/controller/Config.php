@@ -27,24 +27,6 @@ class Config extends Base
     }
 
     function getConfig(){
-        $frontend = [
-            'SITE_CLOSE',
-            'SITE_CLOSE_HINT',
-            'WEB_SITE_STYLE',
-            'WEB_SITE_NAME',
-            'WEB_SITE_DESCRIPTION',
-            'WEB_SITE_ICP',
-            'WEB_SITE_LOGO',
-            'WEB_SITE_GICP',
-            'WEB_SITE_COPY_RIGHT',
-            'SERVICE_TEL',
-            'SERVICE_CONSULT',
-            'SERVICE_BUSINESS',
-            'SERVICE_QRCODE',
-            'SERVICE_WEIXINKF'
-        ];
-        $config = config('system');
-        $withdraw = config('extend');
         $config = $this->ConfigLogic->frontend($this->params['shopid']);
         $this->success('success',$config);
     }

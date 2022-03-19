@@ -42,14 +42,13 @@ class Config extends Base{
     ];
 
 
+    /**
+     * @title 前台数据处理
+     * @param $shopid
+     * @return array
+     */
     public function frontend($shopid){
         $config = [];
-        //获取自定义导航
-        $footer_map = [
-            ['shopid', '=', $shopid]
-        ];
-        $config += (new MicroConfig())->where($footer_map)->field('style,footer,navtar,search')->find()->toArray();
-        $config = (new \app\micro\logic\Config())->formatData($config);
         //获取基础配置
         $base_config = $this->handle()['system'];
         foreach ($this->_frontend_params as $key){
@@ -57,6 +56,7 @@ class Config extends Base{
                 $config[$key] = $base_config[$key];
             }
         }
+
         //获取提现配置
         $withdraw_config = config('extend');
         foreach ($this->_frontend_params as $key){
@@ -64,7 +64,6 @@ class Config extends Base{
                 $config[$key] = $withdraw_config[$key];
             }
         }
-
         return $config;
     }
 
