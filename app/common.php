@@ -1081,4 +1081,19 @@ if (!function_exists('need_authorization')){
     }
 }
 
+if (!function_exists('num2string')) {
+    /**
+     * 数字转友好显示： 如： 10000 -》 1w
+     */
+    function num2string($num) {
+        if ($num >= 10000) {
+            $num = number_format(round($num / 10000 * 100) / 100,1) .'w';
+        } elseif($num >= 1000) {
+            $num = number_format(round($num / 1000 * 100) / 100,1) . 'k';
+        }
+        return $num;
+    }
+
+}
+
 
