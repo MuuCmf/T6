@@ -28,7 +28,7 @@ class Message
             $content = (new MessageContentModel())->find($data['content_id']);
         }
         // 开始发送
-        foreach($to_uids as $to_uid){
+        foreach($to_uids as $i => $to_uid){
             // 发送站内信
             if(in_array('msg', $send_type)){
                 $msg['shopid'] = $data['shopid'];
@@ -47,6 +47,10 @@ class Message
                     (new Mail())->sendMailLocal($user['email'], $content['title'], $content['content']);
                 }
             }
+
+            if ($i > 0 && $i % 100 == 0) { 
+                sleep(5); 
+            } 
         }
         
         //如果任务执行成功后 记得删除任务，不然这个任务会重复执行，直到达到最大重试次数后失败后，执行failed方法
@@ -81,7 +85,7 @@ class Message
             $content = (new MessageContentModel())->find($data['content_id']);
         }
         // 开始发送
-        foreach($to_uids as $to_uid){
+        foreach($to_uids as $i => $to_uid){
             // 发送站内信
             if(in_array('msg', $send_type)){
                 $msg['shopid'] = $data['shopid'];
@@ -100,6 +104,10 @@ class Message
                     (new Mail())->sendMailLocal($user['email'], $content['title'], $content['content']);
                 }
             }
+
+            if ($i > 0 && $i % 100 == 0) { 
+                sleep(5); 
+            } 
         }
         //如果任务执行成功后 记得删除任务，不然这个任务会重复执行，直到达到最大重试次数后失败后，执行failed方法
         $job->delete();
