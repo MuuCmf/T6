@@ -264,6 +264,7 @@ class Config extends Common
         foreach ($scores as &$v) {
             $v['value'] = $scoreModel->getUserScore(is_login(), $v['id']);
         }
+
         unset($v);
         View::assign('scores', $scores);
 
@@ -307,7 +308,7 @@ class Config extends Common
         return View::fetch();
     }
 
-
+    //积分规则
     public function scorerule()
     {
         $scoreModel = new ScoreType();
@@ -358,7 +359,7 @@ class Config extends Common
         View::assign('tab', 'scorerule');
         return View::fetch();
     }
-
+//积分等级
     public function score_estate()
     {
         $scoreModel = new ScoreType();

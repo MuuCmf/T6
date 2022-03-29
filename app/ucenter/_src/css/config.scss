@@ -671,56 +671,56 @@
                     }
                 }
             }
-            // .my-page{
-            //     .my-page-group{
-            //         .my-page-cell{
-            //             width: 28px;
-            //             height: 28px;
-            //             min-width: 28px;
-            //             background: #f4f4f5;
-            //             color: #737274;
-            //             -webkit-user-select:none;
-            //             -moz-user-select:none;
-            //             -ms-user-sclect:none;
-            //             user-select:none;
-            //         }
-            //         .my-page-omit{
-            //             -webkit-user-select:none;
-            //             -moz-user-select:none;
-            //             -ms-user-sclect:none;
-            //             user-select:none;
-            //         }
-            //         .my-page-cell:hover{
-            //             background: #03b8cf;
-            //             border: 0;
-            //             color: #ffffff;
-            //         }
-            //         .my-page-checked{
-            //             background: #03b8cf;
-            //             border: 0;
-            //             color: #ffffff;
-            //         }
-            //     }
-            //     .my-page-prev{
-            //         transform: rotate(180deg);
-            //     }
-            //     .my-page-prev,.my-page-next{
-            //         width: 28px;
-            //         height: 28px;
-            //         margin: 0 5px;
-            //         line-height: 26px;
-            //         -webkit-user-select: none;
-            //         -moz-user-select: none;
-            //         -ms-user-select: none;
-            //         user-select: none;
-            //         .iconfont{
-            //             font-size: 20px;
-            //         }
-            //     }
-            //     .my-page-prev:hover,.my-page-next:hover{
-            //         border: 1px solid #ddd;
-            //     }
-            // }
+            .my-page{
+                .my-page-group{
+                    .my-page-cell{
+                        width: 28px;
+                        height: 28px;
+                        min-width: 28px;
+                        background: #f4f4f5;
+                        color: #737274;
+                        -webkit-user-select:none;
+                        -moz-user-select:none;
+                        -ms-user-sclect:none;
+                        user-select:none;
+                    }
+                    .my-page-omit{
+                        -webkit-user-select:none;
+                        -moz-user-select:none;
+                        -ms-user-sclect:none;
+                        user-select:none;
+                    }
+                    .my-page-cell:hover{
+                        background: #03b8cf;
+                        border: 0;
+                        color: #ffffff;
+                    }
+                    .my-page-checked{
+                        background: #03b8cf;
+                        border: 0;
+                        color: #ffffff;
+                    }
+                }
+                .my-page-prev{
+                    transform: rotate(180deg);
+                }
+                .my-page-prev,.my-page-next{
+                    width: 28px;
+                    height: 28px;
+                    margin: 0 5px;
+                    line-height: 26px;
+                    -webkit-user-select: none;
+                    -moz-user-select: none;
+                    -ms-user-select: none;
+                    user-select: none;
+                    .iconfont{
+                        font-size: 20px;
+                    }
+                }
+                .my-page-prev:hover,.my-page-next:hover{
+                    border: 1px solid #ddd;
+                }
+            }
         }
     }
 }
@@ -1164,11 +1164,15 @@
                         }
                     }
                     .captcha-prompt{
-                            color: #777777;
-                            font-size: 16px;
-                            width: 374px;
-                            margin-left: 72px;
-                            padding-top: 20px;
+                        height: 71px;
+                        color: #777777;
+                        font-size: 16px;
+                        width: 374px;
+                        margin-left: 72px;
+                        padding-top: 20px;
+                        .captcha-prompt-item{
+                            display: none;
+                        }
                     }
                     .operating{
                         width: 242px;

@@ -4,8 +4,6 @@
 {/block}
 {block name="body"}
 <div class="main-wrapper">
-
-
     <div id="main-container" class="container user-config">
         <div class="row">
             <div class="col-xs-3">
@@ -96,8 +94,7 @@
                     <div class="estate-rule">
                         <div class="estate-rule-header">
                             <h4 class="estate-rule-title">等级规则</h4>
-                            <div class="score-acquire-rule"><a href="{:url('scorerule')}">积分获取规则<i
-                                        class="iconfont">&#xe661;</i></a></div>
+                            <div class="score-acquire-rule"><a href="{:url('scorerule')}">积分获取规则<i class="iconfont">&#xe661;</i></a></div>
                         </div>
                         <div class="estate-rule-body">
                             <ul class="part-one">
@@ -156,8 +153,11 @@
         // 设置当前高亮菜单
         $("#{$tab}").addClass('active');
     })
+
     $(function(){
-        var value = 180;
+        // var value = "{volist name='scores' id='vo' }{$vo.value}{/volist}"
+        var value = 20;
+        console.log(value)
         if(value >=1600){
             $('.estate7-item').css({"display":"block"})
             $('.lv1,.lv2,.lv3,.lv4,.lv5,.lv6,.lv7').css({"background":"transparent"})
