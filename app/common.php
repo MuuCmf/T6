@@ -1081,4 +1081,44 @@ if (!function_exists('need_authorization')){
     }
 }
 
+if (!function_exists('num2string')) {
+    /**
+     * 数字转友好显示： 如： 10000 -》 1w
+     */
+    function num2string($num) {
+        if ($num >= 10000) {
+            $num = number_format(round($num / 10000 * 100) / 100,1) .'w';
+        } elseif($num >= 1000) {
+            $num = number_format(round($num / 1000 * 100) / 100,1) . 'k';
+        }
+        return $num;
+    }
+
+}
+
+function emoji_encode($str){
+    $strEncode = '';
+
+    $length = mb_strlen($str,'utf-8');
+
+    for ($i=0; $i < $length; $i++) {
+        $_tmpStr = mb_substr($str,$i,1,'utf-8');
+        if(strlen($_tmpStr) >= 4){
+            $strEncode .= '[[EMOJI:'.rawurlencode($_tmpStr).']]';
+        }else{
+            $strEncode .= $_tmpStr;
+        }
+    }
+
+    return $strEncode;
+}
+//对emoji表情转反义
+function emoji_decode($str)
+{
+    $strDecode = preg_replace_callback('|\[\[EMOJI:(.*?)\]\]|', function ($matches) {
+        return rawurldecode($matches[1]);
+    }, $str);
+    return $strDecode;
+}
+
 

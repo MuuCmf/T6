@@ -16,16 +16,15 @@ use app\common\model\Action;
 
 class Config extends Common
 {
+    protected $middleware = [
+        'app\\common\\middleware\\CheckAuth',
+    ];
+
     /**
      * 用户中心首页
      */
     public function index()
     {
-        // 验证登录
-        if (!is_login()) {
-            return redirect('/ucenter/common/login');
-        }
-
         $aNickname = input('post.nickname', '', 'text');
         $aSex = input('post.sex', 0, 'intval');
         $aSignature = input('post.signature', '', 'text');
@@ -144,9 +143,6 @@ class Config extends Common
     public function account()
     {
         if(request()->isPost()){
-            if (!is_login()) {
-                return $this->error('账号验证失败');
-            }
             $account = input('account', '', 'text');
             $type = input('type', '', 'text');
             $verify = input('verify', '', 'text');

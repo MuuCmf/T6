@@ -148,7 +148,7 @@ class Common extends CommonCommon
     public function login()
     {
         if (request()->isPost()) {
-             //获取参数
+            //获取参数
             $account = input('post.account', '', 'text'); // 账号
             $password = input('post.password', '', 'text'); // 密码
             $captcha = input('post.captcha', '', 'text'); // 验证码
