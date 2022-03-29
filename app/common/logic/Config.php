@@ -12,6 +12,8 @@
  * +----------------------------------------------------------------------
  */
 namespace app\common\logic;
+use app\channel\logic\OfficialAccount;
+use app\channel\model\WechatConfig;
 use app\micro\model\MicroConfig;
 
 class Config extends Base{
@@ -64,6 +66,14 @@ class Config extends Base{
                 $config[$key] = $withdraw_config[$key];
             }
         }
+
+        //获取公众号配置
+        $weixin_h5 = (new WechatConfig())->where('shopid',$shopid)->field('title,desc,cover,qrcode,appid')->find();
+        if ($weixin_h5){
+            $weixin_h5 = $weixin_h5->toArray();
+            $weixin_h5 = (new OfficialAccount())->formatData($weixin_h5);
+        }
+        $config['weixin_h5'] = $weixin_h5 ?? [];
         return $config;
     }
 
