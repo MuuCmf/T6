@@ -26,7 +26,10 @@ class Config extends Base
         $this->params = request()->param();
     }
 
-    function getConfig(){
+    /**
+     * @title 获取前台系统配置
+     */
+    function getFrontendConfig(){
         $config = $this->ConfigLogic->frontend($this->params['shopid']);
         $this->success('success',$config);
     }
