@@ -25,38 +25,87 @@ class CheckAuth extends JWTAuth
      */
     public function handle($request, \Closure $next): object
     {
-        header('Access-Control-Expose-Headers:Authorization,authorization');//用于暴露response中的token，h5因w3c规范导致获取不到
-        try {
-            $payload = $this->auth->auth();
-        } catch (TokenExpiredException $e) { // 捕获token过期
-            // 尝试刷新token，会将旧token加入黑名单
+        //判断设备类型
+        if (!$this->check_wap()){
+            // 验证登录
+            $uid = is_login();
+            if (!$uid) {
+                return redirect('/ucenter/common/login');
+            }
+            $request->uid = $uid;
+            $response = $next($request);
+        }else{
+
+            header('Access-Control-Expose-Headers:Authorization,authorization');//用于暴露response中的token，h5因w3c规范导致获取不到
             try {
-                $this->auth->setRefresh();
-                $token = $this->auth->refresh();
+                $payload = $this->auth->auth();
+            } catch (TokenExpiredException $e) { // 捕获token过期
+                // 尝试刷新token，会将旧token加入黑名单
+                try {
+                    $this->auth->setRefresh();
+                    $token = $this->auth->refresh();
+                    $payload = $this->auth->auth(false);
+                } catch (TokenBlacklistGracePeriodException $e) {
+                    $payload = $this->auth->auth(false);
+                } catch (JWTException $exception) {
+                    // 如果捕获到此异常，即代表 refresh 也过期了，用户无法刷新令牌，需要重新登录。
+                    echo json_encode(['code' => 0 ,'data' => 'login' ,'msg' => '未登录']);exit();
+                }
+            } catch (TokenBlacklistGracePeriodException $e) { // 捕获黑名单宽限期
                 $payload = $this->auth->auth(false);
-            } catch (TokenBlacklistGracePeriodException $e) {
-                $payload = $this->auth->auth(false);
-            } catch (JWTException $exception) {
-                // 如果捕获到此异常，即代表 refresh 也过期了，用户无法刷新令牌，需要重新登录。
+            } catch (TokenBlacklistException $e) { // 捕获黑名单，退出登录或者已经自动刷新，当前token就会被拉黑
                 echo json_encode(['code' => 0 ,'data' => 'login' ,'msg' => '未登录']);exit();
             }
-        } catch (TokenBlacklistGracePeriodException $e) { // 捕获黑名单宽限期
-            $payload = $this->auth->auth(false);
-        } catch (TokenBlacklistException $e) { // 捕获黑名单，退出登录或者已经自动刷新，当前token就会被拉黑
-            echo json_encode(['code' => 0 ,'data' => 'login' ,'msg' => '未登录']);exit();
+
+            // 可以获取payload里自定义的字段，比如uid
+            $request->uid = $payload['uid']->getValue();
+
+            $response = $next($request);
+
+            // 如果有新的token，则在响应头返回（前端判断一下响应中是否有 token，如果有就直接使用此 token 替换掉本地的 token，以此达到无痛刷新token效果）
+            if (isset($token)) {
+                $this->setAuthentication($response, $token);
+            }
         }
-
-        // 可以获取payload里自定义的字段，比如uid
-        $request->uid = $payload['uid']->getValue();
-
-        $response = $next($request);
-
-        // 如果有新的token，则在响应头返回（前端判断一下响应中是否有 token，如果有就直接使用此 token 替换掉本地的 token，以此达到无痛刷新token效果）
-        if (isset($token)) {
-            $this->setAuthentication($response, $token);
-        }
-
         return $response;
+    }
+
+    function check_wap() {
+        if (isset($_SERVER['HTTP_VIA'])) return true;
+        if (isset($_SERVER['HTTP_X_NOKIA_CONNECTION_MODE'])) return true;
+        if (isset($_SERVER['HTTP_X_UP_CALLING_LINE_ID'])) return true;
+        if (strpos(strtoupper($_SERVER['HTTP_ACCEPT']),"VND.WAP.WML") > 0) {
+            // Check whether the browser/gateway says it accepts WML.
+            $br = "WML";
+        } else {
+            $browser = isset($_SERVER['HTTP_USER_AGENT']) ? trim($_SERVER['HTTP_USER_AGENT']) : '';
+            if(empty($browser)) return true;
+            $mobile_os_list=array('Google Wireless Transcoder','Windows CE','WindowsCE','Symbian','Android','armv6l','armv5','Mobile','CentOS','mowser','AvantGo','Opera Mobi','J2ME/MIDP','Smartphone','Go.Web','Palm','iPAQ');
+
+            $mobile_token_list=array('Profile/MIDP','Configuration/CLDC-','160×160','176×220','240×240','240×320','320×240','UP.Browser','UP.Link','SymbianOS','PalmOS','PocketPC','SonyEricsson','Nokia','BlackBerry','Vodafone','BenQ','Novarra-Vision','Iris','NetFront','HTC_','Xda_','SAMSUNG-SGH','Wapaka','DoCoMo','iPhone','iPod');
+
+            $found_mobile = $this->checkSubstrs($mobile_os_list,$browser) ||
+                $this->checkSubstrs($mobile_token_list,$browser);
+            if($found_mobile)
+                $br ="WML";
+            else $br = "WWW";
+        }
+        if($br == "WML") {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    function checkSubstrs($list,$str){
+        $flag = false;
+        for($i=0;$i<count($list);$i++){
+            if(strpos($str,$list[$i]) > 0){
+                $flag = true;
+                break;
+            }
+        }
+        return $flag;
     }
     
 }
