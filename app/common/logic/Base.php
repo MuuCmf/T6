@@ -12,6 +12,43 @@ class Base
     ];
 
     /**
+     * 生成缩微图
+     */
+    public function setImgAttr($data, $proportion = '4:3' ,$prefix = 'cover')
+    {
+        if($proportion == '1:1'){
+            $width = 100;
+            $height = 100;
+        }
+        if($proportion == '4:3'){
+            $width = 100;
+            $height = 75;
+        }
+        if($proportion == '16:9'){
+            $width = 100;
+            $height = 56;
+        }
+        if($proportion == '3:5'){
+            $width = 100;
+            $height = 167;
+        }
+        if(empty($data[$prefix])){
+            $data[$prefix] = $data[$prefix . '_100'] = $data[$prefix . '_200'] = $data[$prefix . '_300'] = $data[$prefix . '_400'] = $data[$prefix . '_800'] = request()->domain() . '/static/common/images/nopic.png';
+        }else{
+            //处理缩微图
+            $data[$prefix . '_100'] = get_thumb_image($data[$prefix], intval($width), intval($height));
+            $data[$prefix . '_200'] = get_thumb_image($data[$prefix], intval($width*2), intval($height*2));
+            $data[$prefix . '_300'] = get_thumb_image($data[$prefix], intval($width*3), intval($height*3));
+            $data[$prefix . '_400'] = get_thumb_image($data[$prefix], intval($width*4), intval($height*4));
+            $data[$prefix . '_800'] = get_thumb_image($data[$prefix], intval($width*8), intval($height*8));
+            $data[$prefix . '_800'] = get_thumb_image($data[$prefix], intval($width*8), intval($height*8));
+            $data[$prefix . '_original'] = get_attachment_src($data[$prefix]);
+        }
+        return $data;
+    }
+
+
+    /**
      * 生成封面缩微图
      */
     public function setCoverAttr($data, $proportion = '4:3')
