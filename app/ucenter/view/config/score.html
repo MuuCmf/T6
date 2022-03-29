@@ -2,7 +2,7 @@
 {block name="style"}
 <link href="__STATIC__/ucenter/css/main.min.css" rel="stylesheet">
 <link rel="stylesheet" href="__STATIC__/ucenter/lib/paging/my-page.css">
-<link rel="stylesheet" href="__STATIC__/ucenter/lib/paging/pagination.css">
+<!-- <link rel="stylesheet" href="__STATIC__/ucenter/lib/paging/pagination.css"> -->
 {/block}
 {block name="body"}
 <div class="main-wrapper">
@@ -35,9 +35,11 @@
                                 <div class="gold-coin"><img src="__STATIC__/ucenter/images/species.png" alt=""></div>
                                 <div class="quantity">
                                     <p>现有M币</p>
-                                    <span class="">001122</span>
+                                    <span class="">{$vo.value}</span>
+                                    <!-- <span class="">{$vo.value}</span> -->
                                 </div>
                             </div>
+                            <img style="width:88px; height:88px;" class="img-circle" src="{$user.avatar64}">
                         </div>
                     </div>
                     <div class="integral-detail">
@@ -56,41 +58,47 @@
                                 <li>
                                     <span class="integrate-type">积分</span>
                                     <span class="change-integrate">+20</span>
-                                    <span class="acquire-manner">论坛添加帖子</span>
-                                    <span class="acquire-time">2022-03-04 11:32</span>
-                                </li>
-                                <li>
-                                    <span class="integrate-type">M币</span>
-                                    <span class="change-integrate">+200</span>
-                                    <span class="acquire-manner">网站登录</span>
+                                    <span class="acquire-manner">论坛回复帖子</span>
                                     <span class="acquire-time">2022-03-04<span>11:32</span></span>
                                 </li>
                                 <li>
                                     <span class="integrate-type">积分</span>
-                                    <span class="change-integrate">+2</span>
-                                    <span class="acquire-manner">论坛回复帖子</span>
-                                    <span class="acquire-time">2022-03-04 11:32</span>
+                                    <span class="change-integrate">+200</span>
+                                    <span class="acquire-manner">登录网站</span>
+                                    <span class="acquire-time">2022-03-04<span>11:32</span></span>
                                 </li>
                                 <li>
                                     <span class="integrate-type">M币</span>
-                                    <span class="change-integrate">+20</span>
+                                    <span class="change-integrate">+1</span>
                                     <span class="acquire-manner">论坛添加帖子</span>
-                                    <span class="acquire-time">2022-03-04 11:32</span>
+                                    <span class="acquire-time">2022-03-04<span>11:32</span></span>
                                 </li>
                                 <li>
                                     <span class="integrate-type">积分</span>
                                     <span class="change-integrate">+20</span>
                                     <span class="acquire-manner">论坛回复帖子</span>
-                                    <span class="acquire-time">2022-03-04<span>14:27</span></span>
+                                    <span class="acquire-time">2022-03-04<span>11:32</span></span>
+                                </li>
+                                <li>
+                                    <span class="integrate-type">积分</span>
+                                    <span class="change-integrate">+200</span>
+                                    <span class="acquire-manner">登录网站</span>
+                                    <span class="acquire-time">2022-03-04<span>11:32</span></span>
+                                </li>
+                                <li>
+                                    <span class="integrate-type">M币</span>
+                                    <span class="change-integrate">+1</span>
+                                    <span class="acquire-manner">论坛添加帖子</span>
+                                    <span class="acquire-time">2022-03-04<span>11:32</span></span>
                                 </li>
                             </ul>
                         </div>
                         <div class="paging">
-                        <div class="box" id="wrap1"></div>
-                           <!-- <div style="text-align:center;">
+                        <!-- <div class="box" id="wrap1"></div> -->
+                           <div style="text-align:center;">
                                 <div class="my-page">
                                 </div>
-                            </div> -->
+                            </div>
                         </div> 
                     </div>
                 </div>
@@ -111,27 +119,29 @@
         $("#{$tab}").addClass('active');
     });
 
-var onPagechange = function(page){
-			    console.log('当前点击页码',page);
-			}
-			var obj = {
-			    wrapid:'wrap1', //页面显示分页器容器id
-			    total:9990,//总条数
-			    pagesize:10,//每页显示10条
-			    currentPage:1,//当前页
-			    onPagechange:onPagechange,
-			    //btnCount:7 页数过多时，显示省略号的边界页码按钮数量，可省略，且值是大于5的奇数
-			}
-			pagination.init(obj);
+// var total_amount = 100;
+// var onPagechange = function(page){
+//     console.log('当前页码',page)
+// }
+// var obj = {
+//     wrapid:'wrap1',//页面显示分页器容器id
+//     total:total_amount,//总条数
+//     pagesize:10,//每页显示条数
+//     currentPage:1,//当前页
+//     onPagechange:onPagechange,
+//     //btnCount:7,页数过多时，显示省略号的边界页码按钮数量，可省略，且值大于5的奇数
+// }
+// pagination.init(obj);
+myPageInit({
+    pages:20,
+    currentPage:1,
+    element:'.my-page',
+    callback:function(page){
+        console.log("当前页码",page)
+    }
+})
 
-    // myPageInit({
-    //         pages: 10,
-    //         currentPage: 1,
-    //         element: '.my-page',
-    //         callback: function (page) {
-    //             console.log("当前页:", page);
-    //         }
-    //     });
+
 </script>
 
 
