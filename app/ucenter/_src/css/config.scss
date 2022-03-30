@@ -556,6 +556,10 @@
                 >a{
                     font-size: 16px;
                     color: #03b8cf;
+                    >span{
+                        display: inline-block;
+                        height: 26px;
+                    }
                     .iconfont{
                         font-size: 26px;
                         line-height: 28px;
@@ -564,6 +568,7 @@
                 }
             }
         }
+        
         .integral-detail-body{
             padding-top: 19px;
             .detail-header{
@@ -580,16 +585,20 @@
                     text-align: center;
                 }
                 .integrate-type{
-                    width: 142px;
+                    // width: 142px;
+                    width: 17%;
                 }
                 .change-integrate{
-                    width:187px;
+                    // width:187px;
+                    width: 23%;
                 }
                 .acquire-manner{
-                    width:263px;
+                    // width:263px;
+                    width: 32%;
                 }
                 .acquire-time{
-                    width: 211px;
+                    // width: 211px;
+                    width: 26%;
                 }
             }
             .detail{
@@ -604,23 +613,31 @@
                     >span{
                         display: inline-block;
                         text-align: center;
+                        overflow: hidden;
+    text-overflow: ellipsis;
+    -o-text-overflow: ellipsis;
+    white-space: nowrap;
                     }
                     .integrate-type{
                         color: #555555;
-                        width: 142px;
+                        // width: 142px;
+                        width: 17%;
                     }
                     .change-integrate{
                         color: #e77f22;
                         font-size: 20px;
-                        width: 185px;
+                        // width: 185px;
+                        width: 23%;
                     }
                     .acquire-manner{
                         color: #555555;
-                        width: 263px;
+                        // width: 263px;
+                        width: 32%;
                     }
                     .acquire-time{
                         color: #999999;
-                        width: 211px;
+                        // width: 211px;
+                        width: 26%;
                         >span{
                             padding-left:4px; 
                         }
@@ -958,6 +975,7 @@
                 line-height: 46px;
                 >a{
                     color: #03b8cf;
+                    
                     .iconfont{
                         font-size: 24px;
                         vertical-align: bottom;

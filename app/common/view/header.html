@@ -24,11 +24,16 @@
                         <!-- 手机号 -->
                         <!-- <p class="mobile">你好，<span id="item">13333289404</span></p> -->
                         <!-- 头像 -->
+                        <div class="information">
+                            <span class="information-quantity">99+</span>
+                            <a class="information-icon"><i class="iconfont">&#xe741;</i></a>
+                        </div>
                         <div class="avatar">
                             <a class="dropdown-toggle dropdown-toggle-avatar" data-toggle="dropdown" role="button">
                                 <img class="avatar img-circle" src="{$common_header_user.avatar64}"/>
                                 {$common_header_user.nickname}
                             </a>
+                            <span class="triangular-icon"><i class="iconfont">&#xeabc;</i></span>
                             <ul class="dropdown-menu pull-right" role="menu">
                                 {volist name="user_nav" id="vo"}
                                 <li>
@@ -52,9 +57,9 @@
                                 </li>
                             </ul>
                         </div>
-                        <a class="logout" data-url="{:url('ucenter/Common/logout')}" event-node="logout">
+                        <!-- <a class="logout" data-url="{:url('ucenter/Common/logout')}" event-node="logout">
                             【退出】
-                        </a>
+                        </a> -->
                     </li>
                     {else/}
                     <li class="member login verticalbar">
