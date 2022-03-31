@@ -15,25 +15,37 @@ namespace app\ucenter\controller;
 use app\common\controller\Api as ApiBase;
 use app\common\model\Feedback;
 use app\common\model\Member;
+use app\common\model\MemberWallet;
 use app\common\model\Verify;
 use app\channel\service\wechat\MiniProgram;
 use think\Request;
 
 class Api extends ApiBase{
     protected $MemberModel;
+    protected $middleware = [
+        'app\\common\\middleware\\CheckAuth',
+    ];
     function __construct()
     {
         parent::__construct();
-        //添加token验证中间件
-        $this->middleware[] = 'app\\common\\middleware\\CheckAuth';
         $this->MemberModel = new Member();
     }
 
     public function getUserInfo(){
         $uid = request()->uid;
         //查询用户信息
-        $user = query_user($uid,['uid','nickname','avatar','email','mobile','realname','sex','qq','balance','score1']);
+        $user = query_user($uid,['uid','nickname','avatar','email','mobile','realname','sex','qq','score1']);
         if ($user){
+            $wallet = (new MemberWallet())->where('uid',$uid)->field('balance,freeze,revenue')->find();
+            if ($wallet){
+                $user['wallet'] = $wallet->toArray();
+            }else{
+                $user['wallet'] = [
+                    'balance'   =>  0,
+                    'freeze'    =>  0,
+                    'revenue'   =>  0
+                ];
+            }
             $this->success('success',$user);
         }
         $this->error('没有查询到用户数据');

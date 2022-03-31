@@ -55,7 +55,7 @@ class WechatMiniProgram extends Base {
         $user = $this->MemberSyncModel->getDataByMap($map);
         $token = '';
         if ($user){
-            $user = query_user($user['uid'],['uid','nickname','avatar','email','mobile','realname','sex','qq','balance','score1']);
+            $user = query_user($user['uid'],['uid','nickname','avatar','email','mobile','realname','sex','qq','score1']);
             $this->MemberModel->updateLogin($user['uid']);
             $token = JWTAuth::builder(['uid'=>$user['uid']]);
             $token = 'Bearer ' . $token;
@@ -85,7 +85,7 @@ class WechatMiniProgram extends Base {
         ];
         $user = $this->MemberModel->oauth($data);
         $this->MemberModel->updateLogin($user['uid']);
-        $user = query_user($user['uid'],['uid','nickname','avatar','email','mobile','realname','sex','qq','balance','score1']);
+        $user = query_user($user['uid'],['uid','nickname','avatar','email','mobile','realname','sex','qq','score1']);
         $token = JWTAuth::builder(['uid'=>$user['uid']]);
         $token = 'Bearer ' . $token;
         $this->success('success',['user_info'=>$user,'token'=>$token]);
