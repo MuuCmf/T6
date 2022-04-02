@@ -14,6 +14,7 @@
 namespace app\common\logic;
 use app\channel\logic\OfficialAccount;
 use app\channel\model\WechatConfig;
+use app\common\model\Module;
 use app\micro\model\MicroConfig;
 
 class Config extends Base{
@@ -74,6 +75,13 @@ class Config extends Base{
             $weixin_h5 = (new OfficialAccount())->formatData($weixin_h5);
         }
         $config['weixin_h5'] = $weixin_h5 ?? [];
+
+        //获取已安装模块列表
+        $module_map = [
+            ['is_setup', '=', 1]
+        ];
+        $config['module'] = (new Module())->where($module_map)->field('name')->select()->toArray();
+        $config['module'] = array_column($config['module'],'name');
         return $config;
     }
 
