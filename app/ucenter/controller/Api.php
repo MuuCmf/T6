@@ -31,11 +31,22 @@ class Api extends ApiBase{
         $this->MemberModel = new Member();
     }
 
+    /**
+     * @title 获取用户信息
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\DbException
+     * @throws \think\db\exception\ModelNotFoundException
+     */
     public function getUserInfo(){
         $uid = request()->uid;
         //查询用户信息
-        $user = query_user($uid,['uid','nickname','avatar','email','mobile','realname','sex','qq','score1']);
+        $user = query_user($uid,['uid','nickname','avatar','email','mobile','realname','sex','qq','score1','birthday','signature']);
         if ($user){
+            //格式化生日
+            $birthday = strtotime($user['birthday']);
+            $birthday = $birthday > 0 ? $birthday : time();
+            $user['birthday'] = date('Y年m月d日',$birthday);
+            //获取钱包数据
             $wallet = (new MemberWallet())->where('uid',$uid)->field('balance,freeze,revenue')->find();
             if ($wallet){
                 $user['wallet'] = $wallet->toArray();
@@ -49,6 +60,29 @@ class Api extends ApiBase{
             $this->success('success',$user);
         }
         $this->error('没有查询到用户数据');
+    }
+
+    /**
+     *@title 修改用户信息
+     */
+    public function edit(){
+        if (\request()->post()){
+            $birthday_format = date_parse_from_format('Y年m月d日',$this->params['birthday']);
+            $birthday = mktime(0,0,0,$birthday_format['month'],$birthday_format['day'],$birthday_format['year']);
+            $birthday = date('Y-m-d',$birthday);
+            $data = [
+                'uid'   =>  \request()->uid,
+                'nickname'  =>  $this->params['nickname'],
+                'sex'       =>  $this->params['sex'],
+                'birthday'  =>  $birthday,
+                'signature' =>  $this->params['signature']
+            ];
+            $result = $this->MemberModel->edit($data);
+            if ($result){
+                $this->success('修改成功');
+            }
+            $this->error('网络异常，请稍后再试');
+        }
     }
 
     /**
