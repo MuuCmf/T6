@@ -362,11 +362,11 @@
         }
     }
 }
-.modal-dialog{
-    width: 630px;
-    max-width: 630px !important;
-    height: 455px;
-}
+// .modal-dialog{
+//     width: 630px;
+//     max-width: 630px !important;
+//     height: 455px;
+// }
 .modal-content{
 .modal-header{
     height: 75px;
@@ -381,7 +381,7 @@
         font-size: 24px;
     }
 }
-.modal-body{
+.information-popout{
     padding: 65px 85px;
     max-width: 630px;
     height: 380px;
@@ -1273,5 +1273,3 @@
         }
     }
 }
-
-
