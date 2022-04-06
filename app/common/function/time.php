@@ -149,8 +149,9 @@ function get_time_unit($key = null){
 
     return empty($key)?$array:$array[$key];
 }
+
 /**
- * 获取今日起始和结束时间戳
+ * 获取今日起始和结束时间戳(勿用，即将废弃)
  *
  * @return     <type>  ( description_of_the_return_value )
  */
@@ -160,4 +161,66 @@ function dayTime()
     $endToday = mktime(0,0,0,date('m'),date('d')+1,date('Y'))-1;
 
     return array($beginToday, $endToday);
+}
+
+
+if(!function_exists("yestodayTime") ) {
+    /**
+     * 获取今日起始和结束时间戳
+     *
+     * @return     <type>  ( description_of_the_return_value )
+     */
+    function yestodayTime()
+    {
+        $beginToday = mktime(0,0,0,date('m'),date('d')-1,date('Y'));
+        $endToday = mktime(0,0,0,date('m'),date('d'),date('Y'))-1;
+
+        return array($beginToday, $endToday);
+    }
+}
+if(!function_exists("dayTime") ) {
+    /**
+     * 获取今日起始和结束时间戳
+     *
+     * @return     <type>  ( description_of_the_return_value )
+     */
+    function dayTime()
+    {
+        $beginToday = mktime(0,0,0,date('m'),date('d'),date('Y'));
+        $endToday = mktime(0,0,0,date('m'),date('d')+1,date('Y'))-1;
+
+        return array($beginToday, $endToday);
+    }
+}
+if(!function_exists("weekTime") ) {
+    /**
+     * 获取本周时间戳
+     *
+     * @return     <type>  ( description_of_the_return_value )
+     */
+    function weekTime()
+    {
+        $beginThisweek = mktime(0,0,0,date('m'),date('d')-date('w')+1,date('y'));  
+        $endThisweek = mktime(23,59,59,date("m"),date("d")-date("w")+7,date("Y"));;  
+        
+        return array($beginThisweek,$endThisweek);
+    }
+}
+
+if(!function_exists("monthTime") ) {
+    /**
+     * 获取本月时间戳
+     *
+     * @return     <type>  ( description_of_the_return_value )
+     */
+    function monthTime()
+    {
+        $year = date("Y");
+        $month = date("m");
+        $allday = date("t");
+        $first_time = strtotime($year."-".$month."-1");
+        $last_time = strtotime($year."-".$month."-".$allday);
+
+        return array($first_time,$last_time);
+    }
 }
