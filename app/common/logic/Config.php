@@ -42,6 +42,10 @@ class Config extends Base{
         'WITHDRAW_DAY_NUM',
         'WITHDRAW_MIN_PRICE',
         'WITHDRAW_MAX_PRICE',
+        //用户协议
+        'USER_REG_AGREEMENT',
+        'USER_REG_SWITCH',
+        'USER_LOGIN_SWITCH'
     ];
 
 
