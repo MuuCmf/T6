@@ -17,26 +17,54 @@
           <button class="close"data-dismiss="modal">×</button>
         </div>
         <div class="order-list">
-          <div>
-          <div class="order-type">
-            <h4>付款成功通知</h4>
-            <p class="time">2022/03/29 12:34</p>
-          </div>
-          <div class="order-content">
-            <div class="icon">
-              <img src="__STATIC__/ucenter/images/default-minerva-man.png" alt="">
-            </div>
-            <div class="order-details">
-              <p class="">尊敬的用户，您购买的订单【云小店】已经成功付款啦，订单号为100920220329312</p>
-              <p class="">商品总额：<span>¥647</span></p>
-              <p class="">数量：<span>1</span></p>
-              <p class="">折扣：<span>无</span></p>
-              <p class="actually-paid">实付金额：<span class="">¥647</span></p>
-            </div>
-            <div class="operate">展开<i class="iconfont">&#xeabc;</i></div>
-          </div>
-        </div>
-
+          <ul>
+            <li>
+                <div class="order-type">
+                    <h4>付款成功通知</h4>
+                    <p class="time">2022/03/29 12:34</p>
+                  </div>
+                  <div class="order-content">
+                    <div class="icon">
+                      <img src="__STATIC__/ucenter/images/default-minerva-man.png" alt="">
+                    </div>
+                    <div class="order-details">
+                      <p class="">尊敬的用户，您购买的订单【云小店】已经成功付款啦，订单号为100920220329312</p>
+                      <p class="">商品总额：<span>¥647</span></p>
+                      <p class="">数量：<span>1</span></p>
+                      <p class="">折扣：<span>无</span></p>
+                      <p class="actually-paid">实付金额：<span class="">¥647</span></p>
+                    </div>
+                    <div class="operate">
+                      <span class="expand">展开</span>
+                      <span class="put-away">收起</span>
+                      <i class="iconfont">&#xeabc;</i>
+                    </div>
+                </div>
+            </li>
+            <li>
+                <div class="order-type">
+                    <h4>付款成功通知</h4>
+                    <p class="time">2022/03/29 12:34</p>
+                  </div>
+                  <div class="order-content">
+                    <div class="icon">
+                      <img src="__STATIC__/ucenter/images/default-minerva-man.png" alt="">
+                    </div>
+                    <div class="order-details">
+                      <p class="">尊敬的用户，您购买的订单【云小店】已经成功付款啦，订单号为100920220329312</p>
+                      <p class="">商品总额：<span>¥647</span></p>
+                      <p class="">数量：<span>1</span></p>
+                      <p class="">折扣：<span>无</span></p>
+                      <p class="actually-paid">实付金额：<span class="">¥647</span></p>
+                    </div>
+                    <div class="operate">
+                      <span class="expand">展开</span>
+                      <span class="put-away">收起</span>
+                      <i class="iconfont">&#xeabc;</i>
+                    </div>
+                </div>
+            </li>
+          </ul>
         </div>
       </div>
       <div class="loading-part tab-pane fade" id="loading-part">
@@ -84,6 +112,15 @@
                 <p class="content">小笑骁点赞了您的文章：“我是文章标题啊……”</p>
                 <p class="time">2022/03/29 18:35</p>
               </div>
+            </li>
+            <li class="">
+                <div class="avatar">
+                  <img src="__STATIC__/ucenter/images/default-minerva-man.png" alt="">
+                </div>
+                <div class="comment">
+                  <p class="content">小笑骁点赞了您的文章：“我是文章标题啊……”</p>
+                  <p class="time">2022/03/29 18:35</p>
+                </div>
             </li>
           </ul>
         </div>
@@ -133,11 +170,12 @@
                   <span class="time">2022/03/29 18:35</span>
                 </div>
                 <div class="content">
-                  <p>亲爱的酷友：
+                  <p>
+                    亲爱的酷友：
 
                     晚上好呀～为了提供更好的服务与体验，当前小 Z 正在努力加班加点升级，升级时间预计 1 小时（3月19日 
                     01:30开始），期待与你深夜再次相遇，或者早点休息，明天再见吧，祝你好梦~
-                    </p>
+                  </p>
                 </div>
               </div>
             </li>
@@ -151,14 +189,16 @@
                   <span class="time">2022/03/29 18:35</span>
                 </div>
                 <div class="content">
-                  <p>速来创作品牌全新LOGO参与品牌形象焕新的潮流！
+                  <p>
+                    速来创作品牌全新LOGO参与品牌形象焕新的潮流！
                     国控星鲨品牌全新LOGO&70周年徽标设计大赛火热进行中！
                     此次大赛总奖金高达15万元！
                     心动就赶快行动～
                     小Z温馨提示：
                     上传作品后还需要同步提交作品的创意说明、基础规范及效果展示哦～
                     让我们一起用灵感和创意点燃健康美学！
-                    作品征集时间：3月1日 - 4月13日23:59</p>
+                    作品征集时间：3月1日 - 4月13日23:59
+                  </p>
                 </div>
               </div>
             </li>
@@ -169,31 +209,29 @@
   </div>
 </div>
 <script>
-  // $(window).ready(function() {
-  //   $("div.order-details").hide();
-  //   $(".operate").click(function() {
-  //     $(this)
-  //       .parent()
-  //       .toggleClass("download-Invert");
-  //     $(this)
-  //       .parent()
-  //       .nextAll(".operate")
-  //       .removeClass("download-Invert");
-  //     // $(this).css({transform:"rotateX(180deg)",color: "#222"});
-  //     $(this)
-  //       .parent()
-  //       .next()
-  //       .slideToggle();
-  //     $(this)
-  //       .parent()
-  //       .prevAll(".operate")
-  //       .slideUp("slow");
-  //     $(this)
-  //       .parent()
-  //       .next()
-  //       .nextAll(".operate")
-  //       .slideUp("slow");
-  //     return false;
-  //   });
-  // });
+$(window).ready(function() {
+    $(".operate").click(function() {
+      $(this)
+        .parent()
+        .toggleClass("operate-Invert");
+      $(this)
+        .parent()
+        .nextAll(".operate")
+        .removeClass("operate-Invert");
+      $(this)
+        .parent()
+        .next()
+        .slideToggle();
+      $(this)
+        .parent()
+        .prevAll(".operate")
+        .slideUp("slow");
+      $(this)
+        .parent()
+        .next()
+        .nextAll(".operate")
+        .slideUp("slow");
+      return false;
+    });
+  });
 </script>
