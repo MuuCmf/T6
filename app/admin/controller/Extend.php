@@ -179,7 +179,6 @@ class Extend extends Admin
 
             $list = Db::name("ExtendConfig")->where(['status' => 1])->field('id,name,title,extra,value,group,remark,type')->order('sort asc')->select()->toArray();
             $list = $this->extendConfigModel->lists();
-
             $builder = new AdminConfigBuilder();
             $builder->title('存储配置')->suggest('基于第三方云存储各项参数配置');
             

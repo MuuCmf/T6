@@ -1049,17 +1049,9 @@ function get_thumb_image($attachment, $width = 100, $height = 'auto', $replace =
         if (empty($picture)) {
             return request()->domain() . '/static/common/images/nopic.png';
         }
-
-        // 本地图片处理
-        if ($picture) {
-            $attach = $Attachment->getThumbImage($picture['attachment'], $width, $height, $replace);
-            return get_attachment_src($attach['src']);
-        } else {
-        // 远程云存储图片处理
-            $new_img = $picture['attachment'];
-            
-            return get_attachment_src($new_img);
-        }
+        $attach = $Attachment->getThumbImage($picture['attachment'], $width, $height, $replace);
+        return get_attachment_src($attach['src']);
+        
     }else{
         return $attachment;
     }
