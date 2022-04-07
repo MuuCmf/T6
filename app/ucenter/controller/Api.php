@@ -15,15 +15,17 @@ namespace app\ucenter\controller;
 use app\common\controller\Api as ApiBase;
 use app\common\model\Feedback;
 use app\common\model\Member;
+use app\common\model\Member as CommonMember;
 use app\common\model\MemberWallet;
 use app\common\model\Verify;
 use app\channel\service\wechat\MiniProgram;
+use thans\jwt\facade\JWTAuth;
 use think\Request;
 
 class Api extends ApiBase{
     protected $MemberModel;
     protected $middleware = [
-        'app\\common\\middleware\\CheckAuth',
+        'app\\common\\middleware\\CheckAuth' => ['except' => 'login'],
     ];
     function __construct()
     {
@@ -190,6 +192,45 @@ class Api extends ApiBase{
             $this->success('提交成功，我们会尽快处理您的反馈');
         }
         $this->error('网络异常，请稍后再试');
+    }
+
+    public function login(){
+        if (\request()->isAjax()){
+            //获取参数
+            $account = input('post.account', '', 'text'); // 账号
+            $password = input('post.password', '', 'text'); // 密码
+            $captcha = input('post.captcha', '', 'text'); // 验证码
+            $login_type = input('post.login_type','password');//登录类型
+
+            if(empty($account)) return $this->error('账号不能为空');
+            $commonMemberModel = new CommonMember;
+
+            if ($login_type == 'password'){
+                //密码登录
+                if(empty($password)) return $this->error('密码不能为空');
+                // 验证账号和密码
+                $uid = $commonMemberModel->verifyUserPassword($account, $password);
+                if($uid == -1) return $this->error('用户不存在或被禁用');
+                if($uid == -2) return $this->error('密码错误');
+            }else{
+                //验证码登录
+                $uid = $commonMemberModel->verifyUserCaptcha($account, $captcha);
+                if($uid == -1) return $this->error('用户不存在或被禁用');
+                if($uid == -2) return $this->error('验证码错误');
+            }
+
+            //登录
+            $res = $commonMemberModel->login($uid);
+            $this->MemberModel->updateLogin($uid);
+            $token = JWTAuth::builder(['uid'=>$uid]);
+            $token = 'Bearer ' . $token;
+            $this->success('success',['token'=>$token]);
+            if ($res) {
+                return $this->success('登录成功','');
+            } else {
+                return $this->error($commonMemberModel->getError());
+            }
+        }
     }
 
 }

@@ -261,13 +261,14 @@ class WechatOfficialAccount extends Base
         $target_url = input('param.target_url',request()->domain());
         $target_url = explode('#',$target_url);
         $oauth_data = [
-            'target_url' => $target_url[0]
+            'target_url' => urlencode($target_url[0])
         ];
         //uniapp hash路由带有# ,防止跳转授权时丢失
         if (isset($target_url[1])){
-            $oauth_data['spa_param'] = $target_url[1];
+            $oauth_data['spa_param'] = urlencode($target_url[1]);
         }
-        OfficialAccount::oauth($oauth_data);
+        $url = OfficialAccount::oauth($oauth_data);
+        return redirect($url);
     }
 
     /**
@@ -275,10 +276,11 @@ class WechatOfficialAccount extends Base
      */
     public function oauthCallback()
     {
+        $code = request()->param('code');
         $app = OfficialAccount::getApp();
-        $oauth = $app->oauth;
         // 获取 OAuth 授权结果用户信息
-        $user = $oauth->user()->getOriginal();
+        $user = $app->oauth->userFromCode($code);
+        $user = $user->getRaw();
         //处理用户数据
         $MemberModel = new Member();
         $user['oauth_type'] = 'weixin_h5';//1为公众号授权

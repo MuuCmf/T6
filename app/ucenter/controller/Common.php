@@ -2,6 +2,7 @@
 namespace app\ucenter\controller;
 
 use think\App;
+use think\facade\Config;
 use think\facade\Cookie;
 use think\facade\Db;
 use think\facade\View;
@@ -161,7 +162,7 @@ class Common extends CommonCommon
                 //密码登录
                 if(empty($password)) return $this->error('密码不能为空');
                 // 检测图形验证码
-                if (check_verify_open('login')) {
+                if (check_verify_open('login') && !is_mobile()) {
                     if (!captcha_check($captcha)) {
                         return $this->error('图形验证码错误');
                     }
@@ -173,8 +174,19 @@ class Common extends CommonCommon
             }else{
                 //验证码登录
                 $uid = $commonMemberModel->verifyUserCaptcha($account, $captcha);
-                if($uid == -1) return $this->error('用户不存在或被禁用');
                 if($uid == -2) return $this->error('验证码错误');
+                //快捷登录，第一次登录的用户默认生成新用户
+                if($uid == -1) {
+                    $type = check_account_type($account);
+                    if($type == 'email'){
+                        $email = $account;
+                        $mobile = '';
+                    }else{
+                        $email = '';
+                        $mobile = $account;
+                    }
+                    $uid = $commonMemberModel->randMember('' ,'','',$email,$mobile);
+                }
             }
 
             //登录
@@ -184,7 +196,9 @@ class Common extends CommonCommon
                 if(empty($last_url)){
                     $last_url = request()->domain();
                 }
-                return $this->success('登录成功','',$last_url);
+                $token = JWTAuth::builder(['uid'=>$uid]);
+                $token = 'Bearer ' . $token;
+                return $this->success('登录成功',['token' => $token],$last_url);
             } else {
                 return $this->error($commonMemberModel->getError());
             }

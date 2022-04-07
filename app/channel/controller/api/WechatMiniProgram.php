@@ -84,11 +84,9 @@ class WechatMiniProgram extends Base {
             'oauth_type' => 'weixin_app'
         ];
         $user = $this->MemberModel->oauth($data);
-        $this->MemberModel->updateLogin($user['uid']);
-        $user = query_user($user['uid'],['uid','nickname','avatar','email','mobile','realname','sex','qq','score1']);
         $token = JWTAuth::builder(['uid'=>$user['uid']]);
         $token = 'Bearer ' . $token;
-        $this->success('success',['user_info'=>$user,'token'=>$token]);
+        $this->success('success',['token'=>$token]);
     }
 
     /**

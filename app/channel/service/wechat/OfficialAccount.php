@@ -169,9 +169,9 @@ class OfficialAccount extends Wechat {
             foreach ($params as $key => $item){
                 $config['oauth']['callback'] .= "&{$key}={$item}";
             }
-            $this->app = Factory::officialAccount($config);
         }
-        $this->app->oauth->redirect()->send();
+        $response = $this->app->oauth->scopes(['snsapi_userinfo'])->redirect($config['oauth']['callback']);
+        return $response;
     }
 
     /**

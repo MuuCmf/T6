@@ -1,6 +1,8 @@
 <?php
 namespace app\common\logic;
 
+use think\Exception;
+
 class Base
 {
 
@@ -129,6 +131,21 @@ class Base
         }
 
 
+        return $data;
+    }
+
+    /**
+     * @title 模块业务逻辑
+     * @param array $data
+     * @param string $logic_name
+     * @return mixed
+     */
+    public function moduleFormat($data = [], $logic_name = ''){
+        if (!isset($data['app']) || empty($data['app'])){
+            throw new Exception('未支持的模块');
+        }
+        $class = "app\\{$data['app']}\\logic\\{$logic_name}";
+        $data = (new $class)->formatData($data);
         return $data;
     }
 }

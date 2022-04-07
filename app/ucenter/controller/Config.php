@@ -490,7 +490,7 @@ class Config extends Common
         $bind_map =[];
         $bind_map[] = ['uid'    ,'=',  $uid];
         $bind_map[] = ['type'   ,'=',  'weixin_h5'];
-        $has_bind = boolval((new MemberSync())->where($bind_map)->count());
+        $has_bind = (new MemberSync())->where($bind_map)->count();
         View::assign([
             'user'      => $self,
             'has_bind'  => boolval($has_bind),
