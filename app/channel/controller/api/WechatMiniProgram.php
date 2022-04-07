@@ -53,30 +53,28 @@ class WechatMiniProgram extends Base {
         $map[] = ['openid','=',$result['openid']];
         $map[] = ['type','=', 'weixin_app'];
         $user = $this->MemberSyncModel->getDataByMap($map);
-        $token = '';
         if ($user){
             $user = query_user($user['uid'],['uid','nickname','avatar','email','mobile','realname','sex','qq','score1']);
             $this->MemberModel->updateLogin($user['uid']);
             $token = JWTAuth::builder(['uid'=>$user['uid']]);
             $token = 'Bearer ' . $token;
+            $res = [
+                'token'     => $token
+            ];
+            $this->success('success',$res);
         }else{
-            $user = [];
+            $this->error('error','没有查询到用户信息');
         }
-        $res = [
-            'user_info' => $user,
-            'account'   => $result,
-            'token'     => $token
-        ];
-        $this->success('success',$res);
+
     }
 
     public function login(){
         $params = input('param.');
-        $ids = json_decode($params['user_ids'],true);
-        $result = MiniProgramServer::decryptData($ids['session_key'],$params['iv'],$params['encrypted_data']);
+        $oauth = MiniProgramServer::user($params['code']);
+        $result = MiniProgramServer::decryptData($oauth['session_key'],$params['iv'],$params['encrypted_data']);
         $data = [
-            'unionid'   => $ids['unionid'] ?? '',
-            'openid'    => $ids['openid'],
+            'unionid'   => $oauth['unionid'] ?? '',
+            'openid'    => $oauth['openid'],
             'nickname'  => $result['nickName'],
             'avatar'    => $result['avatarUrl'],
             'sex'       => $result['gender'],
@@ -84,9 +82,12 @@ class WechatMiniProgram extends Base {
             'oauth_type' => 'weixin_app'
         ];
         $user = $this->MemberModel->oauth($data);
-        $token = JWTAuth::builder(['uid'=>$user['uid']]);
-        $token = 'Bearer ' . $token;
-        $this->success('success',['token'=>$token]);
+        if ($user){
+            $token = JWTAuth::builder(['uid'=>$user['uid']]);
+            $token = 'Bearer ' . $token;
+            $this->success('success',['token'=>$token]);
+        }
+        $this->error('需要登录','login');
     }
 
     /**
