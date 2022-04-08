@@ -28,6 +28,11 @@ class Config extends Base{
         'WEB_SITE_DESCRIPTION',
         'WEB_SITE_ICP',
         'WEB_SITE_LOGO',
+        'WEB_SITE_LOGO_100',
+        'WEB_SITE_LOGO_200',
+        'WEB_SITE_LOGO_300',
+        'WEB_SITE_LOGO_400',
+        'WEB_SITE_LOGO_800',
         'WEB_SITE_GICP',
         'WEB_SITE_COPY_RIGHT',
         //客服信息
@@ -35,6 +40,11 @@ class Config extends Base{
         'SERVICE_CONSULT',
         'SERVICE_BUSINESS',
         'SERVICE_QRCODE',
+        'SERVICE_QRCODE_100',
+        'SERVICE_QRCODE_200',
+        'SERVICE_QRCODE_300',
+        'SERVICE_QRCODE_400',
+        'SERVICE_QRCODE_900',
         'SERVICE_WEIXINKF',
         //提现
         'WITHDRAW_STATUS',
