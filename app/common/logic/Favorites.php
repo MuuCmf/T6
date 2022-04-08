@@ -15,7 +15,7 @@ namespace app\common\logic;
 use app\common\model\Module;
 use think\helper\Str;
 
-class History extends Base{
+class Favorites extends Base{
     public function formatData($data){
         //获取应用名
         $data['module_name'] =  $data['app'] == 'system' ? '系统' :Module::where('name',$data['app'])->value('alias');

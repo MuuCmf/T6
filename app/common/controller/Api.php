@@ -9,15 +9,16 @@ class Api extends Base{
     function __construct()
     {
         parent::__construct();
-        $this->initModuleName();
         $this->params = request()->param();
         $this->shopid = $params['shopid'] ?? 0;
+        $this->initModuleName();
+
     }
 
     /**
      * 实例化应用名称
      */
     protected function initModuleName(){
-        $this->module = App('http')->getName();
+        $this->module = $this->params['app'] ?? App('http')->getName();
     }
 }
