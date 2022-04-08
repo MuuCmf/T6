@@ -20,22 +20,9 @@ class History extends Base{
         //获取应用名
         $data['module_name'] =  $data['app'] == 'system' ? '系统' :Module::where('name',$data['app'])->value('alias');
         $data['user_info'] = query_user($data['uid'],['nickname','avatar']);//用户信息
-        $products = $this->getProductsModel($data['app'] ,$data['info_type'])->where('id',$data['info_id'])->find()->toArray();
-        $products = $this->getProductsLogic($data['app'] ,$data['info_type'])->formatData($products);
-        $data['products'] = $products;
+        $data['products'] = json_decode($data['metadata'],true);
+        $data['products'] = $this->setImgAttr($data['products']);
         $data = $this->setTimeAttr($data);
         return $data;
-    }
-
-    protected function getProductsModel($app ,$info_type){
-        $namespace = "app\\{$app}\\model\\" . ucfirst($app) . ucfirst($info_type);
-        $model = new $namespace;
-        return $model;
-    }
-
-    protected function getProductsLogic($app ,$info_type){
-        $namespace = "app\\{$app}\\logic\\" . ucfirst($info_type);
-        $logic = new $namespace;
-        return $logic;
     }
 }
