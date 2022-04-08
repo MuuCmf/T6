@@ -6,7 +6,7 @@ use think\facade\Db;
 use think\facade\View;
 use app\common\model\Channel;
 use app\common\controller\Base;
-
+use app\common\logic\Config as ConfigLogic;
 
 /**
  * 前台控制器基类
@@ -16,6 +16,7 @@ class Common extends Base
     public $title = '';
     public $keywords = '';
     public $description = '';
+    protected $params;
     /**
      * 构造方法
      * @access public
@@ -31,6 +32,7 @@ class Common extends Base
                 exit;
             }
         }
+        $this->params = request()->param();
         // 控制器初始化
         $this->initialize();
     }
@@ -40,6 +42,8 @@ class Common extends Base
      */
 	public function initialize()
     {
+        //获取系统配置
+        $this->initMuuConfig();
  		//获取站点LOGO
  		$this->initLogo();
         //获取前端导航菜单
@@ -50,6 +54,16 @@ class Common extends Base
         $this->initRegAndLogin();
         //获取用户基本资料
         $this->initUserBaseInfo();
+    }
+
+    private function initMuuConfig()
+    {
+        if(empty($this->params['shopid'])){
+            $this->params['shopid'] = 0;
+        }
+        $muu_config_data = (new ConfigLogic())->frontend($this->params['shopid']);
+        
+        View::assign('muu_config_data', $muu_config_data);
     }
 
     /**
