@@ -399,13 +399,72 @@ class Attachment extends Model
      * @param bool $replace
      * @return mixed|string
      */
-    public function getThumbImage($attachment, $width = 100, $height = 'auto', $replace = false ,$type = 'attachment')
+    public function getThumbImage($attachment, $width = 100, $height = 'auto', $replace = false)
+    {
+        // 获取图片存储类型
+        $driver = config('extend.PICTURE_UPLOAD_DRIVER');
+        if (strtolower($driver) == 'local') {
+            $info = $this->localThumb($attachment, $width, $height, $replace);
+            return $info;
+        }else{
+            // 远程图片处理
+            // 阿里云OSS
+            if(strtolower($driver) == 'aliyun'){
+                try {
+                    $oldimageinfo = getimagesize(config('extend.OSS_ALIYUN_BUCKET_DOMAIN') . '/' . $attachment);
+                    $old_image_width = intval($oldimageinfo[0]);
+                    $old_image_height = intval($oldimageinfo[1]);
+                    if ($height == "auto") $height = $old_image_height * $width / $old_image_width;
+                    if ($width == "auto") $width = $old_image_width * $width / $old_image_height;
+                    if (intval($height) == 0 || intval($width) == 0) {
+                        return 0;
+                    }
+                    $src = config('extend.OSS_ALIYUN_BUCKET_DOMAIN') . '/' . $attachment . '?x-oss-process=image/resize,m_fill,h_'.$height.',w_'.$width;
+                    $info['src'] = $src;
+                    $info['width'] = $old_image_width;
+                    $info['height'] = $old_image_height;
+                    return $info;
+                } catch (\Exception $e) {
+                    // 返还本地路径
+                    $info = $this->localThumb($attachment, $width, $height, $replace);
+                    $info['src'] = get_attachment_url() . $info['src'];
+                    return $info;
+                }
+            }
+            // 腾讯云COS
+            if(strtolower($driver) == 'tencent'){
+                try {
+                    $oldimageinfo = getimagesize(config('extend.COS_TENCENT_BUCKET_DOMAIN') . '/' . $attachment);
+                    $old_image_width = intval($oldimageinfo[0]);
+                    $old_image_height = intval($oldimageinfo[1]);
+                    if ($height == "auto") $height = $old_image_height * $width / $old_image_width;
+                    if ($width == "auto") $width = $old_image_width * $width / $old_image_height;
+    
+                    $src = config('extend.COS_TENCENT_BUCKET_DOMAIN') . '/' . $attachment . '?imageView2/1/w/'.$width.'/h/'.$height;
+                    $info['src'] = $src;
+                    $info['width'] = $old_image_width;
+                    $info['height'] = $old_image_height;
+                    return $info;
+                } catch (\Exception $e) {
+                    // 返还本地路径
+                    $info = $this->localThumb($attachment, $width, $height, $replace);
+                    $info['src'] = get_attachment_url() . $info['src'];
+                    return $info;
+                }
+            }
+        }
+    }
+
+    /**
+     * 本地缩微图处理
+     */
+    public function localThumb($attachment, $width = 100, $height = 'auto', $replace = false)
     {
         $UPLOAD_URL = '';
         $UPLOAD_PATH = PUBLIC_PATH . '/attachment/';
         $attachment = str_ireplace($UPLOAD_URL, '', $attachment); //将URL转化为本地地址
         $info = pathinfo($attachment);
-        
+
         $oldFile = $info['dirname'] . DIRECTORY_SEPARATOR . $info['filename'] . '.' . $info['extension'];
         $thumbFile = $info['dirname'] . DIRECTORY_SEPARATOR . $info['filename'] . '_' . $width . '_' . $height . '.' . $info['extension'];
 
@@ -432,6 +491,7 @@ class Attachment extends Model
             return $info;
         } else {
             //执行缩图操作
+            // 获取原图尺寸
             $oldimageinfo = getimagesize($UPLOAD_PATH . $oldFile);
             $old_image_width = intval($oldimageinfo[0]);
             $old_image_height = intval($oldimageinfo[1]);
@@ -475,45 +535,51 @@ class Attachment extends Model
         $file_path = ltrim($file_path, '/');
         $file_path = $UPLOAD_PATH . $file_path;
 
-        if (file_exists($file_path)) {
-            //如果不裁剪，则发生错误
-            if (!$crop) {
-                return $attachment;
+        //如果不裁剪，则发生错误
+        if (!$crop) {
+            return $attachment;
+        }
+
+        //解析crop参数
+        $crop = explode(',', $crop);
+        $x = $crop[0];
+        $y = $crop[1];
+        $w = $crop[2];
+        $h = $crop[3];
+
+        $driver = config('extend.PICTURE_UPLOAD_DRIVER');
+        if (strtolower($driver) == 'local') {
+            //本地图片处理
+            $image = Image::open($file_path);
+            //生成将单位换算成为像素
+            //$x = $x * $image->width();
+            //$y = $y * $image->height();
+            //$w = $w * $image->width();
+            //$h = $h * $image->height();
+
+            //如果宽度和高度近似相等，则令宽和高一样
+            if (abs($h - $w) < $h * 0.01) {
+                $h = min($h, $w);
+                $w = $h;
+            }
+            //调用组件裁剪
+            $image->crop($w, $h, $x, $y);
+            $image->save($file_path);
+            
+        }else{
+            // 远程图片处理
+            if(strtolower($driver) == 'aliyun'){
+                $attachment = config('extend.OSS_ALIYUN_BUCKET_DOMAIN') . '/' . $attachment . '?x-oss-process=image/crop,x_'.$x.',y_'.$y.',w_'.$w.',h_'.$h;
             }
 
-            //解析crop参数
-            $crop = explode(',', $crop);
-            $x = $crop[0];
-            $y = $crop[1];
-            $w = $crop[2];
-            $h = $crop[3];
-
-            $driver = config('extend.PICTURE_UPLOAD_DRIVER');
-            if (strtolower($driver) == 'local') {
-                //本地图片处理
-                $image = Image::open($file_path);
-                //生成将单位换算成为像素
-                //$x = $x * $image->width();
-                //$y = $y * $image->height();
-                //$w = $w * $image->width();
-                //$h = $h * $image->height();
-
-                //如果宽度和高度近似相等，则令宽和高一样
-                if (abs($h - $w) < $h * 0.01) {
-                    $h = min($h, $w);
-                    $w = $h;
-                }
-                //调用组件裁剪
-                $image->crop($w, $h, $x, $y);
-                $image->save($file_path);
-
-                //返回新文件的路径
-                return  $attachment;
-            }else{
-                // 远程图片处理
-                
+            if(strtolower($driver) == 'tencent'){
+                $attachment = config('extend.COS_TENCENT_BUCKET_DOMAIN') . '/' . $attachment . '?imageMogr2/cut/' . $w .'x' . $h .'x'. $x .'x' . $y;
             }
         }
+
+        //返回新文件的路径
+        return  $attachment;
+        
         
     }
 
