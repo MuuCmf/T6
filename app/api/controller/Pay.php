@@ -88,7 +88,11 @@ class Pay extends Base {
                     ['type', '=', $this->params['channel']]
                 ])->value('openid');
                 //初始化支付数据
-                $pay_data['body'] = $order_data['products']['title'];
+                $title = $order_data['products']['title'];
+                if (mb_strlen($title, 'utf8') > 20){
+                    $title = mb_substr($title, 0, 20, 'utf8') . '...';
+                }
+                $pay_data['body'] = $title;
                 $pay_data['out_trade_no'] = $order_data['order_no'];
                 $pay_data['total_fee'] = $order_data['price'] * 100;
                 $pay_data['openid'] = $order_data['openid'];
@@ -132,6 +136,7 @@ class Pay extends Base {
                     'id' => $refund_info['order_id'],
                     'refund' => $this->params['refund'],
                     'refund_to' => $refund_to,
+                    'status' => 4,//更改已完成
                 ];
 
                 //4为退款流程，其他只更改订单状态
@@ -173,7 +178,6 @@ class Pay extends Base {
                             //退款至付款账户
                             $result = $this->PayService->server->refund($refund_info);
                         }
-                        dump($result);die();
                         if (!$result){
                             throw new Exception('网络异常，请稍后再试');
                         }

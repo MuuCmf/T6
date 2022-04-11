@@ -71,11 +71,17 @@ class Orders extends Base {
                 return $this->success('创建订单成功',$order);
             }catch (Exception $e){
                 Db::rollback();
-                return $this->error($e->getMessage());
+                return $this->error($e->getMessage().",line:{$e->getLine()},'file:{$e->getFile()}");
             }
         }
     }
 
+    /**
+     * @title 订单列表
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\DbException
+     * @throws \think\db\exception\ModelNotFoundException
+     */
     public function list(){
         if (\request()->isAjax()){
             $uid = request()->uid;
