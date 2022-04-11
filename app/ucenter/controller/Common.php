@@ -203,11 +203,6 @@ class Common extends CommonCommon
                 return $this->error($commonMemberModel->getError());
             }
         }else{
-            if (is_weixin()){
-                //微信浏览器跳转微信授权
-                $url = url('channel/api.WechatOfficialAccount/oauth',['target_url'=> input('get.target_url')])->build();
-                $this->redirect($url);
-            }
             // 允许的登录类型
             $ph = $ph_account = [];
             check_login_type('username') && $ph[] = '用户名';
