@@ -87,14 +87,12 @@ class WechatPayment extends PayService{
         ]);
         if ($result['return_code'] == 'SUCCESS' && $result['result_code'] == 'SUCCESS') {
             return true;
-        }elseif($result['return_msg'] == 'OK'){
-            return true;
         }
         throw new Exception($result['return_msg']);
 
     }
 
-    /**
+    /**.
      * @title 回调
      * @param $params
      * @return bool

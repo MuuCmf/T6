@@ -18,6 +18,7 @@ use app\common\controller\Base;
 use app\common\model\CapitalFlow;
 use app\common\model\Member;
 use app\common\model\MemberSync;
+use app\common\model\MemberWallet;
 use app\common\model\Orders;
 use app\common\model\Orders as OrdersModel;
 use app\channel\facade\wechat\OfficialAccount;
@@ -143,6 +144,7 @@ class Pay extends Base {
                     ];
                     $has_refund = $this->CapitalFlowModel->getDataByMap($map);
                     if ($has_refund){
+                        if (is_object($has_refund)) $has_refund = $has_refund->toArray();
                         $refund_info['refund_no'] = $has_refund['flow_no'];
                     }else{
                         //订单流水
@@ -166,11 +168,12 @@ class Pay extends Base {
                         //退款逻辑
                         if ($refund_to == 0){
                             //退款至用户账户
-                            $result = Member::updateAmount($refund_info['uid'],'balance',$refund_info['refund_fee']);
+                            $result = (new MemberWallet())->income($refund_info['uid'],$refund_info['refund_fee'],$refund_info['shopid'],false);
                         }else{
                             //退款至付款账户
                             $result = $this->PayService->server->refund($refund_info);
                         }
+                        dump($result);die();
                         if (!$result){
                             throw new Exception('网络异常，请稍后再试');
                         }
