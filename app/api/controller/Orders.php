@@ -13,6 +13,7 @@
  */
 namespace app\api\controller;
 use app\common\controller\Base;
+use app\common\logic\Orders as OrdersLogic;
 use \app\common\model\Orders as OrdersModel;
 use think\Exception;
 use think\facade\Db;
@@ -23,23 +24,25 @@ class Orders extends Base {
         'app\\common\\middleware\\CheckParam',
         'app\\common\\middleware\\CheckAuth',
     ];
-    private $OrderLogic;//应用业务
+    private $ModuleOrderLogic;//应用业务
+    private $OrderLogic;//订单逻辑
     private $OrderModel;//订单模型
     private $params;//参数
     function __construct(Request $request)
     {
         parent::__construct();
         $this->initParams();//参数赋值
-        $this->initOrderLogic();//初始化订单业务
+        if (isset($this->params['app']))    $this->initModuleOrderLogic();//初始化订单业务
+        $this->OrderLogic = new OrdersLogic();
         $this->OrderModel = new OrdersModel();
     }
 
     /**
-     * 初始化订单业务
+     * 初始化模块订单业务
      */
-    protected function initOrderLogic(){
+    protected function initModuleOrderLogic(){
         $order_namespace = "app\\{$this->params['app']}\\logic\\Orders";
-        $this->OrderLogic = new $order_namespace;
+        $this->ModuleOrderLogic = new $order_namespace;
     }
 
     /**
@@ -50,15 +53,15 @@ class Orders extends Base {
     }
 
     /**
-     * 下单
-     * @param $order_data
+     * @title 下单
+     * @return \think\Response|void
      */
-    function create(){
+    public function create(){
         if (request()->isAjax()){
             Db::startTrans();
             try {
                 //具体业务 分发到相应程序订单类
-                $order = $this->OrderLogic->createOrder($this->params);
+                $order = $this->ModuleOrderLogic->createOrder($this->params);
                 $res = $this->OrderModel->edit($order);
                 if (!$res){
                     throw new Exception('创建订单失败，请稍后再试');
@@ -72,5 +75,30 @@ class Orders extends Base {
             }
         }
     }
+
+    public function list(){
+        if (\request()->isAjax()){
+            $uid = request()->uid;
+            $map = [
+                ['shopid','=',$this->params['shopid']],
+                ['uid','=',$uid],
+            ];
+
+            if ($this->params['status']  == 'all'){
+                $map[] = ['status' ,'between' ,[-1,9999]];
+            }else{
+                $map[] = ['status' ,'=' ,$this->params['status']];
+            }
+
+            $rows = $this->params['rows'] ?? 15;
+            $list = $this->OrderModel->where($map)->page($this->params['page'],$rows)->order('id','DESC')->select()->toArray();
+            foreach ($list as &$item){
+                $item = $this->OrderLogic->formatData($item);
+            }
+            unset($item);
+            $this->success('获取订单成功',$list);
+        }
+    }
+
 
 }
