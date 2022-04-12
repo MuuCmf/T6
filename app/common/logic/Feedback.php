@@ -23,6 +23,11 @@ class Feedback
     {   
 
         $data['user_info'] = query_user($data['uid']);
+        if (!is_array($data['user_info'])) {
+            $data['user_info'] = [];
+            $data['user_info']['nickname'] = '用户已注销';
+            $data['user_info']['avatar'] = request()->domain() . '/static/common/images/default_avatar.jpg';
+        }
         $module = (new Module())->where('name',$data['app'])->find();
         $data['app_alias'] = $module['alias'] ?? '';
 
