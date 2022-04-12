@@ -23,11 +23,12 @@ class Evaluate extends Api {
     protected $logic;
     protected $OrderModel;
     protected $OrderLogic;
+    protected $middleware = [
+        'app\\common\\middleware\\CheckAuth' => ['except' => 'lists']
+    ];
     function __construct()
     {
         parent::__construct();
-        //添加token验证中间件
-        $this->middleware['app\\common\\middleware\\CheckAuth'] = ['except' => ['lists'] ];
         $this->logic = new EvaluateLogic();
         $this->model = new EvaluateModel();
         $this->OrderModel = new OrderModel();

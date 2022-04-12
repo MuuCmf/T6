@@ -106,5 +106,15 @@ class Orders extends Base {
         }
     }
 
+    /**
+     * @title 订单详情
+     */
+    public function detail(){
+        $order_no = $this->params['order_no'];
+        $order_data = $this->OrderModel->getDataByOrderNo($order_no);
+        $order_data = $this->OrderLogic->formatData($order_data);
+        $this->success('success',$order_data);
+    }
+
 
 }
