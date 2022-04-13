@@ -155,7 +155,7 @@ function set_database_config($dbconfig)
  * 写入配置文件
  * @param  array $config 配置信息
  */
-function write_config($config, $auth)
+function write_config($config)
 {
     if (is_array($config)) {
         //数据库配置文件
@@ -168,15 +168,8 @@ function write_config($config, $auth)
             $replace = $config[strtolower($field)];
             return "{$matches[1]} = {$replace}";
         };
-        
         //修改数据库相关配置
         $db_conf = preg_replace_callback("/(HOSTNAME|DATABASE|USERNAME|PASSWORD|HOSTPORT|PREFIX)(\s+)=(\s+)(.*)/", $callback, $db_conf);
-        // //修改用户加密字串配置
-        // $db_conf = preg_replace_callback("/(AUTH_KEY)(\s*)=(\s*)(.*)/", function($matches) use($auth){
-        //     $replace = $auth;
-        //     return "{$matches[1]} = {$replace}";
-        // }, $db_conf);
-
         //检测能否成功写入数据库配置
         $result = @file_put_contents($dbConfigFile, $db_conf);
 
@@ -235,7 +228,7 @@ function create_tables($db_instance, $prefix = '')
  * @param  [type] $auth   [description]
  * @return [type]         [description]
  */
-function register_administrator($db, $prefix, $admin, $auth)
+function register_administrator($db, $prefix, $admin)
 {
     show_msg('开始注册创始人帐号...');
     $uid = 1;
@@ -248,6 +241,7 @@ sql;
     /*  "REPLACE INTO `[PREFIX]ucenter_member` VALUES " .
          "('1', '[NAME]', '[PASS]', '[EMAIL]', '', '[TIME]', '[IP]', 0, 0, '[TIME]', '1',1,'finish')";*/
 
+    $auth = config('auth.auth_key');
     $password = user_md5($admin['password'], $auth);
     $sql = str_replace(
         array('[PREFIX]', '[NAME]', '[PASS]', '[EMAIL]', '[TIME]', '[IP]', '[UID]'),

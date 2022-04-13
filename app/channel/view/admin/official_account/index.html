@@ -33,7 +33,7 @@
                 <label class="item-label">公众号描述<span class="check-tips">（公众号描述）</span>
                 </label>
                 <div class="controls textarea">
-                    <textarea name="desc" cols="30" rows="10" class="form-control">{$data.desc}</textarea>
+                    <textarea name="desc" cols="30" rows="10" class="form-control">{$data.desc|default=''}</textarea>
                 </div>
             </div>
             <div class="form-item builder_item">

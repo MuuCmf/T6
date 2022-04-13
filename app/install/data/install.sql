@@ -481,7 +481,7 @@ INSERT INTO `muucmf_config` (`id`, `name`, `type`, `title`, `group`, `extra`, `r
 (1000, 'USER_REG_SWITCH', 'checkbox', '用户注册开关', 3, 'username:用户名\r\nemail:邮箱\r\nmobile:手机号', '用户注册开关', 1531177781, 1631278401, 1, 'username,email,mobile', 1),
 (1001, 'WEB_SITE_NAME', 'string', '站点名称', 1, '', '站点名称', 1530883729, 1630895072, 1, 'MuuCmf开发框架', 0),
 (1002, 'WEB_SITE_ICP', 'string', 'ICP备案', 1, '', 'ICP备案', 1530883729, 1640309012, 1, '京ICP备12345XXXx号', 20),
-(1003, 'WEB_SITE_LOGO', 'pic', '站点LOGO', 1, '', '站点LOGO', 1530883729, 1640325297, 1, 'image/20210912/f12b57267708d211f4243caf3cf7a6eb.png', 2),
+(1003, 'WEB_SITE_LOGO', 'pic', '站点LOGO', 1, '', '站点LOGO', 1530883729, 1640325297, 1, '', 2),
 (1007, 'WEB_SITE_COPY_RIGHT', 'textarea', '站点版权信息', 1, '', '站点版权信息', 1530883729, 1640327477, 1, '<span>Power&nbsp;by&nbsp;MuuCmf</span>Copyright ©2018-2022 <a href=\"http://www.muucmf.cn\" target=\"_blank\">北京火木科技有限公司</a>', 10),
 (10012, 'USER_LEVEL', 'entity', '用户等级设置', 3, '', '', 1531177781, 1631278482, 1, '0:Lv1 实习\r\n50:Lv2 试用\r\n100:Lv3 转正\r\n200:Lv4 助理\r\n400:Lv5 经理\r\n800:Lv6 董事\r\n1600:Lv7 董事长', 255),
 (10013, 'USER_NICKNAME_MIN_LENGTH', 'num', '昵称长度最小值', 3, '', '昵称长度最小值', 1531177781, 1631278545, 1, '2', 20),

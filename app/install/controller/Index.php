@@ -132,11 +132,10 @@ class Index extends Base
         //创建数据表
         create_tables($db_instance, $dbconfig['prefix']);
         //注册创始人帐号
-        $auth  = build_auth_key();
         $admin = session('admin_info');
-        register_administrator($db_instance, $dbconfig['prefix'], $admin, $auth);
+        register_administrator($db_instance, $dbconfig['prefix'], $admin);
         //更新配置文件
-        $conf   =   write_config($dbconfig, $auth);
+        $conf   =   write_config($dbconfig);
         session('config_file',$conf);
 
         if(session('error')){
