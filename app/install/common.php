@@ -171,11 +171,11 @@ function write_config($config, $auth)
         
         //修改数据库相关配置
         $db_conf = preg_replace_callback("/(HOSTNAME|DATABASE|USERNAME|PASSWORD|HOSTPORT|PREFIX)(\s+)=(\s+)(.*)/", $callback, $db_conf);
-        //修改用户加密字串配置
-        $db_conf = preg_replace_callback("/(AUTH_KEY)(\s*)=(\s*)(.*)/", function($matches) use($auth){
-            $replace = $auth;
-            return "{$matches[1]} = {$replace}";
-        }, $db_conf);
+        // //修改用户加密字串配置
+        // $db_conf = preg_replace_callback("/(AUTH_KEY)(\s*)=(\s*)(.*)/", function($matches) use($auth){
+        //     $replace = $auth;
+        //     return "{$matches[1]} = {$replace}";
+        // }, $db_conf);
 
         //检测能否成功写入数据库配置
         $result = @file_put_contents($dbConfigFile, $db_conf);
@@ -241,8 +241,8 @@ function register_administrator($db, $prefix, $admin, $auth)
     $uid = 1;
     /*插入用户*/
     $sql = <<<sql
-REPLACE INTO `[PREFIX]member` (`uid`, `username`, `email`, `mobile`, `realname`, `nickname`, `password`, `sex`, `avatar`, `birthday`, `qq`, `login`, `signature`, `balance`, `score1`, `score2`, `score3`, `score4`, `status`, `reg_ip`, `last_login_time`, `last_login_ip`, `create_time`, `update_time`) VALUES
-('[UID]', '[NAME]', '[EMAIL]','','','[NAME]', '[PASS]',0, '', '[TIME]', '', '', '', 0, 0, 0, 0, 0, 1, '[IP]', '[TIME]','[IP]','[TIME]','[TIME]');
+REPLACE INTO `[PREFIX]member` (`uid`, `shopid`, `username`, `email`, `mobile`, `realname`, `nickname`, `password`, `sex`, `avatar`, `birthday`, `qq`, `login`, `signature`, `score1`, `score2`, `score3`, `score4`, `status`, `reg_ip`, `last_login_time`, `last_login_ip`, `create_time`, `update_time`) VALUES
+('[UID]', 0, '[NAME]', '[EMAIL]','','','[NAME]', '[PASS]',0, '', '[TIME]', '', '', '', 0, 0, 0, 0, 1, '[IP]', '[TIME]', '[IP]','[TIME]','[TIME]');
 sql;
 
     /*  "REPLACE INTO `[PREFIX]ucenter_member` VALUES " .
