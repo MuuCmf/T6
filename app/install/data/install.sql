@@ -36,6 +36,7 @@ INSERT INTO `muucmf_action` (`id`, `name`, `title`, `remark`, `rule`, `log`, `ty
 --
 -- 表的结构 `muucmf_action_limit`
 --
+
 DROP TABLE IF EXISTS `muucmf_action_limit`;
 CREATE TABLE IF NOT EXISTS `muucmf_action_limit` (
   `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'ID',
@@ -49,8 +50,8 @@ CREATE TABLE IF NOT EXISTS `muucmf_action_limit` (
   `message_content` text NOT NULL COMMENT '消息内容',
   `action_list` text NOT NULL,
   `status` tinyint(4) NOT NULL,
-  `create_time` int(11) NOT NULL,
-  `module` varchar(20) NOT NULL,
+  `create_time` int(11) UNSIGNED NOT NULL,
+  `module` varchar(64) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=5 ;
 
@@ -67,11 +68,12 @@ INSERT INTO `muucmf_action_limit` (`id`, `title`, `name`, `frequency`, `time_num
 --
 -- 表的结构 `muucmf_action_log`
 --
+
 DROP TABLE IF EXISTS `muucmf_action_log`;
 CREATE TABLE IF NOT EXISTS `muucmf_action_log` (
   `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'ID',
-  `action_id` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '行为id',
-  `uid` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '执行用户id',
+  `action_id` int(11) UNSIGNED NOT NULL COMMENT '行为id',
+  `uid` int(11) UNSIGNED NOT NULL COMMENT '执行用户id',
   `action_ip` bigint(20) NOT NULL COMMENT '执行行为者ip',
   `model` varchar(50) NOT NULL DEFAULT '' COMMENT '触发行为的表',
   `record_id` bigint(20) UNSIGNED NOT NULL DEFAULT '0' COMMENT '触发行为的数据id',
@@ -88,8 +90,8 @@ CREATE TABLE IF NOT EXISTS `muucmf_action_log` (
 -- 表的结构 `muucmf_address`
 --
 DROP TABLE IF EXISTS `muucmf_address`;
-DROP TABLE IF EXISTS `muucmf_address` (
-  `id` int(11) UNSIGNED NOT NULL COMMENT 'id',
+CREATE TABLE IF NOT EXISTS `muucmf_address` (
+  `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'id',
   `shopid` int(11) UNSIGNED NOT NULL COMMENT '平台ID',
   `app` varchar(255) NOT NULL COMMENT '应用标识',
   `uid` int(11) UNSIGNED NOT NULL COMMENT '用户ID',
@@ -104,7 +106,7 @@ DROP TABLE IF EXISTS `muucmf_address` (
   `create_time` int(11) UNSIGNED NOT NULL COMMENT '创建时间',
   `update_time` int(11) UNSIGNED NOT NULL COMMENT '更新时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='用户收货地址';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='用户收货地址' AUTO_INCREMENT=1;
 
 --
 -- 表的结构 `muucmf_announce`
@@ -112,7 +114,7 @@ DROP TABLE IF EXISTS `muucmf_address` (
 
 DROP TABLE IF EXISTS `muucmf_announce`;
 CREATE TABLE IF NOT EXISTS `muucmf_announce` (
-  `id` int(11) UNSIGNED NOT NULL COMMENT '主键ID',
+  `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键ID',
   `shopid` int(11) NOT NULL,
   `app` varchar(90) NOT NULL,
   `uid` int(11) UNSIGNED NOT NULL COMMENT '操作用户ID',
@@ -123,7 +125,7 @@ CREATE TABLE IF NOT EXISTS `muucmf_announce` (
   `url` varchar(255) NOT NULL COMMENT '公告链接',
   `link_to` varchar(255) NOT NULL COMMENT '公告链接至JSON参数',
   `sort` int(11) NOT NULL COMMENT '排序',
-  `status` tinyint(2) NOT NULL DEFAULT '0',
+  `status` tinyint(2) NOT NULL COMMENT '状态',
   `create_time` int(11) UNSIGNED NOT NULL COMMENT '创建时间',
   `update_time` int(11) UNSIGNED NOT NULL COMMENT '更新时间',
   PRIMARY KEY (`id`)
@@ -134,8 +136,8 @@ CREATE TABLE IF NOT EXISTS `muucmf_announce` (
 --
 DROP TABLE IF EXISTS `muucmf_attachment`;
 CREATE TABLE IF NOT EXISTS `muucmf_attachment` (
-  `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'ID',
-  `uid` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '用户ID',
+  `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'ID',
+  `uid` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '用户ID',
   `filename` char(30) NOT NULL COMMENT '附件显示名',
   `type` tinyint(3) UNSIGNED NOT NULL DEFAULT '0' COMMENT '附件类型',
   `attachment` varchar(255) NOT NULL COMMENT '路径',
@@ -374,6 +376,29 @@ INSERT INTO `muucmf_auth_rule` (`id`, `module`, `type`, `name`, `title`, `status
 -- --------------------------------------------------------
 
 --
+-- 表的结构 `muucmf_capital_flow`
+--
+
+DROP TABLE IF EXISTS `muucmf_capital_flow`;
+CREATE TABLE IF NOT EXISTS `muucmf_capital_flow` (
+  `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+  `shopid` int(11) UNSIGNED NOT NULL COMMENT '店铺ID',
+  `app` varchar(40) NOT NULL COMMENT '应用标识',
+  `uid` int(11) UNSIGNED NOT NULL COMMENT '用户ID',
+  `flow_no` varchar(64) NOT NULL COMMENT '流水号',
+  `order_no` varchar(64) NOT NULL COMMENT '订单编号',
+  `channel` varchar(20) NOT NULL COMMENT '来源/去向\r\nbalance：余额；\r\nwechat:微信\r\n',
+  `source` varchar(40) NOT NULL COMMENT '资金来源',
+  `type` tinyint(2) NOT NULL COMMENT '资金进出类型，1：支出 2：收入',
+  `price` int(11) NOT NULL COMMENT '金额（单位：分）',
+  `remark` varchar(1000) NOT NULL COMMENT '备注',
+  `status` tinyint(2) NOT NULL COMMENT '流水状态，1完成 0进行中',
+  `create_time` int(11) NOT NULL COMMENT '创建日期',
+  `update_time` int(11) NOT NULL COMMENT '更新日期',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='流水记录表' ROW_FORMAT=COMPACT;
+
+--
 -- 表的结构 `muucmf_channel`
 --
 DROP TABLE IF EXISTS `muucmf_channel`;
@@ -430,8 +455,8 @@ CREATE TABLE IF NOT EXISTS `muucmf_config` (
 --
 
 INSERT INTO `muucmf_config` (`id`, `name`, `type`, `title`, `group`, `extra`, `remark`, `create_time`, `update_time`, `status`, `value`, `sort`) VALUES
-(100, 'WEB_SITE_CLOSE', 'select', '关闭站点', 1, '0:关闭,1:开启', '站点关闭后其他用户不能访问，管理员可以正常访问', 1378898976, 1630896185, 1, '1', 11),
-(102, 'CONFIG_GROUP_LIST', 'entity', '配置分组', 4, '', '配置分组', 1379228036, 1630895389, 1, '1:基本\r\n2:内容\r\n3:用户\r\n4:系统\r\n5:邮件', 15),
+(100, 'SITE_CLOSE', 'select', '关闭站点', 4, '0:关闭,1:开启', '站点关闭后其他用户不能访问，管理员可以正常访问', 1378898976, 1640252032, 1, '1', 3),
+(102, 'CONFIG_GROUP_LIST', 'entity', '配置分组', 4, '', '配置分组', 1379228036, 1645424501, 1, '1:基本\r\n2:服务\r\n3:用户\r\n4:系统\r\n5:邮件', 15),
 (104, 'AUTH_CONFIG', 'entity', 'Auth配置', 4, '', '自定义Auth.class.php类配置', 1379409310, 1630895923, 1, 'AUTH_ON:1\r\nAUTH_TYPE:2', 16),
 (108, 'DATA_BACKUP_PATH', 'string', '数据库备份根路径', 4, '', '路径必须以 / 结尾', 1381482411, 1630895911, 1, '../data/backup', 16),
 (109, 'DATA_BACKUP_PART_SIZE', 'num', '数据库备份卷大小', 4, '', '该值用于限制压缩后的分卷最大长度。单位：B；建议设置20M', 1381482488, 1630895900, 1, '20971520', 18),
@@ -441,24 +466,23 @@ INSERT INTO `muucmf_config` (`id`, `name`, `type`, `title`, `group`, `extra`, `r
 (115, 'ADMIN_ALLOW_IP', 'textarea', '后台允许访问IP', 4, '', '多个用逗号分隔，如果不配置表示不限制IP访问', 1387165454, 1630895868, 1, '', 27),
 (117, 'MAIL_TYPE', 'select', '邮件类型', 5, '1:SMTP 模块发送\r\n2:mail() 函数发送', '如果您选择了采用服务器内置的 Mail 服务，您不需要填写下面的内容', 1388332882, 1630895456, 1, '1', 1),
 (118, 'MAIL_SMTP_HOST', 'string', 'SMTP 服务器', 5, '', 'SMTP服务器', 1388332932, 1630896154, 1, 'smtp.qiye.aliyun.com', 3),
-(119, 'MAIL_SMTP_PORT', 'num', 'SMTP服务器端口', 5, '', '默认25 ', 1388332975, 1630918333, 1, '465', 0),
+(119, 'MAIL_SMTP_PORT', 'num', 'SMTP服务器端口', 5, '', '默认25 ', 1388332975, 1640243664, 1, '465', 0),
 (120, 'MAIL_SMTP_USER', 'string', 'SMTP服务器用户名', 5, '', '填写完整用户名', 1388333010, 1630894629, 1, 'postmaster@hoomuu.cn', 0),
 (121, 'MAIL_SMTP_PASS', 'password', 'SMTP服务器密码', 5, '', '填写您的密码', 1388333057, 1630894645, 1, 'Yanmeng1980', 0),
 (124, 'COUNT_DAY', 'num', '后台首页统计用户增长天数', 4, '', '默认统计最近半个月的用户数增长情况', 1420791945, 1630999185, 1, '10', 0),
 (126, 'USER_NAME_BAOLIU', 'textarea', '保留用户名和昵称', 3, '', '禁止注册用户名和昵称，包含这些即无法注册,用\" , \"号隔开，用户只能是英文，下划线_，数字等', 1388845937, 1631278499, 1, '管理员,测试,admin,垃圾', 200),
-(128, 'VERIFY_OPEN', 'checkbox', '验证码配置', 3, 'reg:注册显示\r\nlogin:登陆显示\r\nreset:密码重置', '验证码配置', 1388500332, 1631320314, 1, 'reg,login', 3),
+(128, 'VERIFY_OPEN', 'checkbox', '验证码配置', 3, 'reg:注册显示\r\nlogin:登陆显示\r\nreset:密码重置', '验证码配置', 1388500332, 1631320314, 1, '', 3),
 (129, 'VERIFY_TYPE', 'select', '验证码类型', 4, '1:中文\r\n2:英文\r\n3:数字\r\n4:英文+数字', '验证码类型', 1388500873, 1630895014, 1, '4', 0),
-(130, 'NO_BODY_TLE', 'textarea', '空白说明', 2, '', '空白说明', 1392216444, 1630895028, 1, '呵呵，暂时没有内容哦！！', 0),
-(132, 'COUNT_CODE', 'textarea', '统计代码', 1, '', '用于统计网站访问量的第三方代码，推荐CNZZ统计', 1403058890, 1630896032, 1, 'xxxxyyyysdfsdfsdfd', 12),
+(132, 'COUNT_CODE', 'textarea', '统计代码', 4, '', '用于统计网站访问量的第三方代码，推荐百度统计', 1403058890, 1640252129, 1, '<script>\r\nvar _hmt = _hmt || [];\r\n(function() {\r\n  var hm = document.createElement(\"script\");\r\n  hm.src = \"https://hm.baidu.com/hm.js?959d8ff4676fce87aa16f4c1edb78038\";\r\n  var s = document.getElementsByTagName(\"script\")[0]; \r\n  s.parentNode.insertBefore(hm, s);\r\n})();\r\n</script>\r\n', 12),
 (134, 'URL_MODEL', 'select', 'URL模式', 4, '2:REWRITE模式(开启伪静态)\r\n3:兼容模式', '选择Rewrite模式则开启伪静态，在开启伪静态之前需要先设置伪静态或阅读/Rewrite/readme.txt中的说明，默认建议开启兼容模式', 1421027546, 1630895041, 1, '3', 0),
-(135, 'DEFUALT_HOME_URL', 'string', '系统默认应用', 1, '', '支持Home/index/index的ThinkPhp路由写法，留空默认index', 1417509438, 1630896256, 1, '', 1),
-(137, 'WEB_SITE_CLOSE_HINT', 'textarea', '关站提示文字', 1, '', '站点关闭后的提示文字。', 1433731248, 1630896168, 1, '网站正在更新维护，请稍候再试。', 4),
+(135, 'DEFUALT_APP', 'string', '系统默认应用', 4, '', '留空默认index', 1417509438, 1640251531, 1, 'muu', 1),
+(137, 'SITE_CLOSE_HINT', 'textarea', '关站提示文字', 4, '', '站点关闭后的提示文字。', 1433731248, 1640252044, 1, '网站正在更新维护，请稍候再试。', 4),
 (140, 'MAIL_SMTP_CE', 'string', '邮件发送测试', 5, '', '填写测试邮件地址', 1388334529, 1630895967, 1, '59262424@qq.com', 11),
-(1000, 'USER_REG_SWITCH', 'checkbox', '用户注册开关', 3, 'username:用户名\r\nemail:邮箱\r\nmobile:手机号', '用户注册开关', 1531177781, 1631278401, 1, 'email,mobile', 1),
+(1000, 'USER_REG_SWITCH', 'checkbox', '用户注册开关', 3, 'username:用户名\r\nemail:邮箱\r\nmobile:手机号', '用户注册开关', 1531177781, 1631278401, 1, 'username,email,mobile', 1),
 (1001, 'WEB_SITE_NAME', 'string', '站点名称', 1, '', '站点名称', 1530883729, 1630895072, 1, 'MuuCmf开发框架', 0),
-(1002, 'WEB_SITE_ICP', 'string', 'ICP备案信息', 1, '', 'ICP备案', 1530883729, 1630895092, 1, '京ICP备12345XXXx号', 0),
-(1003, 'WEB_SITE_LOGO', 'pic', '站点LOGO', 1, '', '站点LOGO', 1530883729, 1630895104, 1, 'image/20210912/f12b57267708d211f4243caf3cf7a6eb.png', 0),
-(1007, 'WEB_SITE_COPY_RIGHT', 'textarea', '站点版权信息', 1, '', '', 1530883729, 1630895119, 1, 'Copyright ©2018-2022 <a href=\"http://www.muucmf.cn\" target=\"_blank\">北京火木科技有限公司</a>', 0),
+(1002, 'WEB_SITE_ICP', 'string', 'ICP备案', 1, '', 'ICP备案', 1530883729, 1640309012, 1, '京ICP备12345XXXx号', 20),
+(1003, 'WEB_SITE_LOGO', 'pic', '站点LOGO', 1, '', '站点LOGO', 1530883729, 1640325297, 1, 'image/20210912/f12b57267708d211f4243caf3cf7a6eb.png', 2),
+(1007, 'WEB_SITE_COPY_RIGHT', 'textarea', '站点版权信息', 1, '', '站点版权信息', 1530883729, 1640327477, 1, '<span>Power&nbsp;by&nbsp;MuuCmf</span>Copyright ©2018-2022 <a href=\"http://www.muucmf.cn\" target=\"_blank\">北京火木科技有限公司</a>', 10),
 (10012, 'USER_LEVEL', 'entity', '用户等级设置', 3, '', '', 1531177781, 1631278482, 1, '0:Lv1 实习\r\n50:Lv2 试用\r\n100:Lv3 转正\r\n200:Lv4 助理\r\n400:Lv5 经理\r\n800:Lv6 董事\r\n1600:Lv7 董事长', 255),
 (10013, 'USER_NICKNAME_MIN_LENGTH', 'num', '昵称长度最小值', 3, '', '昵称长度最小值', 1531177781, 1631278545, 1, '2', 20),
 (10014, 'USER_NICKNAME_MAX_LENGTH', 'num', '昵称长度最大值', 3, '', '昵称长度最大值', 1531177781, 1631278555, 1, '32', 21),
@@ -469,7 +493,15 @@ INSERT INTO `muucmf_config` (`id`, `name`, `type`, `title`, `group`, `extra`, `r
 (10138, 'OPEN_QUICK_LOGIN', 'radio', '用户快捷登录', 3, '1:启用\r\n0:关闭', '', 0, 0, 1, '1', 3),
 (10139, 'USER_NICKNAME_SWITCH', 'radio', '用户注册昵称开关', 3, '1:开启\r\n0:关闭', '用户注册时是否可直接设置自己的昵称', 0, 0, 1, '0', 5),
 (10140, 'USER_NICKNAME_PREFIX', 'string', '用户昵称前缀', 3, '', '系统自动生成用户昵称时的前缀', 0, 1631522685, 1, '', 6),
-(10141, 'USER_REG_AGREEMENT', 'editor', '用户注册服务协议', 3, '', '用户注册服务协议', 0, 0, 1, '<p><br/></p><p><br/></p><p><br/></p><h1 style=\"font-size: 32px; font-weight: bold; border-bottom: 2px solid rgb(204, 204, 204); padding: 0px 4px 0px 0px; text-align: center; margin: 0px 0px 20px;\">用户注册服务协议</h1><p><br/></p><p><br/></p><p>ThinkPHP 是一个免费开源的，快速、简单的面向对象的 轻量级PHP开发框架 ，创立于2006年初，遵循Apache2开源协议发布，是为了敏捷WEB应用开发和简化企业应用开发而诞生的。ThinkPHP从诞生以来一直秉承简洁实用的设计原则，在保持出色的性能和至简的代码的同时，也注重易用性。并且拥有众多的原创功能和特性，在社区团队的积极参与下，在易用性、扩展性和性能方面不断优化和改进，已经成长为国内最领先和最具影响力的WEB应用开发框架，众多的典型案例确保可以稳定用于商业以及门户级的开发。</p>', 999);
+(10141, 'USER_REG_AGREEMENT', 'editor', '用户注册服务协议', 3, '', '用户注册服务协议', 0, 0, 1, '<p style=\"text-align: center;\"><span style=\"font-size: 36px;\">用户注册服务协议</span></p><p><br/></p><hr/><p>ThinkPHP\r\n 是一个免费开源的，快速、简单的面向对象的 轻量级PHP开发框架 \r\n，创立于2006年初，遵循Apache2开源协议发布，是为了敏捷WEB应用开发和简化企业应用开发而诞生的。ThinkPHP从诞生以来一直秉承简洁实用的设计原则，在保持出色的性能和至简的代码的同时，也注重易用性。并且拥有众多的原创功能和特性，在社区团队的积极参与下，在易用性、扩展性和性能方面不断优化和改进，已经成长为国内最领先和最具影响力的WEB应用开发框架，众多的典型案例确保可以稳定用于商业以及门户级的开发。</p>', 999),
+(10142, 'SERVICE_TEL', 'string', '联系电话', 2, '', '联系电话', 0, 1640230429, 1, '18618380435', 0),
+(10143, 'WEB_SITE_GICP', 'string', '公安备案', 1, '', '公安备案', 0, 1640308908, 1, '京公网安备12345XXXx号', 21),
+(10144, 'SERVICE_CONSULT', 'string', '咨询&服务', 2, '', '咨询&服务Eamil|电话号码', 0, 0, 1, 'service@hoomuu.cn', 2),
+(10145, 'SERVICE_BUSINESS', 'string', '商务合作', 2, '', '商务合作邮箱或电话号码', 0, 0, 1, 'business@hoomuu.cn', 3),
+(10146, 'SERVICE_QRCODE', 'pic', '客服二维码', 2, '', '客服二维码', 0, 0, 1, 'images/20211224/2bc43634b1ee175bfddac1f3f18e2104.png', 4),
+(10147, 'SERVICE_WEIXINKF', 'string', '微信客服链接', 2, '', '使用详情 https://work.weixin.qq.com/kf', 0, 1640309559, 1, 'https://work.weixin.qq.com/kfid/kfcb3dc015a434054c5', 5),
+(10148, 'WEB_SITE_STYLE', 'style', '站点风格', 1, 'Blue\r\nGreen\r\nOrange\r\nLightRed\r\nLightPink\r\nMagenta', '请选择客户端展示的风格色系', 0, 1640327457, 1, 'Orange', 3),
+(10149, 'WEB_SITE_DESCRIPTION', 'textarea', '站点简短描述', 1, '', '请完善站点简短描述', 0, 1640325379, 1, 'MuuCmf T6 开源低代码应用开发框架', 1);
 
 -- --------------------------------------------------------
 
@@ -488,6 +520,54 @@ CREATE TABLE IF NOT EXISTS `muucmf_count_active` (
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='活跃统计表' AUTO_INCREMENT=1;
 
 -- --------------------------------------------------------
+
+--
+-- 表的结构 `muucmf_crontab`
+--
+
+DROP TABLE IF EXISTS `muucmf_crontab`;
+CREATE TABLE IF NOT EXISTS `muucmf_crontab` (
+  `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+  `shopid` int(11) UNSIGNED NOT NULL COMMENT '店铺ID',
+  `title` varchar(50) NOT NULL COMMENT '标题',
+  `description` varchar(500) NOT NULL COMMENT '描述',
+  `execute` varchar(200) NOT NULL COMMENT '调用执行路径',
+  `cycle` varchar(20) NOT NULL COMMENT 'hour:每小时\r\nday:每天\r\nweek:每星期\r\nmonth:每月\r\nminute-n:N分钟\r\nhour-n:N小时\r\nday-n:N天',
+  `day` tinyint(1) NOT NULL COMMENT '天',
+  `hour` tinyint(1) NOT NULL COMMENT '小时',
+  `minute` tinyint(1) NOT NULL COMMENT '分钟',
+  `status` tinyint(1) NOT NULL COMMENT '-1删除 0禁用 1启用',
+  `create_time` int(11) UNSIGNED NOT NULL COMMENT '创建日期',
+  `update_time` int(11) UNSIGNED NOT NULL COMMENT '更新日期',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='计划任务表';
+
+
+
+--
+-- 转存表中的数据 `muucmf_crontab`
+--
+
+INSERT INTO `muucmf_crontab` (`id`, `shopid`, `title`, `description`, `execute`, `cycle`, `day`, `hour`, `minute`, `status`, `create_time`, `update_time`) VALUES
+(1, 0, '云小店订单自动确认收货', '订单收货确认用户未处理，系统默认7天后自动处理', 'app\\minishop\\crontab\\Receive', 'minute-n', 1, 1, 1, 1, 1645689347, 1645782464),
+(2, 0, '云小店订单自动评价', '订单收货后用户未评价，系统默认7天后自动好评', 'app\\minishop\\crontab\\Evaluate', 'minute-n', 1, 1, 1, 1, 1645782483, 1645782483);
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `muucmf_crontab_log`
+--
+DROP TABLE IF EXISTS `muucmf_crontab_log`;
+CREATE TABLE IF NOT EXISTS `muucmf_crontab_log` (
+  `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+  `shopid` int(11) UNSIGNED NOT NULL COMMENT '平台ID',
+  `cid` int(11) UNSIGNED NOT NULL COMMENT '任务ID',
+  `description` varchar(500) NOT NULL COMMENT '描述',
+  `status` tinyint(2) NOT NULL COMMENT '状态',
+  `create_time` int(11) UNSIGNED NOT NULL COMMENT '创建时间',
+  `update_time` int(11) UNSIGNED NOT NULL COMMENT '更新时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='计划任务执行日志表';
 
 --
 -- 表的结构 `muucmf_district`
@@ -4060,6 +4140,31 @@ INSERT INTO `muucmf_district` (`id`, `name`, `level`, `upid`) VALUES
 -- --------------------------------------------------------
 
 --
+-- 表的结构 `muucmf_evaluate`
+--
+DROP TABLE IF EXISTS `muucmf_evaluate`;
+CREATE TABLE IF NOT EXISTS `muucmf_evaluate` (
+  `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '自增ID',
+  `shopid` int(11) UNSIGNED NOT NULL COMMENT '店铺ID',
+  `app` varchar(20) NOT NULL COMMENT '应用标识',
+  `uid` int(11) NOT NULL COMMENT '用户ID',
+  `type` varchar(255) NOT NULL COMMENT '商品类型：商品：goods 闪电购：live_goods',
+  `type_id` int(11) NOT NULL COMMENT '商品ID',
+  `order_no` varchar(255) NOT NULL COMMENT '订单号',
+  `images` varchar(600) NOT NULL COMMENT '评价晒图',
+  `value` decimal(3,2) NOT NULL COMMENT '评分',
+  `content` varchar(600) NOT NULL COMMENT '评价内容',
+  `add_content` varchar(600) NOT NULL COMMENT '追加评论 json格式{images:content:}',
+  `reply` text NOT NULL COMMENT '评价回复',
+  `reply_time` int(11) UNSIGNED NOT NULL COMMENT '回复时间',
+  `create_time` int(11) UNSIGNED NOT NULL COMMENT '创建时间',
+  `update_time` int(11) UNSIGNED NOT NULL COMMENT '更新时间',
+  `status` tinyint(4) NOT NULL DEFAULT '0' COMMENT '状态',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='订单评价表' ROW_FORMAT=COMPACT;
+
+
+--
 -- 表的结构 `muucmf_extend_config`
 --
 DROP TABLE IF EXISTS `muucmf_extend_config`;
@@ -4071,22 +4176,25 @@ CREATE TABLE IF NOT EXISTS `muucmf_extend_config` (
   `group` tinyint(3) UNSIGNED NOT NULL DEFAULT '0' COMMENT '配置分组',
   `extra` varchar(255) NOT NULL DEFAULT '' COMMENT '配置值',
   `remark` varchar(500) NOT NULL COMMENT '配置说明',
-  `create_time` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '创建时间',
-  `update_time` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '更新时间',
+  `create_time` int(11) UNSIGNED NOT NULL COMMENT '创建时间',
+  `update_time` int(11) UNSIGNED NOT NULL COMMENT '更新时间',
   `status` tinyint(4) NOT NULL DEFAULT '0' COMMENT '状态',
   `value` text NOT NULL COMMENT '配置值',
   `sort` smallint(3) UNSIGNED NOT NULL DEFAULT '0' COMMENT '排序',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uk_name` (`name`) USING BTREE,
+  KEY `type` (`type`) USING BTREE,
+  KEY `group` (`group`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='扩展配置';
 
 --
 -- 转存表中的数据 `muucmf_extend_config`
 --
 
 INSERT INTO `muucmf_extend_config` (`id`, `name`, `type`, `title`, `group`, `extra`, `remark`, `create_time`, `update_time`, `status`, `value`, `sort`) VALUES
-(1, 'GROUP_LIST', 'entity', '扩展分组', 1, '', '分组后便于管理参数', 0, 1631683399, 1, '1:配置项\r\n2:阿里云OSS\r\n3:腾讯云COS\r\n4:阿里云短信\r\n5:腾讯云短信', 0),
-(3, 'PICTURE_UPLOAD_DRIVER', 'select', '图片上传驱动', 1, 'local:本地\r\naliyun:阿里云', '', 0, 1630909873, 1, 'local', 0),
-(4, 'FILE_UPLOAD_DRIVER', 'select', '文件上传驱动', 1, 'local:本地\r\naliyun:阿里云', '', 0, 1630911696, 1, 'local', 0),
+(1, 'GROUP_LIST', 'entity', '扩展分组', 1, '', '分组后便于管理参数', 0, 1645410333, 1, '1:配置项\r\n2:阿里云OSS\r\n3:腾讯云COS\r\n4:阿里云短信\r\n5:腾讯云短信\r\n6:微信支付\r\n7:支付宝支付\r\n8:提现配置', 0),
+(3, 'PICTURE_UPLOAD_DRIVER', 'select', '图片上传驱动', 1, '', '', 0, 1649315854, 1, 'local', 0),
+(4, 'FILE_UPLOAD_DRIVER', 'select', '文件上传驱动', 1, '', '', 0, 1649315862, 1, 'local', 0),
 (6, 'OSS_ALIYUN_ACCESSKEYID', 'string', 'AccessKeyID', 2, '', 'Access Key ID是您访问阿里云API的密钥，具有该账户完全的权限，请您妥善保管.', 1630910114, 1630918767, 1, 'LTAI5tL7gugDWUfwTUHrEdB1', 0),
 (7, 'OSS_ALIYUN_ACCESSKEYSECRET', 'string', 'AccessKeySecret', 2, '', 'Access Key Secret是您访问阿里云API的密钥，具有该账户完全的权限，请您妥善保管.', 1630910174, 1630918648, 1, 'YvHsCzzzwH8cj3YPOoU9aOeGeE7OVP', 0),
 (8, 'OSS_ALIYUN_ENDPOINT', 'string', 'Endpoint', 2, '', '如：oss-cn-beijing.aliyuncs.com', 1630910253, 1630918691, 1, 'oss-cn-beijing.aliyuncs.com', 0),
@@ -4111,7 +4219,59 @@ INSERT INTO `muucmf_extend_config` (`id`, `name`, `type`, `title`, `group`, `ext
 (28, 'SMS_TENCENT_SECRETID', 'string', 'SecretID', 5, '', 'SecretID 是您项目的安全密钥，具有该账户完全的权限，请妥善保管', 0, 0, 1, 'AKIDiGYZJmzvb091cvykFUSAbkcEZdQyFFzR', 0),
 (29, 'SMS_TENCENT_SECRETKEY', 'string', 'SecretKEY', 5, '', 'SecretKEY 是您项目的安全密钥，具有该账户完全的权限，请妥善保管', 0, 0, 1, 'DAqFOGrAE0VjgMltkLfmdEYaLp2ycz6v', 0),
 (30, 'SMS_TENCENT_REGION', 'string', 'Region', 5, '', '地域参数，格式 如：ap-beijing.', 0, 0, 1, 'ap-beijing', 0),
-(31, 'SMS_ALIYUN_REGION', 'string', 'Region', 4, '', '地域参数，格式 如：cn-beijing.', 0, 0, 1, 'cn-beijing', 0);
+(31, 'SMS_ALIYUN_REGION', 'string', 'Region', 4, '', '地域参数，格式 如：cn-beijing.', 0, 0, 1, 'cn-beijing', 0),
+(32, 'WX_PAY_MCH_ID', 'num', '微信商户ID', 6, '', 'Mch ID是您微信商户的商 户ID，请您妥善保管.', 0, 0, 1, '1513278631', 0),
+(33, 'WX_PAY_KEY_SECRET', 'string', '微信商户API密钥', 6, '', 'Key Secret是您微信商户的API密钥，请您妥善保管.', 0, 0, 1, 'E0DBCB26C939DEA508A33988CEAFAE79', 0),
+(34, 'VOD_UPLOAD_DRIVER', 'select', '云点播上传驱动', 1, '', '云点播上传驱动', 0, 0, 1, 'disable', 0),
+(35, 'VOD_TENCENT_SECRETID', 'string', 'SecretID', 1, '', 'SecretID 是您项目的安全密钥', 0, 0, 1, 'AKID70h9OaFMOIJ4bsmlQL8ZBsRr2zB36Y1G', 0),
+(36, 'VOD_TENCENT_SECRETKEY', 'string', 'SecretKEY', 1, '', 'SecretKEY 是您项目的安全密钥', 0, 1635733379, 1, 'nSuFPnwLoxwoU2KNOAZpzuzwsR374sa9', 0),
+(37, 'VOD_TENCENT_SUBAPPID', 'string', 'SubAppId', 1, '', 'SubAppId 是您云点播平台子应用ID', 0, 1635733390, 1, '1500003662', 0),
+(38, 'WITHDRAW_STATUS', 'select', '提现开关', 8, '0:关闭\r\n1:开启', '如有特殊情况，可暂时关闭提现', 0, 1645410598, 1, '0', 1),
+(39, 'WITHDRAW_TAX_RATE', 'num', '提现税率', 8, '', ' 默认千分之五（千分比）', 0, 1645410586, 1, '5', 2),
+(40, 'WITHDRAW_DAY_NUM', 'num', '每日可提现次数', 8, '', '一天最多可提现多少次', 0, 0, 1, '5', 3),
+(41, 'WITHDRAW_MIN_PRICE', 'num', '单次最小提现金额', 8, '', '一次最少提现金额', 0, 0, 1, '1', 4),
+(42, 'WITHDRAW_MAX_PRICE', 'num', '单次最大提现金额', 8, '', '一次最大提现金额', 0, 0, 1, '500', 5);
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `muucmf_favorites`
+--
+
+DROP TABLE IF EXISTS `muucmf_favorites`;
+CREATE TABLE IF NOT EXISTS `muucmf_favorites` (
+  `id` bigint(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+  `shopid` bigint(11) UNSIGNED NOT NULL COMMENT '订单所属店铺ID',
+  `app` varchar(60) NOT NULL COMMENT '关联应用的唯一标识',
+  `uid` int(11) UNSIGNED NOT NULL COMMENT '用户ID',
+  `info_type` varchar(32) NOT NULL COMMENT '关联模型，如：classroom:知识内容，column：专栏',
+  `info_id` bigint(11) UNSIGNED NOT NULL COMMENT '关联主键ID',
+  `status` tinyint(4) NOT NULL COMMENT '订单状态，1，正常，0，禁用，-1，已删除',
+  `metadata` text NOT NULL COMMENT '元数据',
+  `create_time` int(11) UNSIGNED NOT NULL COMMENT '创建时间',
+  `update_time` int(11) UNSIGNED NOT NULL COMMENT '更新时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='用户收藏表' ROW_FORMAT=COMPACT;
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `muucmf_feedback`
+--
+
+DROP TABLE IF EXISTS `muucmf_feedback`;
+CREATE TABLE IF NOT EXISTS `muucmf_feedback` (
+  `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+  `shopid` int(11) UNSIGNED NOT NULL COMMENT '平台ID',
+  `app` varchar(60) NOT NULL COMMENT '关联应用模板name',
+  `content` varchar(255) NOT NULL COMMENT '反馈内容',
+  `images` varchar(255) NOT NULL COMMENT '反馈图片，支持多张',
+  `uid` int(11) UNSIGNED NOT NULL COMMENT '用户ID',
+  `status` tinyint(2) NOT NULL COMMENT '状态，1，正常，0，禁用，-1，已删除',
+  `create_time` int(11) UNSIGNED NOT NULL COMMENT '创建时间',
+  `update_time` int(11) UNSIGNED NOT NULL COMMENT '更新时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='用户反馈表' ROW_FORMAT=COMPACT;
 
 -- --------------------------------------------------------
 
@@ -4144,6 +4304,8 @@ CREATE TABLE IF NOT EXISTS `muucmf_field_group` (
   `create_time` int(11) NOT NULL COMMENT '创建时间',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3 ;
+
+-- --------------------------------------------------------
 
 --
 -- 转存表中的数据 `muucmf_field_group`
@@ -4207,11 +4369,32 @@ CREATE TABLE IF NOT EXISTS `muucmf_follow` (
 -- --------------------------------------------------------
 
 --
+-- 表的结构 `muucmf_history`
+--
+DROP TABLE IF EXISTS `muucmf_history`;
+CREATE TABLE `muucmf_history` (
+  `id` bigint(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+  `shopid` int(10) NOT NULL COMMENT '店铺ID',
+  `app` varchar(60) NOT NULL COMMENT '关联的应用唯一标识',
+  `uid` int(11) UNSIGNED NOT NULL COMMENT '用户ID',
+  `info_id` int(11) UNSIGNED NOT NULL COMMENT '关联主键ID',
+  `info_type` varchar(255) NOT NULL COMMENT '关联模型',
+  `status` tinyint(4) NOT NULL COMMENT '状态',
+  `metadata` text NOT NULL COMMENT '元数据',
+  `create_time` int(11) UNSIGNED NOT NULL COMMENT '创建时间',
+  `update_time` int(11) UNSIGNED NOT NULL COMMENT '更新时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='内容浏览记录';
+
+-- --------------------------------------------------------
+
+--
 -- 表的结构 `muucmf_member`
 --
 DROP TABLE IF EXISTS `muucmf_member`;
 CREATE TABLE IF NOT EXISTS `muucmf_member` (
-  `uid` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '用户ID',
+  `uid` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '用户ID',
+  `shopid` int(11) UNSIGNED NOT NULL COMMENT '店铺ID',
   `username` varchar(32) NOT NULL COMMENT '用户名',
   `email` varchar(50) NOT NULL COMMENT '邮箱',
   `mobile` varchar(18) NOT NULL COMMENT '手机号',
@@ -4224,21 +4407,59 @@ CREATE TABLE IF NOT EXISTS `muucmf_member` (
   `qq` char(10) NOT NULL DEFAULT '' COMMENT 'qq号',
   `login` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '登录次数',
   `signature` text NOT NULL COMMENT '个性签名',
-  `balance` int(11) NOT NULL COMMENT '用户余额，单位：分',
-  `score1` float DEFAULT NULL COMMENT '积分',
-  `score2` double DEFAULT '0' COMMENT 'score2',
-  `score3` double DEFAULT '0' COMMENT 'score3',
-  `score4` double DEFAULT '0' COMMENT 'score4',
+  `score1` int(11) NOT NULL COMMENT '积分',
+  `score2` int(11) NOT NULL COMMENT 'score2',
+  `score3` int(11) NOT NULL COMMENT 'score3',
+  `score4` int(11) NOT NULL COMMENT 'score4',
   `status` tinyint(4) NOT NULL DEFAULT '0' COMMENT '会员状态',
-  `reg_ip` bigint(20) NOT NULL COMMENT '注册IP',
+  `reg_ip` varchar(128) NOT NULL COMMENT '注册IP',
   `last_login_time` int(11) NOT NULL COMMENT '最后登录时间',
-  `last_login_ip` bigint(20) NOT NULL COMMENT '最后登录IP',
-  `create_time` int(11) NOT NULL COMMENT '注册创建时间',
-  `update_time` int(11) NOT NULL COMMENT '更新时间',
+  `last_login_ip` varchar(128) NOT NULL COMMENT '最后登录IP',
+  `create_time` int(11) UNSIGNED NOT NULL COMMENT '注册创建时间',
+  `update_time` int(11) UNSIGNED NOT NULL COMMENT '更新时间',
   PRIMARY KEY (`uid`),
   KEY `status` (`status`),
   KEY `name` (`nickname`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='会员表' AUTO_INCREMENT=100 ;
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `muucmf_member_sync`
+--
+
+DROP TABLE IF EXISTS `muucmf_member_sync`;
+CREATE TABLE `muucmf_member_sync` (
+  `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+  `uid` int(11) UNSIGNED NOT NULL COMMENT '用户ID',
+  `openid` varchar(60) NOT NULL COMMENT '三方用户ID',
+  `unionid` varchar(60) NOT NULL COMMENT '三方平台ID',
+  `type` varchar(40) NOT NULL COMMENT 'weixin_h5微信公众号 weixin_app微信小程序',
+  `create_time` int(11) UNSIGNED NOT NULL COMMENT '创建时间',
+  `update_time` int(11) UNSIGNED NOT NULL COMMENT '更新时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='会员同步';
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `muucmf_member_wallet`
+--
+
+DROP TABLE IF EXISTS `muucmf_member_wallet`;
+CREATE TABLE `muucmf_member_wallet` (
+  `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+  `uid` int(11) UNSIGNED NOT NULL COMMENT '用户ID',
+  `shopid` int(11) UNSIGNED NOT NULL COMMENT '店铺ID',
+  `balance` int(11) NOT NULL COMMENT '用户余额',
+  `freeze` int(11) NOT NULL COMMENT '冻结资金',
+  `revenue` int(11) NOT NULL COMMENT '累计收益',
+  `create_time` int(11) UNSIGNED NOT NULL COMMENT '创建日期',
+  `update_time` int(11) UNSIGNED NOT NULL COMMENT '更新日期',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='用户钱包表';
+
+-- --------------------------------------------------------
 
 --
 -- 表的结构 `muucmf_menu`
@@ -4265,16 +4486,30 @@ CREATE TABLE IF NOT EXISTS `muucmf_menu` (
 --
 
 INSERT INTO `muucmf_menu` (`id`, `title`, `pid`, `sort`, `url`, `hide`, `type`, `tip`, `group`, `is_dev`, `icon`, `module`) VALUES
+('059F6E2E-F0AC-78D8-7113-246083B4A070', '移动端页面新增、编辑', 'A4196AE7-235B-A770-8F70-461C427738F7', 0, 'scoreshop/admin.page/mobileEdit', 1, 1, '', '', 0, '', 'scoreshop'),
+('060D0806-AB82-22B0-6DA7-D5D7D69E738F', '核销员设置', 'C59B208B-2369-B23E-9B80-BAB67BCE0C74', 42, 'classroom/admin.offline/managerLists', 0, 1, '', '线下课管理', 0, 'user-plus', 'classroom'),
+('07888F1B-CB8E-344F-2655-7800CCE3D8E2', '专栏课程', 'C59B208B-2369-B23E-9B80-BAB67BCE0C74', 28, 'classroom/admin.column/lists', 0, 1, '', '在线课管理', 0, 'th-large', 'classroom'),
+('08D8D4AB-7DE0-3D6C-2270-4FF3619B8496', '系统配置', '0B553D96-749B-AFB2-9DB9-F6300277C363', 2, 'forum/admin.config/index', 0, 1, '', '基础配置', 0, 'cogs', 'forum'),
+('0A391AFC-1F27-83A6-F38E-D35501E8937C', '配置管理', '1CCB2121-FA21-0088-E145-7483941BD02E', 1, 'livecourse/admin.config/index', 0, 1, '', '配置管理', 0, '', 'livecourse'),
+('0B553D96-749B-AFB2-9DB9-F6300277C363', '付费社群', '0', 4, 'forum/admin.index/index', 0, 1, '', '', 0, '', 'forum'),
+('0C54BD54-9B96-075E-0B03-B52AEC131724', '题库考试', '0', 0, 'exam/admin.index/index', 0, 1, '', '', 0, '', 'exam'),
+('0DB5F050-66EA-03D0-CE04-895DB8C50982', '系统升级', '74', 999, 'admin/Update/index', 0, 0, '', '系统升级', 0, 'cloud-download', 'admin'),
+('0ECA320C-3060-7B5D-D4D2-888DC29326EA', '分类新增、编辑', 'E18FA4AF-7217-EAA8-6BCB-B063E6337783', 0, 'activity/admin.category/edit', 0, 1, '', '', 0, '', 'activity'),
+('0F77F619-1413-D442-1E6D-562DD4F00064', '管理筛选值', '55D229CD-6A6E-D45C-5C6D-498A93F35144', 0, 'classroom/admin.attribute/manage', 0, 1, '', '', 0, '', 'classroom'),
 ('10001', '基本设置', '10000', 0, 'index/Admin/config', 0, 0, '', '设置', 0, '', 'index'),
 ('10313', '应用商店', '105', 0, 'admin/Appcloud/index', 0, 0, '', '云端', 0, 'cloud', ''),
-('105', '应用', '0', 70, 'admin/Module/index', 0, 0, '', '', 0, 'cloud', 'admin'),
+('10434803-7305-8D93-3075-1CCE62F09749', '兑换码', '0B553D96-749B-AFB2-9DB9-F6300277C363', 22, 'forum/admin.cdkey/lists', 1, 1, '', '兑换码管理', 0, '', 'forum'),
+('105', '应用', '0', 5, 'admin/Module/index', 0, 0, '', '', 0, 'cloud', 'admin'),
 ('106', '模块安装', '107', 3, 'admin/Module/install', 0, 0, '', '本地', 0, '', 'admin'),
 ('107', '应用管理', '105', 5, 'admin/Module/index', 0, 0, '', '本地', 0, 'laptop', 'admin'),
 ('108', '卸载模块', '107', 7, 'admin/module/uninstall', 1, 0, '', '本地', 0, '', ''),
 ('114', '行为限制列表', '2', 41, 'admin/action/limit', 0, 0, '', '行为管理', 0, 'ban', 'admin'),
+('11482681-D521-66FA-FF90-2B5556191EA3', '微信小程序配置', 'A4650B98-DAD4-8194-030C-1B2AB4F35CBA', 1, 'channel/admin.WechatMiniProgram/index', 0, 0, '', '微信小程序', 0, 'weixin', 'unions'),
 ('115', '新增/编辑行为限制', '114', 7, 'admin/action/editLimit', 0, 0, '', '', 0, '', ''),
 ('12', '用户组管理', '2', 3, 'admin/Auth/index', 0, 0, '', '权限组', 0, 'users', 'admin'),
+('1225F269-174A-65DE-CE3E-FC7BC54A100F', '新增、编辑', 'AA2E8DF2-3108-5B6E-CD24-1B8310D09AB6', 0, 'classroom/admin.Live/edit', 0, 1, '', '', 0, '', 'classroom'),
 ('13', '删除', '12', 0, 'admin/Auth/changeStatus?method=deleteGroup', 0, 0, '删除用户组', '', 0, '', 'admin'),
+('13DBFD8E-1794-DD9A-3D50-B2014F4C42C4', '分类管理', '0B553D96-749B-AFB2-9DB9-F6300277C363', 20, 'forum/admin.category/lists', 0, 1, '', '社群管理', 0, 'th-list', 'forum'),
 ('14', '禁用', '12', 0, 'admin/Auth/changeStatus?method=forbidGroup', 0, 0, '禁用用户组', '', 0, '', 'admin'),
 ('148', '删除日志', '31', 0, 'admin/Action/remove', 1, 0, '', '', 0, '', ''),
 ('149', '清空日志', '31', 0, 'admin/Action/clear', 1, 0, '', '', 0, '', ''),
@@ -4282,68 +4517,289 @@ INSERT INTO `muucmf_menu` (`id`, `title`, `pid`, `sort`, `url`, `hide`, `type`, 
 ('150', '设置积分状态', '51', 0, 'admin/Score/setTypeStatus', 0, 0, '', '', 0, '', 'admin'),
 ('151', '删除积分类型', '51', 0, 'admin/Score/delType', 1, 0, '', '', 0, '', 'admin'),
 ('153', '删除菜单', '82', 0, 'admin/Menu/del', 1, 0, '', '', 0, '', ''),
+('1533095B-307D-7329-6B41-44AC2259A343', '订单列表', '1CCB2121-FA21-0088-E145-7483941BD02E', 3, 'livecourse/admin.orders/lists', 0, 1, '', '订单管理', 0, '', 'livecourse'),
 ('155', '设置显示隐藏', '82', 0, 'admin/Menu/toogleHide', 1, 0, '', '', 0, '', ''),
+('1552C818-5C98-92E3-95EA-4D722E3968E8', '直接下级分销商', '6154107A-A934-CEF1-88C0-49C85E5923B9', 2, 'distribution/admin.promoter/sublevel', 1, 1, '', '', 0, '', 'distribution'),
 ('156', '行为限制启用、禁用、删除', '114', 0, 'admin/ActionLimit/setLimitStatus', 1, 0, '', '', 0, '', ''),
 ('16', '新增', '12', 0, 'admin/Auth/createGroup', 0, 0, '创建新的用户组', '', 0, '', 'admin'),
+('161C7D8A-AB52-DD21-B898-2DB1D72F0EF7', '资料下载', 'C59B208B-2369-B23E-9B80-BAB67BCE0C74', 26, 'classroom/admin.material/lists', 0, 1, '', '在线课管理', 0, 'download', 'classroom'),
 ('17', '编辑', '12', 0, 'admin/Auth/editGroup', 0, 0, '编辑用户组名称和描述', '', 0, '', 'admin'),
 ('170', '编辑模块', '107', 0, 'admin/Module/edit', 1, 0, '', '模块管理', 0, '', ''),
 ('18', '保存用户组', '12', 0, 'admin/Auth/writeGroup', 0, 0, '新增和编辑用户组的\"保存\"按钮', '', 0, '', 'admin'),
+('1819A61B-322B-4ED5-C539-066702C80606', '分类新增、编辑', '9CA9EC79-586A-1550-80AF-B12D22281D2D', 0, 'scoreshop/admin.category/edit', 1, 1, '', '', 0, '', 'scoreshop'),
 ('19', '授权', '12', 0, 'admin/Auth/group', 0, 0, '\"后台 \\ 用户 \\ 用户信息\"列表页的\"授权\"操作按钮,用于设置用户所属用户组', '', 0, '', 'admin'),
-('2', '用户', '0', 3, 'admin/member/index', 0, 0, '', '', 0, 'user', 'admin'),
+('1A21DBCD-FA7C-C84A-99A5-DA457DE56F01', '支付配置', '74', 6, 'admin/extend/payment', 0, 0, '', '第三方扩展', 0, 'jpy', 'admin'),
+('1B23C61A-3B9E-07DC-6FC8-DA8A2F7A80D0', '浏览记录', '8F5C83E0-3753-C731-4EEF-5D004137B11D', 91, 'admin/History/list', 0, 0, '', '用户互动', 0, 'eye', 'admin'),
+('1B6B6FB1-C5D2-301A-D115-AC54037ABE23', '专栏内容管理', '07888F1B-CB8E-344F-2655-7800CCE3D8E2', 0, 'classroom/admin.column/manager', 0, 1, '', '', 0, '', 'classroom'),
+('1CCB2121-FA21-0088-E145-7483941BD02E', '直播课堂', '0', 0, 'livecourse/admin.index/index', 0, 1, '', '', 0, '', 'livecourse'),
+('1E82B5BE-3CCF-C30D-F604-728174A3281F', '文章', '0', 1, 'articles/admin/index', 1, 1, '', '', 0, '', 'articles'),
+('1EB2371A-EBE7-ED0D-ABA2-BE309AA0ED0B', '订单列表', '2A1A844A-68B5-3787-FA0E-F0380A7EFE83', 60, 'scoreshop/admin.orders/lists', 0, 1, '', '订单管理', 0, 'newspaper-o', 'scoreshop'),
+('2', '用户', '0', 2, 'admin/member/index', 0, 0, '', '', 0, 'user', 'admin'),
 ('20', '访问授权', '12', 0, 'admin/Auth/access', 0, 0, '\"后台 \\ 用户 \\ 权限管理\"列表页的\"访问授权\"操作按钮', '', 0, '', 'admin'),
 ('201', '重置用户密码', '3', 0, 'admin/Member/initpass', 1, 0, '', '', 0, '', 'admin'),
 ('21', '成员授权', '12', 0, 'admin/Auth/user', 0, 0, '\"后台 \\ 用户 \\ 权限管理\"列表页的\"成员授权\"操作按钮', '', 0, '', 'admin'),
+('21F0B505-4C17-9DFE-D9A6-43D9CA564327', '控制台', '26DCAB9E-0A4E-7E9C-D16E-8D7FF67245E9', 1, 'minishop/admin.index/index', 0, 1, '', '基础配置', 0, 'area-chart', 'minishop'),
 ('22', '解除授权', '12', 0, 'admin/Auth/removeFromGroup', 0, 0, '\"成员授权\"列表页内的解除授权操作按钮', '', 0, '', 'admin'),
+('227057D2-2B6E-8119-06D2-BAEEDF236755', '系统配置', '2A1A844A-68B5-3787-FA0E-F0380A7EFE83', 1, 'scoreshop/admin.config/index', 0, 1, '', '基础配置', 0, 'cogs', 'scoreshop'),
 ('23', '保存成员授权', '12', 0, 'admin/Auth/addToGroup', 0, 0, '\"用户信息\"列表页\"授权\"时的\"保存\"按钮和\"成员授权\"里右上角的\"添加\"按钮)', '', 0, '', 'admin'),
-('231', '用户导航', '74', 5, 'admin/Channel/user', 0, 0, '', '导航管理', 0, 'user-plus', 'admin'),
+('231', '用户导航', '74', 61, 'admin/Channel/user', 0, 0, '', '导航管理', 0, 'user-plus', 'admin'),
 ('232', '积分日志', '2', 9, 'admin/Score/log', 0, 0, '', '积分管理', 0, 'calendar', 'admin'),
+('2393C8FA-0875-8894-8AB9-7B5E41D4A426', '新增、编辑', '3C9B77F3-4A0F-93F7-AD97-E579E9F966D7', 0, 'classroom/admin.imageText/edit', 0, 1, '', '在线课管理', 0, '', 'classroom'),
+('25D57993-C02A-4588-0517-4836CA407079', '评论列表', '1E82B5BE-3CCF-C30D-F604-728174A3281F', 200, 'articles/admin.comment/lists', 0, 1, '', '评论管理', 0, 'newspaper-o', 'articles'),
+('2644899F-6E2C-C43C-5ACF-BC9919D83AD3', '评论列表', '0B553D96-749B-AFB2-9DB9-F6300277C363', 24, 'forum/admin.postReply/lists', 0, 1, '', '社群管理', 0, 'commenting', 'forum'),
+('26B06CB8-C355-016B-762C-A61CFC73A3F3', '新增、编辑试题', '978599F8-BADC-B2FF-1D2D-17A9945CD7CE', 0, 'exam/admin.questions/edit', 0, 1, '', '', 0, '', 'exam'),
+('26DCAB9E-0A4E-7E9C-D16E-8D7FF67245E9', '云小店', '0', 2, 'minishop/admin.Index/index', 0, 1, '', '', 0, 'shopping-bag', 'minishop'),
+('27C2D3F8-D178-28DE-EC82-A96B6726D5F0', '新增、编辑公告', 'DAF83BB8-F5C2-0CBB-AD8B-FEBB44D12FA3', 0, 'admin/Announce/edit', 0, 0, '', '', 0, '', 'admin'),
+('28F002C8-4525-E354-C84D-B21BC9EB2485', '新增、编辑分类', 'F29D6718-A1CB-861E-438C-62F9635FF98B', 0, 'articles/admin.category/edit', 0, 1, '', '', 0, '', 'articles'),
 ('294859E5-C33E-098A-EDEB-B88928EF4DEC', '编辑', '3', 0, 'admin/member/edit', 0, 0, '', '', 0, '', 'admin'),
+('2A1A844A-68B5-3787-FA0E-F0380A7EFE83', '积分商城', '0', 0, 'scoreshop/admin.config/index', 0, 1, '', '', 0, 'shopping-bag', 'scoreshop'),
 ('3', '用户信息', '2', 2, 'admin/member/index', 0, 0, '', '用户管理', 0, 'user', ''),
+('30D0D3A2-C153-2D5C-119E-0F61324B476F', '筛选管理', '26DCAB9E-0A4E-7E9C-D16E-8D7FF67245E9', 21, 'minishop/admin.attribute/lists', 0, 1, '', '商品管理', 0, 'check-square', 'minishop'),
+('30E1D216-C309-DC1A-9A36-831C652F9E68', '直播间列表', '1CCB2121-FA21-0088-E145-7483941BD02E', 2, 'livecourse/admin.room/lists', 0, 1, '', '直播间管理', 0, '', 'livecourse'),
 ('31', '行为日志', '2', 42, 'admin/Action/log', 0, 0, '', '行为管理', 0, 'list-ul', 'admin'),
 ('32', '查看行为日志', '31', 0, 'admin/action/detail', 1, 0, '', '', 0, '', ''),
+('36645111-F7F8-94C2-577F-F8A71BF0324D', '新增、编辑', '07888F1B-CB8E-344F-2655-7800CCE3D8E2', 0, 'classroom/admin.column/edit', 0, 1, '', '', 0, '', 'classroom'),
+('37515457-B458-103E-9EB4-2F7F19CF2DB2', '核销员设置', 'E54D9FC1-F7C7-8E16-A19A-B86F2135710E', 31, 'activity/admin.verificationManager/lists', 0, 1, '', '核销管理', 0, 'user-plus', 'activity'),
 ('39', '扩展资料', '2', 6, 'admin/field/group', 0, 0, '', '用户管理', 0, 'expand', 'admin'),
+('39974021-941D-2510-4A74-F8BA392A5A7C', '视频课程', 'C59B208B-2369-B23E-9B80-BAB67BCE0C74', 24, 'classroom/admin.video/lists', 0, 1, '', '在线课管理', 0, 'video-camera', 'classroom'),
+('3C7A1DF0-F67F-30AD-246C-E413F0843C1D', '新增、编辑', '39974021-941D-2510-4A74-F8BA392A5A7C', 0, 'classroom/admin.video/edit', 0, 1, '', '', 0, '', 'classroom'),
+('3C9B77F3-4A0F-93F7-AD97-E579E9F966D7', '图文课程', 'C59B208B-2369-B23E-9B80-BAB67BCE0C74', 22, 'classroom/admin.ImageText/lists', 0, 1, '', '在线课管理', 0, 'file-image-o', 'classroom'),
+('3E80256F-B06C-0D29-9F12-1E78A13F81AD', '订单列表', 'E54D9FC1-F7C7-8E16-A19A-B86F2135710E', 60, 'activity/admin.orders/lists', 0, 1, '', '订单管理', 0, 'newspaper-o', 'activity'),
 ('4', '行为&积分规则', '2', 40, 'admin/Action/action', 0, 0, '', '行为管理', 0, 'hand-pointer-o', 'admin'),
 ('40', '添加、编辑分组', '39', 0, 'admin/field/editGroup', 0, 0, '', '', 0, '', 'admin'),
 ('41', '分组排序', '39', 0, 'admin/Member/sortProfile', 0, 0, '', '', 0, '', 'admin'),
+('41EDFF28-631A-95D1-2ECC-3F88EA2A8192', '活动新增编辑', 'D3AF5AEA-47CA-9CE7-A2FB-FD5E1BF2C891', 0, 'activity/admin.activity/edit', 0, 1, '', '', 0, '', 'activity'),
 ('42', '字段列表', '39', 0, 'admin/field/list', 0, 0, '', '', 0, '', 'admin'),
 ('43', '添加、编辑字段', '39', 0, 'admin/field/editField', 0, 0, '', '', 0, '', 'admin'),
 ('44', '字段排序', '39', 0, 'admin/field/sortField', 0, 0, '', '', 0, '', 'admin'),
+('45093DBF-2F35-478C-C143-51D58F0C9820', '自定义页面', 'F3E64A02-81BF-922A-EF22-09ABFD9CF4D8', 10, 'micro/admin.mobile/lists', 0, 1, '', '移动端', 0, '', 'micro'),
+('49EDB726-FDA7-61AA-0501-6B2EB850F5B7', 'DIY', '45093DBF-2F35-478C-C143-51D58F0C9820', 0, 'micro/admin.mobile/diy', 0, 1, '', '', 0, '', 'micro'),
+('4B3DFCDA-258E-0CBC-66D5-BB95CE81B9D5', '跳转小程序列表', 'A4650B98-DAD4-8194-030C-1B2AB4F35CBA', 998, 'channel/admin.tominiprogram/index', 0, 0, '', '微信小程序', 0, 'external-link', 'admin'),
+('4B6E56C7-715A-DEBB-F335-9B290240F781', '消息类型', '8F5C83E0-3753-C731-4EEF-5D004137B11D', 10, 'admin/Message/type', 0, 0, '', '消息管理', 0, 'commenting', 'admin'),
+('4D25C745-6F5C-B968-E68A-609E137C9B20', '订单列表', '0C54BD54-9B96-075E-0B03-B52AEC131724', 90, 'exam/admin.orders/lists', 0, 1, '', '订单管理', 0, 'newspaper-o', 'exam'),
+('4E72609A-8EBA-A6E3-A989-5AE47240D70A', '配置管理', '1E82B5BE-3CCF-C30D-F604-728174A3281F', 0, 'articles/admin.config/index', 0, 1, '', '配置管理', 0, 'cogs', 'articles'),
+('4EF1FF5B-F390-89DF-B9FE-30030977CC89', '发送消息', '4B6E56C7-715A-DEBB-F335-9B290240F781', 0, 'admin/Message/send', 0, 0, '', '', 0, '', 'admin'),
 ('51', '积分类型列表', '2', 10, 'admin/Score/type', 0, 0, '', '积分管理', 0, 'sticky-note', 'admin'),
 ('52', '新增/编辑类型', '51', 0, 'admin/Score/editType', 1, 0, '', '', 0, '', 'admin'),
+('55105D67-344F-7D1F-63EF-00503D476847', '系统配置', 'C59B208B-2369-B23E-9B80-BAB67BCE0C74', 0, 'classroom/admin.config/index', 0, 1, '', '基础配置', 0, 'cogs', 'classroom'),
+('55D229CD-6A6E-D45C-5C6D-498A93F35144', '筛选管理', 'C59B208B-2369-B23E-9B80-BAB67BCE0C74', 21, 'classroom/admin.attribute/lists', 0, 1, '', '分类管理', 0, 'check-square', 'classroom'),
+('5757C8A2-8F36-1AA8-1447-00A27875C2D7', '自定义页面', 'F3E64A02-81BF-922A-EF22-09ABFD9CF4D8', 21, 'micro/admin.pc/lists', 0, 1, '', 'PC端', 0, '', 'micro'),
+('5912A922-E34B-9288-6708-2D341192CFF8', '筛选管理', '2A1A844A-68B5-3787-FA0E-F0380A7EFE83', 21, 'scoreshop/admin.attribute/lists', 0, 1, '', '商品管理', 0, 'check-square', 'scoreshop'),
+('5950D1D9-DEB4-509B-9025-1B4798D55546', '分类新增、编辑', '13DBFD8E-1794-DD9A-3D50-B2014F4C42C4', 0, 'forum/admin.category/edit', 1, 1, '', '', 0, '', 'forum'),
+('59BCAF42-FE63-FD31-4B01-A0DBB5E4BDDD', '公告添加、编辑', '320CA81E-8D20-9248-4397-CA80D4058138', 0, 'scoreshop/admin.Announce/edit', 1, 1, '', '', 0, '', 'scoreshop'),
+('5D7C56F9-3AD1-11B0-4FF5-299DB47FB0A7', '线下课管理', 'C59B208B-2369-B23E-9B80-BAB67BCE0C74', 40, 'classroom/admin.offline/lists', 0, 1, '', '线下课管理', 0, 'map-marker', 'classroom'),
 ('5DDD95BA-9BB4-1340-5E62-D83C83A9F881', '存储设置', '74', 3, 'admin/extend/store', 0, 0, '', '第三方扩展', 0, 'plus-square', 'admin'),
 ('6', '新增、编辑用户行为', '4', 0, 'admin/action/edit', 0, 0, '', '', 0, '', 'admin'),
-('74', '系统', '0', 99, 'admin/Config/group', 0, 0, '', '', 0, 'windows', 'admin'),
+('609E34D4-037B-914C-42BD-5571EB94B64A', '问答管理', 'C59B208B-2369-B23E-9B80-BAB67BCE0C74', 100, 'classroom/admin.questions/lists', 0, 1, '', '用户互动', 0, 'question-circle-o', 'classroom'),
+('60B65D5D-41E9-1B97-446D-6F791BFF7AD6', '考试列表', '0C54BD54-9B96-075E-0B03-B52AEC131724', 60, 'exam/admin.exam/lists', 0, 1, '', '考试管理', 0, '', 'exam'),
+('60F1F173-0196-BEEE-7852-00F71939360A', '新增、编辑消息内容', 'D15A9C87-9B85-DE05-ADCF-EAAD05BD94FD', 0, 'admin/Message/contentEdit', 0, 0, '', '', 0, '', 'admin'),
+('6154107A-A934-CEF1-88C0-49C85E5923B9', '分销商管理', 'DC8DB3DE-7C67-A2E1-2DEB-E87585C74692', 2, 'distribution/admin.promoter/lists', 0, 1, '', '分销管理', 0, 'th-list', 'distribution'),
+('61D3370E-C3CB-C293-8051-B0442BCF27BA', '老师管理', 'C59B208B-2369-B23E-9B80-BAB67BCE0C74', 50, 'classroom/admin.teacher/lists', 0, 1, '', '老师管理', 0, 'user-plus', 'classroom'),
+('61DAFD9B-E944-AFC4-1B4D-0130E564D4CE', '文章列表', '1E82B5BE-3CCF-C30D-F604-728174A3281F', 100, 'articles/admin.articles/lists', 0, 1, '', '文章管理', 0, 'sticky-note-o', 'articles'),
+('65CAEBB7-DB63-B3F7-62F4-7CFDD7EB1A4F', '用户导航', 'F3E64A02-81BF-922A-EF22-09ABFD9CF4D8', 23, 'micro/admin.pc/usernav', 0, 1, '', 'PC端', 0, '', 'micro'),
+('68542D33-203F-C7F5-47C4-B7F4505865AF', '学习记录', 'C59B208B-2369-B23E-9B80-BAB67BCE0C74', 90, 'classroom/admin.time/member', 0, 1, '', '用户互动', 0, 'clock-o', 'classroom'),
+('6B092E46-1EF5-846D-1587-C9E35E0BEF0B', '开始升级', '0DB5F050-66EA-03D0-CE04-895DB8C50982', 0, 'admin/Update/start', 1, 0, '', '', 0, '', 'admin'),
+('6B0D6F06-BB37-64F1-B22B-D3A29193FAAD', '设置首页', '35A8666B-4F68-88B7-040A-7416DA2FE5D9', 0, 'minishop/admin.page/setHome', 0, 1, '', '', 0, '', 'minishop'),
+('6C5DCCBA-E4E0-D0AA-F8DE-CB61502730C6', '新增、编辑', 'E8ADC84B-B639-FEFB-AE99-9B9E4CED3679', 0, 'forum/admin.vip/edit', 1, 1, '', '', 0, '', 'forum'),
+('6C6C7C10-2F4E-B774-77FD-599F7E6417F6', '新增、编辑核销员', '060D0806-AB82-22B0-6DA7-D5D7D69E738F', 0, 'classroom/admin.offline/managerEdit', 0, 1, '', '', 0, '', 'classroom'),
+('6E50C73A-CA2B-7CA8-889E-99B25D578164', '公众号配置', 'A4650B98-DAD4-8194-030C-1B2AB4F35CBA', 0, 'channel/admin.OfficialAccount/index', 0, 0, '', '微信公众号', 0, 'weixin', 'unions'),
+('700931FE-EAC0-3A19-34F0-3C7C047353C6', '订单详情', '753F331D-7F1F-3B8D-B90A-9BB647B7BE10', 0, 'minishop/admin.orders/detail', 0, 1, '', '', 0, '', 'minishop'),
+('712FFED1-2DA9-F97C-7C58-F4B50709CD61', '题库考试', '0', 4, 'exam/admin.index/index', 0, 1, '', '', 0, '', 'admin'),
+('724B056B-73C9-ACAF-492D-5BC1928EA83C', '商品规格管理 ', 'AD7ABAAA-6497-2A90-1319-FA32479193B6', 0, 'scoreshop/admin.goods/sku', 1, 1, '', '', 0, '', 'scoreshop'),
+('74', '系统', '0', 6, 'admin/Config/group', 0, 0, '', '', 0, 'windows', 'admin'),
 ('75', '系统配置', '74', 1, 'admin/Config/group', 0, 0, '', '系统配置', 0, 'cog', 'admin'),
+('753F331D-7F1F-3B8D-B90A-9BB647B7BE10', '订单列表', '26DCAB9E-0A4E-7E9C-D16E-8D7FF67245E9', 60, 'minishop/admin.orders/lists', 0, 1, '', '订单管理', 0, 'newspaper-o', 'minishop'),
 ('76', '系统配置参数', '74', 2, 'admin/config/list', 0, 0, '', '系统配置', 0, 'list-ul', 'admin'),
+('764299E1-A418-8C55-D004-2CB4B15607A5', '试卷列表', '0C54BD54-9B96-075E-0B03-B52AEC131724', 30, 'exam/admin.paper/lists', 0, 1, '', '试卷管理', 0, '', 'exam'),
 ('77', '编辑', '76', 0, 'admin/config/edit', 0, 0, '新增编辑和保存配置', '', 0, '', ''),
+('778B735D-394B-14F7-7D9D-D3D489B5E706', '订单详情', '1EB2371A-EBE7-ED0D-ABA2-BE309AA0ED0B', 0, 'scoreshop/admin.orders/detail', 0, 1, '', '', 0, '', 'scoreshop'),
+('779A7963-C0FE-E448-69AE-B65440F9A640', '系统配置', 'E54D9FC1-F7C7-8E16-A19A-B86F2135710E', 0, 'activity/admin.config/index', 0, 1, '', '基础配置', 0, 'cogs', 'activity'),
 ('78', '删除', '76', 0, 'admin/Config/del', 0, 0, '删除配置', '', 0, '', ''),
+('782D3C8F-D46D-35F2-D778-31FD2DCAB7F5', '自动回复', 'A4650B98-DAD4-8194-030C-1B2AB4F35CBA', 6, 'channel/admin.OfficialAccount/autoReply', 0, 0, '', '微信公众号', 0, 'comment-o', 'unions'),
+('7B5DAB6C-C160-F201-D535-5A06E26F7DBE', '新增、编辑', '782D3C8F-D46D-35F2-D778-31FD2DCAB7F5', 0, 'unions/admin.OfficialAccount/editAutoReply', 0, 1, '', '', 0, '', 'unions'),
+('7DA9C3DD-CCCB-E427-9E6C-70823455D8C3', '新增、编辑', '161C7D8A-AB52-DD21-B898-2DB1D72F0EF7', 0, 'classroom/admin.material/edit', 0, 1, '', '', 0, '', 'classroom'),
+('7FA6CEF5-0E26-D9C3-EEB7-5FF0F9F8BFB6', '新增、编辑', '86EBF600-BD01-B867-2FB6-92FB305D366D', 0, 'forum/admin.vipCard/edit', 1, 1, '', '', 0, '', 'forum'),
+('7FDD2D42-33EA-F1B7-5C13-8800A8EFE584', '分类新增、编辑', 'F436D7A4-CAB9-C87C-F698-D9A529498BB0', 0, 'exam/admin.category/edit', 0, 1, '', '', 0, '', 'exam'),
 ('8', '变更行为状态', '4', 0, 'admin/action/setStatus', 0, 0, '', '', 0, '', ''),
 ('80', '保存', '76', 0, 'admin/Config/save', 0, 0, '保存配置', '', 0, '', ''),
 ('81', '排序', '76', 0, 'admin/Config/sort', 1, 0, '', '', 0, '', ''),
-('82', '系统权限菜单', '74', 19, 'admin/menu/index', 0, 0, '', '权限管理', 0, 'navicon', 'admin'),
+('812DB499-01B8-787D-7EDA-AC4A9FDCAFBC', '订阅消息', 'A4650B98-DAD4-8194-030C-1B2AB4F35CBA', 2, 'channel/admin.WechatMiniProgram/templateMessage', 0, 0, '', '微信小程序', 0, 'commenting-o', 'admin'),
+('82', '系统权限菜单', '74', 80, 'admin/menu/index', 0, 0, '', '权限管理', 0, 'navicon', 'admin'),
+('829F0C36-06F4-71BD-3F70-124B05125F09', '管理筛选值', '5912A922-E34B-9288-6708-2D341192CFF8', 0, 'scoreshop/admin.attribute/manage', 1, 1, '', '', 0, '', 'scoreshop'),
 ('83', '新增', '82', 0, 'admin/Menu/add', 0, 0, '', '系统设置', 0, '', ''),
 ('84', '编辑', '82', 0, 'admin/Menu/edit', 0, 0, '', '', 0, '', ''),
+('8412EFD0-C08F-CF3E-F0FB-9F714E956FCA', '新增、编辑卡项', 'B7F8FB44-F1A0-3788-0991-38829831A749', 0, 'classroom/admin.VipCard/edit', 0, 1, '', '', 0, '', 'classroom'),
 ('85', '导入', '82', 0, 'admin/Menu/import', 0, 0, '', '', 0, '', ''),
+('85669A1F-A229-FA7F-5831-6A8D7BD64631', '分销商详情', '6154107A-A934-CEF1-88C0-49C85E5923B9', 0, 'distribution/admin.promoter/detail', 1, 1, '', '', 0, '', 'distribution'),
 ('86', '排序', '82', 0, 'admin/Menu/sort', 1, 0, '', '', 0, '', ''),
-('87', '前台导航', '74', 6, 'admin/channel/common', 0, 0, '', '导航管理', 0, 'sitemap', 'admin'),
-('88', '新增', '87', 0, 'admin/Channel/add', 0, 0, '', '', 0, '', ''),
-('89', '编辑', '87', 0, 'admin/Channel/edit', 0, 0, '', '', 0, '', ''),
+('86A2539D-A2AD-D3A1-F7A7-2573E00DC086', '分类新增、编辑', 'DF4DB621-8524-F860-5D6B-F789340E192C', 0, 'classroom/admin.category/edit', 0, 1, '', '', 0, '', 'classroom'),
+('86EBF600-BD01-B867-2FB6-92FB305D366D', '卡项管理', '0B553D96-749B-AFB2-9DB9-F6300277C363', 26, 'forum/admin.vipCard/lists', 0, 1, '', 'VIP会员', 0, 'id-card', 'forum'),
+('87', '前台导航', 'A4650B98-DAD4-8194-030C-1B2AB4F35CBA', 60, 'channel/admin.pc/channel', 0, 0, '', 'PC管理', 0, 'sitemap', 'admin'),
+('8894CE05-A6BF-DCBE-E020-B2F3484FD6BE', '商品新增、编辑', 'AD7ABAAA-6497-2A90-1319-FA32479193B6', 0, 'scoreshop/admin.goods/edit', 1, 1, '', '', 0, '', 'scoreshop'),
+('88AA61FE-1498-2D6E-661B-C31756FB2965', '管理筛选值', 'D812F6DD-7FD6-3E01-37B5-4C18EE0F07F9', 0, 'activity/admin.attribute/manage', 0, 1, '', '', 0, '', 'activity'),
+('897E2923-8BD9-B391-2BB4-6B67EAF897C6', '核销管理', 'C59B208B-2369-B23E-9B80-BAB67BCE0C74', 41, 'classroom/admin.offline/verification', 0, 1, '', '线下课管理', 0, '', 'classroom'),
+('89E17276-8445-6267-FF14-01A1683D3D40', '管理筛选值', 'B23588C2-4A75-5F9C-9C22-8B4F86DDC6D7', 0, 'exam/admin.attribute/manage', 0, 1, '', '', 0, '', 'exam'),
+('8AAB43C1-7E07-3BD0-56FA-1653FA269380', '筛选新增、编辑', '55D229CD-6A6E-D45C-5C6D-498A93F35144', 0, 'minishop/admin.attribute/edit', 0, 1, '', '商品管理', 0, '', 'minishop'),
 ('8AEC0A7D-555F-8708-90B0-5528A2542F2F', '新增、编辑', 'D1B92885-12EA-9403-F367-E8978A4650DE', 0, 'admin/extend/edit', 0, 0, '', '', 0, '', 'admin'),
-('90', '删除', '87', 0, 'admin/Channel/del', 0, 0, '', '', 0, '', ''),
-('91', '排序', '87', 0, 'admin/Channel/sort', 1, 0, '', '', 0, '', ''),
-('92', '备份数据库', '74', 20, 'admin/Database/dataExport', 0, 0, '', '数据备份', 0, 'database', 'admin'),
+('8D1000BA-BD92-CBD5-FCFE-393926C4B6D6', '核销管理', 'E54D9FC1-F7C7-8E16-A19A-B86F2135710E', 32, 'activity/admin.verification/lists', 0, 1, '', '核销管理', 0, 'address-card', 'activity'),
+('8E8FCDCA-42C2-4A13-C1B3-756000F3F24C', '运费新增、编辑', '9EF50E00-970D-4AD7-CDB7-4DAB2AE4A82F', 0, 'minishop/admin.delivery/edit', 0, 1, '', '', 0, '', 'minishop'),
+('8F5C83E0-3753-C731-4EEF-5D004137B11D', '运营', '0', 3, 'admin/Announce/list', 0, 0, '', '', 0, 'area-chart', 'admin'),
+('8F6741BF-6CBC-89F6-2DA3-564E34EDBF81', '公告添加、编辑', 'BA082DFE-8E9A-C683-D886-026EC37F7D7D', 0, 'minishop/admin.Announce/edit', 1, 1, '', '', 0, '', 'minishop'),
+('9046DAB8-73C9-74CF-B95B-6110A41BF43D', '任务管理', '74', 70, 'admin/crontab/list', 0, 0, '', '计划任务', 0, 'clock-o', 'admin'),
+('9065163B-C8D4-CC16-9984-0451041465C9', '系统配置', 'DC8DB3DE-7C67-A2E1-2DEB-E87585C74692', 0, 'distribution/admin.config/index', 0, 1, '', '基础设置', 0, 'cogs', 'distribution'),
+('909E4E57-AE99-2CD0-74A2-2CCB3D03C79D', '新增、编辑直播间', '30E1D216-C309-DC1A-9A36-831C652F9E68', 0, 'livecourse/admin.room/edit', 0, 1, '', '直播间管理', 0, '', 'livecourse'),
+('91377A3B-2DF4-9334-E70C-6240DB520341', '新增、编辑', '4B3DFCDA-258E-0CBC-66D5-BB95CE81B9D5', 0, 'channel/admin.tominiprogram/edit', 1, 0, '', '跳转小程序', 0, '', 'admin'),
+('92', '备份数据库', '74', 90, 'admin/Database/dataExport', 0, 0, '', '数据备份', 0, 'database', 'admin'),
 ('93', '备份', '92', 0, 'admin/Database/export', 0, 0, '备份数据库', '', 0, '', ''),
 ('94', '优化表', '92', 0, 'admin/Database/optimize', 0, 0, '优化数据表', '', 0, '', ''),
 ('95', '修复表', '92', 0, 'admin/Database/repair', 0, 0, '修复数据表', '', 0, '', ''),
-('96', '还原数据库', '74', 21, 'admin/Database/dataImport', 0, 0, '', '数据备份', 0, 'window-restore', 'admin'),
+('96', '还原数据库', '74', 91, 'admin/Database/dataImport', 0, 0, '', '数据备份', 0, 'window-restore', 'admin'),
 ('97', '恢复', '96', 0, 'admin/Database/import', 0, 0, '数据库恢复', '', 0, '', ''),
+('978599F8-BADC-B2FF-1D2D-17A9945CD7CE', '试题管理', '0C54BD54-9B96-075E-0B03-B52AEC131724', 20, 'exam/admin.questions/lists', 0, 1, '', '题库管理', 0, 'calendar-o', 'exam'),
+('97A89093-CD26-8166-460A-6F6A9BA30C30', '社群列表', '0B553D96-749B-AFB2-9DB9-F6300277C363', 21, 'forum/admin.forum/lists', 0, 1, '', '社群管理', 0, 'commenting-o', 'forum'),
 ('98', '删除', '96', 0, 'admin/Database/del', 0, 0, '删除备份文件', '', 0, '', ''),
-('A8DBCB14-BA8A-7888-824F-AF15DF7AF84D', '控制台', 'DA900619-B54E-49E7-8027-21C94ECD6FAC', 0, 'admin/index/index', 0, 0, '', '控制台', 0, '', ''),
-('BD56C46E-C9B0-D24A-C7F9-93831C04820D', '首页', '0', 0, 'index/index/index', 0, 1, '', '', 0, '', 'index'),
+('987A27D8-8E9E-F298-C93A-4E81627D678C', '新增、编辑', '5D7C56F9-3AD1-11B0-4FF5-299DB47FB0A7', 0, 'classroom/admin.offline/edit', 0, 1, '', '', 0, '', 'classroom'),
+('9BE37DD3-641B-1CF0-BE1D-52A38F7BE6C4', '分类树', 'B7135ED2-C7EA-4232-F61E-BC521D606AE2', 0, 'demo/admin/tree', 0, 1, '', 'Bulider机制', 0, '', 'demo'),
+('9C42B22C-3466-1596-A3C3-703B5C657C9C', '系统配置', '26DCAB9E-0A4E-7E9C-D16E-8D7FF67245E9', 2, 'minishop/admin.config/index', 0, 1, '', '基础配置', 0, 'cogs', 'minishop'),
+('9C71E25E-7A2D-5736-02A8-867CA310C4E9', '新增、编辑', 'A6751B14-9D42-3C9F-7B48-B56C9B7B8873', 0, 'minishop/admin.vipCard/edit', 1, 1, '', 'VIP会员 ', 0, '', 'minishop'),
+('9CA9EC79-586A-1550-80AF-B12D22281D2D', '分类管理', '2A1A844A-68B5-3787-FA0E-F0380A7EFE83', 20, 'scoreshop/admin.category/lists', 0, 1, '', '商品管理', 0, 'th-list', 'scoreshop'),
+('9E5DAA35-EFD5-9446-63FA-C204E42ED2A5', '新增、编辑', 'DF720B34-F928-4D1B-43FF-49FA30B55E58', 0, 'classroom/admin.audio/edit', 0, 1, '', '', 0, '', 'classroom'),
+('9EF50E00-970D-4AD7-CDB7-4DAB2AE4A82F', '运费模板', '26DCAB9E-0A4E-7E9C-D16E-8D7FF67245E9', 23, 'minishop/admin.delivery/lists', 0, 1, '', '商品管理', 0, 'cog', 'minishop'),
+('9F92AFDB-9B41-5D82-0704-BA98008E233B', '小程序配置', 'A4650B98-DAD4-8194-030C-1B2AB4F35CBA', 0, 'channel/admin.MiniProgram/shopIndex', 1, 0, '', '小程序配置', 0, '', 'unions'),
+('A0F85745-B3E4-8C98-649B-ED25C13413E0', '商品规格管理 ', 'B84F8F95-4029-075B-9A4E-46502D9033F5', 0, 'minishop/admin.goods/sku', 0, 1, '', '', 0, '', 'minishop'),
+('A1C1C053-EBEF-CA92-4DDD-855A6BC2FB7C', '直播课配置', 'C59B208B-2369-B23E-9B80-BAB67BCE0C74', 30, 'classroom/admin.Live/config', 0, 1, '', '直播课管理', 0, 'cog', 'classroom'),
+('A3F78CCD-3F3C-4BDA-D96C-C0E68BC59188', '答题记录', '0C54BD54-9B96-075E-0B03-B52AEC131724', 40, 'exam/admin.record/lists', 0, 1, '', '模拟练习', 0, '', 'exam'),
+('A4650B98-DAD4-8194-030C-1B2AB4F35CBA', '渠道', '0', 4, 'channel/admin.OfficialAccount/index', 0, 0, '', '', 0, 'cubes', 'unions'),
+('A5CD3728-FB33-F213-0CD0-075F1A5BF756', '列表演示', 'B7135ED2-C7EA-4232-F61E-BC521D606AE2', 0, 'demo/Admin/listDemo', 0, 1, '', 'Bulider机制', 0, '', 'demo'),
+('A6751B14-9D42-3C9F-7B48-B56C9B7B8873', '卡项管理', '26DCAB9E-0A4E-7E9C-D16E-8D7FF67245E9', 26, 'minishop/admin.vipCard/lists', 0, 1, '', 'VIP会员', 0, 'id-card', 'minishop'),
+('A75F3AE7-412A-F043-FF30-8779F39C0B1A', '新增、编辑 ', 'BE8DF9EB-D0B3-5696-2E06-163440C6F7BA', 0, 'minishop/admin.vip/edit', 1, 1, '', 'VIP会员', 0, '', 'minishop'),
+('A8DBCB14-BA8A-7888-824F-AF15DF7AF84D', '控制台', 'DA900619-B54E-49E7-8027-21C94ECD6FAC', 0, 'admin/index/index', 0, 0, '', '控制台', 0, 'cog', 'admin'),
+('A95B82D0-1756-48ED-9AFB-1C283A174A9D', '筛选新增、编辑', 'B23588C2-4A75-5F9C-9C22-8B4F86DDC6D7', 0, 'exam/admin.attribute/edit', 0, 1, '', '', 0, '', 'exam'),
+('AA2E8DF2-3108-5B6E-CD24-1B8310D09AB6', '直播课堂', 'C59B208B-2369-B23E-9B80-BAB67BCE0C74', 31, 'classroom/admin.Live/lists', 0, 1, '', '直播课管理', 0, 'video-camera', 'classroom'),
+('AA5E505D-8F99-EFBD-F434-D099109DF291', '提现管理', '8F5C83E0-3753-C731-4EEF-5D004137B11D', 12, 'admin/withdraw/lists', 0, 0, '', '提现管理', 0, 'money', 'admin'),
+('AD4E0A9E-FD52-2FA9-EC0B-4B6D15D13951', '新增、编辑任务', '9046DAB8-73C9-74CF-B95B-6110A41BF43D', 0, 'admin/crontab/edit', 1, 0, '', '计划任务', 0, '', 'admin'),
+('AD5E02C5-B1C6-7555-D8A7-09189710DD57', '云点播配置', '74', 5, 'admin/extend/vod', 0, 0, '', '第三方扩展', 0, 'cloud-upload', 'admin'),
+('AD7ABAAA-6497-2A90-1319-FA32479193B6', '商品管理', '2A1A844A-68B5-3787-FA0E-F0380A7EFE83', 22, 'scoreshop/admin.goods/lists', 0, 1, '', '商品管理', 0, 'file-image-o', 'scoreshop'),
+('AD8E5784-2C84-0F0C-A46F-D5B23530B067', '新增、编辑', '61D3370E-C3CB-C293-8051-B0442BCF27BA', 0, 'classroom/admin.teacher/edit', 0, 1, '', '', 0, '', 'classroom'),
+('AF7DBA13-84ED-5AEE-E267-68F5B9C30021', '试卷试题', '764299E1-A418-8C55-D004-2CB4B15607A5', 2, 'exam/admin.paper/questions', 0, 1, '', '', 0, '', 'exam'),
+('B0905BE8-96D8-F526-EAC1-E0EA48B0031D', '筛选新增、编辑', 'D812F6DD-7FD6-3E01-37B5-4C18EE0F07F9', 0, 'activity/admin.attribute/edit', 0, 1, '', '', 0, '', 'activity'),
+('B23588C2-4A75-5F9C-9C22-8B4F86DDC6D7', '筛选管理', '0C54BD54-9B96-075E-0B03-B52AEC131724', 11, 'exam/admin.attribute/lists', 0, 1, '', '分类管理', 0, 'check-square', 'exam'),
+('B4CCC48C-113F-4A31-9378-F9F77EEA9F4B', '用户反馈', '8F5C83E0-3753-C731-4EEF-5D004137B11D', 90, 'admin/Feedback/list', 0, 0, '', '用户互动', 0, 'exchange', 'admin'),
+('B7135ED2-C7EA-4232-F61E-BC521D606AE2', 'Demo', '0', 5, 'demo/admin/index', 0, 1, '', '', 0, '', 'demo'),
+('B7F8FB44-F1A0-3788-0991-38829831A749', '卡项管理', 'C59B208B-2369-B23E-9B80-BAB67BCE0C74', 71, 'classroom/admin.VipCard/lists', 0, 1, '', 'VIP会员', 0, 'id-card', 'classroom'),
+('B84F8F95-4029-075B-9A4E-46502D9033F5', '商品管理', '26DCAB9E-0A4E-7E9C-D16E-8D7FF67245E9', 22, 'minishop/admin.goods/lists', 0, 1, '', '商品管理', 0, 'file-image-o', 'minishop'),
+('BCC936B0-6935-37C6-79CC-03A47BE349C2', '社群新增、编辑', '97A89093-CD26-8166-460A-6F6A9BA30C30', 21, 'forum/admin.forum/edit', 1, 1, '', '社群管理', 0, '', 'forum'),
+('BD56C46E-C9B0-D24A-C7F9-93831C04820D', '首页', '0', 6, 'index/index/index', 0, 1, '', '', 0, '', 'index'),
 ('BD914EA5-C77D-7118-399B-2E19DEB1D44B', '基础配置', 'BD56C46E-C9B0-D24A-C7F9-93831C04820D', 0, 'index/admin/index', 0, 1, '', '基础配置', 0, '', 'index'),
-('C8862310-A0B1-3BF0-3195-D92236CD0A5C', '短信配置', '74', 0, 'admin/extend/sms', 0, 0, '', '第三方扩展', 0, '', 'admin'),
-('D1B92885-12EA-9403-F367-E8978A4650DE', '扩展配置参数', '74', 999, 'admin/extend/list', 0, 0, '', '第三方扩展', 0, '', 'admin'),
-('DA900619-B54E-49E7-8027-21C94ECD6FAC', '控制台', '0', 0, 'admin/index/index', 0, 0, '后台首页', '', 0, '', '');
+('BE860666-0366-44FE-4282-1F3B63B384C7', 'VIP会员', 'C59B208B-2369-B23E-9B80-BAB67BCE0C74', 70, 'classroom/admin.vip/lists', 0, 1, '', 'VIP会员', 0, 'user-circle-o', 'classroom'),
+('BE8DF9EB-D0B3-5696-2E06-163440C6F7BA', 'VIP会员', '26DCAB9E-0A4E-7E9C-D16E-8D7FF67245E9', 24, 'minishop/admin.vip/lists', 0, 1, '', 'VIP会员', 0, 'user-circle-o', 'minishop'),
+('C0905880-3DF8-B37E-343E-1AA8761EC765', '订单列表', 'C59B208B-2369-B23E-9B80-BAB67BCE0C74', 80, 'classroom/admin.orders/lists', 0, 1, '', '订单管理', 0, 'newspaper-o', 'classroom'),
+('C0E096B9-7F7E-0C84-E8E5-E11D2F0AB145', 'TabBar', 'F3E64A02-81BF-922A-EF22-09ABFD9CF4D8', 11, 'micro/admin.mobile/tabbar', 0, 1, '', '移动端', 0, '', 'micro'),
+('C1447D41-4F7B-2335-8B4C-2E0A25E943EC', '试题列表', '712FFED1-2DA9-F97C-7C58-F4B50709CD61', 41, 'exam/admin.exam/questionsList', 0, 1, '', '题库考试', 0, '', 'classroom'),
+('C18BC914-3682-E539-BAB3-1B46E0357589', '控制台', 'C59B208B-2369-B23E-9B80-BAB67BCE0C74', 0, 'classroom/admin.index/index', 0, 1, '', '基础配置', 0, 'area-chart', 'classroom'),
+('C28A63EA-054F-4366-15CF-364BAC45BC8E', '分类新增、编辑', 'C3FF1DE5-0B8B-EBFB-5FF4-6A0415048D39', 0, 'minishop/admin.category/edit', 0, 1, '', '', 0, '', 'minishop'),
+('C2E64010-AC80-DF22-5C53-53A709B6F914', '表单演示', 'B7135ED2-C7EA-4232-F61E-BC521D606AE2', 0, 'demo/Admin/config', 0, 1, 'Bulider机制', 'Bulider机制', 0, '', 'demo'),
+('C3FF1DE5-0B8B-EBFB-5FF4-6A0415048D39', '分类管理', '26DCAB9E-0A4E-7E9C-D16E-8D7FF67245E9', 20, 'minishop/admin.category/lists', 0, 1, '', '商品管理', 0, 'th-list', 'minishop'),
+('C59B208B-2369-B23E-9B80-BAB67BCE0C74', '云课堂', '0', 3, 'classroom/admin.index/index', 0, 1, '', '', 0, '', 'classroom'),
+('C62E6C5E-778D-FC91-913C-A817EE4D3796', '新增、编辑文章', '61DAFD9B-E944-AFC4-1B4D-0130E564D4CE', 0, 'articles/admin.articles/edit', 0, 1, '', '', 0, '', 'articles'),
+('C8862310-A0B1-3BF0-3195-D92236CD0A5C', '短信配置', '74', 4, 'admin/extend/sms', 0, 0, '', '第三方扩展', 0, 'mobile', 'admin'),
+('C960C7FF-D99F-14F6-4082-D7F0FA9A5B3C', '推广日志', 'DC8DB3DE-7C67-A2E1-2DEB-E87585C74692', 4, 'distribution/admin.record/lists', 0, 1, '', '分销管理', 0, 'file-image-o', 'distribution'),
+('D15A9C87-9B85-DE05-ADCF-EAAD05BD94FD', '消息发送记录', '8F5C83E0-3753-C731-4EEF-5D004137B11D', 11, 'admin/Message/list', 0, 0, '', '消息管理', 0, 'comments', 'admin'),
+('D1B92885-12EA-9403-F367-E8978A4650DE', '扩展配置参数', '74', 999, 'admin/extend/list', 0, 0, '', '第三方扩展', 0, 'list-ul', 'admin'),
+('D273258A-2842-7AF2-802C-6AC91C98CB9A', '权限菜单', '107', 8, 'admin/module/menu', 0, 1, '', '本地', 0, '', 'admin'),
+('D3AF5AEA-47CA-9CE7-A2FB-FD5E1BF2C891', '活动管理', 'E54D9FC1-F7C7-8E16-A19A-B86F2135710E', 22, 'activity/admin.activity/lists', 0, 1, '', '活动管理', 0, 'map-marker', 'activity'),
+('D45D94D6-4637-EB3D-9909-C30D2369A91F', '设置首页', 'A4196AE7-235B-A770-8F70-461C427738F7', 0, 'scoreshop/admin.page/setHome', 1, 1, '', '', 0, '', 'scoreshop'),
+('D5FDAA08-68E2-C8D3-85C7-D09973DA3A22', '佣金收入', 'DC8DB3DE-7C67-A2E1-2DEB-E87585C74692', 30, 'distribution/admin.charges/lists', 0, 1, '', '资金管理', 0, 'user-plus', 'distribution'),
+('D7AC6473-7E00-7B96-9361-511E06A89F27', '新增、编辑消息类型', '4B6E56C7-715A-DEBB-F335-9B290240F781', 0, 'admin/Message/typeEdit', 0, 0, '', '', 0, '', 'admin'),
+('D812F6DD-7FD6-3E01-37B5-4C18EE0F07F9', '筛选管理', 'E54D9FC1-F7C7-8E16-A19A-B86F2135710E', 21, 'activity/admin.attribute/lists', 0, 1, '', '活动管理', 0, 'check-square', 'activity'),
+('D8BD20B3-5919-0BFD-BB51-689FE8FF7719', '订单管理', '0B553D96-749B-AFB2-9DB9-F6300277C363', 27, 'forum/admin.orders/lists', 0, 1, '', '订单管理', 0, 'th-list', 'forum'),
+('DA900619-B54E-49E7-8027-21C94ECD6FAC', '控制台', '0', 1, 'admin/index/index', 0, 0, '后台首页', '', 0, 'cog', 'admin'),
+('DABA8BF4-83F7-9354-895B-DAAC65A11CB1', '新增、编辑权限菜单', '107', 9, 'admin/module/medit', 0, 1, '', '本地', 0, '', 'admin'),
+('DAF83BB8-F5C2-0CBB-AD8B-FEBB44D12FA3', '公告管理', '8F5C83E0-3753-C731-4EEF-5D004137B11D', 2, 'admin/Announce/list', 0, 0, '', '公告管理', 0, 'bullhorn', 'admin'),
+('DC8DB3DE-7C67-A2E1-2DEB-E87585C74692', '分销', '0', 0, 'distribution/admin.config/index', 0, 1, '', '', 0, '', 'distribution'),
+('DD9D49C2-E383-CCA7-1BFA-FB47BCABF3AE', '移动端页面新增、编辑', '35A8666B-4F68-88B7-040A-7416DA2FE5D9', 0, 'minishop/admin.page/mobileEdit', 0, 1, '', '', 0, '', 'minishop'),
+('DF4DB621-8524-F860-5D6B-F789340E192C', '分类管理', 'C59B208B-2369-B23E-9B80-BAB67BCE0C74', 20, 'classroom/admin.category/lists', 0, 1, '', '分类管理', 0, 'th-list', 'classroom'),
+('DF720B34-F928-4D1B-43FF-49FA30B55E58', '音频课程', 'C59B208B-2369-B23E-9B80-BAB67BCE0C74', 23, 'classroom/admin.Audio/lists', 0, 1, '', '在线课管理', 0, 'volume-down', 'classroom'),
+('E0623338-C0C0-6BC5-15F8-2D5A150AACB8', '试题分类', '712FFED1-2DA9-F97C-7C58-F4B50709CD61', 40, 'exam/admin.exam/lists', 0, 1, '', '题库考试', 0, '', 'classroom'),
+('E18FA4AF-7217-EAA8-6BCB-B063E6337783', '分类管理', 'E54D9FC1-F7C7-8E16-A19A-B86F2135710E', 20, 'activity/admin.category/lists', 0, 1, '', '活动管理', 0, 'th-list', 'activity'),
+('E54D9FC1-F7C7-8E16-A19A-B86F2135710E', '线下活动', '0', 0, 'activity/admin.config/index', 0, 1, '', '', 0, '', 'activity'),
+('E638A4EA-602A-D876-6D86-E3AED5917F24', '核销员新增、编辑', '37515457-B458-103E-9EB4-2F7F19CF2DB2', 0, 'activity/admin.verificationManager/edit', 0, 1, '', '', 0, '', 'activity'),
+('E655CE72-9B0C-1787-D502-F19221867C3D', '新增、编辑VIP会员', 'BE860666-0366-44FE-4282-1F3B63B384C7', 0, 'classroom/admin.Vip/edit', 0, 1, '', '', 0, '', 'classroom'),
+('E8ADC84B-B639-FEFB-AE99-9B9E4CED3679', 'VIP会员', '0B553D96-749B-AFB2-9DB9-F6300277C363', 25, 'forum/admin.vip/lists', 0, 1, '', 'VIP会员', 0, 'user-circle-o', 'forum'),
+('E8FF682F-3694-E678-018C-AE5F2FC4A87C', '新增、编辑试卷', '764299E1-A418-8C55-D004-2CB4B15607A5', 1, 'exam/admin.paper/edit', 0, 1, '', '', 0, '', 'exam'),
+('E97A2B9E-30E6-8678-7D3C-9178FC908E18', '筛选新增、编辑', '55D229CD-6A6E-D45C-5C6D-498A93F35144', 0, 'classroom/admin.attribute/edit', 0, 1, '', '在线课管理', 0, '', 'classroom'),
+('EAC6CA3E-C0EF-0902-880B-99F41552CAA4', '系统配置', '0C54BD54-9B96-075E-0B03-B52AEC131724', 0, 'exam/admin.config/index', 0, 1, '', '基础配置', 0, 'cogs', 'exam'),
+('EC83BE8E-3918-610C-07E4-461C770AEBDB', '帖子列表', '0B553D96-749B-AFB2-9DB9-F6300277C363', 23, 'forum/admin.post/lists', 0, 1, '', '社群管理', 0, 'table', 'forum'),
+('ED701550-6DFE-62A9-634C-6C2EFC249124', '模板消息', 'A4650B98-DAD4-8194-030C-1B2AB4F35CBA', 4, 'channel/admin.OfficialAccount/templateMessage', 0, 0, '', '微信公众号', 0, 'commenting-o ', 'admin'),
+('F29D6718-A1CB-861E-438C-62F9635FF98B', '分类列表', '1E82B5BE-3CCF-C30D-F604-728174A3281F', 1, 'articles/admin.category/lists', 0, 1, '', '分类管理', 0, 'th-list', 'articles'),
+('F2DD3E4D-5DBB-4990-C6BE-843ABB0C3383', '分销订单', 'DC8DB3DE-7C67-A2E1-2DEB-E87585C74692', 3, 'distribution/admin.orders/lists', 0, 1, '', '分销管理', 0, 'check-square', 'distribution'),
+('F3E64A02-81BF-922A-EF22-09ABFD9CF4D8', '页面', '0', 2, 'micro/admin.mobile/lists', 0, 1, '', '', 0, 'window-maximize', 'micro'),
+('F436D7A4-CAB9-C87C-F698-D9A529498BB0', '分类管理', '0C54BD54-9B96-075E-0B03-B52AEC131724', 10, 'exam/admin.category/lists', 0, 1, '', '分类管理', 0, 'th-list', 'exam'),
+('F68A8837-298E-94BE-11E7-C0A46B87DA2A', '商品新增、编辑', 'B84F8F95-4029-075B-9A4E-46502D9033F5', 0, 'minishop/admin.goods/edit', 0, 1, '', '', 0, '', 'minishop'),
+('F837A36A-D0E9-2F0E-C184-967AFA57360F', '管理筛选值', '30D0D3A2-C153-2D5C-119E-0F61324B476F', 0, 'minishop/admin.attribute/manage', 0, 1, '', '', 0, '', 'minishop'),
+('F8C08807-1339-95ED-FDEC-8E5D853FC1D8', '菜单管理', 'A4650B98-DAD4-8194-030C-1B2AB4F35CBA', 1, 'channel/admin.OfficialAccount/menu', 0, 0, '', '微信公众号', 0, 'bars', 'unions'),
+('FEED3C0E-B468-2F64-6F8A-A682DE85CC35', '帖子详情', 'EC83BE8E-3918-610C-07E4-461C770AEBDB', 0, 'forum/admin.post/detail', 1, 1, '', '', 0, '', 'forum'),
+('FF434492-9C85-E188-E28F-F6000F91C6D5', '控制台', '0B553D96-749B-AFB2-9DB9-F6300277C363', 0, 'forum/admin.index/index', 0, 1, '', '基础配置', 0, 'area-chart', 'forum');
+
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `muucmf_message`
+--
+
+DROP TABLE IF EXISTS `muucmf_message`;
+CREATE TABLE IF NOT EXISTS `muucmf_message` (
+  `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+  `shopid` int(11) UNSIGNED NOT NULL COMMENT '店铺ID',
+  `uid` int(11) UNSIGNED NOT NULL COMMENT '发送用户UID',
+  `to_uid` int(11) UNSIGNED NOT NULL COMMENT '接收用户UID',
+  `type_id` int(11) NOT NULL COMMENT '消息类型ID',
+  `content_id` int(11) NOT NULL COMMENT '消息内容ID',
+  `is_read` tinyint(2) NOT NULL COMMENT '是否已读',
+  `status` tinyint(2) NOT NULL COMMENT '状态',
+  `create_time` int(11) UNSIGNED NOT NULL COMMENT '创建时间',
+  `update_time` int(11) UNSIGNED NOT NULL COMMENT '更新时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='消息表';
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `muucmf_message_content`
+--
+DROP TABLE IF EXISTS `muucmf_message_content`;
+CREATE TABLE IF NOT EXISTS `muucmf_message_content` (
+  `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+  `shopid` int(11) UNSIGNED NOT NULL COMMENT '店铺ID',
+  `title` varchar(500) NOT NULL COMMENT '消息标题',
+  `description` varchar(128) NOT NULL COMMENT '简短描述',
+  `content` text NOT NULL COMMENT '消息内容',
+  `args` text NOT NULL COMMENT '消息参数 json格式',
+  `status` tinyint(2) NOT NULL COMMENT '状态',
+  `create_time` int(11) UNSIGNED NOT NULL COMMENT '创建时间',
+  `update_time` int(11) UNSIGNED NOT NULL COMMENT '更新时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='消息内容';
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `muucmf_message_type`
+--
+
+DROP TABLE IF EXISTS `muucmf_message_type`;
+CREATE TABLE `muucmf_message_type` (
+  `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+  `shopid` int(11) UNSIGNED NOT NULL COMMENT '店铺ID',
+  `title` varchar(64) NOT NULL COMMENT '类型标题',
+  `description` varchar(255) NOT NULL COMMENT '类型描述',
+  `icon` varchar(255) NOT NULL COMMENT '类型图标',
+  `status` tinyint(2) NOT NULL COMMENT '状态',
+  `create_time` int(11) UNSIGNED NOT NULL COMMENT '创建时间',
+  `update_time` int(11) UNSIGNED NOT NULL COMMENT '更新时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='消息类型';
 
 -- --------------------------------------------------------
 
@@ -4354,6 +4810,7 @@ DROP TABLE IF EXISTS `muucmf_module`;
 CREATE TABLE IF NOT EXISTS `muucmf_module` (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键ID',
   `name` varchar(30) NOT NULL COMMENT '模块名',
+  `icon` varchar(500) NOT NULL COMMENT '标志',
   `alias` varchar(30) NOT NULL COMMENT '中文名',
   `version` varchar(20) NOT NULL COMMENT '版本号',
   `is_com` tinyint(4) NOT NULL COMMENT '是否商业版',
@@ -4373,10 +4830,86 @@ CREATE TABLE IF NOT EXISTS `muucmf_module` (
 -- 转存表中的数据 `muucmf_module`
 --
 
-INSERT INTO `muucmf_module` (`id`, `name`, `alias`, `version`, `is_com`, `summary`, `developer`, `website`, `entry`, `is_setup`, `sort`, `uninstall`) VALUES
-(4, 'index', '首页', '1.0.0', 0, '系统主页，系统核心模块', '北京火木科技有限公司', 'http://www.muucmf.com', 'index/admin/index', 1, 0, 0),
-(5, 'devtool', '开发者工具', '1.0.0', 0, '开发者工具，主要提供给开发者使用，包含了模块打包工具', '北京火木科技有限公司', 'https://www.muucmf.cn', 'devtool/Admin/module', 1, 0, 1),
-(7, 'demo', '模块开发演示', '1.0.0', 1, '模块开发演示', '北京火木科技有限公司', 'http://www.muucmf.cn', 'demo/Admin/index', 1, 0, 1);
+INSERT INTO `muucmf_module` (`id`, `name`, `icon`, `alias`, `version`, `is_com`, `summary`, `developer`, `website`, `entry`, `is_setup`, `sort`, `uninstall`) VALUES
+(5, 'devtool', 'http://dev.t6.muucmf.cn/static/admin/images/module_default_icon.png', '开发者工具', '1.0.0', 0, '开发者工具，主要提供给开发者使用，包含了模块打包工具', '北京火木科技有限公司', 'https://www.muucmf.cn', 'devtool/Admin/module', 1, 0, 1),
+(10, 'demo', 'http://dev.t6.muucmf.cn/static/admin/images/module_default_icon.png', '模块开发演示', '1.0.0', 1, '模块开发演示', '北京火木科技有限公司', 'http://www.muucmf.cn', 'demo/Admin/index', 1, 0, 1),
+(20, 'articles', 'http://dev.t6.muucmf.cn/static/admin/images/module_default_icon.png', '文章', '1.0.0', 1, '文章模块', '北京火木科技有限公司', 'http://www.muucmf.com', 'articles/admin.articles/lists', 1, 0, 1);
+
+-- --------------------------------------------------------
+
+
+--
+-- 表的结构 `muucmf_orders`
+--
+
+DROP TABLE IF EXISTS `muucmf_orders`;
+CREATE TABLE `muucmf_orders` (
+  `id` bigint(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+  `shopid` int(10) UNSIGNED NOT NULL COMMENT '店铺ID',
+  `app` varchar(60) NOT NULL COMMENT '关联应用唯一标识',
+  `uid` int(11) UNSIGNED NOT NULL COMMENT '用户ID',
+  `order_no` varchar(128) NOT NULL COMMENT '订单号',
+  `paid` tinyint(4) NOT NULL COMMENT '是否支付 1:已支付 0：未支付',
+  `paid_time` int(11) UNSIGNED NOT NULL COMMENT '支付时间',
+  `type` varchar(32) NOT NULL COMMENT '订单类型',
+  `order_info_type` varchar(32) NOT NULL COMMENT '商品类型关键字，如：knowledge:知识内容，column：专栏内容，关联不同模型',
+  `order_info_id` bigint(11) UNSIGNED NOT NULL COMMENT '商品ID',
+  `channel` varchar(128) NOT NULL COMMENT '支付渠道',
+  `paid_fee` int(11) UNSIGNED NOT NULL COMMENT '实际支付金额',
+  `price` int(11) UNSIGNED NOT NULL COMMENT '订单价格',
+  `products` text NOT NULL COMMENT '商品详情json数据',
+  `status` tinyint(4) NOT NULL COMMENT '订单状态，1，正常，0，禁用，-1，已删除',
+  `evaluate` tinyint(2) NOT NULL COMMENT '评价状态',
+  `author_id` int(11) UNSIGNED NOT NULL COMMENT '内容拥有者ID',
+  `ip` varchar(128) NOT NULL COMMENT 'ip地址',
+  `create_time` int(11) UNSIGNED NOT NULL COMMENT '创建时间',
+  `update_time` int(11) UNSIGNED NOT NULL COMMENT '更新时间',
+  `end_time` int(11) NOT NULL COMMENT '订单有效期结束时间戳',
+  `discount_fee` int(11) NOT NULL COMMENT '已优惠的金额，如优惠卷、限时折扣等，单位：分',
+  `delivery_fee` int(11) NOT NULL COMMENT '邮费金额，单位：分',
+  `logistic` text NOT NULL COMMENT '物流数据 json',
+  `logistic_time` int(11) NOT NULL COMMENT '发货时间',
+  `address_id` int(11) NOT NULL COMMENT '收货地址',
+  `refund` tinyint(2) NOT NULL COMMENT '收货退款状态',
+  `refund_to` tinyint(4) NOT NULL COMMENT '退款至 0：用户余额 1：原路退回',
+  `refund_no` varchar(128) NOT NULL COMMENT '流水表单号',
+  `remark` varchar(500) NOT NULL COMMENT '备注',
+  `receipt` varchar(255) NOT NULL COMMENT '发票抬头',
+  `metadata` text NOT NULL COMMENT '元数据',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `order_no` (`order_no`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='订单表' ROW_FORMAT=COMPACT;
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `muucmf_praise`
+--
+DROP TABLE IF EXISTS `muucmf_praise`;
+CREATE TABLE `muucmf_praise` (
+  `id` bigint(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+  `shopid` int(10) NOT NULL COMMENT '店铺ID',
+  `app` varchar(20) NOT NULL COMMENT '应用标识',
+  `uid` int(11) UNSIGNED NOT NULL COMMENT '用户ID',
+  `info_type` varchar(32) NOT NULL COMMENT '知识类型，post:帖子，关联不同模型',
+  `info_id` bigint(11) UNSIGNED NOT NULL COMMENT '内容ID,知识内容或专栏的ID',
+  `status` tinyint(4) NOT NULL COMMENT '订单状态，1，正常，0，禁用，-1，已删除',
+  `create_time` int(11) UNSIGNED NOT NULL COMMENT '创建时间',
+  `update_time` int(11) UNSIGNED NOT NULL COMMENT '更新时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='点赞表' ROW_FORMAT=COMPACT;
+
+-- --------------------------------------------------------
+
+DROP TABLE IF EXISTS `muucmf_qrcode_login`;
+CREATE TABLE `muucmf_qrcode_login` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+  `scene_key` varchar(100) NOT NULL COMMENT '场景值',
+  `metadata` text COMMENT '元数据',
+  `create_time` int(11) NOT NULL COMMENT '创建时间',
+  `update_time` int(11) NOT NULL COMMENT '更新时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='扫码登录' ROW_FORMAT=COMPACT;
 
 -- --------------------------------------------------------
 
@@ -4385,10 +4918,10 @@ INSERT INTO `muucmf_module` (`id`, `name`, `alias`, `version`, `is_com`, `summar
 --
 DROP TABLE IF EXISTS `muucmf_score_log`;
 CREATE TABLE IF NOT EXISTS `muucmf_score_log` (
-  `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `uid` int(11) UNSIGNED NOT NULL,
-  `ip` bigint(20) NOT NULL,
-  `type` int(11) NOT NULL,
+  `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+  `uid` int(11) UNSIGNED NOT NULL COMMENT '用户ID',
+  `ip` varchar(32) NOT NULL COMMENT 'IP',
+  `type` int(11) UNSIGNED NOT NULL,
   `action` varchar(20) NOT NULL,
   `value` double NOT NULL,
   `finally_value` double NOT NULL,
@@ -4419,9 +4952,7 @@ CREATE TABLE IF NOT EXISTS `muucmf_score_type` (
 
 INSERT INTO `muucmf_score_type` (`id`, `title`, `status`, `unit`) VALUES
 (1, '积分', 1, '分'),
-(2, '威望', 1, '点'),
-(3, '贡献', 1, '元'),
-(4, '余额', 1, '点');
+(2, '威望', 1, '点');
 
 -- --------------------------------------------------------
 
@@ -4451,6 +4982,25 @@ CREATE TABLE IF NOT EXISTS `muucmf_seo_rule` (
 INSERT INTO `muucmf_seo_rule` (`id`, `title`, `app`, `controller`, `action`, `status`, `seo_keywords`, `seo_description`, `seo_title`, `sort`, `summary`) VALUES
 (10007, 'Muu云课堂V2演示', '', '', '', -1, 'Muu云课堂V2', '', 'Muu云课堂V2演示', 0, ''),
 (10008, '首页规则', 'index', 'index', '', 1, 'MuuCmf T6 开源低代码应用开发框架', 'MuuCmf T6 开源低代码应用开发框架', 'MuuCmf T6 开源低代码应用开发框架', 0, '');
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `muucmf_tominiprogram`
+--
+
+DROP TABLE IF EXISTS `muucmf_tominiprogram`;
+CREATE TABLE `muucmf_tominiprogram` (
+  `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+  `shopid` int(11) UNSIGNED NOT NULL COMMENT '店铺ID',
+  `appid` varchar(128) NOT NULL COMMENT 'appid',
+  `title` varchar(255) NOT NULL COMMENT '小程序名称',
+  `qrcode` varchar(500) NOT NULL COMMENT '小程序二维码',
+  `type` varchar(40) NOT NULL COMMENT '小程序类型',
+  `create_time` int(11) UNSIGNED NOT NULL COMMENT '创建时间',
+  `update_time` int(11) UNSIGNED NOT NULL COMMENT '更新时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='跳转小程序配置表';
 
 -- --------------------------------------------------------
 
@@ -4540,3 +5090,152 @@ CREATE TABLE IF NOT EXISTS `muucmf_verify` (
   `create_time` int(11) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `muucmf_vip`
+--
+
+DROP TABLE IF EXISTS `muucmf_vip`;
+CREATE TABLE `muucmf_vip` (
+  `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '自增ID',
+  `shopid` int(11) UNSIGNED NOT NULL COMMENT '平台ID',
+  `app` varchar(60) NOT NULL COMMENT '应用唯一标识',
+  `uid` int(11) NOT NULL COMMENT '开通用户ID',
+  `mt_id` int(11) NOT NULL COMMENT '卡项ID',
+  `card_no` varchar(128) NOT NULL COMMENT '会员卡号',
+  `end_time` int(11) NOT NULL COMMENT '到期时间',
+  `status` tinyint(2) NOT NULL COMMENT '会员状态',
+  `order_no` int(11) NOT NULL COMMENT '开通时对应订单号',
+  `create_time` int(11) UNSIGNED NOT NULL COMMENT '创建时间',
+  `update_time` int(11) UNSIGNED NOT NULL COMMENT '更新时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='vip会员表' ROW_FORMAT=COMPACT;
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `muucmf_vip_card`
+--
+
+DROP TABLE IF EXISTS `muucmf_vip_card`;
+CREATE TABLE `muucmf_vip_card` (
+  `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '自增ID',
+  `shopid` int(11) UNSIGNED NOT NULL COMMENT '平台ID',
+  `app` varchar(60) NOT NULL COMMENT '应用唯一标识',
+  `title` varchar(64) NOT NULL COMMENT 'VIP会员名',
+  `description` varchar(255) NOT NULL COMMENT '简短描述',
+  `cover` varchar(255) NOT NULL COMMENT '图标',
+  `card_bg` varchar(255) NOT NULL COMMENT '会员卡背景',
+  `category_ids` varchar(512) NOT NULL COMMENT '支持的分类IDS',
+  `discount` double NOT NULL COMMENT '折扣 0免费 1:1折',
+  `month_price` int(11) NOT NULL COMMENT '月份价格，单位:分',
+  `quarter_price` int(11) NOT NULL COMMENT '季度价格 单位：分',
+  `year_price` int(11) NOT NULL COMMENT '年费价格 单位：分',
+  `forever_price` int(11) UNSIGNED NOT NULL COMMENT '永久会员价格',
+  `content` text NOT NULL COMMENT '会员权益描述',
+  `config` text NOT NULL COMMENT '卡片配置，如背景色，文字色等',
+  `create_time` int(11) UNSIGNED NOT NULL COMMENT '创建时间',
+  `update_time` int(11) UNSIGNED NOT NULL COMMENT '更新时间',
+  `sort` int(11) NOT NULL COMMENT '排序值',
+  `status` tinyint(2) NOT NULL COMMENT '状态',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='vip会员类型表' ROW_FORMAT=COMPACT;
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `muucmf_wechat_auto_reply`
+--
+
+DROP TABLE IF EXISTS `muucmf_wechat_auto_reply`;
+CREATE TABLE `muucmf_wechat_auto_reply` (
+  `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+  `shopid` int(11) UNSIGNED NOT NULL COMMENT '店铺ID',
+  `keyword` varchar(100) NOT NULL COMMENT '关键字',
+  `text` varchar(500) NOT NULL COMMENT '回复文本',
+  `remark` varchar(255) NOT NULL COMMENT '备注',
+  `sort` int(11) NOT NULL COMMENT '排序',
+  `type` tinyint(4) NOT NULL COMMENT '0：关注回复 1：自动回复',
+  `msg_type` varchar(20) NOT NULL COMMENT '消息类型 text文本 news 图文 image图片 voice音频 video视频',
+  `material_json` text NOT NULL COMMENT '素材json',
+  `media_id` varchar(100) NOT NULL COMMENT '媒体资源 ID',
+  `status` tinyint(4) NOT NULL COMMENT '状态',
+  `create_time` int(11) NOT NULL COMMENT '创建日期',
+  `update_time` int(11) NOT NULL COMMENT '更新日期',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='微信自动回复';
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `muucmf_wechat_config`
+--
+
+DROP TABLE IF EXISTS `muucmf_wechat_config`;
+CREATE TABLE `muucmf_wechat_config` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+  `shopid` int(11) NOT NULL COMMENT '商户ID',
+  `title` varchar(24) NOT NULL COMMENT '应用标题',
+  `desc` varchar(255) NOT NULL COMMENT '描述',
+  `cover` varchar(500) NOT NULL COMMENT '应用封面',
+  `qrcode` varchar(500) NOT NULL COMMENT '二维码',
+  `appid` varchar(18) NOT NULL COMMENT '应用的独立标识',
+  `secret` varchar(60) NOT NULL COMMENT '应用密匙',
+  `encoding_aes_key` varchar(60) NOT NULL COMMENT '消息加解密密钥',
+  `url` varchar(255) NOT NULL COMMENT '服务器配置地址',
+  `token` varchar(40) NOT NULL COMMENT 'token',
+  `menu_json` text NOT NULL COMMENT '公众号菜单配置',
+  `tmplmsg` varchar(1000) NOT NULL COMMENT '模板消息配置',
+  `create_time` int(11) NOT NULL COMMENT '创建日期',
+  `update_time` int(11) NOT NULL COMMENT '更新日期',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='公众号配置表';
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `muucmf_wechat_mp_config`
+--
+
+DROP TABLE IF EXISTS `muucmf_wechat_mp_config`;
+CREATE TABLE `muucmf_wechat_mp_config` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+  `shopid` int(11) NOT NULL COMMENT '商户ID',
+  `title` varchar(20) NOT NULL COMMENT '小程序名称',
+  `description` varchar(500) NOT NULL COMMENT '描述',
+  `appid` varchar(40) NOT NULL COMMENT '应用ID',
+  `secret` varchar(60) NOT NULL COMMENT '应用密匙',
+  `originalid` varchar(40) NOT NULL COMMENT '原始ID',
+  `tmplmsg` varchar(500) NOT NULL COMMENT '模板消息',
+  `create_time` int(11) NOT NULL COMMENT '创建日期',
+  `update_time` int(11) NOT NULL COMMENT '更新日期',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='小程序配置表' ROW_FORMAT=COMPACT;
+
+
+-- --------------------------------------------------------
+
+--
+-- 表的结构 `muucmf_withdraw`
+--
+
+DROP TABLE IF EXISTS `muucmf_withdraw`;
+CREATE TABLE `muucmf_withdraw` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+  `shopid` int(11) NOT NULL COMMENT '店铺ID',
+  `uid` int(11) NOT NULL COMMENT '用户ID',
+  `order_no` varchar(64) NOT NULL COMMENT '订单号',
+  `price` int(11) NOT NULL COMMENT '金额',
+  `real_price` int(11) NOT NULL COMMENT '实际到账金额',
+  `channel` varchar(50) NOT NULL COMMENT '渠道',
+  `info` varchar(500) NOT NULL COMMENT '备注',
+  `paid` tinyint(2) NOT NULL COMMENT '状态0未提现 1已提现',
+  `paid_time` int(11) NOT NULL COMMENT '提现时间',
+  `error` tinyint(2) NOT NULL COMMENT '提现失败 1失败 0未失败',
+  `error_msg` text NOT NULL COMMENT '错误消息',
+  `create_time` int(11) NOT NULL COMMENT '创建时间',
+  `update_time` int(11) NOT NULL COMMENT '更新时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='提现表' ROW_FORMAT=COMPACT;
