@@ -4,6 +4,7 @@ namespace app\admin\controller;
 use think\facade\View;
 use app\common\model\Module as ModuleModel;
 use app\common\model\Announce as AnnounceModel;
+use app\common\logic\Announce as AnnounceLogic;
 
 use app\admin\validate\Common;
 use think\exception\ValidateException;
@@ -14,6 +15,7 @@ class Announce extends Admin
 {
     protected $ModuleModel;
     protected $AnnounceModel;
+    protected $AnnounceLogic;
 
     /**
      * 构造方法
@@ -25,6 +27,7 @@ class Announce extends Admin
         parent::__construct();
         $this->ModuleModel = new ModuleModel();
         $this->AnnounceModel = new AnnounceModel();
+        $this->AnnounceLogic = new AnnounceLogic();
         // 设置页面title
         $this->setTitle('公告管理');
     }
@@ -53,7 +56,7 @@ class Announce extends Admin
         $lists = $lists->toArray();
         
         foreach($lists['data'] as &$val){
-            $val = $this->AnnounceModel->formatData($val);
+            $val = $this->AnnounceLogic->formatData($val);
         }
         unset($val);
 
@@ -75,6 +78,7 @@ class Announce extends Admin
         View::assign('title',$title);
 
         if (request()->isPost()) {
+            
             $data = input();
             // 数据验证
             try {
@@ -86,6 +90,18 @@ class Announce extends Admin
                 // 验证失败 输出错误信息
                 return $this->error($e->getError());
             }
+            // 处理连接至数据
+            if(!empty($data['link_type']) || !empty($data['link_title'])){
+                $link_to = [
+                    'type' => $data['link_type'],
+                    'title' => $data['link_title'],
+                    'type_title' => $data['link_type_title'],
+                    'param' => $data['link_param']
+                ];
+                $data['link_to'] = json_encode($link_to);
+            }
+            
+            // 写入数据表
             $res = $this->AnnounceModel->edit($data);
             
             if ($res) {
@@ -97,6 +113,7 @@ class Announce extends Admin
         }else{
             if(!empty($id)){
                 $data = $this->AnnounceModel->getDataById($id);
+                $data = $this->AnnounceLogic->formatData($data);
             }else{
                 // 初始化数据
                 $data = [];
@@ -110,9 +127,19 @@ class Announce extends Admin
             }
             View::assign('data', $data);
 
-            // 获取自定义页面应用是否安装
+            // 获取Micro应用是否安装
+            $micro_is_setup = $this->ModuleModel->checkInstalled('micro');
+            View::assign('micro_is_setup', $micro_is_setup);
+            if($micro_is_setup){
+                // 链接至参数
+                bind('micro\\LinkSsevice', 'app\\micro\\service\\Link');
+                $links = app('micro\\LinkSsevice')->getAllLinks();
+                View::assign('links', $links);
 
-            
+                $link_static_tmpl = app('micro\\LinkSsevice')->getStaticTmpl();
+                View::assign('link_static_tmpl', $link_static_tmpl);
+            }
+
             // 输出模板
             return View::fetch();
         }
