@@ -121,110 +121,110 @@ class Admin extends Base
         $controller = Request()->controller();
         $action = Request()->action();
 
-        $menus  =   session('ADMIN_MENU_LIST'.$controller);
+        //$menus  =   session('ADMIN_MENU_LIST'.$controller);
 
-        if (empty($menus)) {
-            // 获取主菜单
-            $where[] = ['pid','=','0'];
-            $menuModel = new Menu();
-            $menus['main'] = Db::name('menu')->where($where)->order('sort','asc')->select()->toArray();
-            $menus['child'] = []; //设置子节点
+        //if (empty($menus)) {
+        // 获取主菜单
+        $where[] = ['pid','=','0'];
+        $menuModel = new Menu();
+        $menus['main'] = Db::name('menu')->where($where)->order('sort','asc')->select()->toArray();
+        $menus['child'] = []; //设置子节点
 
-            //当前菜单
-            $current_map[] = [
-                ['url','=', $module .'/'. $controller .'/'. $action],
-            ];
-            $current = Db::name('menu')->where($current_map)->find();
-            //获取顶级菜单数据
-            $nav_current_id = 0;
-            if (input('?param.module_name') && $module != 'admin'){
-                foreach ($menus['main'] as $m){
-                    if ($m['module'] == $module){
-                        $nav_current_id = $m['id'];
-                    }
+        //当前菜单
+        $current_map[] = [
+            ['url','=', $module .'/'. $controller .'/'. $action],
+        ];
+        $current = Db::name('menu')->where($current_map)->find();
+        //获取顶级菜单数据
+        $nav_current_id = 0;
+        if (input('?param.module_name') && $module != 'admin'){
+            foreach ($menus['main'] as $m){
+                if ($m['module'] == $module){
+                    $nav_current_id = $m['id'];
                 }
-            }elseif($current){
-                $nav = $menuModel->getPath($current['id']);
-                $nav_current_id = $nav[0]['id'];
             }
+        }elseif($current){
+            $nav = $menuModel->getPath($current['id']);
+            $nav_current_id = $nav[0]['id'];
+        }
 
-            if ($nav_current_id) {
-                //echo $nav_first_title;
-                foreach ($menus['main'] as $key => $item) {
+        if ($nav_current_id) {
+            //echo $nav_first_title;
+            foreach ($menus['main'] as $key => $item) {
 
-                    //如果是模块菜单获取模块信息
-                    if($item['module'] != '' || !empty($item['module'])){
-                        $app = $this->moduleModel->getModule($item['module']);
-                    }
-                    
-                    if (!is_array($item) || empty($item['title']) || empty($item['url'])) {
-                        return $this->error('控制器基类{$menus}属性元素配置有误');
-                    }
-                    if (stripos($item['url'], $module) !== 0) {
-                        $item['url'] = $module . '/' . $item['url'];
-                    }
-                    // 判断主菜单权限
-                    if (!$this->isRoot && !$this->checkRule($item['url'], AuthRuleModel::RULE_MAIN, null)) {
-                        unset($menus['main'][$key]);
-                        continue;//继续循环
+                //如果是模块菜单获取模块信息
+                if($item['module'] != '' || !empty($item['module'])){
+                    $app = $this->moduleModel->getModule($item['module']);
+                }
+                
+                if (!is_array($item) || empty($item['title']) || empty($item['url'])) {
+                    return $this->error('控制器基类{$menus}属性元素配置有误');
+                }
+                if (stripos($item['url'], $module) !== 0) {
+                    $item['url'] = $module . '/' . $item['url'];
+                }
+                // 判断主菜单权限
+                if (!$this->isRoot && !$this->checkRule($item['url'], AuthRuleModel::RULE_MAIN, null)) {
+                    unset($menus['main'][$key]);
+                    continue;//继续循环
+                }
+
+                // 获取当前主菜单的子菜单项
+                if ($item['id'] == $nav_current_id) {
+                    $menus['main'][$key]['class'] = 'active';
+                    //生成child树
+                    $groups = Db::name('Menu')->where(['pid'=>$item['id']])->distinct(true)->field("`group`")->order('sort asc')->select()->toArray();
+
+                    if ($groups) {
+                        $groups = array_column($groups, 'group');
+                    } else {
+                        $groups = [];
                     }
 
-                    // 获取当前主菜单的子菜单项
-                    if ($item['id'] == $nav_current_id) {
-                        $menus['main'][$key]['class'] = 'active';
-                        //生成child树
-                        $groups = Db::name('Menu')->where(['pid'=>$item['id']])->distinct(true)->field("`group`")->order('sort asc')->select()->toArray();
+                    //获取二级分类的合法url
+                    $where = [];
+                    $where['pid'] = $item['id'];
+                    $where['hide'] = 0;
+                    $second_urls = Db::name('Menu')->where($where)->order('sort asc')->select()->toArray();
 
-                        if ($groups) {
-                            $groups = array_column($groups, 'group');
-                        } else {
-                            $groups = [];
+                    if (!$this->isRoot) {
+                        // 检测菜单权限
+                        $to_check_urls = [];
+                        foreach ($second_urls as $key => $to_check_url) {
+                            if (stripos($to_check_url, $module) !== 0) {
+                                $rule = $module . '/' . $to_check_url;
+                            } else {
+                                $rule = $to_check_url;
+                            }
+                            if ($this->checkRule($rule, 1, null))
+                                $to_check_urls[] = $to_check_url;
                         }
-
-                        //获取二级分类的合法url
-                        $where = [];
-                        $where['pid'] = $item['id'];
-                        $where['hide'] = 0;
-                        $second_urls = Db::name('Menu')->where($where)->order('sort asc')->select()->toArray();
-
-                        if (!$this->isRoot) {
-                            // 检测菜单权限
-                            $to_check_urls = [];
-                            foreach ($second_urls as $key => $to_check_url) {
-                                if (stripos($to_check_url, $module) !== 0) {
-                                    $rule = $module . '/' . $to_check_url;
-                                } else {
-                                    $rule = $to_check_url;
-                                }
-                                if ($this->checkRule($rule, 1, null))
-                                    $to_check_urls[] = $to_check_url;
+                    }
+                    // 按照分组生成子菜单树
+                    $map = [];
+                    foreach ($groups as $k=>$g) {
+                        $map = ['group' => $g];
+                        if (isset($to_check_urls)) {
+                            if (empty($to_check_urls)) {
+                                // 没有任何权限
+                                continue;
+                            } else {
+                                $map['url'] = ['in', $to_check_urls];
                             }
                         }
-                        // 按照分组生成子菜单树
-                        $map = [];
-                        foreach ($groups as $k=>$g) {
-                            $map = ['group' => $g];
-                            if (isset($to_check_urls)) {
-                                if (empty($to_check_urls)) {
-                                    // 没有任何权限
-                                    continue;
-                                } else {
-                                    $map['url'] = ['in', $to_check_urls];
-                                }
-                            }
-                            $map['pid'] = $item['id'];
-                            $map['hide'] = 0;
-                            
-                            $menuList = Db::name('Menu')->where($map)->field('id,pid,title,url,icon,tip')->order('sort asc')->select()->toArray();
-                            if ($menuList){
-                                $menus['child'][$k]['group'] = $g;
-                                $menus['child'][$k]['child'] = list_to_tree($menuList, 'id', 'pid', 'operater', $item['id']);
-                            }
+                        $map['pid'] = $item['id'];
+                        $map['hide'] = 0;
+                        
+                        $menuList = Db::name('Menu')->where($map)->field('id,pid,title,url,icon,tip')->order('sort asc')->select()->toArray();
+                        if ($menuList){
+                            $menus['child'][$k]['group'] = $g;
+                            $menus['child'][$k]['child'] = list_to_tree($menuList, 'id', 'pid', 'operater', $item['id']);
                         }
                     }
                 }
             }
         }
+        //}
         return $menus;
     }
 
