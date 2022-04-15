@@ -28,6 +28,7 @@ class Base extends Model{
         if(!empty($this->id)){
             return $this->id;
         }else{
+            if (is_object($res)) return  $res->id;
             return $res;
         }
     }

@@ -23,6 +23,7 @@ class Channel extends MuuBase{
         'weixin_h5' => '微信公众号支付',
         'weixin_app' => '微信小程序支付',
         'alipay' => '支付宝',
-        'offline' => '线下支付'
+        'offline' => '线下支付',
+        'score' => '积分'
     ];
 }

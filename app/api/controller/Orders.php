@@ -71,7 +71,7 @@ class Orders extends Base {
                 return $this->success('创建订单成功',$order);
             }catch (Exception $e){
                 Db::rollback();
-                return $this->error($e->getMessage().",line:{$e->getLine()},'file:{$e->getFile()}");
+                return $this->error($e->getMessage().$e->getFile().$e->getLine());
             }
         }
     }
