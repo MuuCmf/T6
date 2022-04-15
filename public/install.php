@@ -20,13 +20,6 @@ define('APP_PATH', __DIR__ . '/../app/');
 define('PUBLIC_PATH', __DIR__);
 //static目录
 define('STATIC_URL', './static');
-// 判断是否安装MuuCmf
-if (!is_file(__DIR__ . '/../data/install.lock'))
-{	
-    header("location: /install.php");
-    exit;
-}
-
 // 执行HTTP应用并响应
 $http = (new App())->http;
 

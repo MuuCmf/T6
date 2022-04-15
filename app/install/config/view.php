@@ -31,8 +31,8 @@ return [
         '__IMG__' => '/static/install/images',
         '__NAME__'=>'MuuCmf开源低代码应用开发框架',
         '__COMPANY__'=>'北京火木科技有限公司',
-        '__WEBSITE__'=>'www.muucmf.cn',
+        '__WEBSITE__'=>'www.muucmf.cc',
         '__COMPANY_WEBSITE__'=>'www.hoomuu.cn',
-        '__MUUCMF__' => 'MuuCmf T6开发框架'
+        '__MUUCMF__' => 'MuuCmf T6'
     ],
 ];

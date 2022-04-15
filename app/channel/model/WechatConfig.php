@@ -39,8 +39,18 @@ class WechatConfig extends Base{
         if ($res){
             $res = $res->toArray();
             return $res;
+        }else{
+            //初始化数据
+            $data['id'] = 0;
+            $data['title'] = '';
+            $data['cover'] = '';
+            $data['desc'] = '';
+            $data['qrcode'] = '';
+            $data['appid'] = '';
+            $data['secret'] = '';
+
+            return $data;
         }
-        return null;
     }
 
     /**
