@@ -109,11 +109,14 @@ class Message extends Base
         $data['to_user'] = query_user($data['to_uid'], ['nickname','avatar']);
         
         // 获取消息类型数据
-        $type = (new MessageType())->find($data['type_id']);
-        if(!$type->isEmpty()){
-            $data['type']['title'] = $type->title;
-            $data['type']['icon'] = get_attachment_src($type->icon);
+        if(!empty($data['type_id'])){
+            $type = (new MessageType())->find($data['type_id']);
+            if(!$type->isEmpty()){
+                $data['type']['title'] = $type->title;
+                $data['type']['icon'] = get_attachment_src($type->icon);
+            }
         }
+        
         // 获取消息内容
         $content = (new MessageContent())->find($data['content_id']);
         if(!$content->isEmpty()){

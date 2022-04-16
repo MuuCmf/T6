@@ -13,7 +13,7 @@ class Common extends Validate
         'description' => 'require',
         'content' => 'require',
         'icon' => 'require',
-        'type_id' => 'number|min:1'
+        'type_id' => 'number|min:1|between:1,99999999999'
     ];
     
     protected $message = [

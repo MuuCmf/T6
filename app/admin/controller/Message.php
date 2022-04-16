@@ -124,7 +124,6 @@ class Message extends Admin
             }
             // 处理发送的类型
             $send_type = $data['send_type'];
-
             // 处理接收用户
             if(!empty($data['to_uid'])){
                 $to_uids = intval($data['to_uid']);
