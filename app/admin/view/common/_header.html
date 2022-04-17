@@ -34,10 +34,25 @@
       <div class="navbar-custom-menu">
         <ul class="nav navbar-nav">
           <!--clear cache-->
-          <li><a href="javascript:;" title="清理缓存" data-id="clear_cache" data-msg="清理缓存成功" data-url="{:url('admin/common/clear_cache')}">
+          <li><a href="javascript:;" title="清理缓存" data-id="clear_cache" data-msg="清理缓存成功" data-url="{:url('admin/common/clearCache')}">
                 <i class="fa fa-trash"></i> 
               </a>
           </li>
+          <script>
+            $(function(){
+              $('[data-id="clear_cache"]').click(function(){
+                var url = $('[data-id="clear_cache"]').data('url');
+                $.get(url,function(res){
+                  //弹出提示消息
+                  if (res.code == 200) {
+                      toast.success(res.msg, 'success');
+                  } else {
+                      toast.error(res.msg, 'danger');
+                  }
+                });
+              });
+            });
+          </script>
           <li><a target="_blank" title="访问前台" href="{$this_domain}">
                 <i class="fa fa-copy"></i> 
               </a>

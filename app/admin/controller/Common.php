@@ -2,6 +2,7 @@
 namespace app\admin\controller;
 
 use think\facade\View;
+use think\facade\Cache;
 use thans\jwt\facade\JWTAuth;
 use app\common\controller\Base;
 use app\common\model\Member as CommonMember;
@@ -59,25 +60,11 @@ class Common extends Base
      * 清理缓存 clear cache
      * @return [type] [description]
      */
-    public function clear_cache(){
+    public function clearCache(){
 
-        $dirname = root_path().'runtime/';
-        //清文件缓存
-        $dirs   =   array($dirname);
+        $res = Cache::clear();
 
-        if(function_exists('memcache_init')){
-            $mem = memcache_init();
-            $mem->flush();
-        }
-        header('Content-Type:text/html;charset=utf-8');
-        //清理缓存
-        foreach($dirs as $value) {
-            rmdirr($value);
-            echo "".$value."\" 已经被删除!缓存清理完毕。 ";
-        }
-
-        @mkdir($dirname,0777,true);
-
+        if($res) return $this->success('缓存清理成功');
     }
 
 }
