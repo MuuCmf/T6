@@ -63,6 +63,9 @@ class Admin extends Base
         // 当前应用模块信息
         $module_name = input('get.module_name');
         $module = $this->moduleModel->getModule($module_name ?? app('http')->getName());
+        if(!empty($module)){
+            $module['icon'] = $this->moduleModel->getIcon($module['name'], $module['icon']);
+        }
         View::assign('MODULE', $module);
         //当前管理菜单
         View::assign('ADMIN_MENU', $this->getMenus());
