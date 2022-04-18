@@ -276,26 +276,33 @@ class Module extends Admin
             
         } else {
             $id = input('id','0','text');
+            // 上级ID
             $pid = input('pid','0','text');
             View::assign('pid', $pid);
+            // 应用唯一标识
             $app = input('app', '', 'text');
             View::assign('app', $app);
-            $info = [];
+            // 初始化info数据
+            $info = [
+                'pid' => 0,
+                'type' => 1,
+            ];
             /* 获取数据 */
-            $info = $this->MenuModel->where(['id'=>$id])->find();
-
+            if(!empty($id) || $id != '0'){
+                $info = $this->MenuModel->where(['id'=>$id])->find();
+            }
+            
             if(empty($info)){
                 $map['id'] = input('pid');
                 $info = $this->MenuModel->where($map)->field('module,pid,hide,type')->find();
                 $info['pid'] = input('pid','0','text');
             }
             View::assign('info', $info);
-
             $menus = $this->MenuModel->where('module','=',$app)->order('sort asc,id asc')->select()->toArray();
             $tree = new Tree();
             $menus = $tree->toFormatTree($menus,$title = 'title',$pk='id',$pid = 'pid',$root = '0');
-            
             View::assign('Menus', $menus);
+
             $moduleModel = new ModuleModel();
             View::assign('Modules',$moduleModel->getAll());
 

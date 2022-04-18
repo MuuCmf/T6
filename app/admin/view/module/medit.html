@@ -15,10 +15,14 @@
             <div class="form-item builder_item">
                 <label class="item-label">所属应用<span class="check-tips">（所属的应用模块，应用菜单必须选择，否则无法导出）</span></label>
                 <div class="controls">
-                    <select name="module" class="form-select-size form-control">
+                    <select name="module" class="form-select-size form-control" readonly>
                         <option value="admin">系统菜单</option>
                         {volist name="Modules" id="module"}
+                        {if $app == $module.name}
+                        <option value="{$module.name}" selected>{$module.alias}-{$module.name}</option>
+                        {else /}
                         <option value="{$module.name}">{$module.alias}-{$module.name}</option>
+                        {/if}
                         {/volist}
                     </select>
                 </div>
@@ -44,10 +48,18 @@
             <div class="form-item builder_item">
                 <label class="item-label">上级菜单<span class="check-tips">（所属的上级菜单）</span></label>
                 <div class="controls">
-                    <select name="pid" class="form-select-size form-control">
+                    <select name="pid" class="form-select-size form-control" readonly>
+                        {notempty name="Menus"}
                         {volist name="Menus" id="menu"}
-                        <option value="{$menu.id}" selected="{if $pid == $menu.id}selected{else}false{/if}">{:htmlspecialchars_decode($menu.title_show)}</option>
+                            {if $pid == $menu.id}
+                            <option value="{$menu.id}" selected>{:htmlspecialchars_decode($menu.title_show)}</option>
+                            {else}
+                            <option value="{$menu.id}">{:htmlspecialchars_decode($menu.title_show)}</option>
+                            {/if}
                         {/volist}
+                        {else /}
+                        <option value="0">顶级菜单</option>
+                        {/notempty}
                     </select>
                 </div>
             </div>
@@ -71,11 +83,17 @@
             <div class="form-item builder_item">
                 <label class="item-label">菜单类型<span class="check-tips"></span></label>
                 <div class="controls">
-                    <input type="radio" name="type" value="1" id="type-1">
+                    {if $info.type == 1}
+                    <input type="radio" name="type" value="1" id="type-1" checked>
                     <label for="type-1">应用</label>
-
                     <input type="radio" name="type" value="0" id="type-0">
                     <label for="type-0">系统</label>
+                    {else}
+                    <input type="radio" name="type" value="1" id="type-1">
+                    <label for="type-1">应用</label>
+                    <input type="radio" name="type" value="0" id="type-0" checked>
+                    <label for="type-0">系统</label>
+                    {/if}
                 </div>
             </div>
             <div class="form-ite builder_item">
@@ -96,9 +114,7 @@
 
 {block name="script"}
     <script type="text/javascript">
-        Think.setValue("pid", '{$info.pid|default=0}');
+        
         Think.setValue("hide", '{$info.hide|default=0}');
-        Think.setValue("type", '{$info.type|default=0}');
-        Think.setValue("module", '{$info.module|default="admin"}');
     </script>
 {/block}
