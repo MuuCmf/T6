@@ -6,9 +6,7 @@ return [
     '_PACK_WELCOME_' => '欢迎使用本工具。本工具将会通过引导来快速生成一个模块安装引导脚本。',
     '_PACK_MODULE_SELECT_' => '选择您要打包的模块',
     '_PACK_STEP_ONE_' => '第一步.导出后台菜单',
-    '_PACK_STEP_TWO_' => '第二步.导出权限节点',
-    '_PACK_STEP_THREE_' => '第三步.导出用户行为',
-    '_PACK_STEP_FOUR_' => '第四步.导出相关数据表',
+    '_PACK_STEP_TWO_' => '第二步.导出相关数据表',
     '_PACK_DECLARE_' => '特别申明：打包前强烈建议备份数据库，以免造成不必要的损失。',
     '_PACK_AGREE_START_' => '我同意，开始打包向导',
 
@@ -55,9 +53,9 @@ return [
     '_PACK_INSTALL_SCRIPT_' => 'install.sql脚本',
     '_PACK_INSTALL_SCRIPT_CONTENT_' => '以下为自动生成的install.sql内容',
     '_PACK_INSTALL_SCRIPT_NULL_' => '由于没有相关表，所以install.sql文件为空。',
-    '_PACK_CLEAR_DATA_SCRIPT_' => 'cleanData.sql脚本',
-    '_PACK_CLEAR_DATA_SCRIPT_CONTENT_' => '以下为自动生成的cleanData.sql内容',
-    '_PACK_CLEAR_DATA_SCRIPT_NULL_' => '由于没有相关表，所以cleanData.sql文件为空。',
+    '_PACK_CLEAR_DATA_SCRIPT_' => 'uninstall.sql脚本',
+    '_PACK_CLEAR_DATA_SCRIPT_CONTENT_' => '以下为自动生成的uninstall.sql内容',
+    '_PACK_CLEAR_DATA_SCRIPT_NULL_' => '由于没有相关表，所以uninstall.sql文件为空。',
     '_PACK_AUTO_REPLACE_' => '自动替换模块下的对应文件，如果模块目录无写权限将不会自动备份。如果具备权限则会生成.bk文件作为备份。！',
     '_PACK_UP_RE_' => '重新打包',
     '_PACK_REPLACE_INSTALL_FILE_' => '替换安装文件',
@@ -70,4 +68,5 @@ return [
     '_ERROR_FAIL_REPLACE_' => '替换失败，权限不足。',
     '_TABLE_SCHEME_' => '表结构',
     '_TABLE_RECORDS_' => '表内记录',
+    '_SUCCESS_' => '成功'
 ];

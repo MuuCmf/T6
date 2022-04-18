@@ -208,6 +208,15 @@
             'reference' => 'b2bc13e0211988157edd6bd80d3a7d64ab823784',
             'dev_requirement' => false,
         ),
+        'pclzip/pclzip' => array(
+            'pretty_version' => '2.8.2',
+            'version' => '2.8.2.0',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../pclzip/pclzip',
+            'aliases' => array(),
+            'reference' => '19dd1de9d3f5fc4d7d70175b4c344dee329f45fd',
+            'dev_requirement' => false,
+        ),
         'phpmailer/phpmailer' => array(
             'pretty_version' => 'v6.5.3',
             'version' => '6.5.3.0',

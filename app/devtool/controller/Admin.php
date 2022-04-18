@@ -17,7 +17,7 @@ class Admin extends MuuAdmin
     public function __construct()
     {
         parent::__construct();
-
+        $this->refreshS();
         $this->moduleModel = new ModuleModel();
     }
     //获取模块信息
@@ -30,6 +30,7 @@ class Admin extends MuuAdmin
 
     public function module()
     {
+        // 获取所有应用
         $modules = $this->moduleModel->getAll();
         foreach ($modules as $key => $v) {
             if ($v['is_setup']) {
@@ -47,7 +48,8 @@ class Admin extends MuuAdmin
         cache('guide_sql_tables',null);
         cache('guide_sql_rows',null);
         cache('guide_sql_drop_table',null);
-        return View::fetch('module');
+
+        return View::fetch();
     }
 
     public function module1()
@@ -56,9 +58,8 @@ class Admin extends MuuAdmin
             cache('module',input('module', '', 'text'));
         }
         $this->refreshS();
-        $menus = $this->getSubMenus('0');
-        $all_menus = Db::name('menu')->where(['module' => $this->module['name']])->select();
-        
+        $menus = Db::name('menu')->where('module','=', $this->module['name'])->order('sort asc')->select()->toArray();
+        $menus = list_to_tree($menus, 'id', 'pid', '_', '0');
         View::assign('menus', $menus);
 
         return View::fetch('module1');
@@ -72,51 +73,27 @@ class Admin extends MuuAdmin
             cache('guide_menus',$menus);
         }
 
-        $rules = Db::name('Auth_rule')->where(['module' => $this->module['name'], 'status' => 1])->select();
-
-        View::assign('rules', $rules);
-        return View::fetch('module2');
-    }
-
-    public function module3()
-    {
-        $default = input('post.default', '', 'text');
-        if ($default != '') {
-            cache('guide_default_rule',json_encode($default));
-        }
-        $auth_rule = input('post.auth_rule');
-        if ($auth_rule != '') {
-            cache('guide_auth_rule',$auth_rule);
-        }
-
-        $action = Db::name('Action')->where(['module' => $this->module['name'], 'status' => 1])->select();
-        View::assign('action', $action);
-        $action_limit = Db::name('ActionLimit')->where(['module' => $this->module['name'], 'status' => 1])->select();
-        View::assign('action_limit', $action_limit);
-
-        return View::fetch('module3');
-    }
-
-    public function module4()
-    {
-        $action = input('post.action', '');
-        if ($action) {
-            cache('guide_action',$action);
-        }
-        $action_limit = input('post.action_limit', '');
-        if ($action_limit) {
-            cache('guide_action_limit',$action_limit);
-        }
+        // $action = input('post.action', '');
+        // if ($action) {
+        //     cache('guide_action',$action);
+        // }
+        // $action_limit = input('post.action_limit', '');
+        // if ($action_limit) {
+        //     cache('guide_action_limit',$action_limit);
+        // }
 
         $list = Db::query('SHOW TABLE STATUS');
         $list = array_map('array_change_key_case', $list);
 
-        $db_prefix = config('database.DB_PREFIX');
+        // 数据表前缀
+        $db_prefix = config('database.connections.mysql.prefix');
+        // 拼接模块名称
         $p = $db_prefix . strtolower($this->module['name']);
         $sql_table = '';
         $sql_drop_table = '';
         $sql_rows = '';
-        $has_data = '';
+        $has_data = [];
+
         foreach ($list as $key => $v) {
             if (stripos(trim($v['name']), trim($p)) === false) {
                 unset($list[$key]);
@@ -139,10 +116,14 @@ class Admin extends MuuAdmin
         View::assign('sql_drop_tables', $sql_drop_table);
         View::assign('sql_rows', $sql_rows);
         View::assign('has_data', $has_data);
-        return View::fetch('module4');
+        // 输出
+        return View::fetch();
     }
 
-    public function module5()
+    /**
+     * 第三步
+     */
+    public function module3()
     {
         $sql_table = input('post.sql_tables', '');
         $sql_drop_table = input('post.sql_drop_table', '');
@@ -163,8 +144,9 @@ class Admin extends MuuAdmin
 
         $install = $this->getInstallContent();
         View::assign('install', $install);
-        View::assign('cleanData', $sql_drop_table);
-        return View::fetch('devtool@admin/module5');
+        View::assign('uninstall', $sql_drop_table);
+        // 输出
+        return View::fetch();
     }
 
     /**
@@ -174,7 +156,7 @@ class Admin extends MuuAdmin
     public function replace()
     {
         if (is_writable(APP_PATH . $this->module['name'] . '/info')) {
-            $dir = '../app/' . $this->module['name'] . '/info';
+            $dir = APP_PATH . $this->module['name'] . '/info';
             $info = lang('_PACK_REPLACE_INSTALL_FILE_').lang('_SUCCESS_');
 
             if(file_exists($dir . '/install.sql')) {
@@ -229,16 +211,17 @@ class Admin extends MuuAdmin
      */
     public function download()
     {
-        $zip = '../runtime/temp/' . $this->module['name'] . '.zip';
+        $path = runtime_path();
+        $zip = $path . 'temp/' . $this->module['name'] . '.zip';
         $file_name = $this->module['name'] . '.zip';
         $archive = new \PclZip($zip);
-        file_put_contents('../runtime/temp/guide.json', json_encode($this->getGuideContent()));
-        file_put_contents('../runtime/temp/install.sql', $this->getInstallContent());
-        file_put_contents('../runtime/temp/cleanData.sql', cache('guide_sql_drop_table'));
+        file_put_contents($path . '/temp/guide.json', json_encode($this->getGuideContent()));
+        file_put_contents($path . '/temp/install.sql', $this->getInstallContent());
+        file_put_contents($path . '/temp/uninstall.sql', cache('guide_sql_drop_table'));
 
-        $v_list = $archive->create('../runtime/temp/guide.json,../runtime/temp/install.sql,../runtime/temp/cleanData.sql',
-            PCLZIP_OPT_REMOVE_PATH, '../runtime/temp',
-            PCLZIP_OPT_ADD_PATH, 'application/' . $this->module['name'] . '/info');
+        $v_list = $archive->create($path . 'temp/guide.json,'.$path . 'temp/install.sql,'.$path . 'temp/uninstall.sql',
+            PCLZIP_OPT_REMOVE_PATH, $path . 'temp/',
+            PCLZIP_OPT_ADD_PATH, APP_PATH . $this->module['name'] . '/info');
         if ($v_list == 0) {
             die("Error : " . $archive->errorInfo(true));
         }
@@ -368,22 +351,9 @@ class Admin extends MuuAdmin
         }
     }
 
-    private function get_class_all_methods($class)
-    {
-        $r = new reflectionclass($class);
-        foreach ($r->getmethods() as $key => $methodobj) {
-            if ($methodobj->isPublic() && $methodobj->class == $r->getName() && !in_array($methodobj->getName(), array('_initialize'))) {
-                $methods[$key]['type'] = 'public';
-                $methods[$key]['name'] = $methodobj->name;
-                $methods[$key]['class'] = $methodobj->class;
-            }
-        }
-        return $methods;
-    }
-
     private function getSubMenus($pid='0')
     {
-        $menus = Db::name('menu')->where(['module' => $this->module['name'], 'pid' => $pid])->select();
+        $menus = Db::name('menu')->where([['module','=', $this->module['name']], ['pid', '=', $pid]])->select();
         if ($menus == null) {
             return;
         } else {
@@ -399,9 +369,9 @@ class Admin extends MuuAdmin
      * @param $guide
      * @return mixed
      */
-    private function getGuideContent($guide = '')
+    private function getGuideContent(Array $guide = [])
     {
-        $guide['menu'] =cache('guide_menus');
+        $guide['menu'] = cache('guide_menus');
         $guide['default_rule'] = cache('guide_default_rule');
         $guide['auth_rule'] = cache('guide_auth_rule');
         $guide['action'] = cache('guide_action');

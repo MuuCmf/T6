@@ -30,6 +30,7 @@
                             </span>
                             {empty name="one._"}
                             {else/}
+                                {notempty name="one._"}
                                 {volist name="one._" id="two"}
                                     {eq name="two.hide" value="1"}
                                         {php}$class1='text-mute';{/php}
@@ -39,6 +40,7 @@
                                 <span class="{$class1}"><p>
                                     &nbsp; &nbsp; &nbsp; &nbsp;{:lang('_BRACKETS_LEFT_')}2{:lang('_CLASS_')}{:lang('_BRACKETS_RIGHT_')}{$two.id}-{$two.title}-{$two.url}
                                 </p></span>
+                                    {notempty name="two._"}
                                     {volist name="two._" id="three"}
                                         {eq name="three.hide" value="1"}
                                             {php}$class1='text-mute';{/php}
@@ -49,7 +51,9 @@
                                     &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;{:lang('_BRACKETS_LEFT_')}3{:lang('_CLASS_')}{:lang('_BRACKETS_RIGHT_')}{$three.id}-{$three.title}-{$three.url}
                                 </p></span>
                                     {/volist}
+                                    {/notempty}
                                 {/volist}
+                                {/notempty}
                             {/empty}
                         {/volist}
                     </blockquote>

@@ -40,63 +40,59 @@
 
 
 {block name="body"}
-    <div class="main-title">
-        <h2>{:lang('_PACK_MODULE_GUIDE_')}</h2>
-    </div>
+<div class="main-title">
+    <h2>{:lang('_PACK_MODULE_GUIDE_')}</h2>
+</div>
 
-    <div class="with-padding">
-        <p class="">{:lang('_PACK_WELCOME_')}</p>
+<div class="with-padding">
+    <p class="">{:lang('_PACK_WELCOME_')}</p>
 
-        <form action="{:url('module1')}" method="post">
-            <div class="clearfix">
-                <div class="col-xs-12">
-                    <p class="lead">{:lang('_PACK_MODULE_SELECT_')}</p>
+    <form action="{:url('module1')}" method="post">
+        <div class="clearfix">
+            <div class="col-xs-12">
+                <p class="lead">{:lang('_PACK_MODULE_SELECT_')}</p>
 
-                    <div>
-                        {volist name="modules" id="vo"}
-                        
-                            <label class="col-xs-3">
-                            <div class="modules-box" data-type="modules-box">
+                <div>
+                    {volist name="modules" id="vo"}
+                    <label class="col-xs-3">
+                    <div class="modules-box" data-type="modules-box">
 
-                                <div class="modules-radio ">
-                                    <input id="m_{$vo.name}" class="hidden" type="radio" name="module" value="{$vo.name}"> {$vo.name}
-                                </div>
-                                <div class="modules-alias">
-                                    <h3 class="text-center">{$vo.alias}</h3>
-                                </div>
-                                <div class="mask hidden">
-                                    <i class="icon icon-check-circle-o"></i>
-                                </div>
-                            </div>
-                            </label>
-                        
-                        {/volist}
+                        <div class="modules-radio ">
+                            <input id="m_{$vo.name}" class="hidden" type="radio" name="module" value="{$vo.name}"> {$vo.name}
+                        </div>
+                        <div class="modules-alias">
+                            <h3 class="text-center">{$vo.alias}</h3>
+                        </div>
+                        <div class="mask hidden">
+                            <i class="icon icon-check-circle-o"></i>
+                        </div>
                     </div>
+                    </label>
+                    {/volist}
                 </div>
-                <div class="col-xs-12">
-                    <p class="lead">
-                        {:lang('_PACK_PROCESS_')}
-                    </p>
-                    <blockquote>
-                        <ol>
-                            <li>{:lang('_PACK_STEP_ONE_')}</li>
-                            <li>{:lang('_PACK_STEP_TWO_')}</li>
-                            <li>{:lang('_PACK_STEP_THREE_')}</li>
-                            <li>{:lang('_PACK_STEP_FOUR_')}</li>
-                        </ol>
-                    </blockquote>
-                    <p>{:lang('_PACK_DECLARE_')}</p>
-                </div>
+            </div>
+            <div class="col-xs-12">
+                <p class="lead">
+                    {:lang('Packing process')}
+                </p>
+                <blockquote>
+                    <ol>
+                        <li>{:lang('_PACK_STEP_ONE_')}</li>
+                        <li>{:lang('_PACK_STEP_TWO_')}</li>
+                    </ol>
+                </blockquote>
+                <p>{:lang('_PACK_DECLARE_')}</p>
+            </div>
 
 
-            </div>
-            <div class="clearfix" style="margin-top:10px;"> 
-                <button class="btn btn-lg btn-default btn-success btn-block" type="submit">
-                    {:lang('_PACK_AGREE_START_')}
-                </button>
-            </div>
-        </form>
-    </div>
+        </div>
+        <div class="clearfix" style="margin-top:10px;"> 
+            <button class="btn btn-lg btn-default btn-success btn-block" type="submit">
+                {:lang('_PACK_AGREE_START_')}
+            </button>
+        </div>
+    </form>
+</div>
 <script>
 + function($) {
     'use strict';
@@ -112,11 +108,11 @@
             $(this).addClass("selected");
             $(this).find('.mask').removeClass('hidden');
         });
-        $('div[data-type="modules-box"]:first').trigger("click");//执行一次支付方式选择点击
+        $('div[data-type="modules-box"]:first').trigger("click");//执行一次选择点击
     }
 
     moduleChannel.prototype.channelName = function() {
-        //获取支付方式
+        //获取方式
         return $('[data-toggle="paychannel"].selected').find('input').val();
      }
 
@@ -124,6 +120,5 @@
 
 }(jQuery);
 
-//$.fn.payChannel.channelName();
 </script>
 {/block}
