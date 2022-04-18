@@ -81,7 +81,7 @@ class Module extends Admin
                 $item['upgrade'] = 0;
             }
             //获取应用图标
-            $item['icon'] = $moduleModel->getIcon($item['name'],$item['icon']);
+            $item['icon'] = $moduleModel->getIcon($item['name'], $item['icon']);
             
             return $item;
         });
@@ -155,7 +155,7 @@ class Module extends Admin
             $builder->suggest('<span class="text-danger">'.'请谨慎操作，此操作无法还原'.'</span>');
             $builder->keyReadOnly('alias', '卸载的模块');
             $builder->keyBool('withoutData', '是否保留模块数据'.'?', '默认保留模块数据');
-            $builder->keyBool('remove_nav', '移除导航', '卸载后自动卸载掉对应的菜单，或者<a target="_blank" href="/index.php?s=/admin/channel/index.html">手动设置</a>');
+            $builder->keyBool('remove_nav', '移除导航', '卸载后自动卸载掉对应的菜单');
 
             $module['withoutData'] = 1;
             $builder->data($module);

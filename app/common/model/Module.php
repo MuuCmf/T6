@@ -184,10 +184,6 @@ class Module extends Base
 
         if ($withoutData == 0) {
             //如果不保留数据
-            if (file_exists(APP_PATH . '/' . $module['name'] . '/info/cleanData.sql')) {
-                $uninstall_file = APP_PATH . '/' . $module['name'] . '/info/cleanData.sql';
-            }
-            //兼容老的卸载方式，执行uninstall.sql
             if (file_exists(APP_PATH . '/' . $module['name'] . '/info/uninstall.sql')) {
                 $uninstall_file = APP_PATH . '/' . $module['name'] . '/info/uninstall.sql';
             }
@@ -243,10 +239,7 @@ class Module extends Base
         }
 
         $info = $this->where(['name'=>$name])->find();
-        if(!empty($info)){
-            $info->icon = $this->getIcon($name, $info->icon);
-        }
-        
+
         return $info;
     }
 
@@ -318,47 +311,54 @@ class Module extends Base
             $guide = file_get_contents(APP_PATH . $module['name'] . DIRECTORY_SEPARATOR . 'info' . DIRECTORY_SEPARATOR . 'guide.json');
             $data = json_decode($guide, true);
 
-            //导入菜单项,menu
-            $menu = json_decode($data['menu'], true);
-            
-            if (!empty($menu)) {
-                $this->cleanMenus($module['name']);
-                if ($this->addMenus($menu[0]) == true) {
-                    $log .= '&nbsp;&nbsp;>菜单成功安装;<br/>';
+            if(!empty($data['menu'])){
+                //导入菜单项,menu
+                $menu = json_decode($data['menu'], true);
+                if (!empty($menu)) {
+                    $this->cleanMenus($module['name']);
+                    if ($this->addMenus($menu[0]) == true) {
+                        $log .= '&nbsp;&nbsp;>菜单成功安装;<br/>';
+                    }
                 }
             }
 
             //导入前台权限,auth_rule
-            $auth_rule = json_decode($data['auth_rule'], true);
-            if (!empty($auth_rule)) {
-                $this->cleanAuthRules($module['name']);
-                if ($this->addAuthRule($auth_rule)) {
-                    $log .= '&nbsp;&nbsp;>权限成功导入。<br/>';
-                }
-                //设置默认的权限
-                $default_rule = json_decode($data['default_rule'], true);
-                if ($this->addDefaultRule($default_rule, $module['name'])) {
-                    $log .= '&nbsp;&nbsp;>默认权限设置成功。<br/>';
-                }
-            }
-
-            //导入
-            $action = json_decode($data['action'], true);
-            if (!empty($action)) {
-                $this->cleanAction($module['name']);
-                if ($this->addAction($action)) {
-                    $log .= '&nbsp;&nbsp;>行为成功导入。<br/>';
+            if(!empty($data['auth_rule'])){
+                $auth_rule = json_decode($data['auth_rule'], true);
+                if (!empty($auth_rule)) {
+                    $this->cleanAuthRules($module['name']);
+                    if ($this->addAuthRule($auth_rule)) {
+                        $log .= '&nbsp;&nbsp;>权限成功导入。<br/>';
+                    }
+                    //设置默认的权限
+                    $default_rule = json_decode($data['default_rule'], true);
+                    if ($this->addDefaultRule($default_rule, $module['name'])) {
+                        $log .= '&nbsp;&nbsp;>默认权限设置成功。<br/>';
+                    }
                 }
             }
-
-            $action_limit = json_decode($data['action_limit'], true);
-            if (!empty($action_limit)) {
-                $this->cleanActionLimit($module['name']);
-                if ($this->addActionLimit($action_limit)) {
-                    $log .= '&nbsp;&nbsp;>行为限制成功导入。<br/>';
+            
+            if(!empty($data['action'])){
+                //导入
+                $action = json_decode($data['action'], true);
+                if (!empty($action)) {
+                    $this->cleanAction($module['name']);
+                    if ($this->addAction($action)) {
+                        $log .= '&nbsp;&nbsp;>行为成功导入。<br/>';
+                    }
                 }
             }
-
+            
+            if(!empty($data['action_limit'])){
+                $action_limit = json_decode($data['action_limit'], true);
+                if (!empty($action_limit)) {
+                    $this->cleanActionLimit($module['name']);
+                    if ($this->addActionLimit($action_limit)) {
+                        $log .= '&nbsp;&nbsp;>行为限制成功导入。<br/>';
+                    }
+                }
+            }
+            
             if (file_exists(APP_PATH . '/' . $module['name'] . '/info/install.sql')) {
                 $install_sql = APP_PATH . '/' . $module['name'] . '/info/install.sql';
 

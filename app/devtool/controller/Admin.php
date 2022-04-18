@@ -173,9 +173,9 @@ class Admin extends MuuAdmin
                 }
             }
 
-            if(file_exists($dir . '/cleanData.sql')) {
-                if (!rename($dir . '/cleanData.sql', $dir . '/cleanData.sql.bk')) {
-                    $info = lang('_FAIL_BACKUP_WITH_BR_',['file'=>'cleanData.sql']);
+            if(file_exists($dir . '/uninstall.sql')) {
+                if (!rename($dir . '/uninstall.sql', $dir . '/uninstall.sql.bk')) {
+                    $info = lang('_FAIL_BACKUP_WITH_BR_',['file'=>'uninstall.sql']);
                     return $this->error($info);
                 }
             }
@@ -193,8 +193,8 @@ class Admin extends MuuAdmin
                 }
             }
             if (cache('guide_sql_drop_table')) {
-                if (!file_put_contents($dir . '/cleanData.sql', cache('guide_sql_drop_table'))) {
-                    $info = lang('_FAIL_REPLACE_WITH_BR_',['file'=>'cleanData.sql']);
+                if (!file_put_contents($dir . '/uninstall.sql', cache('guide_sql_drop_table'))) {
+                    $info = lang('_FAIL_REPLACE_WITH_BR_',['file'=>'uninstall.sql']);
                     return $this->error($info);
                 }
             }
@@ -372,10 +372,6 @@ class Admin extends MuuAdmin
     private function getGuideContent(Array $guide = [])
     {
         $guide['menu'] = cache('guide_menus');
-        $guide['default_rule'] = cache('guide_default_rule');
-        $guide['auth_rule'] = cache('guide_auth_rule');
-        $guide['action'] = cache('guide_action');
-        $guide['action_limit'] = cache('guide_action_limit');
         return $guide;
     }
 
