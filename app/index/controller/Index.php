@@ -26,5 +26,7 @@ class Index extends Common
         dump(query_user(is_login()));
         $muu_config_data = (new Config())->frontend(0);
         dump($muu_config_data);
+
+        dump(create_guid());
     }
 }
