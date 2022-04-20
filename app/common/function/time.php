@@ -85,14 +85,13 @@ if (!function_exists('friendly_date')) {
     }
 }
 
+/**
+ * 将时间戳转换为日期时间
+ * @param int $time 时间戳
+ * @param string $format 日期时间格式
+ * @return string
+ */
 if (!function_exists('datetime')) {
-
-    /**
-     * 将时间戳转换为日期时间
-     * @param int $time 时间戳
-     * @param string $format 日期时间格式
-     * @return string
-     */
     function datetime($time, $format = 'Y-m-d H:i:s')
     {
         $time = is_numeric($time) ? $time : strtotime($time);
@@ -151,25 +150,11 @@ function get_time_unit($key = null){
 }
 
 /**
- * 获取今日起始和结束时间戳(勿用，即将废弃)
+ * 获取昨日起始和结束时间戳
  *
  * @return     <type>  ( description_of_the_return_value )
  */
-function dayTime()
-{
-    $beginToday = mktime(0,0,0,date('m'),date('d'),date('Y'));
-    $endToday = mktime(0,0,0,date('m'),date('d')+1,date('Y'))-1;
-
-    return array($beginToday, $endToday);
-}
-
-
 if(!function_exists("yestodayTime") ) {
-    /**
-     * 获取今日起始和结束时间戳
-     *
-     * @return     <type>  ( description_of_the_return_value )
-     */
     function yestodayTime()
     {
         $beginToday = mktime(0,0,0,date('m'),date('d')-1,date('Y'));
@@ -178,12 +163,13 @@ if(!function_exists("yestodayTime") ) {
         return array($beginToday, $endToday);
     }
 }
+
+/**
+ * 获取今日起始和结束时间戳
+ *
+ * @return     <type>  ( description_of_the_return_value )
+ */
 if(!function_exists("dayTime") ) {
-    /**
-     * 获取今日起始和结束时间戳
-     *
-     * @return     <type>  ( description_of_the_return_value )
-     */
     function dayTime()
     {
         $beginToday = mktime(0,0,0,date('m'),date('d'),date('Y'));
@@ -192,12 +178,13 @@ if(!function_exists("dayTime") ) {
         return array($beginToday, $endToday);
     }
 }
+
+/**
+ * 获取本周时间戳
+ *
+ * @return     <type>  ( description_of_the_return_value )
+ */
 if(!function_exists("weekTime") ) {
-    /**
-     * 获取本周时间戳
-     *
-     * @return     <type>  ( description_of_the_return_value )
-     */
     function weekTime()
     {
         $beginThisweek = mktime(0,0,0,date('m'),date('d')-date('w')+1,date('y'));  
@@ -207,12 +194,12 @@ if(!function_exists("weekTime") ) {
     }
 }
 
+/**
+ * 获取本月时间戳
+ *
+ * @return     <type>  ( description_of_the_return_value )
+ */
 if(!function_exists("monthTime") ) {
-    /**
-     * 获取本月时间戳
-     *
-     * @return     <type>  ( description_of_the_return_value )
-     */
     function monthTime()
     {
         $year = date("Y");
@@ -222,5 +209,22 @@ if(!function_exists("monthTime") ) {
         $last_time = strtotime($year."-".$month."-".$allday);
 
         return array($first_time,$last_time);
+    }
+}
+
+/**
+ * get_some_day  获取n天前0点的时间戳
+ * @param int $some n天
+ * @param null $day 当前时间
+ * @return int|null
+ */
+if(!function_exists("get_some_day") ) {
+    function get_some_day($some = 30, $day = null)
+    {
+        $time = $day ? $day : time();
+        $some_day = $time - 60 * 60 * 24 * $some;
+        $btime = date('Y-m-d' . ' 00:00:00', $some_day);
+        $some_day = strtotime($btime);
+        return $some_day;
     }
 }

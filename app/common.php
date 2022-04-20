@@ -18,24 +18,6 @@ require_once(__DIR__ . '/common/function/wechat.php');
  * 主要定义系统公共函数库
  */
 
-if (!function_exists('format_bytes')) {
-
-    /**
-     * 将字节转换为可读文本
-     * @param int $size 大小
-     * @param string $delimiter 分隔符
-     * @return string
-     */
-    function format_bytes($size, $delimiter = '')
-    {
-        $units = array('B', 'KB', 'MB', 'GB', 'TB', 'PB');
-        for ($i = 0; $size >= 1024 && $i < 6; $i++)
-            $size /= 1024;
-        return round($size, 2) . $delimiter . $units[$i];
-    }
-
-}
-
 if (!function_exists('is_really_writable')) {
 
     /**
@@ -63,7 +45,6 @@ if (!function_exists('is_really_writable')) {
         fclose($fp);
         return TRUE;
     }
-
 }
 
 if (!function_exists('rmdirs')) {
@@ -122,77 +103,6 @@ if (!function_exists('copydirs')) {
         }
     }
 
-}
-
-if (!function_exists('mb_ucfirst')) {
-
-    function mb_ucfirst($string)
-    {
-        return mb_strtoupper(mb_substr($string, 0, 1)) . mb_strtolower(mb_substr($string, 1));
-    }
-
-}
-
-
-if (!function_exists('var_export_short')) {
-
-    /**
-     * 返回打印数组结构
-     * @param string $var 数组
-     * @param string $indent 缩进字符
-     * @return string
-     */
-    function var_export_short($var = [], $indent = "")
-    {
-        switch (gettype($var)) {
-            case "string":
-                return '"' . addcslashes($var, "\\\$\"\r\n\t\v\f") . '"';
-            case "array":
-                $indexed = array_keys($var) === range(0, count($var) - 1);
-                $r = [];
-                foreach ($var as $key => $value) {
-                    $r[] = "$indent    "
-                        . ($indexed ? "" : var_export_short($key) . " => ")
-                        . var_export_short($value, "$indent    ");
-                }
-                return "[\n" . implode(",\n", $r) . "\n" . $indent . "]";
-            case "boolean":
-                return $var ? "TRUE" : "FALSE";
-            default:
-                return var_export($var, TRUE);
-        }
-    }
-}
-
-/**
- * 字符串截取，支持中文和其他编码
- * @static
- * @access public
- * @param string $str 需要转换的字符串
- * @param string $start 开始位置
- * @param string $length 截取长度
- * @param string $charset 编码格式
- * @param string $suffix 截断显示字符
- * @return string
- */
-function msubstr($str, $start = 0, $length, $charset = "utf-8", $suffix = true)
-{
-    if (function_exists("mb_substr"))
-        $slice = mb_substr($str, $start, $length, $charset);
-    elseif (function_exists('iconv_substr')) {
-        $slice = iconv_substr($str, $start, $length, $charset);
-        if (false === $slice) {
-            $slice = '';
-        }
-    } else {
-        $re['utf-8'] = "/[\x01-\x7f]|[\xc2-\xdf][\x80-\xbf]|[\xe0-\xef][\x80-\xbf]{2}|[\xf0-\xff][\x80-\xbf]{3}/";
-        $re['gb2312'] = "/[\x01-\x7f]|[\xb0-\xf7][\xa0-\xfe]/";
-        $re['gbk'] = "/[\x01-\x7f]|[\x81-\xfe][\x40-\xfe]/";
-        $re['big5'] = "/[\x01-\x7f]|[\x81-\xfe]([\x40-\x7e]|\xa1-\xfe])/";
-        preg_match_all($re[$charset], $str, $match);
-        $slice = join("", array_slice($match[0], $start, $length));
-    }
-    return $suffix ? $slice . '...' : $slice;
 }
 
 if (!function_exists('think_encrypt')) {
@@ -302,28 +212,30 @@ if (!function_exists('data_auth_sign')) {
  * asc正向排序 desc逆向排序 nat自然排序
  * @return array
  */
-function list_sort_by($list, $field, $sortby = 'asc')
-{
-    if (is_array($list)) {
-        $refer = $resultSet = array();
-        foreach ($list as $i => $data)
-            $refer[$i] = &$data[$field];
-        switch ($sortby) {
-            case 'asc': // 正向排序
-                asort($refer);
-                break;
-            case 'desc': // 逆向排序
-                arsort($refer);
-                break;
-            case 'nat': // 自然排序
-                natcasesort($refer);
-                break;
+if (!function_exists('list_sort_by')) {
+    function list_sort_by($list, $field, $sortby = 'asc')
+    {
+        if (is_array($list)) {
+            $refer = $resultSet = array();
+            foreach ($list as $i => $data)
+                $refer[$i] = &$data[$field];
+            switch ($sortby) {
+                case 'asc': // 正向排序
+                    asort($refer);
+                    break;
+                case 'desc': // 逆向排序
+                    arsort($refer);
+                    break;
+                case 'nat': // 自然排序
+                    natcasesort($refer);
+                    break;
+            }
+            foreach ($refer as $key => $val)
+                $resultSet[] = &$list[$key];
+            return $resultSet;
         }
-        foreach ($refer as $key => $val)
-            $resultSet[] = &$list[$key];
-        return $resultSet;
+        return false;
     }
-    return false;
 }
 
 /**
@@ -334,31 +246,33 @@ function list_sort_by($list, $field, $sortby = 'asc')
  * @return array
  * @author 麦当苗儿 <zuojiazi@vip.qq.com>
  */
-function list_to_tree($list, $pk = 'id', $pid = 'pid', $child = '_child', $root = 0)
-{
-    // 创建Tree
-    $tree = array();
-    if (is_array($list)) {
-        // 创建基于主键的数组引用
-        $refer = array();
-        foreach ($list as $key => $data) {
-            $refer[$data[$pk]] =& $list[$key];
-        }
-        foreach ($list as $key => $data) {
-            // 判断是否存在parent
-            $parentId = $data[$pid];
-            if ($root == $parentId) {
-                $tree[] =& $list[$key];
-            } else {
-                if (isset($refer[$parentId])) {
-                    $parent =& $refer[$parentId];
-                    $parent[$child][] =& $list[$key];
+if (!function_exists('list_to_tree')) {
+    function list_to_tree($list, $pk = 'id', $pid = 'pid', $child = '_child', $root = 0)
+    {
+        // 创建Tree
+        $tree = array();
+        if (is_array($list)) {
+            // 创建基于主键的数组引用
+            $refer = array();
+            foreach ($list as $key => $data) {
+                $refer[$data[$pk]] =& $list[$key];
+            }
+            foreach ($list as $key => $data) {
+                // 判断是否存在parent
+                $parentId = $data[$pid];
+                if ($root == $parentId) {
+                    $tree[] =& $list[$key];
+                } else {
+                    if (isset($refer[$parentId])) {
+                        $parent =& $refer[$parentId];
+                        $parent[$child][] =& $list[$key];
+                    }
                 }
             }
         }
-    }
 
-    return $tree;
+        return $tree;
+    }
 }
 
 /**
@@ -370,21 +284,23 @@ function list_to_tree($list, $pk = 'id', $pid = 'pid', $child = '_child', $root 
  * @return array        返回排过序的列表数组
  * @author yangweijie <yangweijiester@gmail.com>
  */
-function tree_to_list($tree, $child = '_child', $order = 'id', &$list = array())
-{
-    if (is_array($tree)) {
-        $refer = array();
-        foreach ($tree as $key => $value) {
-            $reffer = $value;
-            if (isset($reffer[$child])) {
-                unset($reffer[$child]);
-                tree_to_list($value[$child], $child, $order, $list);
+if (!function_exists('tree_to_list')) {
+    function tree_to_list($tree, $child = '_child', $order = 'id', &$list = array())
+    {
+        if (is_array($tree)) {
+            $refer = array();
+            foreach ($tree as $key => $value) {
+                $reffer = $value;
+                if (isset($reffer[$child])) {
+                    unset($reffer[$child]);
+                    tree_to_list($value[$child], $child, $order, $list);
+                }
+                $list[] = $reffer;
             }
-            $list[] = $reffer;
+            $list = list_sort_by($list, $order, $sortby = 'asc');
         }
-        $list = list_sort_by($list, $order, $sortby = 'asc');
+        return $list;
     }
-    return $list;
 }
 
 /**
@@ -411,33 +327,6 @@ function create_dir_or_files($files)
         } else {
             @file_put_contents($value, '');
         }
-    }
-}
-
-if (!function_exists('array_column')) {
-    function array_column(array $input, $columnKey, $indexKey = null)
-    {
-        $result = array();
-        if (null === $indexKey) {
-            if (null === $columnKey) {
-                $result = array_values($input);
-            } else {
-                foreach ($input as $row) {
-                    $result[] = $row[$columnKey];
-                }
-            }
-        } else {
-            if (null === $columnKey) {
-                foreach ($input as $row) {
-                    $result[$row[$indexKey]] = $row;
-                }
-            } else {
-                foreach ($input as $row) {
-                    $result[$row[$indexKey]] = $row[$columnKey];
-                }
-            }
-        }
-        return $result;
     }
 }
 
@@ -529,76 +418,6 @@ function get_nav_active($url)
     return 0;
 }
 
-/**
- * t函数用于过滤标签，输出没有html的干净的文本
- * @param string text 文本内容
- * @return string 处理后内容
- */
-function text($text, $addslanshes = false)
-{
-    $text = nl2br($text);
-    $text = real_strip_tags($text);
-    if ($addslanshes)
-        $text = addslashes($text);
-    $text = trim($text);
-    return $text;
-}
-/**
- * 用于过滤不安全的html标签，输出安全的html
- * @param string $text 待过滤的字符串
- * @param string $type 保留的标签格式
- * @return string 处理后内容
- */
-function html($text,$type = 'html')
-{
-    // 无标签格式
-    $text_tags = '';
-    //只保留链接
-    $link_tags = '<a>';
-    //只保留图片
-    $image_tags = '<img>';
-    //只存在字体样式
-    $font_tags = '<i><b><u><s><em><strong><font><big><small><sup><sub><bdo><h1><h2><h3><h4><h5><h6>';
-    //标题摘要基本格式
-    $base_tags = $font_tags . '<p><br><hr><a><img><map><area><pre><code><q><blockquote><acronym><cite><ins><del><center><strike>';
-    //兼容Form格式
-    $form_tags = $base_tags . '<form><input><textarea><button><select><optgroup><option><label><fieldset><legend>';
-    //内容等允许HTML的格式
-    $html_tags = $base_tags . '<ul><ol><li><dl><dd><dt><table><caption><td><th><tr><thead><tbody><tfoot><col><colgroup><div><span><object><embed><param>';
-    //专题等全HTML格式
-    $all_tags = $form_tags . $html_tags . '<!DOCTYPE><meta><html><head><title><body><base><basefont><script><noscript><applet><object><param><style><frame><frameset><noframes><iframe>';
-    //过滤标签
-    $text = real_strip_tags($text, ${$type . '_tags'});
-    // 过滤攻击代码
-    if ($type != 'all') {
-        // 过滤危险的属性，如：过滤on事件lang js
-        while (preg_match('/(<[^><]+)(ondblclick|onclick|onload|onerror|unload|onmouseover|onmouseup|onmouseout|onmousedown|onkeydown|onkeypress|onkeyup|onblur|onchange|onfocus|action|background[^-]|codebase|dynsrc|lowsrc)([^><]*)/i', $text, $mat)) {
-            $text = str_ireplace($mat[0], $mat[1] . $mat[3], $text);
-        }
-        while (preg_match('/(<[^><]+)(window\.|javascript:|js:|about:|file:|document\.|vbs:|cookie)([^><]*)/i', $text, $mat)) {
-            $text = str_ireplace($mat[0], $mat[1] . $mat[3], $text);
-        }
-    }
-    return $text;
-}
-
-function real_strip_tags($str, $allowable_tags = "")
-{
-   // $str = html_entity_decode($str, ENT_QUOTES, 'UTF-8');
-    return strip_tags($str, $allowable_tags);
-}
-
-/**获取当前的积分
- * @param string $score_name
- * @return mixed
- */
-function getMyScore($score_name = 'score1')
-{
-    $user = query_user(is_login(),array($score_name));
-    $score = $user[$score_name];
-    return $score;
-}
-
 function is_ie()
 {
     $userAgent = $_SERVER['HTTP_USER_AGENT'];
@@ -608,77 +427,6 @@ function is_ie()
     } else {
         return true;
     }
-}
-
-/**
- * 系统公共库文件扩展
- * 主要定义系统公共函数库扩展
- */
-function muucmf_hash($message, $salt = "MuuCmf")
-{
-    $s01 = $message . $salt;
-    $s02 = md5($s01) . $salt;
-    $s03 = sha1($s01) . md5($s02) . $salt;
-    $s04 = $salt . md5($s03) . $salt . $s02;
-    $s05 = $salt . sha1($s04) . md5($s04) . crc32($salt . $s04);
-    return md5($s05);
-}
-
-function array_subtract($a, $b)
-{
-    return array_diff($a, array_intersect($a, $b));
-}
-
-/**
- * 取一个二维数组中的每个数组的固定的键知道的值来形成一个新的一维数组
- * @param $pArray 一个二维数组
- * @param $pKey 数组的键的名称
- * @return 返回新的一维数组
- */
-function getSubByKey($pArray, $pKey = "", $pCondition = "")
-{
-    $result = array();
-    if (is_array($pArray)) {
-        foreach ($pArray as $temp_array) {
-            if (is_object($temp_array)) {
-                $temp_array = (array)$temp_array;
-            }
-            if (("" != $pCondition && $temp_array[$pCondition[0]] == $pCondition[1]) || "" == $pCondition) {
-                $result[] = (("" == $pKey) ? $temp_array : isset($temp_array[$pKey])) ? $temp_array[$pKey] : "";
-            }
-        }
-        return $result;
-    } else {
-        return false;
-    }
-}
-
-
-/**
- * create_rand随机生成一个字符串
- * @param int $length 字符串的长度
- * @param string $type 类型
- * @return string
- * @author:xjw129xjt(肖骏涛) xjt@ourstu.com
- */
-function create_rand($length = 8, $type = 'all')
-{
-    $num = '0123456789';
-    $letter = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-    if ($type == 'num') {
-        $chars = $num;
-    } elseif ($type == 'letter') {
-        $chars = $letter;
-    } else {
-        $chars = $letter . $num;
-    }
-
-    $str = '';
-    for ($i = 0; $i < $length; $i++) {
-        $str .= $chars[mt_rand(0, strlen($chars) - 1)];
-    }
-    return $str;
-
 }
 
 /**
@@ -765,21 +513,6 @@ function build_auth_key()
 }
 
 /**
- * get_some_day  获取n天前0点的时间戳
- * @param int $some n天
- * @param null $day 当前时间
- * @return int|null
- */
-function get_some_day($some = 30, $day = null)
-{
-    $time = $day ? $day : time();
-    $some_day = $time - 60 * 60 * 24 * $some;
-    $btime = date('Y-m-d' . ' 00:00:00', $some_day);
-    $some_day = strtotime($btime);
-    return $some_day;
-}
-
-/**
  * convert_url_query  转换url参数为数组
  * @param $query
  * @return array|string
@@ -798,27 +531,6 @@ function convert_url_query($query)
         return $params;
     }
     return '';
-}
-
-/**
- * cut_str  截取字符串
- * @param $search
- * @param $str
- * @param string $place
- * @return mixed
- */
-function cut_str($search,$str,$place=''){
-    switch($place){
-        case 'l':
-            $result = preg_replace('/.*?'.addcslashes(quotemeta($search),'/').'/','',$str);
-            break;
-        case 'r':
-            $result = preg_replace('/'.addcslashes(quotemeta($search),'/').'.*/','',$str);
-            break;
-        default:
-            $result =  preg_replace('/'.addcslashes(quotemeta($search),'/').'/','',$str);
-    }
-    return $result;
 }
 
 /**

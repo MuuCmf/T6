@@ -325,3 +325,15 @@ function check_auth($rule = '', $except_uid = -1, $type = AuthRule::RULE_URL)
     }
     return true;
 }
+
+/**获取当前的积分
+ * @param string $score_name
+ * @return mixed
+ */
+function get_my_score($score_name = 'score1')
+{
+    $user = query_user(is_login(),array($score_name));
+    $score = $user[$score_name];
+    
+    return $score;
+}
