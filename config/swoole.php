@@ -6,7 +6,7 @@ return [
     'http'       => [
         'enable'     => true,
         'host'       => '0.0.0.0',
-        'port'       => 80,
+        'port'       => 8081,
         'worker_num' => swoole_cpu_num(),
         'options'    => [],
     ],
@@ -24,8 +24,8 @@ return [
                 'client_size' => 2048,
             ],
             'redis' => [
-                'host'          => '127.0.0.1',
-                'port'          => 6379,
+                'host'          => env('redis.host', '127.0.0.1'),
+                'port'          => env('redis.port', '6379'),
                 'max_active'    => 3,
                 'max_wait_time' => 5,
             ],

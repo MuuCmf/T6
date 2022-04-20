@@ -6,5 +6,6 @@ return [
     // 指令定义
     'commands' => [
         'crontab' => 'app\common\command\Crontab',
+        'crontabSwoole' => 'app\common\command\CrontabSwoole',
     ],
 ];

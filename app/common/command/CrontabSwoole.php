@@ -6,11 +6,9 @@ use think\console\Input;
 use think\console\input\Argument;
 use think\console\input\Option;
 use think\console\Output;
-use Workerman\Lib\Timer;
-use Workerman\Worker;
 use app\common\model\Crontab as CrontabModel;
 
-class Crontab extends Command{
+class CrontabSwoole extends Command{
     protected $CrontabModel;//计划任务模型
 
     public function __construct()
@@ -22,7 +20,7 @@ class Crontab extends Command{
     protected function configure()
     {
         // 指令配置 php think crontab start --d 守护进程启动
-        $this->setName('crontab')
+        $this->setName('crontabSwoole')
             ->addArgument('status', Argument::REQUIRED, 'start/stop/reload/status/connections')
             ->addOption('d', null, Option::VALUE_NONE, 'daemon（守护进程）方式启动')
             ->addOption('i', null, Option::VALUE_OPTIONAL, '多长时间执行一次')
@@ -46,10 +44,21 @@ class Crontab extends Command{
 
         $this->init($input, $output);
         //创建定时器任务
-        $task = new Worker();
-        $task->count = 1;
-        $task->onWorkerStart = [$this, 'start'];
-        $task->runAll();
+        $serv = new \swoole_server("0.0.0.0",9505);
+        $serv->on("WorkerStart",function ($serv,$woker_id){
+            if ($woker_id == 0){
+                //每隔1000ms触发一次
+                swoole_timer_tick(1000, function ($timer_id) {
+                    echo "hello\n";
+                });
+            }
+        });
+
+        $serv->on("receive",function ($serv,$fd,$from_id,$data){
+            $serv->send($fd,"Server:".$data);
+        });
+
+        $serv->start();
     }
 
     /**
