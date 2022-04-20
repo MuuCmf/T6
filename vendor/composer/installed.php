@@ -1,12 +1,12 @@
 <?php return array (
   'root' => 
   array (
-    'pretty_version' => '1.0.0+no-version-set',
-    'version' => '1.0.0.0',
+    'pretty_version' => 'dev-develop',
+    'version' => 'dev-develop',
     'aliases' => 
     array (
     ),
-    'reference' => NULL,
+    'reference' => '25d7af47486f7b848d7263f428109de767a183f9',
     'name' => 'topthink/think',
   ),
   'versions' => 
@@ -190,33 +190,6 @@
       array (
       ),
       'reference' => '4a54375c21eea4811dbd1149fe6b246517554e78',
-    ),
-    'nette/php-generator' => 
-    array (
-      'pretty_version' => 'v3.6.7',
-      'version' => '3.6.7.0',
-      'aliases' => 
-      array (
-      ),
-      'reference' => 'b9ba414c9895fd9420887f20eeb4eabde123677f',
-    ),
-    'nette/utils' => 
-    array (
-      'pretty_version' => 'v3.2.7',
-      'version' => '3.2.7.0',
-      'aliases' => 
-      array (
-      ),
-      'reference' => '0af4e3de4df9f1543534beab255ccf459e7a2c99',
-    ),
-    'open-smf/connection-pool' => 
-    array (
-      'pretty_version' => 'v1.0.16',
-      'version' => '1.0.16.0',
-      'aliases' => 
-      array (
-      ),
-      'reference' => 'f70e47dbf56f1869d3207e15825cf38810b865e0',
     ),
     'overtrue/socialite' => 
     array (
@@ -411,24 +384,6 @@
       ),
       'reference' => '120b605dfeb996808c31b6477290a714d356e822',
     ),
-    'stechstudio/backoff' => 
-    array (
-      'pretty_version' => '1.2',
-      'version' => '1.2.0.0',
-      'aliases' => 
-      array (
-      ),
-      'reference' => '816e46107a6be2e1072ba0ff2cb26034872dfa49',
-    ),
-    'swoole/ide-helper' => 
-    array (
-      'pretty_version' => '4.8.9',
-      'version' => '4.8.9.0',
-      'aliases' => 
-      array (
-      ),
-      'reference' => '8f82ba3b6af04a5bccb97c1654af992d1ee8b0fe',
-    ),
     'symfony/cache' => 
     array (
       'pretty_version' => 'v5.4.7',
@@ -487,15 +442,6 @@
       array (
         0 => '2.0',
       ),
-    ),
-    'symfony/finder' => 
-    array (
-      'pretty_version' => 'v5.4.3',
-      'version' => '5.4.3.0',
-      'aliases' => 
-      array (
-      ),
-      'reference' => '231313534dded84c7ecaa79d14bc5da4ccb69b7d',
     ),
     'symfony/http-foundation' => 
     array (
@@ -612,15 +558,6 @@
       ),
       'reference' => '7eacaa588c9b27f2738575adb4a8457a80d9c807',
     ),
-    'tencent/tls-sig-api-v2' => 
-    array (
-      'pretty_version' => 'v1.1',
-      'version' => '1.1.0.0',
-      'aliases' => 
-      array (
-      ),
-      'reference' => 'cae9aa1f6ef04c64b451ef72cdbc004b87a800d4',
-    ),
     'tencentcloud/common' => 
     array (
       'pretty_version' => '3.0.617',
@@ -659,12 +596,12 @@
     ),
     'topthink/think' => 
     array (
-      'pretty_version' => '1.0.0+no-version-set',
-      'version' => '1.0.0.0',
+      'pretty_version' => 'dev-develop',
+      'version' => 'dev-develop',
       'aliases' => 
       array (
       ),
-      'reference' => NULL,
+      'reference' => '25d7af47486f7b848d7263f428109de767a183f9',
     ),
     'topthink/think-captcha' => 
     array (
@@ -719,15 +656,6 @@
       array (
       ),
       'reference' => 'a9f81126bdd52d036461e0c6556592dd478c8728',
-    ),
-    'topthink/think-swoole' => 
-    array (
-      'pretty_version' => 'v4.0.7',
-      'version' => '4.0.7.0',
-      'aliases' => 
-      array (
-      ),
-      'reference' => '70a1f7f0dad2881b7bb08eef19ea6c6bc04b483a',
     ),
     'topthink/think-template' => 
     array (
