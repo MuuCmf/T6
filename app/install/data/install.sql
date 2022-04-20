@@ -4544,6 +4544,7 @@ INSERT INTO `muucmf_menu` (`id`, `title`, `pid`, `sort`, `url`, `hide`, `type`, 
 ('9935C318-787D-A3D9-CCFA-2EAC75CE715B', '保存用户组', 'E62328CE-8E20-DD00-E0E8-832D1C8E3B65', 0, 'admin/Auth/writeGroup', 0, 0, '新增和编辑用户组的\"保存\"按钮', '', 0, '', 'admin'),
 ('9E841904-2E51-0F7D-61BB-247E05AD6526', '删除菜单', '6E7257F5-44DA-009D-548F-47B895DDC1CB', 0, 'admin/Menu/del', 1, 0, '', '', 0, '', 'admin'),
 ('9F92AFDB-9B41-5D82-0704-BA98008E233B', '小程序配置', 'A4650B98-DAD4-8194-030C-1B2AB4F35CBA', 0, 'channel/admin.MiniProgram/shopIndex', 1, 0, '', '小程序配置', 0, '', 'admin'),
+('A4650B98-DAD4-8194-030C-1B2AB4F35CBA', '渠道', '0', 4, 'channel/admin.OfficialAccount/index', 0, 0, '', '', 0, 'cubes', 'admin'),
 ('A53BEFBB-17F7-56CD-ADF9-3D6754061E70', '积分日志', 'D18841ED-C034-2E7A-D0B2-92D0AC647179', 9, 'admin/Score/log', 0, 0, '', '积分管理', 0, 'calendar', 'admin'),
 ('A8DBCB14-BA8A-7888-824F-AF15DF7AF84D', '控制台', 'DA900619-B54E-49E7-8027-21C94ECD6FAC', 0, 'admin/index/index', 0, 0, '', '控制台', 0, 'cog', 'admin'),
 ('A996C9AD-FF89-E8C9-55FB-2F682AC473EA', '清空日志', '113D646E-6D67-CF09-8C2C-4B10D57A6902', 0, 'admin/Action/clear', 1, 0, '', '', 0, '', 'admin'),
@@ -4588,7 +4589,6 @@ INSERT INTO `muucmf_menu` (`id`, `title`, `pid`, `sort`, `url`, `hide`, `type`, 
 ('F8D89EF4-792E-B14F-8456-09394EDE7C72', '编辑模块', '20216DCF-1138-09A3-346A-C92E08E33677', 0, 'admin/Module/edit', 1, 0, '', '模块管理', 0, '', 'admin'),
 ('FAD7E420-2621-D50C-48AF-BAEEA2F361F5', '应用商店', '7BE5FA0B-7009-AB46-FE7B-A9364ACAF687', 0, 'admin/Appcloud/index', 0, 0, '', '云端', 0, 'cloud', 'admin'),
 ('FD6493CE-98CB-A5A7-3236-080E11318831', '备份', '2B76BD2C-80AB-319C-CE6E-1B0E6930B3CC', 0, 'admin/Database/export', 0, 0, '备份数据库', '', 0, '', 'admin');
-
 
 -- --------------------------------------------------------
 
@@ -4673,14 +4673,6 @@ CREATE TABLE IF NOT EXISTS `muucmf_module` (
   UNIQUE KEY `name` (`name`),
   KEY `name_2` (`name`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='模块管理表' AUTO_INCREMENT=12 ;
-
---
--- 转存表中的数据 `muucmf_module`
---
-
-INSERT INTO `muucmf_module` (`id`, `name`, `icon`, `alias`, `version`, `is_com`, `summary`, `developer`, `website`, `entry`, `is_setup`, `sort`, `uninstall`) VALUES
-(5, 'devtool', 'http://dev.t6.muucmf.cn/static/admin/images/module_default_icon.png', '开发者工具', '1.0.0', 0, '开发者工具，主要提供给开发者使用，包含了模块打包工具', '北京火木科技有限公司', 'https://www.muucmf.cn', 'devtool/Admin/module', 1, 0, 1),
-(10, 'demo', 'http://dev.t6.muucmf.cn/static/admin/images/module_default_icon.png', '模块开发演示', '1.0.0', 1, '模块开发演示', '北京火木科技有限公司', 'http://www.muucmf.cn', 'demo/Admin/index', 1, 0, 1),
 
 -- --------------------------------------------------------
 

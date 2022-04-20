@@ -184,8 +184,8 @@ class Module extends Base
 
         if ($withoutData == 0) {
             //如果不保留数据
-            if (file_exists(APP_PATH . '/' . $module['name'] . '/info/uninstall.sql')) {
-                $uninstall_file = APP_PATH . '/' . $module['name'] . '/info/uninstall.sql';
+            if (file_exists(APP_PATH . $module['name'] . '/info/uninstall.sql')) {
+                $uninstall_file = APP_PATH . $module['name'] . '/info/uninstall.sql';
             }
             //读取sql语句
             $uninstallSql = file_get_contents($uninstall_file);
