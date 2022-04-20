@@ -97,8 +97,8 @@ use GuzzleHttp\Psr7;
  * @method object GetMediaInfo(array $args) 获取媒体信息
  * @method object CreateMediaTranscodeJobs(array $args) 媒体转码
  * @method object CreateMediaJobs(array $args) 媒体任务
- * @method object DescribeMediaJob(array $args) 媒体任务
- * @method object DescribeMediaJobs(array $args) 
+ * @method object DescribeMediaJob(array $args) 查询指定的媒体任务
+ * @method object DescribeMediaJobs(array $args) 拉取拉取符合条件的媒体任务
  * @method object CreateMediaSnapshotJobs(array $args) 媒体截图
  * @method object CreateMediaConcatJobs(array $args) 媒体拼接
  * @method object DetectAudio(array $args) 音频审核
@@ -119,10 +119,12 @@ use GuzzleHttp\Psr7;
  * @method object GetDetectImageResult(array $args) 主动获取图片审核结果
  * @method object CreateMediaVoiceSeparateJobs(array $args) 提交人声分离任务
  * @method object DescribeMediaVoiceSeparateJob(array $args) 查询指定的人声分离任务
+ * @method object DetectWebpage(array $args) 提交网页审核任务
+ * @method object GetDetectWebpageResult(array $args) 查询网页审核任务结果
  * @see \Qcloud\Cos\Service::getService()
  */
 class Client extends GuzzleClient {
-    const VERSION = '2.5.0';
+    const VERSION = '2.5.3';
 
     public $httpClient;
     
@@ -139,10 +141,10 @@ class Client extends GuzzleClient {
         $this->cosConfig['schema'] = isset($cosConfig['schema']) ? $cosConfig['schema'] : 'http';
         $this->cosConfig['region'] = isset($cosConfig['region']) ? region_map($cosConfig['region']) : null;
         $this->cosConfig['appId'] = isset($cosConfig['credentials']['appId']) ? $cosConfig['credentials']['appId'] : null;
-        $this->cosConfig['secretId'] = isset($cosConfig['credentials']['secretId']) ? $cosConfig['credentials']['secretId'] : '';
-        $this->cosConfig['secretKey'] = isset($cosConfig['credentials']['secretKey']) ? $cosConfig['credentials']['secretKey'] : '';
+        $this->cosConfig['secretId'] = isset($cosConfig['credentials']['secretId']) ? trim($cosConfig['credentials']['secretId']) : '';
+        $this->cosConfig['secretKey'] = isset($cosConfig['credentials']['secretKey']) ? trim($cosConfig['credentials']['secretKey']) : '';
         $this->cosConfig['anonymous'] = isset($cosConfig['credentials']['anonymous']) ? $cosConfig['credentials']['anonymous'] : false;
-        $this->cosConfig['token'] = isset($cosConfig['credentials']['token']) ? $cosConfig['credentials']['token'] : null;
+        $this->cosConfig['token'] = isset($cosConfig['credentials']['token']) ? trim($cosConfig['credentials']['token']) : null;
         $this->cosConfig['timeout'] = isset($cosConfig['timeout']) ? $cosConfig['timeout'] : 3600;
         $this->cosConfig['connect_timeout'] = isset($cosConfig['connect_timeout']) ? $cosConfig['connect_timeout'] : 3600;
         $this->cosConfig['ip'] = isset($cosConfig['ip']) ? $cosConfig['ip'] : null;
@@ -175,29 +177,37 @@ class Client extends GuzzleClient {
             }));
         }
         $handler->push($this::handleErrors());
-        $this->signature = new Signature(trim($this->cosConfig['secretId']), trim($this->cosConfig['secretKey']), $this->cosConfig, trim($this->cosConfig['token'] ));
+        $this->signature = new Signature($this->cosConfig['secretId'], $this->cosConfig['secretKey'], $this->cosConfig, $this->cosConfig['token']);
         $area = $this->cosConfig['allow_accelerate'] ? 'accelerate' : $this->cosConfig['region'];
         $this->httpClient = new HttpClient([
-            'base_uri' => $this->cosConfig['schema'].'://cos.' . $area . '.myqcloud.com/',
+            'base_uri' => "{$this->cosConfig['schema']}://cos.{$area}.myqcloud.com/",
             'timeout' => $this->cosConfig['timeout'],
             'handler' => $handler,
             'proxy' => $this->cosConfig['proxy'],
             'allow_redirects' => $this->cosConfig['allow_redirects']
         ]);
         $this->desc = new Description($service);
-        $this->api = (array)($this->desc->getOperations());
+        $this->api = (array) $this->desc->getOperations();
         parent::__construct($this->httpClient, $this->desc, [$this,
         'commandToRequestTransformer'], [$this, 'responseToResultTransformer'],
         null);
     }
 
     public function inputCheck() {
+        $message = null;
         //检查Region
         if (empty($this->cosConfig['region'])   &&
             empty($this->cosConfig['domain'])   &&
             empty($this->cosConfig['endpoint']) &&
             empty($this->cosConfig['ip'])) {
-            $e = new Exception\CosException('Region is empty');
+            $message = 'Region is empty';
+        }
+        //检查Secret
+        if (empty($this->cosConfig['secretId']) || empty($this->cosConfig['secretKey'])) {
+            $message = 'Secret is empty';
+        }
+        if ($message !== null) {
+            $e = new Exception\CosException($message);
             $e->setExceptionCode('Invalid Argument');
             throw $e;
         }
@@ -248,6 +258,7 @@ class Client extends GuzzleClient {
         $request = $transformer->uploadBodyTransformer($command, $request);
         $request = $transformer->metadataTransformer($command, $request);
         $request = $transformer->queryStringTransformer($command, $request);
+        $request = $transformer->headerTransformer($command, $request);
         $request = $transformer->md5Transformer($command, $request);
         $request = $transformer->specialParamTransformer($command, $request);
         $request = $transformer->ciParamTransformer($command, $request);

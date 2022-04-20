@@ -564,8 +564,6 @@ class Client extends BaseClient
     /**
      * unionid查询external_userid
      *
-     * @see https://open.work.weixin.qq.com/api/doc/90001/90143/95327
-     *
      * @param string $unionid
      * @param string $openid
      * @param string $corpid
@@ -573,6 +571,10 @@ class Client extends BaseClient
      * @return array|\EasyWeChat\Kernel\Support\Collection|object|\Psr\Http\Message\ResponseInterface|string
      * @throws \EasyWeChat\Kernel\Exceptions\InvalidConfigException
      * @throws \GuzzleHttp\Exception\GuzzleException
+     *
+     * @deprecated  使用新方法`\EasyWeChat\OpenWork\Corp\unionidToExternalUserid`
+     *
+     * @see https://open.work.weixin.qq.com/api/doc/90001/90143/95327
      *
      * @author 读心印 <aa24615@qq.com>
      */
@@ -610,7 +612,7 @@ class Client extends BaseClient
      * @see https://work.weixin.qq.com/api/doc/90000/90135/95098
      * @param string $path 附件资源路径
      * @param string $mediaType 媒体文件类型
-     * @param string attachmentType 附件类型
+     * @param string $attachmentType 附件类型
      * @return array|\EasyWeChat\Kernel\Support\Collection|object|\Psr\Http\Message\ResponseInterface|string
      * @throws \EasyWeChat\Kernel\Exceptions\InvalidConfigException
      * @throws \GuzzleHttp\Exception\GuzzleException
