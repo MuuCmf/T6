@@ -1,8 +1,8 @@
 <?php
 namespace app\admin\lib;
 
-use app\common\model\Module;
 use think\facade\Cache;
+use think\exception\ValidateException;
 
 class Cloud{
     public $api;
@@ -11,16 +11,25 @@ class Cloud{
         $this->api = config('colud.api');
     }
 
-    public function needAuthorization($module){
+    /**
+     * 查询应用授权
+     */
+    public function needAuthorization($app_name){
         $url = $this->api . 'authorization/app';
         $result = curl_request($url,[
-            'app_name'  =>  $module,
+            'app_name'  =>  $app_name,
             'auth_code' =>  self::authCode()
         ]);
-        $result = json_decode($result,true);
-        if ($result['code'] == 0){
+
+        try {
+            $result = json_decode($result,true);
+            if (is_array($result) && $result['code'] == 0){
+                return false;
+            }
+        } catch (ValidateException $e) {
             return false;
         }
+        
         return true;
     }
 
