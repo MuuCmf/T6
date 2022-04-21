@@ -4,15 +4,17 @@ namespace app\admin\lib;
 use think\facade\Cache;
 use think\exception\ValidateException;
 
-class Cloud{
+class Cloud
+{
     public $api;
     function __construct()
     {
-        $this->api = config('colud.api');
+        $this->api = config('cloud.api');
     }
 
     /**
      * 查询应用授权
+     * app_name 应用唯一标识
      */
     public function needAuthorization($app_name){
         $url = $this->api . 'authorization/app';
@@ -23,8 +25,6 @@ class Cloud{
         try {
             $result = json_decode($result,true);
             if (is_array($result) && $result['code'] == 0){
-                return false;
-            }else{
                 return false;
             }
         } catch (ValidateException $e) {
