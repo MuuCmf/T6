@@ -1,5 +1,8 @@
 /*按钮重构*/
 
+.btn {
+    border: 0;
+}
 .btn-primary {
     border: 0;
     background-color: #11a8bb !important;
