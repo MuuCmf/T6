@@ -29,7 +29,7 @@ class Member extends Model
      * @param  string $mobile 用户手机号码
      * @return integer 注册成功-用户信息，注册失败-错误编号
      */
-    public function register($username='', $nickname, $password, $email='', $mobile='', $type='username')
+    public function register($username='', $nickname = '', $password = '', $email='', $mobile='', $type='username')
     {
         $data = [
             'username' => $username,

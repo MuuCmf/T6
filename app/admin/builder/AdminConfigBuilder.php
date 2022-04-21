@@ -55,7 +55,7 @@ class AdminConfigBuilder extends AdminBuilder
      * @param null $opt
      * @return $this
      */
-    public function key($name, $title, $subtitle = null, $type, $opt = null)
+    public function key($name, $title, $subtitle = null, $type = '', $opt = null)
     {
         $key = ['name' => $name, 'title' => $title, 'subtitle' => $subtitle, 'type' => $type, 'opt' => $opt];
         $this->_keyList[] = $key;
@@ -172,17 +172,17 @@ class AdminConfigBuilder extends AdminBuilder
         return $this->keySelect($name, $title, $subtitle, $map);
     }
 
-    public function keySelect($name, $title, $subtitle = null, $options)
+    public function keySelect($name, $title, $subtitle = null, $options = null)
     {
         return $this->key($name, $title, $subtitle, 'select', $options);
     }
 
-    public function keyRadio($name, $title, $subtitle = null, $options)
+    public function keyRadio($name, $title, $subtitle = null, $options  = null)
     {
         return $this->key($name, $title, $subtitle, 'radio', $options);
     }
 
-    public function keyCheckBox($name, $title, $subtitle = null, $options)
+    public function keyCheckBox($name, $title, $subtitle = null, $options  = null)
     {
         return $this->key($name, $title, $subtitle, 'checkbox', $options);
     }
@@ -333,7 +333,7 @@ class AdminConfigBuilder extends AdminBuilder
      * @param $subtitle
      * @return AdminConfigBuilder
      */
-    public function keyCity($name = ['province', 'city', 'district'],$title, $subtitle)
+    public function keyCity($name = ['province', 'city', 'district'],$title = '', $subtitle = '')
     {
         //修正在编辑信息时无法正常显示已经保存的地区信息
         return $this->key($name, $title, $subtitle, 'city');
@@ -391,7 +391,7 @@ class AdminConfigBuilder extends AdminBuilder
         return $this->button($title, $attr);
     }
 
-    public function buttonLink($title='按钮',$attr){
+    public function buttonLink($title='按钮',$attr = []){
         $attr['onclick'] = 'javascript:location.href=\''.$attr['href'].'\';return false;';
         return $this->button($title, $attr);
     }
@@ -458,7 +458,7 @@ class AdminConfigBuilder extends AdminBuilder
      * @param $options
      * @return $this
      */
-    public function keyChosen($name, $title, $subtitle = null, $options)
+    public function keyChosen($name, $title, $subtitle = null, $options = null)
     {
         // 解析option数组
         if (key($options) === 0) {
