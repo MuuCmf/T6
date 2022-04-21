@@ -20,7 +20,6 @@ class Cloud{
             'app_name'  =>  $app_name,
             'auth_code' =>  self::authCode()
         ]);
-        dump($result);exit;
         try {
             $result = json_decode($result,true);
             if (is_array($result) && $result['code'] == 0){
