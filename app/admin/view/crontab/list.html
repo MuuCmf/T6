@@ -21,6 +21,9 @@
             <button class="btn btn-danger ajax-post confirm" url="{:url('status', ['status'=> -1])}" arget-form="ids">
                 删除
             </button>
+            <button class="btn btn-danger ajax-post confirm" data-confirm="确认清空日志表！" url="{:url('clear')}">
+                清空日志
+            </button>
             <span class="check-tips">（服务启动命令 php think crontab start）</span>
 
         </div>

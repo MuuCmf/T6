@@ -1,24 +1,15 @@
 <?php
-/**
- * +----------------------------------------------------------------------
- *                                  |
- *     __     __  __     __  __     | FILE: Crontab.php
- *    /\ \   /\_\_\_\   /\_\_\_\    | AUTHOR: 季骁宣
- *   _\_\ \  \/_/\_\/_  \/_/\_\/_   | EMAIL: jxx0410@sina.com
- *  /\_____\   /\_\/\_\   /\_\/\_\  | QQ: 516036855
- *  \/_____/   \/_/\/_/   \/_/\/_/  | DATETIME: 2022/2/24
- *                                  |-------------------------------------
- *                                  | 登山则情满于山,观海则意溢于海
- * +----------------------------------------------------------------------
- */
 namespace app\admin\controller;
+
+use think\facade\Cache;
+use think\facade\Db;
+use think\facade\View;
 use app\common\model\Crontab as CrontabModel;
 use app\common\logic\Crontab as CrontabLogic;
 use app\common\model\CrontabLog as CrontabLogModel;
-use think\facade\Cache;
-use think\facade\View;
 
 class Crontab extends Admin{
+
     protected $CrontabLogic;
     protected $CrontabModel;
     protected $CrontabLogModel;
@@ -31,6 +22,9 @@ class Crontab extends Admin{
         $this->CrontabLogModel = new CrontabLogModel();
     }
 
+    /**
+     * 任务列表
+     */
     public function list(){
         $map = [
             ['status' ,'between' ,[0,1]],
@@ -47,6 +41,9 @@ class Crontab extends Admin{
             'pager' => $pager,
             'list' => $list['data']
         ]);
+
+        $this->setTitle('计划任务');
+        
         return view();
     }
 
@@ -131,5 +128,17 @@ class Crontab extends Admin{
         }else{
             return $this->error($title . '失败');
         }
+    }
+
+    /**
+     * 清空日志表
+     */
+    public function clear()
+    {
+        $prefix = config('database.connections.mysql.prefix');
+        $table = $prefix . 'crontab_log';
+        Db::execute("truncate TABLE {$table}");
+
+        return $this->success('任务日志表清空成功');
     }
 }
