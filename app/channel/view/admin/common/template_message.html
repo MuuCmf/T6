@@ -3,11 +3,13 @@
 {include file="../../channel/view/admin/common/style" /}
 {/block}
 {block name="body"}
-<div class="panel edit-auto-reply" id="template-message">
-    <div class="panel-heading">
-        模板消息配置
-    </div>
-    <div class="panel-body">
+
+<div class="main-title">
+    <h2>模板消息配置</h2>
+</div>
+
+<div class="with-padding">
+    <div class="template-message-edit-section edit-auto-reply" id="template-message">
 
         <form action="{:url('templateMessage')}" class="form-horizontal ajax-form" method="post">
 

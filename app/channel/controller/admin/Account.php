@@ -1,17 +1,6 @@
 <?php
-/**
- * +----------------------------------------------------------------------
- *                                  |
- *     __     __  __     __  __     | FILE: OfficialAccount.php
- *    /\ \   /\_\_\_\   /\_\_\_\    | AUTHOR: 季骁宣
- *   _\_\ \  \/_/\_\/_  \/_/\_\/_   | EMAIL: jxx0410@sina.com
- *  /\_____\   /\_\/\_\   /\_\/\_\  | QQ: 516036855
- *  \/_____/   \/_/\/_/   \/_/\/_/  | DATETIME: 2021/9/23
- *                                  |-------------------------------------
- *                                  | 登山则情满于山,观海则意溢于海
- * +----------------------------------------------------------------------
- */
 namespace app\channel\controller\admin;
+
 use app\admin\controller\Admin as MuuAdmin;
 use app\channel\logic\TemplateMessage;
 use app\channel\model\WechatAutoReply;
@@ -24,7 +13,7 @@ use think\facade\View;
  * Class OfficialAccount
  * @package app\admin\controller
  */
-class OfficialAccount extends MuuAdmin {
+class Account extends MuuAdmin {
     private $wechatConfigModel;
     private $autoReplyModel;
     function __construct()
@@ -45,7 +34,8 @@ class OfficialAccount extends MuuAdmin {
             return $this->result(200,'success',$menu);
         }
         $this->setTitle('菜单管理');
-        return view();
+
+        return View::fetch();
     }
     /**
      * 保存菜单
@@ -66,7 +56,7 @@ class OfficialAccount extends MuuAdmin {
         }
     }
     /**
-     * 存储配置
+     * 公众号配置
      */
     public function index()
     {
@@ -88,7 +78,9 @@ class OfficialAccount extends MuuAdmin {
                 $data['url'] = $this->wechatConfigModel->callbackUrl();
             }
             View::assign('data', $data);
-            return view();
+            $this->setTitle('公众号配置');
+
+            return View::fetch();
         }
     }
 
@@ -159,7 +151,8 @@ class OfficialAccount extends MuuAdmin {
             View::assign([
                 'data' => $data
             ]);
-            return \view();
+
+            return View::fetch();
         }
     }
 
@@ -229,6 +222,7 @@ class OfficialAccount extends MuuAdmin {
             }
             $this->error('保存失败，请稍后再试');
         }
+
         $type = 'weixin_h5';//当前模板消息类型
         $TemplateMessageLogic = new TemplateMessage();
         $detail = $this->wechatConfigModel->where('shopid',$this->shopid)->value('tmplmsg');
@@ -238,6 +232,8 @@ class OfficialAccount extends MuuAdmin {
             'element' => $TemplateMessageLogic->oauth_type[$type],
             'data' => $detail
         ]);
+        $this->setTitle('模板消息配置');
+
         return \view('admin/common/template_message');
     }
 }
