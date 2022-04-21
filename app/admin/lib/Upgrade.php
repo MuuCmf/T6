@@ -1,17 +1,6 @@
 <?php
-/**
- * +----------------------------------------------------------------------
- *                                  |
- *     __     __  __     __  __     | FILE: Upgrade.php
- *    /\ \   /\_\_\_\   /\_\_\_\    | AUTHOR: 季骁宣
- *   _\_\ \  \/_/\_\/_  \/_/\_\/_   | EMAIL: jxx0410@sina.com
- *  /\_____\   /\_\/\_\   /\_\/\_\  | QQ: 516036855
- *  \/_____/   \/_/\/_/   \/_/\/_/  | DATETIME: 2022/1/13
- *                                  |-------------------------------------
- *                                  | 登山则情满于山,观海则意溢于海
- * +----------------------------------------------------------------------
- */
 namespace app\admin\lib;
+
 use app\common\model\Module;
 use think\Exception;
 use think\facade\Db;
@@ -23,7 +12,7 @@ class Upgrade{
 
     function __construct($app = 'system')
     {
-        $this->api = config('muucmf.cloud_api');
+        $this->api = config('cloud.api');
         $this->app = $app;
     }
 
