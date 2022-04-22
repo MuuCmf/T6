@@ -134,7 +134,7 @@ class Update extends Admin
             $params = request()->post();
             try {
                 $local_path = root_path() . $params['file'];
-                if ($params['skip'] == 0) {
+                if ($params['skip'] == false) {
                     //替换版本文件
                     $params = [
                         'md5'   => $params['md5'],

@@ -55,7 +55,6 @@ class Upgrade{
         $ignore_paths = ['.env','runtime','.idea','.gitignore','data/version.ini','info/info.php','_src/css','_src/js','runtime/'];
         foreach ($ignore_paths as $item){
             if (strpos($path,$item) !== false || strpos($path,$item) == 0){
-                //echo (strpos($path,$item));exit;
                 return true;
             }
         }

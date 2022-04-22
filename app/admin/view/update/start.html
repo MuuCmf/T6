@@ -99,7 +99,7 @@
                     auth_code:that.authCode,
                     app_name:that.appName,
                 }, function (res) {
-                    console.log(res);
+                    //console.log(res);
                     if (res.code == 200) {
                         that.package = res.data.data;
                         that.packageTotal = res.data.total;
@@ -204,6 +204,7 @@
              */
             finishUpgrade() {
                 let that = this;
+                console.log(that.package);
                 if (that.retrying) {
                     that.errRetry();
                     return '';
@@ -213,7 +214,7 @@
                     version: that.upgradeVersion,
                     file: that.versionPackage.name,
                     md5: that.versionPackage.md5,
-                    skip: that.skipUpgradeVersion ? 1 : 0,
+                    skip: that.skipUpgradeVersion ? true : false,
                 }, function (res) {
                     that.status = 1;
                     that.progressTitle = '升级完成';
