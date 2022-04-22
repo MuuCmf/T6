@@ -92,12 +92,15 @@ class Update extends Admin
             $local_version = $this->UpgradeServer->version($app_name);//本地版本
             $upgrade = get_upgrade_status($local_version ,$version);//版本号对比
             if (!$upgrade) $this->success('无需升级', 'same_version');
+
             try {
                 //检查忽略文件
                 $ignore = $this->UpgradeServer->checkIgnoreFile($path);
+                // 忽略文件直接跳过
                 if ($ignore) {
                     return $this->success('success');
                 }
+                
                 //对比文件
                 if (file_exists($local_path)) {
                     $upgrade = !boolval($md5 == @md5_file($local_path));
