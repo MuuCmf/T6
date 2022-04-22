@@ -52,12 +52,14 @@ class Upgrade{
      * @return bool
      */
     public function checkIgnoreFile($path){
-        $ignore_paths = ['./.git','.env','./runtime','./.idea','.gitignore','data/version.ini','info/info.php','_src/css','_src/js','runtime/'];
+        $ignore_paths = ['.env','runtime','.idea','.gitignore','data/version.ini','info/info.php','_src/css','_src/js','runtime/'];
         foreach ($ignore_paths as $item){
-            if (strpos($path,$item) !== false){
+            if (strpos($path,$item) !== false || strpos($path,$item) == 0){
+                //echo (strpos($path,$item));exit;
                 return true;
             }
         }
+
         return false;
     }
 

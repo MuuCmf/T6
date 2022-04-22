@@ -73,7 +73,8 @@ class Update extends Admin
             'upgradeVersion' => input('version'),
             'authCode' => Cloud::authCode(),
         ]);
-        return \view();
+
+        return View::fetch();
     }
 
     /**
@@ -97,7 +98,7 @@ class Update extends Admin
                 //检查忽略文件
                 $ignore = $this->UpgradeServer->checkIgnoreFile($path);
                 // 忽略文件直接跳过
-                if ($ignore) {
+                if ($ignore === true) {
                     return $this->success('success');
                 }
 
