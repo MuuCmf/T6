@@ -69,7 +69,7 @@ class Upgrade{
      */
     public function downFile($params, $save_path = '')
     {
-        $source = $this->api . "/upgrade/download?" . http_build_query($params);
+        $source = $this->api . "upgrade/download?" . http_build_query($params);
         //地址追加授权域名
         $source .= "&auth_code=" . Cloud::authCode();
         $ch = curl_init();//初始化一个cURL会话

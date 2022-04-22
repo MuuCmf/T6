@@ -100,7 +100,7 @@ class Update extends Admin
                 if ($ignore) {
                     return $this->success('success');
                 }
-                
+
                 //对比文件
                 if (file_exists($local_path)) {
                     $upgrade = !boolval($md5 == @md5_file($local_path));
@@ -110,7 +110,7 @@ class Update extends Admin
                 //md5不同，请求远端文件
                 if ($upgrade) {
                     $params = [
-                        'md5'   =>  $md5,
+                        'md5'       =>  $md5,
                         'app_name'  =>  $this->app_name,
                         'version'   =>  $version
                     ];
