@@ -429,5 +429,32 @@ if (!function_exists('array_column')) {
     }
 }
 
+if (!function_exists('is_json')) {
+    /**
+     * 判断字符串是否为 Json 格式
+     *
+     * @param string $data Json 字符串
+     * @param bool $assoc 是否返回关联数组。默认返回对象
+     * @param bool $htmlspecialchars_decode 是否进行html反转义
+     * @return array|bool|object 成功返回转换后的对象或数组，失败返回 false
+     */
+
+
+    function is_json($data = '', $assoc = false, $htmlspecialchars_decode = false)
+    {
+        $data = json_decode($data, $assoc);
+        if ($htmlspecialchars_decode) {
+            if (($data && is_object($data)) || (is_array($data) && !empty($data))) {
+                return $data;
+            }
+        } else {
+            if (($data && is_object($data)) || (is_array($data) && !empty($data))) {
+                return $data;
+            }
+        }
+        return false;
+    }
+}
+
 
 

@@ -11,8 +11,6 @@ use think\Response;
 /**
  * 升级包制作规则
  * 压缩方式：zip
- * 升级文件命名规则：将升级文件压缩至update.zip
- * 数据库文件路径：./sql/update.sql
  */
 class Update extends Admin
 {
@@ -37,23 +35,31 @@ class Update extends Admin
      */
     public function index()
     {
-        //读取本地版本号
-        $localVersion = $this->UpgradeServer->version($this->app_name);
-        //读取云端最新版本号
-        $cloudVersion = $this->UpgradeServer->cloudVersion(request()->param())['data'];
-        $upgrade = get_upgrade_status($localVersion,$cloudVersion['version']);
+        // 设置页面title
         $this->setTitle('在线更新');
-
+        // 读取本地版本号
+        $local_version = $this->UpgradeServer->version($this->app_name);
+        // 读取云端最新版本号
+        $cloud_version = $this->UpgradeServer->cloudVersion(request()->param());
+        if(is_array($cloud_version) && !empty($cloud_version)){
+            $cloud_version = $cloud_version['data'];
+        }
+        // 是否可升级
+        $upgrade = false;
+        if(!empty($cloud_version['version'])){
+            $upgrade = get_upgrade_status($local_version, $cloud_version['version']);
+        }
+        
         //备份地址
         $backup_path = $this->app_name == 'system' ? '网站根目录->data->upgrade' : '网站根目录->app->' . $this->app_name . '->info->backup';
 
-        View::assign('localVersion', $localVersion);
-        View::assign('cloudVersion', $cloudVersion);
+        View::assign('localVersion', $local_version);
+        View::assign('cloudVersion', $cloud_version);
         View::assign('upgrade', $upgrade);
         View::assign('appName', input('get.app_name',''));
         View::assign('backupPath', $backup_path);
 
-        return \view();
+        return View::fetch();
     }
 
     /*开始在线更新数据*/

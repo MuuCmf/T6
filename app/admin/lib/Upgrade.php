@@ -137,7 +137,17 @@ class Upgrade{
     {
         $api = $this->api . 'app/version';
         $output = curl_request($api, $params);
-        $result = json_decode($output, true);//转换为数组格式
+        // 初始化返回数据
+        $result = [
+            'code' => 0,
+            'data' => [
+                'version' => '服务器错误',
+                'remark' => '服务器错误'
+            ]
+        ];
+        if(is_json($output)){
+            $result = json_decode($output, true);//转换为数组格式
+        }
         return $result;
     }
 
