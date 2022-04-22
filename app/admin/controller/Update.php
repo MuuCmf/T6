@@ -134,13 +134,15 @@ class Update extends Admin
             $params = request()->post();
             try {
                 $local_path = root_path() . $params['file'];
-                if ($params['skip'] == false) {
+
+                if ($params['skip'] == 0) {
                     //替换版本文件
                     $params = [
                         'md5'   => $params['md5'],
                         'app_name' => $this->app_name,
                         'version'  => $params['version']
                     ];
+
                     $this->UpgradeServer->downFile($params, $local_path);
                     if ($this->app_name != 'system') {
                         //更新应用版本号

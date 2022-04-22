@@ -76,8 +76,8 @@
             packageTotal: 0,//更新包总大小
             errPackage: [],//发生更新错误包
             retrying: true,//重试
-            versionPackage: null,//版本号升级文件
-            skipUpgradeVersion:false,//跳过更新版本号
+            versionPackage: {},//版本号升级文件
+            skipUpgradeVersion: 0,//跳过更新版本号
         },
         created() {
             this.getUpgradeInfo();
@@ -103,7 +103,8 @@
                     if (res.code == 200) {
                         that.package = res.data.data;
                         that.packageTotal = res.data.total;
-                        that.versionPackage = res.data.version;
+                        //that.versionPackage = res.data.version;
+                        
                         if (that.upgradeVersion != that.localVersion){
                             that.progressTitle = '开始升级';
                             that.upgrade();
@@ -124,6 +125,12 @@
                 that.progressVal = Math.floor(that.packageProgress / step);//进度条
                 that.task = '下载中 ' + item.name;//任务名称
                 that.progressTitle = '升级中';
+
+                if(that.appName == 'system' && item.name == 'data/version.ini'){
+                    that.versionPackage.name = item.name
+                    that.versionPackage.md5 = item.md5
+                    console.log(that.versionPackage)
+                }
                 $.post("{:url('upgrade')}", {
                     app_name: that.appName,
                     version: that.upgradeVersion,
@@ -145,6 +152,7 @@
                         if (res.code != 401){
                             //继续执行
                             that.packageProgress++;
+                            
                             if (that.packageProgress >= that.packageTotal) {
                                 //执行收尾工作
                                 that.finishUpgrade();
@@ -193,7 +201,7 @@
                         md5: item.md5
                     }, function (res) {
                         if (res.code == 0){
-                            that.skipUpgradeVersion = true;
+                            that.skipUpgradeVersion = 1;
                         }
                         that.errRetry(i + 1);
                     }
@@ -214,7 +222,7 @@
                     version: that.upgradeVersion,
                     file: that.versionPackage.name,
                     md5: that.versionPackage.md5,
-                    skip: that.skipUpgradeVersion ? true : false,
+                    skip: that.skipUpgradeVersion ? 1 : 0,
                 }, function (res) {
                     that.status = 1;
                     that.progressTitle = '升级完成';
