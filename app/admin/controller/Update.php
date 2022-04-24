@@ -72,6 +72,7 @@ class Update extends Admin
             'localVersion' => $this->UpgradeServer->version(),
             'upgradeVersion' => input('version'),
             'authCode' => Cloud::authCode(),
+            'cloud' => config('cloud.api')
         ]);
 
         return View::fetch();
