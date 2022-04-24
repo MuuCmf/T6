@@ -76,12 +76,15 @@ class Upgrade{
         $ch = curl_init();//初始化一个cURL会话
         curl_setopt($ch, CURLOPT_URL, $source);//抓取url
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);//是否显示头信息
-        curl_setopt($ch, CURLOPT_SSLVERSION, 3);//传递一个包含SSL版本的长参数
+        //curl_setopt($ch, CURLOPT_SSLVERSION, 3);//传递一个包含SSL版本的长参数
         curl_setopt($ch, CURLINFO_HEADER_OUT, true); //TRUE 时追踪句柄的请求字符串，从 PHP 5.1.3 开始可用。这个很关键，就是允许你查看请求header
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, FALSE);
         $data = curl_exec($ch);// 执行一个cURL会话
         $response = curl_getinfo($ch);
         $error = curl_error($ch);//返回一条最近一次cURL操作明确的文本的错误信息。
         curl_close($ch);//关闭一个cURL会话并且释放所有资源
+        
         //处理返回的错误信息
         if ($response['content_type'] != 'application/octet-stream') {
             $error = json_decode($data, true);
