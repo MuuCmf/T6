@@ -51,7 +51,7 @@
         </div>
 
         <div class="btn-menu">
-            <button @click="jump()" class="btn btn-default" v-if="status == -1">返回</button>
+            <button @click="back()" class="btn btn-default" v-if="status == -1">返回</button>
             <button @click="jump()" class="btn btn-primary" v-if="status == 1">确定</button>
         </div>
     </div>
@@ -230,8 +230,17 @@
                     that.progressVal = 100;
                 })
             },
-            jump() {
+            back() {
                 window.history.go(-1);
+            },
+
+            jump() {
+                if(this.appName == 'system'){
+                    window.history.go(-1);
+                    window.location.href="{:url('admin/update/index')}";
+                }else{
+                    window.location.href="{:url('admin/module/index')}";
+                }
             }
         }
     })

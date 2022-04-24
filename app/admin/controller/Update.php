@@ -7,6 +7,7 @@ use app\admin\lib\Upgrade as UpgradeServer;
 use think\Exception;
 use think\facade\View;
 use think\Response;
+use app\common\model\Module;
 
 /**
  * 升级包制作规则
@@ -118,7 +119,7 @@ class Update extends Admin
                     ];
                     $this->UpgradeServer->downFile($params, $local_path);
                 }
-                return $this->success('success');
+                return $this->success('success', $upgrade);
             } catch (Exception $e) {
                 return $this->result($e->getCode(),$e->getMessage());
             }
@@ -134,25 +135,32 @@ class Update extends Admin
         if (request()->isAjax()) {
             $params = request()->post();
             try {
-                $local_path = root_path() . $params['file'];
-
+                
                 if ($params['skip'] == 0) {
-                    //替换版本文件
-                    $params = [
-                        'md5'   => $params['md5'],
-                        'app_name' => $this->app_name,
-                        'version'  => $params['version']
-                    ];
+                    
+                    // 系统更新
+                    if ($this->app_name == 'system') {
+                        //替换版本文件
+                        $params = [
+                            'md5'   => $params['md5'],
+                            'app_name' => $this->app_name,
+                            'version'  => $params['version']
+                        ];
+                        //更新应用版本号
+                        $this->UpgradeServer->downFile($params, root_path() . 'data/version.ini');
+                    }
 
-                    $this->UpgradeServer->downFile($params, $local_path);
+                    // 应用更新
                     if ($this->app_name != 'system') {
                         //更新应用版本号
-                        \app\common\model\Module::where('name', $this->app_name)->update(['version' => $params['version']]);
+                        $res = (new Module())->where(['name','=', $this->app_name])->update(['version' => $params['version']]);
                     }
                 }
 
                 //执行sql
                 $this->UpgradeServer->executeUpgradeSql($this->app_name);
+
+                //返回
                 return $this->success('升级完成');
             } catch (Exception $e) {
                 return $this->error($e->getMessage());

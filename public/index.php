@@ -19,7 +19,7 @@ define('APP_PATH', __DIR__ . '/../app/');
 //public目录
 define('PUBLIC_PATH', __DIR__);
 //static目录
-define('STATIC_URL', './static');
+define('STATIC_URL', __DIR__ . '/static');
 // 判断是否安装MuuCmf
 if (!is_file(__DIR__ . '/../data/install.lock'))
 {	
