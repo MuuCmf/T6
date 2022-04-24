@@ -5,9 +5,9 @@ namespace app\admin\controller;
 use app\admin\lib\Cloud;
 use app\admin\lib\Upgrade as UpgradeServer;
 use think\Exception;
+use think\facade\Db;
 use think\facade\View;
 use think\Response;
-use app\common\model\Module;
 
 /**
  * 升级包制作规则
@@ -153,7 +153,7 @@ class Update extends Admin
                     // 应用更新
                     if ($this->app_name != 'system') {
                         //更新应用版本号
-                        $res = (new Module())->where(['name','=', $this->app_name])->update(['version' => $params['version']]);
+                        Db::name('module')->where('name','=', $this->app_name)->update(['version' => $params['version']]);
                     }
                 }
 
