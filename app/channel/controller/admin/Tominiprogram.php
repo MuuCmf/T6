@@ -1,17 +1,6 @@
 <?php
-/**
- * +----------------------------------------------------------------------
- *                                  |
- *     __     __  __     __  __     | FILE: Tominiprogram.php
- *    /\ \   /\_\_\_\   /\_\_\_\    | AUTHOR: 季骁宣
- *   _\_\ \  \/_/\_\/_  \/_/\_\/_   | EMAIL: jxx0410@sina.com
- *  /\_____\   /\_\/\_\   /\_\/\_\  | QQ: 516036855
- *  \/_____/   \/_/\/_/   \/_/\/_/  | DATETIME: 2022/1/27
- *                                  |-------------------------------------
- *                                  | 登山则情满于山,观海则意溢于海
- * +----------------------------------------------------------------------
- */
 namespace app\channel\controller\admin;
+
 use think\facade\View;
 use app\admin\controller\Admin as MuuAdmin;
 use app\channel\logic\Tominiprogram as TominiprogramLogic;

@@ -303,319 +303,321 @@ if (!function_exists('tree_to_list')) {
     }
 }
 
-/**
- * 记录行为日志，并执行该行为的规则
- * @param string $action 行为标识
- * @param string $model 触发行为的模型名
- * @param int $record_id 触发行为的记录id
- * @param int $uid 执行行为的用户id
- * @return boolean
- */
-function action_log($action = null, $model = null, $record_id = null, $uid = null)
-{   
-    $actionLogModel = new ActionLog();
+if (!function_exists('action_log')) {
+    /**
+     * 记录行为日志，并执行该行为的规则
+     * @param string $action 行为标识
+     * @param string $model 触发行为的模型名
+     * @param int $record_id 触发行为的记录id
+     * @param int $uid 执行行为的用户id
+     * @return boolean
+     */
+    function action_log($action = null, $model = null, $record_id = null, $uid = null)
+    {   
+        $actionLogModel = new ActionLog();
 
-    return $actionLogModel->add($action, $model, $record_id, $uid);
+        return $actionLogModel->add($action, $model, $record_id, $uid);
+    }
 }
 
-//基于数组创建目录和文件
-function create_dir_or_files($files)
-{
-    foreach ($files as $key => $value) {
-        if (substr($value, -1) == '/') {
-            mkdir($value);
-        } else {
-            @file_put_contents($value, '');
+if (!function_exists('create_dir_or_files')) {
+    //基于数组创建目录和文件
+    function create_dir_or_files($files)
+    {
+        foreach ($files as $key => $value) {
+            if (substr($value, -1) == '/') {
+                mkdir($value);
+            } else {
+                @file_put_contents($value, '');
+            }
         }
     }
 }
 
-/**
- * 获取数据的所有子孙数据的id值
- */
-function get_stemma($pids, Model &$model, $field = 'id')
-{
-    $collection = array();
+if (!function_exists('get_stemma')) {
+    /**
+     * 获取数据的所有子孙数据的id值
+     */
+    function get_stemma($pids, Model &$model, $field = 'id')
+    {
+        $collection = array();
 
-    //非空判断
-    if (empty($pids)) {
+        //非空判断
+        if (empty($pids)) {
+            return $collection;
+        }
+
+        if (is_array($pids)) {
+            $pids = trim(implode(',', $pids), ',');
+        }
+        $result = $model->field($field)->where(array('pid' => array('IN', (string)$pids)))->select();
+        $child_ids = array_column((array)$result, 'id');
+
+        while (!empty($child_ids)) {
+            $collection = array_merge($collection, $result);
+            $result = $model->field($field)->where(array('pid' => array('IN', $child_ids)))->select();
+            $child_ids = array_column((array)$result, 'id');
+        }
         return $collection;
     }
-
-    if (is_array($pids)) {
-        $pids = trim(implode(',', $pids), ',');
-    }
-    $result = $model->field($field)->where(array('pid' => array('IN', (string)$pids)))->select();
-    $child_ids = array_column((array)$result, 'id');
-
-    while (!empty($child_ids)) {
-        $collection = array_merge($collection, $result);
-        $result = $model->field($field)->where(array('pid' => array('IN', $child_ids)))->select();
-        $child_ids = array_column((array)$result, 'id');
-    }
-    return $collection;
 }
 
-/**
- * 获取导航URL
- * @param  string $url 导航URL
- * @return string      解析或的url
- */
-function get_nav_url($url)
-{
-    switch ($url) {
-        case 'http://' === substr($url, 0, 7):
-            return $url;
-        break;
-        case 'https://' === substr($url, 0, 8):
-            return $url;
-        break;
-        case '#' === substr($url, 0, 1):
-            return $url;
-        break;
-        case strpos($url,'/') !== false:
-            $url = url($url);
-            return $url;
-        break;
-        default:
-            $url = url($url . '/index/index');
-            return $url;
-        break;
-    }
-}
-
-/**
- * @param $url 检测当前自定义导航url是否被选中
- * @return bool|string
- */
-function get_nav_active($url)
-{
-    switch ($url) {
-        case 'http://' === substr($url, 0, 7):
-            if (strtolower($url) === strtolower($_SERVER['HTTP_REFERER'])) {
-                return 1;
-            }
-        case 'https://' === substr($url, 0, 7):
-            if (strtolower($url) === strtolower($_SERVER['HTTP_REFERER'])) {
-                return 1;
-            }
-        case '#' === substr($url, 0, 1):
-            return 0;
+if (!function_exists('get_nav_url')) {
+    /**
+     * 获取导航URL
+     * @param  string $url 导航URL
+     * @return string      解析或的url
+     */
+    function get_nav_url($url)
+    {
+        switch ($url) {
+            case 'http://' === substr($url, 0, 7):
+                return $url;
             break;
-        default:
-            $url_array = explode('/', $url);
-            if ($url_array[0] == '') {
-                $MODULE_NAME = $url_array[1];
-            } else {
-                $MODULE_NAME = $url_array[0]; //发现模块就是当前模块即选中。
-            }
-            if (strtolower($MODULE_NAME) === strtolower(app('http')->getName())) {
-                return 1;
-            };
+            case 'https://' === substr($url, 0, 8):
+                return $url;
             break;
-
-    }
-    return 0;
-}
-
-function is_ie()
-{
-    $userAgent = $_SERVER['HTTP_USER_AGENT'];
-    $pos = strpos($userAgent, ' MSIE ');
-    if ($pos === false) {
-        return false;
-    } else {
-        return true;
-    }
-}
-
-/**
- * curl_get_headers 获取链接header
- * @param $url
- * @return array
- */
-function curl_get_headers($url)
-{
-    $ch = curl_init();
-    curl_setopt($ch, CURLOPT_URL, $url);
-    curl_setopt($ch, CURLOPT_NOBODY, 1);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-    curl_setopt($ch, CURLOPT_HEADER, 1);
-    $f = curl_exec($ch);
-    curl_close($ch);
-    $h = explode("\n", $f);
-    $r = array();
-    foreach ($h as $t) {
-        $rr = explode(":", $t, 2);
-        if (count($rr) == 2) {
-            $r[$rr[0]] = trim($rr[1]);
+            case '#' === substr($url, 0, 1):
+                return $url;
+            break;
+            case strpos($url,'/') !== false:
+                $url = url($url);
+                return $url;
+            break;
+            default:
+                $url = url($url . '/index/index');
+                return $url;
+            break;
         }
     }
-    return $r;
 }
 
-/**
- * 发送请求
- * @param string $url 访问的URL
- * @param string $post post数据(不填则为GET)
- * @param string $cookie 提交的$cookies
- * @param int $returnCookie 是否返回$cookies
- * @return bool|string
- */
-function curl_request($url, $post = '', $cookie = '', $returnCookie = 0)
-{
-    $curl = curl_init();
-    curl_setopt($curl, CURLOPT_URL, $url);
-    curl_setopt($curl, CURLOPT_USERAGENT, 'Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.1; Trident/6.0)');
-    curl_setopt($curl, CURLOPT_FOLLOWLOCATION, 1);
-    curl_setopt($curl, CURLOPT_AUTOREFERER, 1);
-    curl_setopt($curl, CURLOPT_REFERER, "http://XXX");
-    curl_setopt($curl, CURLOPT_DNS_USE_GLOBAL_CACHE, false ); #使用DNS缓存
-    curl_setopt($curl, CURLOPT_DNS_CACHE_TIMEOUT, 2 );
-    curl_setopt($curl, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4 );#禁用IPV6
-    if ($post) {
-        curl_setopt($curl, CURLOPT_POST, 1);
-        curl_setopt($curl, CURLOPT_POSTFIELDS, http_build_query($post));
-    }
-    if ($cookie) {
-        curl_setopt($curl, CURLOPT_COOKIE, $cookie);
-    }
-    curl_setopt($curl, CURLOPT_HEADER, $returnCookie);
-    curl_setopt($curl, CURLOPT_TIMEOUT, 10);
-    curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-    curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, FALSE);
-    curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, FALSE);
+if (!function_exists('get_nav_active')) {
+    /**
+     * @param $url 检测当前自定义导航url是否被选中
+     * @return bool|string
+     */
+    function get_nav_active($url)
+    {
+        switch ($url) {
+            case 'http://' === substr($url, 0, 7):
+                if (strtolower($url) === strtolower($_SERVER['HTTP_REFERER'])) {
+                    return 1;
+                }
+            case 'https://' === substr($url, 0, 7):
+                if (strtolower($url) === strtolower($_SERVER['HTTP_REFERER'])) {
+                    return 1;
+                }
+            case '#' === substr($url, 0, 1):
+                return 0;
+                break;
+            default:
+                $url_array = explode('/', $url);
+                if ($url_array[0] == '') {
+                    $MODULE_NAME = $url_array[1];
+                } else {
+                    $MODULE_NAME = $url_array[0]; //发现模块就是当前模块即选中。
+                }
+                if (strtolower($MODULE_NAME) === strtolower(app('http')->getName())) {
+                    return 1;
+                };
+                break;
 
-    $data = curl_exec($curl);
-    if (curl_errno($curl)) {
-        return curl_error($curl);
-    }
-    curl_close($curl);
-    if ($returnCookie) {
-        list($header, $body) = explode("\r\n\r\n", $data, 2);
-        preg_match_all("/Set\-Cookie:([^;]*);/", $header, $matches);
-        $info['cookie'] = substr($matches[1][0], 1);
-        $info['content'] = $body;
-        return $info;
-    } else {
-        return $data;
-    }
-}
-
-
-/**
- * 生成系统AUTH_KEY
- * @author 麦当苗儿 <zuojiazi@vip.qq.com>
- */
-function build_auth_key()
-{
-    $chars = 'abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-    // $chars .= '`~!@#$%^&*()_+-=[]{};:"|,.<>/?';
-    $chars = str_shuffle($chars);
-    return substr($chars, 0, 40);
-}
-
-/**
- * convert_url_query  转换url参数为数组
- * @param $query
- * @return array|string
- */
-function convert_url_query($query)
-{
-    if(!empty($query)){
-        $query = urldecode($query);
-        $queryParts = explode('&', $query);
-        $params = array();
-        foreach ($queryParts as $param)
-        {
-            $item = explode('=', $param);
-            $params[$item[0]] = $item[1];
         }
-        return $params;
+        return 0;
     }
-    return '';
 }
 
-/**
- * 根据ID获取区域名称
- * @param  [type] $id [description]
- * @return [type]     [description]
- */
-function get_area_name($id)
-{
-    return Db::name('district')->where(['id' => $id])->field('name')->find();
+if (!function_exists('is_ie')) {
+    function is_ie()
+    {
+        $userAgent = $_SERVER['HTTP_USER_AGENT'];
+        $pos = strpos($userAgent, ' MSIE ');
+        if ($pos === false) {
+            return false;
+        } else {
+            return true;
+        }
+    }
 }
 
-//判断是http or https
-function get_http_https(){
-    $url = 'http://';
-       if (isset ( $_SERVER ['HTTPS'] ) && $_SERVER ['HTTPS'] == 'on') {
-       $url = 'https://';
-       }else{
+if (!function_exists('curl_get_headers')) {
+    /**
+     * curl_get_headers 获取链接header
+     * @param $url
+     * @return array
+     */
+    function curl_get_headers($url)
+    {
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_NOBODY, 1);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_HEADER, 1);
+        $f = curl_exec($ch);
+        curl_close($ch);
+        $h = explode("\n", $f);
+        $r = array();
+        foreach ($h as $t) {
+            $rr = explode(":", $t, 2);
+            if (count($rr) == 2) {
+                $r[$rr[0]] = trim($rr[1]);
+            }
+        }
+        return $r;
+    }
+}
+
+if (!function_exists('curl_request')) {
+    /**
+     * 发送请求
+     * @param string $url 访问的URL
+     * @param string $post post数据(不填则为GET)
+     * @param string $cookie 提交的$cookies
+     * @param int $returnCookie 是否返回$cookies
+     * @return bool|string
+     */
+    function curl_request($url, $post = '', $cookie = '', $returnCookie = 0)
+    {
+        $curl = curl_init();
+        curl_setopt($curl, CURLOPT_URL, $url);
+        curl_setopt($curl, CURLOPT_USERAGENT, 'Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.1; Trident/6.0)');
+        curl_setopt($curl, CURLOPT_FOLLOWLOCATION, 1);
+        curl_setopt($curl, CURLOPT_AUTOREFERER, 1);
+        curl_setopt($curl, CURLOPT_REFERER, "http://XXX");
+        curl_setopt($curl, CURLOPT_DNS_USE_GLOBAL_CACHE, false ); #使用DNS缓存
+        curl_setopt($curl, CURLOPT_DNS_CACHE_TIMEOUT, 2 );
+        curl_setopt($curl, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4 );#禁用IPV6
+        if ($post) {
+            curl_setopt($curl, CURLOPT_POST, 1);
+            curl_setopt($curl, CURLOPT_POSTFIELDS, http_build_query($post));
+        }
+        if ($cookie) {
+            curl_setopt($curl, CURLOPT_COOKIE, $cookie);
+        }
+        curl_setopt($curl, CURLOPT_HEADER, $returnCookie);
+        curl_setopt($curl, CURLOPT_TIMEOUT, 10);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, FALSE);
+        curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, FALSE);
+
+        $data = curl_exec($curl);
+        if (curl_errno($curl)) {
+            return curl_error($curl);
+        }
+        curl_close($curl);
+        if ($returnCookie) {
+            list($header, $body) = explode("\r\n\r\n", $data, 2);
+            preg_match_all("/Set\-Cookie:([^;]*);/", $header, $matches);
+            $info['cookie'] = substr($matches[1][0], 1);
+            $info['content'] = $body;
+            return $info;
+        } else {
+            return $data;
+        }
+    }
+}
+
+if (!function_exists('build_auth_key')) {
+    /**
+     * 生成系统AUTH_KEY
+     * @author 麦当苗儿 <zuojiazi@vip.qq.com>
+     */
+    function build_auth_key()
+    {
+        $chars = 'abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        // $chars .= '`~!@#$%^&*()_+-=[]{};:"|,.<>/?';
+        $chars = str_shuffle($chars);
+        return substr($chars, 0, 40);
+    }
+}
+
+if (!function_exists('convert_url_query')) {
+    /**
+     * convert_url_query  转换url参数为数组
+     * @param $query
+     * @return array|string
+     */
+    function convert_url_query($query)
+    {
+        if(!empty($query)){
+            $query = urldecode($query);
+            $queryParts = explode('&', $query);
+            $params = array();
+            foreach ($queryParts as $param)
+            {
+                $item = explode('=', $param);
+                $params[$item[0]] = $item[1];
+            }
+            return $params;
+        }
+        return '';
+    }
+}
+
+if (!function_exists('get_area_name')) {
+    /**
+     * 根据ID获取区域名称
+     * @param  [type] $id [description]
+     * @return [type]     [description]
+     */
+    function get_area_name($id)
+    {
+        return Db::name('district')->where(['id' => $id])->field('name')->find();
+    }
+}
+
+if (!function_exists('get_http_https')) {
+    //判断是http or https
+    function get_http_https(){
         $url = 'http://';
-       }
-    return $url;
-}
-
-/**
- * 获取当前完整URL
- * @return [type] [description]
- */
-function get_url() {
-    $url = 'http://';
-    if (isset ( $_SERVER ['HTTPS'] ) && $_SERVER ['HTTPS'] == 'on') {
+        if (isset ( $_SERVER ['HTTPS'] ) && $_SERVER ['HTTPS'] == 'on') {
         $url = 'https://';
+        }else{
+            $url = 'http://';
+        }
+        return $url;
     }
-    if ($_SERVER ['SERVER_PORT'] != '80') {
-        $url .= $_SERVER ['HTTP_HOST'] . ':' . $_SERVER ['SERVER_PORT'] . $_SERVER ['REQUEST_URI'];
-    } else {
-        $url .= $_SERVER ['HTTP_HOST'] . $_SERVER ['REQUEST_URI'];
-    }
-    // 兼容后面的参数组装
-    if (stripos ( $url, '?' ) === false) {
-        $url .= '?t=' . time ();
-    }
-    return $url;
 }
 
-/**
- * 判断网址是否包含参数,有参数返回后缀&，无返回后缀？
- * @param  [type] $url [description]
- * @return [type]      [description]
- */
-function url_query($url){
-    $array = parse_url($url);
-    if(!isset($array['query'])){
-        $url = $url.'?';
-    }else{
-        $url = $url.'&';
+if (!function_exists('get_url')) {
+    /**
+     * 获取当前完整URL
+     * @return [type] [description]
+     */
+    function get_url() {
+        $url = 'http://';
+        if (isset ( $_SERVER ['HTTPS'] ) && $_SERVER ['HTTPS'] == 'on') {
+            $url = 'https://';
+        }
+        if ($_SERVER ['SERVER_PORT'] != '80') {
+            $url .= $_SERVER ['HTTP_HOST'] . ':' . $_SERVER ['SERVER_PORT'] . $_SERVER ['REQUEST_URI'];
+        } else {
+            $url .= $_SERVER ['HTTP_HOST'] . $_SERVER ['REQUEST_URI'];
+        }
+        // 兼容后面的参数组装
+        if (stripos ( $url, '?' ) === false) {
+            $url .= '?t=' . time ();
+        }
+        return $url;
     }
-    return $url;
 }
 
-/**
- * 多维数组中查询是否包含值
- * @param  [type] $value [description]
- * @param  [type] $array [description]
- * @return [type]        [description]
- */
-function deep_in_array($value, $array) {   
-    foreach($array as $item) {   
-        if(!is_array($item)) {   
-            if ($item == $value) {  
-                return true;  
-            } else {  
-                continue;   
-            }  
-        }   
-            
-        if(in_array($value, $item)) {  
-            return true;      
-        } else if(deep_in_array($value, $item)) {  
-            return true;      
-        }  
+if (!function_exists('get_url')) {
+    /**
+     * 判断网址是否包含参数,有参数返回后缀&，无返回后缀？
+     * @param  [type] $url [description]
+     * @return [type]      [description]
+     */
+    function url_query($url){
+        $array = parse_url($url);
+        if(!isset($array['query'])){
+            $url = $url.'?';
+        }else{
+            $url = $url.'&';
+        }
+        return $url;
     }
-    return false;   
 }
 
 if (!function_exists('create_unique')) {
@@ -799,21 +801,6 @@ if (!function_exists('need_authorization')){
             throw new \think\exception\HttpResponseException($response);
         }
     }
-}
-
-if (!function_exists('num2string')) {
-    /**
-     * 数字转友好显示： 如： 10000 -》 1w
-     */
-    function num2string($num) {
-        if ($num >= 10000) {
-            $num = number_format(round($num / 10000 * 100) / 100,1) .'w';
-        } elseif($num >= 1000) {
-            $num = number_format(round($num / 1000 * 100) / 100,1) . 'k';
-        }
-        return $num;
-    }
-
 }
 
 function emoji_encode($str){

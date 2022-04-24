@@ -456,5 +456,47 @@ if (!function_exists('is_json')) {
     }
 }
 
+if (!function_exists('deep_in_array')) {
+    /**
+     * 多维数组中查询是否包含值
+     * @param  [type] $value [description]
+     * @param  [type] $array [description]
+     * @return [type]        [description]
+     */
+    function deep_in_array($value, $array) {   
+        foreach($array as $item) {   
+            if(!is_array($item)) {   
+                if ($item == $value) {  
+                    return true;  
+                } else {  
+                    continue;   
+                }  
+            }   
+                
+            if(in_array($value, $item)) {  
+                return true;      
+            } else if(deep_in_array($value, $item)) {  
+                return true;      
+            }  
+        }
+        return false;   
+    }
+}
+
+if (!function_exists('num2string')) {
+    /**
+     * 数字转友好显示： 如： 10000 -》 1w
+     */
+    function num2string($num) {
+        if ($num >= 10000) {
+            $num = number_format(round($num / 10000 * 100) / 100,1) .'w';
+        } elseif($num >= 1000) {
+            $num = number_format(round($num / 1000 * 100) / 100,1) . 'k';
+        }
+        return $num;
+    }
+
+}
+
 
 
