@@ -1,17 +1,6 @@
 <?php
-/**
- * +----------------------------------------------------------------------
- *                                  |
- *     __     __  __     __  __     | FILE: Payment.php
- *    /\ \   /\_\_\_\   /\_\_\_\    | AUTHOR: 季骁宣
- *   _\_\ \  \/_/\_\/_  \/_/\_\/_   | EMAIL: jxx0410@sina.com
- *  /\_____\   /\_\/\_\   /\_\/\_\  | QQ: 516036855
- *  \/_____/   \/_/\/_/   \/_/\/_/  | DATETIME: 2021/11/2
- *                                  |-------------------------------------
- *                                  | 登山则情满于山,观海则意溢于海
- * +----------------------------------------------------------------------
- */
 namespace app\api\controller;
+
 use app\common\controller\Base;
 use app\common\logic\Orders as OrdersLogic;
 use \app\common\model\Orders as OrdersModel;
