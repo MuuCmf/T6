@@ -23,7 +23,7 @@ class Orders extends Base
                 $res = $data['id'];
             }
         }else{
-            $data['order_no'] = $this->build_order_no();
+            $data['order_no'] = build_order_no();
             $res = $this->save($data);
             if($res) $res = $this->id;
         }
@@ -386,22 +386,6 @@ class Orders extends Base
         $year_total = json_encode($year_total);//本年每月数据
 
         return $year_total;
-    }
-
-    /**
-     * 生成流水号
-     */
-    protected function _build_serial_no()
-    {
-        return date('Ymd').time().substr(implode(NULL, array_map('ord', str_split(substr(uniqid(), 7, 13), 1))), 0, 10);
-    }
-
-    /**
-     * 生成订单号
-     * @return [type] [description]
-     */
-    protected function build_order_no(){
-        return date('Ymd').substr(implode(NULL, array_map('ord', str_split(substr(uniqid(), 7, 13), 1))), 0, 10);
     }
 
 }

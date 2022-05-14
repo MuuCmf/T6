@@ -108,39 +108,43 @@ function closetags($html)
     return $html;
 }
 
-/**
- * check_image_src  判断链接是否为图片
- * @param $file_path
- * @return bool
- */
-function check_image_src($file_path)
-{
-    if (!is_bool(strpos($file_path, 'http://'))) {
-        $header = curl_get_headers($file_path);
-        $res = strpos($header['Content-Type'], 'image/');
-        return is_bool($res) ? false : true;
-    } else {
-        return true;
+if (!function_exists('check_image_src')) {
+    /**
+     * check_image_src  判断链接是否为图片
+     * @param $file_path
+     * @return bool
+     */
+    function check_image_src($file_path)
+    {
+        if (!is_bool(strpos($file_path, 'http://'))) {
+            $header = curl_get_headers($file_path);
+            $res = strpos($header['Content-Type'], 'image/');
+            return is_bool($res) ? false : true;
+        } else {
+            return true;
+        }
     }
 }
 
-/**
- * filter_image  对图片src进行安全过滤
- * @param $content
- * @return mixed
- */
-function filter_image($content)
-{
-    preg_match_all("/<[img|IMG].*?src=[\'|\"](.*?(?:[\.gif|\.jpg|\.png]))[\'|\"].*?[\/]?>/", $content, $arr); //匹配所有的图片
-    if ($arr[1]) {
-        foreach ($arr[1] as $v) {
-            $check = check_image_src($v);
-            if (!$check) {
-                $content = str_replace($v, '', $content);
+if (!function_exists('filter_image')) {
+    /**
+     * filter_image  对图片src进行安全过滤
+     * @param $content
+     * @return mixed
+     */
+    function filter_image($content)
+    {
+        preg_match_all("/<[img|IMG].*?src=[\'|\"](.*?(?:[\.gif|\.jpg|\.png]))[\'|\"].*?[\/]?>/", $content, $arr); //匹配所有的图片
+        if ($arr[1]) {
+            foreach ($arr[1] as $v) {
+                $check = check_image_src($v);
+                if (!$check) {
+                    $content = str_replace($v, '', $content);
+                }
             }
         }
+        return $content;
     }
-    return $content;
 }
 
 /**
@@ -164,24 +168,26 @@ function check_html_tags($content, $tags = array())
     return false;
 }
 
-/**
- * filter_base64   对内容进行base64过滤
- * @param $content
- * @return mixed
- */
-function filter_base64($content)
-{
-    preg_match_all("/data:.*?,(.*?)\"/", $content, $arr); //匹配base64编码
-    if ($arr[1]) {
-        foreach ($arr[1] as $v) {
-            $base64_decode = base64_decode($v);
-            $check = check_html_tags($base64_decode);
-            if ($check) {
-                $content = str_replace($v, '', $content);
+if (!function_exists('filter_base64')) {
+    /**
+     * filter_base64   对内容进行base64过滤
+     * @param $content
+     * @return mixed
+     */
+    function filter_base64($content)
+    {
+        preg_match_all("/data:.*?,(.*?)\"/", $content, $arr); //匹配base64编码
+        if ($arr[1]) {
+            foreach ($arr[1] as $v) {
+                $base64_decode = base64_decode($v);
+                $check = check_html_tags($base64_decode);
+                if ($check) {
+                    $content = str_replace($v, '', $content);
+                }
             }
         }
+        return $content;
     }
-    return $content;
 }
 
 /**
@@ -496,6 +502,24 @@ if (!function_exists('num2string')) {
         return $num;
     }
 
+}
+
+if (!function_exists('build_order_no')) {
+    /**
+     * 生成唯一订单号
+     */
+    function build_order_no(){
+        return date('Ymd').substr(implode(NULL, array_map('ord', str_split(substr(uniqid(), 7, 13), 1))), 0, 10);
+    }
+}
+
+if (!function_exists('build_serial_no')) {
+    /**
+     * 生成唯一流水号
+     */
+    function build_serial_no(){
+        return date('Ymd').time().substr(implode(NULL, array_map('ord', str_split(substr(uniqid(), 7, 13), 1))), 0, 10);
+    }
 }
 
 
