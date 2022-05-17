@@ -1,0 +1,79 @@
+<html class="screen-desktop-wide device-desktop">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<!--响应式布局 各模块可以根据需求自定义meta-->
+<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>绑定微信账号确认</title><!-- zui -->
+<link href="https://cdn.bootcss.com/weui/1.1.3/style/weui.min.css" rel="stylesheet">
+<style>
+.main {
+	padding:0 10px;
+}
+.shop-info {
+	padding:20px;
+	text-align: center;
+}
+.bind-icon {
+	text-align: center;
+}
+.user-info {
+	padding:20px;
+	text-align: center;
+}
+.confirm {
+	padding:20px;
+}
+</style>
+</head>
+<body>
+	<div class="main">
+		
+
+
+
+
+		<div class="confirm">
+			<button class="weui-btn weui-btn_primary" type="submit">确认绑定</button>
+
+			<button class="weui-btn weui-btn_default" type="button" data-rule="close_page">取 消</button>
+		</div>
+
+		<div class="weui-msg__extra-area">
+            <div class="weui-footer">   
+                <p class="weui-footer__text">Copyright © 2008-2016 MuuCmf</p>
+            </div>
+        </div>
+	</div>
+
+	<script src="__ZUI__/lib/jquery/jquery.js"></script>
+	<script src="https://res.wx.qq.com/open/js/jweixin-1.4.0.js" type="text/javascript" charset="utf-8"></script>
+	<script>
+	$(function(){
+
+		$('[type="submit"]').click(function(){
+			var url = '{:url()}';
+			var query = {
+				token: "{$token}",
+			};
+			$.post(url,query,function(msg){
+                if(msg.code){
+                	
+                    window.location.href=msg.url;
+                    
+                }else{
+                    alert('绑定发生错误,请稍后再试！');
+                }
+            },'json');
+		});
+
+		//关闭窗口
+		$('[data-rule="close_page"]').click(function(){
+			wx.closeWindow();
+		});
+
+	});
+	</script>
+</body>
+</html>
+

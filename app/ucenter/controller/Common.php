@@ -13,6 +13,7 @@ use app\common\model\ActionLimit;
 use thans\jwt\facade\JWTAuth;
 use app\common\model\Verify;
 use app\common\controller\Common as CommonCommon;
+use EasyWeChat\Factory;
 
 /**
  * 用户登录及注册
@@ -396,6 +397,162 @@ class Common extends CommonCommon
         $agreement = config('system.USER_REG_AGREEMENT');
         View::assign('agreement', $agreement);
         return View::fetch();
+    }
+
+    /**
+     * 用户绑定微笑账号
+     */
+    public function bind()
+    {   
+        $uid = input('uid', 0,'intval');
+        $shop_id = input('shop_id', 0, 'intval');
+        View::assign('token',$uid);
+        //微信授权回调页地址
+        $oauth_callback = url('oauth_callback',['uid'=>$uid,'shop_id'=>$shop_id]);
+        // 获取微信配置信息
+        $wechat_config = (new \app\channel\model\WechatConfig)->getDataByMap([
+            'shopid' => 0
+        ]);
+
+        $config = [
+            /**
+		     * Debug 模式，bool 值：true/false
+		     *
+		     * 当值为 false 时，所有的日志都不会记录
+		     */
+            'debug'  => true,
+            /**
+		     * 账号基本信息，请从微信公众平台/开放平台获取
+		     */
+            'app_id' => $wechat_config['appid'],
+            'secret' => $wechat_config['secret'],
+            'token' => $wechat_config['token'],
+            'aes_key' => $wechat_config['encoding_aes_key'],
+            // EncodingAESKey，兼容与安全模式下请一定要填写！！！
+
+            /**
+             * OAuth 配置
+             *
+             * scopes：公众平台（snsapi_userinfo / snsapi_base），开放平台：snsapi_login
+             * callback：OAuth授权完成后的回调页地址
+             */
+            'oauth' => [
+                'scopes'   => ['snsapi_userinfo'],
+                'callback' => $oauth_callback,
+            ],
+
+            /**
+             * Guzzle 全局设置
+             *
+             * 更多请参考： http://docs.guzzlephp.org/en/latest/request-options.html
+             */
+            'guzzle' => [
+                'timeout' => 3.0, // 超时时间（秒）
+                //'verify' => false, // 关掉 SSL 认证（强烈不建议！！！）
+            ],
+        ];
+
+        $app = Factory::officialAccount($config);
+        $oauth = $app->oauth;
+
+        $weixin_user = session('wechat_user');
+        // 未登录
+        if (empty($weixin_user)) {
+            session('target_url', url('bind',['uid'=>$uid,'shop_id'=>$shop_id],true,true));
+            $redirectUrl = $oauth->redirect();
+            header("Location: {$redirectUrl}");
+            exit;
+        }
+        dump($weixin_user);
+
+        //post处理
+        if(request()->isPost()){
+
+            $data = [
+                'uid' => $uid,
+                'shop_id' => $shop_id,
+                'open_id' => $weixin_user['id'],
+                'nickname' => $weixin_user['nickname'],
+                'avatar' => $weixin_user['avatar'],
+            ];
+
+            //$res = $this->microWithdrawWeixinModel->edit($data);
+            if($res){
+                $this->success('提现账号绑定成功',url('bind_success'));
+            }else{
+                $this->error('绑定失败');
+            }
+            
+        }else{
+            //通过验证写自身业务逻辑
+
+            View::assign('weixin_user',$weixin_user);
+            return View::fetch();
+        } 
+    }
+
+    /**
+     * 绑定微信 授权回调页
+     */
+    public function oauth_callback()
+    {   
+        $uid = input('uid', 0,'intval');
+        $shop_id = input('shop_id', 0, 'intval');
+
+        // 获取微信配置信息
+        $wechat_config = (new \app\channel\model\WechatConfig)->getDataByMap([
+            'shopid' => 0
+        ]);
+
+        $config = [
+            /**
+		     * Debug 模式，bool 值：true/false
+		     *
+		     * 当值为 false 时，所有的日志都不会记录
+		     */
+            'debug'  => true,
+            /**
+		     * 账号基本信息，请从微信公众平台/开放平台获取
+		     */
+            'app_id' => $wechat_config['appid'],
+            'secret' => $wechat_config['secret'],
+            'token' => $wechat_config['token'],
+            'aes_key' => $wechat_config['encoding_aes_key'],
+            // EncodingAESKey，兼容与安全模式下请一定要填写！！！
+
+            /**
+             * OAuth 配置
+             *
+             * scopes：公众平台（snsapi_userinfo / snsapi_base），开放平台：snsapi_login
+             * callback：OAuth授权完成后的回调页地址
+             */
+            'oauth' => [
+                'scopes'   => ['snsapi_userinfo'],
+                'callback' => url('oauth_callback'),
+            ],
+
+            /**
+             * Guzzle 全局设置
+             *
+             * 更多请参考： http://docs.guzzlephp.org/en/latest/request-options.html
+             */
+            'guzzle' => [
+                'timeout' => 3.0, // 超时时间（秒）
+                //'verify' => false, // 关掉 SSL 认证（强烈不建议！！！）
+            ],
+        ];
+        
+        $app = Factory::officialAccount($config);
+        $oauth = $app->oauth;
+        
+        // 获取 OAuth 授权结果用户信息
+        $code = input('code','','text');
+        $user = $oauth->userFromCode($code);
+        session('wechat_user', $user->toArray());
+        $targetUrl = url('bind',['uid'=>$uid,'shop_id'=>$shop_id],true,true);
+
+        return redirect($targetUrl);
+
     }
 
 }
