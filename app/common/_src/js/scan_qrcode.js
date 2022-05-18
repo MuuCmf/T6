@@ -19,7 +19,7 @@ var scan_login = {
      */
     initWechatQrcode(elem){
         this.createSceneKey();
-        let qrCodeSrc = `${this.apiHost}/channel/official/loginQrcode?scene_key=${this.sceneKey}`;
+        let qrCodeSrc = `${this.apiHost}/channel/official/qrcode?scene_key=${this.sceneKey}`;
         $(elem).attr('src', qrCodeSrc);
         //查询扫码状态
         this.hasScan();
@@ -45,7 +45,7 @@ var scan_login = {
      */
     login(){
         let that = this;
-        console.log(12312312);
+        
         $.post( `${this.apiHost}/channel/official/scanLogin`,{openid:this.userInfo.openid,scene_key:this.sceneKey},function (data) {
             if (data.code == 200) {
                 toast.success(data.msg);

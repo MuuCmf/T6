@@ -157,11 +157,11 @@ class WechatOfficialAccount extends Base
     }
 
     /**
-     * 生成登录二维码
+     * 生成微信临时二维码
      * @param $scene_key
      * @return \think\response\Json
      */
-    public static function loginQrcode($scene_key){
+    public static function qrcode($scene_key){
         //模板调用
         $access_token = OfficialAccount::getToken();
         $qrcode_url = 'https://api.weixin.qq.com/cgi-bin/qrcode/create?access_token=' . $access_token['access_token'];

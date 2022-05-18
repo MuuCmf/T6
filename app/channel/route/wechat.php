@@ -6,7 +6,7 @@ use think\facade\Route;
 Route::group('official',function (){
     Route::rule('callback' ,'channel/api.WechatOfficialAccount/callback');
     Route::rule('oauthCallback' ,'channel/api.WechatOfficialAccount/oauthCallback');
-    Route::rule('loginQrcode' ,'channel/api.WechatOfficialAccount/loginQrcode');
+    Route::rule('qrcode' ,'channel/api.WechatOfficialAccount/qrcode');
     Route::rule('hasScan' ,'channel/api.WechatOfficialAccount/hasScan');
     Route::rule('scanLogin' ,'channel/api.WechatOfficialAccount/scanLogin');
 });
