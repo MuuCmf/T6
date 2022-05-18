@@ -32,118 +32,44 @@
 
 
                     <div class="modal fade wechat-modal" id="wechat-modal"> 
-                            <div class="modal-dialog modal-lg">
-                                <div class="modal-content">
-                                    <div class="wechat-header">
-                                        <h4>绑定微信</h4>
-                                        <button class="close"data-dismiss="modal">×</button>
-                                    </div>
-                                    <!-- <div class="wechat-body">
-                                        <div class="schedule">
-                                            <ul class="progress-part">
-                                                <li class="finish">1</li>
-                                                <li class="progress-line"></li>
-                                                <li>2</li>
-                                                <li class="progress-line"></li>
-                                                <li><i class="iconfont">&#xe7a3;</i></li>
-                                            </ul>
-                                            <ul class="progress-prompt">
-                                                <li class="finish">身份验证</li>
-                                                <li>微信扫码绑定</li>
-                                                <li>完成</li>
-                                            </ul>
-                                        </div>
-                                        <div class="col-xs-8">
-                                            <form action="{:url('ucenter/config/wechat')}">
-                                                <div class="form-group">
-                                                    <label for="verify" class="col-xs-2">验证码</label>
-                                                    <div class="col-xs-10">
-                                                        <input type="hidden" name="mobile" value="{$user['mobile']|default=''}">
-                                                        <input type="text" name="verify" id="" placeholder="请输入手机验证码">
-                                                        <button class="get_verify_code" data-role="getVerify">获取验证码</button>
-                                                    </div>
-                                                </div>
-                                                
-                                                <div class="operating">
-                                                    <button class="save" data-role="verifyCode">下一步</button>
-                                                    <button class="close" data-dismiss="modal">取消</button>
-                                                </div>
-                                            </form>
-                                        </div>
-                                    </div> -->
-                                    <div class="wechat-body part-two">
-                                            <div class="schedule ">
-                                                <ul class="progress-part">
-                                                    <li class="finish">1</li>
-                                                    <li class="progress-line"></li>
-                                                    <li class="finish">2</li>
-                                                    <li class="progress-line"></li>
-                                                    <li><i class="iconfont">&#xe7a3;</i></li>
-                                                </ul>
-                                                <ul class="progress-prompt">
-                                                    <li class="finish">身份验证</li>
-                                                    <li class="finish">微信扫码绑定</li>
-                                                    <li>完成</li>
-                                                </ul>
-                                            </div>
-                                            <div class="col-xs-8">
-                                                <div class="no-bind">
-                                                    <div class="col-md-6 qrcode">
-                                                        <img class="wechat-qrcode" src="" alt="">
-                                                        <div class="scan-status">未扫码</div>
-                                                        <button class="btn btn-info confirm btn-bind" type="button">绑定</button>
-                                                    </div>
-                                                </div>
-                                                <p class="description">使用微信扫码，绑定账号</p>
-                                            </div>
-                                    </div>
-                                    <!-- <div class="wechat-body part-three">
-                                            <div class="schedule">
-                                                <ul class="progress-part">
-                                                    <li class="finish">1</li>
-                                                    <li class="progress-line"></li>
-                                                    <li class="finish">2</li>
-                                                    <li class="progress-line"></li>
-                                                    <li class="finish"><i class="iconfont">&#xe7a3;</i></li>
-                                                </ul>
-                                                <ul class="progress-prompt">
-                                                    <li class="finish">身份验证</li>
-                                                    <li class="finish">微信扫码绑定</li>
-                                                    <li class="finish">完成</li>
-                                                </ul>
-                                            </div>
-                                            <div class="col-xs-8">
-                                                <div class="prompt">
-                                                    <div><img src="__STATIC__/ucenter/images/countermeasure.png" alt=""></div>
-                                                    <p>绑定成功</p>
-                                                </div>
-                                                <div class="operating">
-                                                    <button class="back">上一步</button>
-                                                    <button class="close" data-dismiss="modal">完成</button>
-                                                </div>
-                                            </div>
-                                    </div> -->
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="wechat-header">
+                                    <h4>绑定微信</h4>
+                                    <button class="close"data-dismiss="modal">×</button>
                                 </div>
+                                <div class="wechat-body part-two">
+                                    <!-- <div class="schedule ">
+                                        <ul class="progress-part">
+                                            <li class="finish">1</li>
+                                            <li class="progress-line"></li>
+                                            <li class="finish">2</li>
+                                            <li class="progress-line"></li>
+                                            <li><i class="iconfont">&#xe7a3;</i></li>
+                                        </ul>
+                                        <ul class="progress-prompt">
+                                            <li class="finish">身份验证</li>
+                                            <li class="finish">微信扫码绑定</li>
+                                            <li>完成</li>
+                                        </ul>
+                                    </div> -->
+                                    <div class="content">
+                                        <div class="bind">
+                                            <div class="qrcode">
+                                                <img class="wechat-qrcode" src="" alt="">
+                                                <div class="blur hidden">
+                                                    <img alt="" src="__STATIC__/common/images/check_success.png">
+                                                    <span>扫码成功</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <p class="description">使用微信扫码，绑定账号</p>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <!-- <div id="usercenter-content-td ">
-                    <div class="bind-wechat col-md-12">
-                        {if $has_bind}
-                        <div class="bind">
-                            <span>绑定成功</span>
-                        </div>
-                        {else /}
-                        <div class="no-bind">
-                            <div class="col-md-6 qrcode">
-                                <img class="wechat-qrcode" src="" alt="">
-                                <div class="scan-status">未扫码</div>
-                                <button class="btn btn-info confirm btn-bind" type="button">绑定</button>
-                            </div>
-                        </div>
-                        {/if}
-                    </div>
-                </div> -->
             </div>
             <div class="clearfix"></div>
         </div>
@@ -157,82 +83,66 @@
     $(function () {
         // 设置当前高亮菜单
         $("#{$tab}").addClass('active');
+        //生成二维码
+        scan_qrcode.initWechatQrcode('.wechat-qrcode');
+        //查询扫码状态
+        scan_qrcode.hasScan();
         //扫码回调
-        scan_login.callback = function(){
-            scan_login.login();
+        scan_qrcode.callback = function(){
+            // 显示扫码完成
+            $('.bind .qrcode .blur').removeClass('hidden');
+            console.log(scan_qrcode.userInfo)
+            // 绑定用户
         }
+    });
 
-        //扫码登录
-        scan_login.initWechatQrcode('.wechat-qrcode');
+    // $(function () {
+        
+    //     // 获取验证码
+    //     $("[data-role='getVerify']").click(function () {
+    //         var $this = $(this);
+    //         toast.showLoading();
+    //         var account = $('input[name="mobile"]').val();
+    //         if(account == ''){
+    //             toast.error('请先绑定手机号码');
+    //             toast.hideLoading();
+    //             return false;
+    //         }
+    //         var type = 'mobile';
 
-        $('.btn-bind').on('click','',function () {
-            $.post("./wechat",{
-                openid:scan_login.userInfo.openid,
-                unionid:scan_login.userInfo.unionid,
-            },function (res) {
-                if (res.code == 200){
-                    window.location.reload();
-                    toast.success(res.msg);
-                }else{
-                    toast.error(res.msg);
-                }
-            })
-        })
-    })
-    // $('.testgetcode').on('click',function(){
-    //     $('.captcha-prompt-item').css({"display":"block"})
+    //         $.post("{:url('api/Verify/send')}", {
+    //             account: account, 
+    //             type: type, 
+    //             action:'config'
+    //         }, function (res) {
+    //             toast.hideLoading();
+    //             if(res.code == 200){
+    //                 DecTime.obj = $this
+    //                 DecTime.time = "{:config('extend.SMS_RESEND')}";
+    //                 $this.attr('disabled',true)
+    //                 DecTime.dec_time();
+    //                 toast.success(res.msg);
+    //             }
+    //             else{
+    //                 toast.error(res.msg);
+    //             }
+    //         })
+    //     })
     // })
 
-
-    $(function () {
-        
-        // 获取验证码
-        $("[data-role='getVerify']").click(function () {
-            var $this = $(this);
-            toast.showLoading();
-            var account = $('input[name="mobile"]').val();
-            if(account == ''){
-                toast.error('请先绑定手机号码');
-                toast.hideLoading();
-                return false;
-            }
-            var type = 'mobile';
-
-            $.post("{:url('api/Verify/send')}", {
-                account: account, 
-                type: type, 
-                action:'config'
-            }, function (res) {
-                toast.hideLoading();
-                if(res.code == 200){
-                    DecTime.obj = $this
-                    DecTime.time = "{:config('extend.SMS_RESEND')}";
-                    $this.attr('disabled',true)
-                    DecTime.dec_time();
-                    toast.success(res.msg);
-                }
-                else{
-                    toast.error(res.msg);
-                }
-            })
-        })
-
-        
-    })
-
-    // 验证码倒计时
-    var DecTime = {
-        obj: {},
-        time:0,
-        dec_time : function(){
-            if(this.time > 0){
-                this.obj.text('重新获取('+this.time--+'S)')
-                setTimeout("DecTime.dec_time()",1000)
-            }else{
-                this.obj.text("获取验证码")
-                this.obj.attr('disabled',false)
-            }
-        }
-    }
+    // // 验证码倒计时
+    // var DecTime = {
+    //     obj: {},
+    //     time:0,
+    //     dec_time : function(){
+    //         if(this.time > 0){
+    //             this.obj.text('重新获取('+this.time--+'S)')
+    //             setTimeout("DecTime.dec_time()",1000)
+    //         }else{
+    //             this.obj.text("获取验证码")
+    //             this.obj.attr('disabled',false)
+    //         }
+    //     }
+    // }
 </script>
 {/block}

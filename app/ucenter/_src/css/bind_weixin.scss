@@ -60,7 +60,6 @@
     .modal-dialog{
         width: 660px;
         max-width: 660px !important;
-        height: 588px;
         .modal-content{
             .wechat-header{
                 height: 76px;
@@ -77,7 +76,7 @@
                     margin-left: auto;
                 }
             }
-            .wechat-body{
+            .wechat-body {
                 .schedule{
                     width: 446px;
                     margin: 0 auto;
@@ -124,89 +123,38 @@
                         }
                     }
                 }
-                .col-xs-8{
-                    margin: 0 105px;
-                    padding: 80px 0 0;
-                    .form-group{
-                        height: 58px;
-                        margin: 0;
-                        .col-xs-2{
-                            font-size: 16px;
-                            color: #777777;
-                            padding: 0;
-                            margin-top: 10px;
-                        }
-                        .col-xs-10{
-                            border-bottom: 1px solid #e5e5e5;
-                            padding: 0 0 10px;
-                            >input{
-                                font-size: 18px;
-                                color: #333333;
-                                border: 0;
-                                outline:none;
-                            }
-                            >.get_verify_code{
-                                display: inline-block;
-                                width: 118px;
-                                height: 47px;
-                                border: 1px solid #03b8cf;
-                                border-radius: 23px;
-                                color: #03b8cf;
-                                font-size: 14px;
-                                line-height: 47px;
-                                text-align: center;
-                                margin-left: 28px;
-                            }
-                        }
-                    }
-                    .captcha-prompt{
-                        height: 71px;
-                        color: #777777;
-                        font-size: 16px;
-                        width: 374px;
-                        margin-left: 72px;
-                        padding-top: 20px;
-                        .captcha-prompt-item{
-                            display: none;
-                        }
-                    }
-                    .operating{
-                        width: 242px;
-                        margin-left: 70px;
-                        padding-top: 50px;
-                        >button{
-                            width: 112px;
-                            height: 44px;
-                            border-radius: 4px;
-                            font-size: 16px;
-                        }
-                        .close{
-                            border: 1px solid #e2e2e2;
-                            color: #555555;
-                            opacity: 1;
-                        }
-                        .save{
-                            background: #03b8cf;
-                            color: #ffffff;
-                            border: 0;
-                        }
-                    }
-                }
             }
-            .part-two{
-                .col-xs-8{
+            .wechat-body.part-two{
+                .content {
                     width: 100%;
                     margin: 0;
-                    padding-top: 90px;
-                    .no-bind{
+                    padding: 60px 0;
+                    .bind{
                         width: 178px;
                         height: 178px;
                         margin: 0 auto;
                         .qrcode{
+                            position: relative;
                             width: 178px;
                             height: 178px;
                             border: 1px solid #dedede;
                             padding: 0;
+                            .blur{
+                                width: 200px;
+                                height: 200px;
+                                position: absolute;
+                                top: -1px;
+                                left: 50%;
+                                margin-left: -100px;
+                                background-color: hsla(0,0%,100%,.96);
+                                display: flex;
+                                flex-direction: column;
+                                align-items: center;
+                                padding-top: 50px;
+                                >img{
+                                  width: 50px;
+                                }
+                              }
                         }
                     }
                     .description{
