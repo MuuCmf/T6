@@ -202,8 +202,8 @@ class WechatOfficialAccount extends Base
                     'sex'       =>  $oauth_info['sex'],
                     'oauth_type'    =>  'weixin_h5',
                     'shopid'    =>  Cache::get('shopid'),
-                    'avatar'    =>  '',
-                    'nickname'  =>  $MemberModel->createRandNickname()
+                    'avatar'    =>  $oauth_info['avatar'],
+                    'nickname'  =>  rand_nickname(config('system.USER_NICKNAME_PREFIX'))
                 ];
                 $user = $MemberModel->oauth($data);
                 $MemberModel->updateLogin($user['uid']);
