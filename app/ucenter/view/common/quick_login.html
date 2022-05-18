@@ -160,10 +160,10 @@
         });
 
         //扫码回调
-        scan_login.callback = function () {
+        scan_qrcode.callback = function () {
             $('.ewm-login .blur').removeClass('hidden');
             $('.ewm-login .reset-qrcode').removeClass('hidden');
-            scan_login.login();
+            scan_qrcode.login();
         }
         $("#password-login").click(function () {
             $(".ewm").show();
@@ -178,13 +178,17 @@
             $(".normal-login").hide();
             $(".password-login").show();
             $(".ewm-login").show();
-            //扫码登录
-            scan_login.initWechatQrcode('.wechat-qrcode');
+            //显示二维码
+            scan_qrcode.initWechatQrcode('.wechat-qrcode');
+            //查询扫码状态
+            scan_qrcode.hasScan();
         });
 
         $('.ewm-login .reset-qrcode').click(function () {
             //扫码登录
-            scan_login.initWechatQrcode('.wechat-qrcode');
+            scan_qrcode.initWechatQrcode('.wechat-qrcode');
+            //查询扫码状态
+            scan_qrcode.hasScan();
             $('.ewm-login .blur').addClass('hidden');
             $('.ewm-login .reset-qrcode').addClass('hidden');
         })

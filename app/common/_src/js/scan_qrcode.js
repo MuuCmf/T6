@@ -2,7 +2,7 @@
  * 扫码登陆
  * @type {{userInfo: null, initWechatQrcode(*=): void, callback: null, hasScan(): void}}
  */
-var scan_login = {
+var scan_qrcode = {
     userInfo : null,//用户信息
     callback : null,//回调
     sceneKey : null,
@@ -21,8 +21,6 @@ var scan_login = {
         this.createSceneKey();
         let qrCodeSrc = `${this.apiHost}/channel/official/qrcode?scene_key=${this.sceneKey}`;
         $(elem).attr('src', qrCodeSrc);
-        //查询扫码状态
-        this.hasScan();
     },
     /**
      * @title 检测是否扫码

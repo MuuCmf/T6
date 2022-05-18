@@ -38,7 +38,7 @@
                                         <h4>绑定微信</h4>
                                         <button class="close"data-dismiss="modal">×</button>
                                     </div>
-                                    <div class="wechat-body">
+                                    <!-- <div class="wechat-body">
                                         <div class="schedule">
                                             <ul class="progress-part">
                                                 <li class="finish">1</li>
@@ -60,7 +60,7 @@
                                                     <div class="col-xs-10">
                                                         <input type="hidden" name="mobile" value="{$user['mobile']|default=''}">
                                                         <input type="text" name="verify" id="" placeholder="请输入手机验证码">
-                                                        <a class="get_verify_code" data-role="getVerify">获取验证码</a>
+                                                        <button class="get_verify_code" data-role="getVerify">获取验证码</button>
                                                     </div>
                                                 </div>
                                                 
@@ -70,8 +70,8 @@
                                                 </div>
                                             </form>
                                         </div>
-                                    </div>
-                                    <!-- <div class="wechat-body part-two">
+                                    </div> -->
+                                    <div class="wechat-body part-two">
                                             <div class="schedule ">
                                                 <ul class="progress-part">
                                                     <li class="finish">1</li>
@@ -96,7 +96,7 @@
                                                 </div>
                                                 <p class="description">使用微信扫码，绑定账号</p>
                                             </div>
-                                    </div> -->
+                                    </div>
                                     <!-- <div class="wechat-body part-three">
                                             <div class="schedule">
                                                 <ul class="progress-part">
@@ -185,11 +185,19 @@
 
 
     $(function () {
+        
+        // 获取验证码
         $("[data-role='getVerify']").click(function () {
             var $this = $(this);
             toast.showLoading();
             var account = $('input[name="mobile"]').val();
+            if(account == ''){
+                toast.error('请先绑定手机号码');
+                toast.hideLoading();
+                return false;
+            }
             var type = 'mobile';
+
             $.post("{:url('api/Verify/send')}", {
                 account: account, 
                 type: type, 
@@ -209,19 +217,22 @@
             })
         })
 
-        var DecTime = {
-            obj: {},
-            time:0,
-            dec_time : function(){
-                if(this.time > 0){
-                    this.obj.text('重新获取('+this.time--+'S)')
-                    setTimeout("DecTime.dec_time()",1000)
-                }else{
-                    this.obj.text("获取验证码")
-                    this.obj.attr('disabled',false)
-                }
+        
+    })
+
+    // 验证码倒计时
+    var DecTime = {
+        obj: {},
+        time:0,
+        dec_time : function(){
+            if(this.time > 0){
+                this.obj.text('重新获取('+this.time--+'S)')
+                setTimeout("DecTime.dec_time()",1000)
+            }else{
+                this.obj.text("获取验证码")
+                this.obj.attr('disabled',false)
             }
         }
-    })
+    }
 </script>
 {/block}
