@@ -1075,9 +1075,9 @@
             vertical-align: sub;
         }
     }
-    }
-    }
 }
+
+/* 绑定微信 */
 .wechat-modal{
     .modal-dialog{
         width: 660px;
@@ -1109,16 +1109,16 @@
                         padding-left: 23px;
                         margin-bottom: 10px;
                         >li{
-                        width: 22px;
-                        height: 22px;
-                        border-radius: 50%;
-                        border: 1px solid #cccccc;
-                        text-align: center;
-                        color: #555555;
-                        font-size: 14px;
-                        .iconfont{
-                            font-size: 12px;
-                        }
+                            width: 22px;
+                            height: 22px;
+                            border-radius: 50%;
+                            border: 1px solid #cccccc;
+                            text-align: center;
+                            color: #555555;
+                            font-size: 14px;
+                            .iconfont{
+                                font-size: 12px;
+                            }
                         }
                         .finish{
                             background: #03b8cf;
@@ -1126,12 +1126,12 @@
                             color: #fff;
                         }
                         .progress-line{
-                        width: 176px;
-                        height: 2px;
-                        background: #d1d1d1;
-                        border: 0;
-                        margin-top: 10px;
-                    }
+                            width: 176px;
+                            height: 2px;
+                            background: #d1d1d1;
+                            border: 0;
+                            margin-top: 10px;
+                        }
                     }
                     .progress-prompt{
                         display: flex;
@@ -1167,7 +1167,7 @@
                                 border: 0;
                                 outline:none;
                             }
-                            >a{
+                            >.get_verify_code{
                                 display: inline-block;
                                 width: 118px;
                                 height: 47px;

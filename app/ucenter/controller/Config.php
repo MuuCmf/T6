@@ -252,7 +252,7 @@ class Config extends Common
         
     }
 
-        /**
+    /**
      * 我的积分
      * @return [type] [description]
      */
@@ -359,7 +359,10 @@ class Config extends Common
         View::assign('tab', 'scorerule');
         return View::fetch();
     }
-//积分等级
+
+    /**
+     * 积分等级
+     */
     public function score_estate()
     {
         $scoreModel = new ScoreType();
@@ -410,6 +413,7 @@ class Config extends Common
         View::assign('tab', 'score_estate');
         return View::fetch();
     }
+
     //消息通知
     public function message()
     {
@@ -462,6 +466,9 @@ class Config extends Common
         return View::fetch();
     }
 
+    /**
+     * 绑定微信账号
+     */
     public function wechat(){
         if (request()->isAjax()){
             //绑定用户信息
@@ -484,18 +491,18 @@ class Config extends Common
             }
             $this->error('绑定失败，请稍后再试！');
         }
+
         $uid = get_uid();
-        $self = query_user($uid, array('nickname','avatar' ,'score1', 'score2', 'score3', 'score4'));
+        $self = query_user($uid, array('mobile','nickname','avatar' ,'score1', 'score2', 'score3', 'score4'));
+        View::assign('user', $self);
         //是否绑定微信
         $bind_map =[];
         $bind_map[] = ['uid'    ,'=',  $uid];
         $bind_map[] = ['type'   ,'=',  'weixin_h5'];
         $has_bind = (new MemberSync())->where($bind_map)->count();
-        View::assign([
-            'user'      => $self,
-            'has_bind'  => boolval($has_bind),
-        ]);
+        View::assign('has_bind', $has_bind);
         View::assign('tab', 'wechat');
+
         return View::fetch();
     }
 

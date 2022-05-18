@@ -63,19 +63,21 @@
                 }
             })
         })
-    })
 
-    var DecTime = {
-        obj:0,
-        time:0,
-        dec_time : function(){
-            if(this.time > 0){
-                this.obj.text('重新获取('+this.time--+'S)')
-                setTimeout("DecTime.dec_time()",1000)
-            }else{
-                this.obj.text("获取验证码")
-                this.obj.attr('disabled',false)
+        var DecTime = {
+            obj:0,
+            time:0,
+            dec_time : function(){
+                if(this.time > 0){
+                    this.obj.text('重新获取('+this.time--+'S)')
+                    setTimeout("DecTime.dec_time()",1000)
+                }else{
+                    this.obj.text("获取验证码")
+                    this.obj.attr('disabled',false)
+                }
             }
         }
-    }
+    })
+
+    
 </script>

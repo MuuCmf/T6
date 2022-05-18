@@ -29,6 +29,8 @@
                             </div>
                         </div>
                     </div>
+
+
                     <div class="modal fade wechat-modal" id="wechat-modal"> 
                             <div class="modal-dialog modal-lg">
                                 <div class="modal-content">
@@ -56,17 +58,14 @@
                                                 <div class="form-group">
                                                     <label for="verify" class="col-xs-2">验证码</label>
                                                     <div class="col-xs-10">
-                                                        <input type="text" name="" id="" placeholder="请输入手机验证码">
-                                                        <a class="testgetcode">获取验证码</a>
+                                                        <input type="hidden" name="mobile" value="{$user['mobile']|default=''}">
+                                                        <input type="text" name="verify" id="" placeholder="请输入手机验证码">
+                                                        <a class="get_verify_code" data-role="getVerify">获取验证码</a>
                                                     </div>
                                                 </div>
-                                                <div class="captcha-prompt">
-                                                    <div class="captcha-prompt-item">
-                                                        验证码已发送至管理员绑定手机号<span>{$user.email|default='未设置'}</span> ，请注意查收
-                                                    </div>
-                                                </div>
+                                                
                                                 <div class="operating">
-                                                    <button class="save">保存</button>
+                                                    <button class="save" data-role="verifyCode">下一步</button>
                                                     <button class="close" data-dismiss="modal">取消</button>
                                                 </div>
                                             </form>
@@ -180,8 +179,49 @@
             })
         })
     })
-    $('.testgetcode').on('click',function(){
-        $('.captcha-prompt-item').css({"display":"block"})
+    // $('.testgetcode').on('click',function(){
+    //     $('.captcha-prompt-item').css({"display":"block"})
+    // })
+
+
+    $(function () {
+        $("[data-role='getVerify']").click(function () {
+            var $this = $(this);
+            toast.showLoading();
+            var account = $('input[name="mobile"]').val();
+            var type = 'mobile';
+            $.post("{:url('api/Verify/send')}", {
+                account: account, 
+                type: type, 
+                action:'config'
+            }, function (res) {
+                toast.hideLoading();
+                if(res.code == 200){
+                    DecTime.obj = $this
+                    DecTime.time = "{:config('extend.SMS_RESEND')}";
+                    $this.attr('disabled',true)
+                    DecTime.dec_time();
+                    toast.success(res.msg);
+                }
+                else{
+                    toast.error(res.msg);
+                }
+            })
+        })
+
+        var DecTime = {
+            obj: {},
+            time:0,
+            dec_time : function(){
+                if(this.time > 0){
+                    this.obj.text('重新获取('+this.time--+'S)')
+                    setTimeout("DecTime.dec_time()",1000)
+                }else{
+                    this.obj.text("获取验证码")
+                    this.obj.attr('disabled',false)
+                }
+            }
+        }
     })
 </script>
 {/block}
