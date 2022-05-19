@@ -53,6 +53,7 @@ class WechatOfficialAccount extends Base
                     //自动回复消息
                     $map[] = ['type', '=', 2];
                     $map[] = ['keyword', '=', $message['Content']];
+                    $map[] = ['status', '=', 1];
                     $this->doMessage($message, $map);
                     break;
             }
@@ -95,6 +96,7 @@ class WechatOfficialAccount extends Base
                     $QrcodeLoginModel->edit($qrcode_login);
                     //登录消息
                     $map[] = ['type', '=', 3];
+                    $map[] = ['status', '=', 1];
                     $this->doMessage($message, $map);
                 }else{
                     //消息通知
