@@ -57,6 +57,7 @@
                                                 <div class="blur hidden">
                                                     <img alt="" src="__STATIC__/common/images/check_success.png">
                                                     <span>扫码成功</span>
+                                                    <span class="refresh">重新生成二维码</span>
                                                 </div>
                                             </div>
                                         </div>
@@ -85,61 +86,30 @@
         //查询扫码状态
         scan_qrcode.hasScan();
         //扫码回调
-        scan_qrcode.callback = function(){
-            // 显示扫码完成
-            $('.bind .qrcode .blur').removeClass('hidden');
-            console.log(scan_qrcode.userInfo)
-            // 绑定用户
+        callback();
+
+        // 刷新二维码
+        $('.refresh').click(function(){
+            //生成二维码
+            scan_qrcode.initWechatQrcode('.wechat-qrcode');
+            //查询扫码状态
+            scan_qrcode.hasScan();
+            $('.bind .qrcode .blur').addClass('hidden');
+            callback();
+        });
+
+        function callback(){
+            //扫码回调
+            scan_qrcode.callback = function(){
+                // 显示扫码完成
+                $('.bind .qrcode .blur').removeClass('hidden');
+                //console.log(scan_qrcode.userInfo)
+                // 绑定用户
+                $.post("{:url('ucenter/Config/wechat')}", scan_qrcode.userInfo, function (res) {
+                    handle_ajax(res);
+                })
+            }
         }
     });
-
-    // $(function () {
-        
-    //     // 获取验证码
-    //     $("[data-role='getVerify']").click(function () {
-    //         var $this = $(this);
-    //         toast.showLoading();
-    //         var account = $('input[name="mobile"]').val();
-    //         if(account == ''){
-    //             toast.error('请先绑定手机号码');
-    //             toast.hideLoading();
-    //             return false;
-    //         }
-    //         var type = 'mobile';
-
-    //         $.post("{:url('api/Verify/send')}", {
-    //             account: account, 
-    //             type: type, 
-    //             action:'config'
-    //         }, function (res) {
-    //             toast.hideLoading();
-    //             if(res.code == 200){
-    //                 DecTime.obj = $this
-    //                 DecTime.time = "{:config('extend.SMS_RESEND')}";
-    //                 $this.attr('disabled',true)
-    //                 DecTime.dec_time();
-    //                 toast.success(res.msg);
-    //             }
-    //             else{
-    //                 toast.error(res.msg);
-    //             }
-    //         })
-    //     })
-    // })
-
-    // // 验证码倒计时
-    // var DecTime = {
-    //     obj: {},
-    //     time:0,
-    //     dec_time : function(){
-    //         if(this.time > 0){
-    //             this.obj.text('重新获取('+this.time--+'S)')
-    //             setTimeout("DecTime.dec_time()",1000)
-    //         }else{
-    //             this.obj.text("获取验证码")
-    //             this.obj.attr('disabled',false)
-    //         }
-    //     }
-    // }
 </script>
 {/block}

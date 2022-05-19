@@ -477,8 +477,9 @@ class Config extends Common
             $bind_map =[];
             $bind_map[] = ['openid','=', $params['openid']];
             $bind_map[] = ['type','=','weixin_h5'];
+            // 查询是否已绑定
             $has_bind = boolval((new MemberSync())->where($bind_map)->count());
-            if ($has_bind) $this->error('当前微信已绑定了其他账号');
+            if ($has_bind) return $this->error('当前微信已绑定了其他账号');
             $data = [
                 'uid'     => get_uid(),
                 'openid'  => $params['openid'],
@@ -487,9 +488,9 @@ class Config extends Common
             ];
             $res = (new MemberSync())->edit($data);
             if ($res){
-                $this->success('绑定成功');
+                return $this->success('绑定成功');
             }
-            $this->error('绑定失败，请稍后再试！');
+            return $this->error('绑定失败，请稍后再试！');
         }
 
         $uid = get_uid();
