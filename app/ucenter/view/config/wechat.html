@@ -24,9 +24,15 @@
                             <!-- <img src="__STATIC__/ucenter/images/default-minerva-she.png" alt=""> -->
                             </div>
                             <p class="wechat-nickname">微信昵称</p>
+                            {if $has_bind}
+                            <div class="has-bind">
+                                <span class="wechat_upload_btn">已绑定<i class="iconfont">&#xe661;</i></span>
+                            </div>
+                            {else}
                             <div class="to-bind">
                                 <span class="wechat_upload_btn" data-toggle="modal" data-target="#wechat-modal">去绑定<i class="iconfont">&#xe661;</i></span>
                             </div>
+                            {/if}
                         </div>
                     </div>
 

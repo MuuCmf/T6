@@ -5,6 +5,7 @@ namespace app\ucenter\controller;
 
 use app\common\model\MemberSync;
 use app\channel\controller\api\WechatOfficialAccount;
+use app\channel\service\wechat\OfficialAccount;
 use think\facade\Db;
 use think\facade\View;
 use app\common\controller\Common;
@@ -494,13 +495,16 @@ class Config extends Common
         }
 
         $uid = get_uid();
-        $self = query_user($uid, array('mobile','nickname','avatar' ,'score1', 'score2', 'score3', 'score4'));
+        $self = query_user($uid, ['mobile','nickname','avatar' ,'score1', 'score2', 'score3', 'score4']);
         View::assign('user', $self);
         //是否绑定微信
         $bind_map =[];
         $bind_map[] = ['uid'    ,'=',  $uid];
         $bind_map[] = ['type'   ,'=',  'weixin_h5'];
-        $has_bind = (new MemberSync())->where($bind_map)->count();
+        $has_bind = (new MemberSync())->where($bind_map)->find();
+        dump($has_bind);
+        $user = $app->user->get($has_bind->openid);
+        dump($user);
         View::assign('has_bind', $has_bind);
         View::assign('tab', 'wechat');
 

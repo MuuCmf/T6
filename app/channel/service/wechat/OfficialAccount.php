@@ -203,4 +203,11 @@ class OfficialAccount extends Wechat {
     public function sendTemplateMsg($data){
         return $this->app->template_message->send($data);
     }
+
+    /**
+     * 获取单个用户信息
+     */
+    public function getUserByOpenid($openid){
+        return $this->app->user->get($openid);
+    }
 }

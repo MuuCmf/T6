@@ -23,37 +23,51 @@
             }
         }
     }
-    .wechat-avatar::after{
+    .wechat-avatar::after {
         content:'';
         width: 38px;
         height: 38px;
         border-radius: 50%;
-        background: url(../images/weixin.png)no-repeat;
+        background: url(../images/weixin.png) no-repeat;
         position: absolute;
         bottom:0px;
         right: 0px;
     }
-    .wechat-nickname{
+    .wechat-nickname {
         margin: 0 50px 0 40px;
         line-height: 120px;
         color: #555555;
         font-size: 18px;
     }
-    .to-bind{
+    .to-bind {
         line-height: 124px;
         .wechat_upload_btn{
-        font-size: 16px;
-        color: #03b8cf;
-        height: 30px;
-        line-height: 30px;
-        cursor:pointer;
-        .iconfont{
-            font-size: 26px;
-            vertical-align: sub;
+            font-size: 16px;
+            color: #03b8cf;
+            height: 30px;
+            line-height: 30px;
+            cursor:pointer;
+            .iconfont{
+                font-size: 26px;
+                vertical-align: sub;
+            }
+        }
+    }
+    .has-bind {
+        line-height: 124px;
+        .wechat_upload_btn{
+            font-size: 16px;
+            color: #03b8cf;
+            height: 30px;
+            line-height: 30px;
+            cursor:pointer;
+            .iconfont{
+                font-size: 26px;
+                vertical-align: sub;
+            }
         }
     }
 }
-    }
 
 /* 绑定微信 */
 .wechat-modal{
