@@ -83,9 +83,11 @@
                     padding-top:65px; 
                     .progress-part{
                         display: flex;
-                        padding-left: 23px;
+                        margin: 0 auto;
                         margin-bottom: 10px;
-                        >li{
+                        width: 330px;
+                        padding-left: 40px;
+                        >li {
                             width: 22px;
                             height: 22px;
                             border-radius: 50%;
@@ -93,11 +95,11 @@
                             text-align: center;
                             color: #555555;
                             font-size: 14px;
-                            .iconfont{
+                            .iconfont {
                                 font-size: 12px;
                             }
                         }
-                        .finish{
+                        .finish {
                             background: #03b8cf;
                             border: 0;
                             color: #fff;
@@ -112,14 +114,18 @@
                     }
                     .progress-prompt{
                         display: flex;
-                        justify-content: space-between;
-                        margin: 0;
-                        >li{
+                        margin: 0 auto;
+                        width: 340px;
+                        >li {
+                            flex: 1;
+                            text-align: center;
                             font-size: 16px;
                             color: #999999;
                         }
-                        .finish{
+                        .finish {
+                            text-align: left;
                             color: #222222;
+                            padding-left: 10px;
                         }
                     }
                 }
