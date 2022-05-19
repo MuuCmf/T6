@@ -34,74 +34,6 @@ ul {
   margin-left: 0;
 }
 
-/*后台页面按钮样式*/
-.btn-new {
-  background: #00ce74;
-  color: #fff;
-  border: 1px solid #00ce74;
-  border-radius: 2px;
-}
-
-.btn-new:hover {
-  background: #03a75f;
-  color: #fff;
-  border: 1px solid #03c470;
-}
-
-.btn-open {
-  background: #fff;
-  color: #00ce74;
-  border: 1px solid #00ce74;
-  border-radius: 2px;
-}
-
-.btn-open:hover {
-  background: #fff;
-  color: #03a75f;
-  border: 1px solid #03a75f;
-}
-
-.btn-forbid {
-  background: #fff;
-  color: #ff8e20;
-  border: 1px solid #ff8e20;
-  border-radius: 2px;
-}
-
-.btn-forbid:hover {
-  background: #fff;
-  color: #de7e1f;
-  border: 1px solid #de7e1f;
-}
-
-.btn-delete {
-  background: #fff;
-  color: #ff2020;
-  border: 1px solid #ff2020;
-  border-radius: 2px;
-}
-
-.btn-delete:hover {
-  background: #fff;
-  color: #e61d1d;
-  border: 1px solid #e61d1d;
-}
-
-.btn-up {
-  background: #fff;
-  color: #666;
-  border: 1px solid #666;
-  border-radius: 2px;
-}
-
-.btn-up:hover {
-  background: #fff;
-  color: #00ce74;
-  border: 1px solid #00ce74;
-}
-
-/*后台页面按钮样式*/
-
 .nav-secondary>li>.a-active {
   font-size: 18px;
 }
@@ -125,19 +57,8 @@ ul {
   border-bottom-color: #00ce74;
 }
 
-.img-avatar {
-  width: 84px;
-  height: 84px;
-}
-
 .control-label {
   text-align: left !important;
-}
-
-/*ZUI修复*/
-.modal-open .modal {
-  overflow-x: hidden;
-  overflow-y: hidden;
 }
 
 /*布局通用样式*/
@@ -248,29 +169,6 @@ ul {
   }
 }
 
-.tb_rank {
-  border: 1px solid #ccc;
-  border-collapse: collapse;
-  width: 100%;
-  margin: auto;
-
-  td,
-  th {
-    padding: 5px 10px;
-    border: 1px solid #ccc;
-    border-left: none;
-    border-right: none;
-    color: #555;
-  }
-}
-
-/*编辑器修复*/
-.edui-btn-toolbar {
-  background: white;
-}
-
-/*编辑器修复end*/
-
 /*提示信息颜色*/
 .tooltip.green .tooltip-inner {
   background-color: #2ac25f;
@@ -374,29 +272,27 @@ ul {
 /**
  * 确认操作默认框
  */
-.tip-model-content {
-  .tip-modal-icon {
-    text-align: center;
-    color: #ea644a;
-    margin-bottom: 30px;
+/*弹出提示框*/
+.confirm-modal {
+  .fa {
+    font-size:36px;
+    color: #dd4b39;
   }
-
-  .tip-modal-text {
-    margin: 0 auto;
-    width: 300px;
-    color: #666;
-    text-align: center;
-    margin-bottom: 30px;
+  .title {
+    font-size:20px;
+    font-weight: 400;
+    padding: 10px;
   }
-
-  .tip-modal-btn {
-    margin-bottom: 30px;
-    text-align: center;
-
+  .desc {
+    height: auto;
+  }
+  .btns {
+    padding: 20px 0;
     .btn {
       margin: 0 10px;
     }
   }
+
 }
 
 /**

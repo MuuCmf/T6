@@ -18,24 +18,29 @@
                 <div id="usercenter-content-td" >
                     <div class="bind-wechat col-md-12">
                         <h4 class="wechat-title">绑定微信</h4>
-                        <div>
+                        <div class="wechat-body">
                             <div class="wechat-avatar">
                             <img src="__STATIC__/ucenter/images/default-minerva-man.png" alt="">
                             <!-- <img src="__STATIC__/ucenter/images/default-minerva-she.png" alt=""> -->
                             </div>
-                            <p class="wechat-nickname">微信昵称</p>
+                            
                             {if $has_bind}
                             <div class="has-bind">
-                                <span class="wechat_upload_btn">已绑定<i class="iconfont">&#xe661;</i></span>
+                                <div class="openid">
+                                    <span> {$has_bind.openid}</span>
+                                </div>
+                                <div class="action">
+                                    <span class="wechat-bind">已绑定</span>
+                                    <span class="wechat-unbind ajax-post" data-url="{:url('unbind')}" data-confirm="确认解除绑定">解除绑定</span>
+                                </div>
                             </div>
                             {else}
                             <div class="to-bind">
-                                <span class="wechat_upload_btn" data-toggle="modal" data-target="#wechat-modal">去绑定<i class="iconfont">&#xe661;</i></span>
+                                <span class="wechat-bind" data-toggle="modal" data-target="#wechat-modal">去绑定<i class="iconfont">&#xe661;</i></span>
                             </div>
                             {/if}
                         </div>
                     </div>
-
 
                     <div class="modal fade wechat-modal" id="wechat-modal"> 
                         <div class="modal-dialog">

@@ -233,7 +233,7 @@
                         '<i class="fa fa-exclamation-circle"></i>'+
                         '<p class="title">系统提示</p>'+
                         '<p class="desc">'+ confirmText +'</p>'+
-                        '<div class="text-center">'+
+                        '<div class="btns text-center">'+
                             '<button class="btn btn-info confirm margin-right" type="button">确认</button>'+
                             '<button type="button" class="btn" data-dismiss="modal">取消</button>'+
                         '</div>'+

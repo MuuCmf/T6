@@ -4,8 +4,6 @@ declare (strict_types = 1);
 namespace app\ucenter\controller;
 
 use app\common\model\MemberSync;
-use app\channel\controller\api\WechatOfficialAccount;
-use app\channel\service\wechat\OfficialAccount;
 use think\facade\Db;
 use think\facade\View;
 use app\common\controller\Common;
@@ -60,82 +58,6 @@ class Config extends Common
 
             return View::fetch();
         }
-    }
-
-    /**获取用户扩展信息
-     * @param null $uid
-     */
-    public function _getExpandInfo($uid = null)
-    {
-        $profile_group_list = $this->_profile_group_list($uid);
-        if ($profile_group_list) {
-            $info_list = $this->_info_list($profile_group_list[0]['id'], $uid);
-            View::assign('info_list', $info_list);
-            View::assign('profile_group_id', $profile_group_list[0]['id']);
-            //dump($info_list);exit;
-        }
-        foreach ($profile_group_list as &$v) {
-            $v['fields'] = $this->_getExpandInfoByGid($v['id']);
-        }
-
-        View::assign('profile_group_list', $profile_group_list);
-    }
-
-    /**显示某一扩展分组信息
-     * @param null $profile_group_id
-     * @param null $uid
-     */
-    public function _getExpandInfoByGid($profile_group_id = null)
-    {
-        $res = Db::name('field_group')->where(array('id' => $profile_group_id, 'status' => '1'))->find();
-        if (!$res) {
-            return array();
-        }
-        $info_list = $this->_info_list($profile_group_id);
-
-        return $info_list;
-        View::assign('info_list', $info_list);
-        View::assign('profile_group_id', $profile_group_id);
-        View::assign('profile_group_list', $profile_group_list);
-    }
-
-    /**分组下的字段信息及相应内容
-     * @param null $id 扩展分组id
-     * @param null $uid
-     * @author 大蒙 59262424@qq.com
-     */
-    public function _info_list($id = null, $uid = null)
-    {
-        $info_list = null;
-
-        if (isset($uid) && $uid != is_login()) {
-            //查看别人的扩展信息
-            $field_setting_list = Db::name('field_setting')->where(array('profile_group_id' => $id, 'status' => '1', 'visiable' => '1', 'id' => array('in', $fields_list)))->order('sort asc')->select();
-
-            if (!$field_setting_list) {
-                return null;
-            }
-            $map['uid'] = $uid;
-        } else if (is_login()) {
-            $field_setting_list = Db::name('field_setting')->where(array('profile_group_id' => $id, 'status' => '1', 'id' => array('in', $fields_list)))->order('sort asc')->select();
-
-            if (!$field_setting_list) {
-                return null;
-            }
-            $map['uid'] = is_login();
-
-        } else {
-            $this->error(lang('_ERROR_PLEASE_LOGIN_').lang('_EXCLAMATION_'));
-        }
-        foreach ($field_setting_list as $val) {
-            $map['field_id'] = $val['id'];
-            $field = Db::name('field')->where($map)->find();
-            $val['field_content'] = $field;
-            $info_list[$val['id']] = $val;
-            unset($map['field_id']);
-        }
-
-        return $info_list;
     }
 
     /**
@@ -502,13 +424,26 @@ class Config extends Common
         $bind_map[] = ['uid'    ,'=',  $uid];
         $bind_map[] = ['type'   ,'=',  'weixin_h5'];
         $has_bind = (new MemberSync())->where($bind_map)->find();
-        dump($has_bind);
-        $user = $app->user->get($has_bind->openid);
-        dump($user);
+
         View::assign('has_bind', $has_bind);
         View::assign('tab', 'wechat');
 
         return View::fetch();
+    }
+
+    /**
+     * 解除微信用户绑定
+     */
+    public function unbind()
+    {
+        $map[] = ['uid', '=', get_uid()];
+        $map[] = ['type'   ,'=',  'weixin_h5'];
+        $res = (new MemberSync())->where($map)->delete();
+
+        if ($res){
+            return $this->success('解除绑定成功');
+        }
+        return $this->error('解除绑定失败，请稍后再试！');
     }
 
 }

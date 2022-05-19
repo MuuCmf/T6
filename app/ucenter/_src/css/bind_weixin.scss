@@ -8,7 +8,7 @@
         font-size: 24px;
         color: #222222;
     }
-    >div{
+    .wechat-body {
         margin-top: 52px;
         display: flex;
         .wechat-avatar{
@@ -40,8 +40,9 @@
         font-size: 18px;
     }
     .to-bind {
+        margin-left: 30px;
         line-height: 124px;
-        .wechat_upload_btn{
+        .wechat-bind {
             font-size: 16px;
             color: #03b8cf;
             height: 30px;
@@ -54,18 +55,29 @@
         }
     }
     .has-bind {
-        line-height: 124px;
-        .wechat_upload_btn{
+        margin-left: 30px;
+        line-height: 36px;
+        .openid {
             font-size: 16px;
-            color: #03b8cf;
-            height: 30px;
-            line-height: 30px;
-            cursor:pointer;
-            .iconfont{
-                font-size: 26px;
-                vertical-align: sub;
+            margin-top: 30px;
+        }
+        .action {
+            line-height: 40px;
+            .wechat-bind {
+                font-size: 16px;
+                color: #03b8cf;
+                cursor:pointer;
+                margin-right: 30px;
+            }
+            .wechat-unbind {
+                font-size: 16px;
+                color: red;
+                border: 1px solid red;
+                padding: 6px 20px;
+                cursor:pointer;
             }
         }
+        
     }
 }
 
