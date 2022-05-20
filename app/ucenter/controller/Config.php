@@ -12,6 +12,8 @@ use app\common\model\Verify;
 use app\common\model\Member;
 use app\common\model\ScoreType;
 use app\common\model\Action;
+use app\common\model\Message as MessageModel;
+use app\common\model\MessageType as MessageTypeModel;
 
 class Config extends Common
 {
@@ -337,55 +339,24 @@ class Config extends Common
         return View::fetch();
     }
 
-    //消息通知
+    /**
+     * 消息模态框
+     */
     public function message()
     {
-        $scoreModel = new ScoreType();
-
-        $scores = $scoreModel->getTypeList(['status'=>1]);
-        foreach ($scores as &$v) {
-            $v['value'] = $scoreModel->getUserScore(is_login(), $v['id']);
+        // 获取消息类型
+        $MessageModel = new MessageModel();
+        $MessageTypeModel = new MessageTypeModel();
+        // 查询条件
+        $map[] = ['shopid', '=', 0];
+        $map[] = ['status', '=', 1];
+        $type_list = $MessageTypeModel->getList($map);
+        foreach($type_list as &$val){
+            $val = $MessageTypeModel->formatData($val);
         }
-        unset($v);
-        View::assign('scores', $scores);
-
-        $level = config('system.USER_LEVEL');
-        View::assign('level', $level);
-
-        $self = query_user(get_uid(), array('nickname','avatar' ,'score1', 'score2', 'score3', 'score4'));
-
-        View::assign('user', $self);
-
-        $actionModel = new Action();
-        $action = $actionModel->getAction(['status' => 1]);
-        $action_module = [];
+        unset($val);
+        View::assign('type_list', $type_list);
         
-        foreach ($action as &$v) {
-            $v['rule_array'] = unserialize($v['rule']);
-            if(is_array($v['rule_array'])){
-                foreach ($v['rule_array'] as &$o) {
-                    if (is_numeric($o['rule'])) {
-                        $o['rule'] = $o['rule'] > 0 ? '+' . intval($o['rule']) : $o['rule'];
-                    }
-                    $o['score'] = $scoreModel->getType(['id' => $o['field']]);
-                }
-            }
-            if ($v['rule_array'] != false) {
-                $action_module[$v['module']]['action'][] = $v;
-            }
-        }
-        unset($v);
-
-        // foreach ($action_module as $key => &$a) {
-        //     if (empty($a['action'])) {
-        //         unset($action_module[$key]);
-        //     }
-        //     $a['module'] = model('common/Module')->getModule($key);
-        // }
-        // unset($a);
-        View::assign('action_module', $action_module);
-        
-        View::assign('tab', 'message');
         return View::fetch();
     }
 

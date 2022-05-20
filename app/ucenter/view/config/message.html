@@ -3,13 +3,15 @@
     <div class="left-navigation">
       <h4>消息通知</h4>
       <ul id="myTab" class="nav-tabs">
-        <li class="active"><a href="#order" data-toggle="tab">订单消息</a><span class="information-quantity">1</span></li>
-        <li class=""><a href="#loading-part" data-toggle="tab">评论</a><span class="information-quantity">2</span></li>
-        <li class=""><a href="#like" data-toggle="tab">点赞</a><span class="information-quantity">3</span></li>
-        <li class=""><a href="#store-up" data-toggle="tab">收藏</a><span class="information-quantity">4</span></li>
-        <li class=""><a href="#system-notice" data-toggle="tab">系统通知</a><span class="information-quantity">5</span></li>
+        {foreach $type_list as $key=>$val}
+        <li class="">
+          <a href="#" data-toggle="tab" data-type-id="{$val.id}">{$val.title}</a>
+          <span class="information-quantity">1</span>
+        </li>
+        {/foreach}
       </ul>
     </div>
+
     <div  class="right-content tab-content" id="myTabContent">
       <div class="order tab-pane fade in active" id="order">
         <div class="content-head">
@@ -210,28 +212,40 @@
 </div>
 <script>
 $(window).ready(function() {
-    $(".operate").click(function() {
-      $(this)
-        .parent()
-        .toggleClass("operate-Invert");
-      $(this)
-        .parent()
-        .nextAll(".operate")
-        .removeClass("operate-Invert");
-      $(this)
-        .parent()
-        .next()
-        .slideToggle();
-      $(this)
-        .parent()
-        .prevAll(".operate")
-        .slideUp("slow");
-      $(this)
-        .parent()
-        .next()
-        .nextAll(".operate")
-        .slideUp("slow");
-      return false;
-    });
+  $(".operate").click(function() {
+    $(this)
+      .parent()
+      .toggleClass("operate-Invert");
+    $(this)
+      .parent()
+      .nextAll(".operate")
+      .removeClass("operate-Invert");
+    $(this)
+      .parent()
+      .next()
+      .slideToggle();
+    $(this)
+      .parent()
+      .prevAll(".operate")
+      .slideUp("slow");
+    $(this)
+      .parent()
+      .next()
+      .nextAll(".operate")
+      .slideUp("slow");
+    return false;
   });
+});
+
+$(function(){
+  // 默认点击第一个消息类型
+  $('.message .nav-tabs a').first().click();
+
+  $('.message .nav-tabs a').click(function(){
+    $('.message .nav-tabs li').removeClass('active');
+
+    $(this).parent().addClass('active');
+  });
+
+});
 </script>
