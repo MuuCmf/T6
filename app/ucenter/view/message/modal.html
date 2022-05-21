@@ -20,10 +20,15 @@
           </div>
           <div class="system-notice-list">
             <ul>
+                <div class="empty">
+                    还没有消息哦~
+                </div>
             </ul>
           </div>
         </div>
-        <ul id="messagePager" class="pager" data-ride="pager" data-page="2" data-rec-total="89"></ul>
+        <div class="paper-section">
+            <ul id="messagePager" class="pager" data-ride="pager" data-elements="prev_icon,nav,next_icon"></ul>
+        </div>
       </div>
     </div>
   </div>
@@ -55,17 +60,41 @@
   });
   
   $(function(){
-    
+    var shopid = 0;
+    var type_id = 0;
+    // 手动进行初始化
+    $('#messagePager').pager({
+        page: 1,
+    });
+
+    // 获取分页器实例对象
+    var messagePager = $('#messagePager').data('zui.pager');
 
     // 点击消息类型事件
     $('.message .nav-tabs a').click(function(){
         $('.message .nav-tabs li').removeClass('active');
         $(this).parent().addClass('active');
-        var type_id = $(this).data('type-id');
-        console.log(type_id);
-        $.post("{:url('api/message/lists')}", {
+        type_id = $(this).data('type-id');
+        getList(shopid, type_id, 1)
+    });
+
+    // 默认点击第一个消息类型
+    $('.message .nav-tabs a').first().click();
+
+    $('#messagePager').on('onPageChange', function(e, state, oldState) {
+        if (state.page !== oldState.page) {
+            console.log('页码从', oldState.page, '变更为', state.page);
+            getList(shopid, type_id, state.page)
+        }
+    });
+
+    function getList(shopid, type_id, page){
+        toast.showLoading()
+        var url = "{:url('api/message/lists')}";
+            url = url + '?page=' + page
+        $.post(url, {
             type_id : type_id,
-            shopid : 0
+            shopid : 0,
         }, function (res) {
             console.log(res);
             if(res.data){
@@ -86,21 +115,20 @@
                     html += '    </div>'
                     html += '</li>'
                 });
-                console.log(html);
+
                 //写入DOM
                 $('.message-body .right-content .system-notice-list ul').html(html);
+
+                // 设置当前页码为 4，并同时设置记录总数为 100， 每页记录数目为 30
+                messagePager.set({
+                    page: res.data.current_page,
+                    recTotal: res.data.total,
+                    recPerPage: res.data.per_page
+                });
+                toast.hideLoading()
             }
         })
-    });
-
-    // 默认点击第一个消息类型
-    $('.message .nav-tabs a').first().click();
-
-    // 手动进行初始化
-    $('#messagePager').pager({
-        page: 1,
-        recTotal: 100
-    });
+    }
   
   });
   </script>
