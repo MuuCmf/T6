@@ -31,7 +31,7 @@ class Message extends Common
         }
         unset($val);
         View::assign('type_list', $type_list);
-        
+
         return View::fetch();
     }
 

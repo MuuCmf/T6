@@ -1,6 +1,8 @@
 <?php
 namespace app\common\model;
 
+use app\common\model\Message as MessageModel;
+
 class MessageType extends Base
 {
     //自动写入创建和更新的时间戳字段
@@ -21,6 +23,18 @@ class MessageType extends Base
             $data['icon_80'] = request()->domain() . '/static/common/images/nopic.png';
         }else{
             $data['icon_80'] = get_thumb_image($data['icon'], 80, 80);
+        }
+
+        // 未读消息数量
+        $map[] = ['type_id', '=', $data['id']];
+        $map[] = ['is_read', '=', 0];
+        $map[] = ['status', '=', 1];
+        
+        $num = (new MessageModel())->where($map)->count();
+        if($num > 99){
+            $data['unread'] = '99+';
+        }else{
+            $data['unread'] = $num;
         }
 
         if(isset($data['status'])){
