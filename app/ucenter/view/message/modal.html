@@ -97,7 +97,7 @@
             shopid : 0,
         }, function (res) {
             console.log(res);
-            if(res.data){
+            if(res.data.data.length > 0){
                 var html = '';
                 $.each(res.data.data,function(i,n){
                     html += '<li>'
@@ -125,8 +125,16 @@
                     recTotal: res.data.total,
                     recPerPage: res.data.per_page
                 });
-                toast.hideLoading()
+            }else{
+                var html = '';
+                    html += '<div class="empty">'
+                    html += '还没有消息哦~'
+                    html += '</div>'
+
+                //写入DOM
+                $('.message-body .right-content .system-notice-list ul').html(html);
             }
+            toast.hideLoading()
         })
     }
   
