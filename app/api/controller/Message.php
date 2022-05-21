@@ -10,8 +10,9 @@ use app\common\model\MessageType as MessageTypeModel;
  * @package app\api\controller
  */
 class Message extends Api{
-    protected $params;
+
     protected $MessageModel;
+    protected $MessageTypeModel;
 
     protected $middleware = [
         'app\\common\\middleware\\CheckAuth',
