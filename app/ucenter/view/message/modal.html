@@ -33,32 +33,6 @@
     </div>
   </div>
   <script>
-  $(window).ready(function() {
-      
-    $(".message").on('click', '.operate',function() {
-      $(this)
-        .parent()
-        .toggleClass("operate-Invert");
-      $(this)
-        .parent()
-        .nextAll(".operate")
-        .removeClass("operate-Invert");
-      $(this)
-        .parent()
-        .next()
-        .slideToggle();
-      $(this)
-        .parent()
-        .prevAll(".operate")
-        .slideUp("slow");
-      $(this)
-        .parent()
-        .next()
-        .nextAll(".operate")
-        .slideUp("slow");
-      return false;
-    });
-  });
   
   $(function(){
     var shopid = 0;
@@ -73,7 +47,7 @@
     var messagePager = $('#messagePager').data('zui.pager');
 
     // 点击消息类型事件
-    $('.message .nav-tabs a').click(function(){
+    $('.message-modal .message .nav-tabs a').click(function(){
         $('.message .nav-tabs li').removeClass('active');
         $(this).parent().addClass('active');
         type_id = $(this).data('type-id');
@@ -82,15 +56,23 @@
         getList(shopid, type_id, 1);
     });
 
-    // 默认点击第一个消息类型
-    $('.message .nav-tabs a').first().click();
-
     $('#messagePager').on('onPageChange', function(e, state, oldState) {
         if (state.page !== oldState.page) {
-            console.log('页码从', oldState.page, '变更为', state.page);
             getList(shopid, type_id, state.page)
         }
     });
+
+    $(".message").on('click', '.operate',function() {
+        $(this).parent().toggleClass("operate-Invert");
+        $(this).parent().nextAll(".operate").removeClass("operate-Invert");
+        $(this).parent().next().slideToggle();
+        $(this).parent().prevAll(".operate").slideUp("slow");
+        $(this).parent().next().nextAll(".operate").slideUp("slow");
+        return false;
+    });
+
+    // 默认点击第一个消息类型
+    $('.message-modal .message .nav-tabs a').first().click();
 
     function getList(shopid, type_id, page){
         toast.showLoading()
@@ -142,7 +124,7 @@
                     html += '</div>'
 
                 //写入DOM
-                $('.message-body .right-content .system-notice-list ul').html(html);
+                $('.message-modal .message-body .right-content .system-notice-list ul').html(html);
             }
             toast.hideLoading()
         })
