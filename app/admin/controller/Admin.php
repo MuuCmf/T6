@@ -89,8 +89,8 @@ class Admin extends Base
         $uid = is_login();
         if (!$uid) {// 还没登录 跳转到登录页面
             if($uid) return $uid;
-
-            $this->redirect(url('admin/common/login'));
+            // 调整至前台登陆页
+            $this->redirect(url('ucenter/common/login'));
         }
 
         return $uid;

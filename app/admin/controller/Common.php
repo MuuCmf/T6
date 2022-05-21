@@ -50,7 +50,7 @@ class Common extends Base
         if(is_login()){
             $commonMemberModel = new CommonMember;
             $commonMemberModel->logout(is_login());
-            return $this->success('退出成功','', url('login'));
+            return $this->success('退出成功','', url('ucenter/common/login'));
         } else {
             return $this->error('error');
         }
