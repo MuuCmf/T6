@@ -41,6 +41,7 @@ class Message extends Api{
         return $this->success('success',$list);
     }
 
+
     /**
      * 消息列表
      */
@@ -81,6 +82,7 @@ class Message extends Api{
     {
         $uid = request()->uid;
         $map[] = ['to_uid', '=', $uid];
+        $map[] = ['shopid' ,'=' ,$this->shopid];
         $type_id = input('type_id', 0, 'intval');
         if(!empty($type_id)){
             $map[] = ['type_id', '=', $type_id];
@@ -90,7 +92,16 @@ class Message extends Api{
         
         $num = $this->MessageModel->where($map)->count();
 
-        return $this->success('success',$num);
+        if($num > 99){
+            $friendly_num = '99+';
+        }else{
+            $friendly_num = $num;
+        }
+
+        return $this->success('success',[
+            'num' => $num,
+            'friendly_num' => $friendly_num
+        ]);
 
     }
     

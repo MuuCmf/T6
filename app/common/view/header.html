@@ -21,11 +21,10 @@
                     <li class="active"><a class="active-item" href="{:url('muu/about/index')}">关于我们</a></li>
                     {if condition="is_login()"}
                     <li class="dropdown">
-                        <!-- 手机号 -->
-                        <!-- <p class="mobile">你好，<span id="item">13333289404</span></p> -->
-                        <!-- 头像 -->
                         <div class="information" >
-                            <span class="information-quantity">99+</span>
+                            <span class="information-quantity">
+                                99+
+                            </span>
                             <a class="information-icon"data-remote="{:url('ucenter/message/modal')}" data-show-header="false" data-class-name="message-modal" data-toggle="modal">
                                 <i class="iconfont">&#xe741;</i>
                             </a>
@@ -63,6 +62,24 @@
                             【退出】
                         </a> -->
                     </li>
+                    <script>
+                        $(function(){
+                            // 获取未读消息数量
+                            var url = '{:url("api/message/unread")}';
+                            $.post(url, {
+                                shopid : 0,
+                            }, function (res) {
+                                if(res.code == 200){
+                                    if(res.data.friendly_num == 0){
+                                        $('.information-quantity').addClass('hidden');
+                                    }else{
+                                        $('.information-quantity').removeClass('hidden');
+                                        $('.information-quantity').text(res.data.friendly_num);
+                                    }
+                                }
+                            })
+                        })
+                    </script>
                     {else/}
                     <li class="member login verticalbar">
                         <!-- 弹框 -->
