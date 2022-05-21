@@ -340,27 +340,6 @@ class Config extends Common
     }
 
     /**
-     * 消息模态框
-     */
-    public function message()
-    {
-        // 获取消息类型
-        $MessageModel = new MessageModel();
-        $MessageTypeModel = new MessageTypeModel();
-        // 查询条件
-        $map[] = ['shopid', '=', 0];
-        $map[] = ['status', '=', 1];
-        $type_list = $MessageTypeModel->getList($map);
-        foreach($type_list as &$val){
-            $val = $MessageTypeModel->formatData($val);
-        }
-        unset($val);
-        View::assign('type_list', $type_list);
-        
-        return View::fetch();
-    }
-
-    /**
      * 绑定微信账号
      */
     public function wechat(){
