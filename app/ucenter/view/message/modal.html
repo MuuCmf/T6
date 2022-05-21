@@ -5,7 +5,7 @@
         <ul id="myTab" class="nav-tabs">
           {foreach $type_list as $key=>$val}
           <li class="">
-            <a href="#" data-toggle="tab" data-type-id="{$val.id}">{$val.title}</a>
+            <a href="#" data-toggle="tab" data-type-id="{$val.id}" data-type-title="{$val.title}">{$val.title}</a>
             <span class="information-quantity">1</span>
           </li>
           {/foreach}
@@ -34,7 +34,8 @@
   </div>
   <script>
   $(window).ready(function() {
-    $(".operate").click(function() {
+      
+    $(".message").on('click', '.operate',function() {
       $(this)
         .parent()
         .toggleClass("operate-Invert");
@@ -62,6 +63,7 @@
   $(function(){
     var shopid = 0;
     var type_id = 0;
+    var type_title = '';
     // 手动进行初始化
     $('#messagePager').pager({
         page: 1,
@@ -75,7 +77,9 @@
         $('.message .nav-tabs li').removeClass('active');
         $(this).parent().addClass('active');
         type_id = $(this).data('type-id');
-        getList(shopid, type_id, 1)
+        type_title = $(this).data('type-title');
+        $('.message .content-head h4').text(type_title);
+        getList(shopid, type_id, 1);
     });
 
     // 默认点击第一个消息类型
@@ -104,14 +108,19 @@
                     html += '    <div class="avatar">'
                     html += '    <img src="'+n.form_user.avatar64+'" alt="">'
                     html += '    </div>'
-                    html += '    <div class="comment">'
-                    html += '    <div class="message-types">'
+                    html += '    <div class="message-content">'
+                    html += '        <div class="message-types">'
                     html += '        <h4> '+n.content.title+' </h4>'
                     html += '        <span class="time">'+n.create_time_str+'</span>'
-                    html += '    </div>'
-                    html += '     <div class="content">'
-                    html +=       n.content.content
-                    html += '    </div>'
+                    html += '        </div>'
+                    html += '         <div class="content-detail">'
+                    html += '         <div class="detail">' + n.content.content + '</div>'
+                    html += '         <div class="operate">'
+                    html += '             <span class="expand">展开</span>'
+                    html += '             <span class="put-away">收起</span>'
+                    html += '             <i class="iconfont">&#xeabc;</i>'
+                    html += '         </div>'
+                    html += '         </div>'
                     html += '    </div>'
                     html += '</li>'
                 });
@@ -128,7 +137,8 @@
             }else{
                 var html = '';
                     html += '<div class="empty">'
-                    html += '还没有消息哦~'
+                    html += '<div class="image"><img src="__STATIC__/common/images/empty.png" /></div>'
+                    html += '<div class="text">还没有消息哦~</div>'
                     html += '</div>'
 
                 //写入DOM
