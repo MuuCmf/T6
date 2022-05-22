@@ -117,7 +117,7 @@ class Update extends Admin
                         'app_name'  =>  $this->app_name,
                         'version'   =>  $version
                     ];
-                    $this->UpgradeServer->downFile($params, $local_path);
+                    $res = $this->UpgradeServer->downFile($params, $local_path);
                 }
                 return $this->success('success', $upgrade);
             } catch (Exception $e) {
