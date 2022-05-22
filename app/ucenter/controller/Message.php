@@ -23,11 +23,23 @@ class Message extends Common
         $MessageModel = new MessageModel();
         $MessageTypeModel = new MessageTypeModel();
         // 查询条件
-        $map[] = ['shopid', '=', 0];
-        $map[] = ['status', '=', 1];
-        $type_list = $MessageTypeModel->getList($map);
+        $t_map[] = ['shopid', '=', 0];
+        $t_map[] = ['status', '=', 1];
+        $type_list = $MessageTypeModel->getList($t_map)->toArray();
         foreach($type_list as &$val){
             $val = $MessageTypeModel->formatData($val);
+            // 未读消息数量
+            $map = [];
+            $map[] = ['type_id', '=', $val['id']];
+            $map[] = ['is_read', '=', 0];
+            $map[] = ['status', '=', 1];
+            $map[] = ['to_uid', '=', get_uid()];
+            $num = $MessageModel->where($map)->count();
+            if($num > 99){
+                $val['unread'] = '99+';
+            }else{
+                $val['unread'] = $num;
+            }
         }
         unset($val);
         View::assign('type_list', $type_list);

@@ -33,6 +33,7 @@ class Common extends Base
             }
         }
         $this->params = request()->param();
+        $this->shopid = $this->params['shopid'] ?? 0;
         // 控制器初始化
         $this->initialize();
     }

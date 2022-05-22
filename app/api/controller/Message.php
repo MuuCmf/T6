@@ -29,12 +29,24 @@ class Message extends Api{
      */
     public function type()
     {
+        $uid = request()->uid;
         // 查询条件
-        $map[] = ['shopid', '=', $this->shopid];
-        $map[] = ['status', '=', 1];
-        $list = $this->MessageTypeModel->getList($map);
+        $t_map[] = ['shopid', '=', $this->shopid];
+        $t_map[] = ['status', '=', 1];
+        $list = $this->MessageTypeModel->getList($t_map);
         foreach($list as &$val){
             $val = $this->MessageTypeModel->formatData($val);
+            // 未读消息数量
+            $map[] = ['to_uid', '=', $uid];
+            $map[] = ['type_id', '=', $val['id']];
+            $map[] = ['is_read', '=', 0];
+            $map[] = ['status', '=', 1];
+            $num = (new MessageModel())->where($map)->count();
+            if($num > 99){
+                $val['unread'] = '99+';
+            }else{
+                $val['unread'] = $num;
+            }
         }
         unset($val);
 
@@ -86,6 +98,15 @@ class Message extends Api{
         $type_id = input('type_id', 0, 'intval');
         if(!empty($type_id)){
             $map[] = ['type_id', '=', $type_id];
+        }else{
+            $t_map[] = ['shopid', '=', $this->shopid];
+            $t_map[] = ['status', '=', 1];
+            $list = $this->MessageTypeModel->getList($t_map);
+            $type_ids = [];
+            foreach($list as $v){
+                $type_ids[] = $v['id'];
+            }
+            $map[] = ['type_id', 'in', $type_ids];
         }
         $map[] = ['is_read', '=', 0];
         $map[] = ['status', '=', 1];
@@ -103,6 +124,25 @@ class Message extends Api{
             'friendly_num' => $friendly_num
         ]);
 
+    }
+
+    /**
+     * 全部未读消息标识为已读
+     */
+    public function isread()
+    {
+        $uid = request()->uid;
+        $map[] = ['to_uid', '=', $uid];
+        $map[] = ['shopid' ,'=' ,$this->shopid];
+        $map[] = ['is_read', '=', 0];
+
+        $res = $this->MessageModel->where($map)->update(['is_read'=> 1]);
+
+        if($res){
+            return $this->success('success', '更新成功');
+        }
+
+        return $this->error('error', '更新失败');
     }
     
 

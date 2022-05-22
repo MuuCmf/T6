@@ -16,10 +16,11 @@
   
       <div  class="right-content" id="myTabContent">
         <div class="system-notice tab-pane" id="system-notice">
-          <div class="content-head">
+          <div class="content-head clearfix">
             <h4>系统通知</h4>
-            <div class="isread">全部标记为已读</div>
+            
             <button class="close"data-dismiss="modal">×</button>
+            <div class="isread">全部标记为已读</div>
           </div>
           <div class="system-notice-list">
             <ul>
@@ -51,27 +52,37 @@
 
     // 点击消息类型事件
     $('.message-modal .message .nav-tabs a').click(function(){
-        $('.message .nav-tabs li').removeClass('active');
-        $(this).parent().addClass('active');
-        type_id = $(this).data('type-id');
-        type_title = $(this).data('type-title');
-        $('.message .content-head h4').text(type_title);
-        getList(shopid, type_id, 1);
+      $('.message .nav-tabs li').removeClass('active');
+      $(this).parent().addClass('active');
+      type_id = $(this).data('type-id');
+      type_title = $(this).data('type-title');
+      $('.message .content-head h4').text(type_title);
+      getList(shopid, type_id, 1);
     });
 
     $('#messagePager').on('onPageChange', function(e, state, oldState) {
-        if (state.page !== oldState.page) {
-            getList(shopid, type_id, state.page)
-        }
+      if (state.page !== oldState.page) {
+          getList(shopid, type_id, state.page)
+      }
     });
 
-    $(".message").on('click', '.operate',function() {
-        $(this).parent().toggleClass("operate-Invert");
-        $(this).parent().nextAll(".operate").removeClass("operate-Invert");
-        $(this).parent().next().slideToggle();
-        $(this).parent().prevAll(".operate").slideUp("slow");
-        $(this).parent().next().nextAll(".operate").slideUp("slow");
-        return false;
+    $(".message-modal").on('click', '.operate',function() {
+      $(this).parent().toggleClass("operate-Invert");
+      $(this).parent().nextAll(".operate").removeClass("operate-Invert");
+      $(this).parent().next().slideToggle();
+      $(this).parent().prevAll(".operate").slideUp("slow");
+      $(this).parent().next().nextAll(".operate").slideUp("slow");
+      return false;
+    });
+
+    $('.message-modal .isread').click(function(){
+      var url = "{:url('api/message/isread')}";
+      $.post(url, {}, function (res) {
+        console.log(res)
+        if(res.code == 200){
+          $('.information-quantity').addClass('hidden');
+        }
+      });
     });
 
     // 默认点击第一个消息类型

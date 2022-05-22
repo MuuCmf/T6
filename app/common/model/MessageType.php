@@ -25,18 +25,6 @@ class MessageType extends Base
             $data['icon_80'] = get_thumb_image($data['icon'], 80, 80);
         }
 
-        // 未读消息数量
-        $map[] = ['type_id', '=', $data['id']];
-        $map[] = ['is_read', '=', 0];
-        $map[] = ['status', '=', 1];
-        
-        $num = (new MessageModel())->where($map)->count();
-        if($num > 99){
-            $data['unread'] = '99+';
-        }else{
-            $data['unread'] = $num;
-        }
-
         if(isset($data['status'])){
             $data['status_str'] = $this->_status[$data['status']];
         }
