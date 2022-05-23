@@ -70,6 +70,8 @@ class Config extends Base{
                 $config[$key] = $withdraw_config[$key];
             }
         }
+        $config['system'] = $this->handle()['system'];
+        $config['extend'] = config('extend');
 
         //获取公众号配置
         $weixin_h5 = (new WechatConfig())->where('shopid',$shopid)->field('title,desc,cover,qrcode,appid')->find();
@@ -101,14 +103,24 @@ class Config extends Base{
             $config['system']['WEB_SITE_LOGO_800'] = get_thumb_image($config['system']['WEB_SITE_LOGO'], intval($width*8), intval($height*8));
         }
 
-        if(!empty($config['system']['SERVICE_QRCODE'])){
+        if(!empty($config['system']['SERVICE_KF_QRCODE'])){
             $width = 100;
             $height = 100;
-            $config['system']['SERVICE_QRCODE_100'] = get_thumb_image($config['system']['SERVICE_QRCODE'], intval($width), intval($height));
-            $config['system']['SERVICE_QRCODE_200'] = get_thumb_image($config['system']['SERVICE_QRCODE'], intval($width*2), intval($height*2));
-            $config['system']['SERVICE_QRCODE_300'] = get_thumb_image($config['system']['SERVICE_QRCODE'], intval($width*3), intval($height*3));
-            $config['system']['SERVICE_QRCODE_400'] = get_thumb_image($config['system']['SERVICE_QRCODE'], intval($width*4), intval($height*4));
-            $config['system']['SERVICE_QRCODE_800'] = get_thumb_image($config['system']['SERVICE_QRCODE'], intval($width*8), intval($height*8));
+            $config['system']['SERVICE_KF_QRCODE_100'] = get_thumb_image($config['system']['SERVICE_KF_QRCODE'], intval($width), intval($height));
+            $config['system']['SERVICE_KF_QRCODE_200'] = get_thumb_image($config['system']['SERVICE_KF_QRCODE'], intval($width*2), intval($height*2));
+            $config['system']['SERVICE_KF_QRCODE_300'] = get_thumb_image($config['system']['SERVICE_KF_QRCODE'], intval($width*3), intval($height*3));
+            $config['system']['SERVICE_KF_QRCODE_400'] = get_thumb_image($config['system']['SERVICE_KF_QRCODE'], intval($width*4), intval($height*4));
+            $config['system']['SERVICE_KF_QRCODE_800'] = get_thumb_image($config['system']['SERVICE_KF_QRCODE'], intval($width*8), intval($height*8));
+        }
+
+        if(!empty($config['system']['SERVICE_WEIXIN_QRCODE'])){
+            $width = 100;
+            $height = 100;
+            $config['system']['SERVICE_WEIXIN_QRCODE_100'] = get_thumb_image($config['system']['SERVICE_WEIXIN_QRCODE'], intval($width), intval($height));
+            $config['system']['SERVICE_WEIXIN_QRCODE_200'] = get_thumb_image($config['system']['SERVICE_WEIXIN_QRCODE'], intval($width*2), intval($height*2));
+            $config['system']['SERVICE_WEIXIN_QRCODE_300'] = get_thumb_image($config['system']['SERVICE_WEIXIN_QRCODE'], intval($width*3), intval($height*3));
+            $config['system']['SERVICE_WEIXIN_QRCODE_400'] = get_thumb_image($config['system']['SERVICE_WEIXIN_QRCODE'], intval($width*4), intval($height*4));
+            $config['system']['SERVICE_WEIXIN_QRCODE_800'] = get_thumb_image($config['system']['SERVICE_WEIXIN_QRCODE'], intval($width*8), intval($height*8));
         }
 
 

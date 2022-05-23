@@ -111,8 +111,7 @@
         }
       }
     }
-  
-    //扫码咨询
+
   
     .tabbar-item {
         width: 100%;
@@ -127,12 +126,25 @@
             .support {
                 width: 320px;
     
-                >h3 {
-                    margin: 0;
-                    color: #03b8cf;
-                    font-size: 28px;
-                    font-weight: 600;
+                
+                .web-site {
+                    .logo {
+                        float: left;
+                        img {
+                            width: 60px;
+                            height: 60px;
+                        }
+                    }
+                    h3 {
+                        margin: 0;
+                        margin-left: 70px;
+                        color: #03b8cf;
+                        font-size: 28px;
+                        font-weight: 600;
+                        line-height: 60px;
+                    }
                 }
+                
                 .description {
                     margin-top: 30px;
                     color: #fff;
@@ -331,7 +343,7 @@
         color: #84848f;
         background: #20202d;
         text-align: center;
-        line-height: 36px;
+        line-height: 42px;
         border-top: 1px solid #45454e;
         a {
             color: #fff;

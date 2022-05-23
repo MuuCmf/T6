@@ -63,7 +63,7 @@ class Common extends Base
             $this->params['shopid'] = 0;
         }
         $muu_config_data = (new ConfigLogic())->frontend($this->params['shopid']);
-        
+
         View::assign('muu_config_data', $muu_config_data);
     }
 
