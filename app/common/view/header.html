@@ -21,7 +21,7 @@
                 </ul>
             </div>
             <div class="attr-nav">
-                <ul>
+                <ul class="clearfix">
                     {if condition="is_login()"}
                     <li class="dropdown">
                         <div class="information" >
@@ -81,7 +81,7 @@
                         })
                     </script>
                     {else/}
-                    <li class="member login verticalbar">
+                    <li class="login verticalbar">
                         <!-- 弹框 -->
                         {if condition="$open_quick_login"}
                         <a data-login="quick_do_login" data-remote="{:url('ucenter/Common/quickLogin')}"
@@ -91,7 +91,7 @@
                         <a data-login="do_login" href="{$login_url}">登录</a>
                         {/if}
                     </li>
-                    <li class="member registration">
+                    <li class="registration">
                         <a data-role="do_register"
                         href="{:url('ucenter/Common/register',['forward'=> $_SERVER['REQUEST_URI']])}">注册</a>
                     </li>
