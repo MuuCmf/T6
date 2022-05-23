@@ -1,4 +1,4 @@
-<div class="tabbar">
+<div class="footer">
   <div class="wemreceive" id="wemreceive">
     <div class="wemreceive-item">
       <h3>现在扫码咨询，领取专属一对一解决方案</h3>
@@ -10,38 +10,16 @@
         </div>
     </div>
   </div>
+
   <div class="tabbar-item">
     <div class="">
       <div class="support">
         <h3>MuuCmf</h3>
-        <div>扫码加我微信
-          <p>技术支持邮箱</p>
-          <div class="E-mailAddress">
-            <textarea readonly="readonly" onClick="email()" id="e-mail" title="点击复制">{$Think.config.system.SERVICE_CONSULT}</textarea>
-            <span class="prompt">复制成功</span>
-            <i class="iconfont">&#xe671;</i>
-          </div>
-        </div>
-        <p class="qqCluster">官方技术售前交流QQ群：<textarea readonly=readonly onClick="groupnumber()" id="groupnumber"
-            title="点击复制">2134567890</textarea> <span class="getqq">复制成功</span></p>
-        <p class="company">{$Think.config.system.WEB_SITE_COPY_RIGHT|raw|htmlspecialchars_decode}</p>
-        <p class="recordnVarchar"><span>{$Think.config.system.WEB_SITE_ICP}</span>{$Think.config.system.WEB_SITE_GICP}</p>
-      </div>
-      <div class="contactUs">
-        <h3 class="contactUs-item">联系我们</h3>
-        <p>联系电话</p>
-        <h3>{$Think.config.system.SERVICE_TEL}</h3>
-        <div>
-          <div>
-            <img src="__IMG__/Demostation.png" alt="">
-            <p>扫一扫，查看演示站</p>
-          </div>
-          <div>
-            <img src="{:get_attachment_src($Think.config.system.SERVICE_QRCODE)}" alt="">
-            <p>扫码添加客服经理微信</p>
-          </div>
+        <div class="description">
+          {$Think.config.system.WEB_SITE_DESCRIPTION|htmlspecialchars_decode}
         </div>
       </div>
+
       <div class="product">
         <h3>产品</h3>
         <ul>
@@ -51,11 +29,58 @@
           <li><a href="{:url('muu/offlineactivity/index')}">线下活动</a></li>
           <li><a href="{:url('muu/itembankexam/index')}">题库考试</a></li>
           <li><a href="{:url('muu/live/index')}">直播</a></li>
-          <li><a href="{:url('muu/shop/index')}">积分商城</a></li>
-          <li><a href="{:url('muu/download/index')}">资料下载</a></li>
         </ul>
       </div>
+
+      <div class="contact">
+        <h3>联系我们</h3>
+        <div class="contact-us">
+          <div class="info-box">
+              <div class="img">
+                  <i class="fa fa-phone" aria-hidden="true"></i>
+              </div>
+              <span class="value">{$Think.config.system.SERVICE_TEL}</span>
+              <span class="title">7*24小时服务热线</span>
+          </div>
+
+          <div class="info-box">
+              
+              <div class="img">
+                  <i class="fa fa-commenting" aria-hidden="true"></i>
+              </div>
+              <span class="value">{$Think.config.system.SERVICE_CONSULT}</span>
+              <span class="title">课程咨询和服务</span>
+          </div>
+
+          <div class="info-box">
+              <div class="img">
+                <i class="fa fa-handshake-o" aria-hidden="true"></i>
+              </div>
+              <span class="value">{$Think.config.system.SERVICE_BUSINESS}</span>
+              <span class="title">商务合作</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="qrcode">
+        <div>
+          <div>
+            <img src="{:get_attachment_src($Think.config.system.SERVICE_WEIXIN_QRCODE)}" alt="">
+            <p>扫一扫，关注公众号</p>
+          </div>
+          <div>
+            <img src="{:get_attachment_src($Think.config.system.SERVICE_KF_QRCODE)}" alt="">
+            <p>扫码添加客服经理微信</p>
+          </div>
+        </div>
+      </div>
     </div>
+  </div>
+
+  <div class="copyright company">
+    <span>{$Think.config.system.WEB_SITE_COPY_RIGHT|raw|htmlspecialchars_decode}</span>
+    <span>{$Think.config.system.WEB_SITE_ICP}</span>
+    <span>{$Think.config.system.WEB_SITE_GICP}</span>
   </div>
 </div>
 <script>
