@@ -57,33 +57,9 @@
       </div>
     </div>
   </div>
-  <div class="suspension">
-   <p >您好，我是您的专属客服</p>
-   <p class="ldptingke">扫码加我微信</p>
-   <div>
-     <img src="{:get_attachment_src($Think.config.system.SERVICE_QRCODE)}" alt="">
-   </div>
-   <p class="solution">0元领取<br/>专属解决方案</p>
-   <button>在线咨询</button>
-   <p class="mobile"><span class="iconfont">&#xe692;</span> {$Think.config.system.SERVICE_TEL}</p>
-  </div>
 </div>
 <script>
   $(function () {
-    //授权查询页 底部扫码领取方案不显示
-    var address = "/muu/nslookup/index.html";
-    if (window.location.pathname == address) {
-      $(".wemreceive").css({
-        "display": "none"
-      });
-    }
-    //用户协议页面底部不显示
-    var serviceagreement = "/ucenter/Common/agreement.html"
-    if (window.location.pathname == serviceagreement) {
-      $(".tabbar").css({
-        "display": "none"
-      });
-    }
 //背景特效
 var SEPARATION = 60, AMOUNTX = 50, AMOUNTY = 50;
     var container;
