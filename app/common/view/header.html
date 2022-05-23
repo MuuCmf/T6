@@ -10,7 +10,7 @@
             <div class="navigation">
                 <ul class="index-menu clearfix">
                     {volist name="nav" id="nav"}
-                    <li >
+                    <li class="{eq name='nav.url|get_nav_active' value='1'}active{else/}{/eq}">
                         <a class="active-item" title="{$nav.title}" href="{$nav.url|get_nav_url}"
                             target="{eq name='nav.target' value='1'}_blank{else/}_self{/eq}">
                             <span>{$nav.title}</span>
@@ -18,19 +18,6 @@
                         </a>
                     </li>
                     {/volist}
-                    <li class="active">
-                        <a class="active-item product" href="{:url('muu/product/index')}">产品</a>
-                        <span class="product-underline"></span>
-                    </li>
-                    <li class="active">
-                        <a class="active-item" href="{:url('muu/frame/index')}">下载开源框架</a>
-                    </li>
-                    <li class="active">
-                        <a class="active-item" href="{:url('muu/nslookup/index')}">授权查询</a>
-                    </li>
-                    <li class="active">
-                        <a class="active-item" href="{:url('muu/about/index')}">关于我们</a>
-                    </li>
                 </ul>
             </div>
             <div class="attr-nav">
@@ -114,13 +101,3 @@
         </div>
     </div>
 </div>
-<script>
-    $(window).ready(function () {
-        $(".index-menu a").each(function () {
-            $this = $(this);
-            if ($this[0].href == String(window.location)) {
-                $this.addClass("main-active")
-            }
-        })
-    })
-</script>

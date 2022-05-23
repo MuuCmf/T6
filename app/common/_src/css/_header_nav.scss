@@ -52,19 +52,7 @@
             display: block;
             padding: 1px 21px 0;
           }
-          .main-active{
-            color: #358cc3;
-          }
-          .main-active::after{
-            content: ' ';
-            position: absolute;
-            bottom: 6px;
-            left: 50%;
-            width: 12px;
-            height: 3px;
-            background: #358cc2;
-            margin-left: -6px;
-          }
+          
           >span{
             display: inline-block;
             width: 12px;
@@ -75,6 +63,21 @@
             margin-left: -6px;
             bottom: 6px;
             display: none;
+          }
+        }
+        >li.active {
+          .active-item{
+            color: #358cc3;
+          }
+          .active-item::after{
+            content: ' ';
+            position: absolute;
+            bottom: 6px;
+            left: 50%;
+            width: 12px;
+            height: 3px;
+            background: #358cc2;
+            margin-left: -6px;
           }
         }
 

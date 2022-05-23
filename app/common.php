@@ -400,12 +400,16 @@ if (!function_exists('get_nav_active')) {
     function get_nav_active($url)
     {
         switch ($url) {
-            case 'http://' === substr($url, 0, 7):
-                if (strtolower($url) === strtolower($_SERVER['HTTP_REFERER'])) {
+            case '/':
+                if (strtolower(request()->domain() . $url) === strtolower(request()->url(true))) {
                     return 1;
                 }
-            case 'https://' === substr($url, 0, 7):
-                if (strtolower($url) === strtolower($_SERVER['HTTP_REFERER'])) {
+            case 'http://' === substr($url, 0, 7):
+                if (strtolower($url) === strtolower(request()->url(true))) {
+                    return 1;
+                }
+            case 'https://' === substr($url, 0, 8):
+                if (strtolower($url) === strtolower(request()->url(true))) {
                     return 1;
                 }
             case '#' === substr($url, 0, 1):
@@ -414,11 +418,11 @@ if (!function_exists('get_nav_active')) {
             default:
                 $url_array = explode('/', $url);
                 if ($url_array[0] == '') {
-                    $MODULE_NAME = $url_array[1];
+                    $app_name = $url_array[1];
                 } else {
-                    $MODULE_NAME = $url_array[0]; //发现模块就是当前模块即选中。
+                    $app_name = $url_array[0]; //发现模块就是当前模块即选中。
                 }
-                if (strtolower($MODULE_NAME) === strtolower(app('http')->getName())) {
+                if (strtolower($app_name) === strtolower(app('http')->getName())) {
                     return 1;
                 };
                 break;
