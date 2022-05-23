@@ -8,17 +8,33 @@
                 </h1>
             </div>
             <div class="navigation">
-                <ul class="index-menu">
-                    <li class="active"><a class="active-item home" href="{:url('muu/index/index')}">首页</a>
-                        <span class="home-underline"></span>
+                <ul class="index-menu clearfix">
+                    {volist name="nav" id="nav"}
+                    <li >
+                        <a class="active-item" title="{$nav.title}" href="{$nav.url|get_nav_url}"
+                            target="{eq name='nav.target' value='1'}_blank{else/}_self{/eq}">
+                            <span>{$nav.title}</span>
+                            <span class="label label-badge rank-label" title="{$nav.band_text}">{$nav.band_text}</span>
+                        </a>
                     </li>
+                    {/volist}
                     <li class="active">
                         <a class="active-item product" href="{:url('muu/product/index')}">产品</a>
                         <span class="product-underline"></span>
                     </li>
-                    <li class="active"><a class="active-item" href="{:url('muu/frame/index')}">下载开源框架</a></li>
-                    <li class="active"><a class="active-item" href="{:url('muu/nslookup/index')}">授权查询</a></li>
-                    <li class="active"><a class="active-item" href="{:url('muu/about/index')}">关于我们</a></li>
+                    <li class="active">
+                        <a class="active-item" href="{:url('muu/frame/index')}">下载开源框架</a>
+                    </li>
+                    <li class="active">
+                        <a class="active-item" href="{:url('muu/nslookup/index')}">授权查询</a>
+                    </li>
+                    <li class="active">
+                        <a class="active-item" href="{:url('muu/about/index')}">关于我们</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="attr-nav">
+                <ul>
                     {if condition="is_login()"}
                     <li class="dropdown">
                         <div class="information" >
@@ -39,7 +55,7 @@
                                 {volist name="user_nav" id="vo"}
                                 <li>
                                     <a href="{:get_nav_url($vo['url'])}"
-                                       target="{eq name='vo.target' value='1'}_blank{else/}_self{/eq}">
+                                    target="{eq name='vo.target' value='1'}_blank{else/}_self{/eq}">
                                         <span>{$vo.title}</span>
                                     </a>
                                 </li>
@@ -58,9 +74,6 @@
                                 </li>
                             </ul>
                         </div>
-                        <!-- <a class="logout" data-url="{:url('ucenter/Common/logout')}" event-node="logout">
-                            【退出】
-                        </a> -->
                     </li>
                     <script>
                         $(function(){
@@ -85,7 +98,7 @@
                         <!-- 弹框 -->
                         {if condition="$open_quick_login"}
                         <a data-login="quick_do_login" data-remote="{:url('ucenter/Common/quickLogin')}"
-                           data-show-header="false" data-toggle="modal">登录</a>
+                        data-show-header="false" data-toggle="modal">登录</a>
                         {else/}
                         <!-- 单页 -->
                         <a data-login="do_login" href="{$login_url}">登录</a>
@@ -93,7 +106,7 @@
                     </li>
                     <li class="member registration">
                         <a data-role="do_register"
-                           href="{:url('ucenter/Common/register',['forward'=> $_SERVER['REQUEST_URI']])}">注册</a>
+                        href="{:url('ucenter/Common/register',['forward'=> $_SERVER['REQUEST_URI']])}">注册</a>
                     </li>
                     {/if}
                 </ul>
