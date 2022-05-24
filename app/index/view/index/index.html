@@ -409,4 +409,24 @@ Original Idea and Design by Luca Luzzatti
 Optimizing tips from Benjamin K?stner
 General tips from Salvatore Previti*/
 </script>
+<script>
+$(function(){
+	var coverH = 100;
+    var nowTop = parseInt($(window).scrollTop());
+    if(nowTop > coverH){
+        $('.header').removeClass('transparent');
+    }else{
+        $('.header').addClass('transparent');
+    }
+
+	$(document).scroll(function() {
+		var nowTop = parseInt($(window).scrollTop());
+		if(nowTop > coverH){
+			$('.header').removeClass('transparent');
+		}else{
+			$('.header').addClass('transparent');
+		}
+	});
+});
+</script>
 {/block}
