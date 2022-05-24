@@ -18,7 +18,7 @@ var src='./_src/',
 // 编译全部scss 并压缩
 gulp.task('scss', function(){
     gulp.src([
-            'css/**/*.scss',
+            src + 'css/**/*.scss',
         ])
         .pipe(sass())
         .pipe(rename({suffix: '.min'}))//rename压缩后的文件名
@@ -30,7 +30,7 @@ gulp.task('scss', function(){
 gulp.task('mod_js', function() {
       gulp.src([
             //'js/lib/*.js',//先打包类库
-            'js/**/*.js'
+            src + 'js/**/*.js'
         ])
         .pipe(plumber())
         .pipe(babel({
@@ -43,14 +43,14 @@ gulp.task('mod_js', function() {
 
 // 图片文件直接copy
 gulp.task('images', function () {
-    gulp.src('images/**/*')
+    gulp.src(src + 'images/**/*')
     .pipe(copy())
     .pipe(gulp.dest(dist + '/images'));
 });
 
 // 第三方资源库不编译的直接copy
 gulp.task('lib', function () {
-    gulp.src('lib/**/*')
+    gulp.src(src + 'lib/**/*')
     .pipe(copy())
     .pipe(gulp.dest(dist + '/lib'));
 });

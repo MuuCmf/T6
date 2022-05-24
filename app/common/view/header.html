@@ -32,12 +32,12 @@
                                 <i class="iconfont">&#xe741;</i>
                             </a>
                         </div>
-                        <div class="avatar">
+                        <div class="user-info">
                             <a class="dropdown-toggle dropdown-toggle-avatar" data-toggle="dropdown" role="button">
                                 <img class="avatar img-circle" src="{$common_header_user.avatar64}"/>
-                                {$common_header_user.nickname}
+                                <span>{$common_header_user.nickname}</span>
                             </a>
-                            <span class="triangular-icon"><i class="iconfont">&#xeabc;</i></span>
+                            
                             <ul class="dropdown-menu pull-right" role="menu">
                                 {volist name="user_nav" id="vo"}
                                 <li>
