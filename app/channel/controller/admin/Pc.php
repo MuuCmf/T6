@@ -23,7 +23,7 @@ class Pc extends MuuAdmin{
     /**
      * 顶部通用导航
      */
-    public function channel()
+    public function navbar()
     {
 
         if (request()->isPost()) {
@@ -35,7 +35,8 @@ class Pc extends MuuAdmin{
                 Db::execute('TRUNCATE TABLE ' . config('database.connections.mysql.prefix') . 'channel');
 
                 for ($i = 0; $i < count(reset($one)); $i++) {
-                    $data[$i] = array(
+                    $data[$i] = [
+                        'block' => 'navbar',
                         'type' => text($one['type'][$i]),
                         'app' => text($one['app'][$i]),
                         'title' => html($one['title'][$i]),
@@ -43,7 +44,7 @@ class Pc extends MuuAdmin{
                         'sort' => intval($one['sort'][$i]),
                         'target' => empty($one['target'][$i]) ? 0:intval($one['target'][$i]),
                         'status' => 1
-                    );
+                    ];
                     $pid[$i] = $this->channelModel->insert($data[$i]);
                 }
 
@@ -56,8 +57,8 @@ class Pc extends MuuAdmin{
         } else {
             /* 获取频道列表 */
             $map[] = ['status', '>', -1];
+            $map[] = ['block', '=', 'navbar'];
             $list = $this->channelModel->where($map)->order('sort asc,id asc')->select()->toArray();
-
 
             // 获取应用模块列表
             $moduleModel = new ModuleModel();
@@ -76,7 +77,52 @@ class Pc extends MuuAdmin{
      */
     public function footer()
     {
+        if (request()->isPost()) {
 
+            $one = $_POST['nav'][1];
+
+            if (count($one) > 0) {
+                // 移除现有内容
+                Db::execute('TRUNCATE TABLE ' . config('database.connections.mysql.prefix') . 'channel');
+
+                for ($i = 0; $i < count(reset($one)); $i++) {
+                    $data[$i] = array(
+                        'block' => 'footer',
+                        'type' => text($one['type'][$i]),
+                        'app' => text($one['app'][$i]),
+                        'title' => html($one['title'][$i]),
+                        'url' => text($one['url'][$i]),
+                        'sort' => intval($one['sort'][$i]),
+                        'target' => empty($one['target'][$i]) ? 0:intval($one['target'][$i]),
+                        'status' => 1
+                    );
+                    $pid[$i] = $this->channelModel->insert($data[$i]);
+                }
+
+                cache('common_nav',null);
+
+                return $this->success('修改成功');
+            }
+            return $this->error('导航至少存在一个。');
+
+        } else {
+            
+            /* 获取频道列表 */
+            $map[] = ['status', '>', -1];
+            $map[] = ['block', '=', 'footer'];
+            $list = $this->channelModel->where($map)->order('sort asc,id asc')->select()->toArray();
+
+
+            // 获取应用模块列表
+            $moduleModel = new ModuleModel();
+            $module = $moduleModel->getAll(['is_setup' => 1]);
+            View::assign('module', $module);
+            View::assign('list', $list);
+
+            $this->setTitle('导航管理');
+
+            return View::fetch();
+        }
     }
 
 
