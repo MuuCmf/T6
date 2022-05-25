@@ -194,15 +194,6 @@
                 })
             };
 
-            var add_two = function () {
-                $('.add-two').unbind('click');
-                $('.add-two').click(function () {
-                    $(this).closest('li').after($('#two-nav').html());
-                    fix_form()
-                    re_bind()
-                })
-            };
-
             var remove_li = function () {
                 $('.remove-li').unbind('click');
                 $('.remove-li').click(function () {
@@ -234,19 +225,6 @@
                 })
             }
 
-            //执行
-            var re_bind = function(){
-                change_select();
-                change_module();
-                add_new();
-                add_one();
-                add_two();
-                remove_li();
-                add_child();
-                target_change();
-                sort();
-            };
-
             var fix_form = function () {
                 $('.channel-ul').sortable({trigger: '.sort-handle-1', selector: 'li', dragCssClass: '',finish:function(){
                     re_bind()
@@ -257,21 +235,19 @@
                 }});
             };
 
-            var bind_color = function () {
-                $('.simpleColorContainer').remove()
-                $('.simple_color_callback').simpleColor({
-                    boxWidth: 15,
-                    boxHeight: 15,
-                    cellWidth: 15,
-                    cellHeight: 15,
-                    chooserCSS: { 'z-index': 1200 },
-                    displayCSS: { 'border': 0 }
-                });
+            //执行
+            var re_bind = function(){
+                change_select();
+                change_module();
+                add_new();
+                add_one();
+                remove_li();
+                add_child();
+                target_change();
+                sort();
             };
 
-            window.channel_sort = fix_form;
-            window.channel_bind_color = bind_color;
-
+            re_bind()
             fix_form();
 
         }(jQuery, window, undefined));
