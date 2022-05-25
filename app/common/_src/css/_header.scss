@@ -29,7 +29,7 @@
       }
       .navigation {
         float: left;
-        font-size: 16px;
+        font-size: 14px;
         margin-left: 60px;
         padding-right: 10px;
         width: 726px;
@@ -47,7 +47,7 @@
           list-style: none;
           >li {
             float: left;
-            line-height: 56px;
+            line-height: 60px;
             position: relative;
             .active-item{
               color: #222;
@@ -224,7 +224,7 @@
           >a{
             display: block;
             color: #222;
-            font-size: 16px;
+            font-size: 14px;
             text-decoration:none;
             padding: 10px 0;
             &:hover{
@@ -244,6 +244,19 @@
             box-shadow: none;
             padding: 10px 0;
             top: 78px;
+            &::before{
+              content:'';
+              display: block;
+              width: 0;
+              height: 0;
+              position: absolute;
+              top: -10px;
+              left: 50%;
+              margin-left: -10px;
+              border-width: 0 10px 10px;
+              border-style: solid;
+              border-color: transparent transparent #fff;
+            }
             >li{
               height: 46px;
               text-align: center;
@@ -262,49 +275,34 @@
               }
             }
           }
-          .dropdown-menu::before{
-            content:'';
-            display: block;
-            width: 0;
-            height: 0;
-            position: absolute;
-            top: -10px;
-            left: 50%;
-            margin-left: -10px;
-            border-width: 0 10px 10px;
-            border-style: solid;
-            border-color: transparent transparent #fff;
-          }
         }
 
-        .number{
-          color: #222;
-          margin-right: 10px;
-        }
-  
-        .verticalbar{
-          float: left;
-          font-size: 16px;
-          line-height: 56px;
-          &::after {
-            content: '|';
-            margin: 0 10px 0 6px;
-            color: #c7cacf;
+        ul {
+          list-style: none;
+          .login{
+            float: left;
+            font-size: 14px;
+            line-height: 60px;
+            &::after {
+              content: '|';
+              margin: 0 10px 0 6px;
+              color: #c7cacf;
+            }
           }
-        }
-        
-        .registration{
-          float: left;
-          font-size: 16px;
-          line-height: 56px;
-          >a{
-            padding-top: 1px;
-            color: #222;
-            &:hover {
-              text-decoration: none;
+          
+          .registration{
+            float: left;
+            font-size: 14px;
+            line-height: 60px;
+            >a{
+              color: #222;
+              &:hover {
+                text-decoration: none;
+              }
             }
           }
         }
+        
       }
     }
   }
@@ -329,10 +327,7 @@
     }
   
     .attr-nav {
-      .dropdown,.verticalbar{
-        .mobile{
-          color: #fff;
-        }
+      .dropdown,.logo{
         >a{
           color: #fff;
         }
@@ -344,19 +339,13 @@
         }
       }
   
-      .verticalbar{
-        float: left;
-        font-size: 16px;
-        line-height: 56px;
+      .login{
         >a{
           color: #fff;
         }
       }
   
       .registration{
-        float: left;
-        font-size: 16px;
-        line-height: 56px;
         >a{
           color: #fff;
         }
