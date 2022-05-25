@@ -28,23 +28,27 @@ class Pc extends MuuAdmin{
 
         if (request()->isPost()) {
 
-            $one = $_POST['nav'][1];
-
-            if (count($one) > 0) {
+            $nav = $_POST['nav'];
+            
+            if (count($nav) > 0) {
                 // 移除现有内容
-                Db::execute('TRUNCATE TABLE ' . config('database.connections.mysql.prefix') . 'channel');
-
-                for ($i = 0; $i < count(reset($one)); $i++) {
+                //Db::execute('TRUNCATE TABLE ' . config('database.connections.mysql.prefix') . 'channel');
+                $this->channelModel->where([
+                    'block' => 'navbar',
+                ])->delete();
+                for ($i = 0; $i < count(reset($nav)); $i++) {
                     $data[$i] = [
+                        'id' => create_guid(),
                         'block' => 'navbar',
-                        'type' => text($one['type'][$i]),
-                        'app' => text($one['app'][$i]),
-                        'title' => html($one['title'][$i]),
-                        'url' => text($one['url'][$i]),
-                        'sort' => intval($one['sort'][$i]),
-                        'target' => empty($one['target'][$i]) ? 0:intval($one['target'][$i]),
+                        'type' => text($nav['type'][$i]),
+                        'app' => text($nav['app'][$i]),
+                        'title' => html($nav['title'][$i]),
+                        'url' => text($nav['url'][$i]),
+                        'sort' => intval($nav['sort'][$i]),
+                        'target' => empty($nav['target'][$i]) ? 0:intval($nav['target'][$i]),
                         'status' => 1
                     ];
+                    
                     $pid[$i] = $this->channelModel->insert($data[$i]);
                 }
 
@@ -58,14 +62,13 @@ class Pc extends MuuAdmin{
             /* 获取频道列表 */
             $map[] = ['status', '>', -1];
             $map[] = ['block', '=', 'navbar'];
-            $list = $this->channelModel->where($map)->order('sort asc,id asc')->select()->toArray();
-
+            $list = $this->channelModel->where($map)->order('sort asc')->select()->toArray();
+            View::assign('list', $list);
             // 获取应用模块列表
             $moduleModel = new ModuleModel();
             $module = $moduleModel->getAll(['is_setup' => 1]);
             View::assign('module', $module);
-            View::assign('list', $list);
-
+            
             $this->setTitle('导航管理');
 
             return View::fetch();

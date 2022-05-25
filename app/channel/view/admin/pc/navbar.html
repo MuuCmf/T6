@@ -16,10 +16,10 @@
         <ul class="channel-ul">
             {volist name="list" id="nav"}
             <li class="clearfix pLi">
-                <input name="nav[1][sort][]" class="sort" type="hidden">
+                <input name="nav[sort][]" class="sort" type="hidden" value="{$nav.sort}">
                 <div class="pull-left nav_list">
             
-                    <select name="nav[1][type][]" class="form-control nav-type margin-right" style="width: 100px;">
+                    <select name="nav[type][]" class="form-control nav-type margin-right" style="width: 100px;">
                         {if $nav['type'] == '_custom'}
                         <option value="app">系统应用</option>
                         <option value="_custom" selected>自定义链接</option>
@@ -29,7 +29,7 @@
                         {/if}
                     </select>
             
-                    <select name="nav[1][app][]" class="form-control module margin-right" style="width: 100px;{if $nav['type']=='_custom'}display:none{/if}">
+                    <select name="nav[app][]" class="form-control module margin-right" style="width: 100px;{if $nav['type']=='_custom'}display:none{/if}">
                         {volist name="module" id="v"}
                         {if strtolower($nav['app']) == strtolower($v['name'])}
                         <option value="{$v.name}" selected>{$v.alias}</option>
@@ -38,12 +38,12 @@
                         {/if}
                         {/volist}
                     </select>
-                    <input name="nav[1][title][]" placeholder="请输入标题" class="form-control title margin-right" style="width: 100px;" value="{$nav.title}">
-                    <input name="nav[1][url][]" placeholder="请输入链接" class="form-control url margin-right" style="width: 300px;{if $nav['type']=='app'}display:none{/if}" value=" {$nav.url}">
+                    <input name="nav[title][]" placeholder="请输入标题" class="form-control title margin-right" style="width: 100px;" value="{$nav.title}">
+                    <input name="nav[url][]" placeholder="请输入链接" class="form-control url margin-right" style="width: 300px;{if $nav.type=='app'}display:none{/if}" value=" {$nav.url}">
                 </div>
             
                 <div class='pull-left new-blank margin-right'>
-                    <input type="hidden" name="nav[1][target][]" class="target_input" value="{$nav.target}">
+                    <input type="hidden" name="nav[target][]" class="target_input" value="{$nav.target}">
                     {if condition="$nav['target'] eq 1"}
                     <input type="checkbox" value="1" class="target" checked>
                     {else}
@@ -77,24 +77,24 @@
 
 <div id="one-nav" class="hide">
     <li class="clearfix pLi">
-        <input name="nav[1][sort][]" class="sort" type="hidden">
+        <input name="nav[sort][]" class="sort" type="hidden" value="0">
         <div class="pull-left nav_list">
-            <select name="nav[1][type][]" class="form-control nav-type margin-right" style="width: 100px;">
+            <select name="nav[type][]" class="form-control nav-type margin-right" style="width: 100px;">
                 <option value="app" >系统模块</option>
                 <option value="_custom" >自定义链接</option>
             </select>
 
-            <select name="nav[1][app][]" class="form-control module margin-right" style="width: 100px;">
+            <select name="nav[app][]" class="form-control module margin-right" style="width: 100px;">
                 {volist name="module" id="v"}
                 <option value="{$v.name}">{$v.alias}</option>
                 {/volist}
             </select>
-            <input name="nav[1][title][]" placeholder="请输入标题" class="form-control title margin-right" style="width: 100px;" value="{$module.0.alias}">
-            <input name="nav[1][url][]" placeholder="请输入链接" class="form-control url margin-right" style="width: 300px;display:none" value="{$module.0.entry}">
+            <input name="nav[title][]" placeholder="请输入标题" class="form-control title margin-right" style="width: 100px;" value="{$module.0.alias}">
+            <input name="nav[url][]" placeholder="请输入链接" class="form-control url margin-right" style="width: 300px;display:none" value="{$module.0.entry}">
         </div>
 
         <div class='pull-left new-blank'>
-            <input type="hidden" name="nav[1][target][]" class="target_input" value="0">
+            <input type="hidden" name="nav[target][]" class="target_input" value="0">
             <input type="checkbox" value="1" class="target">
             <label class="target-blank">
                 新窗口
@@ -121,6 +121,160 @@
 {block name="script"}
     <script src="__STATIC__/common/lib/zui/lib/sortable/zui.sortable.min.js"></script>
     <script>
-        $.muu.channel_sort();
+
+        ;(function($,window, undefined) {
+            'use strict';
+
+            var target_change = function(){
+                $('.channel-ul').off('click').on('click','label.target-blank',function(event){
+                    event.preventDefault();
+                    if($(this).prev().prop('checked')){
+                        $(this).prev().prop("checked",false);
+                        $(this).closest('.new-blank').find('.target_input').val(0);
+                    }else{
+                        $(this).prev().prop("checked",true);
+                        $(this).closest('.new-blank').find('.target_input').val(1);
+                    }
+                })
+                /*
+                $('.target').change(function(){
+                    $(this).closest('.new-blank').find('.target_input').val($(this).prev().is(':checked')?1:0);
+                })*/
+            };
+
+            var change_select = function () {
+                $('.nav-type').unbind('change')
+                $('.nav-type').change(function () {
+                    var obj = $(this);
+                    switch (obj.val()) {
+                        case 'app':
+                            obj.closest('li>div').children('select.module').show().change();
+                            obj.closest('li>div').children('input.url').hide();
+                            break;
+                        case '_custom':
+                            obj.closest('li>div').children('select.module').hide();
+                            obj.closest('li>div').children('input.url').show();
+                            obj.closest('li>div').children('input.title').val('');
+                            obj.closest('li>div').children('input.url').val('');
+                            break;
+                    }
+                })
+            };
+
+            var change_module = function () {
+                $('.module').unbind('change')
+                $('.module').change(function () {
+                    var obj = $(this);
+                    var text = obj.find("option:selected").text();
+                    var value = obj.val();
+                    obj.closest('li>div').children('input.title').val(text);
+                    obj.closest('li>div').children('input.url').val(value);
+
+                    obj.closest('li>div').next().children('select.chosen-icons').attr('data-value','icon-'+obj.find("option:selected").data('icon'));
+                    re_bind()
+                })
+
+            };
+
+            var add_new = function () {
+                $('.add-new').unbind('click');
+                $('.add-new').click(function () {
+                    $('.channel-ul').append($('#one-nav').html());
+                    fix_form()
+                    re_bind()
+                })
+            };
+
+            var add_one = function () {
+                $('.add-one').unbind('click');
+                $('.add-one').click(function () {
+                    $(this).closest('.pLi').after($('#one-nav').html());
+                    fix_form()
+                    re_bind()
+                })
+            };
+
+            var add_two = function () {
+                $('.add-two').unbind('click');
+                $('.add-two').click(function () {
+                    $(this).closest('li').after($('#two-nav').html());
+                    fix_form()
+                    re_bind()
+                })
+            };
+
+            var remove_li = function () {
+                $('.remove-li').unbind('click');
+                $('.remove-li').click(function () {
+                    if( $(this).parents('form').find('.pLi').length > 1){
+                        $(this).closest('li').remove()
+                        re_bind()
+                    }else{
+                        toast.error('不能再减了~');
+                    }
+
+                })
+            };
+
+            var add_child = function () {
+                $('.add-child').unbind('click');
+                $('.add-child').click(function () {
+                    if ($(this).closest('li').find('.ul-2').length == 0) {
+                        $(this).closest('li').append('<div class="clearfix"></div><ul class="ul-2"  style="display: block;"></ul>')
+                    }
+                    $(this).closest('li').find('.ul-2').prepend($('#two-nav').html());
+                    re_bind()
+                })
+            };
+
+            var sort = function() {
+                $('.channel-ul .pLi').each(function (index, element) {
+                    $(this).attr('data-id', index);
+                    $(this).find('.sort').val($(this).attr('data-order'));
+                })
+            }
+
+            //执行
+            var re_bind = function(){
+                change_select();
+                change_module();
+                add_new();
+                add_one();
+                add_two();
+                remove_li();
+                add_child();
+                target_change();
+                sort();
+            };
+
+            var fix_form = function () {
+                $('.channel-ul').sortable({trigger: '.sort-handle-1', selector: 'li', dragCssClass: '',finish:function(){
+                    re_bind()
+                }
+                });
+                $('.channel-ul .ul-2').sortable({trigger: '.sort-handle-2', selector: 'li', dragCssClass: '',finish:function(){
+                    re_bind()
+                }});
+            };
+
+            var bind_color = function () {
+                $('.simpleColorContainer').remove()
+                $('.simple_color_callback').simpleColor({
+                    boxWidth: 15,
+                    boxHeight: 15,
+                    cellWidth: 15,
+                    cellHeight: 15,
+                    chooserCSS: { 'z-index': 1200 },
+                    displayCSS: { 'border': 0 }
+                });
+            };
+
+            window.channel_sort = fix_form;
+            window.channel_bind_color = bind_color;
+
+            fix_form();
+
+        }(jQuery, window, undefined));
+
     </script>
 {/block}
