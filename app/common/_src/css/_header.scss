@@ -184,6 +184,9 @@
         display: inline-block;
         margin-left: 13px;
         height: 60px;
+        ul {
+          list-style: none;
+        }
         .dropdown,.verticalbar{
           line-height: 60px;
           margin: 0;
