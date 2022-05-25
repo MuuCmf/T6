@@ -21,7 +21,7 @@ class Pc extends MuuAdmin{
     }
 
     /**
-     * 前台公共导航
+     * 顶部通用导航
      */
     public function channel()
     {
@@ -69,6 +69,14 @@ class Pc extends MuuAdmin{
 
             return View::fetch();
         }
+    }
+
+    /**
+     * 底部快捷导航
+     */
+    public function footer()
+    {
+
     }
 
 
