@@ -52,7 +52,7 @@ class Pc extends MuuAdmin{
                     $pid[$i] = $this->channelModel->insert($data[$i]);
                 }
 
-                cache('common_nav',null);
+                cache('common_navbar_nav',null);
 
                 return $this->success('修改成功');
             }
@@ -82,46 +82,46 @@ class Pc extends MuuAdmin{
     {
         if (request()->isPost()) {
 
-            $one = $_POST['nav'][1];
-
-            if (count($one) > 0) {
+            $nav = $_POST['nav'];
+            
+            if (count($nav) > 0) {
                 // 移除现有内容
-                Db::execute('TRUNCATE TABLE ' . config('database.connections.mysql.prefix') . 'channel');
-
-                for ($i = 0; $i < count(reset($one)); $i++) {
-                    $data[$i] = array(
+                $this->channelModel->where([
+                    'block' => 'footer',
+                ])->delete();
+                for ($i = 0; $i < count(reset($nav)); $i++) {
+                    $data[$i] = [
+                        'id' => create_guid(),
                         'block' => 'footer',
-                        'type' => text($one['type'][$i]),
-                        'app' => text($one['app'][$i]),
-                        'title' => html($one['title'][$i]),
-                        'url' => text($one['url'][$i]),
-                        'sort' => intval($one['sort'][$i]),
-                        'target' => empty($one['target'][$i]) ? 0:intval($one['target'][$i]),
+                        'type' => text($nav['type'][$i]),
+                        'app' => text($nav['app'][$i]),
+                        'title' => html($nav['title'][$i]),
+                        'url' => text($nav['url'][$i]),
+                        'sort' => intval($nav['sort'][$i]),
+                        'target' => empty($nav['target'][$i]) ? 0:intval($nav['target'][$i]),
                         'status' => 1
-                    );
+                    ];
+                    
                     $pid[$i] = $this->channelModel->insert($data[$i]);
                 }
 
-                cache('common_nav',null);
+                cache('common_footer_nav',null);
 
                 return $this->success('修改成功');
             }
             return $this->error('导航至少存在一个。');
 
         } else {
-            
             /* 获取频道列表 */
             $map[] = ['status', '>', -1];
             $map[] = ['block', '=', 'footer'];
-            $list = $this->channelModel->where($map)->order('sort asc,id asc')->select()->toArray();
-
-
+            $list = $this->channelModel->where($map)->order('sort asc')->select()->toArray();
+            View::assign('list', $list);
             // 获取应用模块列表
             $moduleModel = new ModuleModel();
             $module = $moduleModel->getAll(['is_setup' => 1]);
             View::assign('module', $module);
-            View::assign('list', $list);
-
+            
             $this->setTitle('导航管理');
 
             return View::fetch();

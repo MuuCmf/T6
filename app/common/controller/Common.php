@@ -48,7 +48,9 @@ class Common extends Base
  		//获取站点LOGO
  		$this->initLogo();
         //获取前端导航菜单
-        $this->initNav();
+        $this->initNavbar();
+        //获取底部导航菜单
+        $this->initFooterNav();
 		//获取用户菜单
 		$this->initUserNav();
         //用户登录、注册
@@ -81,11 +83,18 @@ class Common extends Base
     /**
      * 初始化前端导航
      */
-    private function initNav()
+    private function initNavbar()
     {
         $channelModel = new Channel();
-        $nav = $channelModel->lists();
-        View::assign('nav',$nav);
+        $nav = $channelModel->lists('navbar');
+        View::assign('navbar',$nav);
+    }
+
+    private function initFooterNav()
+    {
+        $channelModel = new Channel();
+        $nav = $channelModel->lists('footer');
+        View::assign('footer_nav',$nav);
     }
 
     /**

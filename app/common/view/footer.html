@@ -16,14 +16,15 @@
       </div>
 
       <div class="product">
-        <h3>产品</h3>
+        <h3>快捷导航</h3>
         <ul>
-          <li><a href="{:url('muu/classroom/index')}">云课堂</a></li>
-          <li><a href="{:url('muu/forum/index')}">付费社群</a></li>
-          <li><a href="{:url('muu/cloudstore/index')}">云小店</a></li>
-          <li><a href="{:url('muu/offlineactivity/index')}">线下活动</a></li>
-          <li><a href="{:url('muu/itembankexam/index')}">题库考试</a></li>
-          <li><a href="{:url('muu/live/index')}">直播</a></li>
+          {volist name="footer_nav" id="nav"}
+          <li>
+              <a title="{$nav.title}" href="{$nav.url|get_nav_url}" target="{eq name='nav.target' value='1'}_blank{else/}_self{/eq}">
+                  <span>{$nav.title}</span>
+              </a>
+          </li>
+          {/volist}
         </ul>
       </div>
 

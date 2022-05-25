@@ -9,7 +9,7 @@
             </div>
             <div class="navigation">
                 <ul class="index-menu clearfix">
-                    {volist name="nav" id="nav"}
+                    {volist name="navbar" id="nav"}
                     <li class="{eq name='nav.url|get_nav_active' value='1'}active{else/}{/eq}">
                         <a class="active-item" title="{$nav.title}" href="{$nav.url|get_nav_url}"
                             target="{eq name='nav.target' value='1'}_blank{else/}_self{/eq}">
