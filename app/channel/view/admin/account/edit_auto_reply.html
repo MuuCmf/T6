@@ -4,11 +4,11 @@
 {/block}
 
 {block name="body"}
-<div class="panel edit-auto-reply">
-    <div class="panel-heading">
-        新增/编辑 自动回复
-    </div>
-    <div class="panel-body">
+<div class="main-title">
+    <h2>新增/编辑 自动回复</h2>
+</div>
+<div class="with-padding">
+    <div class="edit-auto-reply">
         <form class="form-horizontal" method="post"  action="{:url('editAutoReply')}?id={$data.id|default=0}">
             <input type="hidden" name="id" value="{$data.id|default='0'}">
             <input type="hidden" name="material_json" value="{$data.material_json|default=''}">
@@ -79,7 +79,6 @@
                                 </div>
                             </div>
                             <button type="button" class="btn btn-primary choose-material" @click="chooseMaterial()"><i class="icon icon-cloud-upload"></i> 选择素材</button>
-
                         </div>
                     </div>
                 </div>
@@ -123,18 +122,17 @@
             <div class="form-group">
                 <div class="col-sm-offset-2 col-sm-10">
                     <button type="submit" class="btn btn-info">保存</button>
-                    <button type="button" class="btn btn-return" onclick="javascript:history.back(-1);return false;">返回</button>
+                    <button type="button" class="btn btn-return" onclick="javascript:history.back(-1); return false;">返回</button>
                 </div>
             </div>
         </form>
     </div>
 </div>
-{include file="admin/official_account/material" /}
+{include file="admin/account/material" /}
 {/block}
 
 {block name="script"}
 <script>
-
 
     var vm = new Vue({
         el: '.edit-auto-reply',

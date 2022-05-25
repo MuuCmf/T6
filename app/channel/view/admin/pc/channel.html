@@ -5,7 +5,7 @@
 {/block}
 {block name="body"}
 <div class="main-title">
-    <h2>公共导航</h2>
+    <h2>顶部导航</h2>
 </div>
 
 <div class="with-padding">
@@ -31,7 +31,11 @@
             
                     <select name="nav[1][app][]" class="form-control module margin-right" style="width: 100px;{if $nav['type']=='_custom'}display:none{/if}">
                         {volist name="module" id="v"}
-                        <option value="{$v.name}" {if strtolower($nav['app']) == strtolower($v['name'])}selected{/if}>{$v.alias}</option>
+                        {if strtolower($nav['app']) == strtolower($v['name'])}
+                        <option value="{$v.name}" selected>{$v.alias}</option>
+                        {else}
+                        <option value="{$v.name}" selected>{$v.alias}</option>
+                        {/if}
                         {/volist}
                     </select>
                     <input name="nav[1][title][]" placeholder="请输入标题" class="form-control title margin-right" style="width: 100px;" value="{$nav.title}">
@@ -40,7 +44,11 @@
             
                 <div class='pull-left new-blank margin-right'>
                     <input type="hidden" name="nav[1][target][]" class="target_input" value="{$nav.target}">
-                    <input type="checkbox" value="1" class="target" {if condition="$nav['target'] eq 1"}checked{/if}>
+                    {if condition="$nav['target'] eq 1"}
+                    <input type="checkbox" value="1" class="target" checked>
+                    {else}
+                    <input type="checkbox" value="1" class="target">
+                    {/if}
                     <label class="target-blank">
                         新窗口
                     </label>
