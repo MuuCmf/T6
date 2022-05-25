@@ -21,47 +21,45 @@
                 </ul>
             </div>
             <div class="attr-nav">
-                <ul class="clearfix">
-                    {if condition="is_login()"}
-                    <li class="dropdown">
-                        <div class="information" >
-                            <span class="information-quantity hidden">
-                                
-                            </span>
-                            <a class="information-icon"data-remote="{:url('ucenter/message/modal')}" data-show-header="false" data-class-name="message-modal" data-toggle="modal">
-                                <i class="iconfont">&#xe741;</i>
-                            </a>
-                        </div>
-                        <div class="user-info">
-                            <a class="dropdown-toggle dropdown-toggle-avatar" data-toggle="dropdown" role="button">
-                                <img class="avatar img-circle" src="{$common_header_user.avatar64}"/>
-                                <span>{$common_header_user.nickname}</span>
-                            </a>
+                {if condition="is_login()"}
+                <div class="clearfix">
+                    <div class="information" >
+                        <span class="information-quantity hidden">
                             
-                            <ul class="dropdown-menu pull-right" role="menu">
-                                {volist name="user_nav" id="vo"}
-                                <li>
-                                    <a href="{:get_nav_url($vo['url'])}"
-                                    target="{eq name='vo.target' value='1'}_blank{else/}_self{/eq}">
-                                        <span>{$vo.title}</span>
-                                    </a>
-                                </li>
-                                {/volist}
-                                {if condition="check_auth('admin/Index/index')"}
-                                <li>
-                                    <a href="{:url('admin/Index/index')}" target="_blank">
-                                        管理后台
-                                    </a>
-                                </li>
-                                {/if}
-                                <li>
-                                    <a data-url="{:url('ucenter/Common/logout')}" event-node="logout">
-                                        退出
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
-                    </li>
+                        </span>
+                        <a class="information-icon"data-remote="{:url('ucenter/message/modal')}" data-show-header="false" data-class-name="message-modal" data-toggle="modal">
+                            <i class="iconfont">&#xe741;</i>
+                        </a>
+                    </div>
+                    <div class="user-info">
+                        <a class="dropdown-toggle dropdown-toggle-avatar" data-toggle="dropdown" role="button">
+                            <img class="avatar img-circle" src="{$common_header_user.avatar64}"/>
+                            <span>{$common_header_user.nickname}</span>
+                        </a>
+                        
+                        <ul class="dropdown-menu " role="menu">
+                            {volist name="user_nav" id="vo"}
+                            <li>
+                                <a href="{:get_nav_url($vo['url'])}"
+                                target="{eq name='vo.target' value='1'}_blank{else/}_self{/eq}">
+                                    <span>{$vo.title}</span>
+                                </a>
+                            </li>
+                            {/volist}
+                            {if condition="check_auth('admin/Index/index')"}
+                            <li>
+                                <a href="{:url('admin/Index/index')}" target="_blank">
+                                    管理后台
+                                </a>
+                            </li>
+                            {/if}
+                            <li>
+                                <a data-url="{:url('ucenter/Common/logout')}" event-node="logout">
+                                    退出
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
                     <script>
                         $(function(){
                             // 获取未读消息数量
@@ -80,7 +78,9 @@
                             })
                         })
                     </script>
-                    {else/}
+                </div>
+                {else/}
+                <ul>
                     <li class="login verticalbar">
                         <!-- 弹框 -->
                         {if condition="$open_quick_login"}
@@ -95,8 +95,8 @@
                         <a data-role="do_register"
                         href="{:url('ucenter/Common/register',['forward'=> $_SERVER['REQUEST_URI']])}">注册</a>
                     </li>
-                    {/if}
                 </ul>
+                {/if}
             </div>
         </div>
     </div>
