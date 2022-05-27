@@ -70,8 +70,8 @@ class Config extends Base{
                 $config[$key] = $withdraw_config[$key];
             }
         }
-        $config['system'] = $this->handle()['system'];
-        $config['extend'] = config('extend');
+        //$config['system'] = $this->handle()['system'];
+        //$config['extend'] = config('extend');
 
         //获取公众号配置
         $weixin_h5 = (new WechatConfig())->where('shopid',$shopid)->field('title,desc,cover,qrcode,appid')->find();
