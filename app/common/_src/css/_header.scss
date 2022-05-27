@@ -29,20 +29,13 @@
       }
       .navigation {
         float: left;
-        font-size: 14px;
+        font-size: 15px;
         margin-left: 60px;
         padding-right: 10px;
         width: 726px;
         height: 60px;
         overflow: hidden;
-        // &::before {
-        //   content: '';
-        //   position: absolute;
-        //   top: 17px;
-        //   height: 24px;
-        //   width: 1px;
-        //   background-color: #d2d2d2;
-        // }
+
         >ul {
           list-style: none;
           >li {
@@ -224,7 +217,7 @@
           >a{
             display: block;
             color: #222;
-            font-size: 14px;
+            font-size: 15px;
             text-decoration:none;
             padding: 10px 0;
             &:hover{
@@ -281,7 +274,7 @@
           list-style: none;
           .login{
             float: left;
-            font-size: 14px;
+            font-size: 15px;
             line-height: 60px;
             &::after {
               content: '|';
@@ -292,7 +285,7 @@
           
           .registration{
             float: left;
-            font-size: 14px;
+            font-size: 15px;
             line-height: 60px;
             >a{
               color: #222;

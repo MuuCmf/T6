@@ -140,7 +140,6 @@ class Common extends CommonCommon
             $nicknameSwitch = config('system.USER_NICKNAME_SWITCH');
             View::assign('nicknameSwitch', $nicknameSwitch);
 
-            // dump(check_auth('admin/Index/index'));
             $this->setTitle('注册');
             return View::fetch();
         }

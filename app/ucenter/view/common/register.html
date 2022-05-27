@@ -7,17 +7,16 @@
 <div id="main-container" class="container">
     <div class="register">
         <div class="register-header">
-            <!-- 注册{:config('system.WEB_SITE_NAME')}账号 -->
             <h3>
-                <a href="{:url('muu/index/index')}"><img src="__STATIC__/common/images/logo.png" alt=""></a>
-                <span>注册</span>
+                <a href="/">
+                    <img src="{$logo}" alt="">
+                </a>
             </h3>
         </div>
         <div class="register-body clearfix">
             {if !empty($regSwitch)}
 
             <div class="register-type-tab">
-                <!-- class="nav nav-secondary nav-justified" -->
                 <ul id="regNav">
                     {if check_reg_type('username')}
                     <li class="{if $regSwitch[0] == 'username'}active{/if}">
