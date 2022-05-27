@@ -39,7 +39,7 @@ body::-webkit-scrollbar-thumb {/*滚动条里面小方块*/
         margin: 0 auto;
         width:80px;
         height:80px;
-        border-radius: 5px;
+        border-radius: 10px;
         overflow: hidden;
 
         img {
@@ -124,7 +124,7 @@ body::-webkit-scrollbar-thumb {/*滚动条里面小方块*/
         margin: 0 auto;
         width:80px;
         height:80px;
-        border-radius: 5px;
+        border-radius: 10px;
         overflow: hidden;
 
         img {
@@ -314,6 +314,27 @@ body::-webkit-scrollbar-thumb {/*滚动条里面小方块*/
 .control-sidebar-light::-webkit-scrollbar-track {/*滚动条里面轨道*/
   background: #fff;
 }
+
+.sidebar-collapse {
+  .main-sidebar {
+    .sidebar {
+      .expand-info {
+        .expand-icon {
+          width: 36px;
+          height: 36px;
+          border-radius: 5px;
+        }
+        h3 {
+          display: none;
+        }
+        p {
+          display: none;
+        }
+      }
+    }
+  }
+}
+
 //ZUI中独立提出的漂浮消息框样式
 /// ========================================================================
 /// ZUI: messager.less
