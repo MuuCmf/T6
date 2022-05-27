@@ -14,17 +14,10 @@ var gulp        = require('gulp'),
 // 定义源代码的目录和编译压缩后的目录
 var src='./_src/',
     dist='../../public/static/admin';
-// 编译adminlte全部scss 并压缩
-gulp.task('adminlte_scss', function(){
-    gulp.src(src + 'css/adminlte/*.scss')
-        .pipe(sass())
-        .pipe(rename({suffix: '.min'}))//rename压缩后的文件名
-        .pipe(minifyCss())
-        .pipe(gulp.dest(dist+'/css'));
-})
+
 // 编译app全部scss 并压缩
 gulp.task('admin_scss', function(){
-    gulp.src([src + 'css/muu/*.scss',src + 'css/app/*.scss'])
+    gulp.src([src + 'css/**/*.scss'])
         .pipe(sass())
         .pipe(concat('main.css'))//合并css
         .pipe(rename({suffix: '.min'}))//rename压缩后的文件名
@@ -103,9 +96,7 @@ gulp.task('server', function() {
     });
     */
     // 监听scss文件编译
-    gulp.watch(src + 'css/adminlte/*.scss', ['adminlte_scss']);
-    // 监听scss文件编译
-    gulp.watch([src + 'css/muu/*.scss',src + 'css/app/*.scss'], ['admin_scss']);
+    gulp.watch([src + 'css/**/*.scss'], ['admin_scss']);
     // 监听其他不编译的文件 有变化直接copy
     gulp.watch(src + 'images/**/*.!(jpg|jpeg|png|gif|bmp|svg)', ['images']);
     gulp.watch(src + 'lib/**/*.!(jpg|jpeg|png|gif|bmp|svg|css|js)', ['lib']);   
@@ -118,4 +109,4 @@ gulp.task('server', function() {
     //gulp.watch(src + '/html/**/*.html', ['html']);
 });
 // 监听事件
-gulp.task('default', ['adminlte_scss', 'admin_scss', 'adminlte_js', 'main_js', 'css','images', 'lib', 'server'])
+gulp.task('default', ['admin_scss', 'adminlte_js', 'main_js', 'css','images', 'lib', 'server'])
