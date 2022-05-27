@@ -172,9 +172,9 @@ CREATE TABLE IF NOT EXISTS `muucmf_auth_group` (
 --
 
 INSERT INTO `muucmf_auth_group` (`id`, `module`, `type`, `title`, `description`, `status`, `rules`) VALUES
-(1, 'admin', 1, '普通用户', '', 1, ',338,340,341,344'),
-(2, 'admin', 1, 'VIP', '', 1, ',338,340,341,344'),
-(3, 'admin', 1, '管理员', '', 1, '1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,62,63,65,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99,100,102,103,104,105,106,107,108,109,110,111,112,113,114,115');
+(1, 'admin', 1, '普通用户', '', 1, ''),
+(2, 'admin', 1, 'VIP', '', 1, ''),
+(3, 'admin', 1, '管理员', '', 1, '');
 
 -- --------------------------------------------------------
 
@@ -402,8 +402,9 @@ CREATE TABLE IF NOT EXISTS `muucmf_capital_flow` (
 -- 表的结构 `muucmf_channel`
 --
 DROP TABLE IF EXISTS `muucmf_channel`;
-CREATE TABLE IF NOT EXISTS `muucmf_channel` (
-  `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '频道ID',
+CREATE TABLE `muucmf_channel` (
+  `id` varchar(64) NOT NULL COMMENT '频道ID',
+  `block` varchar(32) NOT NULL COMMENT '位置 navbar：顶部 footer:底部',
   `type` varchar(32) NOT NULL DEFAULT '0' COMMENT '链接类型',
   `app` varchar(64) NOT NULL COMMENT '模块标识，空：自定义链接',
   `title` char(30) NOT NULL COMMENT '频道标题',
@@ -418,15 +419,23 @@ CREATE TABLE IF NOT EXISTS `muucmf_channel` (
   `band_text` varchar(30) NOT NULL,
   `icon` varchar(20) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='前台导航配置' ROW_FORMAT=COMPACT;
 
 --
 -- 转存表中的数据 `muucmf_channel`
 --
 
-INSERT INTO `muucmf_channel` (`id`, `type`, `app`, `title`, `url`, `sort`, `create_time`, `update_time`, `status`, `target`, `color`, `band_color`, `band_text`, `icon`) VALUES
-(1, 'app', 'index', '首页', 'index', 0, 0, 0, 1, 0, '', '', '', ''),
-(2, '_custom', 'ucenter', '百度', 'https://www.baidu.com', 0, 0, 0, 1, 1, '', '', '', '');
+INSERT INTO `muucmf_channel` (`id`, `block`, `type`, `app`, `title`, `url`, `sort`, `create_time`, `update_time`, `status`, `target`, `color`, `band_color`, `band_text`, `icon`) VALUES
+('34E4CBAD-0156-E57E-07CE-61C294B17963', 'navbar', '_custom', 'business', '授权查询', 'https://dev.t6.muucmf.cn/muu/nslookup/index', 4, 0, 0, 1, 0, '', '', '', ''),
+('45618513-CD3C-775E-349F-7891BDBBE6BB', 'footer', '_custom', 'business', '云小店', '/muu/cloudstore/index', 0, 0, 0, 1, 0, '', '', '', ''),
+('56BF5260-743C-DA23-96E3-1D87CD72FFE9', 'navbar', '_custom', 'business', '关于我们', 'https://dev.t6.muucmf.cn/muu/about/index', 5, 0, 0, 1, 0, '', '', '', ''),
+('58AF1C70-5C8A-F57D-DCA7-E15E4E83345E', 'footer', '_custom', 'classroom', '题库考试', '/muu/itembankexam/index', 4, 0, 0, 1, 0, '', '', '', ''),
+('68DF7ACC-D4D2-25B8-1817-3EEC26A2BF9C', 'footer', '_custom', 'business', '线下活动', '/muu/offlineactivity/index', 3, 0, 0, 1, 0, '', '', '', ''),
+('8653A679-C97E-E303-294B-6FB3FF73D301', 'navbar', '_custom', 'business', '产品', 'https://dev.t6.muucmf.cn/muu/product/index', 1, 0, 0, 1, 0, '', '', '', ''),
+('A96E6296-01FA-B4B6-ECD5-16B3398861AF', 'footer', '_custom', 'business', '云课堂', '/muu/classroom/index', 1, 0, 0, 1, 0, '', '', '', ''),
+('B9FD7A31-CD35-69BF-08BD-994E5435F0C2', 'navbar', '_custom', 'business', '开发框架', 'https://dev.t6.muucmf.cn/muu/frame/index', 2, 0, 0, 1, 0, '', '', '', ''),
+('D5F84EF3-B001-79B5-160B-AB916C765623', 'footer', '_custom', 'business', '付费社群', '/muu/forum/index', 2, 0, 0, 1, 0, '', '', '', ''),
+('E122DD60-ADCE-011A-CB9B-A8D8B6F02B24', 'navbar', '_custom', 'business', '首页', '/', 0, 0, 0, 1, 0, '', '', '', '');
 
 -- --------------------------------------------------------
 
@@ -473,16 +482,16 @@ INSERT INTO `muucmf_config` (`id`, `name`, `type`, `title`, `group`, `extra`, `r
 (126, 'USER_NAME_BAOLIU', 'textarea', '保留用户名和昵称', 3, '', '禁止注册用户名和昵称，包含这些即无法注册,用\" , \"号隔开，用户只能是英文，下划线_，数字等', 1388845937, 1631278499, 1, '管理员,测试,admin,垃圾', 200),
 (128, 'VERIFY_OPEN', 'checkbox', '验证码配置', 3, 'reg:注册显示\r\nlogin:登陆显示\r\nreset:密码重置', '验证码配置', 1388500332, 1631320314, 1, '', 3),
 (129, 'VERIFY_TYPE', 'select', '验证码类型', 4, '1:中文\r\n2:英文\r\n3:数字\r\n4:英文+数字', '验证码类型', 1388500873, 1630895014, 1, '4', 0),
-(132, 'COUNT_CODE', 'textarea', '统计代码', 4, '', '用于统计网站访问量的第三方代码，推荐百度统计', 1403058890, 1640252129, 1, '<script>\r\nvar _hmt = _hmt || [];\r\n(function() {\r\n  var hm = document.createElement(\"script\");\r\n  hm.src = \"https://hm.baidu.com/hm.js?959d8ff4676fce87aa16f4c1edb78038\";\r\n  var s = document.getElementsByTagName(\"script\")[0]; \r\n  s.parentNode.insertBefore(hm, s);\r\n})();\r\n</script>\r\n', 12),
+(132, 'COUNT_CODE', 'textarea', '统计代码', 1, '', '用于统计网站访问量的第三方代码，推荐百度统计', 1403058890, 1653285401, 1, '<script>\r\nvar _hmt = _hmt || [];\r\n(function() {\r\n  var hm = document.createElement(\"script\");\r\n  hm.src = \"https://hm.baidu.com/hm.js?959d8ff4676fce87aa16f4c1edb78038\";\r\n  var s = document.getElementsByTagName(\"script\")[0]; \r\n  s.parentNode.insertBefore(hm, s);\r\n})();\r\n</script>\r\n', 12),
 (134, 'URL_MODEL', 'select', 'URL模式', 4, '2:REWRITE模式(开启伪静态)\r\n3:兼容模式', '选择Rewrite模式则开启伪静态，在开启伪静态之前需要先设置伪静态或阅读/Rewrite/readme.txt中的说明，默认建议开启兼容模式', 1421027546, 1630895041, 1, '3', 0),
 (135, 'DEFUALT_APP', 'string', '系统默认应用', 4, '', '留空默认index', 1417509438, 1640251531, 1, 'muu', 1),
 (137, 'SITE_CLOSE_HINT', 'textarea', '关站提示文字', 4, '', '站点关闭后的提示文字。', 1433731248, 1640252044, 1, '网站正在更新维护，请稍候再试。', 4),
 (140, 'MAIL_SMTP_CE', 'string', '邮件发送测试', 5, '', '填写测试邮件地址', 1388334529, 1630895967, 1, '59262424@qq.com', 11),
 (1000, 'USER_REG_SWITCH', 'checkbox', '用户注册开关', 3, 'username:用户名\r\nemail:邮箱\r\nmobile:手机号', '用户注册开关', 1531177781, 1631278401, 1, 'username,email,mobile', 1),
-(1001, 'WEB_SITE_NAME', 'string', '站点名称', 1, '', '站点名称', 1530883729, 1630895072, 1, 'MuuCmf开发框架', 0),
+(1001, 'WEB_SITE_NAME', 'string', '站点名称', 1, '', '站点名称', 1530883729, 1630895072, 1, 'MuuCmf T6', 0),
 (1002, 'WEB_SITE_ICP', 'string', 'ICP备案', 1, '', 'ICP备案', 1530883729, 1640309012, 1, '京ICP备12345XXXx号', 20),
-(1003, 'WEB_SITE_LOGO', 'pic', '站点LOGO', 1, '', '站点LOGO', 1530883729, 1640325297, 1, '', 2),
-(1007, 'WEB_SITE_COPY_RIGHT', 'textarea', '站点版权信息', 1, '', '站点版权信息', 1530883729, 1640327477, 1, '<span>Power&nbsp;by&nbsp;MuuCmf</span>Copyright ©2018-2022 <a href=\"http://www.muucmf.cn\" target=\"_blank\">北京火木科技有限公司</a>', 10),
+(1003, 'WEB_SITE_LOGO', 'pic', '站点LOGO', 1, '', '站点LOGO', 1530883729, 1640325297, 1, 'image/20210912/f12b57267708d211f4243caf3cf7a6eb.png', 2),
+(1007, 'WEB_SITE_COPY_RIGHT', 'textarea', '站点版权信息', 1, '', '站点版权信息', 1530883729, 1640327477, 1, '<span>Power&nbsp;by&nbsp;MuuCmf</span>&nbsp&nbspCopyright ©2018-2022 <a href=\"http://www.muucmf.cn\" target=\"_blank\">北京火木科技有限公司</a>', 10),
 (10012, 'USER_LEVEL', 'entity', '用户等级设置', 3, '', '', 1531177781, 1631278482, 1, '0:Lv1 实习\r\n50:Lv2 试用\r\n100:Lv3 转正\r\n200:Lv4 助理\r\n400:Lv5 经理\r\n800:Lv6 董事\r\n1600:Lv7 董事长', 255),
 (10013, 'USER_NICKNAME_MIN_LENGTH', 'num', '昵称长度最小值', 3, '', '昵称长度最小值', 1531177781, 1631278545, 1, '2', 20),
 (10014, 'USER_NICKNAME_MAX_LENGTH', 'num', '昵称长度最大值', 3, '', '昵称长度最大值', 1531177781, 1631278555, 1, '32', 21),
@@ -494,14 +503,15 @@ INSERT INTO `muucmf_config` (`id`, `name`, `type`, `title`, `group`, `extra`, `r
 (10139, 'USER_NICKNAME_SWITCH', 'radio', '用户注册昵称开关', 3, '1:开启\r\n0:关闭', '用户注册时是否可直接设置自己的昵称', 0, 0, 1, '0', 5),
 (10140, 'USER_NICKNAME_PREFIX', 'string', '用户昵称前缀', 3, '', '系统自动生成用户昵称时的前缀', 0, 1631522685, 1, '', 6),
 (10141, 'USER_REG_AGREEMENT', 'editor', '用户注册服务协议', 3, '', '用户注册服务协议', 0, 0, 1, '<p style=\"text-align: center;\"><span style=\"font-size: 36px;\">用户注册服务协议</span></p><p><br/></p><hr/><p>ThinkPHP\r\n 是一个免费开源的，快速、简单的面向对象的 轻量级PHP开发框架 \r\n，创立于2006年初，遵循Apache2开源协议发布，是为了敏捷WEB应用开发和简化企业应用开发而诞生的。ThinkPHP从诞生以来一直秉承简洁实用的设计原则，在保持出色的性能和至简的代码的同时，也注重易用性。并且拥有众多的原创功能和特性，在社区团队的积极参与下，在易用性、扩展性和性能方面不断优化和改进，已经成长为国内最领先和最具影响力的WEB应用开发框架，众多的典型案例确保可以稳定用于商业以及门户级的开发。</p>', 999),
-(10142, 'SERVICE_TEL', 'string', '联系电话', 2, '', '联系电话', 0, 1640230429, 1, '18618380435', 0),
+(10142, 'SERVICE_TEL', 'string', '联系电话', 2, '', '联系电话', 0, 1640230429, 1, '13426436565', 0),
 (10143, 'WEB_SITE_GICP', 'string', '公安备案', 1, '', '公安备案', 0, 1640308908, 1, '京公网安备12345XXXx号', 21),
 (10144, 'SERVICE_CONSULT', 'string', '咨询&服务', 2, '', '咨询&服务Eamil|电话号码', 0, 0, 1, 'service@hoomuu.cn', 2),
 (10145, 'SERVICE_BUSINESS', 'string', '商务合作', 2, '', '商务合作邮箱或电话号码', 0, 0, 1, 'business@hoomuu.cn', 3),
-(10146, 'SERVICE_QRCODE', 'pic', '客服二维码', 2, '', '客服二维码', 0, 0, 1, 'images/20211224/2bc43634b1ee175bfddac1f3f18e2104.png', 4),
-(10147, 'SERVICE_WEIXINKF', 'string', '微信客服链接', 2, '', '使用详情 https://work.weixin.qq.com/kf', 0, 1640309559, 1, 'https://work.weixin.qq.com/kfid/kfcb3dc015a434054c5', 5),
-(10148, 'WEB_SITE_STYLE', 'style', '站点风格', 1, 'Blue\r\nGreen\r\nOrange\r\nLightRed\r\nLightPink\r\nMagenta', '请选择客户端展示的风格色系', 0, 1640327457, 1, 'Orange', 3),
-(10149, 'WEB_SITE_DESCRIPTION', 'textarea', '站点简短描述', 1, '', '请完善站点简短描述', 0, 1640325379, 1, 'MuuCmf T6 开源低代码应用开发框架', 1);
+(10146, 'SERVICE_KF_QRCODE', 'pic', '客服二维码', 2, '', '客服二维码', 0, 1653285638, 1, 'images/20211224/2bc43634b1ee175bfddac1f3f18e2104.png', 4),
+(10147, 'SERVICE_WEIXINKF', 'string', '微信客服链接', 2, '', '使用详情 https://work.weixin.qq.com/kf', 0, 1653285496, 1, 'https://work.weixin.qq.com/kfid/kfcb3dc015a434054c5', 8),
+(10148, 'WEB_SITE_STYLE', 'style', '站点风格', 1, 'Blue\r\nGreen\r\nOrange\r\nLightRed\r\nLightPink\r\nMagenta', '请选择客户端展示的风格色系', 0, 1640327457, 1, 'Blue', 3),
+(10149, 'WEB_SITE_DESCRIPTION', 'textarea', '站点简短描述', 1, '', '请完善站点简短描述', 0, 1640325379, 1, '<p>MuuCmf T6 开源低代码应用开发框架</p>\r\n<p>北京火木科技有限公司 版权所有并提供技术支持</p>', 1),
+(10150, 'SERVICE_WEIXIN_QRCODE', 'pic', '公众号二维码', 2, '', '关注公众号二维码', 0, 1653285668, 1, 'images/20220523/669bcd974dfe0ab9f045dc37eadb5af6.jpg', 5);
 
 -- --------------------------------------------------------
 
