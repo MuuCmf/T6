@@ -17,24 +17,23 @@
                 
                 .web-site {
                     .logo {
-                        float: left;
+                        
                         img {
-                            width: 60px;
-                            height: 60px;
+                            width: auto;
+                            height: 50px;
                         }
                     }
                     h3 {
                         margin: 0;
-                        margin-left: 70px;
                         color: #03b8cf;
-                        font-size: 28px;
+                        font-size: 22px;
                         font-weight: 600;
-                        line-height: 60px;
+                        line-height: 50px;
                     }
                 }
                 
                 .description {
-                    margin-top: 30px;
+                    margin-top: 15px;
                     color: #fff;
                     height: 180px;
                     overflow: hidden;

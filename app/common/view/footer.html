@@ -5,13 +5,13 @@
       <div class="support">
         <div class="web-site clearfix">
           <div class="logo">
-            <img src="{$muu_config_data.WEB_SITE_LOGO_100}" />
+            <img src="{$muu_config_data.WEB_SITE_LOGO_ORIGIN}" />
           </div>
           <h3>{$muu_config_data.WEB_SITE_NAME}</h3>
         </div>
         
         <div class="description">
-          {$muu_config_data.system.WEB_SITE_DESCRIPTION|raw|htmlspecialchars_decode}
+          {$muu_config_data.WEB_SITE_DESCRIPTION|raw|htmlspecialchars_decode}
         </div>
       </div>
 
@@ -35,7 +35,7 @@
               <div class="img">
                   <i class="fa fa-phone" aria-hidden="true"></i>
               </div>
-              <span class="value">{$muu_config_data.system.SERVICE_TEL}</span>
+              <span class="value">{$muu_config_data.SERVICE_TEL}</span>
               <span class="title">7*24小时服务热线</span>
           </div>
 
@@ -44,7 +44,7 @@
               <div class="img">
                   <i class="fa fa-commenting" aria-hidden="true"></i>
               </div>
-              <span class="value">{$muu_config_data.system.SERVICE_CONSULT}</span>
+              <span class="value">{$muu_config_data.SERVICE_CONSULT}</span>
               <span class="title">课程咨询和服务</span>
           </div>
 
@@ -52,7 +52,7 @@
               <div class="img">
                 <i class="fa fa-handshake-o" aria-hidden="true"></i>
               </div>
-              <span class="value">{$muu_config_data.system.SERVICE_BUSINESS}</span>
+              <span class="value">{$muu_config_data.SERVICE_BUSINESS}</span>
               <span class="title">商务合作</span>
           </div>
         </div>
@@ -61,11 +61,11 @@
       <div class="qrcode">
         <div>
           <div>
-            <img src="{:get_attachment_src($muu_config_data.system.SERVICE_WEIXIN_QRCODE)}" alt="">
+            <img src="{:get_attachment_src($muu_config_data.SERVICE_WEIXIN_QRCODE)}" alt="">
             <p>扫一扫，关注公众号</p>
           </div>
           <div>
-            <img src="{:get_attachment_src($muu_config_data.system.SERVICE_KF_QRCODE)}" alt="">
+            <img src="{:get_attachment_src($muu_config_data.SERVICE_KF_QRCODE)}" alt="">
             <p>扫码添加客服经理微信</p>
           </div>
         </div>
@@ -74,9 +74,9 @@
   </div>
 
   <div class="copyright company">
-    <span>{$muu_config_data.system.WEB_SITE_COPY_RIGHT|raw|htmlspecialchars_decode}</span>
-    <span>{$muu_config_data.system.WEB_SITE_ICP}</span>
-    <span>{$muu_config_data.system.WEB_SITE_GICP}</span>
+    <span>{$muu_config_data.WEB_SITE_COPY_RIGHT|raw|htmlspecialchars_decode}</span>
+    <span>{$muu_config_data.WEB_SITE_ICP}</span>
+    <span>{$muu_config_data.WEB_SITE_GICP}</span>
   </div>
 </div>
 <script>

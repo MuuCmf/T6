@@ -17,6 +17,7 @@ class Config extends Base{
         'WEB_SITE_DESCRIPTION',
         'WEB_SITE_ICP',
         'WEB_SITE_LOGO',
+        'WEB_SITE_LOGO_ORIGIN',
         'WEB_SITE_LOGO_100',
         'WEB_SITE_LOGO_200',
         'WEB_SITE_LOGO_300',
@@ -28,12 +29,20 @@ class Config extends Base{
         'SERVICE_TEL',
         'SERVICE_CONSULT',
         'SERVICE_BUSINESS',
-        'SERVICE_QRCODE',
-        'SERVICE_QRCODE_100',
-        'SERVICE_QRCODE_200',
-        'SERVICE_QRCODE_300',
-        'SERVICE_QRCODE_400',
-        'SERVICE_QRCODE_900',
+        'SERVICE_KF_QRCODE',
+        'SERVICE_KF_QRCODE_ORIGIN',
+        'SERVICE_KF_QRCODE_100',
+        'SERVICE_KF_QRCODE_200',
+        'SERVICE_KF_QRCODE_300',
+        'SERVICE_KF_QRCODE_400',
+        'SERVICE_KF_QRCODE_800',
+        'SERVICE_WEIXIN_QRCODE',
+        'SERVICE_WEIXIN_QRCODE_ORIGIN',
+        'SERVICE_WEIXIN_QRCODE_100',
+        'SERVICE_WEIXIN_QRCODE_200',
+        'SERVICE_WEIXIN_QRCODE_300',
+        'SERVICE_WEIXIN_QRCODE_400',
+        'SERVICE_WEIXIN_QRCODE_800',
         'SERVICE_WEIXINKF',
         //提现
         'WITHDRAW_STATUS',
@@ -94,18 +103,20 @@ class Config extends Base{
     {
         $config = config();
         if(!empty($config['system']['WEB_SITE_LOGO'])){
+            
             $width = 100;
-            $height = 100;
-            $config['system']['WEB_SITE_LOGO_100'] = get_thumb_image($config['system']['WEB_SITE_LOGO'], intval($width), intval($height));
-            $config['system']['WEB_SITE_LOGO_200'] = get_thumb_image($config['system']['WEB_SITE_LOGO'], intval($width*2), intval($height*2));
-            $config['system']['WEB_SITE_LOGO_300'] = get_thumb_image($config['system']['WEB_SITE_LOGO'], intval($width*3), intval($height*3));
-            $config['system']['WEB_SITE_LOGO_400'] = get_thumb_image($config['system']['WEB_SITE_LOGO'], intval($width*4), intval($height*4));
-            $config['system']['WEB_SITE_LOGO_800'] = get_thumb_image($config['system']['WEB_SITE_LOGO'], intval($width*8), intval($height*8));
+            $config['system']['WEB_SITE_LOGO_ORIGIN'] = get_attachment_src($config['system']['WEB_SITE_LOGO']);
+            $config['system']['WEB_SITE_LOGO_100'] = get_thumb_image($config['system']['WEB_SITE_LOGO'], intval($width));
+            $config['system']['WEB_SITE_LOGO_200'] = get_thumb_image($config['system']['WEB_SITE_LOGO'], intval($width*2));
+            $config['system']['WEB_SITE_LOGO_300'] = get_thumb_image($config['system']['WEB_SITE_LOGO'], intval($width*3));
+            $config['system']['WEB_SITE_LOGO_400'] = get_thumb_image($config['system']['WEB_SITE_LOGO'], intval($width*4));
+            $config['system']['WEB_SITE_LOGO_800'] = get_thumb_image($config['system']['WEB_SITE_LOGO'], intval($width*8));
         }
 
         if(!empty($config['system']['SERVICE_KF_QRCODE'])){
             $width = 100;
             $height = 100;
+            $config['system']['SERVICE_KF_QRCODE_ORIGIN'] = get_attachment_src($config['system']['SERVICE_KF_QRCODE']);
             $config['system']['SERVICE_KF_QRCODE_100'] = get_thumb_image($config['system']['SERVICE_KF_QRCODE'], intval($width), intval($height));
             $config['system']['SERVICE_KF_QRCODE_200'] = get_thumb_image($config['system']['SERVICE_KF_QRCODE'], intval($width*2), intval($height*2));
             $config['system']['SERVICE_KF_QRCODE_300'] = get_thumb_image($config['system']['SERVICE_KF_QRCODE'], intval($width*3), intval($height*3));
@@ -116,6 +127,7 @@ class Config extends Base{
         if(!empty($config['system']['SERVICE_WEIXIN_QRCODE'])){
             $width = 100;
             $height = 100;
+            $config['system']['SERVICE_WEIXIN_QRCODE_ORIGIN'] = get_attachment_src($config['system']['SERVICE_WEIXIN_QRCODE']);
             $config['system']['SERVICE_WEIXIN_QRCODE_100'] = get_thumb_image($config['system']['SERVICE_WEIXIN_QRCODE'], intval($width), intval($height));
             $config['system']['SERVICE_WEIXIN_QRCODE_200'] = get_thumb_image($config['system']['SERVICE_WEIXIN_QRCODE'], intval($width*2), intval($height*2));
             $config['system']['SERVICE_WEIXIN_QRCODE_300'] = get_thumb_image($config['system']['SERVICE_WEIXIN_QRCODE'], intval($width*3), intval($height*3));
