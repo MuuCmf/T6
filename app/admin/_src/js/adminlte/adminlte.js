@@ -611,7 +611,7 @@ throw new Error('AdminLTE requires jQuery')
     
     var postSetHeight;
 
-    $(Selector.contentWrapper).css('min-height', windowHeight);
+    $(Selector.contentWrapper).css('height', windowHeight - 50);
 
   };
 

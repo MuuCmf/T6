@@ -1,8 +1,11 @@
-body::-webkit-scrollbar {
-  background-color: #f2f2f2;
+.main-sidebar {
+  padding-top: 0;
+  margin-top: 50px;
+  min-height: auto;
 }
-body::-webkit-scrollbar-thumb {/*滚动条里面小方块*/
-  border-radius: 1px;
+.fixed .content-wrapper {
+  padding-top: 0;
+  margin-top: 50px;
 }
 .skin-blue-light, 
 .skin-black-light, 
@@ -27,7 +30,7 @@ body::-webkit-scrollbar-thumb {/*滚动条里面小方块*/
   .main-sidebar {
     background-color: #fff;
     z-index:860;
-    height: 100%;
+    height: calc(100% - 50px);
     overflow-x:hidden;
     overflow-y:auto; 
 
@@ -112,7 +115,7 @@ body::-webkit-scrollbar-thumb {/*滚动条里面小方块*/
   .main-sidebar {
     background-color: #383e4b;
     z-index:860;
-    height: 100%;
+    height: calc(100% - 50px);
     overflow-x:hidden;
     overflow-y:auto; 
 
