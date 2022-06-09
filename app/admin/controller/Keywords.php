@@ -2,21 +2,18 @@
 namespace app\admin\controller;
 
 use think\facade\View;
-use app\common\model\Module as ModuleModel;
-use app\common\model\Announce as AnnounceModel;
-use app\common\logic\Announce as AnnounceLogic;
+use app\common\model\Keywords as KeywordsModel;
+use app\common\logic\Keywords as KeywordsLogic;
 
 use app\admin\validate\Common;
 use think\exception\ValidateException;
 /**
- * 公告控制器
+ * 搜索关键字控制器
  */
-class Announce extends Admin
+class Keywords extends Admin
 {
-    protected $ModuleModel;
-    protected $AnnounceModel;
-    protected $AnnounceLogic;
-
+    protected $KeywordsModel;
+    protected $KeywordsLogic;
     /**
      * 构造方法
      * @access public
@@ -25,17 +22,16 @@ class Announce extends Admin
     public function __construct()
     {
         parent::__construct();
-        $this->ModuleModel = new ModuleModel();
-        $this->AnnounceModel = new AnnounceModel();
-        $this->AnnounceLogic = new AnnounceLogic();
+        $this->KeywordsModel = new KeywordsModel();
+        $this->KeywordsLogic = new KeywordsLogic();
         // 设置页面title
-        $this->setTitle('公告管理');
+        $this->setTitle('搜索关键字管理');
     }
 
     /**
      * 列表
      */
-    public function list()
+    public function lists()
     {
         // 查询条件
         $map = [
@@ -51,12 +47,12 @@ class Announce extends Admin
 
         $fields = '*';
         $rows = input('rows', 20, 'intval');
-        $lists = $this->AnnounceModel->getListByPage($map, 'sort desc,create_time desc', $fields, $rows);
+        $lists = $this->KeywordsModel->getListByPage($map, 'num desc,create_time desc', $fields, $rows);
         $pager = $lists->render();
         $lists = $lists->toArray();
-        
+
         foreach($lists['data'] as &$val){
-            $val = $this->AnnounceLogic->formatData($val);
+            $val = $this->KeywordsLogic->formatData($val);
         }
         unset($val);
         
