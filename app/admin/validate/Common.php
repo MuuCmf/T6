@@ -13,7 +13,8 @@ class Common extends Validate
         'description' => 'require',
         'content' => 'require',
         'icon' => 'require',
-        'type_id' => 'number|min:1|between:1,99999999999'
+        'type_id' => 'number|min:1|between:1,99999999999',
+        'keyword'  =>  'require',
     ];
     
     protected $message = [
@@ -21,7 +22,8 @@ class Common extends Validate
         'description' => '简短描述不能为空',
         'content' => '内容不能为空',
         'icon' => '图标未上传',
-        'type_id' => '消息类型未选择'
+        'type_id' => '消息类型未选择',
+        'keyword' => '关键字不能为空'
     ];
 
     protected $scene = [
@@ -30,7 +32,9 @@ class Common extends Validate
         // 消息类型
         'message_type'   =>  ['title', 'description', 'icon'],
         // 消息发送
-        'message'   =>  ['type_id', 'title', 'description', 'content']
+        'message'   =>  ['type_id', 'title', 'description', 'content'],
+        // 关键字
+        'keywords'  =>  ['keyword'],
     ];    
     
 }

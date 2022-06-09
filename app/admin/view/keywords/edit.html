@@ -1,0 +1,109 @@
+{extend name="common/main"/}
+
+{block name="style"}
+
+{/block}
+
+{block name="body"}
+
+<div class="main-title">
+    <h2>新增、编辑搜索关键字</h2>
+</div>
+
+<div class="with-padding">
+    <div class="keyword-edit-section">
+        <form action="" method="post" class="form-horizontal ajax-form" role="form">
+            <input type="hidden" name="id" value="{$data['id']}">
+
+            <div class="builder_item">
+                <label class="item-label">
+                    关键字
+                    <span class="check-tips">（请填写关键字）</span>
+                </label>
+                <div class="controls">
+                    <input type="text" class="form-control" name="keyword" placeholder="请填写关键字" value="{$data['keyword']}">
+                </div>
+            </div>
+
+            <div class="builder_item">
+                <label class="item-label">
+                    排序
+                    <span class="check-tips">（数字越大，越靠前，最大999。）</span>
+                </label>
+                <div class="controls">
+                    <input type="number" class="form-control" name="sort" value="{$data['sort']}" placeholder="排序" max="999">
+                </div>
+            </div>
+
+            <div class="builder_item">
+                <label class="item-label">是否推荐</label>
+                <div class="controls recommend-section">
+                    {if $data['recommend'] == 1}
+                    <input type="radio" name="recommend" id="is_recommend-1" value="1" checked> 
+                    <label class="radio-inline" for="is_recommend-1">推荐</label>
+                    <input type="radio" name="recommend" id="is_recommend-0" value="0">
+                    <label class="radio-inline" for="is_recommend-0">不推荐</label>
+                    {/if}
+                    {if $data['recommend'] == 0}
+                    <input type="radio" name="recommend" id="is_recommend-1" value="1"> 
+                    <label class="radio-inline" for="is_recommend-1">推荐</label>
+                    <input type="radio" name="recommend" id="is_recommend-0" value="0" checked>
+                    <label class="radio-inline" for="is_recommend-0"> 不推荐</label>
+                    {/if}
+                </div>
+            </div>
+
+            <div class="builder_item">
+            
+                <label class="item-label">状态设置</label>
+                <div class="controls status-section">
+                    {if $data['status'] == 1}
+                    <input type="radio" name="status" id="is_status-1" value="1" checked> 
+                    <label class="radio-inline" for="is_status-1">启用</label>
+                    <input type="radio" name="status" id="is_status-0" value="0">
+                    <label class="radio-inline" for="is_status-0"> 禁用</label>
+                    {/if}
+                    {if $data['status'] == 0}
+                    <input type="radio" name="status" id="is_status-1" value="1"> 
+                    <label class="radio-inline" for="is_status-1">启用</label>
+                    <input type="radio" name="status" id="is_status-0" value="0" checked>
+                    <label class="radio-inline" for="is_status-0"> 禁用</label>
+                    {/if}
+                </div>
+            </div>
+
+            <div class="builder_item">
+                <label class="item-label"></label>
+                <div class="form-controls">
+                    <button type="submit" class="btn btn-lg btn-primary">确认提交</button>
+                </div>
+            </div>
+            
+        </form>
+    </div>
+
+</div>
+
+
+{/block}
+{block name="script"}
+<script>
+    $(function(){
+        $('input[name="type"]').click(function(){
+            $('input[name="type"]').each(function(){
+                if($(this).prop('checked')){
+                    var result = $(this).val();
+                    console.log(result);
+
+                    if(result == 1){
+                        $('[data-role="image-type-group"]').removeClass('hide');
+                    }else{
+                        $('[data-role="image-type-group"]').addClass('hide');
+                    }
+                }
+            });
+        });
+    });
+</script>
+
+{/block}

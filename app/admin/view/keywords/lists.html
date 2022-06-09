@@ -46,11 +46,12 @@
                         <label for="check-all"></label>
                     </th>
                     <th class="">{:lang('ID')}</th>
-                    <th class="">公告标题</th>
-                    <th class="">类型</th>
+                    <th class="">关键字</th>
+                    <th class="">用户</th>
                     <th class="">排序</th>
                     <th class="">发布时间</th>
                     <th class="">更新时间</th>
+                    <th class="">是否推荐</th>
                     <th class="">状态</th>
                     <th class="">操作</th>
                 </tr>
@@ -63,11 +64,19 @@
                         <label for="keywords-{$vo.id}"></label>
                     </td>
                     <td>{$vo.id}</td>
-                    <td>{$vo.title}</td>
-                    <td>{$vo.type_str}</td>
+                    <td>{$vo.keyword}</td>
+                    <td>{$vo.uid}</td>
                     <td>{$vo.sort}</td>
                     <td>{$vo.create_time_str}</td>
                     <td>{$vo.update_time_str}</td>
+                    <td>
+                        {if $vo.recommend == 1}
+                        <span class="label label-success">{$vo.recommend_str}</span>
+                        {/if}
+                        {if $vo.recommend == 0}
+                        <span class="label label-warning">{$vo.recommend_str}</span>
+                        {/if}
+                    </td>
                     <td>
                         {if $vo.status == 1}
                         <span class="label label-success">{$vo.status_str}</span>
@@ -78,6 +87,11 @@
                     </td>
                     <td>
                         <a class="btn btn-sm btn-primary" href="{:url('edit',['id'=>$vo['id']])}" >编辑</a>
+                        {if $vo.status == 0}
+                        <a class="btn btn-sm btn-info ajax-post" href="{:url('status',['status'=>1, 'ids'=>$vo['id']])}">启用</a>
+                        {else}
+                        <a class="btn btn-sm btn-warning ajax-post" href="{:url('status',['status'=>0, 'ids'=>$vo['id']])}">禁用</a>
+                        {/if}
                         <a class="btn btn-sm btn-danger ajax-post" href="{:url('status',['status'=>-1, 'ids'=>$vo['id']])}" data-confirm="确认执行删除操作？">删除</a>
                     </td>
                 </tr>

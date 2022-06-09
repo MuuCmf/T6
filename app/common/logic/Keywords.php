@@ -9,7 +9,7 @@ class Keywords extends Base{
         -1 => '删除',
     ];
     public $_recommend = [
-        0 => '',
+        0 => '未推荐',
         1 => '推荐'
     ];
 
@@ -18,7 +18,7 @@ class Keywords extends Base{
      */
     public function formatData($data){
 
-        $data['recommend_str'] = $this->_status[$data['recommend']];
+        $data['recommend_str'] = $this->_recommend[$data['recommend']];
         $data['status_str'] = $this->_status[$data['status']];
         
         $data = $this->setTimeAttr($data);

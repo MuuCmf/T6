@@ -47,7 +47,7 @@ class Keywords extends Admin
 
         $fields = '*';
         $rows = input('rows', 20, 'intval');
-        $lists = $this->KeywordsModel->getListByPage($map, 'num desc,create_time desc', $fields, $rows);
+        $lists = $this->KeywordsModel->getListByPage($map, 'create_time desc', $fields, $rows);
         $pager = $lists->render();
         $lists = $lists->toArray();
 
@@ -78,31 +78,19 @@ class Keywords extends Admin
         View::assign('title',$title);
 
         if (request()->isPost()) {
-            
             $data = input();
             // 数据验证
             try {
-                validate(Common::class)->scene('announce')->check([
-                    'title'  => $data['title'],
-                    'content'  => $data['content'],
+                validate(Common::class)->scene('keywords')->check([
+                    'keyword'  => $data['keyword'],
                 ]);
             } catch (ValidateException $e) {
                 // 验证失败 输出错误信息
                 return $this->error($e->getError());
             }
-            // 处理连接至数据
-            if(!empty($data['link_type']) || !empty($data['link_title'])){
-                $link_to = [
-                    'type' => $data['link_type'],
-                    'title' => $data['link_title'],
-                    'type_title' => $data['link_type_title'],
-                    'param' => $data['link_param']
-                ];
-                $data['link_to'] = json_encode($link_to);
-            }
             
             // 写入数据表
-            $res = $this->AnnounceModel->edit($data);
+            $res = $this->KeywordsModel->edit($data);
             
             if ($res) {
                 $this->success($title.'成功', $res, Cookie('__forward__'));
@@ -112,33 +100,20 @@ class Keywords extends Admin
 
         }else{
             if(!empty($id)){
-                $data = $this->AnnounceModel->getDataById($id);
-                $data = $this->AnnounceLogic->formatData($data);
+                $data = $this->KeywordsModel->getDataById($id);
+                $data = $this->KeywordsLogic->formatData($data);
             }else{
                 // 初始化数据
                 $data = [];
                 $data['id'] = 0;
-                $data['type'] = 1;
-                $data['title'] = '';
-                $data['content'] = '';
-                $data['cover'] = '';
-                $data['status'] = 1;
+                $data['keyword'] = '';
                 $data['sort'] = 0;
+                $data['recommend'] = 0;
+                $data['status'] = 1;
             }
             View::assign('data', $data);
-
-            // 获取Micro应用是否安装
-            $micro_is_setup = $this->ModuleModel->checkInstalled('micro');
-            View::assign('micro_is_setup', $micro_is_setup);
-            if($micro_is_setup){
-                // 链接至参数
-                bind('micro\\LinkSsevice', 'app\\micro\\service\\Link');
-                $links = app('micro\\LinkSsevice')->getAllLinks();
-                View::assign('links', $links);
-
-                $link_static_tmpl = app('micro\\LinkSsevice')->getStaticTmpl();
-                View::assign('link_static_tmpl', $link_static_tmpl);
-            }
+            // 设置页面title
+            $this->setTitle($title . '搜索关键字');
 
             // 输出模板
             return View::fetch();
@@ -165,7 +140,7 @@ class Keywords extends Admin
         }
         $data['status'] = $status;
 
-        $res = $this->AnnounceModel->where('id', 'in', $ids)->update($data);
+        $res = $this->KeywordsModel->where('id', 'in', $ids)->update($data);
         if($res){
             return $this->success($title . '成功');
         }else{

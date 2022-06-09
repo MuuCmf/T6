@@ -25,7 +25,7 @@ class Menu extends Admin {
         parent::__construct();
 
         $this->MenuModel = new MenuModel();
-        $this->ModuleModel = new moduleModel();
+        $this->ModuleModel = new ModuleModel();
     }
 
     /**
