@@ -23,7 +23,7 @@ class Api extends Base
         $this->params = request()->param();
         $this->shopid = $params['shopid'] ?? 0;
         $this->initModuleName();
-        $this->checkToken();
+        $this->getUid();
     }
 
     /**
@@ -35,9 +35,9 @@ class Api extends Base
     }
 
     /**
-     * 判断是否带token请求
+     * 获取uid
      */
-    protected function checkToken()
+    protected function getUid()
     {
         $header = request()->header();
         if(isset($header['authorization'])){
@@ -58,12 +58,13 @@ class Api extends Base
                     Cookie::set('token', $token);
                 }
                 if (in_array('header', Config::get('jwt.token_mode'))) {
-                    response()->header(['Authorization' => 'Bearer '.$token]);
+                    //response()->header(['Authorization' => 'Bearer '.$token]);
+                    header('Authorization:'.'Bearer '.$token);
                 }
             }
             
             $uid = $payload['uid']->getValue();
-            $this->uid = $uid;
+            request()->uid = $uid;
         }
     }
 }

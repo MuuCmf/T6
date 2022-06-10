@@ -9,10 +9,14 @@ use app\common\model\Member;
 /**
  * 检测用户是否登录
  * @return integer 0-未登录，大于0-当前登录用户ID
- * @author 麦当苗儿 <zuojiazi@vip.qq.com>
+ * @author 大蒙 <59262424@qq.com>
  */
 function is_login()
 {   
+    if(!empty(request()->uid)){
+        return request()->uid;
+    }
+
     $user = session('user_auth');
     if (empty($user)) {
         return 0;
