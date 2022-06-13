@@ -5,7 +5,7 @@ use app\common\controller\Api;
 use app\common\model\Keywords as KeywordsModel;
 use app\common\logic\Keywords as KeywordsLogic;
 
-class History extends Api
+class Keywords extends Api
 {
     protected $model;
     protected $logic;
@@ -17,21 +17,56 @@ class History extends Api
         $this->model = new KeywordsModel();
     }
 
-    public function lists()
+    /**
+     * 用户搜索历史
+     */
+    public function history()
     {
-        $uid = request()->uid;
+        $uid = get_uid();
         $params = request()->param();
+
+        
+        if(!empty($uid)){
+            $map = [
+                ['shopid' ,'=' ,$params['shopid']],
+                ['status' ,'=' ,1],
+                ['uid' ,'=' ,$uid],
+            ];
+
+            $rows = $params['rows'] ?? 15;
+            $lists = $this->model->getList($map, $rows, 'create_time desc' ,'*');
+            foreach ($lists as &$item){
+                $item = $this->logic->formatData($item);
+            }
+            unset($item);
+
+            return $this->success('success',$lists);
+        }else{
+            return $this->error('用户未登陆');
+        }
+        
+    }
+
+    /**
+     * 系统热门（推荐）搜索关键字
+     */
+    public function hot()
+    {
+        $params = request()->param();
+
         $map = [
             ['shopid' ,'=' ,$params['shopid']],
-            ['uid' ,'=' ,$uid],
             ['status' ,'=' ,1],
+            ['recommend', '=', 1]
         ];
+
         $rows = $params['rows'] ?? 15;
-        $lists = $this->model->where($map)->page($params['page'],$rows)->order('id','DESC')->select()->toArray();
+        $lists = $this->model->getList($map, $rows, 'sort desc,create_time desc' ,'*');
         foreach ($lists as &$item){
             $item = $this->logic->formatData($item);
         }
         unset($item);
-        $this->success('success',$lists);
+
+        return $this->success('success',$lists);
     }
 }
