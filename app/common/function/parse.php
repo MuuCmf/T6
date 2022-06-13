@@ -547,6 +547,16 @@ if (!function_exists('create_guid')) {
     }
 }
 
+if (!function_exists('create_unique')) {
+    /**
+     * 生成唯一标识符
+     */
+    function create_unique(){
+        $data = $_SERVER['HTTP_USER_AGENT'].$_SERVER['REMOTE_ADDR'].time().rand();
+        return sha1($data);
+    }
+}
+
 if (!function_exists('build_order_no')) {
     /**
      * 生成唯一订单号

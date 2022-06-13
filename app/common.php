@@ -238,88 +238,6 @@ if (!function_exists('list_sort_by')) {
     }
 }
 
-/**
- * 把返回的数据集转换成Tree
- * @param array $list 要转换的数据集
- * @param string $pid parent标记字段
- * @param string $level level标记字段
- * @return array
- * @author 麦当苗儿 <zuojiazi@vip.qq.com>
- */
-if (!function_exists('list_to_tree')) {
-    function list_to_tree($list, $pk = 'id', $pid = 'pid', $child = '_child', $root = 0)
-    {
-        // 创建Tree
-        $tree = array();
-        if (is_array($list)) {
-            // 创建基于主键的数组引用
-            $refer = array();
-            foreach ($list as $key => $data) {
-                $refer[$data[$pk]] =& $list[$key];
-            }
-            foreach ($list as $key => $data) {
-                // 判断是否存在parent
-                $parentId = $data[$pid];
-                if ($root == $parentId) {
-                    $tree[] =& $list[$key];
-                } else {
-                    if (isset($refer[$parentId])) {
-                        $parent =& $refer[$parentId];
-                        $parent[$child][] =& $list[$key];
-                    }
-                }
-            }
-        }
-
-        return $tree;
-    }
-}
-
-/**
- * 将list_to_tree的树还原成列表
- * @param  array $tree 原来的树
- * @param  string $child 孩子节点的键
- * @param  string $order 排序显示的键，一般是主键 升序排列
- * @param  array $list 过渡用的中间数组，
- * @return array        返回排过序的列表数组
- * @author yangweijie <yangweijiester@gmail.com>
- */
-if (!function_exists('tree_to_list')) {
-    function tree_to_list($tree, $child = '_child', $order = 'id', &$list = array())
-    {
-        if (is_array($tree)) {
-            $refer = array();
-            foreach ($tree as $key => $value) {
-                $reffer = $value;
-                if (isset($reffer[$child])) {
-                    unset($reffer[$child]);
-                    tree_to_list($value[$child], $child, $order, $list);
-                }
-                $list[] = $reffer;
-            }
-            $list = list_sort_by($list, $order, $sortby = 'asc');
-        }
-        return $list;
-    }
-}
-
-if (!function_exists('action_log')) {
-    /**
-     * 记录行为日志，并执行该行为的规则
-     * @param string $action 行为标识
-     * @param string $model 触发行为的模型名
-     * @param int $record_id 触发行为的记录id
-     * @param int $uid 执行行为的用户id
-     * @return boolean
-     */
-    function action_log($action = null, $model = null, $record_id = null, $uid = null)
-    {   
-        $actionLogModel = new ActionLog();
-
-        return $actionLogModel->add($action, $model, $record_id, $uid);
-    }
-}
-
 if (!function_exists('create_dir_or_files')) {
     //基于数组创建目录和文件
     function create_dir_or_files($files)
@@ -331,104 +249,6 @@ if (!function_exists('create_dir_or_files')) {
                 @file_put_contents($value, '');
             }
         }
-    }
-}
-
-if (!function_exists('get_stemma')) {
-    /**
-     * 获取数据的所有子孙数据的id值
-     */
-    function get_stemma($pids, Model &$model, $field = 'id')
-    {
-        $collection = array();
-
-        //非空判断
-        if (empty($pids)) {
-            return $collection;
-        }
-
-        if (is_array($pids)) {
-            $pids = trim(implode(',', $pids), ',');
-        }
-        $result = $model->field($field)->where(array('pid' => array('IN', (string)$pids)))->select();
-        $child_ids = array_column((array)$result, 'id');
-
-        while (!empty($child_ids)) {
-            $collection = array_merge($collection, $result);
-            $result = $model->field($field)->where(array('pid' => array('IN', $child_ids)))->select();
-            $child_ids = array_column((array)$result, 'id');
-        }
-        return $collection;
-    }
-}
-
-if (!function_exists('get_nav_url')) {
-    /**
-     * 获取导航URL
-     * @param  string $url 导航URL
-     * @return string      解析或的url
-     */
-    function get_nav_url($url)
-    {
-        switch ($url) {
-            case 'http://' === substr($url, 0, 7):
-                return $url;
-            break;
-            case 'https://' === substr($url, 0, 8):
-                return $url;
-            break;
-            case '#' === substr($url, 0, 1):
-                return $url;
-            break;
-            case strpos($url,'/') !== false:
-                $url = url($url);
-                return $url;
-            break;
-            default:
-                $url = url($url . '/index/index');
-                return $url;
-            break;
-        }
-    }
-}
-
-if (!function_exists('get_nav_active')) {
-    /**
-     * @param $url 检测当前自定义导航url是否被选中
-     * @return bool|string
-     */
-    function get_nav_active($url)
-    {
-        switch ($url) {
-            case '/':
-                if (strtolower(request()->domain() . $url) === strtolower(request()->url(true))) {
-                    return 1;
-                }
-            case 'http://' === substr($url, 0, 7):
-                if (strtolower($url) === strtolower(request()->url(true))) {
-                    return 1;
-                }
-            case 'https://' === substr($url, 0, 8):
-                if (strtolower($url) === strtolower(request()->url(true))) {
-                    return 1;
-                }
-            case '#' === substr($url, 0, 1):
-                return 0;
-                break;
-            default:
-                $url_array = explode('/', $url);
-                if ($url_array[0] == '') {
-                    $app_name = $url_array[1];
-                } else {
-                    $app_name = $url_array[0]; //发现模块就是当前模块即选中。
-                }
-                if (strtolower($app_name) === strtolower(app('http')->getName())) {
-                    return 1;
-                };
-                break;
-
-        }
-        return 0;
     }
 }
 
@@ -607,7 +427,7 @@ if (!function_exists('get_url')) {
     }
 }
 
-if (!function_exists('get_url')) {
+if (!function_exists('url_query')) {
     /**
      * 判断网址是否包含参数,有参数返回后缀&，无返回后缀？
      * @param  [type] $url [description]
@@ -624,15 +444,6 @@ if (!function_exists('get_url')) {
     }
 }
 
-if (!function_exists('create_unique')) {
-    /**
-     * 生成唯一标识符
-     */
-    function create_unique(){
-        $data = $_SERVER['HTTP_USER_AGENT'].$_SERVER['REMOTE_ADDR'].time().rand();
-        return sha1($data);
-    }
-}
 
 if (!function_exists('is_weixin')) {
     /**
@@ -702,7 +513,7 @@ if (!function_exists('get_device_type')) {
 }
 if (!function_exists('save_local_storage')) {
     /**
-     * 判断手机是IOS还是Android
+     * 保存至localStorage
      */
     function save_local_storage($key,$value,$script = '')
     {
@@ -760,6 +571,7 @@ if (!function_exists('version_contrast')) {
         }
     }
 }
+
 if (!function_exists('get_upgrade_status')) {
     /**
      * @title 可以升级
