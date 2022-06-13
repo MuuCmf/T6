@@ -65,7 +65,19 @@
                     </td>
                     <td>{$vo.id}</td>
                     <td>{$vo.keyword}</td>
-                    <td>{$vo.uid}</td>
+                    <td>
+                        {if !empty($vo.uid)}
+                        <div class="user-info">
+                            <div class="avatar">
+                                <img src="{$vo.user_info.avatar64}">
+                            </div>
+                            <div class="info">
+                                <div class="uid">uid：{$vo.user_info.uid|intval}</div>
+                                <div class="nickname text-ellipsis">{$vo.user_info.nickname|text}</div>
+                            </div>
+                        </div>
+                        {/if}
+                    </td>
                     <td>{$vo.sort}</td>
                     <td>{$vo.create_time_str}</td>
                     <td>{$vo.update_time_str}</td>

@@ -55,7 +55,7 @@ class Keywords extends Admin
             $val = $this->KeywordsLogic->formatData($val);
         }
         unset($val);
-        
+
         if(request()->isAjax()){
             // ajax请求返回数据
             return $this->success('success', $lists);

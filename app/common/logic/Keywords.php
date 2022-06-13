@@ -22,6 +22,10 @@ class Keywords extends Base{
         $data['status_str'] = $this->_status[$data['status']];
         
         $data = $this->setTimeAttr($data);
+        if(!empty($data['uid'])){
+            $data['user_info'] = query_user($data['uid']);
+        }
+
         return $data;
     }
 }
