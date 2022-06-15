@@ -52,7 +52,8 @@ class History extends Base
      * @param $info_id
      * @param $info_type
      */
-    public static function addLog($uid,$info_id ,$info_type,$shopid, $app,$metadata){
+    public static function addLog($shopid, $app, $uid, $info_id ,$info_type, $metadata)
+    {
         //写浏览记录
         $history_data = [
             'info_id' => $info_id,
