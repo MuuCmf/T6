@@ -46,6 +46,9 @@ class Address extends Api{
         return $this->success('获取成功！',$data);
     }
 
+    /**
+     * 地址详情
+     */
     public function detail(){
         $id = input('get.id',0);
         $data = $this->model->getDataById($id);
@@ -53,8 +56,11 @@ class Address extends Api{
         $this->success('获取成功！',$data);
     }
 
+    /**
+     * 地址列表
+     */
     public function lists(){
-        $uid = request()->uid;
+        $uid = get_uid();
         //初始化查询条件
         $map = [
             ['shopid' ,'=' , $this->shopid],
@@ -68,10 +74,15 @@ class Address extends Api{
         unset($item);
         $this->success('获取成功！',$lists);
     }
-    public function edit(){
+
+    /**
+     * 新增、编辑地址
+     */
+    public function edit()
+    {
         if (request()->isPost()){
             $param = request()->post();
-            $uid = request()->uid;
+            $uid = get_uid();
             $data = [
                 'id' => $param['id'],
                 'uid' => $uid,
@@ -82,9 +93,12 @@ class Address extends Api{
                 'pos_city' => $param['pos_city'],
                 'pos_district' => $param['pos_district'],
                 'address' => $param['address'],
-                'first' => $param['first'], //默认地址
                 'status' => 1
             ];
+
+            if(empty($param['id'])){
+                $data['first'] = 1;
+            }
 
             // 验证数据
             if(empty($data['name'])){
@@ -99,22 +113,19 @@ class Address extends Api{
             if(empty($data['address'])){
                 $this->error('详细地址不能为空！');
             }
-
+            //关闭其他默认地址
+            if ($data['first'] == 1){
+                $this->model->where([
+                    ['shopid','=',$this->shopid],
+                    ['uid','=',$uid]
+                ])->update([
+                    'update_time' => time(),
+                    'first' => 0
+                ]);
+            }
             //写入数据
             $res = $this->model->edit($data);
             if($res){
-                //关闭其他默认地址
-                if ($param['first'] == 1){
-                    $id = is_object($res) ? $res->id : $res;
-                    $this->model->where([
-                        ['id','<>',$id],
-                        ['shopid','=',$this->shopid],
-                        ['uid','=',$uid]
-                    ])->update([
-                        'update_time' => time(),
-                        'first' => 0
-                    ]);
-                }
                 //返回提示
                 $this->success('编辑成功！', $res);
             }else{
