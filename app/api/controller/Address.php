@@ -21,7 +21,7 @@ class Address extends Api{
      * 获取默认地址
      */
     public function default(){
-        $uid = request()->uid;
+        $uid = get_uid();
         $map = [
             ['uid','=',$uid],
             ['shopid' ,'=' , $this->shopid],
@@ -29,7 +29,8 @@ class Address extends Api{
             ['status','=',1],
         ];
         $data = $this->model->getDataByMap($map);
-        if (!$data){
+ 
+        if(!empty($data)){
             $map = [
                 ['uid','=',$uid],
                 ['status','=',1],
@@ -37,8 +38,12 @@ class Address extends Api{
             ];
             $data = $this->model->getDataByMap($map);
         }
-        $data = $this->logic->formatData($data);
-        $this->success('获取成功！',$data);
+
+        if(!empty($data)){
+            $data = $this->logic->formatData($data);
+        }
+        
+        return $this->success('获取成功！',$data);
     }
 
     public function detail(){
