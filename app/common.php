@@ -1,7 +1,6 @@
 <?php
 
 use think\facade\Db;
-use app\common\model\ActionLog;
 
 require_once(__DIR__ . '/common/function/attachment.php');
 require_once(__DIR__ . '/common/function/builder.php');

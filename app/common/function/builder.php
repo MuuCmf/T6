@@ -1,6 +1,7 @@
 <?php
 use think\facade\Db;
 use think\facade\Config;
+use app\common\model\ActionLog;
 /**
  * 后台公共文件
  * 主要定义后台公共函数库
