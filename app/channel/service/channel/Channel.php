@@ -22,7 +22,7 @@ class Channel{
                 }
                 break;
             //微信小程序
-            case 'weixin_app':
+            case 'weixin_mp':
                 //获取配置信息
                 $map = [
                     ['shopid' ,'=' , $shopid],

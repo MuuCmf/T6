@@ -13,6 +13,8 @@ use app\common\logic\Config as ConfigLogic;
  */
 class Common extends Base
 {
+    public $shopid = 0;//店铺ID
+    public $module;//请求的应用
     public $title = '';
     public $keywords = '';
     public $description = '';
@@ -42,7 +44,9 @@ class Common extends Base
      * 初始化
      */
 	public function initialize()
-    {
+    {   
+        //获取应用名
+        $this->initModuleName();
         //获取系统配置
         $this->initMuuConfig();
  		//获取站点LOGO
@@ -57,6 +61,14 @@ class Common extends Base
         $this->initRegAndLogin();
         //获取用户基本资料
         $this->initUserBaseInfo();
+    }
+
+    /**
+     * 实例化应用名称
+     */
+    protected function initModuleName()
+    {
+        $this->module = $this->params['app'] ?? App('http')->getName();
     }
 
     private function initMuuConfig()

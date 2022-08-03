@@ -1011,8 +1011,6 @@ EOF;
     return $html;
 }
 
-
-
 /**
  * 通过ID获取附件路径
  */
@@ -1022,7 +1020,7 @@ function pic($id)
         return false;
     }
     $picture = Db::name('attachment')->where(['id'=>$id])->find();
-    $picture['url'] = get_attachment_url($picture['attachment']);
+    $picture['url'] = request()->domain() . '/attachment/' . $picture['attachment'];
     
     return $picture['url'];
 }
@@ -1050,6 +1048,7 @@ function get_thumb_image($attachment, $width = 100, $height = 'auto', $replace =
             return request()->domain() . '/static/common/images/nopic.png';
         }
         $attach = $Attachment->getThumbImage($picture['attachment'], $width, $height, $replace);
+
         return get_attachment_src($attach['src']);
         
     }else{
@@ -1118,7 +1117,7 @@ function get_attachment_src($attachment)
         // 获取附件路径
         if ($driver == 'local') {
             //本地url
-            return get_attachment_url() . str_replace('//', '/', $attachment); //防止双斜杠的出现
+            return request()->domain() . '/attachment/' . str_replace('//', '/', $attachment); //防止双斜杠的出现
         }
         if ($driver == 'aliyun') {
             return config('extend.OSS_ALIYUN_BUCKET_DOMAIN') . '/' . $attachment;

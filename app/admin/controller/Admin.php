@@ -7,6 +7,7 @@ use think\facade\Db;
 use think\facade\View;
 use app\common\controller\Base;
 use app\admin\model\Menu;
+use app\admin\model\AuthRule;
 use app\common\model\Module as ModuleModel;
 
 /**
@@ -29,14 +30,9 @@ class Admin extends Base
     protected $title;
     protected $moduleModel;
     public $isRoot;
-    /**
-     * 当前模块管理菜单
-     * @var array
-     */
     protected $menu = [];
-
     public $shopid = 0;//店铺Id，sass平台拓展
-
+    public $app_name = ''; // 应用标识
     /**
      * 构造方法
      * @access public
@@ -53,26 +49,24 @@ class Admin extends Base
         $this->isRoot = 1;
         // 判断登陆
         $this->needLogin();
+        $this->recordRequest();
         $this->setTitle();
         // 当前系统域名
         View::assign('this_domain',request()->domain());
         // 当前模块、控制器及方法名
-        View::assign('this_module',strtolower(app('http')->getName()));
+        $this->app_name = strtolower(app('http')->getName());
+        View::assign('this_app', $this->app_name);
         View::assign('this_controller',strtolower(request()->controller()));
         View::assign('this_action',strtolower(request()->action()));
         // 当前应用模块信息
-        $module_name = input('get.module_name');
-        $module = $this->moduleModel->getModule($module_name ?? app('http')->getName());
-        if(!empty($module)){
-            $module['icon'] = $this->moduleModel->getIcon($module['name'], $module['icon']);
-        }
-        View::assign('MODULE', $module);
+        $module = $this->moduleModel->getModule($this->app_name);
+        View::assign('module', $module);
         //当前管理菜单
-        View::assign('ADMIN_MENU', $this->getMenus());
+        View::assign('admin_menu', $this->getMenus());
         // 模块入口
-        View::assign('ALL_MODULE_LIST', $this->allModuleList()); 
+        View::assign('all_module_list', $this->allModuleList()); 
         //获取登录用户数据
-        View::assign('AUTH_USER',query_user(is_login()));
+        View::assign('auth_user',query_user(is_login()));
         //框架版本号
         View::assign('version',$this->version());
         //数据库版本号
@@ -123,10 +117,6 @@ class Admin extends Base
         $module = input('param.module_name') ?? app('http')->getName();
         $controller = Request()->controller();
         $action = Request()->action();
-
-        //$menus  =   session('ADMIN_MENU_LIST'.$controller);
-
-        //if (empty($menus)) {
         // 获取主菜单
         $where[] = ['pid','=','0'];
         $menuModel = new Menu();
@@ -138,6 +128,7 @@ class Admin extends Base
             ['url','=', $module .'/'. $controller .'/'. $action],
         ];
         $current = Db::name('menu')->where($current_map)->find();
+        
         //获取顶级菜单数据
         $nav_current_id = 0;
         if (input('?param.module_name') && $module != 'admin'){
@@ -152,7 +143,7 @@ class Admin extends Base
         }
 
         if ($nav_current_id) {
-            //echo $nav_first_title;
+
             foreach ($menus['main'] as $key => $item) {
 
                 //如果是模块菜单获取模块信息
@@ -167,7 +158,7 @@ class Admin extends Base
                     $item['url'] = $module . '/' . $item['url'];
                 }
                 // 判断主菜单权限
-                if (!$this->isRoot && !$this->checkRule($item['url'], AuthRuleModel::RULE_MAIN, null)) {
+                if (!$this->isRoot && !$this->checkRule($item['url'], AuthRule::RULE_MAIN, null)) {
                     unset($menus['main'][$key]);
                     continue;//继续循环
                 }
@@ -227,7 +218,7 @@ class Admin extends Base
                 }
             }
         }
-        //}
+
         return $menus;
     }
 
@@ -319,6 +310,11 @@ class Admin extends Base
             return false;
         }
         return true;
+    }
+
+    public function recordRequest(){
+        $result = (new \app\admin\lib\Cloud())->recordRequest();
+        return $result;
     }
 
     /**

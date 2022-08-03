@@ -91,14 +91,15 @@ class Message extends Base
     {
         // 发送用户
         if($data['uid'] == 0){
+            $avatar = request()->domain() . '/static/common/images/message_icon/system.png';
             // uid为0时属系统信息
             $data['form_user'] = [
                 'nickname' => '系统',
-                'avatar' => get_attachment_src(config('system.WEB_SITE_LOGO')),
-                'avatar64' => get_attachment_src(config('system.WEB_SITE_LOGO')),
-                'avatar128' => get_attachment_src(config('system.WEB_SITE_LOGO')),
-                'avatar256' => get_attachment_src(config('system.WEB_SITE_LOGO')),
-                'avatar512' => get_attachment_src(config('system.WEB_SITE_LOGO')),
+                'avatar' => $avatar,
+                'avatar64' => $avatar,
+                'avatar128' => $avatar,
+                'avatar256' => $avatar,
+                'avatar512' => $avatar,
             ];
         }else{
             // 包含uid时为用户之间互动消息

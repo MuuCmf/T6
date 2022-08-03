@@ -15,7 +15,7 @@
       <!-- Muu system menus -->
       <div class="nav-system-menu">
         <ul class="nav navbar-nav">
-          {volist name="ADMIN_MENU.main" id="menu"}
+          {volist name="admin_menu.main" id="menu"}
             {neq name="$menu.type" value="1"}
             <li data-id="{$menu.id}" data-url="{$menu.url}" class="{$menu.class|default=''}">
                 <a href="{$menu.url|url}">
@@ -59,20 +59,20 @@
           </li>
           <li class="dropdown user user-menu">
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-              <img src="{$AUTH_USER.avatar64}" class="user-image" alt="User Image">
-              <span class="nickname">{$AUTH_USER.nickname}</span>
+              <img src="{$auth_user.avatar64}" class="user-image" alt="User Image">
+              <span class="nickname">{$auth_user.nickname}</span>
             </a>
             <ul class="dropdown-menu">
               <!-- User image -->
               <li class="user-header">
-                <img src="{$AUTH_USER.avatar64}" class="img-circle" alt="User Image">
+                <img src="{$auth_user.avatar64}" class="img-circle" alt="User Image">
                 <p>
-                  {$AUTH_USER.nickname}
+                  {$auth_user.nickname}
                   <small>
-                      {empty name="AUTH_USER['signature']"}
+                      {empty name="auth_user['signature']"}
                         这家伙太懒，不爱写签名
                       {else /}
-                        {$AUTH_USER.signature}
+                        {$auth_user.signature}
                       {/empty}
                   </small>
                 </p>

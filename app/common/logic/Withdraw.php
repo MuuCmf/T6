@@ -8,7 +8,8 @@ use app\channel\logic\Channel;
  * Class Withdraw
  * @package app\common\logic
  */
-class Withdraw extends Base{
+class Withdraw extends Base
+{
     public $_paid = [
         0 => '提现中',
         1 => '已完成'

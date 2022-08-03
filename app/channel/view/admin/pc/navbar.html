@@ -30,7 +30,7 @@
                     </select>
             
                     <select name="nav[app][]" class="form-control module margin-right" style="width: 100px;{if $nav['type']=='_custom'}display:none{/if}">
-                        {volist name="module" id="v"}
+                        {volist name="module_list" id="v"}
                         {if strtolower($nav['app']) == strtolower($v['name'])}
                         <option value="{$v.name}" selected>{$v.alias}</option>
                         {else}
@@ -85,12 +85,12 @@
             </select>
 
             <select name="nav[app][]" class="form-control module margin-right" style="width: 100px;">
-                {volist name="module" id="v"}
+                {volist name="module_list" id="v"}
                 <option value="{$v.name}">{$v.alias}</option>
                 {/volist}
             </select>
-            <input name="nav[title][]" placeholder="请输入标题" class="form-control title margin-right" style="width: 100px;" value="{$module.0.alias}">
-            <input name="nav[url][]" placeholder="请输入链接" class="form-control url margin-right" style="width: 300px;display:none" value="{$module.0.entry}">
+            <input name="nav[title][]" placeholder="请输入标题" class="form-control title margin-right" style="width: 100px;" value="{$module_list.0.alias}">
+            <input name="nav[url][]" placeholder="请输入链接" class="form-control url margin-right" style="width: 300px;display:none" value="{$module_list.0.entry}">
         </div>
 
         <div class='pull-left new-blank'>

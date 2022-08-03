@@ -4,9 +4,9 @@ namespace app\common\logic;
 use app\channel\logic\OfficialAccount;
 use app\channel\model\WechatConfig;
 use app\common\model\Module;
-use app\micro\model\MicroConfig;
 
-class Config extends Base{
+class Config extends Base
+{
     //前端所需参数
     protected $_frontend_params = [
         //站点基础配置
@@ -51,10 +51,11 @@ class Config extends Base{
         'WITHDRAW_DAY_NUM',
         'WITHDRAW_MIN_PRICE',
         'WITHDRAW_MAX_PRICE',
-        //用户协议
+        //用户
         'USER_REG_AGREEMENT',
         'USER_REG_SWITCH',
-        'USER_LOGIN_SWITCH'
+        'USER_LOGIN_SWITCH',
+        'USER_MOBILE_BIND'
     ];
 
 
@@ -63,7 +64,7 @@ class Config extends Base{
      * @param $shopid
      * @return array
      */
-    public function frontend($shopid){
+    public function frontend($shopid = 0){
         $config = [];
         //获取基础配置
         $base_config = $this->handle()['system'];
@@ -80,9 +81,20 @@ class Config extends Base{
                 $config[$key] = $withdraw_config[$key];
             }
         }
-        //$config['system'] = $this->handle()['system'];
-        //$config['extend'] = config('extend');
 
+        //获取公众号配置
+        //$config['weixin_h5'] = $this->weixinH5($shopid );
+
+        //获取已安装模块列表
+        //$config['module'] = $this->app();
+        return $config;
+    }
+
+    /**
+     * 获取公众号配置
+     */
+    public function weixinH5($shopid = 0)
+    {
         //获取公众号配置
         $weixin_h5 = (new WechatConfig())->where('shopid',$shopid)->field('title,desc,cover,qrcode,appid')->find();
         if ($weixin_h5){
@@ -91,13 +103,22 @@ class Config extends Base{
         }
         $config['weixin_h5'] = $weixin_h5 ?? [];
 
+        return $weixin_h5;
+    }
+
+    /**
+     * 获取已安装应用列表
+     */
+    public function app()
+    {
         //获取已安装模块列表
-        $module_map = [
+        $map = [
             ['is_setup', '=', 1]
         ];
-        $config['module'] = (new Module())->where($module_map)->field('name')->select()->toArray();
-        $config['module'] = array_column($config['module'],'name');
-        return $config;
+        $list = (new Module())->where($map)->field('name')->select()->toArray();
+        $arr = array_column($list,'name');
+
+        return $arr;
     }
 
     public function handle()

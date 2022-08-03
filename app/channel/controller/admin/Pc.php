@@ -18,6 +18,7 @@ class Pc extends MuuAdmin{
         parent::__construct();
 
         $this->channelModel = new ChannelModel();
+        
     }
 
     /**
@@ -66,8 +67,8 @@ class Pc extends MuuAdmin{
             View::assign('list', $list);
             // 获取应用模块列表
             $moduleModel = new ModuleModel();
-            $module = $moduleModel->getAll(['is_setup' => 1]);
-            View::assign('module', $module);
+            $module_list = $moduleModel->getAll(['is_setup' => 1]);
+            View::assign('module_list', $module_list);
             
             $this->setTitle('导航管理');
 
@@ -119,8 +120,8 @@ class Pc extends MuuAdmin{
             View::assign('list', $list);
             // 获取应用模块列表
             $moduleModel = new ModuleModel();
-            $module = $moduleModel->getAll(['is_setup' => 1]);
-            View::assign('module', $module);
+            $module_list = $moduleModel->getAll(['is_setup' => 1]);
+            View::assign('module_list', $module_list);
             
             $this->setTitle('导航管理');
 
@@ -161,13 +162,12 @@ class Pc extends MuuAdmin{
             /* 获取频道列表 */
             $map[] = ['status','>', -1];
             $list = Db::name('UserNav')->where($map)->order('sort asc,id asc')->select()->toArray();
-            
+            View::assign('list', $list);
             // 获取应用模块列表
             $moduleModel = new ModuleModel();
-            $module = $moduleModel->getAll(['is_setup' => 1]);
-            View::assign('module', $module);
-            View::assign('list', $list);
-
+            $module_list = $moduleModel->getAll(['is_setup' => 1]);
+            View::assign('module_list', $module_list);
+            
             return View::fetch();
         }
     }

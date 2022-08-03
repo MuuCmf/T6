@@ -12,8 +12,7 @@ use app\common\model\Verify;
 use app\common\model\Member;
 use app\common\model\ScoreType;
 use app\common\model\Action;
-use app\common\model\Message as MessageModel;
-use app\common\model\MessageType as MessageTypeModel;
+use app\common\model\MemberWallet;
 
 class Config extends Common
 {
@@ -22,16 +21,20 @@ class Config extends Common
     ];
 
     /**
-     * 用户中心首页
+     * 用户中心
      */
     public function index()
     {
-        $aNickname = input('post.nickname', '', 'text');
-        $aSex = input('post.sex', 0, 'intval');
-        $aSignature = input('post.signature', '', 'text');
-
         if (Request()->isPost()) {
-            $uid = is_login();
+            $aNickname = input('post.nickname', '', 'text');
+            $aSex = input('post.sex', 0, 'intval');
+            $aSignature = input('post.signature', '', 'text');
+            // $birthday = input('post.birthday', 0, 'intval');
+            // $birthday_format = date_parse_from_format('Y年m月d日', $birthday);
+            // $birthday = mktime(0,0,0,$birthday_format['month'], $birthday_format['day'], $birthday_format['year']);
+            // $birthday = date('Y-m-d',$birthday);
+
+            $uid = get_uid();
             $commonMemberModel = new Member;
             $check = $commonMemberModel->checkNickname($aNickname, $uid);
             if($check !== true){
@@ -40,8 +43,8 @@ class Config extends Common
             $user['nickname'] = $aNickname;
             $user['sex'] = $aSex;
             $user['signature'] = $aSignature;
-
-            $res = Db::name('Member')->where(['uid'=>get_uid()])->update($user);
+            //$user['birthday']  =  $birthday;
+            $res = Db::name('Member')->where('uid', $uid)->update($user);
             if ($res) {
                 return $this->success('设置成功');
 
@@ -51,7 +54,7 @@ class Config extends Common
 
         } else {
             //调用基本信息
-            $user = query_user(is_login(),['username','nickname', 'signature', 'email', 'mobile', 'avatar', 'sex']);
+            $user = query_user(is_login(),['username','nickname', 'signature', 'email', 'mobile', 'avatar', 'sex', 'birthday']);
             //显示页面
             View::assign('user', $user);
             // $this->_getExpandInfo();
@@ -60,6 +63,38 @@ class Config extends Common
 
             return View::fetch();
         }
+    }
+
+    /**
+     * @title 获取用户信息
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\DbException
+     * @throws \think\db\exception\ModelNotFoundException
+     */
+    public function userInfo()
+    {
+        $uid = get_uid();
+        //查询用户信息
+        $user = query_user($uid,['uid','nickname','avatar','email','mobile','realname','sex','qq','score1','birthday','signature']);
+        if ($user){
+            //格式化生日
+            $birthday = strtotime($user['birthday']);
+            $birthday = $birthday > 0 ? $birthday : time();
+            $user['birthday'] = date('Y年m月d日',$birthday);
+            //获取钱包数据
+            $wallet = (new MemberWallet())->where('uid',$uid)->field('balance,freeze,revenue')->find();
+            if ($wallet){
+                $user['wallet'] = $wallet->toArray();
+            }else{
+                $user['wallet'] = [
+                    'balance'   =>  0,
+                    'freeze'    =>  0,
+                    'revenue'   =>  0
+                ];
+            }
+            $this->success('success',$user);
+        }
+        $this->error('没有查询到用户数据');
     }
 
     /**
@@ -91,7 +126,7 @@ class Config extends Common
                 ];
             }
             
-            $res = Db::name('Member')->where(['uid' => is_login()])->update($data);
+            $res = Db::name('Member')->where(['uid' => get_uid()])->update($data);
             if ($res) {
                 return $this->success('保存成功');
             }else{
@@ -105,6 +140,95 @@ class Config extends Common
 
             return View::fetch();
         }
+    }
+
+    /**
+     *@title 修改用户信息
+     */
+    public function edit()
+    {
+        if (\request()->post()){
+            $birthday_format = date_parse_from_format('Y年m月d日',$this->params['birthday']);
+            $birthday = mktime(0,0,0,$birthday_format['month'],$birthday_format['day'],$birthday_format['year']);
+            $birthday = date('Y-m-d',$birthday);
+            $data = [
+                'uid'   =>  get_uid(),
+                'nickname'  =>  $this->params['nickname'],
+                'sex'       =>  $this->params['sex'],
+                'birthday'  =>  $birthday,
+                'signature' =>  $this->params['signature']
+            ];
+            $result = (new Member)->edit($data);
+            if ($result){
+                $this->success('修改成功');
+            }
+            $this->error('网络异常，请稍后再试');
+        }
+    }
+
+        /**
+     * 绑定手机号
+     */
+    public function mobile()
+    {
+        $uid = request()->uid;
+        $mobile = input('post.mobile');
+        $code = input('post.code');
+
+        if (empty($mobile)){
+            $this->error('请输入手机号');
+        }
+        if (empty($code)){
+            $this->error('请输入验证码');
+        }
+        $verifyModel = new Verify();
+        if (!$verifyModel->checkVerify($mobile, 'mobile', $code)) {
+            $this->error('验证码错误');
+        }
+
+        $memberModel = new Member;
+        $has_bind = $memberModel->where('mobile',$mobile)->count();
+        if ($has_bind > 0){
+            $this->error('当前手机号已被他人绑定');
+        }
+        $data = ['uid' => $uid,'mobile' => $mobile];
+        $res = $memberModel->edit($data);
+        if ($res){
+            $this->success('绑定成功');
+        }
+        $this->error('绑定失败');
+    }
+
+    /**
+     * 绑定邮件
+     */
+    public function email(){
+        $uid = request()->uid;
+        $email = input('post.email');
+        $code = input('post.code');
+
+        if (empty($email)){
+            $this->error('请输入邮箱');
+        }
+        if (empty($code)){
+            $this->error('请输入验证码');
+        }
+        $verifyModel = new Verify();
+        if (!$verifyModel->checkVerify($email, 'email', $code)) {
+            $this->error('验证码错误');
+        }
+        $memberModel = new Member;
+
+        $has_bind = $memberModel->where('email',$email)->count();
+        if ($has_bind > 0){
+            $this->error('当前邮箱已被他人绑定');
+        }
+        $data = ['uid' => $uid,'email' => $email];
+        $res = $memberModel->edit($data);
+        if ($res){
+            $this->success('绑定成功');
+        }
+        $this->error('绑定失败');
     }
 
     /**
@@ -141,24 +265,34 @@ class Config extends Common
      */
     public function avatar()
     {
-        if (Request()->isPost()) {
+        if (request()->isPost()) {
             $crop = input('post.crop', '', 'text');
             $uid = is_login();
             $path = input('post.path', '', 'text');
+            $avatar = input('post.avatar', '', 'text');
             
-            if (empty($crop)) {
-                return $this->error('参数错误');
+            $memberModel = new Member();
+            if(!empty($avatar)){
+                $res = $memberModel->edit([
+                    'uid' => $uid,
+                    'avatar' => $avatar
+                ]);
+            }else{
+                if (empty($crop)) {
+                    return $this->error('参数错误');
+                }
+    
+                // 裁切图片
+                $Attachment = new Attachment();
+                $path = $Attachment->cropImage($path, $crop);
+    
+                //更新数据库数据
+                $data = [
+                    'avatar' => $path,
+                ];
+                $res = Db::name('Member')->where(['uid' => $uid])->update($data);
             }
 
-            // 裁切图片
-            $Attachment = new Attachment();
-            $path = $Attachment->cropImage($path, $crop);
-
-            //更新数据库数据
-            $data = [
-                'avatar' => $path,
-            ];
-            $res = Db::name('Member')->where(['uid' => $uid])->update($data);
             if ($res) {
                 return $this->success('保存成功');
             }else{

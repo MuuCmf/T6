@@ -60,12 +60,13 @@ class Attachment extends Model
         foreach($files as $file){
             //判断是否已经存在
             $sha1 = $file->hash('sha1');
-            //处理已存在图片
+            //处理已存在
             $file_info = $this->where(['sha1'=>$sha1])->find();
             if(!empty($file_info)){
                 $file_res = [];
                 $data = $file_info->toArray();
                 $file_res['filename'] = $data['filename'];
+                $file_res['ext'] = $data['ext'];
                 $file_res['size'] = $data['size'];
                 $file_res['attachment'] = $data['attachment'];
                 $file_res['url'] = get_attachment_src($data['attachment']);
@@ -140,6 +141,7 @@ class Attachment extends Model
                 // 返回数据
                 $file_res = [];
                 $file_res['filename'] = $data['filename'];
+                $file_res['ext'] = $data['ext'];
                 $file_res['size'] = $data['size'];
                 $file_res['attachment'] = $data['attachment'];
                 $file_res['url'] = get_attachment_src($data['attachment']);
@@ -168,6 +170,7 @@ class Attachment extends Model
                 $img = [];
                 $data = $pic_info->toArray();
                 $img['filename'] = $data['filename'];
+                $img['ext'] = $data['ext'];
                 $img['size'] = $data['size'];
                 $img['attachment'] = $data['attachment'];
                 $img['url'] = get_attachment_src($data['attachment']);
@@ -223,6 +226,7 @@ class Attachment extends Model
                 // 返回数据
                 $avatar = [];
                 $avatar['filename'] = $data['filename'];
+                $avatar['ext'] = $data['ext'];
                 $avatar['size'] = $data['size'];
                 $avatar['attachment'] = $data['attachment'];
                 $avatar['url'] = get_attachment_src($data['attachment']);
@@ -464,7 +468,7 @@ class Attachment extends Model
         $UPLOAD_PATH = PUBLIC_PATH . '/attachment/';
         $attachment = str_ireplace($UPLOAD_URL, '', $attachment); //将URL转化为本地地址
         $info = pathinfo($attachment);
-
+        
         $oldFile = $info['dirname'] . DIRECTORY_SEPARATOR . $info['filename'] . '.' . $info['extension'];
         $thumbFile = $info['dirname'] . DIRECTORY_SEPARATOR . $info['filename'] . '_' . $width . '_' . $height . '.' . $info['extension'];
 
@@ -474,7 +478,7 @@ class Attachment extends Model
         $filename = ltrim($attachment, '/');
         $oldFile = ltrim($oldFile, '/');
         $thumbFile = ltrim($thumbFile, '/');
-
+        
         if (!file_exists($UPLOAD_PATH . $oldFile)) {
             //原图不存在直接返回
             @unlink($UPLOAD_PATH . $thumbFile);
@@ -513,8 +517,7 @@ class Attachment extends Model
                 //默认裁切类型标识缩略图居中裁剪类型，先写死，后续版本增加后台设置
                 $thumb->thumb($width, $height, Image::THUMB_CENTER);
                 $thumb->save($UPLOAD_PATH . $thumbFile);
-
-                $info['src'] = $UPLOAD_PATH . $thumbFile;
+                $info['src'] = $thumbFile;
                 $info['width'] = $old_image_width;
                 $info['height'] = $old_image_height;
                 return $info;

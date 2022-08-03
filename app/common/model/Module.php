@@ -67,8 +67,6 @@ class Module extends Base
                 // 合并数据表内模块
                 $module_info = $this->getModule($info['name']);
                 if($module_info){
-                    $module_info = $module_info->toArray();
-                    
                     if(is_array($module_info)){
                         $info = array_merge($info, $module_info);
                     }
@@ -93,7 +91,8 @@ class Module extends Base
         $this->cleanModulesCache();
     }
 
-    /**重置单个模块信息
+    /**
+     * 重置单个模块信息
      * @param $name
      */
     public function reloadModule($name)
@@ -126,7 +125,8 @@ class Module extends Base
         }
     }
 
-    /**检查模块是否已经安装
+    /**
+     * 检查模块是否已经安装
      * @param $name
      * @return bool
      */
@@ -155,7 +155,8 @@ class Module extends Base
         cache('admin_modules', null);
     }
 
-    /**清理某个模块的缓存
+    /**
+     * 清理某个模块的缓存
      * @param $name 模块名
      */
     public function cleanModuleCache($name)
@@ -164,7 +165,8 @@ class Module extends Base
 
     }
 
-    /**卸载模块
+    /**
+     * 卸载模块
      * @param $id 模块ID
      * @param int $withoutData 0.清理数据 1.不清理数据
      * @return bool
@@ -234,16 +236,23 @@ class Module extends Base
      */
     public function getModule($name)
     {
-        if($name == 'admin'){
+        if($name == 'admin' || $name == "channel" || $name == "ucenter"){
             return false;
         }
 
-        $info = $this->where(['name'=>$name])->find();
-
+        $info = $this->where('name', $name)->find();
+        if(!empty($info)){
+            $info = $info->toArray();
+            $icon = $this->getIcon($name, $info['icon']);
+            
+            $info['icon_url'] = $icon;
+        }
+        
         return $info;
     }
 
-    /**通过ID获取模块信息
+    /**
+     * 通过ID获取模块信息
      * @param $id
      * @return array|mixed
      */
@@ -283,7 +292,8 @@ class Module extends Base
         }
     }
 
-    /**安装某个模块
+    /**
+     * 安装某个模块
      * @param $id
      * @return bool
      */

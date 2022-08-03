@@ -1,7 +1,8 @@
 <?php
 namespace app\common\logic;
 
-class Keywords extends Base{
+class Keywords extends Base
+{
 
     public $_status  = [
         1  => '启用',
@@ -16,7 +17,8 @@ class Keywords extends Base{
     /**
      * 处理数据
      */
-    public function formatData($data){
+    public function formatData($data)
+    {
 
         $data['recommend_str'] = $this->_recommend[$data['recommend']];
         $data['status_str'] = $this->_status[$data['status']];

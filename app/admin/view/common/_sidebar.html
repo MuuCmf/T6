@@ -1,18 +1,18 @@
 <aside class="main-sidebar">
     <!-- sidebar: style can be found in sidebar.less -->
     <section class="sidebar">
-      {notempty name="MODULE"}
+      {notempty name="module"}
       <div class="expand-info">
         <div class="expand-icon">
-          <img src="{$MODULE.icon}" />
+          <img src="{$module.icon_url}" />
         </div>
-        <h3 class="title">{$MODULE.alias}</h3>
-        <p class="version">版本：{$MODULE.version}</p>
+        <h3 class="title">{$module.alias}</h3>
+        <p class="version">版本：{$module.version}</p>
       </div>
       {/notempty}
       <!-- sidebar menu: : style can be found in sidebar.less -->
-      {notempty name="ADMIN_MENU.child"}
-      {volist name="ADMIN_MENU.child" id="sub_menu"}
+      {notempty name="admin_menu.child"}
+      {volist name="admin_menu.child" id="sub_menu"}
       <ul class="sidebar-menu" data-widget="tree">
         
         <li class="treeview menu-open">
@@ -32,7 +32,7 @@
           </a>
           <ul class="treeview-menu menu-open">
               {volist name="sub_menu.child" id="c_menu"}
-              {if strtolower($c_menu.url) == ($this_module.'/'.$this_controller.'/'.$this_action)}
+              {if strtolower($c_menu.url) == ($this_app.'/'.$this_controller.'/'.$this_action)}
               <li data-id="{$c_menu.id}" data-url="{$c_menu.url|url}" class="active">
               {else /}
               <li data-id="{$c_menu.id}" data-url="{$c_menu.url|url}">
@@ -54,7 +54,7 @@
       {/volist}
       {/notempty}
 
-      {notempty name="ALL_MODULE_LIST"}
+      {notempty name="all_module_list"}
       {if($this_controller == 'index')}
       <!--常用应用-->
       <ul class="sidebar-menu module-menu" data-widget="tree">
@@ -68,7 +68,7 @@
               </span>
           </a>
           <ul class="treeview-menu module-treeview-menu menu-open">
-            {volist name="ALL_MODULE_LIST" id="vo"}
+            {volist name="all_module_list" id="vo"}
             <li>
                 <a href="{:url($vo.entry)}">
                   <img class="icon" src="{$vo.icon}" />

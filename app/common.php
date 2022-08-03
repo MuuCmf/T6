@@ -10,7 +10,6 @@ require_once(__DIR__ . '/common/function/parse.php');
 require_once(__DIR__ . '/common/function/poster.php');
 require_once(__DIR__ . '/common/function/qrcode.php');
 require_once(__DIR__ . '/common/function/time.php');
-require_once(__DIR__ . '/common/function/wechat.php');
 
 /**
  * 系统公共库文件
@@ -596,17 +595,23 @@ if (!function_exists('need_authorization')){
      * @title 检测授权
      * @throws HttpResponseException
      */
-    function need_authorization(){
-        $module = get_module_name();
-        $result = (new \app\admin\lib\Cloud())->needAuthorization($module);
-        if (!$result){
-            $result = [
-                'code' => 0,
-                'msg'  => '应用未授权',
-                'data' => [],
-                'url'  => request()->domain(),
-                'wait' => 3,
-            ];
+    function need_authorization($app_name = ''){
+        if(empty($app_name)){
+            $app_name = get_module_name();
+        }
+
+        $result = (new \app\admin\lib\Cloud())->needAuthorization($app_name);
+        if ($result == false || is_array($result) && $result['code'] == 0){
+            if(!is_array($result)){
+                $result = [
+                    'code' => 0,
+                    'msg'  => '警告！未获取授权',
+                    'data' => [],
+                    'url'  => '',
+                    'wait' => 3,
+                ];
+            }
+            
             $type = (request()->isJson() || request()->isAjax()) ? 'json' : 'html';
             if ($type == 'html') {
                 $response = view(app('config')->get('app.dispatch_error_tmpl'), $result);
@@ -618,29 +623,7 @@ if (!function_exists('need_authorization')){
     }
 }
 
-function emoji_encode($str){
-    $strEncode = '';
 
-    $length = mb_strlen($str,'utf-8');
 
-    for ($i=0; $i < $length; $i++) {
-        $_tmpStr = mb_substr($str,$i,1,'utf-8');
-        if(strlen($_tmpStr) >= 4){
-            $strEncode .= '[[EMOJI:'.rawurlencode($_tmpStr).']]';
-        }else{
-            $strEncode .= $_tmpStr;
-        }
-    }
-
-    return $strEncode;
-}
-//对emoji表情转反义
-function emoji_decode($str)
-{
-    $strDecode = preg_replace_callback('|\[\[EMOJI:(.*?)\]\]|', function ($matches) {
-        return rawurldecode($matches[1]);
-    }, $str);
-    return $strDecode;
-}
 
 

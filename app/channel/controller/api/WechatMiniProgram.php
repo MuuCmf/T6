@@ -13,7 +13,8 @@ use think\facade\Cache;
  * Class MiniProgram
  * @package app\channel\controller\service
  */
-class WechatMiniProgram extends Base {
+class WechatMiniProgram extends Base
+{
     protected $MemberSyncModel;
     protected $MemberModel;
     protected $middleware = [
@@ -32,7 +33,8 @@ class WechatMiniProgram extends Base {
      * code 换取用户信息
      * @param $code
      */
-    public function code($code){
+    public function code($code)
+    {
         $result = MiniProgramServer::user($code);
         if (!isset($result['openid'])){
             $this->error($result['errmsg']);
@@ -40,7 +42,7 @@ class WechatMiniProgram extends Base {
         //查询是否注册过
         $map = [];
         $map[] = ['openid','=',$result['openid']];
-        $map[] = ['type','=', 'weixin_app'];
+        $map[] = ['type','=', 'weixin_mp'];
         $user = $this->MemberSyncModel->getDataByMap($map);
         if ($user){
             $user = query_user($user['uid'],['uid','nickname','avatar','email','mobile','realname','sex','qq','score1']);
@@ -57,7 +59,8 @@ class WechatMiniProgram extends Base {
 
     }
 
-    public function login(){
+    public function login()
+    {
         $params = input('param.');
         $oauth = MiniProgramServer::user($params['code']);
         $result = MiniProgramServer::decryptData($oauth['session_key'],$params['iv'],$params['encrypted_data']);
@@ -68,7 +71,7 @@ class WechatMiniProgram extends Base {
             'avatar'    => $result['avatarUrl'],
             'sex'       => $result['gender'],
             'shopid'    => $params['shopid'],
-            'oauth_type' => 'weixin_app'
+            'oauth_type' => 'weixin_mp'
         ];
         $user = $this->MemberModel->oauth($data);
         if ($user){
@@ -83,7 +86,8 @@ class WechatMiniProgram extends Base {
      * 获取小程序码：适用于需要的码数量极多，或仅临时使用的业务场景
      * @return mixed
      */
-    public function unlimitQrcode(){
+    public function unlimitQrcode()
+    {
         //小程序路径
         $path = input('param.path');
         //二维码url参数
@@ -98,12 +102,18 @@ class WechatMiniProgram extends Base {
         echo $result;
     }
 
-    public function bindMobile(){
+    /**
+     * 绑定手机号
+     */
+    public function bindMobile()
+    {
         $uid = request()->uid;
-        $params = request()->param();
-        $code_decode = MiniProgramServer::user($params['code']);
+        $code = input('code');
+        $iv = input('iv');
+        $encrypted = input('encrypted');
+        $code_decode = MiniProgramServer::user($code);
         $session_key = $code_decode['session_key'];
-        $data = MiniProgramServer::decryptData($session_key,$params['iv'],$params['encrypted']);
+        $data = MiniProgramServer::decryptData($session_key,$iv,$encrypted);
         //保存手机号
         $res = $this->MemberModel->edit([
             'uid' => $uid,

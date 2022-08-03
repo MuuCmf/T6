@@ -125,6 +125,7 @@ class Base
             'msg'  => $msg,
             'data' => $data,
             'url'  => $url,
+            'time' => time(),
             'wait' => $wait,
         ];
 
@@ -164,6 +165,7 @@ class Base
             'msg'  => $msg,
             'data' => $data,
             'url'  => $url,
+            'time' => time(),
             'wait' => $wait,
         ];
 
@@ -187,13 +189,14 @@ class Base
     * @param  array $header 发送的Header信息
     * @return void
     */
-   protected function result(int $code = 0, string $msg = '', $data = '', $url = '',$type = 'json', array $header = []): Response
+   protected function result(int $code = 0, string $msg = '', $data = '', $url = '',int $wait = 3, array $header = []): Response
    {
         $result = [
             'code' => $code,
             'msg' => $msg,
             'data' => $data,
             'url' => $url,
+            'wait' => $wait,
             'time' => time(),
         ];
 

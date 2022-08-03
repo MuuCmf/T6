@@ -52,10 +52,18 @@ class History extends Base
      * @param $info_id
      * @param $info_type
      */
-    public static function addLog($shopid, $app, $uid, $info_id ,$info_type, $metadata)
+    public function addLog($shopid = 0, $app, $uid, $info_id ,$info_type, $metadata)
     {
+        // 判断是否存在记录
+        $data = $this->yesHistory($shopid, $app, $uid, $info_id, $info_type);
+
+        $id = 0;
+        if($data){
+            $id = $data['id'];
+        }
         //写浏览记录
         $history_data = [
+            'id' => $id,
             'info_id' => $info_id,
             'info_type' => $info_type,
             'uid'=> $uid,
@@ -64,7 +72,9 @@ class History extends Base
             'status' => 1,
             'metadata' => json_encode($metadata)
         ];
-        (new History())->edit($history_data);
+        $res = $this->edit($history_data);
+
+        return $res;
     }
 
 }

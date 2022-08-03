@@ -45,7 +45,7 @@ class Base extends Model{
      */
     public function getListByPage($map,$order='create_time desc',$field='*',$r=20)
     {
-        $list  = $this->where($map)->order($order)->field($field)->paginate($r,false,['query'=>request()->param()]);
+        $list  = $this->where($map)->order($order)->field($field)->paginate(['list_rows'=>$r, 'query'=>request()->param()], false);
 
         return $list;
     }

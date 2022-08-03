@@ -12,6 +12,27 @@ class Cloud
         $this->api = config('cloud.api');
     }
 
+    public function recordRequest()
+    {
+        $domain = request()->host();
+        $ip   = request()->ip();
+        $url = $this->api . 'cloud/record';
+        $result = curl_request($url,[
+            'domain'  =>  $domain,
+            'ip' =>  $ip
+        ]);
+        try {
+            $result = json_decode($result,true);
+            if (is_array($result) && $result['code'] == 0){
+                return $result;
+            }
+        } catch (ValidateException $e) {
+            return false;
+        }
+
+        return true;
+    }
+
     /**
      * 查询应用授权
      * app_name 应用唯一标识
@@ -25,7 +46,7 @@ class Cloud
         try {
             $result = json_decode($result,true);
             if (is_array($result) && $result['code'] == 0){
-                return false;
+                return $result;
             }
         } catch (ValidateException $e) {
             return false;

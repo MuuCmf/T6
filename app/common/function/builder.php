@@ -2,6 +2,7 @@
 use think\facade\Db;
 use think\facade\Config;
 use app\common\model\ActionLog;
+use app\common\model\History;
 /**
  * 后台公共文件
  * 主要定义后台公共函数库
@@ -360,6 +361,21 @@ if (!function_exists('action_log')) {
         $actionLogModel = new ActionLog();
 
         return $actionLogModel->add($action, $model, $record_id, $uid);
+    }
+}
+
+if (!function_exists('history_log')) {
+    /**
+     * 记录浏览记录
+     * @param string $action 行为标识
+     * @param string $model 触发行为的模型名
+     * @param int $record_id 触发行为的记录id
+     * @param int $uid 执行行为的用户id
+     * @return boolean
+     */
+    function history_log($shopid = 0, $app, $uid, $info_id ,$info_type, $metadata)
+    { 
+        return (new History())->addLog($shopid, $app, $uid, $info_id ,$info_type, $metadata);
     }
 }
 

@@ -575,5 +575,35 @@ if (!function_exists('build_serial_no')) {
     }
 }
 
+if (!function_exists('emoji_encode')) {
+    function emoji_encode($str){
+        $strEncode = '';
+
+        $length = mb_strlen($str,'utf-8');
+
+        for ($i=0; $i < $length; $i++) {
+            $_tmpStr = mb_substr($str,$i,1,'utf-8');
+            if(strlen($_tmpStr) >= 4){
+                $strEncode .= '[[EMOJI:'.rawurlencode($_tmpStr).']]';
+            }else{
+                $strEncode .= $_tmpStr;
+            }
+        }
+
+        return $strEncode;
+    }
+}
+
+if (!function_exists('emoji_decode')) {
+    //对emoji表情转反义
+    function emoji_decode($str)
+    {
+        $strDecode = preg_replace_callback('|\[\[EMOJI:(.*?)\]\]|', function ($matches) {
+            return rawurldecode($matches[1]);
+        }, $str);
+        return $strDecode;
+    }
+}
+
 
 

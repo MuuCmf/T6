@@ -145,7 +145,9 @@ class Common extends CommonCommon
         }
     }
 
-    /* 登录页面 */
+    /**
+     *  登录 
+    */
     public function login()
     {
         if (request()->isPost()) {

@@ -5,7 +5,6 @@ use think\Exception;
 
 class Base
 {
-
     public $_status = [
         1  => '启用',
         0  => '禁用',
@@ -103,6 +102,11 @@ class Base
     }
     public function setTimeAttr($data)
     {
+        $data['create_time_str'] = '';
+        $data['create_time_friendly_str'] = '';
+        $data['update_time_str'] = '';
+        $data['update_time_friendly_str'] = '';
+
         if(!empty($data['create_time'])){
             $data['create_time_str'] = time_format($data['create_time']);
             $data['create_time_friendly_str'] = friendly_date($data['create_time']);

@@ -1,11 +1,11 @@
 <?php
 namespace app\channel\service\channel;
 
-class Pay{
+class Pay
+{
     //支付服务类
     protected $_class_name = [
-        'weixin_h5' => 'WechatPayment',
-        'weixin_app' => 'WechatPayment',
+        'weixin' => 'WechatPayment',
         'alipay' => 'AlipayPayment',
     ];
 
@@ -18,9 +18,10 @@ class Pay{
      * @param $shopid
      * @return $this
      */
-    public function init($appid ,$channel ,$shopid){
+    public function init($appid ,$pay_channel)
+    {
         //获取实例化的服务
-        $pay_namespace = "app\\channel\\service\\pay\\{$this->_class_name[$channel]}";
+        $pay_namespace = "app\\channel\\service\\pay\\{$this->_class_name[$pay_channel]}";
         $this->server = new $pay_namespace($appid);
         return $this;
     }

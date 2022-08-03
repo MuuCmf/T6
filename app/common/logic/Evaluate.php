@@ -9,10 +9,12 @@ class Evaluate extends Base{
     public function formatData($data)
     {
         if(!empty($data)){
+            // 获取用户
             $data['user_info'] = query_user($data['uid']);
-            if($data['images'] !== null || $data['images'] !== 'null'){
+            // 处理评价图片
+            if($data['images'] !== null || $data['images'] !== 'null' || !empty($data['images'])){
                 $data['images'] = json_decode($data['images'],true);
-                if(is_array($data['images'])){
+                if(is_array($data['images']) && !empty($data['images'])){
                     $temp_images = [];
                     foreach($data['images'] as $key=>$val){
                         $thumb = get_thumb_image($val, 60 , 60);

@@ -9,28 +9,6 @@ class Orders extends Base
     protected $autoWriteTimestamp = true; 
 
     /**
-     * 编辑/新增数据
-     *
-     * @param      <type>  $data   The data
-     *
-     * @return     <type>  ( description_of_the_return_value )
-     */
-    public function edit($data)
-    {
-        if(!empty($data['id'])){
-            $res = $this->update($data);
-            if ($res !== false){
-                $res = $data['id'];
-            }
-        }else{
-            $data['order_no'] = build_order_no();
-            $res = $this->save($data);
-            if($res) $res = $this->id;
-        }
-        return $res;
-    }
-
-    /**
      * Gets the data by order no.
      *
      * @param      <type>  $order_no  The order no
@@ -57,67 +35,21 @@ class Orders extends Base
      * @param  integer $paid [description]
      * @return [type]        [description]
      */
-    public function yesSale($shopid= 0, $app= 'classroom', $uid, $id, $type)
+    public function yesSale($shopid= 0, $app= '', $uid, $id, $type)
     {   
-        $where = 'app = :app AND order_info_id = :id AND order_info_type = :type AND paid = 1 AND status = 1 AND uid = :uid AND (end_time > :time OR end_time = 0)';
-        if(!empty($shopid)){
-            $where .= ' AND shopid = '.$shopid;
-        }
+        $where = 'shopid = :shopid AND app = :app AND order_info_id = :id AND order_info_type = :type AND paid = 1 AND uid = :uid AND (end_time > :time OR end_time = 0)';
+        
         //判断内容是否购买
         $res = $this->whereRaw(
             $where,
-            [ 'app' => $app, 'id' => $id, 'uid' => $uid, 'type' => $type, 'time' => time()]
-        )->find();
-
-        if($res){
-            return true;
+            [ 'shopid' => intval($shopid), 'app' => $app, 'id' => intval($id), 'uid' => intval($uid), 'type' => $type, 'time' => intval(time())]
+        )->findOrEmpty();
+        
+        if(!$res->isEmpty()){
+            return $res;
         }
 
         return false;
-    }
-
-    /**
-     * 处理支付平台的异步通知
-     * @param  [type] $data [description]
-     * @return [type]       [description]
-     */
-    public function notify($data)
-    {
-        $order = $this->getDataByOrderNO($data['order_no']);
-
-        if($order){
-            $v['id'] = $order['id'];
-            $v['paid'] = 1;
-            $v['paid_time'] = time();
-
-            //启用事务
-            $this->startTrans();
-            //更改订单状态
-            $paid_res = $this->edit($v);
-            if(!$paid_res){
-                $this->error = '更改订单支付状态失败';
-                $this->rollback();
-                return false;
-            }
-            //写入交易流水表
-            $finance_data['serial_no'] = $this->_build_serial_no();//交易流水号
-            $finance_data['type'] = 1; //交易类型
-            $finance_data['amount'] = intval($order['paid_fee']*100);//支付架构
-            $finance_data['title'] = '内容订单购买成功，订单号：'.$order['order_no'];//交易标题（简况）
-
-            //$finance_res = model('micro/MicroFinance')->editData($finance_data);
-            if(!$finance_res){
-                $this->error = '写入交易流水表失败';
-                $this->rollback();
-                return false;
-            }
-
-            //提交
-            $this->commit();
-        }else{
-            return false;
-        }
-        return true;
     }
 
     /**

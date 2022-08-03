@@ -24,17 +24,19 @@ class Orders extends Base
     ];
 
     /**
-     * 订单状态
+     * 订单通用状态
      * @var string[]
      */
     public $_status = [
-        0 => '待付款',
-        1 => '待发货',
-        2 => '待收货',
-        3 => '已收货', //确认收货
-        4 => '已完成', //已完成评价
-        -1 => '已取消'
+        1 => '待付款',
+        2 => '待发货', 
+        3 => '待收货', 
+        4 => '已收货', //确认收货
+        5 => '已完成', //已完成评价
+        0 => '已取消',
+        -1 => '已删除'
     ];
+
     /**
      * 支付状态
      * @var string[]
@@ -43,6 +45,7 @@ class Orders extends Base
         0 => '未支付',
         1 => '已支付'
     ];
+
     /**
      * 退款状态
      * @var string[]
@@ -58,14 +61,27 @@ class Orders extends Base
     ];
 
     /**
+     * 支付渠道
+     * @var [type]
+     */
+    public $_pay_channel = [
+        'weixin' => '微信',
+        'alipay' => '支付宝',
+        'offline' => '线下支付',
+        'score' => '积分',
+        'convert' => '兑换码',
+        '' => '无'
+    ];
+
+    /**
      * 格式化数据
      */
     public function formatData($data)
     {
-
         if (is_object($data)){
             $data = $data->toArray();
         }
+
         //订单状态
         $data['status_str'] = $this->_status[$data['status']];
         //售后退款状态
@@ -117,6 +133,4 @@ class Orders extends Base
         }
         return $data;
     }
-
-
 }
