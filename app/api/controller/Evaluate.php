@@ -7,7 +7,8 @@ use app\common\logic\Evaluate as EvaluateLogic;
 use app\common\model\Orders as OrderModel;
 use \app\common\logic\Orders as OrderLogic;
 
-class Evaluate extends Api {
+class Evaluate extends Api 
+{
     protected $model;
     protected $logic;
     protected $OrderModel;
@@ -44,9 +45,12 @@ class Evaluate extends Api {
         }
         unset($item);
         $count = $this->model->where($map)->count();
-        $this->success('SUCCESS',['data' => $lists,'total' => $count]);
+        return $this->success('SUCCESS',['data' => $lists,'total' => $count]);
     }
 
+    /**
+     * 题交和修改评价
+     */
     public function edit(){
         $params = request()->param();
         $uid = request()->uid;
@@ -60,15 +64,19 @@ class Evaluate extends Api {
         $evaluate_map[] = ['order_no','=',$params['order_no']];
         $evaluate_map[] = ['shopid','=',$this->shopid];
         $is_have = $this->model->getDataByMap($evaluate_map);
-        //dump($is_have);exit;
         if($is_have && $is_have['status'] == 1){
             if($is_have['create_time'] != $is_have['update_time']){
                 $this->error('您已经评价过了');
             }
             $id = $is_have['id'];
         }
-        $images = $params['images'];
-        $images = explode(',', $images);
+        //处理评价图片
+        $images = '';
+        if(!empty($params['images'])){
+            $images = $params['images'];
+            $images = explode(',', $images);
+        }
+        
         //提交
         $data = [
             'id' => $id,
@@ -89,12 +97,12 @@ class Evaluate extends Api {
             $order_info = $this->OrderModel->getDataByOrderNo($params['order_no']);
             $order_data = [
                 'id' => $order_info['id'],
-                'status' => 4, //已评价
+                'status' => 5, //已评价
             ];
             $this->OrderModel->edit($order_data);
-            $this->success('提交成功',$res);
+            return $this->success('提交成功',$res);
         }
-        $this->error('提交失败，请稍后再试');
+        return $this->error('提交失败，请稍后再试');
     }
 
     public function detail(){
@@ -108,6 +116,6 @@ class Evaluate extends Api {
         ];
         $result = $this->model->getDataByMap($map);
         $result = $this->logic->formatData($result);
-        $this->success('SUCCESS',$result);
+        return $this->success('SUCCESS',$result);
     }
 }

@@ -35,19 +35,45 @@ class Withdraw extends Admin{
         }
         // 每页显示数量
         $rows = input('rows', 15, 'intval');
-        $lists = $this->WithdrawModel->where($map)->order('id desc')->paginate($rows);
+        // 获取分页列表
+        $lists = $this->WithdrawModel->getListByPage($map, 'id desc create_time desc', '*', $rows);
         $pager = $lists->render();
         $lists = $lists->toArray();
         foreach ($lists['data'] as &$item){
             $item = $this->WithdrawLogic->formatData($item);
         }
-        $lists = $lists['data'];
+
         View::assign([
             'order_no'  =>  $order_no,
             'lists'     =>  $lists,
             'pager'     =>  $pager,
         ]);
-        return view();
+
+        $this->setTitle('提现列表');
+
+        return View::fetch();
+    }
+
+    /**
+     * 详情
+     */
+    public function detail()
+    {
+        // ID
+        $id = input('id', 0, 'intval');
+
+        $data = [];
+        if (!empty($id)) {
+            $data = $this->WithdrawModel->getDataById($id);
+            $data = $this->WithdrawLogic->formatData($data);
+        }
+
+        View::assign('data',$data);
+
+        //输出页面
+        return View::fetch();
+
+
     }
 
     /**

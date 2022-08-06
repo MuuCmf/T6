@@ -30,15 +30,22 @@ class Config {
                 //$data['article_config']['status'] = 0;
                 $data['status_str'] = $this->_status[0];
             }
-            if(!is_array($data['config'])){
-                $data['config'] = json_decode($data['config'],true);
+            if(!is_array($data['comment'])){
+                $data['comment'] = json_decode($data['comment'],true);
             }
             
-            if(!empty($data['config']['comment']['switch'])){
-                $data['config']['comment']['switch_str'] = $this->_status[$data['config']['comment']['switch']];
+            if(!empty($data['comment']['status'])){
+                $data['comment']['status_str'] = $this->_status[$data['comment']['status']];
             }else{
-                $data['config']['comment']['switch'] = 0;
-                $data['config']['comment']['switch_str'] = $this->_status[0];
+                $data['comment']['status'] = 0;
+                $data['comment']['status_str'] = $this->_status[0];
+            }
+
+            if(!empty($data['comment']['audit'])){
+                $data['comment']['audit_str'] = $this->_status[$data['comment']['audit']];
+            }else{
+                $data['comment']['audit'] = 0;
+                $data['comment']['audit_str'] = $this->_status[0];
             }
     
             return $data;

@@ -6,10 +6,19 @@ namespace app\index\controller;
 use think\facade\View;
 use app\common\controller\Common;
 use app\common\logic\Config;
+use app\channel\facade\wechat\OfficialAccount;
+use app\common\model\Orders as OrdersModel;
+use app\common\model\CapitalFlow;
 
 
 class Index extends Common
 {
+    function __construct()
+    {
+        parent::__construct();
+        $this->OrderModel = new OrdersModel();
+        $this->CapitalFlowModel = new CapitalFlow();
+    }
     public function index()
     {
         $this->setTitle('首页');
@@ -20,13 +29,8 @@ class Index extends Common
 
     public function debug()
     {
-        //dump(config());
-        $config = (new Config())->handle();
-        dump($config);
-        dump(query_user(is_login()));
-        $muu_config_data = (new Config())->frontend(0);
-        dump($muu_config_data);
-
-        dump(create_guid());
+        dump(config());
     }
+
+    
 }

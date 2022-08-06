@@ -42,7 +42,7 @@ class Articles extends Admin
         $rows = input('rows', 20, 'intval');
 
         // 获取查询条件
-        $map = $this->ArticlesLogic->getMap(0, $keyword, $category_id, $status);
+        $map = $this->ArticlesLogic->getMap($this->shopid, $keyword, $category_id, $status);
         // 获取列表
         $lists = $this->ArticlesModel->getListByPage($map, 'sort DESC,id DESC', '*', $rows);
         $pager = $lists->render();
@@ -68,6 +68,7 @@ class Articles extends Admin
         // 记录当前列表页的cookie
         Cookie('__forward__', $_SERVER['REQUEST_URI']);
 
+        $this->setTitle('文章列表');
         // 输出模板
         return View::fetch();
     }
@@ -131,6 +132,7 @@ class Articles extends Admin
         $category_tree = $this->CategoryLogic->categoryTree($category_list);
         View::assign('category_tree', $category_tree);
 
+        $this->setTitle($title.'文章');
         // 输出模板
         return View::fetch();
     }
@@ -161,5 +163,10 @@ class Articles extends Admin
         }else{
             return $this->error($title . '失败');
         }  
+    }
+
+    public function verify()
+    {
+        
     }
 }

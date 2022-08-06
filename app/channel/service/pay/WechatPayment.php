@@ -31,9 +31,9 @@ class WechatPayment extends PayService{
             'app_id' => $appid,
             'mch_id' => $mchid,
             'key' => $key,
-            'cert_path' => app()->getRootPath() . 'public/cert/wechat_cert.pem',
-            'key_path' => app()->getRootPath() . 'public/cert/wechat_key.pem',
-            'notify_url' => request()->domain() . "/api/pay/payCallback",
+            'cert_path' => app()->getRootPath() . 'public/attachment/' . config('extend.WX_PAY_CERT'),
+            'key_path' => app()->getRootPath() . 'public/attachment/' . config('extend.WX_PAY_KEY'),
+            'notify_url' => request()->domain() . "/api/pay/callback",
             'sandbox' => $this->sandbox,//沙盒模式开关
         ];
     }

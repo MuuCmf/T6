@@ -1,15 +1,19 @@
 <?php
 namespace app\api\controller;
 
-use app\common\controller\Base;
+use app\common\controller\Api;
 use app\common\model\Attachment;
 /**
  * 文件控制器
  * 主要用于下载模型的文件上传和下载
  */
 
-class File extends Base
+class File extends Api
 {
+    //添加token验证中间件
+    protected $middleware = [
+        'app\\common\\middleware\\CheckAuth',
+    ];
     protected $Attachment;
     /**
      * 构造方法
@@ -25,13 +29,16 @@ class File extends Base
     /* 通用文件上传 */
     public function upload()
     {   
+        // 强制上传方法，默认自动
+        $enforce = input('enforce', 'auto', 'text');
+        $uid = get_uid();
         $files = request()->file();
 
         if (empty($files)) {
             return $this->error('未选择文件');
         }
 
-        $result = $this->Attachment->upload($files,'file');
+        $result = $this->Attachment->upload($files, 'file', $uid, $enforce);
 
         if(is_array($result)){
             return $this->result(200, '上传成功', $result);
@@ -46,17 +53,7 @@ class File extends Base
      */
     public function avatar()
     {
-        $uid = $aUid = input('uid',0,'intval');
-        //无uid时尝试获取
-        if($uid == 0){
-            $aUid = $uid || is_login();
-        }
-        
-        if($aUid <= 0){
-            $return['code'] = 0;
-            $return['msg'] = 'Uid Error';
-            return json($return);
-        }
+        $uid = is_login();
         /* 调用文件上传组件上传文件 */
         $files = request()->file();
         
@@ -66,7 +63,7 @@ class File extends Base
             return json($return);
         }
         
-        $arr = $this->Attachment->upload($files,'avatar','avatar',$aUid);
+        $arr = $this->Attachment->upload($files,'avatar',$uid);
 
         if(is_array($arr)){
             $return['code'] = 1;

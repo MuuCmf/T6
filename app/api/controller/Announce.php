@@ -4,7 +4,8 @@ use app\common\controller\Api;
 use app\common\model\Announce as AnnounceModel;
 use app\common\logic\Announce as AnnounceLogic;
 
-class Announce extends Api{
+class Announce extends Api
+{
     protected $model;
     protected $logic;
 

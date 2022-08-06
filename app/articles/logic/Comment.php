@@ -4,7 +4,9 @@ namespace app\articles\logic;
 use think\facade\Cache;
 use app\articles\model\ArticlesConfig as ConfigModel;
 use app\articles\logic\Config as ConfigLogic;
+use app\articles\model\ArticlesArticles as ArticlesModel;
 use app\articles\model\ArticlesComment as CommentModel;
+use app\common\model\Support as SupportModel;
 
 /*
  * 评论数据逻辑层
@@ -14,12 +16,16 @@ class Comment extends Base
     protected $ConfigModel;
     protected $ConfigLogic;
     protected $CommentModel;
+    protected $ArticlesModel;
+    protected $SupportModel;
 
     public function __construct()
     {
         $this->ConfigModel = new ConfigModel();
         $this->ConfigLogic = new ConfigLogic();
         $this->CommentModel = new CommentModel();
+        $this->ArticlesModel = new ArticlesModel();
+        $this->SupportModel = new SupportModel();
     }
 
     /**
@@ -74,10 +80,11 @@ class Comment extends Base
     /**
      * 数据格式化
      */
-    public function formatData($data, $shopid = '')
+    public function formatData($data = [])
     {
         // 获取店铺配置数据
-        $config_data = Cache::get('MUUCMF_ARTICLES_CONFIG_DATA');
+        $shopid = intval($data['shopid']);
+        $config_data = Cache::get('MUUCMF_ARTICLES_CONFIG_DATA_' . $shopid);
 
         if(!empty($data)){
             $id = $data['id'];
@@ -90,6 +97,15 @@ class Comment extends Base
             if(!empty($data['update_time'])){
                 $data['update_time_str'] = time_format($data['update_time']);
                 $data['update_time_friendly_str'] = friendly_date($data['update_time']);
+            }
+
+            $data['article'] = $this->ArticlesModel->getDataById($data['article_id']);
+            $data['user_info'] = query_user($data['uid']);
+            //判断是否点赞
+            if($this->SupportModel->yesSupport($shopid, get_uid(), $data['id'], 'Comment' , 'Articles')){
+                $data['support_yesno'] = 1;
+            }else{
+                $data['support_yesno'] = 0;
             }
         }
 

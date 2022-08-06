@@ -6,7 +6,6 @@ use app\articles\logic\Category as CategoryLogic;
 use app\articles\model\ArticlesConfig as ConfigModel;
 use app\articles\logic\Config as ConfigLogic;
 use app\common\model\Favorites as FavoritesModel;
-use app\articles\logic\Favorites as FavoritesLogic;
 
 /*
  * 数据逻辑层
@@ -86,13 +85,15 @@ class Articles extends Base
     /**
      * 数据格式化
      */
-    public function formatData($data, $shopid = '')
+    public function formatData($data = [])
     {
-        // 获取店铺配置数据
-        $config_data= $this->ConfigModel->getDataByMap(['shopid' => $shopid]);
-        $config_data = $this->ConfigLogic->formatData($config_data);
- 
         if(!empty($data)){
+            $shopid = intval($data['shopid']);
+            // 获取应用配置数据
+            $config_data = (new ConfigModel)->getConfig($data['shopid']);
+            // 获取uid
+            $uid = get_uid();
+            
             $id = $data['id'];
             $data = $this->setCoverAttr($data, '4:3');
             
@@ -104,7 +105,7 @@ class Articles extends Base
             $data['content'] = htmlspecialchars_decode($data['content']);
             
             //判断是否收藏
-            if($this->FavoritesModel->yesFavorites($shopid, 'articles', get_uid(), $id, 'Articles')){
+            if($uid > 0 && $this->FavoritesModel->yesFavorites($shopid, get_module_name(), $uid, $id, 'articles')){
                 $data['favorites_yesno'] = 1;
             }else{
                 $data['favorites_yesno'] = 0;
@@ -120,6 +121,11 @@ class Articles extends Base
                 $data['update_time_str'] = time_format($data['update_time']);
                 $data['update_time_friendly_str'] = friendly_date($data['update_time']);
             }
+
+            //访问量、收藏量、点赞量数据处理 | 显示的量为真实数据+虚拟数据
+            $data['handling_view'] = intval($data['view']) + intval($data['f_view']);
+            $data['handling_favorites'] = intval($data['favorites']) + intval($data['f_favorites']);
+            $data['handling_support'] = intval($data['support']) + intval($data['f_support']);
 
             //拼接url地址
             $data['url'] = url('articles\h5\index',[],'',true) . '#/articles/pages/articles/detail?id='.$data['id'];

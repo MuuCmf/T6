@@ -9,7 +9,8 @@ use app\common\model\MessageType as MessageTypeModel;
  * @title 消息接口类
  * @package app\api\controller
  */
-class Message extends Api{
+class Message extends Api
+{
 
     protected $MessageModel;
     protected $MessageTypeModel;

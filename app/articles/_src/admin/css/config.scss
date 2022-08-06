@@ -1,35 +1,4 @@
 .config-section {
-	.card {
-		background-color: #fff;
-		border-radius: 5px;
-		border: none;
-		position: relative;
-		margin-bottom: 30px;
-	}
-	.form-files-box {
-		line-height: 1;
-		margin-bottom: 28px;
-		.form-file {
-			display: flex;
-			align-items: center;
-			padding: 14px;
-			border-bottom: 1px solid #e8e9eb;
-			color: #4c4c4c;
-			line-height: 40px;
-			.form-label {
-				width: 130px;
-				flex: 0 0 130px;
-				text-align: left;
-				font-size: 14px;
-			}
-			.form-value {
-				flex: 1;
-				width: 0;
-				text-align: left;
-				color: #999;
-			}
-		}
-	}
 
 	.config-list-section {
 		.header {
@@ -38,71 +7,45 @@
 			padding: 10px;
 		}
 		
-		.config-item-box {
-
-			.config-item {
+		.form-files-box {
+			line-height: 1;
+			margin-bottom: 28px;
+			.form-file {
 				position: relative;
-			    display: block;
-			    align-items: center;
-			    padding: 14px;
-			    border-bottom: 1px solid #e8e9eb;
-			    color: #4c4c4c;
-			    line-height: 40px;
-			    height: 266px;
-			    overflow: hidden;
-			    .form-label {
-			    	width: 130px;
-				    flex: 0 0 130px;
-				    text-align: left;
-				    font-size: 14px;
-			    }
-			    .form-value {
-				    
-				    text-align: left;
-				    color: #999;
-				    .logo {
-				    	margin: 10px auto;
-				    	width: 64px;
-				    	img {
-				    		width:64px;
-				    	}
-				    }
-				    .title {
-				    	text-align: center;
-				    }
-				    .description {
-				    	text-align: center;
-				    }
-
-				    .style-config {
-						display: block;
-						width: 60px;
-						height: 60px;
+				display: flex;
+				align-items: center;
+				padding: 14px;
+				border-bottom: 1px solid #e8e9eb;
+				color: #4c4c4c;
+				line-height: 40px;
+				.form-label {
+					width: 130px;
+					flex: 0 0 130px;
+					text-align: left;
+					font-size: 14px;
+				}
+				.form-value {
+					flex: 1;
+					text-align: left;
+					color: #999;
+					.logo {
 						margin: 10px auto;
-						.style {
-							width: 60px;
-							height: 60px;
-							overflow: hidden;
-							color: #fff;
-							text-align: center;
-							line-height: 60px;
-							border-radius: 5px;
+						width: 64px;
+						img {
+							width:64px;
 						}
 					}
-					.style-desc {
-						display: block;
-						height: 60px;
-						line-height: 60px;
+					.title {
+						
 					}
-
+					.description {
+						
+					}
 				}
 				.form-edit {
-					position: absolute;
-					bottom: 0;
-					left: 0;
-					right: 0;
+					width: 120px;
 					height: 48px;
-					text-align: center;
+					text-align: right;
 				}
 			}
 		}
@@ -129,43 +72,6 @@
 		}
 	}
 }
-#chooseUserModal {
-	/*模态内选择类型*/
-	.user-search {
-		margin-bottom: 20px;
-		.search-box {
-			border: 0!important;
-			padding: 0!important;
-		}
-	}
-	
-	.user-section {
-		.user-item {
-			float: left;
-			width: 180px;
-			margin: 10px;
-			padding: 5px;
-			border: 1px solid #eee;
-			cursor: pointer;
-			height: 62px;
-
-			.user-avatar {
-				float: left;
-				width: 50px;
-				height: 50px;
-				img {
-					width: 100%;
-					border-radius: 50%;
-				}
-			}
-			.user-nickname {
-				margin-left: 60px;
-				line-height: 28px;
-			}
-		}
-	}
-}
-
 
 .style-Modal {
 	.shop-style-section {

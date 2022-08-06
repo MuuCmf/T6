@@ -103,7 +103,7 @@
             
             {else/}
                 <div class="file_item" data-id="$file.id">
-                    <span>{$field.value|get_filename_by_id}</span>
+                    <span>{$field.value|get_attachment_filename}</span>
                     <a class="remove"><i class="icon-trash"></i></a>
                 </div>
             {/empty}
@@ -123,7 +123,7 @@
                 // swf文件路径
                 swf: 'Uploader.swf',
                 // 文件接收服务端。
-                server: "{:url('api/file/upload',array('session_id'=>session_id()))}",
+                server: "{:url('api/file/upload', $field.opt)}",
                 // 选择文件的按钮。可选。
                 // 内部根据当前运行是创建，可能是input元素，也可能是flash.
                 pick: "#uploader_{$field.name}",
@@ -177,7 +177,7 @@
             {php}$aIds = explode(',',$field['value']);{/php}
             {volist name="$aIds" id="vo"}
                 <div class="file_item" data-id="{$vo}">
-                    <span>{$vo.name|get_filename_by_id}</span>
+                    <span>{$vo.name|get_attachment_filename}</span>
                     <a class="remove"><i class="icon-trash"></i></a> 
                 </div>
             {/volist}

@@ -1,7 +1,8 @@
 <?php
 namespace app\channel\service\pay;
 
-abstract class PayService{
+abstract class PayService
+{
     protected $app;
     public $config;
     public $type;

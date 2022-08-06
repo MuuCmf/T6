@@ -52,9 +52,9 @@ class WechatMiniProgram extends Base
             $res = [
                 'token'     => $token
             ];
-            $this->success('success',$res);
+            return $this->success('success',$res);
         }else{
-            $this->error('error','没有查询到用户信息');
+            return $this->error('error','没有查询到用户信息');
         }
 
     }
@@ -77,9 +77,9 @@ class WechatMiniProgram extends Base
         if ($user){
             $token = JWTAuth::builder(['uid'=>$user['uid']]);
             $token = 'Bearer ' . $token;
-            $this->success('success',['token'=>$token]);
+            return $this->success('success',['token'=>$token]);
         }
-        $this->error('需要登录','login');
+        return $this->error('需要登录','login');
     }
 
     /**
@@ -121,8 +121,8 @@ class WechatMiniProgram extends Base
         ]);
 
         if ($res){
-            $this->success('绑定手机号成功');
+            return $this->success('绑定手机号成功');
         }
-        $this->error('绑定手机号失败');
+        return $this->error('绑定手机号失败');
     }
 }

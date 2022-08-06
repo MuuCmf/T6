@@ -25,10 +25,16 @@ return [
     // 视图输出字符串替换内容
     'tpl_replace_string' => [
         '__STATIC__' => '/static',
+        '__COMMON__' => '/static/common',
         '__ZUI__' => '/static/common/lib/zui',
         '__LIB__' => '/static/articles/lib',
-        '__CSS__' => '/static/articles/css',
-        '__JS__' => '/static/articles/js',
         '__IMG__' => '/static/articles/images',
+        '__ADMIN_CSS__' => '/static/articles/admin/css',
+        '__ADMIN_JS__' => '/static/articles/admin/js',
+        '__ADMIN_IMG__' => '/static/articles/admin/images',
+        '__PC_CSS__' => request()->domain() . '/static/articles/pc/css',
+        '__PC_JS__' => request()->domain() . '/static/articles/pc/js',
+        '__PC_IMG__' => request()->domain() . '/static/articles/pc/images',
+
     ],
 ];

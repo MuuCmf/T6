@@ -9,7 +9,9 @@ class Keywords extends Api
 {
     protected $model;
     protected $logic;
-
+    protected $middleware = [
+        'app\\common\\middleware\\CheckAuth' => ['only' => 'history']
+    ];
     function __construct()
     {
         parent::__construct();

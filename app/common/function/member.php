@@ -4,7 +4,8 @@ use think\facade\Db;
 use muucmf\Auth;
 use think\captcha\Captcha;
 use app\common\model\Member;
-
+use app\common\model\MemberWallet;
+use app\common\model\MemberSync;
 
 /**
  * 检测用户是否登录
@@ -33,9 +34,12 @@ function get_uid()
     return is_login();
 }
 
+/**
+ * 获取用户openid
+ */
 function get_openid($uid ,$channel = 'weixin_h5')
 {
-    $model = new \app\common\model\MemberSync();
+    $model = new MemberSync();
     $map = [
         ['uid' ,'=' ,$uid],
         ['type' ,'=' , $channel]
@@ -55,8 +59,14 @@ function query_user($uid = 0, $field_arr = [])
     if(is_array($field_arr)){
         $field = implode(',' ,$field_arr);
     }
+    // 获取用户数据
     $memberModel = new Member;
     $auth_user = $memberModel->info($uid, $field);
+    // 获取钱包数据
+    $memberWalletModel = new MemberWallet();
+    $wallet = $memberWalletModel->getWallet($uid);
+
+    $auth_user['wallet'] = $wallet;
 
     return $auth_user;
 }

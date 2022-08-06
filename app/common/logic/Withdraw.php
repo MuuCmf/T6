@@ -20,35 +20,25 @@ class Withdraw extends Base
         1 => '失败'
     ];
 
-    public function formatData($data){
+    public function formatData($data)
+    {
         //用户数据
         $data['price'] = sprintf("%.2f",$data['price']/100);
         $data['paid_str'] = $this->_paid[$data['paid']];
         $data['error_str'] = $this->_error[$data['error']];
         if($data['paid_time'] == 0){
-            $data['paid_time_str'] = '未提现';
+            $data['paid_time_str'] = '未完成';
         }else{
             $data['paid_time_str'] = time_format($data['paid_time']);
         }
         $data['openid'] = get_openid($data['uid'],$data['channel']);
         $data['user_info'] = query_user($data['uid'],['nickname','avatar']);
         $data['channel_str'] = Channel::$_channel[$data['channel']];
+
+        if(!empty($data['error_msg'])){
+            $data['error_msg'] = json_decode($data['error_msg'], true);
+        }
         $data = $this->setTimeAttr($data);
         return $data;
-    }
-
-    /**
-     * @title 获取提现配置
-     * @return array
-     */
-    public function getConfig(){
-        $config = [
-            'status' => config('extend.WITHDRAW_STATUS'),
-            'tax_rate' => config('extend.WITHDRAW_TAX_RATE'),
-            'day_num' => config('extend.WITHDRAW_DAY_NUM'),
-            'min_price' => config('extend.WITHDRAW_MIN_PRICE'),
-            'max_price' => config('extend.WITHDRAW_MAX_PRICE'),
-        ];
-        return $config;
     }
 }

@@ -1,15 +1,10 @@
 <?php
 namespace app\api\controller;
 
-use app\common\controller\Base;
-use app\common\model\Attachment;
+use app\common\controller\Api;
 use app\common\service\TcVod;
-/**
- * 文件控制器
- * 主要用于下载模型的文件上传和下载
- */
 
-class Vod extends Base
+class Vod extends Api
 {
 
     public function sign()

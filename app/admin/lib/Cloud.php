@@ -12,6 +12,9 @@ class Cloud
         $this->api = config('cloud.api');
     }
 
+    /**
+     * 授权请求
+     */
     public function recordRequest()
     {
         $domain = request()->host();

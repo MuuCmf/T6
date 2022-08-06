@@ -137,19 +137,52 @@ CREATE TABLE IF NOT EXISTS `muucmf_announce` (
 DROP TABLE IF EXISTS `muucmf_attachment`;
 CREATE TABLE IF NOT EXISTS `muucmf_attachment` (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'ID',
-  `uid` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '用户ID',
+  `shopid` int(11) UNSIGNED NOT NULL COMMENT '店铺ID',
+  `uid` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '用户ID',
   `filename` char(30) NOT NULL COMMENT '附件显示名',
-  `type` tinyint(3) UNSIGNED NOT NULL DEFAULT '0' COMMENT '附件类型',
+  `type` varchar(32) NOT NULL DEFAULT '0' COMMENT '附件类型',
   `attachment` varchar(255) NOT NULL COMMENT '路径',
   `mime` char(30) NOT NULL COMMENT 'mimeType',
   `ext` char(20) NOT NULL COMMENT '扩展名',
   `size` bigint(20) UNSIGNED NOT NULL DEFAULT '0' COMMENT '附件大小',
   `md5` varchar(255) NOT NULL COMMENT 'MD5',
   `sha1` varchar(255) NOT NULL COMMENT 'SHA1',
+  `driver` varchar(32) NOT NULL COMMENT '上传驱动 local\\oss\\cos\\tcvod',
+  `file_id` varchar(64) NOT NULL COMMENT '文件ID,仅云点播支持',
   `create_time` int(11) UNSIGNED NOT NULL COMMENT '创建时间',
   `update_time` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '更新时间',
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`) USING BTREE,
+  KEY `attachment` (`attachment`),
+  KEY `mime` (`mime`);
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='附件表' AUTO_INCREMENT=1;
+
+--
+-- 表的结构 `muucmf_author`
+--
+DROP TABLE IF EXISTS `muucmf_author`;
+CREATE TABLE IF NOT EXISTS `muucmf_author` (
+  `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+  `shopid` int(10) NOT NULL COMMENT '店铺ID',
+  `uid` int(11) UNSIGNED NOT NULL COMMENT '绑定讲师用户ID',
+  `name` varchar(18) NOT NULL COMMENT '讲师姓名',
+  `description` varchar(140) NOT NULL COMMENT '简短描述',
+  `cover` varchar(255) NOT NULL COMMENT '讲师图片',
+  `avatar_card` varchar(255) NOT NULL COMMENT '手持身份证照片',
+  `certificate` varchar(255) NOT NULL COMMENT '资格证书',
+  `content` text NOT NULL COMMENT '讲师详情',
+  `charges` int(11) UNSIGNED NOT NULL COMMENT '余额 单位：分',
+  `freeze` int(11) UNSIGNED NOT NULL COMMENT '冻结资金 单位：分',
+  `total` int(11) UNSIGNED NOT NULL COMMENT '总收益 单位：分',
+  `create_time` int(11) UNSIGNED NOT NULL COMMENT '创建时间',
+  `update_time` int(11) UNSIGNED NOT NULL COMMENT '更新时间',
+  `sort` int(11) NOT NULL COMMENT '排序值',
+  `view` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '阅读量',
+  `verify` int(11) UNSIGNED NOT NULL COMMENT '讲师认证类型ID',
+  `auth` text NOT NULL COMMENT '功能权限 json格式',
+  `status` tinyint(4) NOT NULL COMMENT '数据状态',
+  `reason` varchar(255) NOT NULL COMMENT '拒绝审核原因',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='创作者表' ROW_FORMAT=COMPACT;
 
 --
 -- 表的结构 `muucmf_auth_group`
@@ -214,164 +247,6 @@ CREATE TABLE IF NOT EXISTS `muucmf_auth_rule` (
   PRIMARY KEY (`id`),
   KEY `module` (`module`,`status`,`type`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=10000 ;
-
---
--- 转存表中的数据 `muucmf_auth_rule`
---
-
-INSERT INTO `muucmf_auth_rule` (`id`, `module`, `type`, `name`, `title`, `status`, `condition`) VALUES
-(1, 'admin', 1, 'admin/action/editaction', '新增、编辑用户行为', -1, ''),
-(2, 'admin', 1, 'admin/action/setStatus', '变更行为状态', 1, ''),
-(3, 'admin', 1, 'admin/AuthManager/changeStatus?method=deleteGroup', '删除', -1, ''),
-(4, 'admin', 1, 'admin/AuthManager/changeStatus?method=forbidGroup', '禁用', -1, ''),
-(5, 'admin', 1, 'admin/AuthManager/changeStatus?method=resumeGroup', '恢复', -1, ''),
-(6, 'admin', 1, 'admin/AuthManager/createGroup', '新增', -1, ''),
-(7, 'admin', 1, 'admin/AuthManager/editGroup', '编辑', -1, ''),
-(8, 'admin', 1, 'admin/AuthManager/writeGroup', '保存用户组', -1, ''),
-(9, 'admin', 1, 'admin/AuthManager/group', '授权', -1, ''),
-(10, 'admin', 1, 'admin/AuthManager/access', '访问授权', -1, ''),
-(11, 'admin', 1, 'admin/AuthManager/user', '成员授权', -1, ''),
-(12, 'admin', 1, 'admin/AuthManager/removeFromGroup', '解除授权', -1, ''),
-(13, 'admin', 1, 'admin/AuthManager/addToGroup', '保存成员授权', -1, ''),
-(14, 'admin', 1, 'admin/AuthManager/category', '分类授权', -1, ''),
-(15, 'admin', 1, 'admin/AuthManager/addToCategory', '保存分类授权', -1, ''),
-(16, 'admin', 1, 'admin/AuthManager/modelauth', '模型授权', -1, ''),
-(17, 'admin', 1, 'admin/AuthManager/deleteNode', '删除权限节点', -1, ''),
-(18, 'admin', 1, 'admin/action/detail', '查看行为日志', 1, ''),
-(19, 'admin', 1, 'admin/User/editProfile', '添加、编辑分组', -1, ''),
-(20, 'admin', 1, 'admin/User/sortProfile', '分组排序', -1, ''),
-(21, 'admin', 1, 'admin/User/field', '字段列表', -1, ''),
-(22, 'admin', 1, 'admin/User/editFieldSetting', '添加、编辑字段', -1, ''),
-(23, 'admin', 1, 'admin/User/sortField', '字段排序', -1, ''),
-(24, 'admin', 1, 'admin/config/edit', '编辑', 1, ''),
-(25, 'admin', 1, 'admin/Config/del', '删除', 1, ''),
-(26, 'admin', 1, 'admin/Config/add', '新增', -1, ''),
-(27, 'admin', 1, 'admin/Config/save', '保存', 1, ''),
-(28, 'admin', 1, 'admin/Config/sort', '排序', 1, ''),
-(29, 'admin', 1, 'admin/Menu/add', '新增', 1, ''),
-(30, 'admin', 1, 'admin/Menu/edit', '编辑', 1, ''),
-(31, 'admin', 1, 'admin/Menu/import', '导入', 1, ''),
-(32, 'admin', 1, 'admin/Menu/sort', '排序', 1, ''),
-(33, 'admin', 1, 'admin/Channel/add', '新增', 1, ''),
-(34, 'admin', 1, 'admin/Channel/edit', '编辑', 1, ''),
-(35, 'admin', 1, 'admin/Channel/del', '删除', 1, ''),
-(36, 'admin', 1, 'admin/Channel/sort', '排序', 1, ''),
-(37, 'admin', 1, 'admin/Database/export', '备份', 1, ''),
-(38, 'admin', 1, 'admin/Database/optimize', '优化表', 1, ''),
-(39, 'admin', 1, 'admin/Database/repair', '修复表', 1, ''),
-(40, 'admin', 1, 'admin/Database/import', '恢复', 1, ''),
-(41, 'admin', 1, 'admin/Database/del', '删除', 1, ''),
-(42, 'admin', 1, 'admin/SEO/editRule', '新增、编辑', -1, ''),
-(43, 'admin', 1, 'admin/SEO/sortRule', '排序', -1, ''),
-(44, 'admin', 1, 'admin/Action/remove', '删除日志', 1, ''),
-(45, 'admin', 1, 'admin/Action/clear', '清空日志', 1, ''),
-(46, 'admin', 1, 'admin/User/setTypeStatus', '设置积分状态', -1, ''),
-(47, 'admin', 1, 'admin/User/delType', '删除积分类型', -1, ''),
-(48, 'admin', 1, 'admin/Menu/del', '删除菜单', 1, ''),
-(49, 'admin', 1, 'admin/Menu/toogleHide', '设置显示隐藏', 1, ''),
-(50, 'admin', 1, 'admin/ActionLimit/setLimitStatus', '行为限制启用、禁用、删除', 1, ''),
-(51, 'admin', 1, 'admin/SEO/setRuleStatus', '启用、禁用、删除、回收站还原', -1, ''),
-(52, 'admin', 1, 'admin/SEO/doClear', '回收站彻底删除', -1, ''),
-(53, 'admin', 1, 'admin/UserTag/add', '添加分类、标签', -1, ''),
-(54, 'admin', 1, 'admin/UserTag/setStatus', '设置分类、标签状态', -1, ''),
-(55, 'admin', 1, 'admin/UserTag/tagTrash', '分类、标签回收站', -1, ''),
-(56, 'admin', 1, 'admin/UserTag/userTagClear', '测底删除回收站内容', -1, ''),
-(57, 'admin', 1, 'admin/Module/edit', '编辑模块', 1, ''),
-(58, 'admin', 1, 'admin/User/initpass', '重置用户密码', -1, ''),
-(59, 'admin', 1, 'admin/Adv/pos', '广告位', -1, ''),
-(60, 'admin', 1, 'admin/Adv/adv', '广告管理', -1, ''),
-(61, 'admin', 1, 'admin/Adv/editAdv', '新增广告', -1, ''),
-(62, 'admin', 1, 'admin/Adv/editPos', '编辑广告位', -1, ''),
-(63, 'admin', 1, 'admin/Adv/setPosStatus', '设置广告位状态', -1, ''),
-(64, 'admin', 1, 'admin/Adv/schedule', '广告排期', -1, ''),
-(65, 'admin', 1, 'admin/Action/scoreLog', '积分日志', -1, ''),
-(66, 'admin', 1, 'index/Admin/config', '基本设置', 1, ''),
-(67, 'admin', 1, 'admin/announce/announcelist', '公告列表', -1, ''),
-(68, 'admin', 1, 'admin/Announce/add', '发布公告', -1, ''),
-(69, 'admin', 1, 'admin/Appcloud/index', '应用商店', 1, ''),
-(70, 'admin', 1, 'admin/Update/startupdate', '系统升级流程', -1, ''),
-(71, 'admin', 1, 'admin/Message/messagetypelist', '消息类型列表', -1, ''),
-(72, 'admin', 1, 'admin/Message/config', '消息设置', -1, ''),
-(73, 'admin', 1, 'admin/Announce/setStatus', '设置公告状态', -1, ''),
-(74, 'admin', 1, 'admin/Announce/arrive', '公告送达情况', -1, ''),
-(75, 'admin', 1, 'admin/announce/edit', '公告编辑', -1, ''),
-(76, 'admin', 1, 'admin/member/expandinfo_details', '编辑', -1, ''),
-(77, 'admin', 1, 'admin/Schedule/showLog', '查看日志', -1, ''),
-(78, 'admin', 1, 'admin/schedule/clearLog', '清空日志', -1, ''),
-(79, 'admin', 1, 'admin/schedule/editschedule', '编辑、新增计划任务', -1, ''),
-(80, 'admin', 1, 'admin/Schedule/reRun', '重启计划任务', -1, ''),
-(81, 'admin', 1, 'admin/Schedule/setScheduleStatus', '设置计划任务状态', -1, ''),
-(82, 'admin', 1, 'admin/index/index', '控制台', 1, ''),
-(83, 'admin', 2, 'index/index/index', '首页', 1, ''),
-(84, 'admin', 1, 'index/admin/index', '基础配置', 1, ''),
-(85, 'admin', 2, 'admin/index/index', '控制台', 1, ''),
-(86, 'admin', 1, 'admin/User/scoreList', '积分类型列表', -1, ''),
-(87, 'admin', 1, 'admin/Config/group', '系统配置', 1, ''),
-(88, 'admin', 1, 'admin/member/index', '用户信息', 1, ''),
-(89, 'admin', 1, 'admin/User/editScoreType', '新增/编辑类型', -1, ''),
-(90, 'admin', 1, 'admin/config/list', '系统配置参数', 1, ''),
-(91, 'admin', 2, 'admin/member/index', '用户', 1, ''),
-(92, 'admin', 1, 'admin/Action/action', '行为&积分规则', 1, ''),
-(93, 'admin', 1, 'admin/AuthManager/index', '用户组管理', -1, ''),
-(94, 'admin', 1, 'admin/Module/install', '模块安装', 1, ''),
-(95, 'admin', 1, 'admin/Action/actionLog', '行为日志', -1, ''),
-(96, 'admin', 2, 'admin/Announce/announcelist', '运营', -1, ''),
-(97, 'admin', 1, 'admin/Message/userList', '群发消息用户列表', -1, ''),
-(98, 'admin', 1, 'admin/Channel/user', '用户导航', 1, ''),
-(99, 'admin', 1, 'admin/channel/index', '前台导航', -1, ''),
-(100, 'admin', 1, 'admin/Module/index', '应用管理', 1, ''),
-(101, 'admin', 2, 'admin/Action/limit', '安全', -1, ''),
-(102, 'admin', 1, 'admin/member/profile', '扩展资料', 1, ''),
-(103, 'admin', 2, 'admin/Config/group', '系统', 1, ''),
-(104, 'admin', 1, 'admin/menu/index', '系统权限菜单', 1, ''),
-(105, 'admin', 1, 'admin/action/limit', '行为限制列表', 1, ''),
-(106, 'admin', 2, 'admin/Module/index', '应用', 1, ''),
-(107, 'admin', 1, 'admin/module/uninstall', '卸载模块', 1, ''),
-(108, 'admin', 1, 'admin/action/editLimit', '新增/编辑行为限制', 1, ''),
-(109, 'admin', 1, 'admin/member/userTag', '用户标签列表', -1, ''),
-(110, 'admin', 1, 'admin/Database/dataExport', '备份数据库', 1, ''),
-(111, 'admin', 1, 'admin/Seo/index', 'SEO规则管理', -1, ''),
-(112, 'admin', 1, 'admin/Database/dataImport', '还原数据库', 1, ''),
-(113, 'admin', 1, 'admin/Seo/ruleTrash', 'SEO规则回收站', -1, ''),
-(114, 'admin', 1, 'admin/Schedule/schedulelist', '计划任务', -1, ''),
-(115, 'admin', 1, 'admin/Update/index', '系统升级', -1, ''),
-(116, 'admin', 1, 'admin/Member/editProfile', '添加、编辑分组', 1, ''),
-(117, 'admin', 1, 'admin/Member/sortProfile', '分组排序', 1, ''),
-(118, 'admin', 1, 'admin/Member/field', '字段列表', 1, ''),
-(119, 'admin', 1, 'admin/Member/editField', '添加、编辑字段', 1, ''),
-(120, 'admin', 1, 'admin/Member/sortField', '字段排序', 1, ''),
-(121, 'admin', 1, 'admin/Score/editType', '新增/编辑类型', 1, ''),
-(122, 'admin', 1, 'admin/Seo/edit', '新增、编辑', -1, ''),
-(123, 'admin', 1, 'admin/Seo/sort', '排序', -1, ''),
-(124, 'admin', 1, 'admin/Score/setTypeStatus', '设置积分状态', 1, ''),
-(125, 'admin', 1, 'admin/Score/delType', '删除积分类型', 1, ''),
-(126, 'admin', 1, 'admin/Seo/status', '启用、禁用、删除、回收站还原', -1, ''),
-(127, 'admin', 1, 'admin/Seo/clear', '回收站彻底删除', -1, ''),
-(128, 'admin', 1, 'admin/Member/initpass', '重置用户密码', 1, ''),
-(129, 'admin', 1, 'admin/member/edit', '编辑', 1, ''),
-(130, 'admin', 1, 'admin/extend/index', '存储设置', -1, ''),
-(131, 'admin', 1, 'admin/channel/common', '前台导航', 1, ''),
-(132, 'admin', 1, 'admin/Seo/trash', 'SEO规则回收站', -1, ''),
-(133, 'admin', 1, 'admin/Score/log', '积分日志', 1, ''),
-(134, 'admin', 1, 'admin/Score/type', '积分类型列表', 1, ''),
-(135, 'admin', 1, 'admin/Action/log', '行为日志', 1, ''),
-(136, 'admin', 1, 'admin/Auth/changeStatus?method=deleteGroup', '删除', 1, ''),
-(137, 'admin', 1, 'admin/Auth/changeStatus?method=forbidGroup', '禁用', 1, ''),
-(138, 'admin', 1, 'admin/Auth/changeStatus?method=resumeGroup', '恢复', 1, ''),
-(139, 'admin', 1, 'admin/Auth/createGroup', '新增', 1, ''),
-(140, 'admin', 1, 'admin/Auth/editGroup', '编辑', 1, ''),
-(141, 'admin', 1, 'admin/Auth/writeGroup', '保存用户组', 1, ''),
-(142, 'admin', 1, 'admin/Auth/group', '授权', 1, ''),
-(143, 'admin', 1, 'admin/Auth/access', '访问授权', 1, ''),
-(144, 'admin', 1, 'admin/Auth/user', '成员授权', 1, ''),
-(145, 'admin', 1, 'admin/Auth/removeFromGroup', '解除授权', 1, ''),
-(146, 'admin', 1, 'admin/Auth/addToGroup', '保存成员授权', 1, ''),
-(147, 'admin', 1, 'admin/extend/edit', '新增、编辑', 1, ''),
-(148, 'admin', 1, 'admin/Auth/index', '用户组管理', 1, ''),
-(149, 'admin', 1, 'admin/extend/list', '扩展配置参数', 1, ''),
-(150, 'admin', 1, 'admin/action/edit', '新增、编辑用户行为', 1, ''),
-(151, 'admin', 1, 'admin/extend/sms', '短信配置', 1, ''),
-(152, 'admin', 1, 'admin/extend/store', '存储设置', 1, '');
 
 -- --------------------------------------------------------
 
@@ -456,8 +331,11 @@ CREATE TABLE IF NOT EXISTS `muucmf_config` (
   `status` tinyint(4) NOT NULL DEFAULT '0' COMMENT '状态',
   `value` text NOT NULL COMMENT '配置值',
   `sort` smallint(3) UNSIGNED NOT NULL DEFAULT '0' COMMENT '排序',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=100;
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uk_name` (`name`) USING BTREE,
+  KEY `type` (`type`) USING BTREE,
+  KEY `group` (`group`) USING BTREE;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT '配置' AUTO_INCREMENT=100;
 
 --
 -- 转存表中的数据 `muucmf_config`
@@ -465,13 +343,13 @@ CREATE TABLE IF NOT EXISTS `muucmf_config` (
 
 INSERT INTO `muucmf_config` (`id`, `name`, `type`, `title`, `group`, `extra`, `remark`, `create_time`, `update_time`, `status`, `value`, `sort`) VALUES
 (100, 'SITE_CLOSE', 'select', '关闭站点', 4, '0:关闭,1:开启', '站点关闭后其他用户不能访问，管理员可以正常访问', 1378898976, 1640252032, 1, '1', 3),
-(102, 'CONFIG_GROUP_LIST', 'entity', '配置分组', 4, '', '配置分组', 1379228036, 1645424501, 1, '1:基本\r\n2:服务\r\n3:用户\r\n4:系统\r\n5:邮件', 15),
+(102, 'CONFIG_GROUP_LIST', 'entity', '配置分组', 4, '', '配置分组', 1379228036, 1645424501, 1, '1:基本\r\n2:服务\r\n3:用户\r\n4:系统\r\n5:邮件\r\n6:版权', 15),
 (104, 'AUTH_CONFIG', 'entity', 'Auth配置', 4, '', '自定义Auth.class.php类配置', 1379409310, 1630895923, 1, 'AUTH_ON:1\r\nAUTH_TYPE:2', 16),
 (108, 'DATA_BACKUP_PATH', 'string', '数据库备份根路径', 4, '', '路径必须以 / 结尾', 1381482411, 1630895911, 1, '../data/backup', 16),
 (109, 'DATA_BACKUP_PART_SIZE', 'num', '数据库备份卷大小', 4, '', '该值用于限制压缩后的分卷最大长度。单位：B；建议设置20M', 1381482488, 1630895900, 1, '20971520', 18),
 (110, 'DATA_BACKUP_COMPRESS', 'select', '数据库备份文件是否启用压缩', 4, '0:不压缩\r\n1:启用压缩', '压缩备份文件需要PHP环境支持gzopen,gzwrite函数', 1381713345, 1630895885, 1, '1', 22),
 (111, 'DATA_BACKUP_COMPRESS_LEVEL', 'select', '数据库备份文件压缩级别', 4, '1:普通\r\n4:一般\r\n9:最高', '数据库备份文件的压缩级别，该配置在开启压缩时生效', 1381713408, 1630895819, 1, '9', 25),
-(112, 'DEVELOP_MODE', 'select', '开启开发者模式', 4, '0:关闭\r\n1:开启', '是否开启开发者模式', 1383105995, 1630895355, 1, '1', 8),
+(112, 'DEVELOP_MODE', 'select', '开启开发者模式', 4, '0:关闭\r\n1:开启', '是否开启开发者模式', 1383105995, 1630895355, 1, '0', 8),
 (115, 'ADMIN_ALLOW_IP', 'textarea', '后台允许访问IP', 4, '', '多个用逗号分隔，如果不配置表示不限制IP访问', 1387165454, 1630895868, 1, '', 27),
 (117, 'MAIL_TYPE', 'select', '邮件类型', 5, '1:SMTP 模块发送\r\n2:mail() 函数发送', '如果您选择了采用服务器内置的 Mail 服务，您不需要填写下面的内容', 1388332882, 1630895456, 1, '1', 1),
 (118, 'MAIL_SMTP_HOST', 'string', 'SMTP 服务器', 5, '', 'SMTP服务器', 1388332932, 1630896154, 1, 'smtp.qiye.aliyun.com', 3),
@@ -483,15 +361,13 @@ INSERT INTO `muucmf_config` (`id`, `name`, `type`, `title`, `group`, `extra`, `r
 (128, 'VERIFY_OPEN', 'checkbox', '验证码配置', 3, 'reg:注册显示\r\nlogin:登陆显示\r\nreset:密码重置', '验证码配置', 1388500332, 1631320314, 1, '', 3),
 (129, 'VERIFY_TYPE', 'select', '验证码类型', 4, '1:中文\r\n2:英文\r\n3:数字\r\n4:英文+数字', '验证码类型', 1388500873, 1630895014, 1, '4', 0),
 (132, 'COUNT_CODE', 'textarea', '统计代码', 1, '', '用于统计网站访问量的第三方代码，推荐百度统计', 1403058890, 1653285401, 1, '<script>\r\nvar _hmt = _hmt || [];\r\n(function() {\r\n  var hm = document.createElement(\"script\");\r\n  hm.src = \"https://hm.baidu.com/hm.js?959d8ff4676fce87aa16f4c1edb78038\";\r\n  var s = document.getElementsByTagName(\"script\")[0]; \r\n  s.parentNode.insertBefore(hm, s);\r\n})();\r\n</script>\r\n', 12),
-(134, 'URL_MODEL', 'select', 'URL模式', 4, '2:REWRITE模式(开启伪静态)\r\n3:兼容模式', '选择Rewrite模式则开启伪静态，在开启伪静态之前需要先设置伪静态或阅读/Rewrite/readme.txt中的说明，默认建议开启兼容模式', 1421027546, 1630895041, 1, '3', 0),
 (135, 'DEFUALT_APP', 'string', '系统默认应用', 4, '', '留空默认index', 1417509438, 1640251531, 1, 'muu', 1),
 (137, 'SITE_CLOSE_HINT', 'textarea', '关站提示文字', 4, '', '站点关闭后的提示文字。', 1433731248, 1640252044, 1, '网站正在更新维护，请稍候再试。', 4),
 (140, 'MAIL_SMTP_CE', 'string', '邮件发送测试', 5, '', '填写测试邮件地址', 1388334529, 1630895967, 1, '59262424@qq.com', 11),
 (1000, 'USER_REG_SWITCH', 'checkbox', '用户注册开关', 3, 'username:用户名\r\nemail:邮箱\r\nmobile:手机号', '用户注册开关', 1531177781, 1631278401, 1, 'username,email,mobile', 1),
-(1001, 'WEB_SITE_NAME', 'string', '站点名称', 1, '', '站点名称', 1530883729, 1630895072, 1, 'MuuCmf T6', 0),
+(1001, 'WEB_SITE_NAME', 'string', '站点名称', 1, '', '站点名称', 1530883729, 1630895072, 1, 'MuuCmf T6 开源低代码应用开发框架', 0),
 (1002, 'WEB_SITE_ICP', 'string', 'ICP备案', 1, '', 'ICP备案', 1530883729, 1640309012, 1, '京ICP备12345XXXx号', 20),
-(1003, 'WEB_SITE_LOGO', 'pic', '站点LOGO', 1, '', '站点LOGO', 1530883729, 1640325297, 1, 'image/20210912/f12b57267708d211f4243caf3cf7a6eb.png', 2),
-(1007, 'WEB_SITE_COPY_RIGHT', 'textarea', '站点版权信息', 1, '', '站点版权信息', 1530883729, 1640327477, 1, '<span>Power&nbsp;by&nbsp;MuuCmf</span>&nbsp&nbspCopyright ©2018-2022 <a href=\"http://www.muucmf.cn\" target=\"_blank\">北京火木科技有限公司</a>', 10),
+(1003, 'WEB_SITE_LOGO', 'pic', '站点LOGO', 1, '', '站点LOGO', 1530883729, 1640325297, 1, 'images/20220527/5ce650bec1baa93d35ba784bb6daa449.png', 2),
 (10012, 'USER_LEVEL', 'entity', '用户等级设置', 3, '', '', 1531177781, 1631278482, 1, '0:Lv1 实习\r\n50:Lv2 试用\r\n100:Lv3 转正\r\n200:Lv4 助理\r\n400:Lv5 经理\r\n800:Lv6 董事\r\n1600:Lv7 董事长', 255),
 (10013, 'USER_NICKNAME_MIN_LENGTH', 'num', '昵称长度最小值', 3, '', '昵称长度最小值', 1531177781, 1631278545, 1, '2', 20),
 (10014, 'USER_NICKNAME_MAX_LENGTH', 'num', '昵称长度最大值', 3, '', '昵称长度最大值', 1531177781, 1631278555, 1, '32', 21),
@@ -499,7 +375,7 @@ INSERT INTO `muucmf_config` (`id`, `name`, `type`, `title`, `group`, `extra`, `r
 (10135, 'USER_LOGIN_SWITCH', 'checkbox', '用户登录开关', 3, 'username:用户名\r\nemail:邮箱\r\nmobile:手机号', '允许用户登录的方式', 0, 1631278375, 1, 'username,email,mobile', 2),
 (10136, 'USER_USERNAME_MIN_LENGTH', 'num', '用户名长度最小值', 3, '', '用户名长度最小值', 0, 1631522578, 1, '2', 10),
 (10137, 'USER_USERNAME_MAX_LENGTH', 'num', '用户名长度最大值', 3, '', '用户名长度最大值', 0, 1631522594, 1, '32', 11),
-(10138, 'OPEN_QUICK_LOGIN', 'radio', '用户快捷登录', 3, '1:启用\r\n0:关闭', '', 0, 0, 1, '1', 3),
+(10138, 'OPEN_QUICK_LOGIN', 'radio', '用户快捷登录', 3, '1:启用\r\n0:关闭', '开启后在页面弹出快捷登陆框', 0, 1658731272, 1, '1', 3),
 (10139, 'USER_NICKNAME_SWITCH', 'radio', '用户注册昵称开关', 3, '1:开启\r\n0:关闭', '用户注册时是否可直接设置自己的昵称', 0, 0, 1, '0', 5),
 (10140, 'USER_NICKNAME_PREFIX', 'string', '用户昵称前缀', 3, '', '系统自动生成用户昵称时的前缀', 0, 1631522685, 1, '', 6),
 (10141, 'USER_REG_AGREEMENT', 'editor', '用户注册服务协议', 3, '', '用户注册服务协议', 0, 0, 1, '<p style=\"text-align: center;\"><span style=\"font-size: 36px;\">用户注册服务协议</span></p><p><br/></p><hr/><p>ThinkPHP\r\n 是一个免费开源的，快速、简单的面向对象的 轻量级PHP开发框架 \r\n，创立于2006年初，遵循Apache2开源协议发布，是为了敏捷WEB应用开发和简化企业应用开发而诞生的。ThinkPHP从诞生以来一直秉承简洁实用的设计原则，在保持出色的性能和至简的代码的同时，也注重易用性。并且拥有众多的原创功能和特性，在社区团队的积极参与下，在易用性、扩展性和性能方面不断优化和改进，已经成长为国内最领先和最具影响力的WEB应用开发框架，众多的典型案例确保可以稳定用于商业以及门户级的开发。</p>', 999),
@@ -511,7 +387,10 @@ INSERT INTO `muucmf_config` (`id`, `name`, `type`, `title`, `group`, `extra`, `r
 (10147, 'SERVICE_WEIXINKF', 'string', '微信客服链接', 2, '', '使用详情 https://work.weixin.qq.com/kf', 0, 1653285496, 1, 'https://work.weixin.qq.com/kfid/kfcb3dc015a434054c5', 8),
 (10148, 'WEB_SITE_STYLE', 'style', '站点风格', 1, 'Blue\r\nGreen\r\nOrange\r\nLightRed\r\nLightPink\r\nMagenta', '请选择客户端展示的风格色系', 0, 1640327457, 1, 'Blue', 3),
 (10149, 'WEB_SITE_DESCRIPTION', 'textarea', '站点简短描述', 1, '', '请完善站点简短描述', 0, 1640325379, 1, '<p>MuuCmf T6 开源低代码应用开发框架</p>\r\n<p>北京火木科技有限公司 版权所有并提供技术支持</p>', 1),
-(10150, 'SERVICE_WEIXIN_QRCODE', 'pic', '公众号二维码', 2, '', '关注公众号二维码', 0, 1653285668, 1, 'images/20220523/669bcd974dfe0ab9f045dc37eadb5af6.jpg', 5);
+(10150, 'SERVICE_WEIXIN_QRCODE', 'pic', '公众号二维码', 2, '', '关注公众号二维码', 0, 1653285668, 1, 'images/20220523/669bcd974dfe0ab9f045dc37eadb5af6.jpg', 5),
+(10151, 'COPYRIGHT_MAIN', 'string', '版权主体', 6, '', '版权归属主体名称', 0, 0, 1, '北京火木科技有限公司', 0),
+(10152, 'COPYRIGHT_WEBSITE', 'string', '主体官网', 6, '', '版权主体的官方网站地址', 0, 0, 1, 'https://www.muucmf.cn', 0),
+(10153, 'USER_MOBILE_BIND', 'radio', '手机号绑定开关', 3, '1:开启\r\n0:关闭', '手机号绑定开关', 0, 1658731662, 1, '1', 4);
 
 -- --------------------------------------------------------
 
@@ -4169,7 +4048,7 @@ CREATE TABLE IF NOT EXISTS `muucmf_evaluate` (
   `reply_time` int(11) UNSIGNED NOT NULL COMMENT '回复时间',
   `create_time` int(11) UNSIGNED NOT NULL COMMENT '创建时间',
   `update_time` int(11) UNSIGNED NOT NULL COMMENT '更新时间',
-  `status` tinyint(4) NOT NULL DEFAULT '0' COMMENT '状态',
+  `status` tinyint(4) NOT NULL COMMENT '状态',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='订单评价表' ROW_FORMAT=COMPACT;
 
@@ -4205,37 +4084,37 @@ INSERT INTO `muucmf_extend_config` (`id`, `name`, `type`, `title`, `group`, `ext
 (1, 'GROUP_LIST', 'entity', '扩展分组', 1, '', '分组后便于管理参数', 0, 1645410333, 1, '1:配置项\r\n2:阿里云OSS\r\n3:腾讯云COS\r\n4:阿里云短信\r\n5:腾讯云短信\r\n6:微信支付\r\n7:支付宝支付\r\n8:提现配置', 0),
 (3, 'PICTURE_UPLOAD_DRIVER', 'select', '图片上传驱动', 1, '', '', 0, 1649315854, 1, 'local', 0),
 (4, 'FILE_UPLOAD_DRIVER', 'select', '文件上传驱动', 1, '', '', 0, 1649315862, 1, 'local', 0),
-(6, 'OSS_ALIYUN_ACCESSKEYID', 'string', 'AccessKeyID', 2, '', 'Access Key ID是您访问阿里云API的密钥，具有该账户完全的权限，请您妥善保管.', 1630910114, 1630918767, 1, 'LTAI5tL7gugDWUfwTUHrEdB1', 0),
-(7, 'OSS_ALIYUN_ACCESSKEYSECRET', 'string', 'AccessKeySecret', 2, '', 'Access Key Secret是您访问阿里云API的密钥，具有该账户完全的权限，请您妥善保管.', 1630910174, 1630918648, 1, 'YvHsCzzzwH8cj3YPOoU9aOeGeE7OVP', 0),
+(6, 'OSS_ALIYUN_ACCESSKEYID', 'string', 'AccessKeyID', 2, '', 'Access Key ID是您访问阿里云API的密钥，具有该账户完全的权限，请您妥善保管.', 1630910114, 1630918767, 1, '', 0),
+(7, 'OSS_ALIYUN_ACCESSKEYSECRET', 'string', 'AccessKeySecret', 2, '', 'Access Key Secret是您访问阿里云API的密钥，具有该账户完全的权限，请您妥善保管.', 1630910174, 1630918648, 1, '', 0),
 (8, 'OSS_ALIYUN_ENDPOINT', 'string', 'Endpoint', 2, '', '如：oss-cn-beijing.aliyuncs.com', 1630910253, 1630918691, 1, 'oss-cn-beijing.aliyuncs.com', 0),
 (9, 'OSS_ALIYUN_BUCKET', 'string', 'Bucket', 2, '', 'Bucket', 0, 1630918732, 1, 't6-muu', 0),
-(11, 'OSS_ALIYUN_BUCKET_DOMAIN', 'string', 'Bucket域名', 2, '', 'Bucket域名', 0, 1630918755, 1, 'https://t6-muu.oss-cn-beijing.aliyuncs.com', 0),
-(12, 'COS_TENCENT_APPID', 'string', 'APPID', 3, '', 'APPID 是您项目的唯一ID.', 0, 1630985350, 1, '123', 0),
-(13, 'COS_TENCENT_SECRETID', 'string', 'SecretID', 3, '', 'SecretID 是您项目的安全密钥，具有该账户完全的权限，请妥善保管.', 0, 0, 1, 'AKIDpVv4xZv0oKaZHirkMJzPYPzIK5YkgLjq', 0),
-(14, 'COS_TENCENT_SECRETKEY', 'string', 'SecretKEY', 3, '', 'SecretKEY 是您项目的安全密钥，具有该账户完全的权限，请妥善保管.', 0, 0, 1, 'sTnqhHacNq2wZw2qNeeNp0tVquhCQM2R', 0),
+(11, 'OSS_ALIYUN_BUCKET_DOMAIN', 'string', 'Bucket域名', 2, '', 'Bucket域名', 0, 1630918755, 1, '', 0),
+(12, 'COS_TENCENT_APPID', 'string', 'APPID', 3, '', 'APPID 是您项目的唯一ID.', 0, 1630985350, 1, '', 0),
+(13, 'COS_TENCENT_SECRETID', 'string', 'SecretID', 3, '', 'SecretID 是您项目的安全密钥，具有该账户完全的权限，请妥善保管.', 0, 0, 1, '', 0),
+(14, 'COS_TENCENT_SECRETKEY', 'string', 'SecretKEY', 3, '', 'SecretKEY 是您项目的安全密钥，具有该账户完全的权限，请妥善保管.', 0, 0, 1, '', 0),
 (15, 'COS_TENCENT_BUCKET', 'string', 'Bucket', 3, '', 'Bucket.', 0, 0, 1, 't6-1251345595', 0),
 (16, 'COS_TENCENT_REGION', 'string', 'Region', 3, '', 'Bucket所在区域.', 0, 1630985517, 1, 'ap-beijing', 0),
 (17, 'COS_TENCENT_BUCKET_DOMAIN', 'string', 'Bucket域名', 3, '', '腾讯云支持用户自定义访问域名。注：url开头加http://或https://结尾不加 ‘/’例：http://abc.com.', 0, 0, 1, 'https://t6-1251345595.cos.ap-beijing.myqcloud.com', 0),
-(18, 'SMS_TENCENT_APPID', 'string', '腾讯云SDKAppID', 5, '', 'SDK AppID是短信应用的唯一标识，调用短信API接口时，需要提供该参数', 0, 0, 1, '1400550429', 0),
+(18, 'SMS_TENCENT_APPID', 'string', '腾讯云SDKAppID', 5, '', 'SDK AppID是短信应用的唯一标识，调用短信API接口时，需要提供该参数', 0, 0, 1, '', 0),
 (19, 'SMS_TENCENT_APPKEY', 'string', 'App KEY', 5, '', 'App Key是用来校验短信发送合法性的密码，与SDK AppID对应，需要业务方高度保密，切勿把密码存储在客户端', 0, 0, 1, '123', 0),
 (20, 'SMS_TENCENT_SIGN', 'string', '短信签名', 5, '', '请使用真实的已申请的签名，签名参数使用的是`签名内容`，而不是`签名ID`', 0, 0, 1, '火木科技', 0),
 (21, 'SMS_TENCENT_TEMPLATEID', 'string', '短信模板', 5, '', '短信模板ID，应严格按\"模板ID\"填写', 0, 0, 1, '1043413', 0),
 (22, 'SMS_SEND_DRIVER', 'select', '短信发送平台', 1, 'aliyun:阿里云\r\ntencent:腾讯云', '请选择短信发送第三方平台', 0, 0, 1, 'aliyun', 0),
 (23, 'SMS_RESEND', 'num', '验证码有效期', 1, '', '验证码有效期', 0, 0, 1, '60', 0),
-(24, 'SMS_ALIYUN_ACCESSKEYID', 'string', 'AccessKeyID', 4, '', 'Access Key ID是您访问阿里云API的密钥，具有该账户完全的权限，请您妥善保管', 0, 0, 1, 'LTAI5tL7gugDWUfwTUHrEdB1', 0),
-(25, 'SMS_ALIYUN_ACCESSKEYSECRET', 'string', 'AccessKeySecret', 4, '', 'Access Key Secret是您访问阿里云API的密钥，具有该账户完全的权限，请您妥善保管', 0, 0, 1, 'YvHsCzzzwH8cj3YPOoU9aOeGeE7OVP', 0),
+(24, 'SMS_ALIYUN_ACCESSKEYID', 'string', 'AccessKeyID', 4, '', 'Access Key ID是您访问阿里云API的密钥，具有该账户完全的权限，请您妥善保管', 0, 0, 1, '', 0),
+(25, 'SMS_ALIYUN_ACCESSKEYSECRET', 'string', 'AccessKeySecret', 4, '', 'Access Key Secret是您访问阿里云API的密钥，具有该账户完全的权限，请您妥善保管', 0, 0, 1, '', 0),
 (26, 'SMS_ALIYUN_SIGN', 'string', '短信签名', 4, '', '应严格按\"签名名称\"填写，请参考: https://dysms.console.aliyun.com/dysms.htm#/develop/sign', 0, 0, 1, 'muucmf', 0),
-(27, 'SMS_ALIYUN_TEMPLATEID', 'string', '短信模板', 4, '', '短信模板Code，应严格按\"模板CODE\"填写, 请参考: https://dysms.console.aliyun.com/dysms.htm#/develop/template', 0, 0, 1, 'SMS_163851397', 0),
-(28, 'SMS_TENCENT_SECRETID', 'string', 'SecretID', 5, '', 'SecretID 是您项目的安全密钥，具有该账户完全的权限，请妥善保管', 0, 0, 1, 'AKIDiGYZJmzvb091cvykFUSAbkcEZdQyFFzR', 0),
-(29, 'SMS_TENCENT_SECRETKEY', 'string', 'SecretKEY', 5, '', 'SecretKEY 是您项目的安全密钥，具有该账户完全的权限，请妥善保管', 0, 0, 1, 'DAqFOGrAE0VjgMltkLfmdEYaLp2ycz6v', 0),
+(27, 'SMS_ALIYUN_TEMPLATEID', 'string', '短信模板', 4, '', '短信模板Code，应严格按\"模板CODE\"填写, 请参考: https://dysms.console.aliyun.com/dysms.htm#/develop/template', 0, 0, 1, '', 0),
+(28, 'SMS_TENCENT_SECRETID', 'string', 'SecretID', 5, '', 'SecretID 是您项目的安全密钥，具有该账户完全的权限，请妥善保管', 0, 0, 1, '', 0),
+(29, 'SMS_TENCENT_SECRETKEY', 'string', 'SecretKEY', 5, '', 'SecretKEY 是您项目的安全密钥，具有该账户完全的权限，请妥善保管', 0, 0, 1, '', 0),
 (30, 'SMS_TENCENT_REGION', 'string', 'Region', 5, '', '地域参数，格式 如：ap-beijing.', 0, 0, 1, 'ap-beijing', 0),
 (31, 'SMS_ALIYUN_REGION', 'string', 'Region', 4, '', '地域参数，格式 如：cn-beijing.', 0, 0, 1, 'cn-beijing', 0),
 (32, 'WX_PAY_MCH_ID', 'num', '微信商户ID', 6, '', 'Mch ID是您微信商户的商 户ID，请您妥善保管.', 0, 0, 1, '1513278631', 0),
-(33, 'WX_PAY_KEY_SECRET', 'string', '微信商户API密钥', 6, '', 'Key Secret是您微信商户的API密钥，请您妥善保管.', 0, 0, 1, 'E0DBCB26C939DEA508A33988CEAFAE79', 0),
+(33, 'WX_PAY_KEY_SECRET', 'string', '微信商户API密钥', 6, '', 'Key Secret是您微信商户的API密钥，请您妥善保管.', 0, 0, 1, '', 0),
 (34, 'VOD_UPLOAD_DRIVER', 'select', '云点播上传驱动', 1, '', '云点播上传驱动', 0, 0, 1, 'disable', 0),
-(35, 'VOD_TENCENT_SECRETID', 'string', 'SecretID', 1, '', 'SecretID 是您项目的安全密钥', 0, 0, 1, 'AKID70h9OaFMOIJ4bsmlQL8ZBsRr2zB36Y1G', 0),
-(36, 'VOD_TENCENT_SECRETKEY', 'string', 'SecretKEY', 1, '', 'SecretKEY 是您项目的安全密钥', 0, 1635733379, 1, 'nSuFPnwLoxwoU2KNOAZpzuzwsR374sa9', 0),
-(37, 'VOD_TENCENT_SUBAPPID', 'string', 'SubAppId', 1, '', 'SubAppId 是您云点播平台子应用ID', 0, 1635733390, 1, '1500003662', 0),
+(35, 'VOD_TENCENT_SECRETID', 'string', 'SecretID', 1, '', 'SecretID 是您项目的安全密钥', 0, 0, 1, '', 0),
+(36, 'VOD_TENCENT_SECRETKEY', 'string', 'SecretKEY', 1, '', 'SecretKEY 是您项目的安全密钥', 0, 1635733379, 1, '', 0),
+(37, 'VOD_TENCENT_SUBAPPID', 'string', 'SubAppId', 1, '', 'SubAppId 是您云点播平台子应用ID', 0, 1635733390, 1, '', 0),
 (38, 'WITHDRAW_STATUS', 'select', '提现开关', 8, '0:关闭\r\n1:开启', '如有特殊情况，可暂时关闭提现', 0, 1645410598, 1, '0', 1),
 (39, 'WITHDRAW_TAX_RATE', 'num', '提现税率', 8, '', ' 默认千分之五（千分比）', 0, 1645410586, 1, '5', 2),
 (40, 'WITHDRAW_DAY_NUM', 'num', '每日可提现次数', 8, '', '一天最多可提现多少次', 0, 0, 1, '5', 3),
@@ -4498,7 +4377,7 @@ CREATE TABLE IF NOT EXISTS `muucmf_menu` (
 INSERT INTO `muucmf_menu` (`id`, `title`, `pid`, `sort`, `url`, `hide`, `type`, `tip`, `group`, `is_dev`, `icon`, `module`) VALUES
 ('017966CD-EA9F-1D79-B126-85CC3DE9FA6B', '字段列表', '3C011249-2C51-D40B-19EC-2A8CA4DCFE51', 0, 'admin/field/list', 0, 0, '', '', 0, '', 'admin'),
 ('05929499-FF7F-7615-C021-EDECADD02115', '行为限制列表', 'D18841ED-C034-2E7A-D0B2-92D0AC647179', 41, 'admin/action/limit', 0, 0, '', '行为管理', 0, 'ban', 'admin'),
-('0CC7C474-337A-476B-8F70-6837990AA884', '顶部导航', 'A4650B98-DAD4-8194-030C-1B2AB4F35CBA', 60, 'channel/admin.pc/channel', 0, 0, '', 'PC管理', 0, 'sitemap', 'admin'),
+('0CC7C474-337A-476B-8F70-6837990AA884', '顶部导航', 'A4650B98-DAD4-8194-030C-1B2AB4F35CBA', 60, 'channel/admin.pc/navbar', 0, 0, '', 'PC管理', 0, 'sitemap', 'admin'),
 ('0DB5F050-66EA-03D0-CE04-895DB8C50982', '系统升级', '167253B8-B360-E5C8-3F94-F0502E971DAF', 999, 'admin/Update/index', 0, 0, '', '系统升级', 0, 'cloud-download', 'admin'),
 ('0F3D6CB1-0C7E-4292-CF19-6E32FC9D2F8D', '查看行为日志', '113D646E-6D67-CF09-8C2C-4B10D57A6902', 0, 'admin/action/detail', 1, 0, '', '', 0, '', 'admin'),
 ('113D646E-6D67-CF09-8C2C-4B10D57A6902', '行为日志', 'D18841ED-C034-2E7A-D0B2-92D0AC647179', 42, 'admin/Action/log', 0, 0, '', '行为管理', 0, 'list-ul', 'admin'),
@@ -4507,6 +4386,7 @@ INSERT INTO `muucmf_menu` (`id`, `title`, `pid`, `sort`, `url`, `hide`, `type`, 
 ('167253B8-B360-E5C8-3F94-F0502E971DAF', '系统', '0', 6, 'admin/Config/group', 0, 0, '', '', 0, 'windows', 'admin'),
 ('1A21DBCD-FA7C-C84A-99A5-DA457DE56F01', '支付配置', '167253B8-B360-E5C8-3F94-F0502E971DAF', 6, 'admin/extend/payment', 0, 0, '', '第三方扩展', 0, 'jpy', 'admin'),
 ('1B23C61A-3B9E-07DC-6FC8-DA8A2F7A80D0', '浏览记录', '8F5C83E0-3753-C731-4EEF-5D004137B11D', 91, 'admin/History/list', 0, 0, '', '用户互动', 0, 'eye', 'admin'),
+('1E10322E-B5A4-6CFE-6F33-F629B1D72A6F', '关键字列表', '8F5C83E0-3753-C731-4EEF-5D004137B11D', 3, 'admin/Keywords/lists', 0, 0, '', '搜索关键字', 0, 'search', 'admin'),
 ('20216DCF-1138-09A3-346A-C92E08E33677', '应用管理', '7BE5FA0B-7009-AB46-FE7B-A9364ACAF687', 5, 'admin/Module/index', 0, 0, '', '本地', 0, 'laptop', 'admin'),
 ('22AADF5F-AD46-2125-5833-46AE0F01D749', '新增', 'E62328CE-8E20-DD00-E0E8-832D1C8E3B65', 0, 'admin/Auth/createGroup', 0, 0, '创建新的用户组', '', 0, '', 'admin'),
 ('24B6E16C-401D-8CCA-C8E1-DCD118AAC005', '禁用', 'E62328CE-8E20-DD00-E0E8-832D1C8E3B65', 0, 'admin/Auth/changeStatus?method=forbidGroup', 0, 0, '禁用用户组', '', 0, '', 'admin'),
@@ -4547,6 +4427,7 @@ INSERT INTO `muucmf_menu` (`id`, `title`, `pid`, `sort`, `url`, `hide`, `type`, 
 ('8AEC0A7D-555F-8708-90B0-5528A2542F2F', '新增、编辑', 'D1B92885-12EA-9403-F367-E8978A4650DE', 0, 'admin/extend/edit', 0, 0, '', '', 0, '', 'admin'),
 ('8CE9FEC6-99F2-E8FC-87B6-089E8C17FB93', '成员授权', 'E62328CE-8E20-DD00-E0E8-832D1C8E3B65', 0, 'admin/Auth/user', 0, 0, '\"后台 \\ 用户 \\ 权限管理\"列表页的\"成员授权\"操作按钮', '', 0, '', 'admin'),
 ('8F5C83E0-3753-C731-4EEF-5D004137B11D', '运营', '0', 3, 'admin/Announce/list', 0, 0, '', '', 0, 'area-chart', 'admin'),
+('8FBC28D8-1385-5D72-41DA-1F3D80C00021', '新增、编辑关键字', '1E10322E-B5A4-6CFE-6F33-F629B1D72A6F', 0, 'admin/Keywords/edit', 0, 0, '', '', 0, '', 'admin'),
 ('9046DAB8-73C9-74CF-B95B-6110A41BF43D', '计划任务', '167253B8-B360-E5C8-3F94-F0502E971DAF', 70, 'admin/crontab/list', 0, 0, '', '异步任务', 0, 'clock-o', 'admin'),
 ('91377A3B-2DF4-9334-E70C-6240DB520341', '新增、编辑', '4B3DFCDA-258E-0CBC-66D5-BB95CE81B9D5', 0, 'channel/admin.tominiprogram/edit', 1, 0, '', '跳转小程序', 0, '', 'admin'),
 ('9609CE49-7E15-17F7-E43E-1078AB4C23C3', '设置显示隐藏', '6E7257F5-44DA-009D-548F-47B895DDC1CB', 0, 'admin/Menu/toogleHide', 1, 0, '', '', 0, '', 'admin'),
@@ -4705,17 +4586,14 @@ CREATE TABLE `muucmf_orders` (
   `type` varchar(32) NOT NULL COMMENT '订单类型',
   `order_info_type` varchar(32) NOT NULL COMMENT '商品类型关键字，如：knowledge:知识内容，column：专栏内容，关联不同模型',
   `order_info_id` bigint(11) UNSIGNED NOT NULL COMMENT '商品ID',
-  `channel` varchar(128) NOT NULL COMMENT '支付渠道',
+  `channel` varchar(128) NOT NULL COMMENT '渠道',
+  `pay_channel` varchar(32) NOT NULL COMMENT '支付渠道',
   `paid_fee` int(11) UNSIGNED NOT NULL COMMENT '实际支付金额',
   `price` int(11) UNSIGNED NOT NULL COMMENT '订单价格',
   `products` text NOT NULL COMMENT '商品详情json数据',
   `status` tinyint(4) NOT NULL COMMENT '订单状态，1，正常，0，禁用，-1，已删除',
   `evaluate` tinyint(2) NOT NULL COMMENT '评价状态',
   `author_id` int(11) UNSIGNED NOT NULL COMMENT '内容拥有者ID',
-  `ip` varchar(128) NOT NULL COMMENT 'ip地址',
-  `create_time` int(11) UNSIGNED NOT NULL COMMENT '创建时间',
-  `update_time` int(11) UNSIGNED NOT NULL COMMENT '更新时间',
-  `end_time` int(11) NOT NULL COMMENT '订单有效期结束时间戳',
   `discount_fee` int(11) NOT NULL COMMENT '已优惠的金额，如优惠卷、限时折扣等，单位：分',
   `delivery_fee` int(11) NOT NULL COMMENT '邮费金额，单位：分',
   `logistic` text NOT NULL COMMENT '物流数据 json',
@@ -4726,7 +4604,11 @@ CREATE TABLE `muucmf_orders` (
   `refund_no` varchar(128) NOT NULL COMMENT '流水表单号',
   `remark` varchar(500) NOT NULL COMMENT '备注',
   `receipt` varchar(255) NOT NULL COMMENT '发票抬头',
+  `ip` varchar(128) NOT NULL COMMENT 'ip地址',
   `metadata` text NOT NULL COMMENT '元数据',
+  `end_time` int(11) NOT NULL COMMENT '订单有效期结束时间戳',
+  `create_time` int(11) UNSIGNED NOT NULL COMMENT '创建时间',
+  `update_time` int(11) UNSIGNED NOT NULL COMMENT '更新时间',
   PRIMARY KEY (`id`),
   UNIQUE KEY `order_no` (`order_no`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='订单表' ROW_FORMAT=COMPACT;
@@ -4836,12 +4718,27 @@ INSERT INTO `muucmf_seo_rule` (`id`, `title`, `app`, `controller`, `action`, `st
 
 -- --------------------------------------------------------
 
+DROP TABLE IF EXISTS `muucmf_support`;
+CREATE TABLE IF NOT EXISTS `muucmf_support` (
+  `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+  `shopid` int(10) NOT NULL COMMENT '店铺ID',
+  `app` varchar(20) NOT NULL COMMENT '应用标识',
+  `uid` int(11) UNSIGNED NOT NULL COMMENT '用户ID',
+  `info_type` varchar(32) NOT NULL COMMENT '知识类型，post:帖子，关联不同模型',
+  `info_id` bigint(11) UNSIGNED NOT NULL COMMENT '内容ID,知识内容或专栏的ID',
+  `status` tinyint(4) NOT NULL COMMENT '订单状态，1，正常，0，禁用，-1，已删除',
+  `create_time` int(11) UNSIGNED NOT NULL COMMENT '创建时间',
+  `update_time` int(11) UNSIGNED NOT NULL COMMENT '更新时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='点赞表' ROW_FORMAT=COMPACT;
+
+
 --
 -- 表的结构 `muucmf_tominiprogram`
 --
 
 DROP TABLE IF EXISTS `muucmf_tominiprogram`;
-CREATE TABLE `muucmf_tominiprogram` (
+CREATE TABLE IF NOT EXISTS `muucmf_tominiprogram` (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键ID',
   `shopid` int(11) UNSIGNED NOT NULL COMMENT '店铺ID',
   `appid` varchar(128) NOT NULL COMMENT 'appid',
@@ -4852,34 +4749,6 @@ CREATE TABLE `muucmf_tominiprogram` (
   `update_time` int(11) UNSIGNED NOT NULL COMMENT '更新时间',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='跳转小程序配置表';
-
--- --------------------------------------------------------
-
---
--- 表的结构 `muucmf_ucenter_setting`
---
-DROP TABLE IF EXISTS `muucmf_ucenter_setting`;
-CREATE TABLE IF NOT EXISTS `muucmf_ucenter_setting` (
-  `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '设置ID',
-  `type` tinyint(3) UNSIGNED NOT NULL DEFAULT '0' COMMENT '配置类型（1-用户配置）',
-  `value` text NOT NULL COMMENT '配置数据',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='设置表' AUTO_INCREMENT=100;
-
--- --------------------------------------------------------
-
---
--- 表的结构 `muucmf_user_config`
---
-DROP TABLE IF EXISTS `muucmf_user_config`;
-CREATE TABLE IF NOT EXISTS `muucmf_user_config` (
-  `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `uid` int(11) NOT NULL,
-  `name` varchar(30) NOT NULL,
-  `model` varchar(30) NOT NULL,
-  `value` varchar(100) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='用户配置信息表' AUTO_INCREMENT=1;
 
 -- --------------------------------------------------------
 
@@ -4949,12 +4818,12 @@ CREATE TABLE IF NOT EXISTS `muucmf_verify` (
 --
 
 DROP TABLE IF EXISTS `muucmf_vip`;
-CREATE TABLE `muucmf_vip` (
+CREATE TABLE IF NOT EXISTS `muucmf_vip` (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '自增ID',
   `shopid` int(11) UNSIGNED NOT NULL COMMENT '平台ID',
   `app` varchar(60) NOT NULL COMMENT '应用唯一标识',
   `uid` int(11) NOT NULL COMMENT '开通用户ID',
-  `mt_id` int(11) NOT NULL COMMENT '卡项ID',
+  `card_id` int(11) NOT NULL COMMENT '卡项ID',
   `card_no` varchar(128) NOT NULL COMMENT '会员卡号',
   `end_time` int(11) NOT NULL COMMENT '到期时间',
   `status` tinyint(2) NOT NULL COMMENT '会员状态',
@@ -4971,7 +4840,7 @@ CREATE TABLE `muucmf_vip` (
 --
 
 DROP TABLE IF EXISTS `muucmf_vip_card`;
-CREATE TABLE `muucmf_vip_card` (
+CREATE TABLE IF NOT EXISTS `muucmf_vip_card` (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '自增ID',
   `shopid` int(11) UNSIGNED NOT NULL COMMENT '平台ID',
   `app` varchar(60) NOT NULL COMMENT '应用唯一标识',
@@ -5080,7 +4949,8 @@ CREATE TABLE `muucmf_withdraw` (
   `order_no` varchar(64) NOT NULL COMMENT '订单号',
   `price` int(11) NOT NULL COMMENT '金额',
   `real_price` int(11) NOT NULL COMMENT '实际到账金额',
-  `channel` varchar(50) NOT NULL COMMENT '渠道',
+  `channel` varchar(64) NOT NULL COMMENT '渠道',
+  `pay_channel` varchar(64) NOT NULL COMMENT '支付渠道',
   `info` varchar(500) NOT NULL COMMENT '备注',
   `paid` tinyint(2) NOT NULL COMMENT '状态0未提现 1已提现',
   `paid_time` int(11) NOT NULL COMMENT '提现时间',

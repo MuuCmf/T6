@@ -24,7 +24,7 @@ return [
     'taglib_end'    => '}',
     // 视图输出字符串替换内容
     'tpl_replace_string' => [
-        '__STATIC__' => '/static',
-        '__ZUI__' => '/static/common/lib/zui',
+        '__STATIC__' => request()->domain() . '/static',
+        '__ZUI__' => request()->domain() . '/static/common/lib/zui',
     ],
 ];

@@ -15,16 +15,17 @@ class Favorites
 
     public function __construct()
     {
-        $this->ArticlesModel = new ArticlesModel(); //课程模型
-        $this->ArticlesLogic = new ArticlesLogic(); //课程逻辑
+        $this->ArticlesModel = new ArticlesModel(); //模型
+        $this->ArticlesLogic = new ArticlesLogic(); //逻辑
     }
 
-    public function formatData($data, $shopid)
+    public function formatData($data)
 	{
-        //课程
+        $shopid = intval($data['shopid']);
+
         if(strtolower($data['info_type']) == 'articles'){
             $info = $this->ArticlesModel->getDataById($data['info_id']);
-            $info = $this->ArticlesLogic->formatData($info, $shopid);
+            $info = $this->ArticlesLogic->formatData($info);
         }
 
         $data['info'] = $info;

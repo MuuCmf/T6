@@ -69,6 +69,7 @@
             task: '',//进行任务
             appName: '{$appName}',//应用类型 0系统 1应用
             api: '{$cloud}',//接口api
+            json: '{$json}',//文件结构json
             localVersion: '{$version}',//本地版本
             upgradeVersion: '{$upgradeVersion}',//要升级的版本
             package: null,//更新包
@@ -94,10 +95,11 @@
                 } else {
                     api += "app/version";
                 }
-                $.get(api, {
+                $.post(api, {
                     version: that.upgradeVersion,
                     auth_code:that.authCode,
                     app_name:that.appName,
+                    json: that.json,
                 }, function (res) {
                     //console.log(res);
                     if (res.code == 200) {

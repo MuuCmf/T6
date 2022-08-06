@@ -30,16 +30,16 @@ class Attachment extends Model
      *
      * @return     <type>  ( description_of_the_return_value )
      */
-    public function upload($files, $type = "file", $dirname = '', $uid = 0)
+    public function upload($files, $type = "file", $uid = 0, $enforce = 'auto')
     {
         if($type=='file'){
-            $result = $this->file($files, $dirname);
+            $result = $this->file($files, $enforce);
         }
         if($type=='avatar'){
-            $result = $this->avatar($files, $dirname, $uid);
+            $result = $this->avatar($files, $uid);
         }
         if($type=='base64'){
-            $result = $this->base64($files, $dirname);
+            $result = $this->base64($files);
         }
 
         return $result;
@@ -51,7 +51,7 @@ class Attachment extends Model
      * @param      <type>         $files  The files
      * @return     array|boolean  ( description_of_the_return_value )
      */
-    public function file($files, $dirname)
+    public function file($files, $enforce  = 'auto')
     {   
         if (empty($files)) {
             return false;
@@ -79,7 +79,6 @@ class Attachment extends Model
                 $data['size'] = $file->getSize();
                 $data['mime'] = $file->getMime();
                 $data['type'] = 'file';  // 类型用字符串 image file audio video
-                $data['driver'] = 'loacal';
                 // 根据不同mimeType放入不同目录
                 $mime_arr = explode('/', $data['mime']);
 
@@ -97,13 +96,27 @@ class Attachment extends Model
                     default:
                         $file_dir = 'file';
                 }
+                //获取上传驱动
+                if($enforce == 'auto'){
+                    // 获取上传驱动
+                    if($file_dir == 'images'){
+                        $driver = config('extend.FILE_UPLOAD_DRIVER');
+                    }else{
+                        $driver = config('extend.PICTURE_UPLOAD_DRIVER');
+                    }
+                }
+                if($enforce == 'local'){
+                    // 强制本地驱动
+                    $driver = 'local';
+                }
+
                 $data['type'] = $mime_arr[0];
+                $data['driver'] = $driver;
                 $savename = Filesystem::disk('public')->putFile( $file_dir, $file);
                 // 成功上传后 获取上传信息
                 $data['attachment'] = $savename;
                 $data['attachment'] = str_replace("\\","/",$data['attachment']);
-                //获取上传驱动
-                $driver = config('extend.FILE_UPLOAD_DRIVE');
+                
                 if($driver == 'local'){
                     // 本地无需处理
                 }
@@ -156,7 +169,7 @@ class Attachment extends Model
      * @param      <type>         $files  The files
      * @return     array|boolean  ( description_of_the_return_value )
      */
-    private function Avatar($files, $dirname, $uid)
+    private function Avatar($files, $uid)
     {
         if (empty($files)) {
             return false;
@@ -183,12 +196,10 @@ class Attachment extends Model
                 $data['size'] = $file->getSize();
                 $data['mime'] = $file->getMime();
                 $data['type'] = 'image';  // 类型用字符串 pic file audio video
-                $savename = Filesystem::disk('public')->putFile( 'avatar', $file);
+                $savename = Filesystem::disk('public')->putFile( 'avatar/' . $uid, $file);
                 // 成功上传后 获取上传信息
                 $data['attachment'] = $savename;
                 $data['attachment'] = str_replace("\\","/",$data['attachment']);
-                //dump($data);exit;
-                
                 //获取上传驱动
                 $driver = config('extend.PICTURE_UPLOAD_DRIVER');
                 if($driver == 'local'){
@@ -584,6 +595,16 @@ class Attachment extends Model
         return  $attachment;
         
         
+    }
+
+    /**
+     * 获取文件名
+     */
+    public function getFileName($attachment)
+    {
+        $filename = $this->where('attachment', $attachment)->value('filename');
+
+        return $filename;
     }
 
     /**

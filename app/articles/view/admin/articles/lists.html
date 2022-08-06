@@ -1,13 +1,13 @@
 {extend name="../../admin/view/common/main"/}
 {block name="style"}
-<link href="__CSS__/main.min.css" type="text/css" rel="stylesheet">
+<link href="__ADMIN_CSS__/main.min.css" type="text/css" rel="stylesheet">
 {/block}
 
 {block name="body"}
 <ol class="breadcrumb">
 	<i class="icon icon-angle-left"></i>
 	<li>
-		<a href="{:url('index')}">文章管理</a>
+		<a href="{:url('lists')}">文章管理</a>
 	</li>
 	<li>
 		文章列表
@@ -151,4 +151,8 @@
 <div class="page-section">
 	{:htmlspecialchars_decode($pager)}
 </div>
+{include file="admin/common/_preview" /}
+{/block}
+{block name="script"}
+<script src="__ADMIN_JS__/main.min.js"></script>
 {/block}

@@ -61,9 +61,9 @@ class Tominiprogram extends MuuAdmin{
             ];
             $result = $this->TominiprogramModel->edit($data);
             if ($result){
-                $this->success('保存成功',null, url('index')->build());
+                return $this->success('保存成功',null, url('index')->build());
             }
-            $this->error('保存失败');
+            return $this->error('保存失败');
         }
         $id = input('id',0);
         $data = $this->TominiprogramModel->where('id',$id)->where('shopid',$this->shopid)->find();
@@ -94,8 +94,8 @@ class Tominiprogram extends MuuAdmin{
         $id = is_array($id) ? $id : explode(',', $id);
         $result = $this->TominiprogramModel->where('id' ,'in', $id)->delete();
         if ($result){
-            $this->success('删除成功');
+            return $this->success('删除成功');
         }
-        $this->error('删除失败,请稍后再试');
+        return $this->error('删除失败,请稍后再试');
     }
 }

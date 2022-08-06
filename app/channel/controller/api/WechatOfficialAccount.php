@@ -236,9 +236,9 @@ class WechatOfficialAccount extends Base
             ]);
             if (!empty($data)){
                 $data = json_decode($data['metadata'],true);
-                $this->success('success',$data);
+                return $this->success('success',$data);
             }
-            $this->error('没有查询到相关数据');
+            return $this->error('没有查询到相关数据');
         }
     }
 

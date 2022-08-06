@@ -1,13 +1,13 @@
 <?php
 namespace app\api\controller;
 
-use app\common\controller\Base;
+use app\common\controller\Api;
 use app\common\model\Module as ModuleModel;
 /**
  * 应用模块数据接口
  */
 
-class Module extends Base
+class Module extends Api
 {
 
     protected $ModuleModel;
@@ -22,6 +22,24 @@ class Module extends Base
         $this->ModuleModel = new ModuleModel();
     }
 
+    /**
+     * 获取已安装应用列表
+     */
+    public function lists()
+    {
+        //获取已安装模块列表
+        $map = [
+            ['is_setup', '=', 1]
+        ];
+        $list = $this->ModuleModel->where($map)->field('name')->select()->toArray();
+        $arr = array_column($list,'name');
+
+        return $this->success('success', $arr);
+    }
+
+    /**
+     * 查询某应用是否启用
+     */
     public function enable()
     {
         $name = input('name', '', 'text');

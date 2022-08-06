@@ -263,8 +263,8 @@ class AdminConfigBuilder extends AdminBuilder
      * @param $title
      * @param null $subtitle
      */
-    public function keySingleFile($name, $title, $subtitle = null){
-        return  $this->key($name,$title,$subtitle,'singleFile');
+    public function keySingleFile($name, $title, $subtitle = null, $opt = ['enforce'=>'auto']){
+        return  $this->key($name,$title,$subtitle,'singleFile', $opt);
     }
 
     /**多文件上传

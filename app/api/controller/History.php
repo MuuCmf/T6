@@ -16,26 +16,49 @@ class History extends Api
     function __construct()
     {
         parent::__construct();
-        $this->logic = new HistoryLogic();
-        $this->model = new HistoryModel();
+        $this->HistoryLogic = new HistoryLogic();
+        $this->HistoryModel = new HistoryModel();
         //添加jwt中间件
     }
 
     public function lists()
     {
-        $uid = request()->uid;
-        $params = request()->param();
+        $uid = get_uid();
         $map = [
-            ['shopid' ,'=' ,$params['shopid']],
+            ['shopid' ,'=' ,$this->shopid],
             ['uid' ,'=' ,$uid],
-            ['status' ,'=' ,1],
+            ['status' ,'=' ,1]
         ];
-        $rows = $params['rows'] ?? 15;
-        $lists = $this->model->where($map)->page($params['page'],$rows)->order('id','DESC')->select()->toArray();
-        foreach ($lists as &$item){
-            $item = $this->logic->formatData($item);
+
+        $rows = 15;
+        $order_field = input('order_field', 'update_time', 'text');
+        $order_type = input('order_type', 'desc', 'text');
+        $order =  $order_field . ' ' . $order_type;
+        $fields = '*';
+        $lists = $this->HistoryModel->getListByPage($map, $order, $fields, $rows);
+        $lists = $lists->toArray();
+        foreach($lists['data'] as &$val){
+            $val = $this->HistoryLogic->formatData($val);
         }
-        unset($item);
-        $this->success('success',$lists);
+        unset($val);
+
+        return $this->success('success',$lists);
+    }
+
+    /**
+     * 记录数量
+     */
+    public function count()
+    {
+        $uid = get_uid();
+        $map = [
+            ['shopid' ,'=' ,$this->shopid],
+            ['uid' ,'=' ,$uid],
+            ['status' ,'=' ,1]
+        ];
+
+        $count = $this->HistoryModel->where($map)->count();
+
+        return $this->success('success', $count);
     }
 }

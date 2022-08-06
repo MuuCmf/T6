@@ -12,7 +12,6 @@ use app\common\model\Verify;
 use app\common\model\Member;
 use app\common\model\ScoreType;
 use app\common\model\Action;
-use app\common\model\MemberWallet;
 
 class Config extends Common
 {
@@ -81,18 +80,8 @@ class Config extends Common
             $birthday = strtotime($user['birthday']);
             $birthday = $birthday > 0 ? $birthday : time();
             $user['birthday'] = date('Y年m月d日',$birthday);
-            //获取钱包数据
-            $wallet = (new MemberWallet())->where('uid',$uid)->field('balance,freeze,revenue')->find();
-            if ($wallet){
-                $user['wallet'] = $wallet->toArray();
-            }else{
-                $user['wallet'] = [
-                    'balance'   =>  0,
-                    'freeze'    =>  0,
-                    'revenue'   =>  0
-                ];
-            }
-            $this->success('success',$user);
+            
+            return $this->success('success',$user);
         }
         $this->error('没有查询到用户数据');
     }
@@ -160,9 +149,9 @@ class Config extends Common
             ];
             $result = (new Member)->edit($data);
             if ($result){
-                $this->success('修改成功');
+                return $this->success('修改成功');
             }
-            $this->error('网络异常，请稍后再试');
+            return $this->error('网络异常，请稍后再试');
         }
     }
 
@@ -194,9 +183,9 @@ class Config extends Common
         $data = ['uid' => $uid,'mobile' => $mobile];
         $res = $memberModel->edit($data);
         if ($res){
-            $this->success('绑定成功');
+            return $this->success('绑定成功');
         }
-        $this->error('绑定失败');
+        return $this->error('绑定失败');
     }
 
     /**
@@ -226,9 +215,9 @@ class Config extends Common
         $data = ['uid' => $uid,'email' => $email];
         $res = $memberModel->edit($data);
         if ($res){
-            $this->success('绑定成功');
+            return $this->success('绑定成功');
         }
-        $this->error('绑定失败');
+        return $this->error('绑定失败');
     }
 
     /**

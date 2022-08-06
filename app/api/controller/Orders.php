@@ -1,44 +1,27 @@
 <?php
 namespace app\api\controller;
 
-use app\common\controller\Base;
+use app\common\controller\Api;
 use app\common\logic\Orders as OrdersLogic;
 use \app\common\model\Orders as OrdersModel;
 use think\Exception;
 use think\facade\Db;
 use think\Request;
 
-class Orders extends Base {
+class Orders extends Api
+{
     protected $middleware = [
         'app\\common\\middleware\\CheckParam',
         'app\\common\\middleware\\CheckAuth',
     ];
-    private $ModuleOrderLogic;//应用业务
-    private $OrderLogic;//订单逻辑
-    private $OrderModel;//订单模型
-    private $params;//参数
+
+    private $OrdersModel;//订单模型
+    private $OrdersLogic;//订单逻辑
     function __construct(Request $request)
     {
         parent::__construct();
-        $this->initParams();//参数赋值
-        if (isset($this->params['app']))    $this->initModuleOrderLogic();//初始化订单业务
-        $this->OrderLogic = new OrdersLogic();
-        $this->OrderModel = new OrdersModel();
-    }
-
-    /**
-     * 初始化模块订单业务
-     */
-    protected function initModuleOrderLogic(){
-        $order_namespace = "app\\{$this->params['app']}\\logic\\Orders";
-        $this->ModuleOrderLogic = new $order_namespace;
-    }
-
-    /**
-     * 初始化请求参数
-     */
-    protected function initParams(){
-        $this->params = request()->param();
+        $this->OrdersLogic = new OrdersLogic();
+        $this->OrdersModel = new OrdersModel();
     }
 
     /**
@@ -50,17 +33,40 @@ class Orders extends Base {
             Db::startTrans();
             try {
                 //具体业务 分发到相应程序订单类
-                $order = $this->ModuleOrderLogic->createOrder($this->params);
-                $res = $this->OrderModel->edit($order);
+                $this->params['uid'] = get_uid();
+                $order_info_type = $this->params['order_info_type'];
+                if($order_info_type == 'vipcard'){
+                    $order_namespace = "app\\common\\service\\VipOrders";
+                    $appOrdersService = new $order_namespace;
+                    $order_data = $appOrdersService->create($this->params);
+                }else{
+                    $order_namespace = "app\\{$this->params['app']}\\service\\Orders";
+                    $appOrdersService = new $order_namespace;
+                    $order_data = $appOrdersService->create($this->params);
+                }
+                
+                //写入订单
+                $res = $order_id = $this->OrdersModel->edit($order_data);
                 if (!$res){
                     throw new Exception('创建订单失败，请稍后再试');
                 }
+                //获取订单数据
+                $order = $this->OrdersModel->getDataById($order_id);
+                $order = $this->OrdersLogic->formatData($order);
+                //虚拟免费商品后续处理
+                if($order['paid_fee'] == 0){
+                    if(method_exists($appOrdersService,'step')){
+                        // 免费商品直接处理后续逻辑
+                        $appOrdersService->step($order);
+                    }
+                }
                 Db::commit();
-                $order = $this->OrderModel->getDataById($res);
+
                 return $this->success('创建订单成功',$order);
             }catch (Exception $e){
                 Db::rollback();
                 return $this->error($e->getMessage().$e->getFile().$e->getLine());
+                return $this->error($e->getMessage());
             }
         }
     }
@@ -72,27 +78,34 @@ class Orders extends Base {
      * @throws \think\db\exception\ModelNotFoundException
      */
     public function list(){
-        if (\request()->isAjax()){
-            $uid = request()->uid;
-            $map = [
-                ['shopid','=',$this->params['shopid']],
-                ['uid','=',$uid],
-            ];
+        
+        $uid = request()->uid;
+        $status = input('status');
+        $rows = input('rows', 15, 'intval');
+        $map = [
+            ['shopid','=',$this->shopid],
+            ['uid','=',$uid],
+        ];
 
-            if ($this->params['status']  == 'all'){
-                $map[] = ['status' ,'between' ,[-1,9999]];
-            }else{
-                $map[] = ['status' ,'=' ,$this->params['status']];
-            }
-
-            $rows = $this->params['rows'] ?? 15;
-            $list = $this->OrderModel->where($map)->page($this->params['page'],$rows)->order('id','DESC')->select()->toArray();
-            foreach ($list as &$item){
-                $item = $this->OrderLogic->formatData($item);
-            }
-            unset($item);
-            $this->success('获取订单成功',$list);
+        if ($this->params['status']  == 'all'){
+            $map[] = ['status' ,'between' ,[0,9999]];
+        }else{
+            $map[] = ['status' ,'=' ,$status];
         }
+
+        $order_field = input('order_field', 'id', 'text');
+        $order_type = input('order_type', 'desc', 'text');
+        $order =  $order_field . ' ' . $order_type;
+        $fields = '*';
+        $lists = $this->OrdersModel->getListByPage($map, $order, $fields, $rows);
+        $lists = $lists->toArray();
+        foreach($lists['data'] as &$val){
+            $val = $this->OrdersLogic->formatData($val);
+        }
+        unset($val);
+
+        return $this->success('获取订单成功',$lists);
+        
     }
 
     /**
@@ -100,9 +113,9 @@ class Orders extends Base {
      */
     public function detail(){
         $order_no = $this->params['order_no'];
-        $order_data = $this->OrderModel->getDataByOrderNo($order_no);
-        $order_data = $this->OrderLogic->formatData($order_data);
-        $this->success('success',$order_data);
+        $order_data = $this->OrdersModel->getDataByOrderNo($order_no);
+        $order_data = $this->OrdersLogic->formatData($order_data);
+        return $this->success('success',$order_data);
     }
 
 

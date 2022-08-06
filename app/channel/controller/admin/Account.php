@@ -218,9 +218,9 @@ class Account extends MuuAdmin {
             $data = json_encode($data);
             $result = $this->wechatConfigModel->where('shopid',$this->shopid)->save(['tmplmsg' => $data]);
             if ($result){
-                $this->success('保存成功');
+                return $this->success('保存成功');
             }
-            $this->error('保存失败，请稍后再试');
+            return $this->error('保存失败，请稍后再试');
         }
 
         $type = 'weixin_h5';//当前模板消息类型

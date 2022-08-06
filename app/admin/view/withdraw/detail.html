@@ -1,0 +1,84 @@
+
+<div class="withdraw-detail">
+    <div class="user-info">
+        <div class="cover">
+            <img src="{$data['user_info']['avatar']}">
+        </div>
+        <div class="info">
+            <div class="title text-ellipsis">{$data['user_info']['nickname']}</div>
+        </div>
+    </div>
+    
+    <table class="table table-bordered muu-table">
+        <tbody>
+        <tr>
+            <tr>
+                <td>
+                    渠道
+                </td>
+                <td>
+                    <span class="text-info">{$data['channel_str']}</span>
+                </td>
+            </tr>
+            <td>
+                提现金额
+            </td>
+            <td>
+                <span class="text-danger">￥ {$data['price']}</span>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                到账金额
+            </td>
+            <td>
+                <span class="text-danger">￥ {$data['real_price']}</span>
+            </td>
+        </tr>
+    
+        <tr>
+            <td style="width: 300px">
+                申请时间
+            </td>
+            <td>
+                {$data['create_time_str']}
+            </td>
+        </tr>
+    
+        <tr>
+            <td style="width: 300px">
+                完成时间
+            </td>
+            <td>
+                {if $data['paid'] == 1 && $data['error'] == 0}
+                <span class="text-success">{$data['paid_time_str']}</span>
+                {else}
+                <span class="paid-status text-danger">（{$data['error_str']}）</span>
+                {/if}
+            </td>
+        </tr>
+    
+        <tr>
+            <td style="width: 300px">
+                状态
+            </td>
+            <td>
+                {if $data['paid'] == 1 && $data['error'] == 0}
+                    <span class="paid-status text-success">{$data['paid_str']}</span>
+                    <span class="paid-status text-success">（{$data['error_str']}）</span>
+                {else}
+                    <span class="paid-status text-danger">（{$data['error_str']}）</span>
+                {/if}
+            </td>
+        </tr>
+        {if $data['paid'] == 0 && $data['error'] == 1}
+            <td style="width: 300px">
+                失败原因
+            </td>
+            <td>
+                {$data['error_msg']['return_msg']}
+            </td>
+        {/if}
+        </tbody>
+    </table>
+</div>

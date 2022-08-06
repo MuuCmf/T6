@@ -16,7 +16,7 @@ use think\Response;
 class Update extends Admin
 {
     private $UpgradeServer;
-    private $app_name;//应用标识
+    public $app_name;//应用标识
 
     /**
      * 构造方法
@@ -57,7 +57,7 @@ class Update extends Admin
         View::assign('localVersion', $local_version);
         View::assign('cloudVersion', $cloud_version);
         View::assign('upgrade', $upgrade);
-        View::assign('appName', input('get.app_name',''));
+        View::assign('appName', $this->app_name);
         View::assign('backupPath', $backup_path);
 
         return View::fetch();
@@ -66,10 +66,14 @@ class Update extends Admin
     /*开始在线更新数据*/
     public function start()
     {
+        // 生成请求json
+        $json = $this->UpgradeServer->packageJson($this->app_name);
+        $json = json_encode($json);
         $this->setTitle('在线更新');
 
         View::assign([
             'appName' => $this->app_name,
+            'json' => $json,
             'localVersion' => $this->UpgradeServer->version(),
             'upgradeVersion' => input('version'),
             'authCode' => Cloud::authCode(),

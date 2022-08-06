@@ -234,13 +234,13 @@ class Module extends Base
      * @param $name 模块名
      * @return array|mixed
      */
-    public function getModule($name)
+    public function getModule($name, $field = '*')
     {
         if($name == 'admin' || $name == "channel" || $name == "ucenter"){
             return false;
         }
 
-        $info = $this->where('name', $name)->find();
+        $info = $this->where('name', $name)->field($field)->find();
         if(!empty($info)){
             $info = $info->toArray();
             $icon = $this->getIcon($name, $info['icon']);

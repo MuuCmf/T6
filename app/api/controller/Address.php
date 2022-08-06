@@ -4,7 +4,8 @@ use app\common\controller\Api;
 use app\common\model\Address as AddressModel;
 use app\common\logic\Address as AddressLogic;
 
-class Address extends Api{
+class Address extends Api
+{
     protected $model;
     protected $logic;
     protected $middleware = [
@@ -21,7 +22,7 @@ class Address extends Api{
      * 获取默认地址
      */
     public function default(){
-        $uid = get_uid();
+        $uid = request()->uid;
         $map = [
             ['uid','=',$uid],
             ['shopid' ,'=' , $this->shopid],
@@ -29,8 +30,7 @@ class Address extends Api{
             ['status','=',1],
         ];
         $data = $this->model->getDataByMap($map);
- 
-        if(!empty($data)){
+        if (!$data){
             $map = [
                 ['uid','=',$uid],
                 ['status','=',1],
@@ -38,29 +38,19 @@ class Address extends Api{
             ];
             $data = $this->model->getDataByMap($map);
         }
-
-        if(!empty($data)){
-            $data = $this->logic->formatData($data);
-        }
-        
+        $data = $this->logic->formatData($data);
         return $this->success('获取成功！',$data);
     }
 
-    /**
-     * 地址详情
-     */
     public function detail(){
         $id = input('get.id',0);
         $data = $this->model->getDataById($id);
         $data = $this->logic->formatData($data);
-        $this->success('获取成功！',$data);
+        return $this->success('获取成功！',$data);
     }
 
-    /**
-     * 地址列表
-     */
     public function lists(){
-        $uid = get_uid();
+        $uid = request()->uid;
         //初始化查询条件
         $map = [
             ['shopid' ,'=' , $this->shopid],
@@ -72,17 +62,12 @@ class Address extends Api{
             $item = $this->logic->formatData($item);
         }
         unset($item);
-        $this->success('获取成功！',$lists);
+        return $this->success('获取成功！',$lists);
     }
-
-    /**
-     * 新增、编辑地址
-     */
-    public function edit()
-    {
+    public function edit(){
         if (request()->isPost()){
             $param = request()->post();
-            $uid = get_uid();
+            $uid = request()->uid;
             $data = [
                 'id' => $param['id'],
                 'uid' => $uid,
@@ -93,12 +78,9 @@ class Address extends Api{
                 'pos_city' => $param['pos_city'],
                 'pos_district' => $param['pos_district'],
                 'address' => $param['address'],
+                'first' => $param['first'], //默认地址
                 'status' => 1
             ];
-
-            if(empty($param['id'])){
-                $data['first'] = 1;
-            }
 
             // 验证数据
             if(empty($data['name'])){
@@ -113,23 +95,26 @@ class Address extends Api{
             if(empty($data['address'])){
                 $this->error('详细地址不能为空！');
             }
-            //关闭其他默认地址
-            if ($data['first'] == 1){
-                $this->model->where([
-                    ['shopid','=',$this->shopid],
-                    ['uid','=',$uid]
-                ])->update([
-                    'update_time' => time(),
-                    'first' => 0
-                ]);
-            }
+
             //写入数据
             $res = $this->model->edit($data);
             if($res){
+                //关闭其他默认地址
+                if ($param['first'] == 1){
+                    $id = is_object($res) ? $res->id : $res;
+                    $this->model->where([
+                        ['id','<>',$id],
+                        ['shopid','=',$this->shopid],
+                        ['uid','=',$uid]
+                    ])->update([
+                        'update_time' => time(),
+                        'first' => 0
+                    ]);
+                }
                 //返回提示
-                $this->success('编辑成功！', $res);
+                return $this->success('编辑成功！', $res);
             }else{
-                $this->error('编辑失败！');
+                return $this->error('编辑失败！');
             }
         }
     }
@@ -155,9 +140,9 @@ class Address extends Api{
             'first' => 1
         ]);
         if($res){
-            $this->success('设置成功！',$res,'refresh');
+            return $this->success('设置成功！',$res,'refresh');
         }else{
-            $this->error('设置失败！');
+            return $this->error('设置失败！');
         }
     }
 
@@ -167,9 +152,9 @@ class Address extends Api{
             'status' => -1
         ]);
         if($res){
-            $this->success('删除成功！');
+            return $this->success('删除成功！');
         }else{
-            $this->error('删除失败！');
+            return $this->error('删除失败！');
         }
     }
 }

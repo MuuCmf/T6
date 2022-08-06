@@ -23,12 +23,14 @@ class Category extends Admin
      */
     public function lists()
     {
-        $category_tree = $this->CategoryModel->getTree();
+        $category_tree = $this->CategoryModel->getTree($this->shopid, 0);
         if(request()->isAjax()){
             return $this->success('success', $category_tree);
         }
         
         View::assign('category_tree',$category_tree);
+
+        $this->setTitle('分类列表');
         //输出页面
     	return View::fetch();
     }
@@ -97,6 +99,7 @@ class Category extends Admin
             }
             View::assign('category_data',$category_data);
 
+            $this->setTitle($title.'分类');
             // 输出页面
             return View::fetch();
         }

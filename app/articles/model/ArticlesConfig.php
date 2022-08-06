@@ -2,6 +2,8 @@
 namespace app\articles\model;
 
 use app\articles\model\ArticlesBase as Base;
+use think\facade\Cache;
+use app\articles\logic\Config as ConfigLogic;
 
 /**
  * 应用配置
@@ -9,23 +11,19 @@ use app\articles\model\ArticlesBase as Base;
 class ArticlesConfig extends Base
 {
     /**
-     * 初始化数据
-     * @return [type] [description]
+     * 获取应用配置
      */
-    public function defaultData()
+    public function getConfig($shopid = 0)
     {
-        $data = [
-            'id' => 0,
-            'shop_id' => 0,
-            'config' => [
-                'comment' => [
-                    'switch' => 0,
-                    'switch_str' => '禁用',
-                ]
-            ],
-            'status' => 1,
-            'status_str' => '启用'
-        ];
-        return $data;
+        // 获取应用配置数据
+        $config_data = Cache::get(request()->host() . '_MUUCMF_ARTICLES_CONFIG_DATA_' . $shopid);
+        if(empty($config_data)){
+            $config_data= $this->getDataByMap(['shopid' => $shopid]);
+            $config_data = (new ConfigLogic())->formatData($config_data);
+            Cache::set(request()->host() . '_MUUCMF_ARTICLES_CONFIG_DATA_' . $shopid, $config_data);
+        }
+
+        return $config_data;
     }
+
 }

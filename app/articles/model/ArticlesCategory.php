@@ -31,8 +31,9 @@ class ArticlesCategory extends Base
     /**
      * 获取分类树
      */
-    public function getTree($status = 0)
+    public function getTree($shopid = 0, $status = 0)
     {   
+        $map[] = ['shopid', '=', $shopid];
         $map[] = ['status', '>=', $status];
         $list = $this->getList($map, 999, 'sort desc,create_time desc');
         $list = $list->toArray();

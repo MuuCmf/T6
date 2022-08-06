@@ -23,7 +23,7 @@ if (!function_exists('time_format')) {
  */
 if (!function_exists('friendly_date')) {
     function friendly_date($sTime,$type = 'normal',$alt = 'false') {
-        if (!$sTime)
+        if (empty($sTime))
             return '';
         //sTime=源时间，cTime=当前时间，dTime=时间差
         $cTime      =   time();

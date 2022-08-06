@@ -122,7 +122,7 @@ class VipCard extends Base
 
         // 获取应用数据
         $app = (new Module())->getModule($data['app']);
-        $data['app'] = $app;
+        $data['app_info'] = $app;
 
         $data = $this->setImgAttr($data,'1:1');
 

@@ -126,9 +126,13 @@ class Extend extends Admin
             $builder
                 ->keyText('WX_PAY_MCH_ID', 'MchID', 'Mch ID是您微信商户的商 户ID，请您妥善保管.')
                 ->keyText('WX_PAY_KEY_SECRET', 'KeySecret', 'Key Secret是您微信商户的API密钥，请您妥善保管.')
+                ->keySingleFile('WX_PAY_CERT', 'Cert证书','Cert证书上传', ['enforce' => 'local'])
+                ->keySingleFile('WX_PAY_KEY', 'Key证书','Key证书上传', ['enforce' => 'local'])
                 ->group('微信', [
                     'WX_PAY_MCH_ID',
                     'WX_PAY_KEY_SECRET',
+                    'WX_PAY_CERT',
+                    'WX_PAY_KEY'
                 ]);
 
             // 支付宝支付参数配置

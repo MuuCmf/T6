@@ -37,7 +37,7 @@ class Comment extends Admin
         $status = input('status') == null?'all':input('status');
         View::assign('status', $status);
         // 获取查询条件
-        $map = $this->CommentLogic->getMap(0, $keyword, $article_id, $status);
+        $map = $this->CommentLogic->getMap($this->shopid, $keyword, $article_id, $status);
         // 获取列表
         $lists = $this->CommentModel->getListByPage($map, 'id DESC', '*', 20);
         $pager = $lists->render();
@@ -52,7 +52,8 @@ class Comment extends Admin
         View::assign('lists',$lists);
         // 记录当前列表页的cookie
         Cookie('__forward__', $_SERVER['REQUEST_URI']);
-
+        // SEO
+        $this->setTitle('评论列表');
         // 输出模板
         return View::fetch();
     }
@@ -106,7 +107,8 @@ class Comment extends Admin
             $data = $this->CommentLogic->formatData($data);
         }
         View::assign('data',$data);
-
+        // SEO
+        $this->setTitle($title.'评论');
         // 输出模板
         return View::fetch();
     }
@@ -137,5 +139,28 @@ class Comment extends Admin
         }else{
             return $this->error($title . '失败');
         }  
+    }
+
+    /**
+     * 评论审核
+     */
+    public function verify()
+    {
+        $id = input('id',0,'intval');
+        View::assign('id',$id);
+
+        if (request()->isPost()) {
+            $data = input();
+            
+            $res = $this->CommentModel->edit($data);
+
+            if($res){
+                return $this->success('操作成功', $res, Cookie('__forward__'));
+            }else{
+                return $this->error('操作失败');
+            }
+        }
+
+        return View::fetch();
     }
 }

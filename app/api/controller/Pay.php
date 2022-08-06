@@ -3,25 +3,21 @@ namespace app\api\controller;
 
 use app\channel\facade\channel\Channel as ChannelServer;
 use app\channel\facade\channel\Pay as PayServer;
-use app\common\controller\Base;
+use app\common\controller\Api;
 use app\common\model\CapitalFlow;
-use app\common\model\Member;
 use app\common\model\MemberSync;
 use app\common\model\MemberWallet;
-use app\common\model\Orders;
 use app\common\model\Orders as OrdersModel;
 use app\channel\facade\wechat\OfficialAccount;
 use think\Exception;
 use think\facade\Db;
 use think\Request;
 
-class Pay extends Base {
-
-    private $PayService;//支付服务
+class Pay extends Api 
+{
     private $OrderModel;//订单模型
     private $OrderLogic;//订单模型
     private $CapitalFlowModel;
-    private $params;//参数
     protected $middleware = [
         'app\\common\\middleware\\CheckAuth' => ['only' => 'pay'],
     ];
@@ -29,41 +25,15 @@ class Pay extends Base {
     function __construct(Request $request)
     {
         parent::__construct();
-        //中间件加载完成后执行
-        $this->initParams();//参数赋值
-        if ($request->action() != 'payCallback'){
-            $this->initService();//初始化支付服务
-            $this->initOrderLogic();
-        }
         $this->OrderModel = new OrdersModel();
         $this->CapitalFlowModel = new CapitalFlow();
     }
 
-
     /**
-     * 初始化请求参数
+     * 发起支付
      */
-    protected function initParams(){
-        $this->params = request()->param();
-    }
-
-    /**
-     * 初始化订单业务
-     */
-    protected function initOrderLogic(){
-        $order_namespace = "app\\{$this->params['app']}\\logic\\Orders";
-        $this->OrderLogic = new $order_namespace;
-    }
-
-    /**
-     * 初始化支付
-     */
-    protected function initService(){
-        $config = ChannelServer::config($this->params['channel'] ,$this->params['shopid']);
-        $this->PayService = PayServer::init($config['appid'],$this->params['channel'],$this->params['shopid']);
-    }
-
-    public function pay(){
+    public function pay()
+    {
         if (request()->isPost()){
             try {
                 $order_no = $this->params['order_no'];
@@ -71,11 +41,16 @@ class Pay extends Base {
                 if (!$order_data){
                     throw new Exception('订单不存在');
                 }
+                $order_namespace = "app\\{$order_data['app']}\\logic\\Orders";
+                $this->OrderLogic = new $order_namespace;
+
                 $order_data = $this->OrderLogic->formatData($order_data);
                 $order_data['openid'] = MemberSync::where([
                     ['uid' , '=', request()->uid],
-                    ['type', '=', $this->params['channel']]
+                    ['type', '=', $order_data['channel']]
                 ])->value('openid');
+                
+
                 //初始化支付数据
                 $title = $order_data['products']['title'];
                 if (mb_strlen($title, 'utf8') > 20){
@@ -83,23 +58,29 @@ class Pay extends Base {
                 }
                 $pay_data['body'] = $title;
                 $pay_data['out_trade_no'] = $order_data['order_no'];
-                $pay_data['total_fee'] = $order_data['price'] * 100;
+                $pay_data['total_fee'] = intval($order_data['paid_fee'] * 100);
                 $pay_data['openid'] = $order_data['openid'];
                 //支付回调
                 if (isset($this->params['notify_url'])){
                     $pay_data['notify_url'] = $this->params['notify_url'];
                 }else{
-                    $notify_url = request()->domain() . "/api/pay/payCallback";
-                    $notify_url .= "/channel/{$this->params['channel']}";
-                    $notify_url .= "/shopid/{$this->params['shopid']}";
-                    $notify_url .= "/app/{$this->params['app']}";
+                    $notify_url = request()->domain() . "/api/pay/callback";
+                    $notify_url .= "/channel/{$order_data['channel']}";
+                    $notify_url .= "/pay_channel/{$this->params['pay_channel']}";
+                    $notify_url .= "/shopid/{$order_data['shopid']}";
+                    $notify_url .= "/app/{$order_data['app']}";
                     $pay_data['notify_url'] = $notify_url;
                 }
-                $pay = $this->PayService->server->pay($pay_data);
+                // 获取支付参数
+                $config = ChannelServer::config($order_data['channel'] ,$this->shopid);
+                $PayService = PayServer::init($config['appid'], $this->params['pay_channel']);
+                $pay = $PayService->server->pay($pay_data);
                 //更改支付渠道标识
                 $channel_map = [
+                    // 主键ID
                     'id' => $order_data['id'],
-                    'channel' => $this->params['channel']
+                    // 支付渠道
+                    'pay_channel' => $this->params['pay_channel']
                 ];
                 $this->OrderModel->edit($channel_map);
                 return $this->success('success',$pay);
@@ -111,8 +92,10 @@ class Pay extends Base {
 
     /**
      * 退款
+     * (待完善)
      */
-    function refund(){
+    public function refund()
+    {
         if (request()->isAjax()){
             //开启事务
             Db::startTrans();
@@ -165,7 +148,9 @@ class Pay extends Base {
                             $result = (new MemberWallet())->income($refund_info['uid'],$refund_info['refund_fee'],$refund_info['shopid'],false);
                         }else{
                             //退款至付款账户
-                            $result = $this->PayService->server->refund($refund_info);
+                            $config = ChannelServer::config($this->params['channel'] ,$this->shopid);
+                            $PayService = PayServer::init($config['appid'], $this->params['pay_channel']);
+                            $result = $PayService->server->refund($refund_info);
                         }
                         if (!$result){
                             throw new Exception('网络异常，请稍后再试');
@@ -182,25 +167,26 @@ class Pay extends Base {
 
                 $this->OrderModel->edit($order_data);
                 Db::commit();
-                $this->success('处理成功');
+                return $this->success('处理成功');
             }catch (Exception $e){
                 Db::rollback();
-                $this->error($e->getMessage());
+                return $this->error($e->getMessage());
             }
         }
     }
 
     /**
      * 支付成功回调
-     *
      */
-    function payCallback(){
+    public function callback()
+    {
         $notify_xml = file_get_contents("php://input");
         $jsonxml = json_encode(simplexml_load_string($notify_xml, 'SimpleXMLElement', LIBXML_NOCDATA));
         $notify = json_decode($jsonxml, true);
         //实例化支付服务
-        $this->initService();
-        $order_no = $this->PayService->server->notify($notify);
+        $config = ChannelServer::config($this->params['channel'] ,$this->shopid);
+        $PayService = PayServer::init($config['appid'], $this->params['pay_channel']);
+        $order_no = $PayService->server->notify($notify);
         //判断订单是否已支付
         if (!$order_no){
             $this->payXmlMsg('FAIL','通信失败，请稍后再通知我');
@@ -214,9 +200,14 @@ class Pay extends Base {
             $this->payXmlMsg('订单支付完成');
         }
         //实例化订单逻辑
-        $this->initOrderLogic();
+        if($order_info['order_info_type'] == 'vipcard'){
+            $order_namespace = "app\\common\\service\\VipOrders";
+        }else{
+            $order_namespace = "app\\{$order_info['app']}\\service\\Orders";
+        }
+        $this->OrderService = new $order_namespace;
         //处理订单
-        $result = $this->OrderLogic->paySuccess($order_info);
+        $result = $this->OrderService->paySuccess($order_info);
         //消息通知
         if (isset($result['tmplmsg']) && $result['tmplmsg']['switch'] == 1){
             $this->sendPaySuccessTmplmsg($result['tmplmsg'],$result['order_info']);
@@ -230,7 +221,8 @@ class Pay extends Base {
             'app' => $this->params['app'],
             'channel' => $this->params['channel'],
         ]);
-        $this->payXmlMsg();
+
+        return $this->payXmlMsg();
     }
 
     /**

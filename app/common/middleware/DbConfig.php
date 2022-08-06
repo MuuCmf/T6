@@ -13,7 +13,7 @@ class DbConfig
         //获取数据库内配置数据
         if(strtolower(App('http')->getName())!='install'){
             //动态添加系统配置,非模块配置
-            $sys_config = Cache::get('MUUCMF_SYS_CONFIG_DATA');
+            $sys_config = Cache::get(request()->host() . '_MUUCMF_SYS_CONFIG_DATA');
             if (empty($sys_config)) {
                 $map[] = ['status','=',1];
                 //$map[] = ['group','>',0];
@@ -22,7 +22,7 @@ class DbConfig
                     $sys_config[$value['name']] = self::parse($value['type'], $value['value']);
                 }
                 unset($value);
-                Cache::set('MUUCMF_SYS_CONFIG_DATA', $sys_config);
+                Cache::set(request()->host() . '_MUUCMF_SYS_CONFIG_DATA', $sys_config);
             }
             //动态添加系统配置
             if (!empty($sys_config)) {
@@ -36,7 +36,7 @@ class DbConfig
             }
             
             //动态添加扩展配置,非模块配置
-            $ext_config = Cache::get('MUUCMF_EXT_CONFIG_DATA');
+            $ext_config = Cache::get(request()->host() . '_MUUCMF_EXT_CONFIG_DATA');
             if (empty($ext_config)) {
                 $map[] = ['status','=',1];
                 $data = Db::name('ExtendConfig')->where($map)->field('type,name,value')->select()->toArray();
@@ -44,7 +44,7 @@ class DbConfig
                     $ext_config[$value['name']] = self::parse($value['type'], $value['value']);
                 }
                 unset($value);
-                Cache::set('MUUCMF_EXT_CONFIG_DATA', $ext_config);
+                Cache::set(request()->host() . '_MUUCMF_EXT_CONFIG_DATA', $ext_config);
             }
             if (!empty($ext_config)) {
                 Config::set($ext_config,'extend');

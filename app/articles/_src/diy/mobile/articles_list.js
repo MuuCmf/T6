@@ -82,7 +82,7 @@
     }
 
 	//点击显示文章列表控制区
-	$('.page-diy-section').on("click",'.object-item[data-type="articles_list"]',function(){
+	$('.page-diy-mobile-section').on("click",'.object-item[data-type="articles_list"]',function(){
 		//已经显示的不再触发
 		if($(this).find('.diy-preview-controller').hasClass('show')){
 			return;
@@ -97,7 +97,7 @@
 		/******************************************************************************/
 
 		//控制区确认按钮
-		$('.page-diy-section').on('click','[data-object-index="'+object_index+'"] .btn',function(){
+		$('.page-diy-mobile-section').on('click','[data-object-index="'+object_index+'"] .btn',function(){
 			var rows = $('[data-object-index="'+object_index+'"] input[name="rows"]').val();
 			var category_id = $('[data-object-index="'+object_index+'"] select[name="category_id"]').val()
 			var order_field = $('[data-object-index="'+object_index+'"] select[name="order_field"]').val();
@@ -110,12 +110,12 @@
 		});
 
 		//标题框数据绑定
-		$('.page-diy-section').on('input propertychange','[data-object-index="'+object_index+'"] input[name="title"]',function(){
+		$('.page-diy-mobile-section').on('input propertychange','[data-object-index="'+object_index+'"] input[name="title"]',function(){
 			$('[data-object-index="'+object_index+'"] .title h3').html($(this).val());
         });
         
         //点击控制区后
-        $('.page-diy-section').on('click','[data-object-index="'+object_index+'"] .diy-preview-controller',function(e){
+        $('.page-diy-mobile-section').on('click','[data-object-index="'+object_index+'"] .diy-preview-controller',function(e){
             e.stopPropagation();
         });
 
@@ -159,18 +159,18 @@
      * @param  {[type]} ){                     let type [description]
      * @return {[type]}     [description]
      */
-     $('.page-diy-section .object-lists').on("click",'.btn-object[data-type="articles_list"]',function(){
+     $('.page-diy-mobile-section .object-lists').on("click",'.btn-object[data-type="articles_list"]',function(){
 
-        var html = $('[data-object-type="articles_list"]').html();
-        $('.preview-target').append(html);
-         //为新增元素添加编号索引，避免多次引入冲突
+        object_type = $(this).data('type');
+		let html = $('[data-object-type="'+object_type+'"]').html();
+		$('.preview-target').append(html);
+		//为新增元素添加编号索引，避免多次引入冲突
 		$('.preview-target .object-item').each(function(index){
-        	object_type = $(this).data('type');
-            //为所有已显示组件元素DOM编号索引，避免多次引入冲突
-            $(this).attr('data-object-index',object_type+'-'+index);
-            object_index = object_type +'-'+ index;
-        });
-        console.log(object_index);
+			let type = $(this).data('type');
+			//为所有已显示组件元素DOM编号索引，避免多次引入冲突
+			$(this).attr('data-object-index',type+'-'+index);
+			object_index = type+'-'+index;
+		});
         //获取初始列表数据
         articles_list_loader(2,0,'create_time','ASC',0,'[data-object-index='+object_index+']');
     });

@@ -3,8 +3,9 @@ namespace app\articles\controller\admin;
 
 use think\facade\View;
 use think\facade\Cache;
+use app\articles\controller\admin\Admin as ArticlesAdmin;
 
-class Config extends Admin
+class Config extends ArticlesAdmin
 {   
     /**
      * 构造方法
@@ -23,48 +24,66 @@ class Config extends Admin
     {
         //数据提交
         if (request()->isPost()) {
-            $input_config = input();
+            $params = input();
             // 获取配置数据
-            $old_config = $this->config_data;
-            //是否启用插件 0关闭，1启用
-            if(isset($input_config['status'])){
-                $data['status'] = $input_config['status'];
+            $config_data = $this->config_data;
+            
+            //店铺状态
+            if(isset($params['status'])){
+                $data['status'] = $params['status'];
             }
-            //评论开关
-            if(isset($input_config['comment_switch'])){
-                $article_config['comment']['switch'] = $input_config['comment_switch'];
-                if($old_config && is_array($old_config['config'])){
-                    //合并数组
-                    $article_config = array_merge($old_config['config'],$article_config);
-                }
-                //转为json字符串
-                $article_config = json_encode($article_config);
-                $data['config'] = $article_config;
+            //关闭站点时的描述文字
+            if(isset($params['close_desc'])){
+                $data['close_desc'] = $params['close_desc'];
+            }
+            //缩微图比例数据
+            if(isset($params['thumb'])){
+                $data['thumb'] = $params['thumb'];
             }
 
+            // 显示配置
+            if(!empty($config_data['comment']) && !empty($params['comment'])){
+                $old_comment_data = $config_data['comment'];
+                if($old_comment_data && is_array($old_comment_data)){
+                    //合并数组
+                    $comment_data = array_merge($old_comment_data, $params['comment']);
+                    $comment_data = json_encode($comment_data);
+                    $data['comment'] = $comment_data;
+                }
+            }
+            
             //提交数据
-            if(!empty($old_config['id'])){
+            if($config_data){
                 $msg = '更新配置';
-                $data['id'] = $old_config['id'];
+                $data['id'] = $config_data['id'];
             }else{
                 $msg = '新增配置';
             }
-            //dump($shop_config);exit;
+
             $result = $this->ConfigModel->edit($data);
 
             if($result){
-                Cache::delete('MUUCMF_ARTICLES_CONFIG_DATA');
+                Cache::delete('MUUCMF_ARTICLES_CONFIG_DATA_'. $this->shopid);
                 return $this->success($msg . '成功！', $result, url('admin.config/index'));
             }else{
                 return $this->error($msg . '失败！');
             }
         }else{
             // 获取店铺配置数据
-            $data = $this->config_data;
+            $data = $this->ConfigModel->getDataByMap(['shopid' => 0]);
+            $data = $this->ConfigLogic->formatData($data);
             View::assign('data',$data);
 
-            //输出页面
+            // 设置页面Title
+            $this->setTitle('基础配置');
+            // 输出模板
             return View::fetch();
         }
     }
+
+    public function api()
+    {
+        return $this->success('success', $this->config_data);
+    }
+
 }

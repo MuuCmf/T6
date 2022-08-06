@@ -42,7 +42,7 @@ class WechatMiniProgram extends MuuAdmin{
                 $data['id'] = $id;
             }
             $this->MiniProgramModel->edit($data);
-            $this->success('保存成功');
+            return $this->success('保存成功');
         }else{
             //查询分组数据
             //查询数据
@@ -87,9 +87,9 @@ class WechatMiniProgram extends MuuAdmin{
             $data = json_encode($data);
             $result = $this->MiniProgramModel->where('shopid',$this->shopid)->save(['tmplmsg' => $data]);
             if ($result){
-                $this->success('保存成功');
+                return $this->success('保存成功');
             }
-            $this->error('保存失败，请稍后再试');
+            return $this->error('保存失败，请稍后再试');
         }
         $type = 'weixin_app';//当前模板消息类型
         $TemplateMessageLogic = new TemplateMessage();
