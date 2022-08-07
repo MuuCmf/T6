@@ -49,8 +49,6 @@ class Common extends Base
         $this->initModuleName();
         //获取系统配置
         $this->initMuuConfig();
- 		//获取站点LOGO
- 		$this->initLogo();
         //获取前端导航菜单
         $this->initNavbar();
         //获取底部导航菜单
@@ -79,17 +77,6 @@ class Common extends Base
         $muu_config_data = (new ConfigLogic())->frontend($this->params['shopid']);
 
         View::assign('muu_config_data', $muu_config_data);
-    }
-
-    /**
-     * 初始化站点LOGO
-     */
-    private function initLogo()
-    {
-        $logo = config('system.WEB_SITE_LOGO');
-        $logo = $logo ? get_attachment_src($logo) : STATIC_URL . '/common/images/logo.png';
-
-        View::assign('logo', $logo);
     }
 
     /**
