@@ -4,7 +4,7 @@ namespace app\admin\lib;
 use app\common\model\Module;
 use think\Exception;
 use think\facade\Db;
-use think\File;
+use think\exception\ValidateException;
 
 class Upgrade
 {   
@@ -183,83 +183,45 @@ class Upgrade
     }
 
     /**
-     * @title 生成请求升级json
-     * @param $path
-     * @return array
+     * 生成本地升级json包
      */
-    public function packageJson($app = 'system', $path = '')
+    public function buildJson($app_name, $version, $auth_code)
     {
-        global $json_upgrade;
-        $path = !empty($path) ? $path  : root_path();
-        
-        if($path == root_path()){
-            $files = $this->getAppLibrary($app);
-        }else{
-            $files = scandir($path);
+        $url = $this->api . 'upgrade/system/version';
+        if ($app_name == 'system') {
+            $url . "/system/version";
+        } else {
+            $url . "/app/version";
         }
-        
-        foreach ($files as $file) {
-            
-            if ($file != '.' && $file != '..') {
-                if (is_dir($path . DIRECTORY_SEPARATOR . $file)) {
-                    $this->packageJson($app, $path . DIRECTORY_SEPARATOR . $file);
-                } else {
-                    $file_path = $path . DIRECTORY_SEPARATOR . $file;
-                    $name = str_replace(root_path() . DIRECTORY_SEPARATOR,'',$file_path);
-                    $data = [
-                        'name' => $name,
-                        'md5'  => @md5_file($file_path),
-                    ];
-                    $json_upgrade[] = $data;
+        $result = curl_request($url,[
+            'app_name'  =>  $app_name,
+            'version' =>  $version,
+            'auth_code' => $auth_code
+        ]);
+        try {
+            $result = json_decode($result,true);
+            if (is_array($result) && $result['code'] == 200){
+                $files = $result['data']['data'];
+                $files_allowed = [];
+                if (!empty($files)) {
+                    foreach ($files as $file) {
+                        $entry = root_path() . $file['name'];
+                        if (!is_file($entry) || md5_file($entry) != $file['md5']) {
+                            $files_allowed[] = $file;
+                        }
+                    }
                 }
+                
+                $result['data']['data'] = $files_allowed;
+                $result['data']['total'] = count($files_allowed);
+                
+                return $result;
             }
+        } catch (ValidateException $e) {
+            return false;
         }
-        return $json_upgrade;
-    }
 
-    protected function getAppLibrary($app = 'system'){
-
-        if($app == 'system'){
-            $lib = [
-                'app/admin',
-                'app/api',
-                'app/channel',
-                'app/common',
-                'app/index',
-                'app/install',
-                'app/ucenter',
-                'app/common.php',
-                'app/middleware.php',
-                'app/provider.php',
-                'app/service.php',
-                'config',
-                'extend',
-                'public/static/admin',
-                'public/static/channel',
-                'public/static/common',
-                'public/static/install',
-                'public/static/ucenter',
-                'public/index.php',
-                'public/router.php',
-                'route/app.php',
-                'vendor',
-                '.travis.yml',
-                'composer.json',
-                'composer.lock',
-                'LICENSE.txt',
-                'package.json',
-                'README.md',
-                'think'
-            ];
-        }else{
-            $lib = [
-                'app/' . $app,
-                'public/static/' . $app
-            ];
-        }
-        
-        return $lib;
-    
+        return false;
     }
 
 

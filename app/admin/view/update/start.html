@@ -69,7 +69,6 @@
             task: '',//进行任务
             appName: '{$appName}',//应用类型 0系统 1应用
             api: '{$cloud}',//接口api
-            json: '{$json}',//文件结构json
             localVersion: '{$version}',//本地版本
             upgradeVersion: '{$upgradeVersion}',//要升级的版本
             package: null,//更新包
@@ -89,17 +88,12 @@
              */
             getUpgradeInfo() {
                 let that = this;
-                let api = that.api + "upgrade/"
-                if (that.appName == 'system') {
-                    api += "system/version";
-                } else {
-                    api += "app/version";
-                }
+                let api = '{:url("update/package")}';
+                this.progressTitle = '正在获取升级包，请稍后...'
                 $.post(api, {
                     version: that.upgradeVersion,
                     auth_code:that.authCode,
                     app_name:that.appName,
-                    json: that.json,
                 }, function (res) {
                     //console.log(res);
                     if (res.code == 200) {
@@ -115,7 +109,7 @@
                         }
                     } else {
                         that.status = -1;
-                        that.progressTitle = '请求成功';
+                        that.progressTitle = '服务器返回错误，请稍后再试！';
                         that.task = res.msg
                     }
                 })

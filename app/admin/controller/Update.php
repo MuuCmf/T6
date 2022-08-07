@@ -66,21 +66,34 @@ class Update extends Admin
     /*开始在线更新数据*/
     public function start()
     {
-        // 生成请求json
-        $json = $this->UpgradeServer->packageJson($this->app_name);
-        $json = json_encode($json);
+        $version = input('version');
+        $app_name = input('app_name');
+        
         $this->setTitle('在线更新');
 
         View::assign([
-            'appName' => $this->app_name,
-            'json' => $json,
+            'appName' => $app_name,
             'localVersion' => $this->UpgradeServer->version(),
-            'upgradeVersion' => input('version'),
+            'upgradeVersion' => $version,
             'authCode' => Cloud::authCode(),
             'cloud' => config('cloud.api')
         ]);
 
         return View::fetch();
+    }
+
+    /**
+     * 获取升级包
+     */
+    public function package()
+    {
+        $version = input('version');
+        $app_name = input('app_name');
+        $auth_code = input('auth_code');
+        // 生成请求json
+        $result = $this->UpgradeServer->buildJson($app_name, $version, $auth_code);
+        
+        return json($result);
     }
 
     /**
