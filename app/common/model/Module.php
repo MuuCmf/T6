@@ -392,6 +392,21 @@ class Module extends Base
     }
 
     /**
+     * 检查模块是否已经安装
+     * @param $name
+     * @return bool
+     */
+    public function checkInstalled($name)
+    {
+        $m = $this->getModule($name);
+        if (!empty($m) && $m['name'] == $name && $m['is_setup'] == 1) {
+            return true;
+        }
+        
+        return false;
+    }
+
+    /**
      * 添加模块权限
      * @param [type] $default_rule [description]
      * @param [type] $module_name  [description]

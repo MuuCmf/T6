@@ -133,7 +133,13 @@ class Announce extends Admin
 
             // 获取Micro应用是否安装
             $micro_is_setup = $this->ModuleModel->checkInstalled('micro');
+            if($micro_is_setup == true){
+                $micro_is_setup = 1;
+            }else{
+                $micro_is_setup = 0;
+            }
             View::assign('micro_is_setup', $micro_is_setup);
+
             if($micro_is_setup){
                 // 链接至参数
                 bind('micro\\LinkSsevice', 'app\\micro\\service\\Link');

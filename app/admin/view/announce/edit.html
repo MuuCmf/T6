@@ -81,8 +81,7 @@
                     {:ueditor('content', 'content', $data['content'])}
                 </div>
             </div>
-
-            {if $micro_is_setup == true}
+            {if $micro_is_setup == 1}
             <!--安装了自定义页面后可调用该方式做公告链接-->
             <div class="builder_item this-page" data-this-page="announce" id="pageType" data-page-type="announce">
                 <label class="item-label">
@@ -113,7 +112,6 @@
                             <textarea type="hidden" name="link_param" class="hidden">{$data['link']['param']|default=''}</textarea>
                             <!--链接至隐藏域END-->
                         </div>
-                        {include file="../../micro/view/admin/common/_modal" /}
                     </div>
                 </div>
             </div>
@@ -153,6 +151,172 @@
 
 </div>
 
+<!--连接至选择模态框-->
+<div class="modal fade" id="linkTypeModal">
+	<div class="modal-dialog">
+	    <div class="modal-content">
+	    	<div class="modal-header">
+	        	<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">关闭</span></button>
+	        <h4 class="modal-title">选择连接类型</h4>
+	    	</div>
+	      	<div class="modal-body">
+				<!--端类型，需要后端赋值-->
+				<input type="hidden" id="portType" value="{$port_type|default='mobile'}" />
+				<div class="links-items">
+					{notempty name="links"}
+					{foreach $links as $k => $vo}
+					<div class="title" data-app-name="{$vo.name}">{$vo.alias}</div>
+					<ul class="link-type-ul clearfix">
+						{notempty name="vo.links"}
+						{foreach $vo.links as $key => $list_vo}
+						<li class="col-xs-3">
+							<!--详情类-->
+							
+							<a 
+							data-app-name="{$vo.name}" 
+							data-api="{$list_vo['api']|default=''}" 
+							data-category-api="{$list_vo['category_api']|default=''}" 
+							data-link-type="{$list_vo['link_type']|default=''}" 
+							data-link-type-title="{$list_vo['link_type_title']|default=''}" 
+							>
+								<i class="fa fa-{$list_vo['icon']|default=''}"></i>
+								<p>
+									{$list_vo['link_type_title']}
+								</p>
+							</a>
+							
+						</li>
+						{/foreach}
+						{/notempty}
+					</ul>
+					{/foreach}
+					{/notempty}
+				</div>
+	      	</div>
+	    </div>
+	</div>
+</div>
+
+<!--内部页面列表 链接至模态框-->
+<div class="modal fade" id="linkConfigModal">
+	<div class="modal-dialog">
+	    <div class="modal-content">
+	    	<div class="modal-header">
+	        	<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">关闭</span></button>
+	        	<h4 class="modal-title">链接至</h4>
+	    	</div>
+	      	<div class="modal-body">
+
+	      		<div class="link-section">
+
+	        	</div>
+				<div class="link-page">
+                    <ul class="pager" data-ride="pager" data-elements="prev,nav,next"></ul>
+                </div>
+	      	</div>
+	      	<div class="modal-footer">
+	            <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+	            <button type="button" data-rule="list-link-submit" class="btn btn-primary submit">确认</button>
+	        </div>
+	    </div>
+	</div>
+</div>
+<!--链接至模态框 END-->
+
+<!--图标选择模态框-->
+<div class="modal fade" id="iconModal">
+	<div class="modal-dialog">
+	    <div class="modal-content">
+	    	<div class="modal-header">
+	        	<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">关闭</span></button>
+	        <h4 class="modal-title">选择图标</h4>
+	    	</div>
+	      	<div class="modal-body">
+	      		<div class="upload-icon">
+					<div class="btn-custom uploadImgBtn">上传自定义图标</div>
+	      		</div>
+	      		<div class="upload-list"></div>
+	      		<h3>系统图标</h3>
+
+	      		<ul class="nav nav-tabs" role="tablist">
+					{notempty name="icon_list"}
+					{foreach $icon_list as $k=>$vo}
+					{if $k == $config_data['style']}
+					<li role="presentation"  class="active">
+						<a href="#{$k}" aria-controls="{$k}" role="tab" data-toggle="tab">{$k}</a>
+					</li>
+					{else}
+					<li role="presentation">
+						<a href="#{$k}" aria-controls="{$k}" role="tab" data-toggle="tab">{$k}</a>
+					</li>
+					{/if}
+					{/foreach}
+					{/notempty}
+				</ul>
+				
+				<div class="tab-content">
+					{notempty name="icon_list"}
+					{foreach $icon_list as $k=>$vo}
+					<div role="tabpanel" class="tab-pane {if $k == $config_data['style']} active{/if}" id="{$k}">
+						<div class="icon-section">
+							{foreach $vo as $c_k=>$c_v}
+							<span data-icon-url="{$c_v['url']}">
+								<img src="{$c_v['url']}" />
+							</span>
+							{/foreach}
+						</div>
+					</div>
+					{/foreach}
+					{/notempty}
+				</div>
+	      	</div>
+	    </div>
+	</div>
+</div>
+
+<!--富文本编辑器模态框-->
+<div class="modal fade" id="customTextEditorModal">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">关闭</span></button>
+				<h4 class="modal-title">自定义文本</h4>
+			</div>
+			<div class="modal-body">
+				<div class="ueditor-box">
+				{:ueditor('content', 'content')}
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+				<button type="button" class="btn btn-primary" data-rule="save">保存</button>
+			</div>
+		</div>
+	</div>
+</div>
+<!--富文本编辑器模态框END-->
+
+<!--自定义HTML模态框-->
+<div class="modal fade" id="customHtmlModal">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">关闭</span></button>
+				<h4 class="modal-title">自定义html</h4>
+			</div>
+			<div class="modal-body">
+				<div class="html-box">
+					<textarea class="form-control" name="content" rows="10"></textarea>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+				<button type="button" class="btn btn-primary" data-rule="save">保存</button>
+			</div>
+		</div>
+	</div>
+</div>
+<!--自定义HTML模态框END-->
 
 {/block}
 {block name="script"}
