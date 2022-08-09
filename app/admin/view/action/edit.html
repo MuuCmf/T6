@@ -41,7 +41,7 @@
                 <div class="controls">
                     <select name="module" class=" form-control form-select-size">
                         <option value="">系统</option>
-                        {volist name="module" id="vo"}
+                        {volist name="modules" id="vo"}
                         {if $vo['name'] == $data['module']}
                         <option value="{$vo.name}" selected>{$vo.alias}</option>
                         {else}

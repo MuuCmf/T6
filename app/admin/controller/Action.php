@@ -166,28 +166,20 @@ class Action extends Admin {
         $ActionModel = new ActionModel();
         $list = $ActionModel->getListByPage($map,'update_time desc','*',20);
         $page = $list->render();
-
         View::assign('page',$page);
+        $list = $list->toArray();
+        lists_plus($list['data']);
+        int_to_string($list['data']);
+        View::assign('list', $list);
 
-        $list = $list->toArray()['data'];
-        lists_plus($list);
-        int_to_string($list);
+        $modules = $ModuleModel->getAll([
+            ['is_setup' , '=', 1]
+        ]);
+        $modules = array_merge([array('name' => '', 'alias' => '系统')], $modules);
 
+        View::assign('modules', $modules);
         // 记录当前列表页的cookie
         Cookie('__forward__', $_SERVER['REQUEST_URI']);
-
-        View::assign('_list', $list);
-
-        $module = $ModuleModel->getAll();
-        foreach ($module as $key => $v) {
-            if ($v['is_setup'] == 0) {
-                unset($module[$key]);
-            }
-        }
-        $module = array_merge([array('name' => '', 'alias' => '系统')], $module);
-
-        View::assign('module', $module);
-
         $this->setTitle('行为日志');
 
         return View::fetch();
@@ -236,13 +228,38 @@ class Action extends Admin {
             $score = $scoreTypeModel->getTypeList(array('status'=>1));
             View::assign('score', $score);
             // 获取所有应用模型列表
-            $module = $ModuleModel->getAll();
-            View::assign('module', $module);
+            $modules = $ModuleModel->getAll();
+            View::assign('modules', $modules);
 
             $this->setTitle('编辑行为规则');
 
             return View::fetch();
         }
+    }
+
+    public function setStatus()
+    {
+        $ids = input('ids/a');
+        !is_array($ids)&&$ids=explode(',', $ids);
+        $status = input('status', 0, 'intval');
+        $title = '更新';
+        if($status == 0){
+            $title = '禁用';
+        }
+        if($status == 1){
+            $title = '启用';
+        }
+        if($status == -1){
+            $title = '删除';
+        }
+        $data['status'] = $status;
+        $ActionModel = new ActionModel();
+        $res = $ActionModel->where('id', 'in', $ids)->update($data);
+        if($res){
+            return $this->success($title . '成功');
+        }else{
+            return $this->error($title . '失败');
+        }  
     }
 
     /**

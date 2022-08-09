@@ -176,9 +176,9 @@ class Score extends Admin {
         $ids = implode(',',$ids);
         $rs = $this->scoreTypeModel->where('id','in', $ids)->update(['status' => $status]);
         if ($rs) {
-            $this->success('设置成功', $_SERVER['HTTP_REFERER']); 
+            return $this->success('设置成功', $_SERVER['HTTP_REFERER']); 
         }else{
-            $this->error('设置失败');
+            return $this->error('设置失败');
         }
     }
 
@@ -190,9 +190,9 @@ class Score extends Admin {
         $ids = input('ids/a');
         $res = $this->scoreTypeModel->delType($ids);
         if ($res) {
-            $this->success('删除成功');
+            return $this->success('删除成功');
         } else {
-            $this->error('删除失败');
+            return $this->error('删除失败');
         }
     }
 
