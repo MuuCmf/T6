@@ -4,7 +4,7 @@
       {notempty name="module"}
       <div class="expand-info">
         <div class="expand-icon">
-          <img src="{$module.icon_url}" />
+          <img src="{$module.icon_200}" />
         </div>
         <h3 class="title">{$module.alias}</h3>
         <p class="version">版本：{$module.version}</p>
@@ -71,7 +71,7 @@
             {volist name="all_module_list" id="vo"}
             <li>
                 <a href="{:url($vo.entry)}">
-                  <img class="icon" src="{$vo.icon}" />
+                  <img class="icon" src="{$vo.icon_100}" />
                   <span>{$vo.alias}</span>
               </a>
             </li>

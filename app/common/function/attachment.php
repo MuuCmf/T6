@@ -44,14 +44,14 @@ if (!function_exists('single_image_upload')) {
         if($input == false){
             $html .= <<<EOF
             <div class="input-group">
-                <input type="hidden" class="form-control attach" data-name="{$name}" name="{$input_name}" value="{$image}">
+                <input type="hidden" class="attach" data-name="{$name}" name="{$input_name}" value="{$image}">
                 <button id="upload_single_image_{$name}" class="btn btn-default" type="button">{$upload_picture}</button>
             </div>
     EOF;
         }else{
             $html .= <<<EOF
             <div class="input-group">
-                <input type="text" class="form-control attach" data-name="{$name}" name="{$input_name}" value="{$image}">
+                <input type="text" class="attach" data-name="{$name}" name="{$input_name}" value="{$image}">
                 <span class="input-group-btn">
                     <button id="upload_single_image_{$name}" class="btn btn-default" type="button">{$upload_picture}</button>
                 </span>
@@ -143,7 +143,7 @@ if (!function_exists('multi_image_upload')) {
      */
     function multi_image_upload($name, $images = '')
     {
-        $upload_picture = '选择图片';
+        $upload_picture = '上传图片';
         $delete_picture = '删除';
         $picture_exists = '该图片已存在';
         $limit_exceed = '超过图片限制';
@@ -155,26 +155,29 @@ if (!function_exists('multi_image_upload')) {
             <input class="attach" type="hidden" name="'.$name.'" value="'.$images.'"/>
             <div class="upload-img-box">
                 <div class="upload-pre-item popup-gallery">';
-        if(!empty($images)){
-            $aIds = explode(',',$images);
-            foreach($aIds as $aId){
-                $path = get_attachment_src($aId);
-                $html .= '
-                    <div class="each">
-                        <img src="'.$path.'">
-                        <div class="text-center opacity del_btn"></div>
-                        <div data-id="'.$aId.'" class="text-center del_btn">'.$delete_picture.'</div>
-                    </div>
-                ';
-            }
-        }
+                if(!empty($images)){
+                    $aIds = explode(',',$images);
+                    foreach($aIds as $aId){
+                        $path = get_attachment_src($aId);
+                        $html .= '
+                            <div class="each">
+                                <img src="'.$path.'">
+                                <div class="text-center opacity del_btn"></div>
+                                <div data-id="'.$aId.'" class="text-center del_btn">'.$delete_picture.'</div>
+                            </div>
+                        ';
+                    }
+                }
         
-        $html .= '
+        $html .= <<<EOF
                 </div>
             </div>
-            <div id="upload_multi_image_'.$name.'">'.$upload_picture.'</div>
+            <div class="input-group">
+                <button id="upload_multi_image_{$name}" class="btn btn-default" type="button">{$upload_picture}</button>
+            </div>
+            
         </div>
-        ';       
+        EOF;       
         $html .= <<<EOF
         <script>
         $(function () {

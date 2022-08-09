@@ -40,13 +40,12 @@
                 <li id="type_all"><a href="{:url('index', ['type'=>'all'])}">所有</a></li>
                 <li id="type_installed"><a href="{:url('index', ['type'=>'installed'])}">已安装</a></li>
                 <li id="type_uninstalled"><a href="{:url('index', ['type'=>'uninstalled'])}">未安装</a></li>
-                <li id="type_core"><a href="{:url('index', ['type'=>'core'])}">系统应用</a></li>
                 <script>
                     $('#type_{$type}').addClass('active');
                 </script>
             </ul>
             <div class="pull-right">
-                <a href="{:url('admin/module/index',array_merge($_GET,array('refresh'=>1)))}" class="btn btn-default">
+                <a href="{:url('index',array_merge($_GET,array('refresh'=>1)))}" class="btn btn-default">
                     <i class="icon-undo"></i>
                     <span>刷新</span>
                 </a>
@@ -54,6 +53,9 @@
         </div>
 
         <section class="module-list cards clearfix">
+            {if count($modules) == 0}
+            {include file="common/_empty"/}
+            {else /}
             {volist name="modules" id="vo"}
             <div class="item">
                 <div class="module-list-box" data-id="{$vo.id}" data-url="{$vo.entry}" data-module="{$vo.name}">
@@ -61,7 +63,7 @@
                         <div class="media-wrapper">
                             <div class="cover-icon">
                                 <a href="{:url($vo.entry)}" target="_blank">
-                                    <img class="images" src="{$vo.icon}"/>
+                                    <img class="images" src="{$vo.icon_200}"/>
                                 </a>
                             </div>
                         </div>
@@ -78,47 +80,43 @@
                             </div>
                             
                             <div class="card-actions clearfix">
-                                {if $vo['is_com'] == 1 || $vo['uninstall'] == 1}
-                                    {if $vo['is_setup'] == 1}
-                                        <div class="action">
-                                            <!--进入-->
-                                            <a class="btn btn-info go" href="{:url($vo.entry)}">进入应用</a>
-                                            {if $vo['upgrade'] == 1}
-                                            <!--更新-->
-                                            <a class="btn btn-danger upgrade" href="{:url('admin/Update/index',['appid' => $vo.appid ,'app_name' => $vo.name])}">
-                                                <i class="fa fa-cloud-download" aria-hidden="true"></i> 
-                                                更新
-                                            </a>
-                                            {/if}
-                                        </div>
-                                        <div class="manage">
-                                            <a class="btn btn-primary " href="{:url('edit', ['id' => $vo['id']])}">编辑</a>
-                                            <a class="btn btn-warning" href="{:url('menu', ['app' => $vo['name']])}">权限菜单</a>
-                                            <a class="btn btn-danger" href="{:url('uninstall', ['id' => $vo['id']])}">卸载</a>
-                                        </div>
-                                    {else/}
-                                        <!--进入-->
-                                        <a class="btn btn-block btn-default disabled" href="{:url($vo.entry)}">进入应用</a>
-                                        <div class="manage">
-                                            <a class="btn btn-primary " href="{:url('edit', ['id' => $vo['id']])}">编辑</a>
-                                            <a class="btn btn-warning" href="{:url('menu', ['app' => $vo['name']])}">权限菜单</a>
-                                            <a class="btn  btn-success" href="{:url('install', ['name' => $vo['name']])}">安装</a>
-                                        </div>
+                            {if $vo['is_setup'] == 1}
+                                <div class="action">
+                                    <!--进入-->
+                                    <a class="btn btn-info go" href="{:url($vo.entry)}">进入应用</a>
+                                    {if $vo['upgrade'] == 1}
+                                    <!--更新-->
+                                    <a class="btn btn-danger upgrade" href="{:url('admin/Update/index',['appid' => $vo.appid ,'app_name' => $vo.name])}">
+                                        <i class="fa fa-cloud-download" aria-hidden="true"></i> 
+                                        更新
+                                    </a>
                                     {/if}
-                                {else /}
-                                    <a class="btn btn-block btn-info" href="{:url($vo.entry)}">进入应用</a>
-                                    <div class="manage">
-                                        <a class="btn btn-primary " href="{:url('edit', ['id' => $vo['id']])}">编辑</a>
-                                        <a class="btn btn-warning" href="{:url('menu', ['app' => $vo['name']])}">权限菜单</a>
-                                        <a disabled class="btn btn-default">系统应用</a>
-                                    </div>
-                                {/if}
+                                </div>
+                                <div class="manage">
+                                    <a class="btn btn-primary " href="{:url('edit', ['id' => $vo['id']])}">编辑</a>
+                                    <a class="btn btn-warning" href="{:url('menu', ['app' => $vo['name']])}">权限菜单</a>
+                                    <a class="btn btn-danger" href="{:url('uninstall', ['id' => $vo['id']])}">卸载</a>
+                                </div>
+                            {else/}
+                                <!--进入-->
+                                <a class="btn btn-block btn-default disabled" href="{:url($vo.entry)}">进入应用</a>
+                                <div class="manage">
+                                    <a class="btn btn-primary " href="{:url('edit', ['id' => $vo['id']])}">编辑</a>
+                                    <a class="btn btn-warning" href="{:url('menu', ['app' => $vo['name']])}">权限菜单</a>
+                                    {if $vo.source=='local'}
+                                    <a class="btn  btn-success" href="{:url('install', ['name' => $vo['name']])}">安装</a>
+                                    {else}
+                                    <a class="btn  btn-success" href="{:url('admin/update/start', ['app_name' => $vo['name'], 'version'=>$vo['version'], 'scene'=>'setup'])}">安装</a>
+                                    {/if}
+                                </div>
+                            {/if}
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
             {/volist}
+            {/if}
         </section>
         
         <!--模块分页-->

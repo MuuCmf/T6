@@ -601,7 +601,7 @@ if (!function_exists('need_authorization')){
         }
 
         $result = (new \app\admin\lib\Cloud())->needAuthorization($app_name);
-        if ($result == false || is_array($result) && $result['code'] == 0){
+        if ($result == false || is_array($result) && $result['code'] == 0 && $result['data'] == 'tort'){
             if(!is_array($result)){
                 $result = [
                     'code' => 0,

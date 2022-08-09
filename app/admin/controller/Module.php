@@ -39,52 +39,53 @@ class Module extends Admin
         $aType = input('type', 'installed', 'text');
         View::assign('type', $aType);
 
-        /*刷新模块列表时清空缓存*/
-        $aRefresh = input('refresh', 0, 'intval');
-        if ($aRefresh == 1) {
-            cache('admin_modules', null);
-            $this->ModuleModel->reload();
-        }
         /*刷新模块列表时清空缓存 end*/
         switch($aType){
-
             case 'all':
                 $map = [];
+                $this->ModuleModel->reload();
             break;
-
+            // 已安装
             case 'installed':
                 $map[] = ['is_setup','=',1];
             break;
-
+            // 未安装
             case 'uninstalled':
                 $map[] = ['is_setup','=',0];
-            break;
-
-            case 'core':
-                $map[] = ['uninstall','=',0];
+                $this->ModuleModel->reload();
             break;
         };
 
         $upgradeServer = new UpgradeServer();
-        $moduleModel = new ModuleModel();
-        $modules = $this->ModuleModel->getListByPage($map,'sort desc,id desc','*',20)->each(function ($item,$key) use($upgradeServer,$moduleModel){
+        $modules = $this->ModuleModel->getListByPage($map,'sort desc,id desc','*',20)->each(function ($item,$key) use($upgradeServer){
+
             //获取云端版本
-            if ($item['is_com']){
-                $result = $upgradeServer->cloudVersion([
-                    'app_name' => $item['name'],
-                    'appid'    => $item['appid']
-                ]);
-                $item['new_version'] = isset($result['data']['version']) ? $result['data']['version'] : $item['version'];
-                $item['upgrade'] = get_upgrade_status($item['version'],$item['new_version']) ? 1 : 0;
-            }else{
-                $item['new_version'] = $item['version'];
-                $item['upgrade'] = 0;
-            }
+            $result = $upgradeServer->cloudVersion([
+                'app_name' => $item['name'],
+                'appid'    => $item['appid']
+            ]);
+            $item['new_version'] = isset($result['data']['version']) ? $result['data']['version'] : $item['version'];
+            $item['upgrade'] = get_upgrade_status($item['version'],$item['new_version']) ? 1 : 0;
             //获取应用图标
-            $item['icon'] = $moduleModel->getIcon($item['name'], $item['icon']);
+            if(empty($item['icon'])){
+                //图标所在位置为模块静态目录下（推荐）
+                if(file_exists(PUBLIC_PATH . '/static/' . $item['name'] . '/images/icon.jpg')){
+                    $item['icon_100'] = $item['icon_200'] =$item['icon_300'] =$item['icon_400'] = '/static/'. $item['name'] .'/images/icon.jpg';
+                }else{
+                    $item['icon_100'] = $item['icon_200'] =$item['icon_300'] =$item['icon_400'] = '/static/admin/images/module_default_icon.png';
+                }
+            }else{
+                $width = 100;
+                $height = 100;
+                $item['icon_100'] = get_thumb_image($item['icon'], intval($width), intval($height));
+                $item['icon_200'] = get_thumb_image($item['icon'], intval($width*2), intval($height*2));
+                $item['icon_300'] = get_thumb_image($item['icon'], intval($width*3), intval($height*3));
+                $item['icon_400'] = get_thumb_image($item['icon'], intval($width*4), intval($height*4));
+            }
             
             return $item;
         });
+
         $page = htmlspecialchars_decode($modules->render());
         View::assign('page', $page);
         View::assign('modules', $modules);
@@ -121,51 +122,6 @@ class Module extends Admin
     }
 
     /**
-     * 卸载模块
-     */
-    public function uninstall()
-    {
-        $aId = input('id', 0, 'intval');
-        $aNav = input('remove_nav', 0, 'intval');
-
-        $module = $this->ModuleModel->getModuleById($aId);
-        
-        if (request()->isPost()) {
-            $aWithoutData = input('withoutData', 1, 'intval');//是否保留数据
-            $res = $this->ModuleModel->uninstall($aId, $aWithoutData);
-
-            if ($res == true) {
-                if ($aNav) {
-                    Db::name('Channel')->where(['url' => $module['entry']])->delete();
-                    cache('common_nav', null);
-                }
-                cache('admin_modules', null);
-                //删除module表中记录
-                $this->ModuleModel->where(['id' => $aId])->delete();
-                return $this->success('卸载模块成功。','', cookie('__forward__'));
-            } else {
-                $this->error('卸载模块失败。' . $this->ModuleModel->error);
-            }
-
-        }else{
-            $builder = new AdminConfigBuilder();
-            $builder->title($module['alias'] . '——'.'卸载模块');
-            $module['remove_nav'] = 1;
-            $builder->keyReadOnly('id', '模块编号');
-            $builder->suggest('<span class="text-danger">'.'请谨慎操作，此操作无法还原'.'</span>');
-            $builder->keyReadOnly('alias', '卸载的模块');
-            $builder->keyBool('withoutData', '是否保留模块数据'.'?', '默认保留模块数据');
-            $builder->keyBool('remove_nav', '移除导航', '卸载后自动卸载掉对应的菜单');
-
-            $module['withoutData'] = 1;
-            $builder->data($module);
-            $builder->buttonSubmit();
-            $builder->buttonBack();
-            $builder->display();
-        }
-    }
-
-    /**
      * 安装模块
      * @return [type] [description]
      */
@@ -176,13 +132,12 @@ class Module extends Admin
 
         if (request()->isPost()) {
             //执行guide中的内容
-            $res = $this->ModuleModel->install($module['id']);
+            $res = $this->ModuleModel->install($aName);
             
             if ($res === true) {
-                cache('ADMIN_MODULES_' . is_login(), null);
-                $this->success('安装模块成功。', '', cookie('__forward__'));
+                return $this->success('安装模块成功。', '', cookie('__forward__'));
             } else {
-                $this->error('安装模块失败。' . $this->ModuleModel->error);
+                return $this->error('安装模块失败。' . $this->ModuleModel->error);
             }
 
         } else {
@@ -209,6 +164,52 @@ class Module extends Admin
             $builder->display();
         }
     }
+
+    /**
+     * 卸载模块
+     */
+    public function uninstall()
+    {
+        $aId = input('id', 0, 'intval');
+        $aNav = input('remove_nav', 0, 'intval');
+
+        $module = $this->ModuleModel->where('id', $aId)->find();
+        
+        if (request()->isPost()) {
+            $aWithoutData = input('withoutData', 1, 'intval');//是否保留数据
+            $res = $this->ModuleModel->uninstall($aId, $aWithoutData);
+
+            if ($res == true) {
+                if ($aNav) {
+                    Db::name('channel')->where(['url' => $module['entry']])->delete();
+                    cache('common_nav', null);
+                }
+                cache('admin_modules', null);
+                //删除module表中记录
+                $this->ModuleModel->where(['id' => $aId])->delete();
+                return $this->success('卸载模块成功。','', cookie('__forward__'));
+            } else {
+                return $this->error('卸载模块失败。' . $this->ModuleModel->error);
+            }
+
+        }else{
+            $builder = new AdminConfigBuilder();
+            $builder->title($module['alias'] . '——'.'卸载模块');
+            $module['remove_nav'] = 1;
+            $builder->keyReadOnly('id', '模块编号');
+            $builder->suggest('<span class="text-danger">'.'请谨慎操作，此操作无法还原'.'</span>');
+            $builder->keyReadOnly('alias', '卸载的模块');
+            $builder->keyBool('withoutData', '是否保留模块数据'.'?', '默认保留模块数据');
+            $builder->keyBool('remove_nav', '移除导航', '卸载后自动卸载掉对应的菜单');
+
+            $module['withoutData'] = 1;
+            $builder->data($module);
+            $builder->buttonSubmit();
+            $builder->buttonBack();
+            $builder->display();
+        }
+    }
+
 
     /**
      * 应用权限菜单首页

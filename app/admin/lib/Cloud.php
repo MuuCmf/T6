@@ -19,7 +19,7 @@ class Cloud
     {
         $domain = request()->host();
         $ip   = request()->ip();
-        $url = $this->api . 'cloud/record';
+        $url = $this->api . 'request/record';
         $result = curl_request($url,[
             'domain'  =>  $domain,
             'ip' =>  $ip
@@ -85,7 +85,7 @@ class Cloud
      */
     protected static function encrypt_code($string, $expiry = 0, $key = '1234567890') {
         $ckey_length = 1;
-        $key = md5($key ? $key : UC_KEY); //加密解密时这个是不变的
+        $key = md5($key ? $key : 'MUUCMF'); //加密解密时这个是不变的
         $keya = md5(substr($key, 0, 16)); //加密解密时这个是不变的
         $keyb = md5(substr($key, 16, 16)); //加密解密时这个是不变的
         $keyc = $ckey_length ?  substr(md5(microtime()), -$ckey_length) : '';

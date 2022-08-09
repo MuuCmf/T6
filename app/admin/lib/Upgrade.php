@@ -53,7 +53,7 @@ class Upgrade
      * @return bool
      */
     public function checkIgnoreFile($path){
-        $ignore_paths = ['.env','runtime','.idea','.gitignore','data/version.ini','info/info.php','_src'];
+        $ignore_paths = ['.env','runtime','.idea','.gitignore','data/version.ini','_src'];
         foreach ($ignore_paths as $item){
             if (strpos($path,$item) !== false){
                 return true;
@@ -85,15 +85,17 @@ class Upgrade
         $response = curl_getinfo($ch);
         $error = curl_error($ch);//返回一条最近一次cURL操作明确的文本的错误信息。
         curl_close($ch);//关闭一个cURL会话并且释放所有资源
-        
         //处理返回的错误信息
         if ($response['content_type'] != 'application/octet-stream') {
+            
             $error = json_decode($data, true);
             throw new Exception($error['msg'],$error['code']);
         }
+        
         if ($error) {
             throw new Exception($error);
         }
+        
         //备份文件
         if (is_file($save_path)){
             $this->backup($save_path);
@@ -101,6 +103,7 @@ class Upgrade
         //创建目录
         $filename = basename($save_path);
         $dirname = str_replace($filename ,'' ,$save_path);
+
         if (!file_exists($dirname)) {
             mkdir($dirname, 0777, true);
             chmod($dirname, 0777);
@@ -187,11 +190,11 @@ class Upgrade
      */
     public function buildJson($app_name, $version, $auth_code)
     {
-        $url = $this->api . 'upgrade/system/version';
+        $url = $this->api;
         if ($app_name == 'system') {
-            $url . "/system/version";
+            $url = $url . "upgrade/system/version";
         } else {
-            $url . "/app/version";
+            $url = $url . "upgrade/app/version";
         }
         $result = curl_request($url,[
             'app_name'  =>  $app_name,
@@ -210,11 +213,15 @@ class Upgrade
                             $files_allowed[] = $file;
                         }
                     }
+                    $result['data']['data'] = $files_allowed;
+                    $result['data']['total'] = count($files_allowed);
+                }else{
+                    $result['data']['data'] = $files;
+                    $result['data']['total'] = count($files);
                 }
                 
-                $result['data']['data'] = $files_allowed;
-                $result['data']['total'] = count($files_allowed);
-                
+                return $result;
+            }else{
                 return $result;
             }
         } catch (ValidateException $e) {

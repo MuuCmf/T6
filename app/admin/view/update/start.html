@@ -16,14 +16,14 @@
             <img alt="" src="__STATIC__/common/images/update.gif">
         </div>
         <!-- 进度条 -->
-        <div :class="{'active':status == 0}" class="progress progress-striped">
+        <div :class="{'active':status == 0}" class="progress progress-striped" v-if="status!=-1">
             <div :style="{width:`${progressVal}%`}" aria-valuemax="100" class="progress-bar" role="progressbar"></div>
         </div>
         <!--进度描述-->
         <div class="progress-info">
             <div class="progress-title">{{progressTitle}}</div>
             <div :class="{'task-error':status == -1}" class="task">{{task}}</div>
-            <div class="progress-num">{{progressVal}}%</div>
+            <div class="progress-num" v-if="status!=-1">{{progressVal}}%</div>
         </div>
 
         <div class="error-panel panel" v-if="errPackage.length > 0">
@@ -62,6 +62,7 @@
     var vm = new Vue({
         el: '.update-warp',
         data: {
+            scene: '{$scene}', // 使用场景 setup 安装 upgrade 更新
             authCode:'{$authCode}',
             progressVal: 0,//进度值
             status: 0,//更新状态 -1异常 0 进行中 1 已完成
@@ -80,6 +81,7 @@
             skipUpgradeVersion: 0,//跳过更新版本号
         },
         created() {
+            console.log(this.authCode)
             this.getUpgradeInfo();
         },
         methods: {
@@ -89,7 +91,12 @@
             getUpgradeInfo() {
                 let that = this;
                 let api = '{:url("update/package")}';
-                this.progressTitle = '正在获取升级包，请稍后...'
+                if(that.scene == 'setup'){
+                    that.progressTitle = '正在获取安装包，请稍后...';
+                }else{
+                    that.progressTitle = '正在获取升级包，请稍后...';
+                }
+
                 $.post(api, {
                     version: that.upgradeVersion,
                     auth_code:that.authCode,
@@ -102,14 +109,19 @@
                         //that.versionPackage = res.data.version;
                         
                         if (that.upgradeVersion != that.localVersion){
-                            that.progressTitle = '开始升级';
+                            if(that.scene == 'setup'){
+                                that.progressTitle = '开始安装';
+                            }else{
+                                that.progressTitle = '开始升级';
+                            }
+                            
                             that.upgrade();
                         }else{
                             that.sameVersion();
                         }
                     } else {
                         that.status = -1;
-                        that.progressTitle = '服务器返回错误，请稍后再试！';
+                        that.progressTitle = '提示错误：';
                         that.task = res.msg
                     }
                 })
@@ -120,12 +132,11 @@
                 let item = that.package[that.packageProgress];//当前升级包
                 that.progressVal = Math.floor(that.packageProgress / step);//进度条
                 that.task = '下载中 ' + item.name;//任务名称
-                that.progressTitle = '升级中';
+                that.progressTitle = '';
 
                 if(that.appName == 'system' && item.name == 'data/version.ini'){
                     that.versionPackage.name = item.name
                     that.versionPackage.md5 = item.md5
-                    console.log(that.versionPackage)
                 }
                 $.post("{:url('upgrade')}", {
                     app_name: that.appName,
@@ -143,6 +154,9 @@
                                 data: item
                             };
                             that.errPackage.push(err);
+                            console.log('errPackage',that.errPackage)
+                            // 发生错误跳过版本升级
+                            that.skipUpgradeVersion = 1;
                         }
 
                         if (res.code != 401){
@@ -199,6 +213,10 @@
                         if (res.code == 0){
                             that.skipUpgradeVersion = 1;
                         }
+                        if (res.code == 200){
+
+                        }
+                        
                         that.errRetry(i + 1);
                     }
                 )
@@ -208,22 +226,47 @@
              */
             finishUpgrade() {
                 let that = this;
-                console.log(that.package);
-                if (that.retrying) {
-                    that.errRetry();
-                    return '';
+                // 问题包处理
+                // if (that.retrying) {
+                //     that.errRetry();
+                //     return false;
+                // }
+                if(that.skipUpgradeVersion == 1){
+                    that.progressTitle = '部分文件下载失败，请刷新重试！';
+                    that.task = '';
+                    that.progressVal = 100;
+                    return false;
                 }
                 $.post("{:url('finish')}", {
                     app_name: that.appName,
                     version: that.upgradeVersion,
                     file: that.versionPackage.name,
                     md5: that.versionPackage.md5,
+                    scene: that.scene,
                     skip: that.skipUpgradeVersion ? 1 : 0,
                 }, function (res) {
                     that.status = 1;
-                    that.progressTitle = '升级完成';
+                    if(that.scene == 'setup'){
+                        that.progressTitle = '下载完成';
+                        that.setupApp();
+                    }else{
+                        that.progressTitle = '升级完成';
+                    }
+                    
                     that.task = '';
                     that.progressVal = 100;
+                })
+            },
+            /**
+             * 安装应用
+             */
+            setupApp() {
+                let that = this;
+                that.progressTitle = '安装中...';
+                $.post("{:url('admin/module/install')}", {
+                    name: that.appName,
+                }, function (res) {
+                    that.progressTitle = '安装完成';
                 })
             },
             back() {

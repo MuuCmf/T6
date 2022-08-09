@@ -4,6 +4,7 @@ namespace app\admin\controller;
 
 use app\admin\lib\Cloud;
 use app\admin\lib\Upgrade as UpgradeServer;
+use app\common\model\Module as ModuleModel;
 use think\Exception;
 use think\facade\Db;
 use think\facade\View;
@@ -66,15 +67,16 @@ class Update extends Admin
     /*开始在线更新数据*/
     public function start()
     {
-        $version = input('version');
-        $app_name = input('app_name');
-        
+        $version = input('version', '', 'text');
+        $app_name = input('app_name', '', 'text');
+        $scene = input('scene', 'upgrade', 'text');
         $this->setTitle('在线更新');
 
         View::assign([
             'appName' => $app_name,
             'localVersion' => $this->UpgradeServer->version(),
             'upgradeVersion' => $version,
+            'scene' => $scene,
             'authCode' => Cloud::authCode(),
             'cloud' => config('cloud.api')
         ]);
@@ -89,7 +91,7 @@ class Update extends Admin
     {
         $version = input('version');
         $app_name = input('app_name');
-        $auth_code = input('auth_code');
+        $auth_code = Cloud::authCode();
         // 生成请求json
         $result = $this->UpgradeServer->buildJson($app_name, $version, $auth_code);
         
@@ -97,7 +99,7 @@ class Update extends Admin
     }
 
     /**
-     * @title 升级
+     * @title 更新
      * @return Response|void
      */
     public function upgrade()
@@ -111,14 +113,14 @@ class Update extends Admin
             $local_path = root_path() . $path;
             $local_version = $this->UpgradeServer->version($app_name);//本地版本
             $upgrade = get_upgrade_status($local_version ,$version);//版本号对比
-            if (!$upgrade) $this->success('无需升级', 'same_version');
+            if (!$upgrade) $this->success('已经是最新版本！', 'same_version');
 
             try {
                 //检查忽略文件
                 $ignore = $this->UpgradeServer->checkIgnoreFile($path);
                 // 忽略文件直接跳过
                 if ($ignore === true) {
-                    return $this->success('success');
+                    return $this->success('success','忽略的文件');
                 }
 
                 //对比文件
@@ -127,6 +129,7 @@ class Update extends Admin
                 } else {
                     $upgrade = true;
                 }
+
                 //md5不同，请求远端文件
                 if ($upgrade) {
                     $params = [
@@ -134,7 +137,8 @@ class Update extends Admin
                         'app_name'  =>  $this->app_name,
                         'version'   =>  $version
                     ];
-                    $res = $this->UpgradeServer->downFile($params, $local_path);
+                    // 下载文件
+                    $this->UpgradeServer->downFile($params, $local_path);
                 }
                 return $this->success('success', $upgrade);
             } catch (Exception $e) {
@@ -165,12 +169,15 @@ class Update extends Admin
                         ];
                         //更新应用版本号
                         $this->UpgradeServer->downFile($params, root_path() . 'data/version.ini');
-                    }
-
-                    // 应用更新
-                    if ($this->app_name != 'system') {
-                        //更新应用版本号
-                        Db::name('module')->where('name','=', $this->app_name)->update(['version' => $params['version']]);
+                    }else{
+                        // 应用更新
+                        if($params['scene'] == 'setup'){
+                            // 执行安装
+                            (new ModuleModel())->install($this->app_name);
+                        }else{
+                            //更新应用版本号
+                            Db::name('module')->where('name','=', $this->app_name)->update(['version' => $params['version']]);
+                        }
                     }
                 }
 
@@ -178,7 +185,7 @@ class Update extends Admin
                 $this->UpgradeServer->executeUpgradeSql($this->app_name);
 
                 //返回
-                return $this->success('升级完成');
+                return $this->success('完成');
             } catch (Exception $e) {
                 return $this->error($e->getMessage());
             }

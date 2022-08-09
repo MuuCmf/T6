@@ -2,12 +2,11 @@
 namespace app\common\model;
 
 use think\facade\Db;
+use think\exception\ValidateException;
 
 class Module extends Base
 {
     public $error = '';
-    protected $moduleName = '';
-
     /**
      * [getAll description]
      * @return [type] [description]
@@ -15,41 +14,110 @@ class Module extends Base
     public function getAll($where = [])
     {
         $list = $this->where($where)->order('sort desc')->select()->toArray();
+        foreach($list as &$info){
+            
+            if(empty($info['icon'])){
+                //图标所在位置为模块静态目录下（推荐）
+                if(file_exists(PUBLIC_PATH . '/static/' . $info['name'] . '/images/icon.jpg')){
+                    $info['icon_100'] = $info['icon_200'] =$info['icon_300'] =$info['icon_400'] = '/static/'. $info['name'] .'/images/icon.jpg';
+                }else{
+                    $info['icon_100'] = $info['icon_200'] =$info['icon_300'] =$info['icon_400'] = '/static/admin/images/module_default_icon.png';
+                }
+            }else{
+                $width = 100;
+                $height = 100;
+                $info['icon_100'] = get_thumb_image($info['icon'], intval($width), intval($height));
+                $info['icon_200'] = get_thumb_image($info['icon'], intval($width*2), intval($height*2));
+                $info['icon_300'] = get_thumb_image($info['icon'], intval($width*3), intval($height*3));
+                $info['icon_400'] = get_thumb_image($info['icon'], intval($width*4), intval($height*4));
+            }
+        }
+        unset($info);
 
         return $list;
     }
 
     /**
-     * 获取application目录下模块
-     *
-     * @param      <type>  $dir    The dir
-     *
-     * @return     <type>  The dir.
+     * 重置应用
      */
-    public function getDir($dir) {
-        $dirArray[] = NULL;
-        if (false != ($handle = opendir ( $dir ))) {
+    public function reload()
+    {
+        $this->getLocalApp();
+        $this->getCloudAuthApp();
+    }
+
+    /**
+     * 同步云端授权应用
+     */
+    public function getCloudAuthApp()
+    {
+        $url = config('cloud.api') . 'authorization/allapp';
+        $domain = request()->host();
+        $result = curl_request($url,[
+            'domain'  =>  $domain,
+        ]);
+        
+        $result = json_decode($result,true);
+        if (is_array($result) && $result['code'] == 200){
+
+            // 写入应用模块表
+            $list = $result['data'];
+            $data = [];
+            foreach($list as $v){
+                // 查询是否已存在
+                $has = $this->where([
+                    ['name', '=', $v['app']['name']],
+                ])->find();
+
+                if(!empty($v['app']['version'])){
+                    if(empty($has)){
+                        $data[] = [
+                            'name' => $v['app']['name'],
+                            'alias' => $v['app']['title'],
+                            'icon' => $v['app']['cover_400'],
+                            'version' => $v['app']['version'],
+                            'summary' => $v['app']['summary'],
+                            'developer' => $v['app']['developer'],
+                            'source' => 'cloud'
+                        ];
+                    }else{
+                        $a = [
+                            'id' => $has['id'],
+                            'name' => $v['app']['name'],
+                            'alias' => $v['app']['title'],
+                            'source' => 'cloud'
+                        ];
+                        if(empty($has['icon'])){
+                            $a['icon'] = $v['app']['cover_400'];
+                        }
+                        $data[] = $a;
+                    }
+                }
+                
+            }
+            $this->saveAll($data);
+        }
+    }
+
+    /**
+     * 重新通过文件来同步模块
+     */
+    public function getLocalApp()
+    {
+        //获取所有本地模块
+        $dir[] = NULL;
+        if (false != ($handle = opendir (APP_PATH))) {
             $i=0;
             while ( false !== ($file = readdir ( $handle )) ) {
                 //去掉"“.”、“..”以及带“.xxx”后缀的文件
                 if ($file != "." && $file != ".."&&!strpos($file,".")) {
-                    $dirArray[$i] = $file;
+                    $dir[$i] = $file;
                     $i++;
                 }
             }
             //关闭句柄
             closedir ( $handle );
         }
-        return $dirArray;
-    }
-
-    /**
-     * 重新通过文件来同步模块
-     */
-    public function reload()
-    {
-        //获取所有本地模块
-        $dir = $this->getDir(APP_PATH);
 
         foreach($dir as $k=>$v){
             if($v == '.htaccess' || $v == 'extra' || $v == 'lang'){
@@ -67,47 +135,16 @@ class Module extends Base
                 // 合并数据表内模块
                 $module_info = $this->getModule($info['name']);
                 if($module_info){
-                    if(is_array($module_info)){
-                        $info = array_merge($info, $module_info);
-                    }
+                    $info = array_merge($info, $module_info);
+                    $info['id'] = $module_info['id'];
+                    $info['source'] = 'local';
                 }
                 $module[] = $info;
             }
         }
-
         if(!empty($module)){
             //写入数据库
             $this->saveAll($module);
-        }
-        
-        //移除已删除的模块目录
-        $db_list = $this->getAll();
-        foreach($db_list as $val){
-            if(!is_dir(APP_PATH . '/' .$val['name'])){
-                $this->destroy(['id' => $val['id']]);
-            }
-        }
-
-        $this->cleanModulesCache();
-    }
-
-    /**
-     * 重置单个模块信息
-     * @param $name
-     */
-    public function reloadModule($name)
-    {
-        $module = $this->where(['name' => $name])->find();
-        if (empty($module)) {
-            $this->error = '模块信息不存在。';
-            return false;
-        } else {
-            if (file_exists(APP_PATH . '/' . $module['name'] . '/info/info.php') || file_exists(APP_PATH . '/' . $module['name'] . '/info/Info.php')) {
-                $info = array_merge($module, $this->getInfo($module['name']));
-                $this->save($info);
-                $this->cleanModuleCache($name);
-                return true;
-            }
         }
     }
 
@@ -121,174 +158,7 @@ class Module extends Base
 
         if (isset($m['is_setup']) && $m['is_setup'] == 0 && $m['name'] == ucfirst($name)) {
             header("Content-Type: text/html; charset=utf-8");
-            exit('您所访问的模块未安装，禁止访问，请管理员到后台应用-模块管理中安装。');
-        }
-    }
-
-    /**
-     * 检查模块是否已经安装
-     * @param $name
-     * @return bool
-     */
-    public function checkInstalled($name)
-    {
-        $m = $this->getModule($name);
-
-        if ($m['name'] == $name && $m['is_setup']) {
-            return true;
-        }
-        
-        return false;
-    }
-
-    /**
-     * 清理全部模块的缓存
-     */
-    public function cleanModulesCache()
-    {
-        $modules = $this->getAll();
-
-        foreach ($modules as $m) {
-            $this->cleanModuleCache($m['name']);
-        }
-        cache('module_all', null);
-        cache('admin_modules', null);
-    }
-
-    /**
-     * 清理某个模块的缓存
-     * @param $name 模块名
-     */
-    public function cleanModuleCache($name)
-    {
-        cache('common_module_' . strtolower($name), null);
-
-    }
-
-    /**
-     * 卸载模块
-     * @param $id 模块ID
-     * @param int $withoutData 0.清理数据 1.不清理数据
-     * @return bool
-     */
-    public function uninstall($id, $withoutData = 0)
-    {
-        $module = $this->find($id);
-        $module = $module->toArray();
-        if (!$module || $module['is_setup'] == 0) {
-            $this->error = '模块不存在或未安装';
-            return false;
-        }
-        $this->cleanMenus($module['name']);
-        $this->cleanAuthRules($module['name']);
-        $this->cleanAction($module['name']);
-        $this->cleanActionLimit($module['name']);
-
-        if ($withoutData == 0) {
-            //如果不保留数据
-            if (file_exists(APP_PATH . $module['name'] . '/info/uninstall.sql')) {
-                $uninstall_file = APP_PATH . $module['name'] . '/info/uninstall.sql';
-            }
-            //读取sql语句
-            $uninstallSql = file_get_contents($uninstall_file);
-
-            if(empty($uninstallSql)){
-                $this->cleanModulesCache();
-                return true;
-            }
-
-            $uninstallSql = str_replace("\r", "", $uninstallSql);
-            $uninstallSql = explode(";\n", $uninstallSql);
-            
-            //系统配置表前缀
-            $prefix = config('database.connections.mysql.prefix');
-
-            foreach($uninstallSql as $value){
-                $value = trim($value);
-                if (empty($value)) continue; 
-
-                //获取表名
-                $name = preg_replace("/[\s\S]*DROP TABLE IF EXISTS `(\w+)`[\s\S]*/", "\\1", $value);
-                //获取表前缀
-                $orginal = preg_replace("/[\s\S]*DROP TABLE IF EXISTS `([a-zA-Z]+_)[\s\S]*/", "\\1", $value);
-                //替换表前缀
-                $value = str_replace(" `{$orginal}", " `{$prefix}", $value);
-
-                $res = Db::execute($value);
-            }
-            
-            if ($res === false) {
-                $this->error = '清理模块数据失败，错误信息：' . $res['error_code'];
-                return false;
-            }
-        }
-        
-        $module['is_setup'] = 0;
-        $this->where('id', $id)->save($module);
-
-        return true;
-    }
-
-    /**
-     * 通过模块名来获取模块信息
-     * @param $name 模块名
-     * @return array|mixed
-     */
-    public function getModule($name, $field = '*')
-    {
-        if($name == 'admin' || $name == "channel" || $name == "ucenter"){
-            return false;
-        }
-
-        $info = $this->where('name', $name)->field($field)->find();
-        if(!empty($info)){
-            $info = $info->toArray();
-            $icon = $this->getIcon($name, $info['icon']);
-            
-            $info['icon_url'] = $icon;
-        }
-        
-        return $info;
-    }
-
-    /**
-     * 通过ID获取模块信息
-     * @param $id
-     * @return array|mixed
-     */
-    public function getModuleById($id)
-    {
-        $module = $this->where(['id' => $id])->find();
-        if ($module === false || $module == null) {
-            $m = $this->getInfo($module['name']);
-            if ($m != array()) {
-                if ($m['uninstall']) {
-                    $m['is_setup'] = 0;//默认设为已安装，防止已安装的模块反复安装。
-                } else {
-                    $m['is_setup'] = 1;
-                }
-                $m['id'] = $this->add($m);
-                
-                return $m;
-            }
-        } else {
-            return $module;
-        }
-    }
-
-
-    /**
-     * 检查某个模块是否已经是安装的状态
-     * @param $name
-     * @return bool
-     */
-    public function isInstalled($name)
-    {
-        $module = $this->getModule($name);
-        if ($module['is_setup']) {
-            return true;
-        } else {
-            return false;
+            exit('您所访问的应用未安装，禁止访问！');
         }
     }
 
@@ -297,23 +167,23 @@ class Module extends Base
      * @param $id
      * @return bool
      */
-    public function install($id)
+    public function install($name)
     {
         $log = '';
-        if ($id != 0) {
-            $module = $this->find($id);
-        } else {
-            $aName = input('get.name','','text');
-            if(empty($aName)){
-                return false;
-            }
-            $module = $this->getModule($aName);
-        }
+        
+        $module = $this->getModule($name);
 
-        $module = $module->toArray();
         if ($module['is_setup'] == 1) {
             $this->error = '模块已安装。';
             return false;
+        }
+
+        // 更新info内配置数据
+        if (file_exists(APP_PATH . '/' . $name . '/info/info.php')){
+            // 获取配置数据
+            $info = $this->getInfo($name);
+            // 合并数据表内模块
+            $module = array_merge($module, $info);
         }
         
         if (file_exists(APP_PATH . $module['name'] . DIRECTORY_SEPARATOR . 'info' .DIRECTORY_SEPARATOR. 'guide.json')) {
@@ -413,10 +283,10 @@ class Module extends Base
             }
         }
         $module['is_setup'] = 1;
-
-        $rs = $this->where('id', $module['id'])->save($module);
+        // 写入数据库
+        $rs = $this->update($module);
         if ($rs === false) {
-            $this->error = '模块信息修改失败';
+            $this->error = '应用数据修改失败';
             return false;
         }
 
@@ -425,24 +295,100 @@ class Module extends Base
     }
 
     /**
-     * 获取模块图标
-     * @param  [type] $name [description]
-     * @return [type]       [description]
+     * 卸载模块
+     * @param $id 模块ID
+     * @param int $withoutData 0.清理数据 1.不清理数据
+     * @return bool
      */
-    public function getIcon($name, $icon = '')
+    public function uninstall($id, $withoutData = 0)
     {
-        if(empty($icon)){
-            //图标所在位置为模块静态目录下（推荐）
-            if(file_exists(PUBLIC_PATH . '/static/' . $name . '/images/icon.jpg')){
-                $icon = '/static/'. $name .'/images/icon.jpg';
-            }else{
-                $icon = '/static/admin/images/module_default_icon.png';
+        $module = $this->find($id);
+        $module = $module->toArray();
+        if (!$module || $module['is_setup'] == 0) {
+            $this->error = '应用不存在或未安装';
+            return false;
+        }
+        $this->cleanMenus($module['name']);
+        $this->cleanAuthRules($module['name']);
+        $this->cleanAction($module['name']);
+        $this->cleanActionLimit($module['name']);
+
+        if ($withoutData == 0) {
+            //如果不保留数据
+            if (file_exists(APP_PATH . $module['name'] . '/info/uninstall.sql')) {
+                $uninstall_file = APP_PATH . $module['name'] . '/info/uninstall.sql';
             }
-        }else{
-            $icon = get_attachment_src($icon);
+            //读取sql语句
+            $uninstallSql = file_get_contents($uninstall_file);
+
+            if(empty($uninstallSql)){
+                return true;
+            }
+
+            $uninstallSql = str_replace("\r", "", $uninstallSql);
+            $uninstallSql = explode(";\n", $uninstallSql);
+            
+            //系统配置表前缀
+            $prefix = config('database.connections.mysql.prefix');
+
+            foreach($uninstallSql as $value){
+                $value = trim($value);
+                if (empty($value)) continue; 
+
+                //获取表名
+                $name = preg_replace("/[\s\S]*DROP TABLE IF EXISTS `(\w+)`[\s\S]*/", "\\1", $value);
+                //获取表前缀
+                $orginal = preg_replace("/[\s\S]*DROP TABLE IF EXISTS `([a-zA-Z]+_)[\s\S]*/", "\\1", $value);
+                //替换表前缀
+                $value = str_replace(" `{$orginal}", " `{$prefix}", $value);
+
+                $res = Db::execute($value);
+            }
+            
+            if ($res === false) {
+                $this->error = '清理模块数据失败，错误信息：' . $res['error_code'];
+                return false;
+            }
         }
         
-        return $icon;
+        $module['is_setup'] = 0;
+        $this->where('id', $id)->save($module);
+
+        return true;
+    }
+
+    /**
+     * 通过name来获取应用
+     * @param $name 应用名
+     * @return array|mixed
+     */
+    public function getModule($name, $field = '*')
+    {
+        if($name == 'admin' || $name == 'common' || $name == 'channel' || $name == 'ucenter'){
+            return false;
+        }
+
+        $info = $this->where('name', $name)->field($field)->find();
+        if($info){
+            $info = $info->toArray();
+            if(empty($info['icon'])){
+                //图标所在位置为模块静态目录下（推荐）
+                if(file_exists(PUBLIC_PATH . '/static/' . $name . '/images/icon.jpg')){
+                    $info['icon_100'] = $info['icon_200'] =$info['icon_300'] =$info['icon_400'] = '/static/'. $name .'/images/icon.jpg';
+                }else{
+                    $info['icon_100'] = $info['icon_200'] =$info['icon_300'] =$info['icon_400'] = '/static/admin/images/module_default_icon.png';
+                }
+            }else{
+                $width = 100;
+                $height = 100;
+                $info['icon_100'] = get_thumb_image($info['icon'], intval($width), intval($height));
+                $info['icon_200'] = get_thumb_image($info['icon'], intval($width*2), intval($height*2));
+                $info['icon_300'] = get_thumb_image($info['icon'], intval($width*3), intval($height*3));
+                $info['icon_400'] = get_thumb_image($info['icon'], intval($width*4), intval($height*4));
+            }
+        }
+        
+        return $info;
     }
 
     /**
@@ -505,6 +451,9 @@ class Module extends Base
         Db::execute($sql);
     }
 
+    /**
+     * 清理应用行为
+     */
     private function cleanAction($module_name)
     {
         $db_prefix = config('database.connections.mysql.prefix');
@@ -512,6 +461,9 @@ class Module extends Base
         Db::execute($sql);
     }
 
+    /**
+     * 清理应用权限
+     */
     private function cleanAuthRules($module_name)
     {
         $db_prefix = config('database.connections.mysql.prefix');
@@ -519,12 +471,16 @@ class Module extends Base
         Db::execute($sql);
     }
 
+    /**
+     * 清理应用菜单
+     */
     private function cleanMenus($module_name)
     {
         $db_prefix = config('database.connections.mysql.prefix');
         $sql = "DELETE FROM `{$db_prefix}menu` where `module` = '" . $module_name . "'";
         Db::execute($sql);
     }
+
     /**
      * 写入模块菜单
      * @param [type] $menu [description]
@@ -541,7 +497,7 @@ class Module extends Base
     }
 
     /**
-     * 获取模块信息
+     * 获取应用配置信息
      * @param  [type] $name [description]
      * @return [type]       [description]
      */
@@ -554,36 +510,6 @@ class Module extends Base
             return [];
         }
 
-    }
-
-    /**
-     * 获取文件列表
-     */
-    private function getFile($folder)
-    {
-        //打开目录
-        $fp = opendir($folder);
-        //阅读目录
-        while (false != $file = readdir($fp)) {
-            //列出所有文件并去掉'.'和'..'
-            if ($file != '.' && $file != '..') {
-                //$file="$folder/$file";
-                $file = "$file";
-
-                //赋值给数组
-                $arr_file[] = $file;
-
-            }
-        }
-        //输出结果
-        if (is_array($arr_file)) {
-            while (list($key, $value) = each($arr_file)) {
-                $files[] = $value;
-            }
-        }
-        //关闭目录
-        closedir($fp);
-        return $files;
     }
 
 } 
