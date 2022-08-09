@@ -4554,18 +4554,17 @@ CREATE TABLE IF NOT EXISTS `muucmf_module` (
   `icon` varchar(500) NOT NULL COMMENT '标志',
   `alias` varchar(30) NOT NULL COMMENT '中文名',
   `version` varchar(20) NOT NULL COMMENT '版本号',
-  `is_com` tinyint(4) NOT NULL COMMENT '是否商业版',
   `summary` varchar(200) NOT NULL COMMENT '简介',
   `developer` varchar(50) NOT NULL COMMENT '开发者',
   `website` varchar(200) NOT NULL COMMENT '网址',
   `entry` varchar(50) NOT NULL COMMENT '管理端入口',
   `is_setup` tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否已安装',
   `sort` int(11) NOT NULL COMMENT '模块排序',
-  `uninstall` tinyint(4) NOT NULL COMMENT '允许卸载',
+  `source` varchar(16) NOT NULL COMMENT '来源 local/cloud',
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`),
   KEY `name_2` (`name`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='模块管理表' AUTO_INCREMENT=12 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='模块管理表';
 
 -- --------------------------------------------------------
 
