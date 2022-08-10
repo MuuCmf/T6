@@ -41,8 +41,7 @@
         "topthink/think-worker": "^3.0",
         "workerman/crontab": "^1.0",
         "tencent/tls-sig-api-v2": "^1.1",
-        "pclzip/pclzip": "^2.8",
-        "topthink/think-swoole": "^4.0"
+        "pclzip/pclzip": "^2.8"
     },
     "require-dev": {
         "symfony/var-dumper": "^4.2",
