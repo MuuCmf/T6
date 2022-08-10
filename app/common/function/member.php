@@ -65,7 +65,7 @@ function query_user($uid = 0, $field_arr = [])
     // 获取钱包数据
     $memberWalletModel = new MemberWallet();
     $wallet = $memberWalletModel->getWallet($uid);
-    if(!empty($auth_user)){
+    if(is_array($auth_user) || $auth_user != -1){
         $auth_user['wallet'] = $wallet;
     }
 

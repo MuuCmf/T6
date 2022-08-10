@@ -234,6 +234,6 @@ class Account extends MuuAdmin {
         ]);
         $this->setTitle('模板消息配置');
 
-        return \view('admin/common/template_message');
+        return View::fetch('admin/common/template_message');
     }
 }

@@ -182,6 +182,7 @@ class MemberWallet extends Base{
     {
         $wallet = $this->where('uid', $uid)->field('balance, freeze, revenue')->find();
         if(!empty($wallet)){
+            $wallet = $wallet->toArray();
             // 计算可用余额
             $able_balance = intval($wallet['balance'] - $wallet['freeze']);
             // 数据转换单位
