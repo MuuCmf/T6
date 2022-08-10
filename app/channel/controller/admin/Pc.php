@@ -6,6 +6,7 @@ use app\common\model\Channel as ChannelModel;
 use app\common\model\Module as ModuleModel;
 use think\facade\Db;
 use think\facade\View;
+use think\Exception;
 
 class Pc extends MuuAdmin{
     protected $channelModel;
@@ -30,38 +31,47 @@ class Pc extends MuuAdmin{
         if (request()->isPost()) {
 
             $nav = $_POST['nav'];
-            
-            if (count($nav) > 0) {
-                // 移除现有内容
-                //Db::execute('TRUNCATE TABLE ' . config('database.connections.mysql.prefix') . 'channel');
-                $this->channelModel->where([
-                    'block' => 'navbar',
-                ])->delete();
-                for ($i = 0; $i < count(reset($nav)); $i++) {
-                    $data[$i] = [
-                        'id' => create_guid(),
+            // 启动事务
+            Db::startTrans();
+            try {
+                if (count($nav) > 0) {
+                    $this->channelModel->where([
                         'block' => 'navbar',
-                        'type' => text($nav['type'][$i]),
-                        'app' => text($nav['app'][$i]),
-                        'title' => html($nav['title'][$i]),
-                        'url' => text($nav['url'][$i]),
-                        'sort' => intval($nav['sort'][$i]),
-                        'target' => empty($nav['target'][$i]) ? 0:intval($nav['target'][$i]),
-                        'status' => 1
-                    ];
-                    
-                    $pid[$i] = $this->channelModel->insert($data[$i]);
+                    ])->delete();
+                    for ($i = 0; $i < count(reset($nav)); $i++) {
+                        $data[$i] = [
+                            'id' => create_guid(),
+                            'block' => 'navbar',
+                            'type' => text($nav['type'][$i]),
+                            'app' => text($nav['app'][$i]),
+                            'title' => html($nav['title'][$i]),
+                            'url' => text($nav['url'][$i]),
+                            'sort' => intval($i),
+                            'target' => empty($nav['target'][$i]) ? 0:intval($nav['target'][$i]),
+                            'status' => 1
+                        ];
+                    }
+                    $res = $this->channelModel->insertAll($data);
+                    if($res){
+                        // 提交事务
+                        Db::commit();
+                        return $this->success('修改成功',$res);
+                    }
+                }else{
+                    throw new Exception('导航至少存在一个。');
                 }
-
-                cache('common_navbar_nav',null);
-
-                return $this->success('修改成功');
+                
+            } catch (\Exception $e) {
+                // 回滚事务
+                Db::rollback();
+                return $this->error($e->getMessage());
             }
-            return $this->error('导航至少存在一个。');
+            
+            
 
         } else {
             /* 获取频道列表 */
-            $map[] = ['status', '>', -1];
+            $map[] = ['status', '=', 1];
             $map[] = ['block', '=', 'navbar'];
             $list = $this->channelModel->where($map)->order('sort asc')->select()->toArray();
             View::assign('list', $list);
