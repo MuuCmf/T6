@@ -27,7 +27,7 @@ return [
     'deny_app_list'    => ['common'],
 
     // 异常页面的模板文件
-    'exception_tmpl'   => app()->getThinkPath() . 'tpl/think_exception.tpl',
+    'exception_tmpl'   => app()->getRootPath() . 'app/common/view/exception.html',
 
     // 默认跳转页面对应的模板文件
     'dispatch_success_tmpl' => app()->getRootPath() . 'app/common/view/dispatch_jump.html',

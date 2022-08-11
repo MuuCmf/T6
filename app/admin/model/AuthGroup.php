@@ -7,14 +7,15 @@ use think\facade\Db;
 /**
  * 用户组模型类
  */
-class AuthGroup extends Model {
-    const TYPE_ADMIN                = 1;                   // 管理员用户组类型标识
+class AuthGroup extends Model 
+{
+    const TYPE_ADMIN                = 1;                    // 管理员用户组类型标识
     const MEMBER                    = 'member';
-    const AUTH_GROUP_ACCESS         = 'auth_group_access'; // 关系表表名
-    const AUTH_EXTEND               = 'auth_extend';       // 动态权限扩展信息表
-    const AUTH_GROUP                = 'auth_group';        // 用户组表名
-    const AUTH_EXTEND_CATEGORY_TYPE = 1;              // 分类权限标识
-    const AUTH_EXTEND_MODEL_TYPE    = 2; //分类权限标识
+    const AUTH_GROUP_ACCESS         = 'auth_group_access';  // 关系表表名
+    const AUTH_EXTEND               = 'auth_extend';        // 动态权限扩展信息表
+    const AUTH_GROUP                = 'auth_group';         // 用户组表名
+    const AUTH_EXTEND_CATEGORY_TYPE = 1;                    // 分类权限标识
+    const AUTH_EXTEND_MODEL_TYPE    = 2;                    //分类权限标识
 
 
     public $error;
@@ -102,7 +103,7 @@ class AuthGroup extends Model {
         static $groups = array();
         if (isset($groups[$uid]))
             return $groups[$uid];
-        $prefix = config('database.prefix');
+        $prefix = config('database.connections.mysql.prefix');
         $user_groups = Db::table($prefix.self::AUTH_GROUP_ACCESS)
             ->alias('a')
             ->field('uid,group_id,title,description,rules')
@@ -122,22 +123,22 @@ class AuthGroup extends Model {
      * @param int     $session  结果缓存标识
      * @return array
      */
-    static public function getAuthExtend($uid,$type,$session){
+    static public function getAuthExtend($uid, $type, $session){
         if ( !$type ) {
             return false;
         }
         if ( $session ) {
             $result = session($session);
         }
-        if ( $uid == UID && !empty($result) ) {
+        if ( $uid == get_uid() && !empty($result) ) {
             return $result;
         }
-        $prefix = config('database.prefix');
+        $prefix = config('database.connections.mysql.prefix');
         $result = Db::table($prefix.self::AUTH_GROUP_ACCESS.' g')
                         ->join($prefix.self::AUTH_EXTEND.' c on g.group_id=c.group_id')
                         ->where("g.uid='$uid' and c.type='$type' and !isnull(extend_id)")
                         ->getfield('extend_id',true);
-        if ( $uid == UID && $session ) {
+        if ( $uid == get_uid() && $session ) {
             session($session,$result);
         }
         return $result;
@@ -238,14 +239,12 @@ class AuthGroup extends Model {
      * @param int $group_id   用户组id
      */
     static public function memberInGroup($group_id){
-        $prefix   = config('database.prefix');
+        $prefix   = config('database.connections.mysql.prefix');
         $l_table  = $prefix.self::MEMBER;
         $r_table  = $prefix.self::AUTH_GROUP_ACCESS;
-        $r_table2 = $prefix.self::UCENTER_MEMBER;
         $list     = Db::table($l_table.' m') 
                         ->field('m.uid,u.username,m.last_login_time,m.last_login_ip,m.status')
                        ->join($r_table.' a', 'm.uid=a.uid')
-                       ->join($r_table2.' u', 'm.uid=u.id')
                        ->where(array('a.group_id'=>$group_id))
                        ->select();
         return $list;

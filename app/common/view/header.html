@@ -93,7 +93,7 @@
                     </li>
                     <li class="registration">
                         <a data-role="do_register"
-                        href="{:url('ucenter/Common/register',['forward'=> $_SERVER['REQUEST_URI']])}">注册</a>
+                        href="{:url('ucenter/Common/register',['forward'=> request()->url(true)])}">注册</a>
                     </li>
                 </ul>
                 {/if}

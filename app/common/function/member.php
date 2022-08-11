@@ -94,12 +94,13 @@ function get_nickname($uid = 0)
     return $member->getNickname($uid);
 }
 
-/**获得具有某个权限节点的全部用户UID数组
+/**
+ * 获得具有某个权限节点的全部用户UID数组
  * @param string $rule
  */
 function get_auth_user($rule = '')
 {
-    $rule = Db::name('AuthRule')->where(array('name' => $rule))->find();
+    $rule = Db::name('AuthRule')->where('name', $rule)->find();
     $groups = Db::name('AuthGroup')->select();
     $uids = array();
     foreach ($groups as $v) {

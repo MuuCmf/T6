@@ -46,7 +46,6 @@ class Admin extends Base
 
     public function initialize()
     {
-        $this->isRoot = 1;
         // 判断登陆
         $this->needLogin();
         $this->recordRequest();
@@ -55,15 +54,23 @@ class Admin extends Base
         View::assign('this_domain',request()->domain());
         // 当前模块、控制器及方法名
         $this->app_name = strtolower(app('http')->getName());
+        $controller = strtolower(request()->controller());
+        $action = strtolower(request()->action());
         View::assign('this_app', $this->app_name);
-        View::assign('this_controller',strtolower(request()->controller()));
-        View::assign('this_action',strtolower(request()->action()));
+        View::assign('this_controller',$controller );
+        View::assign('this_action',$action);
+        // 检查权限
+        $rule = strtolower($this->app_name . '/' . $controller . '/' . $action);
+        if(!$this->checkRule($rule, get_uid())){
+            throw new \think\Exception('非法操作！', 10006);
+        }
         // 当前应用模块信息
         $module = $this->moduleModel->getModule($this->app_name);
         View::assign('module', $module);
         //当前管理菜单
-        View::assign('admin_menu', $this->getMenus());
-        // 模块入口
+        $admin_menu = $this->getMenus();
+        View::assign('admin_menu', $admin_menu);
+        //模块入口
         View::assign('all_module_list', $this->allModuleList()); 
         //获取登录用户数据
         View::assign('auth_user',query_user(is_login()));
@@ -81,6 +88,9 @@ class Admin extends Base
     public function needLogin(){
 
         $uid = is_login();
+        if($uid == 1){
+            $this->isRoot = 1;
+        }
         if (!$uid) {// 还没登录 跳转到登录页面
             if($uid) return $uid;
             // 调整至前台登陆页
@@ -307,6 +317,9 @@ class Admin extends Base
         return true;
     }
 
+    /**
+     * 记录请求
+     */
     public function recordRequest(){
         $result = (new \app\admin\lib\Cloud())->recordRequest();
         return $result;
