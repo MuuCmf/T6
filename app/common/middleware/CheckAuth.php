@@ -38,6 +38,7 @@ class CheckAuth extends JWTAuth
         } else {
 
             header('Access-Control-Expose-Headers:Authorization,authorization');//用于暴露response中的token，h5因w3c规范导致获取不到
+
             try {
                 $payload = $this->auth->auth();
             } catch (TokenExpiredException $e) { // 捕获token过期
@@ -50,17 +51,17 @@ class CheckAuth extends JWTAuth
                     $payload = $this->auth->auth(false);
                 } catch (JWTException $exception) {
                     // 如果捕获到此异常，即代表 refresh 也过期了，用户无法刷新令牌，需要重新登录。
-                    echo json_encode(['code' => 0, 'data' => 'login', 'msg' => '需要登录']);
+                    echo json_encode(['code' => 0, 'data' => 'login', 'msg' => $exception->getMessage()]);
                     exit();
                 }
             } catch (TokenBlacklistGracePeriodException $e) { // 捕获黑名单宽限期
                 $payload = $this->auth->auth(false);
             } catch (TokenBlacklistException $e) { // 捕获黑名单，退出登录或者已经自动刷新，当前token就会被拉黑
-                echo json_encode(['code' => 0, 'data' => 'login', 'msg' => '需要登录']);
+                echo json_encode(['code' => 0, 'data' => 'login', 'msg' => $e->getMessage()]);
                 exit();
             } catch (JWTException $exception) {
                 // 如果捕获到此异常，即代表 refresh 也过期了，用户无法刷新令牌，需要重新登录。
-                echo json_encode(['code' => 0, 'data' => 'login', 'msg' => '需要登录']);
+                echo json_encode(['code' => 0, 'data' => 'login', 'msg' => $exception->getMessage()]);
                 exit();
             }
 
