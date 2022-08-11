@@ -76,16 +76,16 @@ class Auth extends Admin
             $AuthGroup = new AuthGroup();
             $res = $AuthGroup->editData($data);
             if ($res === false) {
-                $this->error('操作失败');
+                return $this->error('操作失败');
             } else {
                 $back_url = url('admin/AuthManager/index');
                 if(!empty($data['back_url'])){
                     $back_url = $data['back_url'];
                 }
-                $this->success('操作成功!',$back_url);
+                return $this->success('操作成功!',$back_url);
             }
         } else {
-            $this->error('操作失败');
+            return $this->error('操作失败');
         }
     }
 

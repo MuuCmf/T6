@@ -146,13 +146,11 @@ class Admin extends Base
             $nav = $menuModel->getPath($current['id']);
             $nav_current_id = $nav[0]['id'];
         }
-
         if ($nav_current_id) {
-
             foreach ($menus['main'] as $key => $item) {
 
                 //如果是模块菜单获取模块信息
-                if($item['module'] != '' || !empty($item['module'])){
+                if(!empty($item['module']) || $item['module'] != 'admin'){
                     $app = $this->moduleModel->getModule($item['module']);
                 }
                 
@@ -162,6 +160,7 @@ class Admin extends Base
                 if (stripos($item['url'], $module) !== 0) {
                     $item['url'] = $module . '/' . $item['url'];
                 }
+                
                 // 判断主菜单权限
                 if (!$this->isRoot && !$this->checkRule($item['url'], AuthRule::RULE_MAIN, null)) {
                     unset($menus['main'][$key]);
