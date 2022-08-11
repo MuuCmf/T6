@@ -4263,7 +4263,7 @@ CREATE TABLE IF NOT EXISTS `muucmf_follow` (
 DROP TABLE IF EXISTS `muucmf_history`;
 CREATE TABLE `muucmf_history` (
   `id` bigint(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键ID',
-  `shopid` int(10) NOT NULL COMMENT '店铺ID',
+  `shopid` int(11) NOT NULL COMMENT '店铺ID',
   `app` varchar(60) NOT NULL COMMENT '关联的应用唯一标识',
   `uid` int(11) UNSIGNED NOT NULL COMMENT '用户ID',
   `info_id` int(11) UNSIGNED NOT NULL COMMENT '关联主键ID',
@@ -4275,7 +4275,23 @@ CREATE TABLE `muucmf_history` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='内容浏览记录';
 
--- --------------------------------------------------------
+--
+-- 表的结构 `muucmf_keywords`
+--
+
+DROP TABLE IF EXISTS `muucmf_keywords`;
+CREATE TABLE `muucmf_keywords` (
+  `id` bigint(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+  `shopid` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '店铺ID',
+  `uid` int(11) NOT NULL COMMENT 'UID',
+  `keyword` varchar(90) NOT NULL COMMENT '关键词',
+  `sort` int(11) NOT NULL COMMENT '排序',
+  `recommend` tinyint(2) NOT NULL COMMENT '是否推荐',
+  `status` tinyint(2) NOT NULL COMMENT '状态',
+  `create_time` int(11) UNSIGNED NOT NULL COMMENT '创建时间',
+  `update_time` int(11) UNSIGNED NOT NULL COMMENT '更新时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='热门关键词统计' ROW_FORMAT=COMPACT;
 
 --
 -- 表的结构 `muucmf_member`
