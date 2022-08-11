@@ -1,9 +1,6 @@
 <?php
 namespace app\ucenter\controller;
 
-use think\App;
-use think\facade\Config;
-use think\facade\Cookie;
 use think\facade\Db;
 use think\facade\View;
 use app\common\model\Member as CommonMember;
@@ -129,7 +126,6 @@ class Common extends CommonCommon
                  return $this->error($commonMemberModel->getError());
             }
         }else{
-
             // 注册类型开关
             $regSwitch = config('system.USER_REG_SWITCH');
             if(!empty($regSwitch)){

@@ -15,6 +15,7 @@ class Common extends Base
 {
     public $shopid = 0;//店铺ID
     public $module;//请求的应用
+    public $muu_config_data;
     public $title = '';
     public $keywords = '';
     public $description = '';
@@ -74,7 +75,7 @@ class Common extends Base
         if(empty($this->params['shopid'])){
             $this->params['shopid'] = 0;
         }
-        $muu_config_data = (new ConfigLogic())->frontend($this->params['shopid']);
+        $this->muu_config_data = $muu_config_data = (new ConfigLogic())->frontend($this->params['shopid']);
 
         View::assign('muu_config_data', $muu_config_data);
     }
