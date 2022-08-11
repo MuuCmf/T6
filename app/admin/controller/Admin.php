@@ -70,8 +70,6 @@ class Admin extends Base
         //当前管理菜单
         $admin_menu = $this->getMenus();
         View::assign('admin_menu', $admin_menu);
-        //模块入口
-        View::assign('all_module_list', $this->allModuleList()); 
         //获取登录用户数据
         View::assign('auth_user',query_user(is_login()));
         //框架版本号
@@ -110,6 +108,14 @@ class Admin extends Base
             ['name', '<>','ucenter'],
             ['name', '<>','channel']
         ]);
+        // 应用权限
+        foreach($all_module_list as $key=>$item){
+            // 判断主菜单权限
+            if (!$this->isRoot && !$this->checkRule(strtolower($item['entry']), get_uid(), AuthRule::RULE_MAIN, null)) {
+                unset($all_module_list[$key]);
+                continue;//继续循环
+            }
+        }
 
         return $all_module_list;
     }

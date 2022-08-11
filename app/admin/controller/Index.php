@@ -9,6 +9,13 @@ use app\admin\model\CountActive;
 
 class Index extends Admin
 {
+    public function __construct()
+    {
+        parent::__construct();
+        //应用入口
+        View::assign('all_module_list', $this->allModuleList()); 
+    }
+
     /**
      * 控制台首页
      * @return [type] [description]
