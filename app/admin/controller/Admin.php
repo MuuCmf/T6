@@ -157,12 +157,9 @@ class Admin extends Base
                 if (!is_array($item) || empty($item['title']) || empty($item['url'])) {
                     return $this->error('控制器基类{$menus}属性元素配置有误');
                 }
-                if (stripos($item['url'], $module) !== 0) {
-                    $item['url'] = $module . '/' . $item['url'];
-                }
                 
                 // 判断主菜单权限
-                if (!$this->isRoot && !$this->checkRule($item['url'], AuthRule::RULE_MAIN, null)) {
+                if (!$this->isRoot && !$this->checkRule($item['url'], get_uid(), AuthRule::RULE_MAIN, null)) {
                     unset($menus['main'][$key]);
                     continue;//继续循环
                 }
@@ -183,35 +180,33 @@ class Admin extends Base
                     $where = [];
                     $where['pid'] = $item['id'];
                     $where['hide'] = 0;
-                    $second_urls = Db::name('Menu')->where($where)->order('sort asc')->select()->toArray();
+                    $second_urls = Db::name('menu')->where($where)->order('sort asc')->select()->toArray();
 
                     if (!$this->isRoot) {
                         // 检测菜单权限
                         $to_check_urls = [];
                         foreach ($second_urls as $key => $to_check_url) {
-                            if (stripos($to_check_url, $module) !== 0) {
-                                $rule = $module . '/' . $to_check_url;
-                            } else {
-                                $rule = $to_check_url;
+                            $rule = $to_check_url['url'];
+                            if ($this->checkRule($rule, get_uid(), 1, null)){
+                                $to_check_urls[] = $to_check_url['url'];
                             }
-                            if ($this->checkRule($rule, 1, null))
-                                $to_check_urls[] = $to_check_url;
                         }
                     }
                     // 按照分组生成子菜单树
-                    $map = [];
+                    
                     foreach ($groups as $k=>$g) {
-                        $map = ['group' => $g];
+                        $map = [];
+                        $map[] = ['group', '=', $g];
                         if (isset($to_check_urls)) {
                             if (empty($to_check_urls)) {
                                 // 没有任何权限
                                 continue;
                             } else {
-                                $map['url'] = ['in', $to_check_urls];
+                                $map[] = ['url', 'in', $to_check_urls];
                             }
                         }
-                        $map['pid'] = $item['id'];
-                        $map['hide'] = 0;
+                        $map[] = ['pid', '=', $item['id']];
+                        $map[] = ['hide', '=', 0];
                         
                         $menuList = Db::name('Menu')->where($map)->field('id,pid,title,url,icon,tip')->order('sort asc')->select()->toArray();
                         if ($menuList){
