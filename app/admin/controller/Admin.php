@@ -62,7 +62,7 @@ class Admin extends Base
         // 检查权限
         $rule = strtolower($this->app_name . '/' . $controller . '/' . $action);
         if(!$this->checkRule($rule, get_uid())){
-            throw new \think\Exception('非法操作！', 10006);
+            throw new \think\Exception('非法操作');
         }
         // 当前应用模块信息
         $module = $this->moduleModel->getModule($this->app_name);
