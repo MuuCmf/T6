@@ -44,14 +44,14 @@ if (!function_exists('single_image_upload')) {
         if($input == false){
             $html .= <<<EOF
             <div class="input-group">
-                <input type="hidden" class="attach" data-name="{$name}" name="{$input_name}" value="{$image}">
+                <input type="hidden" data-name="{$name}" name="{$input_name}" value="{$image}">
                 <button id="upload_single_image_{$name}" class="btn btn-default" type="button">{$upload_picture}</button>
             </div>
     EOF;
         }else{
             $html .= <<<EOF
             <div class="input-group">
-                <input type="text" class="attach" data-name="{$name}" name="{$input_name}" value="{$image}">
+                <input type="text" class="form-control attach" data-name="{$name}" name="{$input_name}" value="{$image}">
                 <span class="input-group-btn">
                     <button id="upload_single_image_{$name}" class="btn btn-default" type="button">{$upload_picture}</button>
                 </span>
@@ -293,7 +293,7 @@ if (!function_exists('single_file_upload')) {
             if($vod_driver == 'tencent'){
                 $html .= <<<EOF
                 <div class="input-group">
-                    <input type="hidden" class="form-control attach" name="{$name}" value="{$audio}">
+                    <input type="hidden" name="{$name}" value="{$audio}">
                     <button class="btn btn-default btn-upload" type="button">
                         {$upload}
                         <input class="vos-upload" type="file" accept="audio/*" />
