@@ -30,7 +30,7 @@ return [
             'port'       => env('redis.port', '6379'),
             // 密码
             'password'   => env('redis.password', ''),
-            'select'     => 0,
+            'select'     => env('redis.select', 0),
             'timeout'    => 0,
             'persistent' => false,
         ],

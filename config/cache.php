@@ -44,6 +44,8 @@ return [
             'expire'     => 0,
             // 序列化机制 例如 ['serialize', 'unserialize']
             'serialize'  => [],
+            // 
+            'select'     => env('redis.select', 0),
         ],  
     ],
 ];

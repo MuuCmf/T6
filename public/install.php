@@ -916,6 +916,7 @@ DRIVER = redis
 HOST = 127.0.0.1
 PORT = 6379
 password = 
+select = 0
 
 [LANG]
 default_lang = zh-cn
