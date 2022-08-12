@@ -48,7 +48,7 @@ $install_css = <<<EOF
 * { word-wrap: break-word; outline: none;}
 html, body, ul, li, p { padding: 0; margin: 0;}
 
-body { font-family: "microsoft yahei", "Microsoft YaHei", "Lucida Grande", "Lucida Sans Unicode", Tahoma, Helvetica, Arial, sans-serif; font-size: 12px; line-height: 20px; color: #7E8C8D; background-color: #FFFFFF;}
+body { font-family: "microsoft yahei", "Microsoft YaHei", "Lucida Grande", "Lucida Sans Unicode", Tahoma, Helvetica, Arial, sans-serif; font-size: 12px; line-height: 20px; color: #7E8C8D; background-color: #f8f8f8;}
 h1, h2, h4, h5, h6 { font-weight: normal; margin: 0;}
 i, em { font-style: normal;}
 ul, ol, li { list-style-type: none;}
@@ -128,7 +128,7 @@ input.error { border-color: #F30;}
 
 /* Content section
 -------------------------------------- */
-.text-box { width: 898px; height: 358px; margin: 0 auto; border: solid 1px #ECF0F1; position: relative; z-index: 1; overflow: hidden;}
+.license-section { width: 898px; height: 458px; margin: 0 auto; border: solid 1px #ECF0F1; position: relative; z-index: 1; overflow-x: hidden;overflow-y: auto;background: #fff;}
 .license { line-height: 24px; width: 858px; margin: 20px auto;}
 .license h1 { font-size: 18px; line-height: 28px; color: #7E8C8D; text-align: center;}
 .license p { font-size: 12px; text-indent: 2em;}
@@ -236,9 +236,8 @@ $html_header = <<<EOF
 <meta charset="utf-8">
 <title>$html_title</title>
 $install_css
-<link href="https://cdn.bootcss.com/jquery.perfect-scrollbar/0.5.6/perfect-scrollbar.min.css" rel="stylesheet" type="text/css">
+
 <script type="text/javascript" src="https://cdn.bootcss.com/jquery/1.8.2/jquery.min.js"></script>
-<script type="text/javascript" src="https://cdn.bootcss.com/jquery.perfect-scrollbar/0.5.6/perfect-scrollbar.min.js"></script>
 <script type="text/javascript" src="https://cdn.bootcss.com/jquery-mousewheel/3.0.6/jquery.mousewheel.min.js"></script>
 <script src="https://cdn.bootcss.com/iCheck/1.0.2/icheck.min.js"></script>
 <script type="text/javascript" src="https://cdn.bootcdn.net/ajax/libs/jquery-validate/1.11.1/jquery.validate.min.js"></script>
@@ -284,7 +283,8 @@ switch ($_GET['step']) {
         $dirfile_items = [
             ['type' => 'dir', 'path' => 'data'],
             ['type' => 'dir', 'path' => 'public'],
-            ['type' => 'dir', 'path' => 'runtime']
+            ['type' => 'dir', 'path' => 'runtime'],
+            ['type' => 'file', 'path' => '.env']
         ];
         $func_items = [
             ['name' => 'PDO', 'type' => 'class'],
@@ -609,12 +609,6 @@ $html_header
     
 </div>
 $html_footer
-<script type="text/javascript">
-$(document).ready(function(){
-    //自定义滚定条
-    $('#text-box').perfectScrollbar();
-});
-</script>
 EOF;
 
         echo $step;
@@ -624,7 +618,7 @@ EOF;
         $step = <<<EOF
 $html_header
 <div class="main">
-  <div class="text-box" id="text-box">
+  <div class="license-section" id="text-box">
     <div class="license">
       <h1>MuuCmf 软件安装使用协议</h1>
       <p>感谢您选择MuuCmf系统，以下简称本系统。本系统是北京火木科技有限公司自主研发的低代码应用开发框架及多应用整合解决方案。官方网址为 {$site_url}。</p>
@@ -675,13 +669,6 @@ $html_header
   <div class="btn-box"><a href="install.php?step=1" class="btn btn-primary">同意协议进入安装</a><a href="javascript:window.close()" class="btn">不同意</a></div>
 </div>
 $html_footer
-<script type="text/javascript">
-$(document).ready(function(){
-    //自定义滚定条
-    $('#text-box').perfectScrollbar();
-});
-</script>
-
 
 EOF;
         echo $step;
@@ -792,7 +779,7 @@ $html_header
       </div>
     </div>
   </div>
-  <div class="text-box" id="text-box">
+  <div class="license-section" id="text-box">
     <div class="license" id="license"></div>
   </div>
   <div class="btn-box"><a href="javascript:void(0);" id="install_process" class="btn btn-primary">正在安装 ...</a></div>
@@ -805,10 +792,6 @@ function showmessage(message) {
     document.getElementById("text-box").scrollTop = 500+scroll_height;
     scroll_height += 40;
 }
-$(document).ready(function(){
-    //自定义滚定条
-    $('#text-box').perfectScrollbar();
-});
 </script>
 EOF;
     echo $step;

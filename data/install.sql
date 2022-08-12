@@ -361,7 +361,7 @@ INSERT INTO `muucmf_config` (`id`, `name`, `type`, `title`, `group`, `extra`, `r
 (128, 'VERIFY_OPEN', 'checkbox', '验证码配置', 3, 'reg:注册显示\r\nlogin:登陆显示\r\nreset:密码重置', '验证码配置', 1388500332, 1631320314, 1, '', 3),
 (129, 'VERIFY_TYPE', 'select', '验证码类型', 4, '1:中文\r\n2:英文\r\n3:数字\r\n4:英文+数字', '验证码类型', 1388500873, 1630895014, 1, '4', 0),
 (132, 'COUNT_CODE', 'textarea', '统计代码', 1, '', '用于统计网站访问量的第三方代码，推荐百度统计', 1403058890, 1653285401, 1, '<script>\r\nvar _hmt = _hmt || [];\r\n(function() {\r\n  var hm = document.createElement(\"script\");\r\n  hm.src = \"https://hm.baidu.com/hm.js?959d8ff4676fce87aa16f4c1edb78038\";\r\n  var s = document.getElementsByTagName(\"script\")[0]; \r\n  s.parentNode.insertBefore(hm, s);\r\n})();\r\n</script>\r\n', 12),
-(135, 'DEFUALT_APP', 'string', '系统默认应用', 4, '', '留空默认index', 1417509438, 1640251531, 1, '', 1),
+(135, 'DEFUALT_APP', 'string', '系统默认应用', 4, '', '留空默认index', 1417509438, 1640251531, 1, 'index', 1),
 (137, 'SITE_CLOSE_HINT', 'textarea', '关站提示文字', 4, '', '站点关闭后的提示文字。', 1433731248, 1640252044, 1, '网站正在更新维护，请稍候再试。', 4),
 (140, 'MAIL_SMTP_CE', 'string', '邮件发送测试', 5, '', '填写测试邮件地址', 1388334529, 1630895967, 1, '59262424@qq.com', 11),
 (1000, 'USER_REG_SWITCH', 'checkbox', '用户注册开关', 3, 'username:用户名\r\nemail:邮箱\r\nmobile:手机号', '用户注册开关', 1531177781, 1631278401, 1, 'username,email,mobile', 1),
