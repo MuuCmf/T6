@@ -38,7 +38,7 @@ $_date = date('Y');
 $sql_url = '../data/install.sql';
 // 后台默认地址
 $admin_url = '/admin';
-$html_title = '程序安装向导';
+$html_title = 'MuuCmf T6 系统安装向导';
 
 
 $install_css = <<<EOF
