@@ -26,14 +26,11 @@ if (!function_exists('single_image_upload')) {
     EOF;
         if(!empty($image)){
         $html .= <<<EOF
-            
-                
                     <div class="each">
                         <img src="{$image_path}">
                         <div class="text-center opacity del_btn"></div>
                         <div data-id="{$image}" class="text-center del_btn">{$delete_picture}</div>
                     </div>
-                
     EOF;
         }
         $html .= <<<EOF
@@ -44,7 +41,7 @@ if (!function_exists('single_image_upload')) {
         if($input == false){
             $html .= <<<EOF
             <div class="input-group">
-                <input type="hidden" data-name="{$name}" name="{$input_name}" value="{$image}">
+                <input type="hidden" class="form-control attach" data-name="{$name}" name="{$input_name}" value="{$image}">
                 <button id="upload_single_image_{$name}" class="btn btn-default" type="button">{$upload_picture}</button>
             </div>
     EOF;
@@ -293,7 +290,7 @@ if (!function_exists('single_file_upload')) {
             if($vod_driver == 'tencent'){
                 $html .= <<<EOF
                 <div class="input-group">
-                    <input type="hidden" name="{$name}" value="{$audio}">
+                    <input type="hidden" class="form-control attach" name="{$name}" value="{$audio}">
                     <button class="btn btn-default btn-upload" type="button">
                         {$upload}
                         <input class="vos-upload" type="file" accept="audio/*" />
@@ -1020,22 +1017,6 @@ if (!function_exists('single_file_upload')) {
     </script>
     EOF;
         return $html;
-    }
-}
-
-if (!function_exists('pic')) {
-    /**
-     * 通过ID获取附件路径
-     */
-    function pic($id)
-    {
-        if (empty($id)) {
-            return false;
-        }
-        $picture = Db::name('attachment')->where(['id'=>$id])->find();
-        $picture['url'] = request()->domain() . '/attachment/' . $picture['attachment'];
-        
-        return $picture['url'];
     }
 }
 
