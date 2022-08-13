@@ -78,6 +78,10 @@ class Module extends Base
                             'version' => $v['app']['version'],
                             'summary' => $v['app']['summary'],
                             'developer' => $v['app']['developer'],
+                            'website' => '',
+                            'entry' => '',
+                            'is_setup' => 0,
+                            'sort' => 0,
                             'source' => 'cloud'
                         ];
                     }else{
@@ -93,7 +97,6 @@ class Module extends Base
                         $data[] = $a;
                     }
                 }
-                
             }
             $this->saveAll($data);
         }
