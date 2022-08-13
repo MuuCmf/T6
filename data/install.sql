@@ -74,7 +74,7 @@ CREATE TABLE IF NOT EXISTS `muucmf_action_log` (
   `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'ID',
   `action_id` int(11) UNSIGNED NOT NULL COMMENT '行为id',
   `uid` int(11) UNSIGNED NOT NULL COMMENT '执行用户id',
-  `action_ip` bigint(20) NOT NULL COMMENT '执行行为者ip',
+  `action_ip` varchar(64) NOT NULL DEFAULT '' COMMENT '执行行为者ip',
   `model` varchar(50) NOT NULL DEFAULT '' COMMENT '触发行为的表',
   `record_id` bigint(20) UNSIGNED NOT NULL DEFAULT '0' COMMENT '触发行为的数据id',
   `remark` varchar(255) NOT NULL DEFAULT '' COMMENT '日志备注',
