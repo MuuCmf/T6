@@ -25,7 +25,7 @@ class ActionLog extends Model
 	    }
 
 	    //查询行为,判断是否执行
-	    $action_info = Db::name('action')->where(['name'=>$action])->find();
+	    $action_info = Db::name('action')->where('name', $action)->find();
 
 	    if ($action_info['status'] != 1) {
 	        return '该行为被禁用或删除';
@@ -34,7 +34,7 @@ class ActionLog extends Model
 	    //插入行为日志
 	    $data['action_id'] = $action_info['id'];
 	    $data['uid'] = $uid;
-	    $data['action_ip'] = request()->ip(1);
+	    $data['action_ip'] = request()->ip();
 	    $data['model'] = $model;
 	    $data['record_id'] = $record_id;
 	    $data['create_time'] = time();

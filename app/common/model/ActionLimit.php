@@ -70,7 +70,7 @@ class ActionLimit extends Model
 
     public function checkOne($item)
     {
-        $item['action_ip'] = $item['action_ip'] ? request()->ip(1) : null;
+        $item['action_ip'] = $item['action_ip'] ? request()->ip() : null;
         foreach ($item as $k => $v) {
             if (empty($v)) {
                 unset($item[$k]);
@@ -79,7 +79,7 @@ class ActionLimit extends Model
         unset($k, $v);
 
         $limitList = $this->where('action_list','like','%'.$item['action'].'%')->where('status','=',1)->select();
-        $item['action_id'] = Db::name('action')->where(['name' => $item['action']])->field('id')->find();
+        $item['action_id'] = Db::name('action')->where('name', $item['action'])->field('id')->find();
         $item['action_id'] = implode($item['action_id']);
         unset($item['action']);
 
@@ -88,7 +88,7 @@ class ActionLimit extends Model
 
             $item['create_time'] = ['egt', $ago];
 
-            $log = Db::name('actionLog')->where($item)->order('create_time desc')->select();
+            $log = Db::name('action_log')->where($item)->order('create_time desc')->select();
             
             if (count($log) >= $val['frequency']) {
                 $punishes = explode(',', $val['punish']);
@@ -115,7 +115,14 @@ class ActionLimit extends Model
      */
     public function checkActionLimit($action = null, $model = null, $record_id = null, $uid = null, $ip = false)
     {
-        $item = array('action' => $action, 'model' => $model, 'record_id' => $record_id, 'uid' => $uid, 'action_ip' => $ip);
+        $item = [
+            'action' => $action, 
+            'model' => $model, 
+            'record_id' => $record_id, 
+            'uid' => $uid, 
+            'action_ip' => $ip
+        ];
+
         if(empty($record_id)){
             unset($item['record_id']);
         }

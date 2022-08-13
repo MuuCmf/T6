@@ -97,11 +97,10 @@ class Member extends Model
             // 行为限制
             $actionLimit = new ActionLimit();
             $return = $actionLimit->checkActionLimit('input_password','member',$user['uid'],$user['uid']);
-
             if($return && !$return['code']){
                 return $return['msg'];
             }
-
+            
             if ($user['uid'] && $user['status']) {
                 /* 验证用户密码 */
                 if (user_md5($password, Config::get('auth.auth_key')) === $user['password']) {
@@ -109,12 +108,11 @@ class Member extends Model
                 } else {
                     $actionLog = new ActionLog();
                     $actionLog->add('input_password','member',$user['uid'],$user['uid']);
-                    $this->error = '密码错误';
                     return -2; //密码错误
                 }
             }
         }
-        $this->error = '用户不存在或被禁用';
+
         return -1; //用户不存在或被禁用
     }
 
@@ -450,37 +448,42 @@ class Member extends Model
     public function checkNickname($nickname, $uid)
     {
         $length = mb_strlen($nickname, 'utf8');
-        if ($length == 0) {
-            $this->error('请输入昵称');
-        } else if ($length > Config::get('system.NICKNAME_MAX_LENGTH',32)) {
-            $this->error('昵称不能超过'. Config::get('system.NICKNAME_MAX_LENGTH',32).'个字');
-        } else if ($length < Config::get('system.NICKNAME_MIN_LENGTH',2)) {
-            $this->error('昵称不能少于' . Config::get('system.NICKNAME_MIN_LENGTH',2) . '个字');
-        }
-        $match = preg_match('/^(?!_|\s\')[A-Za-z0-9_\x80-\xff\s\']+$/', $nickname);
-        if (!$match) {
-            $this->error('昵称只允许中文、字母、下划线和数字');
-        }
-        //验证唯一性
-        $map_nickname[] = ['nickname', '=', $nickname];
-        $map_nickname[] = ['uid','<>', $uid];
-        $had_nickname = $this->where($map_nickname)->count();
-
-        if ($had_nickname) {
-            $this->error('昵称已被人使用');
-        }
-        //保留昵称
-        $denyName = Config::get('system.USER_NAME_BAOLIU');
-        if ($denyName != '') {
-            $denyName = explode(',', $denyName);
-            foreach ($denyName as $val) {
-                if (!is_bool(strpos($nickname, $val))) {
-                    $this->error('该昵称已被禁用');
+        try {
+            if ($length == 0) {
+                throw new Exception('请输入昵称');
+            } else if ($length > Config::get('system.NICKNAME_MAX_LENGTH',32)) {
+                throw new Exception('昵称不能超过'. Config::get('system.NICKNAME_MAX_LENGTH',32).'个字');
+            } else if ($length < Config::get('system.NICKNAME_MIN_LENGTH',2)) {
+                throw new Exception('昵称不能少于' . Config::get('system.NICKNAME_MIN_LENGTH',2) . '个字');
+            }
+            
+            $match = preg_match('/^(?!_|\s\')[A-Za-z0-9_\x80-\xff\s\']+$/', $nickname);
+            if (!$match) {
+                throw new Exception('昵称只允许中文、字母、下划线和数字');
+            }
+            //验证唯一性
+            $map_nickname[] = ['nickname', '=', $nickname];
+            $map_nickname[] = ['uid','<>', $uid];
+            $had_nickname = $this->where($map_nickname)->count();
+            if ($had_nickname > 0) {
+                throw new Exception('昵称已被人使用');
+            }
+            //保留昵称
+            $denyName = Config::get('system.USER_NAME_BAOLIU');
+            
+            if (!empty($denyName)) {
+                $denyName = explode(',', $denyName);
+                foreach ($denyName as $val) {
+                    if (!is_bool(strpos($nickname, $val))) {
+                        throw new Exception('该昵称已被禁用');
+                    }
                 }
             }
-        }
 
-        return true;
+            return true;
+        }catch (Exception $e){
+            return $e->getMessage();
+        }
     }
 
     /**

@@ -32,18 +32,19 @@ class Config extends Common
             // $birthday_format = date_parse_from_format('Y年m月d日', $birthday);
             // $birthday = mktime(0,0,0,$birthday_format['month'], $birthday_format['day'], $birthday_format['year']);
             // $birthday = date('Y-m-d',$birthday);
-
-            $uid = get_uid();
-            $commonMemberModel = new Member;
+            
+            $uid = intval(get_uid());
+            $commonMemberModel = new Member();
             $check = $commonMemberModel->checkNickname($aNickname, $uid);
             if($check !== true){
-                return $this->error($commonMemberModel->getError());
+                return $this->error($check);
             }
             $user['nickname'] = $aNickname;
             $user['sex'] = $aSex;
             $user['signature'] = $aSignature;
             //$user['birthday']  =  $birthday;
             $res = Db::name('Member')->where('uid', $uid)->update($user);
+            
             if ($res) {
                 return $this->success('设置成功');
 
