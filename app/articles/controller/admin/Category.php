@@ -82,7 +82,7 @@ class Category extends Admin
 
         } else {
             // 获取顶级分类树
-            $category= $this->CategoryModel->getTree(1);
+            $category= $this->CategoryModel->tree($this->shopid, 1);
             View::assign('category',$category);
 
             // 初始化数据结构

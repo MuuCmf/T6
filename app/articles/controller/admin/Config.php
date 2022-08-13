@@ -3,9 +3,8 @@ namespace app\articles\controller\admin;
 
 use think\facade\View;
 use think\facade\Cache;
-use app\articles\controller\admin\Admin as ArticlesAdmin;
 
-class Config extends ArticlesAdmin
+class Config extends Admin
 {   
     /**
      * 构造方法

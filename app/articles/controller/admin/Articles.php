@@ -61,8 +61,7 @@ class Articles extends Admin
         View::assign('lists',$lists);
 
         // 获取分类树
-        $category_list = $this->CategoryModel->getList([['status','=',1]], 999)->toArray();
-        $category_tree = $this->CategoryLogic->categoryTree($category_list);
+        $category_tree = (new CategoryModel())->tree($this->shopid, 1);
         View::assign('category_tree', $category_tree);
         
         // 记录当前列表页的cookie
@@ -128,8 +127,7 @@ class Articles extends Admin
         View::assign('data',$data);
 
         // 获取分类树
-        $category_list = $this->CategoryModel->getList([['status','=',1]], 999)->toArray();
-        $category_tree = $this->CategoryLogic->categoryTree($category_list);
+        $category_tree = $this->CategoryModel->tree($this->shopid, 0);
         View::assign('category_tree', $category_tree);
 
         $this->setTitle($title.'文章');

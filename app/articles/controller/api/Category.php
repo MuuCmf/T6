@@ -24,7 +24,7 @@ class Category extends Base
      */
     public function tree()
     {
-        $category_tree = $this->CategoryModel->getTree($this->shopid);
+        $category_tree = $this->CategoryModel->tree($this->shopid, 1);
         return $this->success('success', $category_tree);
     }
 }

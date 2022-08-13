@@ -10,31 +10,17 @@ class ArticlesCategory extends Base
     protected $autoWriteTimestamp = true;
 
     /**
-     * 编辑/新增数据
-     *
-     * @param      <type>  $data   The data
-     *
-     * @return     <type>  ( description_of_the_return_value )
-     */
-    public function edit($data)
-    {
-        if(!isset($data['uid'])) $data['uid'] = is_login();
-        if(!empty($data['id'])){
-            $res = $this->update($data);
-        }else{
-            $res = $this->save($data);
-        }
-
-        return $res;
-    }
-
-    /**
      * 获取分类树
      */
-    public function getTree($shopid = 0, $status = 0)
+    public function tree(int $shopid = 0, $status = 0)
     {   
         $map[] = ['shopid', '=', $shopid];
-        $map[] = ['status', '>=', $status];
+        if(is_array($status)){
+            $map[] = ['status', 'in', $status];
+        }else{
+            $map[] = ['status', '=', $status];
+        }
+
         $list = $this->getList($map, 999, 'sort desc,create_time desc');
         $list = $list->toArray();
         $CategoryLogic = new CategoryLogic();
