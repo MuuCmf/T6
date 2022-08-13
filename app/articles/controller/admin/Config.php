@@ -53,7 +53,7 @@ class Config extends ArticlesAdmin
             }
             
             //提交数据
-            if($config_data){
+            if(!empty($config_data['id'])){
                 $msg = '更新配置';
                 $data['id'] = $config_data['id'];
             }else{
@@ -63,17 +63,15 @@ class Config extends ArticlesAdmin
             $result = $this->ConfigModel->edit($data);
 
             if($result){
-                Cache::delete('MUUCMF_ARTICLES_CONFIG_DATA_'. $this->shopid);
+                Cache::delete(request()->host() . '_MUUCMF_ARTICLES_CONFIG_DATA_'. $this->shopid);
                 return $this->success($msg . '成功！', $result, url('admin.config/index'));
             }else{
                 return $this->error($msg . '失败！');
             }
         }else{
             // 获取店铺配置数据
-            $data = $this->ConfigModel->getDataByMap(['shopid' => 0]);
-            $data = $this->ConfigLogic->formatData($data);
+            $data = $this->config_data;
             View::assign('data',$data);
-
             // 设置页面Title
             $this->setTitle('基础配置');
             // 输出模板

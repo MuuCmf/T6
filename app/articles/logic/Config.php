@@ -23,7 +23,8 @@ class Config {
 	public function formatData($data)
 	{
         if(!empty($data)){
-            $data = $data->toArray();
+            if (is_object($data)) $data = $data->toArray();
+            
             if(!empty($data['status'])){
                 $data['status_str'] = $this->_status[$data['status']];
             }else{
@@ -47,13 +48,9 @@ class Config {
                 $data['comment']['audit'] = 0;
                 $data['comment']['audit_str'] = $this->_status[0];
             }
-    
-            return $data;
-        }else{
-            $data = (new ConfigModel())->defaultData();
-
-            return $data;
         }
+            
+        return $data;
 	}
 
 }

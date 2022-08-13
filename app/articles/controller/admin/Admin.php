@@ -3,14 +3,11 @@ namespace app\articles\controller\admin;
 
 use app\admin\controller\Admin as MuuAdmin;
 use app\articles\model\ArticlesConfig as ConfigModel;
-use app\articles\logic\Config as ConfigLogic;
-use think\facade\Cache;
 use think\facade\View;
 
 class Admin extends MuuAdmin{
     
     protected $ConfigModel;
-    protected $ConfigLogic;
     public $config_data;
     public $shopid = 0;
 
@@ -18,13 +15,8 @@ class Admin extends MuuAdmin{
     {
         parent::__construct();
         $this->ConfigModel = new ConfigModel();
-        $this->ConfigLogic = new ConfigLogic();
 
-        if (empty($config_data)){
-            $config_data = $this->ConfigModel->getDataByMap(['shopid' => $this->shopid]);
-            $config_data = $this->ConfigLogic->formatData($config_data);
-            Cache::set(request()->host() . '_MUUCMF_ARTICLES_CONFIG_DATA_' . $this->shopid, $config_data);
-        }
+        $config_data = $this->ConfigModel->getConfig($this->shopid);
         $this->config_data = $config_data;
         View::assign([
             'config_data' => $config_data

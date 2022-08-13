@@ -19,11 +19,30 @@ class ArticlesConfig extends Base
         $config_data = Cache::get(request()->host() . '_MUUCMF_ARTICLES_CONFIG_DATA_' . $shopid);
         if(empty($config_data)){
             $config_data= $this->getDataByMap(['shopid' => $shopid]);
+            if(empty($config_data)){
+                $config_data = $this->defaultData($shopid);
+            }
             $config_data = (new ConfigLogic())->formatData($config_data);
             Cache::set(request()->host() . '_MUUCMF_ARTICLES_CONFIG_DATA_' . $shopid, $config_data);
         }
 
         return $config_data;
+    }
+
+    /**
+     * 设置默认数据
+     */
+    public function defaultData($shopid = 0)
+    {
+        return [
+            'status' => 1,
+            'shopid' => $shopid,
+            'comment' => [
+                'status' => 0,
+            ],
+            'thumb' => '4:3',
+            'close_desc' => '',
+        ];
     }
 
 }

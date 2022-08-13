@@ -25,7 +25,7 @@
 					<div class="form-label">应用状态</div>
 					<div class="form-value">
 						<span class="margin-left">
-							{$data['status_str']}
+							{$data['status_str']|default=''}
 						</span>
 						<span class="margin-left">
 							可关闭/开启应用
@@ -50,7 +50,7 @@
 					<div class="form-label">是否启用评论功能</div>
 					<div class="form-value">
 						<span class="title margin-left">
-							{$data.comment.status_str}
+							{$data.comment.status_str|default=''}
 						</span>
 						<span class="description margin-left">
 							设置是否启用评论
