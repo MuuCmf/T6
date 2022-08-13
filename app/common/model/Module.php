@@ -131,7 +131,9 @@ class Module extends Base
             {
                 // 获取配置数据
                 $info = $this->getInfo($subdir);
-                
+                $info['icon'] = '';
+                $info['sort'] = 0;
+                $info['source'] = 'local';
                 // 合并数据表内模块
                 $module_info = $this->getModule($info['name']);
                 if($module_info){

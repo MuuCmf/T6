@@ -21,9 +21,9 @@ class Base extends Model{
     public function edit($data)
     {
         if(!empty($data['id'])){
-            $res = $this->update($data);
+            $res = $this->strict(false)->update($data);
         }else{
-            $res = $this->save($data);
+            $res = $this->strict(false)->save($data);
         }
         if(!empty($this->id)){
             return $this->id;

@@ -72,12 +72,12 @@ CREATE TABLE IF NOT EXISTS `muucmf_articles_comment` (
 -- -----------------------------
 CREATE TABLE IF NOT EXISTS `muucmf_articles_config` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '店铺ID',
-  `shopid` int(10) NOT NULL,
+  `shopid` int(10) DEFAULT 0 NOT NULL,
   `comment` text NOT NULL COMMENT '评论配置数据，json格式',
-  `status` tinyint(2) NOT NULL COMMENT '店铺状态',
+  `status` tinyint(2) NOT NULL DEFAULT 0 COMMENT '店铺状态',
   `close_desc` varchar(255) NOT NULL COMMENT '应用关闭时的描述',
-  `create_time` int(11) NOT NULL COMMENT '创建时间',
-  `update_time` int(11) NOT NULL COMMENT '更新时间',
+  `create_time` int(11) NOT NULL DEFAULT 0 COMMENT '创建时间',
+  `update_time` int(11) NOT NULL DEFAULT 0 COMMENT '更新时间',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='店铺表配置表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='店铺表配置表';
 
