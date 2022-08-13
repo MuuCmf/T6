@@ -4,5 +4,5 @@
 // +----------------------------------------------------------------------
 return [
     //云端api
-    'api' => "https://cloud.muucmf.cc/cloud/",//云端配置
+    'api' => "https://www.muucmf.cc/cloud/",//云端配置
 ];
