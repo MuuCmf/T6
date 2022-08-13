@@ -100,9 +100,9 @@ class Attachment extends Model
                 if($enforce == 'auto'){
                     // 获取上传驱动
                     if($file_dir == 'images'){
-                        $driver = config('extend.FILE_UPLOAD_DRIVER');
-                    }else{
                         $driver = config('extend.PICTURE_UPLOAD_DRIVER');
+                    }else{
+                        $driver = config('extend.FILE_UPLOAD_DRIVER');
                     }
                 }
                 if($enforce == 'local'){
@@ -120,9 +120,10 @@ class Attachment extends Model
                 if($driver == 'local'){
                     // 本地无需处理
                 }
+
                 // 阿里云OSS
                 if($driver == 'aliyun') {
-                    $oss_res = $this->ossUpload($data['attachment'], $file->getPathname());
+                    $oss_res = $this->ossUpload('attachment/' . $data['attachment'], $file->getPathname());
                     // 上传成功
                     if($oss_res === true){
                         // 删除本地文件
@@ -136,7 +137,7 @@ class Attachment extends Model
                 }
                 // 腾讯云COS
                 if($driver == 'tencent') {
-                    $cos_res = $this->cosUpload($data['attachment'], $file->getPathname());
+                    $cos_res = $this->cosUpload('attachment/' . $data['attachment'], $file->getPathname());
                     // 上传成功
                     if($cos_res === true){
                         // 删除本地文件
@@ -426,7 +427,7 @@ class Attachment extends Model
             // 阿里云OSS
             if(strtolower($driver) == 'aliyun'){
                 try {
-                    $oldimageinfo = getimagesize(config('extend.OSS_ALIYUN_BUCKET_DOMAIN') . '/' . $attachment);
+                    $oldimageinfo = getimagesize(config('extend.OSS_ALIYUN_BUCKET_DOMAIN') . '/attachment/' . $attachment);
                     $old_image_width = intval($oldimageinfo[0]);
                     $old_image_height = intval($oldimageinfo[1]);
                     if ($height == "auto") $height = $old_image_height * $width / $old_image_width;
@@ -434,7 +435,7 @@ class Attachment extends Model
                     if (intval($height) == 0 || intval($width) == 0) {
                         return 0;
                     }
-                    $src = config('extend.OSS_ALIYUN_BUCKET_DOMAIN') . '/' . $attachment . '?x-oss-process=image/resize,m_fill,h_'.$height.',w_'.$width;
+                    $src = config('extend.OSS_ALIYUN_BUCKET_DOMAIN') . '/attachment/' . $attachment . '?x-oss-process=image/resize,m_fill,h_'.$height.',w_'.$width;
                     $info['src'] = $src;
                     $info['width'] = $old_image_width;
                     $info['height'] = $old_image_height;
@@ -449,13 +450,13 @@ class Attachment extends Model
             // 腾讯云COS
             if(strtolower($driver) == 'tencent'){
                 try {
-                    $oldimageinfo = getimagesize(config('extend.COS_TENCENT_BUCKET_DOMAIN') . '/' . $attachment);
+                    $oldimageinfo = getimagesize(config('extend.COS_TENCENT_BUCKET_DOMAIN') . '/attachment/' . $attachment);
                     $old_image_width = intval($oldimageinfo[0]);
                     $old_image_height = intval($oldimageinfo[1]);
                     if ($height == "auto") $height = $old_image_height * $width / $old_image_width;
                     if ($width == "auto") $width = $old_image_width * $width / $old_image_height;
     
-                    $src = config('extend.COS_TENCENT_BUCKET_DOMAIN') . '/' . $attachment . '?imageView2/1/w/'.$width.'/h/'.$height;
+                    $src = config('extend.COS_TENCENT_BUCKET_DOMAIN') . '/attachment/' . $attachment . '?imageView2/1/w/'.$width.'/h/'.$height;
                     $info['src'] = $src;
                     $info['width'] = $old_image_width;
                     $info['height'] = $old_image_height;

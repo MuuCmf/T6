@@ -1121,11 +1121,13 @@ if (!function_exists('get_attachment_src')) {
                 //本地url
                 return request()->domain() . '/attachment/' . str_replace('//', '/', $attachment); //防止双斜杠的出现
             }
+            // 阿里云OSS
             if ($driver == 'aliyun') {
-                return config('extend.OSS_ALIYUN_BUCKET_DOMAIN') . '/' . $attachment;
+                return config('extend.OSS_ALIYUN_BUCKET_DOMAIN') . '/attachment/' . $attachment;
             }
+            // 腾讯云COS
             if ($driver == 'tencent') {
-                return config('extend.COS_TENCENT_BUCKET_DOMAIN') . '/' . $attachment;
+                return config('extend.COS_TENCENT_BUCKET_DOMAIN') . '/attachment/' . $attachment;
             }
         }else{
             return $attachment;
