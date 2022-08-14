@@ -76,7 +76,7 @@ class Module extends Base
                             'summary' => $v['app']['summary'],
                             'developer' => $v['app']['developer'],
                             'website' => '',
-                            'entry' => '',
+                            'entry' => $v['app']['name'] . '/admin.index/index',
                             'is_setup' => 0,
                             'sort' => 0,
                             'source' => 'cloud'
@@ -85,8 +85,6 @@ class Module extends Base
                         $has_id = $this->where('name', $v['app']['name'])->value('id');
                         $data[] = [
                             'id' => $has_id,
-                            'name' => $v['app']['name'],
-                            'alias' => $v['app']['title'],
                             'source' => 'cloud'
                         ];
                     }
