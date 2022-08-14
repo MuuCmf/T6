@@ -39,7 +39,6 @@ class Module extends Admin
         $aType = input('type', 'installed', 'text');
         View::assign('type', $aType);
 
-        /*刷新模块列表时清空缓存 end*/
         switch($aType){
             case 'all':
                 $map = [];
@@ -57,15 +56,18 @@ class Module extends Admin
         };
 
         $upgradeServer = new UpgradeServer();
-        $modules = $this->ModuleModel->getListByPage($map,'sort desc,id desc','*',20)->each(function ($item,$key) use($upgradeServer){
-
-            //获取云端版本
-            $result = $upgradeServer->cloudVersion([
-                'app_name' => $item['name'],
-                'appid'    => $item['appid']
-            ]);
-            $item['new_version'] = isset($result['data']['version']) ? $result['data']['version'] : $item['version'];
-            $item['upgrade'] = get_upgrade_status($item['version'],$item['new_version']) ? 1 : 0;
+        $modules = $this->ModuleModel->getListByPage($map,'sort desc,id desc','*',20);
+        foreach($modules as &$item){
+            if($item['source'] == 'cloud'){
+                //获取云端版本
+                $result = $upgradeServer->cloudVersion([
+                    'app_name' => $item['name'],
+                    'appid'    => $item['appid']
+                ]);
+                $item['new_version'] = isset($result['data']['version']) ? $result['data']['version'] : $item['version'];
+                $item['upgrade'] = get_upgrade_status($item['version'],$item['new_version']) ? 1 : 0;
+            }
+            
             //获取应用图标
             if(empty($item['icon'])){
                 //图标所在位置为模块静态目录下（推荐）
@@ -82,9 +84,8 @@ class Module extends Admin
                 $item['icon_300'] = get_thumb_image($item['icon'], intval($width*3), intval($height*3));
                 $item['icon_400'] = get_thumb_image($item['icon'], intval($width*4), intval($height*4));
             }
-            
-            return $item;
-        });
+        }
+        unset($item);
 
         $page = htmlspecialchars_decode($modules->render());
         View::assign('page', $page);

@@ -59,18 +59,15 @@ class Module extends Base
         
         $result = json_decode($result,true);
         if (is_array($result) && $result['code'] == 200){
-
             // 写入应用模块表
+            // 查询存在应用
+            $has = $this->column('name');
             $list = $result['data'];
             $data = [];
             foreach($list as $v){
-                // 查询是否已存在
-                $has = $this->where([
-                    ['name', '=', $v['app']['name']],
-                ])->find();
-
+                // 排除版本未发布的
                 if(!empty($v['app']['version'])){
-                    if(empty($has)){
+                    if(!in_array($v['app']['name'], $has)){
                         $data[] = [
                             'name' => $v['app']['name'],
                             'alias' => $v['app']['title'],
@@ -85,19 +82,17 @@ class Module extends Base
                             'source' => 'cloud'
                         ];
                     }else{
-                        $a = [
-                            'id' => $has['id'],
+                        $has_id = $this->where('name', $v['app']['name'])->value('id');
+                        $data[] = [
+                            'id' => $has_id,
                             'name' => $v['app']['name'],
                             'alias' => $v['app']['title'],
                             'source' => 'cloud'
                         ];
-                        if(empty($has['icon'])){
-                            $a['icon'] = $v['app']['cover_400'];
-                        }
-                        $data[] = $a;
                     }
                 }
             }
+
             $this->saveAll($data);
         }
     }
@@ -150,6 +145,21 @@ class Module extends Base
         if(!empty($module)){
             //写入数据库
             $this->saveAll($module);
+        }
+
+        // 获取所有本地未安装应用
+        $list = $this->where([
+            ['source', '=', 'local'],
+            ['is_setup', '=', 0]
+        ])->select();
+        if(!empty($list)){
+            foreach ($list as $v) {
+                if (!is_dir(APP_PATH . '/' . $v['name']))
+                {
+                    // 清除无文件应用
+                    $this->where('id', $v['id'])->delete();
+                }
+            }
         }
     }
 
