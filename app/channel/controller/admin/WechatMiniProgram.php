@@ -48,8 +48,8 @@ class WechatMiniProgram extends MuuAdmin{
             //查询数据
             $config = $this->MiniProgramModel->where([
                 ['shopid' ,'=' ,$this->shopid],
-
-            ])->find()->toArray();
+            ])->find();
+            
             $builder = new AdminConfigBuilder();
             $builder->title('微信小程序配置')->suggest('基于第三方授权各项参数配置');
 
