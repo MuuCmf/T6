@@ -35,7 +35,7 @@ class History extends Admin{
         }
         //全部应用
         $module_map =[
-            ['is_com' ,'=' ,1]
+            
         ];
         $all_module = (new \app\common\model\Module())->getAll($module_map);
         unset($val);
