@@ -67,6 +67,8 @@ class Auth extends Admin
         if (isset($data['rules']) && !empty($data['rules'])) {
             sort($data['rules']);
             $data['rules'] = implode(',', array_unique($data['rules']));
+        }else{
+            $data['rules'] = '';
         }
 
         $data['module'] = 'admin';

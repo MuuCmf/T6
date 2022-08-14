@@ -48,7 +48,9 @@ class Pc extends MuuAdmin{
                             'url' => text($nav['url'][$i]),
                             'sort' => intval($i),
                             'target' => empty($nav['target'][$i]) ? 0:intval($nav['target'][$i]),
-                            'status' => 1
+                            'status' => 1,
+                            'color' => empty($nav['color'][$i]) ?? '',
+                            'icon' => empty($nav['icon'][$i]) ?? ''
                         ];
                     }
                     $res = $this->channelModel->insertAll($data);
@@ -98,33 +100,31 @@ class Pc extends MuuAdmin{
             // 启动事务
             Db::startTrans();
             try {
-                if (count($nav) > 0) {
-                    // 移除现有内容
-                    $this->channelModel->where([
+                // 移除现有内容
+                $this->channelModel->where([
+                    'block' => 'footer',
+                ])->delete();
+                for ($i = 0; $i < count(reset($nav)); $i++) {
+                    $data[$i] = [
+                        'id' => create_guid(),
                         'block' => 'footer',
-                    ])->delete();
-                    for ($i = 0; $i < count(reset($nav)); $i++) {
-                        $data[$i] = [
-                            'id' => create_guid(),
-                            'block' => 'footer',
-                            'type' => text($nav['type'][$i]),
-                            'app' => text($nav['app'][$i]),
-                            'title' => html($nav['title'][$i]),
-                            'url' => text($nav['url'][$i]),
-                            'sort' => intval($i),
-                            'target' => empty($nav['target'][$i]) ? 0:intval($nav['target'][$i]),
-                            'status' => 1
-                        ];
-                    }
+                        'type' => text($nav['type'][$i]),
+                        'app' => text($nav['app'][$i]),
+                        'title' => html($nav['title'][$i]),
+                        'url' => text($nav['url'][$i]),
+                        'sort' => intval($i),
+                        'target' => empty($nav['target'][$i]) ? 0:intval($nav['target'][$i]),
+                        'status' => 1,
+                        'color' => empty($nav['color'][$i]) ?? '',
+                        'icon' => empty($nav['icon'][$i]) ?? ''
+                    ];
+                }
 
-                    $res = $this->channelModel->insertAll($data);
-                    if($res){
-                        // 提交事务
-                        Db::commit();
-                        return $this->success('修改成功',$res);
-                    }
-                }else{
-                    throw new Exception('导航至少存在一个。');
+                $res = $this->channelModel->insertAll($data);
+                if($res){
+                    // 提交事务
+                    Db::commit();
+                    return $this->success('修改成功',$res);
                 }
                 
             } catch (\Exception $e) {
@@ -159,25 +159,34 @@ class Pc extends MuuAdmin{
 
         if (request()->isPost()) {
             $one = $_POST['nav'][1];
-            if (count($one) > 0) {
-                Db::execute('TRUNCATE TABLE ' . config('database.connections.mysql.prefix') . 'user_nav');
+            // 启动事务
+            Db::startTrans();
+            try {
+                if (count($one) > 0) {
+                    Db::execute('TRUNCATE TABLE ' . config('database.connections.mysql.prefix') . 'user_nav');
 
-                for ($i = 0; $i < count(reset($one)); $i++) {
-                    $data[$i] = array(
-                        'type' => text($one['type'][$i]),
-                        'app' => text($one['app'][$i]),
-                        'title' => text($one['title'][$i]),
-                        'url' => text($one['url'][$i]),
-                        'sort' => intval($one['sort'][$i]),
-                        'target' => intval($one['target'][$i]),
-                        'status' => 1
-                    );
-                    $pid[$i] = Db::name('UserNav')->insert($data[$i]);
+                    for ($i = 0; $i < count(reset($one)); $i++) {
+                        $data[$i] = array(
+                            'type' => text($one['type'][$i]),
+                            'app' => text($one['app'][$i]),
+                            'title' => text($one['title'][$i]),
+                            'url' => text($one['url'][$i]),
+                            'sort' => intval($one['sort'][$i]),
+                            'target' => intval($one['target'][$i]),
+                            'status' => 1
+                        );
+                        $pid[$i] = Db::name('UserNav')->insert($data[$i]);
+                    }
+                    // 提交事务
+                    Db::commit();
+                    cache(request()->domain() . '_muucmf_user_nav',null);
+                    return $this->success('修改成功');
                 }
-                cache('common_user_nav',null);
-                return $this->success('修改成功');
+            } catch (\Exception $e) {
+                // 回滚事务
+                Db::rollback();
+                return $this->error($e->getMessage());
             }
-            return $this->error('导航至少存在一个');
         } else {
             $this->setTitle('导航管理');
             /* 获取频道列表 */

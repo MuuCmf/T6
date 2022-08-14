@@ -84,6 +84,8 @@ class Announce extends Admin
         if (request()->isPost()) {
             
             $data = input();
+            $data['shopid'] = $this->shopid;
+            $data['uid'] = get_uid();
             // 数据验证
             try {
                 validate(Common::class)->scene('announce')->check([
@@ -109,9 +111,9 @@ class Announce extends Admin
             $res = $this->AnnounceModel->edit($data);
             
             if ($res) {
-                $this->success($title.'成功', $res, Cookie('__forward__'));
+                return $this->success($title.'成功', $res, Cookie('__forward__'));
             } else {
-                $this->error($title.'失败');
+                return $this->error($title.'失败');
             }
 
         }else{

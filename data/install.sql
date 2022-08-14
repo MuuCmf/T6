@@ -6,7 +6,7 @@ SET time_zone = "+00:00";
 --
 DROP TABLE IF EXISTS `muucmf_action`;
 CREATE TABLE IF NOT EXISTS `muucmf_action` (
-  `id` int(11) UNSIGNED NOT NULL COMMENT '主键',
+  `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键',
   `name` char(30) NOT NULL DEFAULT '' COMMENT '行为唯一标识',
   `title` char(80) NOT NULL DEFAULT '' COMMENT '行为说明',
   `remark` char(140) NOT NULL DEFAULT '' COMMENT '行为描述',
@@ -14,22 +14,23 @@ CREATE TABLE IF NOT EXISTS `muucmf_action` (
   `log` text NOT NULL COMMENT '日志规则',
   `type` tinyint(2) UNSIGNED NOT NULL DEFAULT '1' COMMENT '类型',
   `status` tinyint(2) NOT NULL DEFAULT '0' COMMENT '状态',
+  `create_time` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '创建时间',
   `update_time` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '修改时间',
-  `module` varchar(20) NOT NULL,
+  `module` varchar(20) NOT NULL DEFAULT '' COMMENT '应用模块',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='系统行为表' AUTO_INCREMENT=11000;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='系统行为表' AUTO_INCREMENT=1000;
 
 --
 -- 转存表中的数据 `muucmf_action`
 --
 
-INSERT INTO `muucmf_action` (`id`, `name`, `title`, `remark`, `rule`, `log`, `type`, `status`, `update_time`, `module`) VALUES
-(1, 'reg', '用户注册', '用户注册', '', '', 1, 1, 1426070545, ''),
-(2, 'input_password', '输入密码', '记录输入密码的次数。', '', '', 1, 1, 1426122119, ''),
-(3, 'user_login', '用户登录', '积分+10，每天一次', 'a:1:{i:0;a:5:{s:5:\"table\";s:6:\"member\";s:5:\"field\";s:1:\"1\";s:4:\"rule\";s:2:\"10\";s:5:\"cycle\";s:2:\"24\";s:3:\"max\";s:1:\"1\";}}', '[user|get_nickname]在[time|time_format]登录了账号', 1, 1, 1428397656, ''),
-(4, 'update_config', '更新配置', '新增或修改或删除配置', '', '', 1, 1, 1383294988, ''),
-(7, 'update_channel', '更新导航', '新增或修改或删除导航', '', '', 1, 1, 1383296301, ''),
-(8, 'update_menu', '更新菜单', '新增或修改或删除菜单', '', '', 1, 1, 1383296392, '');
+INSERT INTO `muucmf_action` (`id`, `name`, `title`, `remark`, `rule`, `log`, `type`, `status`, `create_time`, `update_time`, `module`) VALUES
+(1, 'reg', '用户注册', '用户注册', '', '', 1, 1, 0, 1426070545, ''),
+(2, 'input_password', '输入密码', '记录输入密码的次数。', '', '', 1, 1, 0, 1426122119, ''),
+(3, 'user_login', '用户登录', '积分+10，每天一次', 'a:1:{i:0;a:5:{s:5:\"table\";s:6:\"member\";s:5:\"field\";s:1:\"1\";s:4:\"rule\";s:2:\"10\";s:5:\"cycle\";s:2:\"24\";s:3:\"max\";s:1:\"1\";}}', '[user|get_nickname]在[time|time_format]登录了账号', 1, 1, 0, 1428397656, ''),
+(4, 'update_config', '更新配置', '新增或修改或删除配置', '', '', 1, 1, 0, 1383294988, ''),
+(7, 'update_channel', '更新导航', '新增或修改或删除导航', '', '', 1, 1, 0, 1383296301, ''),
+(8, 'update_menu', '更新菜单', '新增或修改或删除菜单', '', '', 1, 1, 0, 1383296392, '');
 
 -- --------------------------------------------------------
 
@@ -40,18 +41,18 @@ INSERT INTO `muucmf_action` (`id`, `name`, `title`, `remark`, `rule`, `log`, `ty
 DROP TABLE IF EXISTS `muucmf_action_limit`;
 CREATE TABLE IF NOT EXISTS `muucmf_action_limit` (
   `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'ID',
-  `title` varchar(100) NOT NULL COMMENT '标题',
-  `name` varchar(50) NOT NULL COMMENT '名称',
-  `frequency` int(11) NOT NULL COMMENT '频率',
-  `time_number` int(11) NOT NULL COMMENT '时间',
+  `title` varchar(100) NOT NULL DEFAULT '' COMMENT '标题',
+  `name` varchar(50) NOT NULL DEFAULT '' COMMENT '名称',
+  `frequency` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '频率',
+  `time_number` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '时间',
   `time_unit` varchar(50) NOT NULL COMMENT '时间单位',
   `punish` text NOT NULL,
   `if_message` tinyint(4) NOT NULL COMMENT '是否发送消息提醒',
   `message_content` text NOT NULL COMMENT '消息内容',
   `action_list` text NOT NULL,
-  `status` tinyint(4) NOT NULL,
-  `create_time` int(11) UNSIGNED NOT NULL,
-  `module` varchar(64) NOT NULL,
+  `status` tinyint(4) NOT NULL DEFAULT '0',
+  `create_time` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '创建时间',
+  `module` varchar(20) NOT NULL DEFAULT '' COMMENT '应用模块',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=5 ;
 
@@ -60,7 +61,7 @@ CREATE TABLE IF NOT EXISTS `muucmf_action_limit` (
 --
 
 INSERT INTO `muucmf_action_limit` (`id`, `title`, `name`, `frequency`, `time_number`, `time_unit`, `punish`, `if_message`, `message_content`, `action_list`, `status`, `create_time`, `module`) VALUES
-(1, 'reg', '注册限制', 1, 1, 'minute', 'warning', 0, '', '[reg]', 1, 0, ''),
+(1, 'reg', '注册限制', 1, 1, 'minute', 'warning', 0, '', '[reg]', 1, 0, 'all'),
 (2, 'input_password', '输密码', 3, 1, 'minute', 'warning', 0, '', '[input_password]', 1, 0, 'all');
 
 -- --------------------------------------------------------
@@ -72,9 +73,9 @@ INSERT INTO `muucmf_action_limit` (`id`, `title`, `name`, `frequency`, `time_num
 DROP TABLE IF EXISTS `muucmf_action_log`;
 CREATE TABLE IF NOT EXISTS `muucmf_action_log` (
   `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'ID',
-  `action_id` int(11) UNSIGNED NOT NULL COMMENT '行为id',
-  `uid` int(11) UNSIGNED NOT NULL COMMENT '执行用户id',
-  `action_ip` varchar(64) NOT NULL DEFAULT '' COMMENT '执行行为者ip',
+  `action_id` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '行为id',
+  `uid` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '执行用户id',
+  `action_ip` varchar(128) NOT NULL DEFAULT '' COMMENT '执行行为者ip',
   `model` varchar(50) NOT NULL DEFAULT '' COMMENT '触发行为的表',
   `record_id` bigint(20) UNSIGNED NOT NULL DEFAULT '0' COMMENT '触发行为的数据id',
   `remark` varchar(255) NOT NULL DEFAULT '' COMMENT '日志备注',
@@ -92,21 +93,20 @@ CREATE TABLE IF NOT EXISTS `muucmf_action_log` (
 DROP TABLE IF EXISTS `muucmf_address`;
 CREATE TABLE IF NOT EXISTS `muucmf_address` (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'id',
-  `shopid` int(11) UNSIGNED NOT NULL COMMENT '平台ID',
-  `app` varchar(255) NOT NULL COMMENT '应用标识',
-  `uid` int(11) UNSIGNED NOT NULL COMMENT '用户ID',
-  `name` varchar(25) NOT NULL COMMENT '收件人姓名',
-  `phone` varchar(11) NOT NULL COMMENT '收件人电话号码',
-  `address` varchar(200) NOT NULL COMMENT '详细地址',
-  `pos_province` varchar(64) NOT NULL COMMENT '省份',
-  `pos_city` varchar(64) NOT NULL COMMENT '城市',
-  `pos_district` varchar(64) NOT NULL COMMENT '区、县',
-  `first` tinyint(2) NOT NULL COMMENT '是否默认地址',
-  `status` tinyint(2) NOT NULL COMMENT '状态',
-  `create_time` int(11) UNSIGNED NOT NULL COMMENT '创建时间',
-  `update_time` int(11) UNSIGNED NOT NULL COMMENT '更新时间',
+  `shopid` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '平台ID',
+  `uid` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '用户ID',
+  `name` varchar(25) NOT NULL DEFAULT '' COMMENT '收件人姓名',
+  `phone` varchar(11) NOT NULL DEFAULT '' COMMENT '收件人电话号码',
+  `address` varchar(200) NOT NULL DEFAULT '' COMMENT '详细地址',
+  `pos_province` varchar(64) NOT NULL DEFAULT '' COMMENT '省份',
+  `pos_city` varchar(64) NOT NULL DEFAULT '' COMMENT '城市',
+  `pos_district` varchar(64) NOT NULL DEFAULT '' COMMENT '区、县',
+  `first` tinyint(2) NOT NULL DEFAULT '0' COMMENT '是否默认地址',
+  `status` tinyint(2) NOT NULL DEFAULT '0' COMMENT '状态',
+  `create_time` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '创建时间',
+  `update_time` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '更新时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='用户收货地址' AUTO_INCREMENT=1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='用户收货地址' ROW_FORMAT=COMPACT AUTO_INCREMENT=1;
 
 --
 -- 表的结构 `muucmf_announce`
@@ -115,21 +115,20 @@ CREATE TABLE IF NOT EXISTS `muucmf_address` (
 DROP TABLE IF EXISTS `muucmf_announce`;
 CREATE TABLE IF NOT EXISTS `muucmf_announce` (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键ID',
-  `shopid` int(11) NOT NULL,
-  `app` varchar(90) NOT NULL,
-  `uid` int(11) UNSIGNED NOT NULL COMMENT '操作用户ID',
+  `shopid` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '店铺ID',
+  `uid` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '操作用户ID',
   `type` tinyint(2) NOT NULL DEFAULT '1' COMMENT '公告类型 1、图片 0、文字',
-  `title` varchar(128) NOT NULL COMMENT '公告标题',
-  `content` text NOT NULL COMMENT '公告描述',
-  `cover` varchar(255) NOT NULL DEFAULT '0' COMMENT '公告图片',
-  `url` varchar(255) NOT NULL COMMENT '公告链接',
-  `link_to` varchar(255) NOT NULL COMMENT '公告链接至JSON参数',
-  `sort` int(11) NOT NULL COMMENT '排序',
-  `status` tinyint(2) NOT NULL COMMENT '状态',
-  `create_time` int(11) UNSIGNED NOT NULL COMMENT '创建时间',
-  `update_time` int(11) UNSIGNED NOT NULL COMMENT '更新时间',
+  `title` varchar(128) NOT NULL DEFAULT '' COMMENT '公告标题',
+  `content` text COMMENT '公告描述',
+  `cover` varchar(255) NOT NULL DEFAULT '' COMMENT '公告图片',
+  `url` varchar(255) DEFAULT '' COMMENT '公告链接',
+  `link_to` text COMMENT '连接至',
+  `sort` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '排序',
+  `status` tinyint(2) NOT NULL DEFAULT '0' COMMENT '状态',
+  `create_time` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '创建时间',
+  `update_time` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '更新时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='公告表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='公告表' ROW_FORMAT=COMPACT;
 
 --
 -- 表的结构 `muucmf_attachment`
@@ -137,24 +136,24 @@ CREATE TABLE IF NOT EXISTS `muucmf_announce` (
 DROP TABLE IF EXISTS `muucmf_attachment`;
 CREATE TABLE IF NOT EXISTS `muucmf_attachment` (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'ID',
-  `shopid` int(11) UNSIGNED NOT NULL COMMENT '店铺ID',
+  `shopid` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '店铺ID',
   `uid` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '用户ID',
-  `filename` char(30) NOT NULL COMMENT '附件显示名',
-  `type` varchar(32) NOT NULL DEFAULT '0' COMMENT '附件类型',
-  `attachment` varchar(255) NOT NULL COMMENT '路径',
-  `mime` char(30) NOT NULL COMMENT 'mimeType',
-  `ext` char(20) NOT NULL COMMENT '扩展名',
+  `filename` char(30) NOT NULL DEFAULT '' COMMENT '附件显示名',
+  `type` varchar(32) NOT NULL DEFAULT '' COMMENT '附件类型',
+  `attachment` varchar(255) NOT NULL DEFAULT '' COMMENT '路径',
+  `mime` char(30) NOT NULL DEFAULT '' COMMENT 'mimeType',
+  `ext` char(20) NOT NULL DEFAULT '' COMMENT '扩展名',
   `size` bigint(20) UNSIGNED NOT NULL DEFAULT '0' COMMENT '附件大小',
-  `md5` varchar(255) NOT NULL COMMENT 'MD5',
-  `sha1` varchar(255) NOT NULL COMMENT 'SHA1',
-  `driver` varchar(32) NOT NULL COMMENT '上传驱动 local\\oss\\cos\\tcvod',
-  `file_id` varchar(64) NOT NULL COMMENT '文件ID,仅云点播支持',
-  `create_time` int(11) UNSIGNED NOT NULL COMMENT '创建时间',
+  `md5` varchar(255) NOT NULL DEFAULT '' COMMENT 'MD5',
+  `sha1` varchar(255) NOT NULL DEFAULT '' COMMENT 'SHA1',
+  `driver` varchar(32) NOT NULL DEFAULT '' COMMENT '上传驱动 local\\oss\\cos\\tcvod',
+  `file_id` varchar(64) NOT NULL DEFAULT '' COMMENT '文件ID,仅云点播支持',
+  `create_time` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '创建时间',
   `update_time` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '更新时间',
   PRIMARY KEY (`id`) USING BTREE,
   KEY `attachment` (`attachment`),
   KEY `mime` (`mime`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='附件表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='附件表' ROW_FORMAT=COMPACT;
 
 --
 -- 表的结构 `muucmf_author`
@@ -162,26 +161,27 @@ CREATE TABLE IF NOT EXISTS `muucmf_attachment` (
 DROP TABLE IF EXISTS `muucmf_author`;
 CREATE TABLE IF NOT EXISTS `muucmf_author` (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键ID',
-  `shopid` int(10) NOT NULL COMMENT '店铺ID',
-  `uid` int(11) UNSIGNED NOT NULL COMMENT '绑定讲师用户ID',
-  `name` varchar(18) NOT NULL COMMENT '讲师姓名',
-  `description` varchar(140) NOT NULL COMMENT '简短描述',
-  `cover` varchar(255) NOT NULL COMMENT '讲师图片',
-  `avatar_card` varchar(255) NOT NULL COMMENT '手持身份证照片',
-  `certificate` varchar(255) NOT NULL COMMENT '资格证书',
+  `shopid` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '店铺ID',
+  `uid` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '绑定用户ID',
+  `name` varchar(18) NOT NULL DEFAULT '' COMMENT '真实姓名',
+  `description` varchar(140) NOT NULL DEFAULT '' COMMENT '简短描述',
+  `cover` varchar(255) NOT NULL DEFAULT '' COMMENT '图片',
+  `avatar_card` varchar(255) NOT NULL DEFAULT '' COMMENT '手持身份证照片',
+  `certificate` varchar(255) NOT NULL DEFAULT '' COMMENT '资格证书',
   `content` text NOT NULL COMMENT '讲师详情',
-  `charges` int(11) UNSIGNED NOT NULL COMMENT '余额 单位：分',
-  `freeze` int(11) UNSIGNED NOT NULL COMMENT '冻结资金 单位：分',
-  `total` int(11) UNSIGNED NOT NULL COMMENT '总收益 单位：分',
-  `create_time` int(11) UNSIGNED NOT NULL COMMENT '创建时间',
-  `update_time` int(11) UNSIGNED NOT NULL COMMENT '更新时间',
-  `sort` int(11) NOT NULL COMMENT '排序值',
+  `charges` int(11) NOT NULL DEFAULT '0' COMMENT '余额 单位：分',
+  `freeze` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '冻结资金 单位：分',
+  `total` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '总收益 单位：分',
+  `create_time` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '创建时间',
+  `update_time` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '更新时间',
+  `sort` int(11) NOT NULL DEFAULT '0' COMMENT '排序值',
   `view` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '阅读量',
-  `verify` int(11) UNSIGNED NOT NULL COMMENT '讲师认证类型ID',
+  `verify` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '认证类型ID',
   `auth` text NOT NULL COMMENT '功能权限 json格式',
-  `status` tinyint(4) NOT NULL COMMENT '数据状态',
-  `reason` varchar(255) NOT NULL COMMENT '拒绝审核原因',
-  PRIMARY KEY (`id`)
+  `status` tinyint(4) NOT NULL DEFAULT '0' COMMENT '数据状态',
+  `reason` varchar(255) NOT NULL DEFAULT '' COMMENT '拒绝审核原因',
+  PRIMARY KEY (`id`) USING BTREE,
+  KEY `uid` (`uid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='创作者表' ROW_FORMAT=COMPACT;
 
 --
@@ -191,14 +191,14 @@ CREATE TABLE IF NOT EXISTS `muucmf_author` (
 DROP TABLE IF EXISTS `muucmf_auth_group`;
 CREATE TABLE IF NOT EXISTS `muucmf_auth_group` (
   `id` mediumint(8) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '用户组id,自增主键',
-  `module` varchar(20) NOT NULL COMMENT '用户组所属模块',
-  `type` tinyint(4) NOT NULL COMMENT '组类型',
+  `module` varchar(20) NOT NULL DEFAULT '' COMMENT '用户组所属模块',
+  `type` tinyint(4) NOT NULL DEFAULT '0' COMMENT '组类型',
   `title` char(20) NOT NULL DEFAULT '' COMMENT '用户组中文名称',
   `description` varchar(80) NOT NULL DEFAULT '' COMMENT '描述信息',
   `status` tinyint(1) NOT NULL DEFAULT '1' COMMENT '用户组状态：为1正常，为0禁用,-1为删除',
   `rules` text NOT NULL COMMENT '用户组拥有的规则id，多个规则 , 隔开',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ROW_FORMAT=COMPACT;
 
 --
 -- 转存表中的数据 `muucmf_auth_group`
@@ -257,20 +257,21 @@ CREATE TABLE IF NOT EXISTS `muucmf_auth_rule` (
 DROP TABLE IF EXISTS `muucmf_capital_flow`;
 CREATE TABLE IF NOT EXISTS `muucmf_capital_flow` (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键ID',
-  `shopid` int(11) UNSIGNED NOT NULL COMMENT '店铺ID',
-  `app` varchar(40) NOT NULL COMMENT '应用标识',
-  `uid` int(11) UNSIGNED NOT NULL COMMENT '用户ID',
-  `flow_no` varchar(64) NOT NULL COMMENT '流水号',
-  `order_no` varchar(64) NOT NULL COMMENT '订单编号',
-  `channel` varchar(20) NOT NULL COMMENT '来源/去向\r\nbalance：余额；\r\nwechat:微信\r\n',
-  `source` varchar(40) NOT NULL COMMENT '资金来源',
-  `type` tinyint(2) NOT NULL COMMENT '资金进出类型，1：支出 2：收入',
-  `price` int(11) NOT NULL COMMENT '金额（单位：分）',
-  `remark` varchar(1000) NOT NULL COMMENT '备注',
-  `status` tinyint(2) NOT NULL COMMENT '流水状态，1完成 0进行中',
-  `create_time` int(11) NOT NULL COMMENT '创建日期',
-  `update_time` int(11) NOT NULL COMMENT '更新日期',
-  PRIMARY KEY (`id`)
+  `shopid` int(11) NOT NULL DEFAULT '0' COMMENT '店铺ID',
+  `app` varchar(40) NOT NULL DEFAULT '' COMMENT '应用标识',
+  `uid` int(11) NOT NULL DEFAULT '0' COMMENT '用户ID',
+  `flow_no` varchar(64) NOT NULL DEFAULT '' COMMENT '流水号',
+  `order_no` varchar(64) NOT NULL DEFAULT '' COMMENT '订单编号',
+  `channel` varchar(20) NOT NULL DEFAULT '' COMMENT '来源/去向balance：余额；wechat:微信',
+  `source` varchar(40) NOT NULL DEFAULT '' COMMENT '资金来源',
+  `type` tinyint(2) NOT NULL DEFAULT '0' COMMENT '资金进出类型，1：支出 2：收入',
+  `price` int(11) NOT NULL DEFAULT '0' COMMENT '金额（单位：分）',
+  `remark` varchar(1000) NOT NULL DEFAULT '' COMMENT '备注',
+  `status` tinyint(2) NOT NULL DEFAULT '0' COMMENT '流水状态，1完成 0进行中',
+  `create_time` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '创建日期',
+  `update_time` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '更新日期',
+  PRIMARY KEY (`id`),
+  KEY `flow_no` (`flow_no`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='流水记录表' ROW_FORMAT=COMPACT;
 
 --
@@ -279,20 +280,18 @@ CREATE TABLE IF NOT EXISTS `muucmf_capital_flow` (
 DROP TABLE IF EXISTS `muucmf_channel`;
 CREATE TABLE `muucmf_channel` (
   `id` varchar(64) NOT NULL COMMENT '频道ID',
-  `block` varchar(32) NOT NULL COMMENT '位置 navbar：顶部 footer:底部',
-  `type` varchar(32) NOT NULL DEFAULT '0' COMMENT '链接类型',
-  `app` varchar(64) NOT NULL COMMENT '模块标识，空：自定义链接',
-  `title` char(30) NOT NULL COMMENT '频道标题',
-  `url` char(100) NOT NULL COMMENT '频道连接',
+  `block` varchar(32) NOT NULL DEFAULT '' COMMENT '位置 navbar：顶部 footer:底部',
+  `type` varchar(32) NOT NULL DEFAULT '' COMMENT '链接类型',
+  `app` varchar(64) NOT NULL DEFAULT '' COMMENT '模块标识，空：自定义链接',
+  `title` char(30) NOT NULL DEFAULT '' COMMENT '频道标题',
+  `url` char(100) NOT NULL DEFAULT '' COMMENT '频道连接',
   `sort` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '导航排序',
   `create_time` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '创建时间',
   `update_time` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '更新时间',
   `status` tinyint(4) NOT NULL DEFAULT '0' COMMENT '状态',
   `target` tinyint(2) UNSIGNED NOT NULL DEFAULT '0' COMMENT '新窗口打开',
-  `color` varchar(30) NOT NULL,
-  `band_color` varchar(30) NOT NULL,
-  `band_text` varchar(30) NOT NULL,
-  `icon` varchar(20) NOT NULL,
+  `color` varchar(30) NOT NULL DEFAULT '' COMMENT '颜色',
+  `icon` varchar(20) NOT NULL DEFAULT '' COMMENT '图标',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='前台导航配置' ROW_FORMAT=COMPACT;
 
@@ -300,17 +299,18 @@ CREATE TABLE `muucmf_channel` (
 -- 转存表中的数据 `muucmf_channel`
 --
 
-INSERT INTO `muucmf_channel` (`id`, `block`, `type`, `app`, `title`, `url`, `sort`, `create_time`, `update_time`, `status`, `target`, `color`, `band_color`, `band_text`, `icon`) VALUES
-('34E4CBAD-0156-E57E-07CE-61C294B17963', 'navbar', '_custom', 'business', '授权查询', 'https://dev.t6.muucmf.cn/muu/nslookup/index', 4, 0, 0, 1, 0, '', '', '', ''),
-('45618513-CD3C-775E-349F-7891BDBBE6BB', 'footer', '_custom', 'business', '云小店', '/muu/cloudstore/index', 0, 0, 0, 1, 0, '', '', '', ''),
-('56BF5260-743C-DA23-96E3-1D87CD72FFE9', 'navbar', '_custom', 'business', '关于我们', 'https://dev.t6.muucmf.cn/muu/about/index', 5, 0, 0, 1, 0, '', '', '', ''),
-('58AF1C70-5C8A-F57D-DCA7-E15E4E83345E', 'footer', '_custom', 'classroom', '题库考试', '/muu/itembankexam/index', 4, 0, 0, 1, 0, '', '', '', ''),
-('68DF7ACC-D4D2-25B8-1817-3EEC26A2BF9C', 'footer', '_custom', 'business', '线下活动', '/muu/offlineactivity/index', 3, 0, 0, 1, 0, '', '', '', ''),
-('8653A679-C97E-E303-294B-6FB3FF73D301', 'navbar', '_custom', 'business', '产品', 'https://dev.t6.muucmf.cn/muu/product/index', 1, 0, 0, 1, 0, '', '', '', ''),
-('A96E6296-01FA-B4B6-ECD5-16B3398861AF', 'footer', '_custom', 'business', '云课堂', '/muu/classroom/index', 1, 0, 0, 1, 0, '', '', '', ''),
-('B9FD7A31-CD35-69BF-08BD-994E5435F0C2', 'navbar', '_custom', 'business', '开发框架', 'https://dev.t6.muucmf.cn/muu/frame/index', 2, 0, 0, 1, 0, '', '', '', ''),
-('D5F84EF3-B001-79B5-160B-AB916C765623', 'footer', '_custom', 'business', '付费社群', '/muu/forum/index', 2, 0, 0, 1, 0, '', '', '', ''),
-('E122DD60-ADCE-011A-CB9B-A8D8B6F02B24', 'navbar', '_custom', 'business', '首页', '/', 0, 0, 0, 1, 0, '', '', '', '');
+INSERT INTO `muucmf_channel` (`id`, `block`, `type`, `app`, `title`, `url`, `sort`, `create_time`, `update_time`, `status`, `target`, `color`, `icon`) VALUES
+('023499C2-E0B4-412A-3119-43565348BA15', 'navbar', '_custom', 'author', '关于我们', 'https://www.muucmf.cc/muu/about/index', 4, 0, 0, 1, 0, '1', '1'),
+('412C65DC-7392-A844-7CB7-F653F6C0B3A5', 'navbar', '_custom', 'author', '授权查询', 'https://www.muucmf.cc/muu/nslookup/index', 3, 0, 0, 1, 0, '1', '1'),
+('568C89B5-5717-FB43-94B9-26E487CD444C', 'navbar', '_custom', 'author', '开发框架', 'https://www.muucmf.cc/muu/frame/index', 2, 0, 0, 1, 0, '1', '1'),
+('6DB50ECF-710A-7EE9-A597-B3CA193D52CF', 'navbar', '_custom', 'author', 'Muu+系列应用', 'https://www.muucmf.cc/muu/product/index', 1, 0, 0, 1, 0, '1', '1'),
+('762F77AF-777F-1831-B62F-33E9AF4E012D', 'footer', '_custom', 'micro', '资料下载', '/muu/download/index.html', 5, 0, 0, 1, 0, '', ''),
+('789806EC-EB41-01A0-FDCD-2F998B506332', 'footer', '_custom', 'author', '云课堂', '/muu/classroom/index', 0, 0, 0, 1, 0, '', ''),
+('84B7D3CB-9A58-5198-73E1-40FCCBCE34C9', 'footer', '_custom', 'author', '云小店', '/muu/cloudstore/index', 1, 0, 0, 1, 0, '', ''),
+('9A9F91A9-2683-7CE2-2449-DD6626FA6442', 'navbar', '_custom', 'author', '首页', '/', 0, 0, 0, 1, 0, '1', '1'),
+('AD8125E6-7284-C6B5-F255-85389C8CFE2A', 'footer', '_custom', 'author', '线下活动', '/muu/offlineactivity/index', 4, 0, 0, 1, 0, '', ''),
+('F1613D3F-35C1-8B5E-72F4-FFA2770F0ACB', 'footer', '_custom', 'author', '题库考试', '/muu/itembankexam/index', 2, 0, 0, 1, 0, '', ''),
+('FB1BADA5-17FF-5649-E4DC-65D28025895C', 'footer', '_custom', 'author', '付费社群', '/muu/forum/index', 3, 0, 0, 1, 0, '', '');
 
 -- --------------------------------------------------------
 
@@ -321,11 +321,11 @@ DROP TABLE IF EXISTS `muucmf_config`;
 CREATE TABLE IF NOT EXISTS `muucmf_config` (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '配置ID',
   `name` varchar(100) NOT NULL DEFAULT '' COMMENT '配置名称',
-  `type` char(32) NOT NULL COMMENT '配置类型',
+  `type` char(32) NOT NULL DEFAULT '' COMMENT '配置类型',
   `title` varchar(50) NOT NULL DEFAULT '' COMMENT '配置说明',
   `group` tinyint(3) UNSIGNED NOT NULL DEFAULT '0' COMMENT '配置分组',
   `extra` varchar(255) NOT NULL DEFAULT '' COMMENT '配置值',
-  `remark` varchar(500) NOT NULL COMMENT '配置说明',
+  `remark` varchar(500) NOT NULL DEFAULT '' COMMENT '配置说明',
   `create_time` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '创建时间',
   `update_time` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '更新时间',
   `status` tinyint(4) NOT NULL DEFAULT '0' COMMENT '状态',
@@ -399,11 +399,11 @@ INSERT INTO `muucmf_config` (`id`, `name`, `type`, `title`, `group`, `extra`, `r
 --
 DROP TABLE IF EXISTS `muucmf_count_active`;
 CREATE TABLE IF NOT EXISTS `muucmf_count_active` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `type` varchar(10) NOT NULL COMMENT '类型:''day'',''week'',''month''',
-  `date` int(11) NOT NULL,
-  `num` int(11) NOT NULL COMMENT '活跃人数',
-  `total` int(11) NOT NULL COMMENT '总人数',
+  `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+  `type` varchar(10) NOT NULL DEFAULT '' COMMENT '类型:''day'',''week'',''month''',
+  `date` int(11) UNSIGNED NOT NULL DEFAULT '0',
+  `num` int(11) NOT NULL DEFAULT '0' COMMENT '活跃人数',
+  `total` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '总人数',
   PRIMARY KEY (`id`),
   UNIQUE KEY `date` (`date`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='活跃统计表' AUTO_INCREMENT=1;
@@ -417,15 +417,15 @@ CREATE TABLE IF NOT EXISTS `muucmf_count_active` (
 DROP TABLE IF EXISTS `muucmf_crontab`;
 CREATE TABLE IF NOT EXISTS `muucmf_crontab` (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键ID',
-  `shopid` int(11) UNSIGNED NOT NULL COMMENT '店铺ID',
-  `title` varchar(50) NOT NULL COMMENT '标题',
-  `description` varchar(500) NOT NULL COMMENT '描述',
-  `execute` varchar(200) NOT NULL COMMENT '调用执行路径',
-  `cycle` varchar(20) NOT NULL COMMENT 'hour:每小时\r\nday:每天\r\nweek:每星期\r\nmonth:每月\r\nminute-n:N分钟\r\nhour-n:N小时\r\nday-n:N天',
-  `day` tinyint(1) NOT NULL COMMENT '天',
-  `hour` tinyint(1) NOT NULL COMMENT '小时',
-  `minute` tinyint(1) NOT NULL COMMENT '分钟',
-  `status` tinyint(1) NOT NULL COMMENT '-1删除 0禁用 1启用',
+  `shopid` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '店铺ID',
+  `title` varchar(50) NOT NULL DEFAULT '' COMMENT '标题',
+  `description` varchar(500) NOT NULL DEFAULT '' COMMENT '描述',
+  `execute` varchar(200) NOT NULL DEFAULT '' COMMENT '调用执行路径',
+  `cycle` varchar(20) NOT NULL DEFAULT '' COMMENT 'hour:每小时day:每天week:每星期month:每月minute-n:N分钟hour-n:N小时day-n:N天',
+  `day` tinyint(1) NOT NULL DEFAULT '0' COMMENT '天',
+  `hour` tinyint(1) NOT NULL DEFAULT '0' COMMENT '小时',
+  `minute` tinyint(1) NOT NULL DEFAULT '0' COMMENT '分钟',
+  `status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '-1删除 0禁用 1启用',
   `create_time` int(11) UNSIGNED NOT NULL COMMENT '创建日期',
   `update_time` int(11) UNSIGNED NOT NULL COMMENT '更新日期',
   PRIMARY KEY (`id`)
@@ -449,10 +449,10 @@ INSERT INTO `muucmf_crontab` (`id`, `shopid`, `title`, `description`, `execute`,
 DROP TABLE IF EXISTS `muucmf_crontab_log`;
 CREATE TABLE IF NOT EXISTS `muucmf_crontab_log` (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键ID',
-  `shopid` int(11) UNSIGNED NOT NULL COMMENT '平台ID',
-  `cid` int(11) UNSIGNED NOT NULL COMMENT '任务ID',
-  `description` varchar(500) NOT NULL COMMENT '描述',
-  `status` tinyint(2) NOT NULL COMMENT '状态',
+  `shopid` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '平台ID',
+  `cid` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '任务ID',
+  `description` varchar(500) NOT NULL DEFAULT '' COMMENT '描述',
+  `status` tinyint(2) NOT NULL DEFAULT '0' COMMENT '状态',
   `create_time` int(11) UNSIGNED NOT NULL COMMENT '创建时间',
   `update_time` int(11) UNSIGNED NOT NULL COMMENT '更新时间',
   PRIMARY KEY (`id`)
@@ -4034,21 +4034,21 @@ INSERT INTO `muucmf_district` (`id`, `name`, `level`, `upid`) VALUES
 DROP TABLE IF EXISTS `muucmf_evaluate`;
 CREATE TABLE IF NOT EXISTS `muucmf_evaluate` (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '自增ID',
-  `shopid` int(11) UNSIGNED NOT NULL COMMENT '店铺ID',
+  `shopid` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '店铺ID',
   `app` varchar(20) NOT NULL COMMENT '应用标识',
-  `uid` int(11) NOT NULL COMMENT '用户ID',
-  `type` varchar(255) NOT NULL COMMENT '商品类型：商品：goods 闪电购：live_goods',
-  `type_id` int(11) NOT NULL COMMENT '商品ID',
+  `uid` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '用户ID',
+  `type` varchar(255) NOT NULL DEFAULT '' COMMENT '商品类型：商品：goods 闪电购：live_goods',
+  `type_id` int(11) UNSIGNED NOT NULL COMMENT '商品ID',
   `order_no` varchar(255) NOT NULL COMMENT '订单号',
-  `images` varchar(600) NOT NULL COMMENT '评价晒图',
+  `images` varchar(600) DEFAULT NULL COMMENT '评价晒图',
   `value` decimal(3,2) NOT NULL COMMENT '评分',
-  `content` varchar(600) NOT NULL COMMENT '评价内容',
-  `add_content` varchar(600) NOT NULL COMMENT '追加评论 json格式{images:content:}',
+  `content` varchar(600) DEFAULT NULL COMMENT '评价内容',
+  `add_content` varchar(600) DEFAULT NULL COMMENT '追加评论 json格式{images:content:}',
   `reply` text NOT NULL COMMENT '评价回复',
-  `reply_time` int(11) UNSIGNED NOT NULL COMMENT '回复时间',
-  `create_time` int(11) UNSIGNED NOT NULL COMMENT '创建时间',
-  `update_time` int(11) UNSIGNED NOT NULL COMMENT '更新时间',
-  `status` tinyint(4) NOT NULL COMMENT '状态',
+  `reply_time` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '回复时间',
+  `create_time` int(11) UNSIGNED NOT NULL DEFAULT '0',
+  `update_time` int(11) UNSIGNED NOT NULL DEFAULT '0',
+  `status` tinyint(2) NOT NULL DEFAULT '0' COMMENT '状态',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='订单评价表' ROW_FORMAT=COMPACT;
 
@@ -4059,12 +4059,12 @@ CREATE TABLE IF NOT EXISTS `muucmf_evaluate` (
 DROP TABLE IF EXISTS `muucmf_extend_config`;
 CREATE TABLE IF NOT EXISTS `muucmf_extend_config` (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '配置ID',
-  `name` varchar(100) NOT NULL DEFAULT '' COMMENT '配置名称',
+  `name` varchar(100) NOT NULL COMMENT '配置名称',
   `type` char(32) NOT NULL COMMENT '配置类型',
   `title` varchar(50) NOT NULL DEFAULT '' COMMENT '配置说明',
   `group` tinyint(3) UNSIGNED NOT NULL DEFAULT '0' COMMENT '配置分组',
   `extra` varchar(255) NOT NULL DEFAULT '' COMMENT '配置值',
-  `remark` varchar(500) NOT NULL COMMENT '配置说明',
+  `remark` varchar(500) NOT NULL DEFAULT '' COMMENT '配置说明',
   `create_time` int(11) UNSIGNED NOT NULL COMMENT '创建时间',
   `update_time` int(11) UNSIGNED NOT NULL COMMENT '更新时间',
   `status` tinyint(4) NOT NULL DEFAULT '0' COMMENT '状态',
@@ -4074,7 +4074,7 @@ CREATE TABLE IF NOT EXISTS `muucmf_extend_config` (
   UNIQUE KEY `uk_name` (`name`) USING BTREE,
   KEY `type` (`type`) USING BTREE,
   KEY `group` (`group`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='扩展配置';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='扩展配置' ROW_FORMAT=COMPACT;
 
 --
 -- 转存表中的数据 `muucmf_extend_config`
@@ -4130,15 +4130,15 @@ INSERT INTO `muucmf_extend_config` (`id`, `name`, `type`, `title`, `group`, `ext
 DROP TABLE IF EXISTS `muucmf_favorites`;
 CREATE TABLE IF NOT EXISTS `muucmf_favorites` (
   `id` bigint(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键ID',
-  `shopid` bigint(11) UNSIGNED NOT NULL COMMENT '订单所属店铺ID',
-  `app` varchar(60) NOT NULL COMMENT '关联应用的唯一标识',
+  `shopid` bigint(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '订单所属店铺ID',
+  `app` varchar(60) NOT NULL DEFAULT '' COMMENT '关联应用的唯一标识',
   `uid` int(11) UNSIGNED NOT NULL COMMENT '用户ID',
   `info_type` varchar(32) NOT NULL COMMENT '关联模型，如：classroom:知识内容，column：专栏',
   `info_id` bigint(11) UNSIGNED NOT NULL COMMENT '关联主键ID',
-  `status` tinyint(4) NOT NULL COMMENT '订单状态，1，正常，0，禁用，-1，已删除',
+  `status` tinyint(4) NOT NULL DEFAULT '0' COMMENT '订单状态，1，正常，0，禁用，-1，已删除',
   `metadata` text NOT NULL COMMENT '元数据',
-  `create_time` int(11) UNSIGNED NOT NULL COMMENT '创建时间',
-  `update_time` int(11) UNSIGNED NOT NULL COMMENT '更新时间',
+  `create_time` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '创建时间',
+  `update_time` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '更新时间',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='用户收藏表' ROW_FORMAT=COMPACT;
 
@@ -4151,12 +4151,12 @@ CREATE TABLE IF NOT EXISTS `muucmf_favorites` (
 DROP TABLE IF EXISTS `muucmf_feedback`;
 CREATE TABLE IF NOT EXISTS `muucmf_feedback` (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键ID',
-  `shopid` int(11) UNSIGNED NOT NULL COMMENT '平台ID',
-  `app` varchar(60) NOT NULL COMMENT '关联应用模板name',
-  `content` varchar(255) NOT NULL COMMENT '反馈内容',
-  `images` varchar(255) NOT NULL COMMENT '反馈图片，支持多张',
+  `shopid` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '平台ID',
+  `app` varchar(60) NOT NULL DEFAULT '' COMMENT '关联应用模板name',
+  `content` varchar(255) DEFAULT NULL COMMENT '反馈内容',
+  `images` varchar(255) DEFAULT NULL COMMENT '反馈图片，支持多张',
   `uid` int(11) UNSIGNED NOT NULL COMMENT '用户ID',
-  `status` tinyint(2) NOT NULL COMMENT '状态，1，正常，0，禁用，-1，已删除',
+  `status` tinyint(2) NOT NULL DEFAULT '0' COMMENT '状态，1，正常，0，禁用，-1，已删除',
   `create_time` int(11) UNSIGNED NOT NULL COMMENT '创建时间',
   `update_time` int(11) UNSIGNED NOT NULL COMMENT '更新时间',
   PRIMARY KEY (`id`)
@@ -4170,13 +4170,13 @@ CREATE TABLE IF NOT EXISTS `muucmf_feedback` (
 DROP TABLE IF EXISTS `muucmf_field`;
 CREATE TABLE IF NOT EXISTS `muucmf_field` (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键ID',
-  `uid` int(11) UNSIGNED NOT NULL,
-  `field_id` int(11) NOT NULL,
-  `field_data` varchar(1000) NOT NULL,
-  `create_time` int(11) NOT NULL COMMENT '创建时间',
-  `update_time` int(11) NOT NULL COMMENT '更新时间',
+  `uid` int(11) UNSIGNED NOT NULL DEFAULT '0',
+  `field_id` int(11) NOT NULL DEFAULT '0',
+  `field_data` varchar(1000) NOT NULL DEFAULT '',
+  `create_time` int(11) UNSIGNED NOT NULL COMMENT '创建时间',
+  `update_time` int(11) UNSIGNED NOT NULL COMMENT '更新时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ROW_FORMAT=COMPACT;
 
 -- --------------------------------------------------------
 
@@ -4188,11 +4188,11 @@ CREATE TABLE IF NOT EXISTS `muucmf_field_group` (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键ID',
   `profile_name` varchar(25) NOT NULL,
   `status` tinyint(4) NOT NULL DEFAULT '1',
-  `sort` int(11) NOT NULL,
+  `sort` tinyint(4) NOT NULL DEFAULT '0' COMMENT '排序',
   `visiable` tinyint(4) NOT NULL DEFAULT '1',
-  `create_time` int(11) NOT NULL COMMENT '创建时间',
+  `create_time` int(11) UNSIGNED NOT NULL COMMENT '创建时间'
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
 
 -- --------------------------------------------------------
 
@@ -4225,7 +4225,7 @@ CREATE TABLE IF NOT EXISTS `muucmf_field_setting` (
   `input_tips` varchar(100) NOT NULL COMMENT '输入提示',
   `create_time` int(11) NOT NULL COMMENT '创建时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=8 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
 
 --
 -- 转存表中的数据 `muucmf_field_setting`
@@ -4249,11 +4249,11 @@ CREATE TABLE IF NOT EXISTS `muucmf_follow` (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键ID',
   `follow_who` int(11) NOT NULL COMMENT '关注谁',
   `who_follow` int(11) NOT NULL COMMENT '谁关注',
-  `create_time` int(11) NOT NULL,
-  `alias` varchar(40) NOT NULL COMMENT '备注',
-  `group_id` int(11) NOT NULL COMMENT '分组ID',
+  `create_time` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '创建时间',
+  `alias` varchar(40) DEFAULT NULL COMMENT '备注',
+  `group_id` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '分组ID',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='关注表' AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='关注表' ROW_FORMAT=COMPACT;
 
 -- --------------------------------------------------------
 
@@ -4263,17 +4263,17 @@ CREATE TABLE IF NOT EXISTS `muucmf_follow` (
 DROP TABLE IF EXISTS `muucmf_history`;
 CREATE TABLE `muucmf_history` (
   `id` bigint(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键ID',
-  `shopid` int(11) NOT NULL COMMENT '店铺ID',
+  `shopid` int(11) NOT NULL DEFAULT '0' COMMENT '店铺ID',
   `app` varchar(60) NOT NULL COMMENT '关联的应用唯一标识',
   `uid` int(11) UNSIGNED NOT NULL COMMENT '用户ID',
-  `info_id` int(11) UNSIGNED NOT NULL COMMENT '关联主键ID',
+  `info_id` int(11) NOT NULL COMMENT '关联主键ID',
   `info_type` varchar(255) NOT NULL COMMENT '关联模型',
-  `status` tinyint(4) NOT NULL COMMENT '状态',
+  `status` tinyint(4) NOT NULL DEFAULT '0' COMMENT '状态',
   `metadata` text NOT NULL COMMENT '元数据',
   `create_time` int(11) UNSIGNED NOT NULL COMMENT '创建时间',
   `update_time` int(11) UNSIGNED NOT NULL COMMENT '更新时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='内容浏览记录';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='内容浏览记录' ROW_FORMAT=COMPACT;
 
 --
 -- 表的结构 `muucmf_keywords`
@@ -4283,10 +4283,10 @@ DROP TABLE IF EXISTS `muucmf_keywords`;
 CREATE TABLE `muucmf_keywords` (
   `id` bigint(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键ID',
   `shopid` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '店铺ID',
-  `uid` int(11) NOT NULL COMMENT 'UID',
+  `uid` int(11) UNSIGNED NOT NULL COMMENT 'UID',
   `keyword` varchar(90) NOT NULL COMMENT '关键词',
-  `sort` int(11) NOT NULL COMMENT '排序',
-  `recommend` tinyint(2) NOT NULL COMMENT '是否推荐',
+  `sort` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '排序',
+  `recommend` tinyint(2) NOT NULL DEFAULT '0' COMMENT '是否推荐',
   `status` tinyint(2) NOT NULL COMMENT '状态',
   `create_time` int(11) UNSIGNED NOT NULL COMMENT '创建时间',
   `update_time` int(11) UNSIGNED NOT NULL COMMENT '更新时间',
@@ -4299,27 +4299,27 @@ CREATE TABLE `muucmf_keywords` (
 DROP TABLE IF EXISTS `muucmf_member`;
 CREATE TABLE IF NOT EXISTS `muucmf_member` (
   `uid` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '用户ID',
-  `shopid` int(11) UNSIGNED NOT NULL COMMENT '店铺ID',
-  `username` varchar(32) NOT NULL COMMENT '用户名',
-  `email` varchar(50) NOT NULL COMMENT '邮箱',
-  `mobile` varchar(18) NOT NULL COMMENT '手机号',
-  `realname` varchar(18) NOT NULL COMMENT '真实姓名',
-  `nickname` char(32) NOT NULL DEFAULT '' COMMENT '昵称',
+  `shopid` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '店铺ID',
+  `username` varchar(32) DEFAULT NULL COMMENT '用户名',
+  `email` varchar(50) DEFAULT NULL COMMENT '邮箱',
+  `mobile` varchar(18) DEFAULT NULL COMMENT '手机号',
+  `realname` varchar(18) DEFAULT NULL COMMENT '真实姓名',
+  `nickname` char(64) NOT NULL DEFAULT '' COMMENT '昵称',
   `password` varchar(32) NOT NULL COMMENT '登录密码',
   `sex` tinyint(3) UNSIGNED NOT NULL DEFAULT '0' COMMENT '性别',
-  `avatar` varchar(255) NOT NULL COMMENT '用户头像',
+  `avatar` varchar(255) DEFAULT NULL COMMENT '用户头像',
   `birthday` date NOT NULL DEFAULT '0000-00-00' COMMENT '生日',
-  `qq` char(10) NOT NULL DEFAULT '' COMMENT 'qq号',
+  `qq` char(10) DEFAULT '' COMMENT 'qq号',
   `login` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '登录次数',
   `signature` text NOT NULL COMMENT '个性签名',
-  `score1` int(11) NOT NULL COMMENT '积分',
-  `score2` int(11) NOT NULL COMMENT 'score2',
-  `score3` int(11) NOT NULL COMMENT 'score3',
-  `score4` int(11) NOT NULL COMMENT 'score4',
+  `score1` int(11) NOT NULL DEFAULT '0' COMMENT '积分',
+  `score2` int(11) NOT NULL DEFAULT '0' COMMENT 'score2',
+  `score3` int(11) NOT NULL DEFAULT '0' COMMENT 'score3',
+  `score4` int(11) NOT NULL DEFAULT '0' COMMENT 'score4',
   `status` tinyint(4) NOT NULL DEFAULT '0' COMMENT '会员状态',
-  `reg_ip` varchar(128) NOT NULL COMMENT '注册IP',
-  `last_login_time` int(11) NOT NULL COMMENT '最后登录时间',
-  `last_login_ip` varchar(128) NOT NULL COMMENT '最后登录IP',
+  `reg_ip` varchar(128) NOT NULL DEFAULT '' COMMENT '注册IP',
+  `last_login_time` int(11) NOT NULL DEFAULT '0' COMMENT '最后登录时间',
+  `last_login_ip` varchar(128) NOT NULL DEFAULT '0' COMMENT '最后登录IP',
   `create_time` int(11) UNSIGNED NOT NULL COMMENT '注册创建时间',
   `update_time` int(11) UNSIGNED NOT NULL COMMENT '更新时间',
   PRIMARY KEY (`uid`),
@@ -4336,9 +4336,10 @@ CREATE TABLE IF NOT EXISTS `muucmf_member` (
 DROP TABLE IF EXISTS `muucmf_member_sync`;
 CREATE TABLE `muucmf_member_sync` (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+  `shopid` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '店铺ID',
   `uid` int(11) UNSIGNED NOT NULL COMMENT '用户ID',
   `openid` varchar(60) NOT NULL COMMENT '三方用户ID',
-  `unionid` varchar(60) NOT NULL COMMENT '三方平台ID',
+  `unionid` varchar(60) NULL COMMENT '三方平台ID',
   `type` varchar(40) NOT NULL COMMENT 'weixin_h5微信公众号 weixin_app微信小程序',
   `create_time` int(11) UNSIGNED NOT NULL COMMENT '创建时间',
   `update_time` int(11) UNSIGNED NOT NULL COMMENT '更新时间',
@@ -4355,10 +4356,10 @@ DROP TABLE IF EXISTS `muucmf_member_wallet`;
 CREATE TABLE `muucmf_member_wallet` (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键ID',
   `uid` int(11) UNSIGNED NOT NULL COMMENT '用户ID',
-  `shopid` int(11) UNSIGNED NOT NULL COMMENT '店铺ID',
-  `balance` int(11) NOT NULL COMMENT '用户余额',
-  `freeze` int(11) NOT NULL COMMENT '冻结资金',
-  `revenue` int(11) NOT NULL COMMENT '累计收益',
+  `shopid` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '店铺ID',
+  `balance` int(11) NOT NULL DEFAULT '0' COMMENT '用户余额',
+  `freeze` int(11) NOT NULL DEFAULT '0' COMMENT '冻结资金',
+  `revenue` int(11) NOT NULL DEFAULT '0' COMMENT '累计收益',
   `create_time` int(11) UNSIGNED NOT NULL COMMENT '创建日期',
   `update_time` int(11) UNSIGNED NOT NULL COMMENT '更新日期',
   PRIMARY KEY (`id`)
@@ -4381,7 +4382,7 @@ CREATE TABLE IF NOT EXISTS `muucmf_menu` (
   `tip` varchar(255) NOT NULL DEFAULT '' COMMENT '提示',
   `group` varchar(50) DEFAULT '' COMMENT '分组',
   `is_dev` tinyint(1) UNSIGNED NOT NULL DEFAULT '0' COMMENT '是否仅开发者模式可见',
-  `icon` varchar(20) NOT NULL COMMENT '导航图标',
+  `icon` varchar(20) NULL COMMENT '导航图标',
   `module` varchar(50) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -4508,13 +4509,13 @@ INSERT INTO `muucmf_menu` (`id`, `title`, `pid`, `sort`, `url`, `hide`, `type`, 
 DROP TABLE IF EXISTS `muucmf_message`;
 CREATE TABLE IF NOT EXISTS `muucmf_message` (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键ID',
-  `shopid` int(11) UNSIGNED NOT NULL COMMENT '店铺ID',
-  `uid` int(11) UNSIGNED NOT NULL COMMENT '发送用户UID',
+  `shopid` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '店铺ID',
+  `uid` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '发送用户UID',
   `to_uid` int(11) UNSIGNED NOT NULL COMMENT '接收用户UID',
   `type_id` int(11) NOT NULL COMMENT '消息类型ID',
   `content_id` int(11) NOT NULL COMMENT '消息内容ID',
-  `is_read` tinyint(2) NOT NULL COMMENT '是否已读',
-  `status` tinyint(2) NOT NULL COMMENT '状态',
+  `is_read` tinyint(2) NOT NULL DEFAULT '0' COMMENT '是否已读',
+  `status` tinyint(2) NOT NULL DEFAULT '0' COMMENT '状态',
   `create_time` int(11) UNSIGNED NOT NULL COMMENT '创建时间',
   `update_time` int(11) UNSIGNED NOT NULL COMMENT '更新时间',
   PRIMARY KEY (`id`)
@@ -4528,12 +4529,12 @@ CREATE TABLE IF NOT EXISTS `muucmf_message` (
 DROP TABLE IF EXISTS `muucmf_message_content`;
 CREATE TABLE IF NOT EXISTS `muucmf_message_content` (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键ID',
-  `shopid` int(11) UNSIGNED NOT NULL COMMENT '店铺ID',
+  `shopid` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '店铺ID',
   `title` varchar(500) NOT NULL COMMENT '消息标题',
   `description` varchar(128) NOT NULL COMMENT '简短描述',
   `content` text NOT NULL COMMENT '消息内容',
-  `args` text NOT NULL COMMENT '消息参数 json格式',
-  `status` tinyint(2) NOT NULL COMMENT '状态',
+  `args` text NULL COMMENT '消息参数 json格式',
+  `status` tinyint(2) NOT NULL DEFAULT '0' COMMENT '状态',
   `create_time` int(11) UNSIGNED NOT NULL COMMENT '创建时间',
   `update_time` int(11) UNSIGNED NOT NULL COMMENT '更新时间',
   PRIMARY KEY (`id`)
@@ -4548,11 +4549,11 @@ CREATE TABLE IF NOT EXISTS `muucmf_message_content` (
 DROP TABLE IF EXISTS `muucmf_message_type`;
 CREATE TABLE `muucmf_message_type` (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键ID',
-  `shopid` int(11) UNSIGNED NOT NULL COMMENT '店铺ID',
+  `shopid` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '店铺ID',
   `title` varchar(64) NOT NULL COMMENT '类型标题',
   `description` varchar(255) NOT NULL COMMENT '类型描述',
-  `icon` varchar(255) NOT NULL COMMENT '类型图标',
-  `status` tinyint(2) NOT NULL COMMENT '状态',
+  `icon` varchar(255) NULL COMMENT '类型图标',
+  `status` tinyint(2) NOT NULL DEFAULT '0' COMMENT '状态',
   `create_time` int(11) UNSIGNED NOT NULL COMMENT '创建时间',
   `update_time` int(11) UNSIGNED NOT NULL COMMENT '更新时间',
   PRIMARY KEY (`id`)
@@ -4567,16 +4568,16 @@ DROP TABLE IF EXISTS `muucmf_module`;
 CREATE TABLE IF NOT EXISTS `muucmf_module` (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键ID',
   `name` varchar(30) NOT NULL COMMENT '模块名',
-  `icon` varchar(500) NOT NULL COMMENT '标志',
+  `icon` varchar(500) NULL COMMENT '图标',
   `alias` varchar(30) NOT NULL COMMENT '中文名',
   `version` varchar(20) NOT NULL COMMENT '版本号',
   `summary` varchar(200) NOT NULL COMMENT '简介',
-  `developer` varchar(50) NOT NULL COMMENT '开发者',
-  `website` varchar(200) NOT NULL COMMENT '网址',
-  `entry` varchar(50) NOT NULL COMMENT '管理端入口',
+  `developer` varchar(50) NULL COMMENT '开发者',
+  `website` varchar(200) NULL COMMENT '网址',
+  `entry` varchar(50) NULL COMMENT '管理端入口',
   `is_setup` tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否已安装',
-  `sort` int(11) NOT NULL COMMENT '模块排序',
-  `source` varchar(16) NOT NULL COMMENT '来源 local/cloud',
+  `sort` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '模块排序',
+  `source` varchar(16) NOT NULL DEFAULT 'local' COMMENT '来源 local/cloud',
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`),
   KEY `name_2` (`name`)
@@ -4592,13 +4593,13 @@ CREATE TABLE IF NOT EXISTS `muucmf_module` (
 DROP TABLE IF EXISTS `muucmf_orders`;
 CREATE TABLE `muucmf_orders` (
   `id` bigint(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键ID',
-  `shopid` int(10) UNSIGNED NOT NULL COMMENT '店铺ID',
+  `shopid` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '店铺ID',
   `app` varchar(60) NOT NULL COMMENT '关联应用唯一标识',
   `uid` int(11) UNSIGNED NOT NULL COMMENT '用户ID',
   `order_no` varchar(128) NOT NULL COMMENT '订单号',
-  `paid` tinyint(4) NOT NULL COMMENT '是否支付 1:已支付 0：未支付',
-  `paid_time` int(11) UNSIGNED NOT NULL COMMENT '支付时间',
-  `type` varchar(32) NOT NULL COMMENT '订单类型',
+  `paid` tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否支付 1:已支付 0：未支付',
+  `paid_time` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '支付时间',
+  `type` varchar(32) DEFAULT NULL COMMENT '订单类型',
   `order_info_type` varchar(32) NOT NULL COMMENT '商品类型关键字，如：knowledge:知识内容，column：专栏内容，关联不同模型',
   `order_info_id` bigint(11) UNSIGNED NOT NULL COMMENT '商品ID',
   `channel` varchar(128) NOT NULL COMMENT '渠道',
@@ -4606,22 +4607,22 @@ CREATE TABLE `muucmf_orders` (
   `paid_fee` int(11) UNSIGNED NOT NULL COMMENT '实际支付金额',
   `price` int(11) UNSIGNED NOT NULL COMMENT '订单价格',
   `products` text NOT NULL COMMENT '商品详情json数据',
-  `status` tinyint(4) NOT NULL COMMENT '订单状态，1，正常，0，禁用，-1，已删除',
-  `evaluate` tinyint(2) NOT NULL COMMENT '评价状态',
+  `status` tinyint(4) NOT NULL DEFAULT '0' COMMENT '订单状态，1，正常，0，禁用，-1，已删除',
+  `evaluate` tinyint(2) NOT NULL DEFAULT '0' COMMENT '评价状态',
   `author_id` int(11) UNSIGNED NOT NULL COMMENT '内容拥有者ID',
-  `discount_fee` int(11) NOT NULL COMMENT '已优惠的金额，如优惠卷、限时折扣等，单位：分',
-  `delivery_fee` int(11) NOT NULL COMMENT '邮费金额，单位：分',
+  `discount_fee` int(11) NOT NULL DEFAULT '0' COMMENT '已优惠的金额，如优惠卷、限时折扣等，单位：分',
+  `delivery_fee` int(11) NOT NULL DEFAULT '0' COMMENT '邮费金额，单位：分',
   `logistic` text NOT NULL COMMENT '物流数据 json',
-  `logistic_time` int(11) NOT NULL COMMENT '发货时间',
-  `address_id` int(11) NOT NULL COMMENT '收货地址',
-  `refund` tinyint(2) NOT NULL COMMENT '收货退款状态',
-  `refund_to` tinyint(4) NOT NULL COMMENT '退款至 0：用户余额 1：原路退回',
-  `refund_no` varchar(128) NOT NULL COMMENT '流水表单号',
-  `remark` varchar(500) NOT NULL COMMENT '备注',
-  `receipt` varchar(255) NOT NULL COMMENT '发票抬头',
+  `logistic_time` int(11) NOT NULL DEFAULT '0' COMMENT '发货时间',
+  `address_id` int(11) NOT NULL DEFAULT '0' COMMENT '收货地址',
+  `refund` tinyint(2) NOT NULL DEFAULT '0' COMMENT '收货退款状态',
+  `refund_to` tinyint(4) NOT NULL DEFAULT '1' COMMENT '退款至 0：用户余额 1：原路退回',
+  `refund_no` varchar(128) DEFAULT NULL COMMENT '流水表单号',
+  `remark` varchar(500) DEFAULT NULL COMMENT '备注',
+  `receipt` varchar(255) DEFAULT NULL COMMENT '发票抬头',
   `ip` varchar(128) NOT NULL COMMENT 'ip地址',
   `metadata` text NOT NULL COMMENT '元数据',
-  `end_time` int(11) NOT NULL COMMENT '订单有效期结束时间戳',
+  `end_time` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '订单有效期结束时间戳',
   `create_time` int(11) UNSIGNED NOT NULL COMMENT '创建时间',
   `update_time` int(11) UNSIGNED NOT NULL COMMENT '更新时间',
   PRIMARY KEY (`id`),
@@ -4630,32 +4631,13 @@ CREATE TABLE `muucmf_orders` (
 
 -- --------------------------------------------------------
 
---
--- 表的结构 `muucmf_praise`
---
-DROP TABLE IF EXISTS `muucmf_praise`;
-CREATE TABLE `muucmf_praise` (
-  `id` bigint(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键ID',
-  `shopid` int(10) NOT NULL COMMENT '店铺ID',
-  `app` varchar(20) NOT NULL COMMENT '应用标识',
-  `uid` int(11) UNSIGNED NOT NULL COMMENT '用户ID',
-  `info_type` varchar(32) NOT NULL COMMENT '知识类型，post:帖子，关联不同模型',
-  `info_id` bigint(11) UNSIGNED NOT NULL COMMENT '内容ID,知识内容或专栏的ID',
-  `status` tinyint(4) NOT NULL COMMENT '订单状态，1，正常，0，禁用，-1，已删除',
-  `create_time` int(11) UNSIGNED NOT NULL COMMENT '创建时间',
-  `update_time` int(11) UNSIGNED NOT NULL COMMENT '更新时间',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='点赞表' ROW_FORMAT=COMPACT;
-
--- --------------------------------------------------------
-
 DROP TABLE IF EXISTS `muucmf_qrcode_login`;
 CREATE TABLE `muucmf_qrcode_login` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键ID',
   `scene_key` varchar(100) NOT NULL COMMENT '场景值',
   `metadata` text COMMENT '元数据',
-  `create_time` int(11) NOT NULL COMMENT '创建时间',
-  `update_time` int(11) NOT NULL COMMENT '更新时间',
+  `create_time` int(11) UNSIGNED NOT NULL COMMENT '创建时间',
+  `update_time` int(11) UNSIGNED NOT NULL COMMENT '更新时间',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='扫码登录' ROW_FORMAT=COMPACT;
 
@@ -4669,14 +4651,14 @@ CREATE TABLE IF NOT EXISTS `muucmf_score_log` (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键ID',
   `uid` int(11) UNSIGNED NOT NULL COMMENT '用户ID',
   `ip` varchar(32) NOT NULL COMMENT 'IP',
-  `type` int(11) UNSIGNED NOT NULL,
-  `action` varchar(20) NOT NULL,
-  `value` double NOT NULL,
-  `finally_value` double NOT NULL,
-  `create_time` int(11) UNSIGNED NOT NULL,
-  `remark` varchar(255) NOT NULL,
-  `model` varchar(20) NOT NULL,
-  `record_id` int(11) NOT NULL,
+  `type` int(11) NOT NULL COMMENT '积分类型ID',
+  `action` varchar(20) NOT NULL COMMENT '方向',
+  `value` double NOT NULL DEFAULT '0' COMMENT '值',
+  `finally_value` double NOT NULL COMMENT '最终结果值',
+  `create_time` int(11) UNSIGNED NOT NULL COMMENT '创建时间',
+  `remark` varchar(255) DEFAULT NULL COMMENT '备注',
+  `model` varchar(20) NOT NULL COMMENT '触发模型（即将弃用）',
+  `record_id` int(11) UNSIGNED NOT NULL COMMENT '行为ID'
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='积分日志' AUTO_INCREMENT=100 ;
 
@@ -4723,24 +4705,16 @@ CREATE TABLE IF NOT EXISTS `muucmf_seo_rule` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=10000;
 
---
--- 转存表中的数据 `muucmf_seo_rule`
---
-
-INSERT INTO `muucmf_seo_rule` (`id`, `title`, `app`, `controller`, `action`, `status`, `seo_keywords`, `seo_description`, `seo_title`, `sort`, `summary`) VALUES
-(10007, 'Muu云课堂V2演示', '', '', '', -1, 'Muu云课堂V2', '', 'Muu云课堂V2演示', 0, ''),
-(10008, '首页规则', 'index', 'index', '', 1, 'MuuCmf T6 开源低代码应用开发框架', 'MuuCmf T6 开源低代码应用开发框架', 'MuuCmf T6 开源低代码应用开发框架', 0, '');
-
 -- --------------------------------------------------------
 
 DROP TABLE IF EXISTS `muucmf_support`;
 CREATE TABLE IF NOT EXISTS `muucmf_support` (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键ID',
-  `shopid` int(10) NOT NULL COMMENT '店铺ID',
+  `shopid` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '店铺ID',
   `app` varchar(20) NOT NULL COMMENT '应用标识',
   `uid` int(11) UNSIGNED NOT NULL COMMENT '用户ID',
-  `info_type` varchar(32) NOT NULL COMMENT '知识类型，post:帖子，关联不同模型',
-  `info_id` bigint(11) UNSIGNED NOT NULL COMMENT '内容ID,知识内容或专栏的ID',
+  `info_type` varchar(32) NOT NULL COMMENT '内容类型，关联不同模型',
+  `info_id` bigint(11) UNSIGNED NOT NULL COMMENT '内容ID',
   `status` tinyint(4) NOT NULL COMMENT '订单状态，1，正常，0，禁用，-1，已删除',
   `create_time` int(11) UNSIGNED NOT NULL COMMENT '创建时间',
   `update_time` int(11) UNSIGNED NOT NULL COMMENT '更新时间',
@@ -4755,11 +4729,11 @@ CREATE TABLE IF NOT EXISTS `muucmf_support` (
 DROP TABLE IF EXISTS `muucmf_tominiprogram`;
 CREATE TABLE IF NOT EXISTS `muucmf_tominiprogram` (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键ID',
-  `shopid` int(11) UNSIGNED NOT NULL COMMENT '店铺ID',
+  `shopid` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '店铺ID',
   `appid` varchar(128) NOT NULL COMMENT 'appid',
   `title` varchar(255) NOT NULL COMMENT '小程序名称',
-  `qrcode` varchar(500) NOT NULL COMMENT '小程序二维码',
-  `type` varchar(40) NOT NULL COMMENT '小程序类型',
+  `qrcode` varchar(500) NULL COMMENT '小程序二维码',
+  `type` varchar(40) NULL COMMENT '小程序类型',
   `create_time` int(11) UNSIGNED NOT NULL COMMENT '创建时间',
   `update_time` int(11) UNSIGNED NOT NULL COMMENT '更新时间',
   PRIMARY KEY (`id`)
@@ -4782,10 +4756,6 @@ CREATE TABLE IF NOT EXISTS `muucmf_user_nav` (
   `update_time` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '更新时间',
   `status` tinyint(4) NOT NULL DEFAULT '0' COMMENT '状态',
   `target` tinyint(2) UNSIGNED NOT NULL DEFAULT '0' COMMENT '新窗口打开',
-  `color` varchar(30) NOT NULL,
-  `band_color` varchar(30) NOT NULL,
-  `band_text` varchar(30) NOT NULL,
-  `icon` varchar(20) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
 
@@ -4793,8 +4763,8 @@ CREATE TABLE IF NOT EXISTS `muucmf_user_nav` (
 -- 转存表中的数据 `muucmf_user_nav`
 --
 
-INSERT INTO `muucmf_user_nav` (`id`, `type`, `app`, `title`, `url`, `sort`, `create_time`, `update_time`, `status`, `target`, `color`, `band_color`, `band_text`, `icon`) VALUES
-(1, '_custom', 'ucenter', '用户设置', 'ucenter/config/index', 0, 0, 0, 1, 0, '', '', '', '');
+INSERT INTO `muucmf_user_nav` (`id`, `type`, `app`, `title`, `url`, `sort`, `create_time`, `update_time`, `status`, `target`) VALUES
+(1, '_custom', 'ucenter', '用户设置', 'ucenter/config/index', 0, 0, 0, 1, 0);
 
 -- --------------------------------------------------------
 
@@ -4804,9 +4774,9 @@ INSERT INTO `muucmf_user_nav` (`id`, `type`, `app`, `title`, `url`, `sort`, `cre
 DROP TABLE IF EXISTS `muucmf_user_token`;
 CREATE TABLE IF NOT EXISTS `muucmf_user_token` (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `uid` int(11) NOT NULL,
+  `uid` int(11) UNSIGNED NOT NULL,
   `token` varchar(255) NOT NULL,
-  `time` int(11) NOT NULL,
+  `create_time` int(11) UNSIGNED NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=100;
 
@@ -4822,7 +4792,7 @@ CREATE TABLE IF NOT EXISTS `muucmf_verify` (
   `account` varchar(255) NOT NULL,
   `type` varchar(20) NOT NULL,
   `verify` varchar(50) NOT NULL,
-  `create_time` int(11) NOT NULL,
+  `create_time` int(11) UNSIGNED NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
 
@@ -4835,7 +4805,7 @@ CREATE TABLE IF NOT EXISTS `muucmf_verify` (
 DROP TABLE IF EXISTS `muucmf_vip`;
 CREATE TABLE IF NOT EXISTS `muucmf_vip` (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '自增ID',
-  `shopid` int(11) UNSIGNED NOT NULL COMMENT '平台ID',
+  `shopid` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '店铺ID',
   `app` varchar(60) NOT NULL COMMENT '应用唯一标识',
   `uid` int(11) NOT NULL COMMENT '开通用户ID',
   `card_id` int(11) NOT NULL COMMENT '卡项ID',
@@ -4857,7 +4827,7 @@ CREATE TABLE IF NOT EXISTS `muucmf_vip` (
 DROP TABLE IF EXISTS `muucmf_vip_card`;
 CREATE TABLE IF NOT EXISTS `muucmf_vip_card` (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '自增ID',
-  `shopid` int(11) UNSIGNED NOT NULL COMMENT '平台ID',
+  `shopid` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '店铺ID',
   `app` varchar(60) NOT NULL COMMENT '应用唯一标识',
   `title` varchar(64) NOT NULL COMMENT 'VIP会员名',
   `description` varchar(255) NOT NULL COMMENT '简短描述',
@@ -4887,7 +4857,7 @@ CREATE TABLE IF NOT EXISTS `muucmf_vip_card` (
 DROP TABLE IF EXISTS `muucmf_wechat_auto_reply`;
 CREATE TABLE `muucmf_wechat_auto_reply` (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键ID',
-  `shopid` int(11) UNSIGNED NOT NULL COMMENT '店铺ID',
+  `shopid` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '店铺ID',
   `keyword` varchar(100) NOT NULL COMMENT '关键字',
   `text` varchar(500) NOT NULL COMMENT '回复文本',
   `remark` varchar(255) NOT NULL COMMENT '备注',
@@ -4897,8 +4867,8 @@ CREATE TABLE `muucmf_wechat_auto_reply` (
   `material_json` text NOT NULL COMMENT '素材json',
   `media_id` varchar(100) NOT NULL COMMENT '媒体资源 ID',
   `status` tinyint(4) NOT NULL COMMENT '状态',
-  `create_time` int(11) NOT NULL COMMENT '创建日期',
-  `update_time` int(11) NOT NULL COMMENT '更新日期',
+  `create_time` int(11) UNSIGNED NOT NULL COMMENT '创建日期',
+  `update_time` int(11) UNSIGNED NOT NULL COMMENT '更新日期',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='微信自动回复';
 
@@ -4911,7 +4881,7 @@ CREATE TABLE `muucmf_wechat_auto_reply` (
 DROP TABLE IF EXISTS `muucmf_wechat_config`;
 CREATE TABLE `muucmf_wechat_config` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键ID',
-  `shopid` int(11) NOT NULL COMMENT '商户ID',
+  `shopid` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '店铺ID',
   `title` varchar(24) NOT NULL COMMENT '应用标题',
   `desc` varchar(255) NOT NULL COMMENT '描述',
   `cover` varchar(500) NOT NULL COMMENT '应用封面',
@@ -4923,8 +4893,8 @@ CREATE TABLE `muucmf_wechat_config` (
   `token` varchar(40) NOT NULL COMMENT 'token',
   `menu_json` text NOT NULL COMMENT '公众号菜单配置',
   `tmplmsg` varchar(1000) NOT NULL COMMENT '模板消息配置',
-  `create_time` int(11) NOT NULL COMMENT '创建日期',
-  `update_time` int(11) NOT NULL COMMENT '更新日期',
+  `create_time` int(11) UNSIGNED NOT NULL COMMENT '创建日期',
+  `update_time` int(11) UNSIGNED NOT NULL COMMENT '更新日期',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='公众号配置表';
 
@@ -4937,15 +4907,15 @@ CREATE TABLE `muucmf_wechat_config` (
 DROP TABLE IF EXISTS `muucmf_wechat_mp_config`;
 CREATE TABLE `muucmf_wechat_mp_config` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键ID',
-  `shopid` int(11) NOT NULL COMMENT '商户ID',
+  `shopid` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '店铺ID',
   `title` varchar(20) NOT NULL COMMENT '小程序名称',
   `description` varchar(500) NOT NULL COMMENT '描述',
   `appid` varchar(40) NOT NULL COMMENT '应用ID',
   `secret` varchar(60) NOT NULL COMMENT '应用密匙',
   `originalid` varchar(40) NOT NULL COMMENT '原始ID',
   `tmplmsg` varchar(500) NOT NULL COMMENT '模板消息',
-  `create_time` int(11) NOT NULL COMMENT '创建日期',
-  `update_time` int(11) NOT NULL COMMENT '更新日期',
+  `create_time` int(11) UNSIGNED NOT NULL COMMENT '创建日期',
+  `update_time` int(11) UNSIGNED NOT NULL COMMENT '更新日期',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='小程序配置表' ROW_FORMAT=COMPACT;
 
@@ -4959,19 +4929,19 @@ CREATE TABLE `muucmf_wechat_mp_config` (
 DROP TABLE IF EXISTS `muucmf_withdraw`;
 CREATE TABLE `muucmf_withdraw` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键ID',
-  `shopid` int(11) NOT NULL COMMENT '店铺ID',
+  `shopid` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '店铺ID',
   `uid` int(11) NOT NULL COMMENT '用户ID',
   `order_no` varchar(64) NOT NULL COMMENT '订单号',
   `price` int(11) NOT NULL COMMENT '金额',
   `real_price` int(11) NOT NULL COMMENT '实际到账金额',
   `channel` varchar(64) NOT NULL COMMENT '渠道',
   `pay_channel` varchar(64) NOT NULL COMMENT '支付渠道',
-  `info` varchar(500) NOT NULL COMMENT '备注',
+  `info` varchar(500) NULL COMMENT '备注',
   `paid` tinyint(2) NOT NULL COMMENT '状态0未提现 1已提现',
-  `paid_time` int(11) NOT NULL COMMENT '提现时间',
+  `paid_time` int(11) UNSIGNED NOT NULL COMMENT '提现时间',
   `error` tinyint(2) NOT NULL COMMENT '提现失败 1失败 0未失败',
-  `error_msg` text NOT NULL COMMENT '错误消息',
-  `create_time` int(11) NOT NULL COMMENT '创建时间',
-  `update_time` int(11) NOT NULL COMMENT '更新时间',
+  `error_msg` text NULL COMMENT '错误消息',
+  `create_time` int(11) UNSIGNED NOT NULL COMMENT '创建时间',
+  `update_time` int(11) UNSIGNED NOT NULL COMMENT '更新时间',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='提现表' ROW_FORMAT=COMPACT;
