@@ -4190,7 +4190,7 @@ CREATE TABLE IF NOT EXISTS `muucmf_field_group` (
   `status` tinyint(4) NOT NULL DEFAULT '1',
   `sort` tinyint(4) NOT NULL DEFAULT '0' COMMENT '排序',
   `visiable` tinyint(4) NOT NULL DEFAULT '1',
-  `create_time` int(11) UNSIGNED NOT NULL COMMENT '创建时间'
+  `create_time` int(11) UNSIGNED NOT NULL COMMENT '创建时间',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
 
@@ -4300,14 +4300,14 @@ DROP TABLE IF EXISTS `muucmf_member`;
 CREATE TABLE IF NOT EXISTS `muucmf_member` (
   `uid` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '用户ID',
   `shopid` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '店铺ID',
-  `username` varchar(32) DEFAULT NULL COMMENT '用户名',
-  `email` varchar(50) DEFAULT NULL COMMENT '邮箱',
-  `mobile` varchar(18) DEFAULT NULL COMMENT '手机号',
-  `realname` varchar(18) DEFAULT NULL COMMENT '真实姓名',
+  `username` varchar(32) DEFAULT '' COMMENT '用户名',
+  `email` varchar(50) DEFAULT '' COMMENT '邮箱',
+  `mobile` varchar(18) DEFAULT '' COMMENT '手机号',
+  `realname` varchar(18) DEFAULT '' COMMENT '真实姓名',
   `nickname` char(64) NOT NULL DEFAULT '' COMMENT '昵称',
   `password` varchar(32) NOT NULL COMMENT '登录密码',
   `sex` tinyint(3) UNSIGNED NOT NULL DEFAULT '0' COMMENT '性别',
-  `avatar` varchar(255) DEFAULT NULL COMMENT '用户头像',
+  `avatar` varchar(255) DEFAULT '' COMMENT '用户头像',
   `birthday` date NOT NULL DEFAULT '0000-00-00' COMMENT '生日',
   `qq` char(10) DEFAULT '' COMMENT 'qq号',
   `login` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '登录次数',
@@ -4658,7 +4658,7 @@ CREATE TABLE IF NOT EXISTS `muucmf_score_log` (
   `create_time` int(11) UNSIGNED NOT NULL COMMENT '创建时间',
   `remark` varchar(255) DEFAULT NULL COMMENT '备注',
   `model` varchar(20) NOT NULL COMMENT '触发模型（即将弃用）',
-  `record_id` int(11) UNSIGNED NOT NULL COMMENT '行为ID'
+  `record_id` int(11) UNSIGNED NOT NULL COMMENT '行为ID',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='积分日志' AUTO_INCREMENT=100 ;
 
@@ -4891,8 +4891,8 @@ CREATE TABLE `muucmf_wechat_config` (
   `encoding_aes_key` varchar(60) NOT NULL COMMENT '消息加解密密钥',
   `url` varchar(255) NOT NULL COMMENT '服务器配置地址',
   `token` varchar(40) NOT NULL COMMENT 'token',
-  `menu_json` text NOT NULL COMMENT '公众号菜单配置',
-  `tmplmsg` varchar(1000) NOT NULL COMMENT '模板消息配置',
+  `menu_json` text NULL COMMENT '公众号菜单配置',
+  `tmplmsg` varchar(1000) NOT NULL DEFAULT '' COMMENT '模板消息配置',
   `create_time` int(11) UNSIGNED NOT NULL COMMENT '创建日期',
   `update_time` int(11) UNSIGNED NOT NULL COMMENT '更新日期',
   PRIMARY KEY (`id`)
@@ -4907,13 +4907,13 @@ CREATE TABLE `muucmf_wechat_config` (
 DROP TABLE IF EXISTS `muucmf_wechat_mp_config`;
 CREATE TABLE `muucmf_wechat_mp_config` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键ID',
-  `shopid` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '店铺ID',
+  `shopid` int(11) UNSIGNED NOT NULL COMMENT '店铺ID',
   `title` varchar(20) NOT NULL COMMENT '小程序名称',
   `description` varchar(500) NOT NULL COMMENT '描述',
   `appid` varchar(40) NOT NULL COMMENT '应用ID',
   `secret` varchar(60) NOT NULL COMMENT '应用密匙',
   `originalid` varchar(40) NOT NULL COMMENT '原始ID',
-  `tmplmsg` varchar(500) NOT NULL COMMENT '模板消息',
+  `tmplmsg` varchar(500) NOT NULL DEFAULT '' COMMENT '模板消息',
   `create_time` int(11) UNSIGNED NOT NULL COMMENT '创建日期',
   `update_time` int(11) UNSIGNED NOT NULL COMMENT '更新日期',
   PRIMARY KEY (`id`)
