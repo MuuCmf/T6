@@ -64,9 +64,9 @@ class Crontab extends Admin{
             ];
             $result = $this->CrontabModel->edit($data);
             if ($result){
-                $this->success('设置成功','',url('list'));
+                return $this->success('设置成功','',url('list'));
             }
-            $this->error('网路异常，请稍后再试');
+            return $this->error('网路异常，请稍后再试');
         }
         $id = input('id',0);
         $data = [];

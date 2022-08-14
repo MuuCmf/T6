@@ -141,9 +141,9 @@ class Score extends Admin {
                 $res = $this->scoreTypeModel->addType($data);
             }
             if ($res) {
-                $this->success(($aId == 0 ? lang('Add') : lang('Edit')) . lang('Success'));
+                return $this->success(($aId == 0 ? lang('Add') : lang('Edit')) . lang('Success'));
             } else {
-                $this->error(($aId == 0 ? lang('Add') : lang('Edit')) . lang('Failed'));
+                return $this->error(($aId == 0 ? lang('Add') : lang('Edit')) . lang('Failed'));
             }
         } else {
             

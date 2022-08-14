@@ -79,7 +79,7 @@
             </tbody>
         </table>
         {else/}
-        <div class="text-center"> aOh!空空如也~ </div>
+        {include file="common/_empty"/}
         {/notempty}
     </div>
     <!-- 分页 -->
@@ -100,7 +100,7 @@
                     <h4 class="modal-title" id="myModalLabel">行为日志筛选</h4>
                 </div>
                 <div class="modal-body">
-                    <form class="ajax-form" method="post" action="{:url('admin/action/actionLog')}">
+                    <form class="form" method="get" action="">
 
                         <div class="col-xs-12">
                             <label>根据时间筛选</label>

@@ -77,7 +77,7 @@ CREATE TABLE IF NOT EXISTS `muucmf_action_log` (
   `uid` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '执行用户id',
   `action_ip` varchar(128) NOT NULL DEFAULT '' COMMENT '执行行为者ip',
   `model` varchar(50) NOT NULL DEFAULT '' COMMENT '触发行为的表',
-  `record_id` bigint(20) UNSIGNED NOT NULL DEFAULT '0' COMMENT '触发行为的数据id',
+  `record_id` varchar(64) NOT NULL DEFAULT '' COMMENT '触发行为的数据id',
   `remark` varchar(255) NOT NULL DEFAULT '' COMMENT '日志备注',
   `status` tinyint(2) NOT NULL DEFAULT '1' COMMENT '状态',
   `create_time` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '执行行为的时间',

@@ -24,9 +24,9 @@ class Action extends Admin {
         if($aUid) $map[] = ['uid', '=', $aUid];
 
         //按时间和行为筛选
-        $sTime = input('post.sTime',0,'text');
-        $eTime = input('post.eTime',0,'text');
-        $aSelect = input('post.select',0,'intval');
+        $sTime = input('sTime',0,'text');
+        $eTime = input('eTime',0,'text');
+        $aSelect = input('select',0,'intval');
         if($sTime && $eTime) {
             $map[] = ['create_time','between',[strtotime($sTime),strtotime($eTime)]];
         }
@@ -81,9 +81,10 @@ class Action extends Admin {
             return $this->error('参数错误');
         }
         if(is_array($ids)){
-            $map['id'] = array('in', $ids);
-        }elseif (is_numeric($ids)){
-            $map['id'] = $ids;
+            $map[] = ['id', 'in', $ids];
+        }
+        if (is_numeric($ids)){
+            $map[] = ['id', '=', $ids];
         }
         $res = Db::name('ActionLog')->where($map)->delete();
         if($res !== false){
@@ -97,7 +98,8 @@ class Action extends Admin {
      * 清空日志
      */
     public function clear(){
-        $res = Db::name('ActionLog')->where('1=1')->delete();
+        $res = Db::execute('TRUNCATE TABLE ' . config('database.connections.mysql.prefix') . 'action_log');
+        
         if($res !== false){
             return $this->success('日志清理成功');
         }else {
@@ -115,10 +117,10 @@ class Action extends Admin {
         if($aIds){
             $aIds = explode(',',$aIds);
         }
-        if(count($aIds)) {
-            $map['id'] = array('in', $aIds);
+        if(is_array($aIds) && count($aIds)) {
+            $map[] = ['id', 'in', $aIds];
         } else {
-            $map['status'] = 1;
+            $map[] = ['status', '=', 1];
         }
 
         $list = Db::name('ActionLog')->where($map)->order('create_time asc')->select()->toArray();
@@ -127,7 +129,7 @@ class Action extends Admin {
         $data = 'id,行为名称,执行者,执行者IP,日志内容,执行时间'."\n";
         foreach ($list as $val) {
             $val['create_time'] = time_format($val['create_time']);
-            $data.=$val['id'].",".get_action($val['action_id'], 'title').",".get_nickname($val['user_id']).",".long2ip($val['action_ip']).",".$val['remark'].",".$val['create_time']."\n";
+            $data .= $val['id'].",".get_action($val['action_id'], 'title').",".get_nickname($val['uid'])."," .$val['action_ip'] .",".$val['remark'].",".$val['create_time']."\n";
         }
         $data = iconv('utf-8', 'gb2312', $data);
         $filename = date('Ymd').'.csv'; //设置文件名
@@ -201,7 +203,7 @@ class Action extends Admin {
             if (!$res) {
                 return $this->error($ActionModel->getError());
             } else {
-                return $this->success($res['id'] ? '更新成功！' : '新增成功', 'res',Cookie('__forward__'));
+                return $this->success($res['id'] ? '更新成功！' : '新增成功', $res ,Cookie('__forward__'));
             }
         }else{
             $id = input('id');
