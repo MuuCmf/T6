@@ -36,4 +36,21 @@ class CapitalFlow extends Base{
         }
         return false;
     }
+
+    /**
+     * 获取收支明细数量
+     */
+    public function chargesTotal($shopid = 0, $app = '', $uid = 0)
+    {
+        $map = [
+            ['shopid', '=', $shopid],
+            ['uid', '=', $uid]
+        ];
+        if(!empty($app)){
+            $map[] = ['app', '=', $app];
+        }
+        $total = $this->where($map)->count();
+
+        return $total;
+    }
 }
