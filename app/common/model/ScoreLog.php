@@ -9,7 +9,7 @@ use think\facade\Db;
 class ScoreLog extends Model
 {
     
-/**
+    /**
      * 添加积分日志
      * @param [type]  $uid       [description]
      * @param [type]  $type      [description]

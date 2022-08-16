@@ -8,9 +8,10 @@ use think\facade\Db;
  * Class MemberWallet 用户钱包
  * @package app\common\model
  */
-class MemberWallet extends Base{
+class MemberWallet extends Base
+{
 
-
+    protected $autoWriteTimestamp = true;
     /**
      * @title 初始化用户钱包
      * @param $uid
@@ -49,23 +50,34 @@ class MemberWallet extends Base{
      * @return bool
      */
     public function income($shopid = 0 ,$uid ,$money ,$revenue = true){
-        $this->startTrans();
-        $this->initWallet($uid ,$shopid);
-        $map = [
-            ['uid' ,'=' ,$uid],
-            ['shopid' ,'=' ,$shopid]
-        ];
-        $wallet = $this->where($map)->find();//查询当前用户钱包
-        $wallet->balance = Db::raw("balance + {$money}");
-        //计入收益
-        if ($revenue) $wallet->revenue = Db::raw("revenue + {$money}");
-        $result = $wallet->save();
-        if ($result !== false){
-            $this->commit();
-            return true;
+
+        try {
+            $map = [
+                ['uid' ,'=' ,$uid],
+                ['shopid' ,'=' ,$shopid]
+            ];
+            $wallet = $this->where($map)->find();//查询当前用户钱包
+            if(empty(Db::raw("balance + {$money}"))){
+                $wallet->balance = 0;
+            }else{
+                $wallet->balance = Db::raw("balance + {$money}");
+            }
+            
+            //计入收益
+            if ($revenue){
+                if(empty(Db::raw("revenue + {$money}"))){
+                    $wallet->revenue = 0;
+                }else{
+                    $wallet->revenue = Db::raw("revenue + {$money}");
+                }
+            } 
+            $result = $wallet->save();
+            if ($result !== false){
+                return true;
+            }
+        }catch (Exception $e){
+            throw new Exception($e->getMessage());
         }
-        $this->rollback();
-        throw new Exception('钱包写入失败');
     }
 
     /**

@@ -19,7 +19,7 @@ class Pay extends Api
     private $OrderLogic;//订单模型
     private $CapitalFlowModel;
     protected $middleware = [
-        'app\\common\\middleware\\CheckAuth' => ['only' => 'pay'],
+        'app\\common\\middleware\\CheckAuth' => ['only' => 'pay,refund'],
     ];
 
     function __construct(Request $request)
@@ -47,6 +47,7 @@ class Pay extends Api
 
                 // 获取用户openid
                 $openid = MemberSync::where([
+                    ['shopid', '=', $this->shopid],
                     ['uid' , '=', request()->uid],
                     ['type', '=', $order_data['channel']]
                 ])->value('openid');
