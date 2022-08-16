@@ -84,7 +84,7 @@ class Withdraw extends Api
             $withdraw_order_total = $this->WithdrawModel->where($check_map)->count();
             if ($withdraw_order_total >= $config['day_num']) throw new Exception('每日最多可提现' . $config['day_num'] . '次');
             //获取用户openid
-            $openid = get_openid($uid ,$channel);
+            $openid = get_openid($this->shopid, $uid ,$channel);
             if (!$openid)   throw new Exception('用户不存在');
             //用户钱包模型
             $WalletModel = new MemberWallet();

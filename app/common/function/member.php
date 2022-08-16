@@ -37,10 +37,11 @@ function get_uid()
 /**
  * 获取用户openid
  */
-function get_openid($uid ,$channel = 'weixin_h5')
+function get_openid($shopid, $uid ,$channel = 'weixin_h5')
 {
     $model = new MemberSync();
     $map = [
+        ['shopid', '=', $shopid],
         ['uid' ,'=' ,$uid],
         ['type' ,'=' , $channel]
     ];

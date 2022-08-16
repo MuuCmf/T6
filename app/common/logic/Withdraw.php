@@ -31,7 +31,7 @@ class Withdraw extends Base
         }else{
             $data['paid_time_str'] = time_format($data['paid_time']);
         }
-        $data['openid'] = get_openid($data['uid'],$data['channel']);
+        $data['openid'] = get_openid($data['shopid'], $data['uid'],$data['channel']);
         $data['user_info'] = query_user($data['uid'],['nickname','avatar']);
         $data['channel_str'] = Channel::$_channel[$data['channel']];
 

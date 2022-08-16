@@ -253,14 +253,14 @@ class Pay extends Api
         }
         $msg_list = [];
         if (strstr($tmplmsg_config['to'],'manager')){
-            $msg_item['openid'] = get_openid($tmplmsg_config['manager_uid']);
+            $msg_item['openid'] = get_openid($this->shopid, $tmplmsg_config['manager_uid']);
             $msg_item['user_info'] = query_user($order_info['uid']);
             $msg_item['first'] = '客户的订单已支付成功';
             $msg_item['remark'] = '客户的订单已支付成功，如有任何问题请联系平台客服！';
             $msg_list[] = $msg_item;
         }
         if (strstr($tmplmsg_config['to'],'user')){
-            $msg_item['openid'] = get_openid($order_info['uid']);
+            $msg_item['openid'] = get_openid($this->shopid, $order_info['uid']);
             $msg_item['user_info'] = query_user($order_info['uid']);
             $msg_item['first'] = '尊敬的客户，您的订单已支付成功';
             $msg_item['remark'] = '感谢您的支持，如有任何问题请联系平台客服！';
