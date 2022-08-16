@@ -378,7 +378,7 @@ class Admin extends Base
      * @param array  $msg 执行正确和错误的消息,可以设置四个元素 array('success'=>'','error'=>'', 'url'=>'','ajax'=>false)
      *                     url为跳转页面,ajax是否ajax方式(数字则为倒数计时秒数)
      */
-    protected function forbid($table, $where = [], $msg = ['success' => '状态禁用成功', 'error' => '状态禁用失败', 'url' => 'refresh'])
+    public function forbid($table, $where = [], $msg = ['success' => '状态禁用成功', 'error' => '状态禁用失败', 'url' => 'refresh'])
     {
         $data = ['status' => 0];
         return $this->editRow($table, $data, $where, $msg);
@@ -392,7 +392,7 @@ class Admin extends Base
      *                     url为跳转页面,ajax是否ajax方式(数字则为倒数计时秒数)
      *
      */
-    protected function resume($table, $where = [], $msg = ['success' => '启用成功', 'error' => '启用失败', 'url' => 'refresh'])
+    public function resume($table, $where = [], $msg = ['success' => '启用成功', 'error' => '启用失败', 'url' => 'refresh'])
     {
         $data = ['status' => 1];
         return $this->editRow($table, $data, $where, $msg);
@@ -405,7 +405,7 @@ class Admin extends Base
      * @param array  $msg 执行正确和错误的消息 array('success'=>'','error'=>'', 'url'=>'','ajax'=>false)
      *                     url为跳转页面,ajax是否ajax方式(数字则为倒数计时秒数)
      */
-    protected function restore($table, $where = [], $msg = ['success' => '状态还原成功！', 'error' => '状态还原失败！', 'url' => 'refresh'])
+    public function restore($table, $where = [], $msg = ['success' => '状态还原成功！', 'error' => '状态还原失败！', 'url' => 'refresh'])
     {
         $data = ['status' => 1];
         $where = array_merge(['status' => -1], $where);
@@ -419,7 +419,7 @@ class Admin extends Base
      * @param array  $msg 执行正确和错误的消息 array('success'=>'','error'=>'', 'url'=>'','ajax'=>false)
      *                     url为跳转页面,ajax是否ajax方式(数字则为倒数计时秒数)
      */
-    protected function delete($table, $where = [], $msg =['success' => '删除成功', 'error' => '删除失败', 'url' => 'refresh'])
+    public function delete($table, $where = [], $msg =['success' => '删除成功', 'error' => '删除失败', 'url' => 'refresh'])
     {
         $data['status'] = -1;
         //$data['update_time'] = time();

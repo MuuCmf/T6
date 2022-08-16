@@ -43,9 +43,10 @@ class Pay extends Api
                 }
                 $order_namespace = "app\\{$order_data['app']}\\logic\\Orders";
                 $this->OrderLogic = new $order_namespace;
-
                 $order_data = $this->OrderLogic->formatData($order_data);
-                $order_data['openid'] = MemberSync::where([
+
+                // 获取用户openid
+                $openid = MemberSync::where([
                     ['uid' , '=', request()->uid],
                     ['type', '=', $order_data['channel']]
                 ])->value('openid');
@@ -59,7 +60,7 @@ class Pay extends Api
                 $pay_data['body'] = $title;
                 $pay_data['out_trade_no'] = $order_data['order_no'];
                 $pay_data['total_fee'] = intval($order_data['paid_fee'] * 100);
-                $pay_data['openid'] = $order_data['openid'];
+                $pay_data['openid'] = $openid;
                 //支付回调
                 if (isset($this->params['notify_url'])){
                     $pay_data['notify_url'] = $this->params['notify_url'];
@@ -191,13 +192,13 @@ class Pay extends Api
         if (!$order_no){
             $this->payXmlMsg('FAIL','通信失败，请稍后再通知我');
         }
-
+        // 获取订单数据
         $order_info =$this->OrderModel->getDataByOrderNo($order_no);
         if (!$order_info){
             $this->payXmlMsg('FAIL','没有查询到订单');
         }
         if ($order_info['paid'] == 1){
-            $this->payXmlMsg('订单支付完成');
+            $this->payXmlMsg('SUCCESS', '订单支付完成');
         }
         //实例化订单逻辑
         if($order_info['order_info_type'] == 'vipcard'){
