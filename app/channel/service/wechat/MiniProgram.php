@@ -78,7 +78,7 @@ class MiniProgram extends Wechat{
      * @return mixed
      */
     public function sendTemplateMsg($data){
-        return $this->app->template_message->send($data);
+        return $this->app->subscribe_message->send($data);
     }
 
     /**

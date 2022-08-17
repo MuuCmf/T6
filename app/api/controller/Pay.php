@@ -211,8 +211,15 @@ class Pay extends Api
         //处理订单
         $result = $this->OrderService->paySuccess($order_info);
         //消息通知
-        if (isset($result['tmplmsg']) && $result['tmplmsg']['switch'] == 1){
-            $this->sendPaySuccessTmplmsg($result['tmplmsg'],$result['order_info']);
+        if($order_info['channel'] == 'weixin_mp'){
+            $tmplmsg_config = [];
+        }
+        if($order_info['channel'] == 'weixin_h5'){
+            $tmplmsg_config = [];
+        }
+
+        if (!empty($tmplmsg_config) && $tmplmsg_config['switch'] == 1){
+            $this->sendPaySuccessTmplmsg($order_info['channel'], $tmplmsg_config, $order_info);
         }
         //订单流水
         $this->CapitalFlowModel->createFlow([
@@ -246,53 +253,63 @@ class Pay extends Api
      * @param $tmplmsg_config
      * @param $order_info
      */
-    protected function sendPaySuccessTmplmsg($tmplmsg_config,$order_info){
-        //消息模板是否设置
-        if (empty($tmplmsg_config['pay_success'])){
-            return false;
-        }
-        $msg_list = [];
-        if (strstr($tmplmsg_config['to'],'manager')){
-            $msg_item['openid'] = get_openid($this->shopid, $tmplmsg_config['manager_uid']);
-            $msg_item['user_info'] = query_user($order_info['uid']);
-            $msg_item['first'] = '客户的订单已支付成功';
-            $msg_item['remark'] = '客户的订单已支付成功，如有任何问题请联系平台客服！';
-            $msg_list[] = $msg_item;
-        }
-        if (strstr($tmplmsg_config['to'],'user')){
-            $msg_item['openid'] = get_openid($this->shopid, $order_info['uid']);
-            $msg_item['user_info'] = query_user($order_info['uid']);
-            $msg_item['first'] = '尊敬的客户，您的订单已支付成功';
-            $msg_item['remark'] = '感谢您的支持，如有任何问题请联系平台客服！';
-            $msg_list[] = $msg_item;
+    protected function sendPaySuccessTmplmsg($channel, $tmplmsg_config, $order_info){
+
+        // 公众号消息
+        if($channel  == 'weixin_h5'){
+            //消息模板是否设置
+            if (empty($tmplmsg_config['tmplmsg']['pay_success'])){
+                return false;
+            }
+            $msg_list = [];
+            if (in_array('manager', $tmplmsg_config['to'])){
+                $msg_item['openid'] = get_openid($this->shopid, $tmplmsg_config['manager_uid']);
+                $msg_item['user_info'] = query_user($order_info['uid']);
+                $msg_item['first'] = '客户的订单已支付成功';
+                $msg_item['remark'] = '客户的订单已支付成功，如有任何问题请联系平台客服！';
+                $msg_list[] = $msg_item;
+            }
+            if (in_array('user', $tmplmsg_config['to'])){
+                $msg_item['openid'] = get_openid($this->shopid, $order_info['uid']);
+                $msg_item['user_info'] = query_user($order_info['uid']);
+                $msg_item['first'] = '尊敬的客户，您的订单已支付成功';
+                $msg_item['remark'] = '感谢您的支持，如有任何问题请联系平台客服！';
+                $msg_list[] = $msg_item;
+            }
+
+            foreach ($msg_list as $item){
+                $msg = [
+                    'touser' => $item['openid'],
+                    'template_id' => $tmplmsg_config['pay_success'],
+                    'data' => [
+                        'first' => $item['first'],
+                        'keyword1' => [
+                            'value' => $item['user_info']['nickname'],
+                            'color' => '#ff510'
+                        ],
+                        'keyword2' => [
+                            'value' => $order_info['order_no'],
+                            'color' => '#ff510'
+                        ],
+                        'keyword3' => [
+                            'value' => sprintf("%.2f",$order_info['paid_fee']/100). '元',
+                            'color' => '#ff510'
+                        ],
+                        'keyword4' => [
+                            'value' => $order_info['products']['title'] ?? '商品',
+                            'color' => '#ff510'
+                        ],
+                        'remark' => $item['remark'],
+                    ],
+                ];
+                @OfficialAccount::sendTemplateMsg($msg);
+            }
         }
 
-        foreach ($msg_list as $item){
-            $msg = [
-                'touser' => $item['openid'],
-                'template_id' => $tmplmsg_config['pay_success'],
-                'data' => [
-                    'first' => $item['first'],
-                    'keyword1' => [
-                        'value' => $item['user_info']['nickname'],
-                        'color' => '#ff510'
-                    ],
-                    'keyword2' => [
-                        'value' => $order_info['order_no'],
-                        'color' => '#ff510'
-                    ],
-                    'keyword3' => [
-                        'value' => sprintf("%.2f",$order_info['paid_fee']/100). '元',
-                        'color' => '#ff510'
-                    ],
-                    'keyword4' => [
-                        'value' => $order_info['products']['title'] ?? '商品',
-                        'color' => '#ff510'
-                    ],
-                    'remark' => $item['remark'],
-                ],
-            ];
-            @OfficialAccount::sendTemplateMsg($msg);
+        // 小程序消息
+        if($channel == 'weixin_mp'){
+
         }
+        
     }
 }
