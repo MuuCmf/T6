@@ -1,3 +1,92 @@
+/**
+ * 创作者列表页
+ */
+ .author-list-section {
+	.status-nav {
+		li {
+			a {
+				color: #333;
+				&:hover {
+					background-color: #fff;
+					
+				}
+			}
+		}
+		li.active{
+			a {
+				color: #47d1af;
+				background-color: #fff;
+				border-bottom-color: #47d1af;
+				&:hover {
+					background-color: #fff;
+					border-bottom: #47d1af;
+				}
+			}
+		}
+	}
+
+	.items-section {
+		margin-top: 5px;
+		margin-left: -5px;
+		margin-right: -5px;
+		.item {
+			float: left;
+			width: 260px;
+			margin-bottom: 10px;
+			.card {
+				margin: 0 5px;
+				overflow: hidden;
+				.cover {
+					text-align: center;
+					width: 250px;
+					height: 250px;
+					img {
+						width: 100%;
+					}
+				}
+				.info {
+					margin: 0;
+					padding: 0 10px;
+					.title {
+						margin: 10px 0;
+						font-size: 18px;
+					}
+					.description {
+						height: 42px;
+						color: #999;
+						overflow: hidden;
+					}
+				}
+				.action {
+					padding: 10px;
+					text-align: center;
+				}
+			}
+		}
+	}
+}
+
+.author-edit-section {
+	/*讲师绑定用户表单内样式*/
+	.choose-user {
+		.user-avatar {
+			float: left;
+			width: 50px;
+			height: 50px;
+
+			img {
+				width: 100%;
+				border-radius: 50%;
+				overflow: hidden;
+			}
+		}
+		.user-nickname {
+			margin-left: 60px;
+			line-height: 50px;
+		}
+	}
+}
+
 #author-Modal {
 	.author-search {
 		padding: 0 0 15px 0;
