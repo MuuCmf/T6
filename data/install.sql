@@ -4311,7 +4311,7 @@ CREATE TABLE IF NOT EXISTS `muucmf_member` (
   `birthday` date NOT NULL DEFAULT '0000-00-00' COMMENT '生日',
   `qq` char(10) DEFAULT '' COMMENT 'qq号',
   `login` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '登录次数',
-  `signature` text NOT NULL COMMENT '个性签名',
+  `signature` text NULL COMMENT '个性签名',
   `score1` int(11) NOT NULL DEFAULT '0' COMMENT '积分',
   `score2` int(11) NOT NULL DEFAULT '0' COMMENT 'score2',
   `score3` int(11) NOT NULL DEFAULT '0' COMMENT 'score3',

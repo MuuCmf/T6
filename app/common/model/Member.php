@@ -522,11 +522,11 @@ class Member extends Model
                 $uid = $has_union['uid'];
             }else{
                 $member_data = [
-                    'uid'       => 'default',
+                    //'uid'       => 'default',
                     'shopid'    => $data['shopid'],
                     'nickname'  => $data['nickname'],
                     'username'  => rand_username(''),
-                    'password'  => user_md5( 123456,Config::get('auth.auth_key')),
+                    'password'  => user_md5('123456', Config::get('auth.auth_key')),
                     'avatar'    => $data['avatar'],
                     'sex'       => $data['sex'],
                     'email'     => $this->randEmail(),
