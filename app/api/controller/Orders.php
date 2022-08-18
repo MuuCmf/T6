@@ -44,6 +44,14 @@ class Orders extends Api
                     $appOrdersService = new $order_namespace;
                     $order_data = $appOrdersService->create($this->params);
                 }
+
+                // 设置元数据
+                if(isset($this->params['formId'])){
+                    $metadata = [
+                        'formId' => $this->params['formId']
+                    ];
+                    $order_data['metadata'] = json_encode($metadata);
+                }
                 
                 //写入订单
                 $res = $order_id = $this->OrdersModel->edit($order_data);
