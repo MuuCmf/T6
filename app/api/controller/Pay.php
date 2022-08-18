@@ -9,6 +9,7 @@ use app\common\model\MemberSync;
 use app\common\model\MemberWallet;
 use app\common\model\Orders as OrdersModel;
 use app\channel\facade\wechat\OfficialAccount;
+use app\channel\facade\wechat\MiniProgram;
 use think\Exception;
 use think\facade\Db;
 use think\Request;
@@ -188,6 +189,7 @@ class Pay extends Api
         //实例化支付服务
         $config = ChannelServer::config($this->params['channel'] ,$this->shopid);
         $PayService = PayServer::init($config['appid'], $this->params['pay_channel']);
+        //返回商户订单号
         $order_no = $PayService->server->notify($notify);
         //判断订单是否已支付
         if (!$order_no){
@@ -208,19 +210,8 @@ class Pay extends Api
             $order_namespace = "app\\{$order_info['app']}\\service\\Orders";
         }
         $this->OrderService = new $order_namespace;
-        //处理订单
         $result = $this->OrderService->paySuccess($order_info);
-        //消息通知
-        if($order_info['channel'] == 'weixin_mp'){
-            $tmplmsg_config = [];
-        }
-        if($order_info['channel'] == 'weixin_h5'){
-            $tmplmsg_config = [];
-        }
-
-        if (!empty($tmplmsg_config) && $tmplmsg_config['switch'] == 1){
-            $this->sendPaySuccessTmplmsg($order_info['channel'], $tmplmsg_config, $order_info);
-        }
+        
         //订单流水
         $this->CapitalFlowModel->createFlow([
             'uid' => $order_info['uid'],
@@ -230,6 +221,20 @@ class Pay extends Api
             'app' => $this->params['app'],
             'channel' => $this->params['channel'],
         ]);
+
+        //消息通知
+        if($order_info['channel'] == 'weixin_mp'){
+            $tmplmsg_config = [];
+            $this->sendPaySuccessTmplmsg($order_info['channel'], $tmplmsg_config, $order_info);
+        }
+        if($order_info['channel'] == 'weixin_h5'){
+            $tmplmsg_config = [];
+            $this->sendPaySuccessTmplmsg($order_info['channel'], $tmplmsg_config, $order_info);
+        }
+
+        if (!empty($tmplmsg_config) && $tmplmsg_config['switch'] == 1){
+            
+        }
 
         return $this->payXmlMsg();
     }
@@ -254,6 +259,9 @@ class Pay extends Api
      * @param $order_info
      */
     protected function sendPaySuccessTmplmsg($channel, $tmplmsg_config, $order_info){
+
+        // 格式化商品数据
+        $order_info['products'] = json_decode($order_info['products'], true);
 
         // 公众号消息
         if($channel  == 'weixin_h5'){
@@ -309,6 +317,49 @@ class Pay extends Api
         // 小程序消息
         if($channel == 'weixin_mp'){
 
+            $msg_list = [];
+            if (in_array('manager', $tmplmsg_config['to'])){
+                $msg_item['openid'] = get_openid($this->shopid, $tmplmsg_config['manager_uid']);
+                $msg_item['user_info'] = query_user($order_info['uid']);
+                $msg_item['first'] = '客户的订单已支付成功';
+                $msg_item['remark'] = '客户的订单已支付成功，如有任何问题请联系平台客服！';
+                $msg_list[] = $msg_item;
+            }
+            if (in_array('user', $tmplmsg_config['to'])){
+                $msg_item['openid'] = get_openid($this->shopid, $order_info['uid']);
+                $msg_item['user_info'] = query_user($order_info['uid']);
+                $msg_item['first'] = '尊敬的客户，您的订单已支付成功';
+                $msg_item['remark'] = '感谢您的支持，如有任何问题请联系平台客服！';
+                $msg_list[] = $msg_item;
+            }
+
+            foreach ($msg_list as $item){
+                $msg = [
+                    'touser' => $item['openid'],
+                    'template_id' => $tmplmsg_config['pay_success'],
+                    'data' => [
+                        'first' => $item['first'],
+                        'keyword1' => [
+                            'value' => $item['user_info']['nickname'],
+                            'color' => '#ff510'
+                        ],
+                        'keyword2' => [
+                            'value' => $order_info['order_no'],
+                            'color' => '#ff510'
+                        ],
+                        'keyword3' => [
+                            'value' => sprintf("%.2f",$order_info['paid_fee']/100). '元',
+                            'color' => '#ff510'
+                        ],
+                        'keyword4' => [
+                            'value' => $order_info['products']['title'] ?? '商品',
+                            'color' => '#ff510'
+                        ],
+                        'remark' => $item['remark'],
+                    ],
+                ];
+                @MiniProgram::sendTemplateMsg($msg);
+            }
         }
         
     }

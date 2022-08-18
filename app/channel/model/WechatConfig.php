@@ -10,6 +10,8 @@ use app\common\model\Base;
  */
 class WechatConfig extends Base{
 
+    //自动写入创建和更新的时间戳字段
+    protected $autoWriteTimestamp = true; 
     /**
      * @title 根据shopid获取公众号配置
      * @param int $shopid
