@@ -88,7 +88,7 @@ class Config extends Common
     }
 
     /**
-     * changeaccount  修改帐号信息
+     * 绑定用户手机或邮箱
      */
     public function account()
     {
