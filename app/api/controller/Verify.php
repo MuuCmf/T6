@@ -1,6 +1,7 @@
 <?php
 namespace app\api\controller;
 
+use app\common\model\Member as MemberModel;
 use app\common\model\Verify as VerifyModel;
 use app\common\service\Mail;
 use app\common\controller\Common;
@@ -10,7 +11,8 @@ use app\common\controller\Common;
  */
 class Verify extends Common
 {
-    protected $verifyModel;
+    protected $MemberModel;
+    protected $VerifyModel;
     
     /**
      * 构造方法
@@ -19,8 +21,8 @@ class Verify extends Common
     public function __construct()
     {
         parent::__construct();
-
-        $this->verifyModel = new VerifyModel();
+        $this->MemberModel = new MemberModel();
+        $this->VerifyModel = new VerifyModel();
         $this->mailService = new Mail();
     }
 
@@ -32,8 +34,9 @@ class Verify extends Common
         $account = $username = input('post.account', '', 'text');
         $type = input('post.type', 'mobile', 'text');
         $type = $type == 'mobile' ? 'mobile' : 'email';
+        $type_str = $type == 'mobile' ? '手机号' : 'email';
         if (empty($account)) {
-            return $this->error('账号不能为空');
+            return $this->error($type_str . '不能为空');
         }
         // 判断格式类型
         $check_email = preg_match("/[a-z0-9_\-\.]+@([a-z0-9_\-]+?\.)+[a-z]{2,3}/i", $account);
@@ -44,6 +47,23 @@ class Verify extends Common
         if($type == 'mobile' && !$check_mobile){
             return $this->error('手机格式错误');
         }
+
+        // 验证手机号码唯一性
+        $has_map = [
+            ['shopid', '=', $this->shopid],
+        ];
+        if($type == 'mobile'){
+            $has_map[] = ['mobile', '=', $account];
+        }
+        if($type == 'email'){
+            $has_map[] = ['email', '=', $account];
+        }
+        $has_account = $this->MemberModel->where($has_map)->find();
+
+        if($has_account){
+            return $this->error($type_str . '已绑定其他用户');
+        }
+
         // 自动判断发送类型
         check_username($username, $email, $mobile, $type);
         $time = time();
@@ -56,7 +76,7 @@ class Verify extends Common
         }
 
         // 写入验证码
-        $verify = $this->verifyModel->addVerify($account, $type);
+        $verify = $this->VerifyModel->addVerify($account, $type);
         if (!$verify) {
             return $this->error('验证码写入失败');
         }
@@ -64,7 +84,7 @@ class Verify extends Common
         // 发送验证码
         switch ($type) {
             case 'mobile':
-                $res = $this->verifyModel->sendSMS($account, $verify);
+                $res = $this->VerifyModel->sendSMS($account, $verify);
                 $smsDriver = config('extend.SMS_SEND_DRIVER');
                 // 通过阿里云发送短信
                 if($smsDriver == 'aliyun'){
