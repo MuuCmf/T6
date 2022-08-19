@@ -49,20 +49,20 @@ class Verify extends Common
         }
 
         // 验证手机号码唯一性
-        $has_map = [
-            ['shopid', '=', $this->shopid],
-        ];
-        if($type == 'mobile'){
-            $has_map[] = ['mobile', '=', $account];
-        }
-        if($type == 'email'){
-            $has_map[] = ['email', '=', $account];
-        }
-        $has_account = $this->MemberModel->where($has_map)->find();
+        // $has_map = [
+        //     ['shopid', '=', $this->shopid],
+        // ];
+        // if($type == 'mobile'){
+        //     $has_map[] = ['mobile', '=', $account];
+        // }
+        // if($type == 'email'){
+        //     $has_map[] = ['email', '=', $account];
+        // }
+        // $has_account = $this->MemberModel->where($has_map)->find();
 
-        if($has_account){
-            return $this->error($type_str . '已绑定其他用户');
-        }
+        // if($has_account){
+        //     return $this->error($type_str . '已绑定其他用户');
+        // }
 
         // 自动判断发送类型
         check_username($username, $email, $mobile, $type);

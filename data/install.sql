@@ -4044,7 +4044,7 @@ CREATE TABLE IF NOT EXISTS `muucmf_evaluate` (
   `value` decimal(3,2) NOT NULL COMMENT '评分',
   `content` varchar(600) NOT NULL DEFAULT ''  COMMENT '评价内容',
   `add_content` varchar(600) NOT NULL DEFAULT '' COMMENT '追加评论 json格式{images:content:}',
-  `reply` text NOT NULL COMMENT '评价回复',
+  `reply` text NULL COMMENT '评价回复',
   `reply_time` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '回复时间',
   `create_time` int(11) UNSIGNED NOT NULL DEFAULT '0',
   `update_time` int(11) UNSIGNED NOT NULL DEFAULT '0',
