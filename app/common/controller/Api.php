@@ -9,6 +9,7 @@ class Api extends Base
 
     public $shopid = 0;//店铺ID
     public $module;//请求的应用
+    public $app_name; 
     public $params;//参数
 
     function __construct()
@@ -25,7 +26,7 @@ class Api extends Base
      */
     protected function initModuleName()
     {
-        $this->module = $this->params['app'] ?? App('http')->getName();
+        $this->module = $this->app_name = $this->params['app'] ?? App('http')->getName();
     }
 
     /**
