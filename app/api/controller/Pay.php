@@ -306,7 +306,12 @@ class Pay extends Api
                     ],
                 ];
                 $res = @OfficialAccount::sendTemplateMsg($msg);
-                dump($res);
+                //成功返回数据结构
+                //array: [
+                //     "errcode" => 0
+                //     "errmsg" => "ok"
+                //     "msgid" => 2538082547780780032
+                //]
                 return $res;
             }
         }
