@@ -243,7 +243,7 @@ class Pay extends Api
     }
 
     /**
-     * 发送支付成功公众号模板消息
+     * 发送支付成功模板消息
      * @param $tmplmsg_config
      * @param $order_info
      */
@@ -258,20 +258,21 @@ class Pay extends Api
         // 公众号消息
         if($channel  == 'weixin_h5'){
             // 获取配置
-            $tmplmsg_config = (new \app\channel\model\WechatMpConfig())->getWechatMpConfigByShopId($this->shopid);
+            $weixin_config = (new \app\channel\model\WechatConfig())->getWechatConfigByShopId($this->shopid);
+
             //消息模板是否设置
-            if (empty($tmplmsg_config['tmplmsg']['pay_success'])){
+            if (empty($weixin_config['tmplmsg']['tmplmsg']['pay_success'])){
                 return false;
             }
             $msg_list = [];
-            if (in_array('manager', $tmplmsg_config['to'])){
-                $msg_item['openid'] = get_openid($this->shopid, $tmplmsg_config['manager_uid']);
+            if (in_array('manager', $weixin_config['tmplmsg']['to']) && !empty($weixin_config['tmplmsg']['manager_uid'])){
+                $msg_item['openid'] = get_openid($this->shopid, $weixin_config['tmplmsg']['manager_uid']);
                 $msg_item['user_info'] = query_user($order_info['uid']);
                 $msg_item['first'] = '客户的订单已支付成功';
                 $msg_item['remark'] = '客户的订单已支付成功，如有任何问题请联系平台客服！';
                 $msg_list[] = $msg_item;
             }
-            if (in_array('user', $tmplmsg_config['to'])){
+            if (in_array('user', $weixin_config['tmplmsg']['to'])){
                 $msg_item['openid'] = get_openid($this->shopid, $order_info['uid']);
                 $msg_item['user_info'] = query_user($order_info['uid']);
                 $msg_item['first'] = '尊敬的客户，您的订单已支付成功';
@@ -282,7 +283,7 @@ class Pay extends Api
             foreach ($msg_list as $item){
                 $msg = [
                     'touser' => $item['openid'],
-                    'template_id' => $tmplmsg_config['tmplmsg']['pay_success'],
+                    'template_id' => $weixin_config['tmplmsg']['tmplmsg']['pay_success'],
                     'data' => [
                         'first' => $item['first'],
                         'keyword1' => [
@@ -305,7 +306,7 @@ class Pay extends Api
                     ],
                 ];
                 $res = @OfficialAccount::sendTemplateMsg($msg);
-
+                dump($res);
                 return $res;
             }
         }
@@ -313,20 +314,20 @@ class Pay extends Api
         // 小程序消息
         if($channel == 'weixin_mp'){
             // 获取配置
-            $tmplmsg_config = (new \app\channel\model\WechatConfig())->getWechatConfigByShopId($this->shopid);
+            $weixin_mp_config = (new \app\channel\model\WechatMpConfig())->getWechatMpConfigByShopId($this->shopid);
             //消息模板是否设置
-            if (empty($tmplmsg_config['tmplmsg']['pay_success'])){
+            if (empty($weixin_mp_config['tmplmsg']['tmplmsg']['pay_success'])){
                 return false;
             }
             $order_info['metadata'] = json_decode($order_info['meatdata'], true);
             $form_id = $order_info['metadata']['formId'];
             $msg_list = [];
-            if (in_array('manager', $tmplmsg_config['to'])){
-                $msg_item['openid'] = get_openid($this->shopid, $tmplmsg_config['manager_uid'], $channel);
+            if (in_array('manager', $weixin_mp_config['tmplmsg']['to']) && !empty($weixin_config['tmplmsg']['manager_uid'])){
+                $msg_item['openid'] = get_openid($this->shopid, $weixin_mp_config['tmplmsg']['manager_uid'], $channel);
                 $msg_item['user_info'] = query_user($order_info['uid']);
                 $msg_list[] = $msg_item;
             }
-            if (in_array('user', $tmplmsg_config['to'])){
+            if (in_array('user', $weixin_mp_config['tmplmsg']['to'])){
                 $msg_item['openid'] = get_openid($this->shopid, $order_info['uid'], $channel);
                 $msg_item['user_info'] = query_user($order_info['uid']);
                 $msg_list[] = $msg_item;
@@ -335,7 +336,7 @@ class Pay extends Api
             foreach ($msg_list as $item){
                 $msg = [
                     'touser' => $item['openid'],
-                    'template_id' => $tmplmsg_config['tmplmsg']['pay_success'],
+                    'template_id' => $weixin_mp_config['tmplmsg']['tmplmsg']['pay_success'],
                     'page' => 'micro/pages/index',
                     'form_id' => $form_id,
                     'data' => [

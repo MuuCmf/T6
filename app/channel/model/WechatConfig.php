@@ -22,26 +22,31 @@ class WechatConfig extends Base{
      */
     function getWechatConfigByShopId($shopid = 0)
     {
-        $res = $this->where(
+        $config = $this->where(
             [
                 ['shopid','=',$shopid]
             ]
         )->find();
-        if ($res){
-            $res = $res->toArray();
-            return $res;
+        if ($config){
+            $config = $config->toArray();
+            if(!empty($config['tmplmsg'])){
+                $config['tmplmsg'] = json_decode($config['tmplmsg'], true);
+            }else{
+                $config['tmplmsg'] = [];
+            }
         }else{
             //初始化数据
-            $data['id'] = 0;
-            $data['title'] = '';
-            $data['cover'] = '';
-            $data['desc'] = '';
-            $data['qrcode'] = '';
-            $data['appid'] = '';
-            $data['secret'] = '';
+            $config['id'] = 0;
+            $config['title'] = '';
+            $config['cover'] = '';
+            $config['desc'] = '';
+            $config['qrcode'] = '';
+            $config['appid'] = '';
+            $config['secret'] = '';
 
-            return $data;
         }
+
+        return $config;
     }
 
     /**
