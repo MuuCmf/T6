@@ -97,6 +97,24 @@ class Config extends Common
             $type = input('type', '', 'text');
             $verify = input('verify', '', 'text');
             $type = $type == 'mobile' ? 'mobile' : 'email';
+            $type_str = $type == 'mobile' ? '手机号' : 'email';
+
+            // 验证手机号码唯一性
+            $has_map = [
+                ['shopid', '=', $this->shopid],
+            ];
+            if($type == 'mobile'){
+                $has_map[] = ['mobile', '=', $account];
+            }
+            if($type == 'email'){
+                $has_map[] = ['email', '=', $account];
+            }
+            $commonMemberModel = new Member();
+            $has_account = $commonMemberModel->where($has_map)->find();
+
+            if($has_account){
+                return $this->error($type_str . '已绑定其他用户');
+            }
 
             // 验证验证码
             if (($type == 'mobile') || $type == 'email') {
