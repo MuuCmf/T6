@@ -34,7 +34,7 @@ class Config extends Admin
                     $this->ConfigModel->where($map)->save(['value' => $value]);
                 }
             }
-            cache('MUUCMF_SYS_CONFIG_DATA', null);
+            cache(request()->host() . '_MUUCMF_SYS_CONFIG_DATA', null);
             
             return $this->success('保存成功',$config, cookie('__forward__'));
 
@@ -154,7 +154,7 @@ class Config extends Admin
         }
 
         if ($this->ConfigModel->where('id','in', $id)->delete()) {
-            cache('MUUCMF_SYS_CONFIG_DATA', null);
+            cache(request()->host() . '_MUUCMF_SYS_CONFIG_DATA', null);
             //记录行为
             action_log('update_config', 'config', $id, is_login());
             return $this->success('删除成功');
