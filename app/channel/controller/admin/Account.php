@@ -139,7 +139,7 @@ class Account extends MuuAdmin {
             }
             $res = $this->autoReplyModel->edit($data);
             if($res){
-                return $this->success(($aId == 0 ? '新增' : '编辑') . '成功', '', url('channel/admin.OfficialAccount/autoReply'));
+                return $this->success(($aId == 0 ? '新增' : '编辑') . '成功', '', url('channel/admin.account/autoReply'));
             }else{
                 return $this->error('提交失败');
             }

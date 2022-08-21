@@ -81,6 +81,9 @@
                     <a class="btn btn-sm btn-info" href="{:url('editAutoReply',['id'=>$vo['id']])}">
                         编辑
                     </a>
+                    <button class="btn btn-sm btn-danger ajax-post confirm" url="{:url('autoReplyStatus',['ids'=>$vo['id'],'status'=>'-1'])}">
+                        删除
+                    </button>
                 </td>
             </tr>
             {/volist}

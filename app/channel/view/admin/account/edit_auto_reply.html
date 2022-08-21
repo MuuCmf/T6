@@ -9,7 +9,7 @@
 </div>
 <div class="with-padding">
     <div class="edit-auto-reply">
-        <form class="form-horizontal" method="post"  action="{:url('editAutoReply')}?id={$data.id|default=0}">
+        <form class="form-horizontal ajax-post" method="post"  action="{:url('editAutoReply')}?id={$data.id|default=0}">
             <input type="hidden" name="id" value="{$data.id|default='0'}">
             <input type="hidden" name="material_json" value="{$data.material_json|default=''}">
             <div class="form-group">
