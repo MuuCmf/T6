@@ -1,6 +1,12 @@
-MuuCmf T6
+## MuuCmf T6
 
+MuuCmf T6采用最新ThinkPHP6开发，是一个将CMS和Framework两个概念完美结合的内容管理系统及多应用整合开发解决方案，提供了丰富的系统功能，开发人员只需要专注于业务系统的开发。
 
+>官网：http://www.muucmf.cc
+
+>演示地址：https://demo.t6.muucmf.cn
+
+>技术交流群:[633857075][2]
 
 ## 环境
 
