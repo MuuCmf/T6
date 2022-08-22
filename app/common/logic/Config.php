@@ -24,6 +24,7 @@ class Config extends Base
         'WEB_SITE_LOGO_800',
         'WEB_SITE_ICP',
         'WEB_SITE_GICP',
+        'COUNT_CODE',
         'COPYRIGHT_MAIN',
         'COPYRIGHT_WEBSITE',
         //客服信息
