@@ -1,56 +1,57 @@
-ThinkPHP 6.0
-===============
+MuuCmf T6
 
-> 运行环境要求PHP7.1+，兼容PHP8.0。
 
-[官方应用服务市场](https://market.topthink.com) | [`ThinkAPI`——官方统一API服务](https://docs.topthink.com/think-api)
 
-ThinkPHPV6.0版本由[亿速云](https://www.yisu.com/)独家赞助发布。
+## 环境
 
-## 主要新特性
+* PHP 推荐PHP7.4版本
+* MySQL >= 5.6 且 <= 8.0 (需支持innodb引擎)
+* Apache 或 Nginx 
 
-* 采用`PHP7`强类型（严格模式）
-* 支持更多的`PSR`规范
-* 原生多应用支持
-* 更强大和易用的查询
-* 全新的事件系统
-* 模型事件和数据库事件统一纳入事件系统
-* 模板引擎分离出核心
-* 内部功能中间件化
-* SESSION/Cookie机制改进
-* 对Swoole以及协程支持改进
-* 对IDE更加友好
-* 统一和精简大量用法
 
-## 安装
+## 特性
 
-~~~
-composer create-project topthink/think tp 6.0.*
-~~~
+#### 最佳实践沉淀
+产品设计融合专业团队多年研发最佳实践，不仅是单纯的开发框架
 
-如果需要更新框架使用
-~~~
-composer update topthink/framework
-~~~
 
-## 文档
+#### 多应用整合支持
+不管是开发一个小功能还是一个全新的应用，你只是增加了一个应用，完全解耦，即可独立运行，亦可整合使用
 
-[完全开发手册](https://www.kancloud.cn/manual/thinkphp6_0/content)
 
-## 参与开发
+#### 提高开发效率
+系统进行了常用功能和第三方API大量封装，融合多年研发效率实践，告别重复劳动，让开发效能大幅提升
 
-请参阅 [ThinkPHP 核心框架包](https://github.com/top-think/framework)。
+
+#### 专业人才招聘难题
+主流开源框架拥有庞大用户群体，解决专业技术人才少，降低人力成本，招聘难题
+
+
+#### 私有化部署、渐进式扩展
+具有自主可控、稳定可靠、持续进化，支持新功能的无缝交付，新服务的快速引入，更快满足企业新业务扩展保障
+
+
+#### 降低开发、学习成本
+基于主流开源框架开发，让您和团队开箱即用，降低学习、开发成本
+
+
+#### 基础软件服务团队
+专业的研发和支持团队，多年最佳实践高可用架构保障服务更稳定
+
+
+#### 开源、开放
+代码完全开放、开源，对商业使用友好
+
+
 
 ## 版权信息
 
-ThinkPHP遵循Apache2开源协议发布，并提供免费使用。
-
 本项目包含的第三方源码和二进制文件之版权信息另行标注。
 
-版权所有Copyright © 2006-2020 by ThinkPHP (http://thinkphp.cn)
+版权所有Copyright © 2006-2020 by MuuCmf (https://www.muucmf.cc)
 
 All rights reserved。
 
-ThinkPHP® 商标和著作权所有者为上海顶想信息科技有限公司。
+MuuCmf® 商标和著作权所有者为北京火木科技科技有限公司。
 
-更多细节参阅 [LICENSE.txt](LICENSE.txt)
+
