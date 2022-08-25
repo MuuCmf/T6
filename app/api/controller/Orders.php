@@ -73,8 +73,11 @@ class Orders extends Api
                 return $this->success('创建订单成功',$order);
             }catch (Exception $e){
                 Db::rollback();
-                return $this->error($e->getMessage().$e->getFile().$e->getLine());
-                return $this->error($e->getMessage());
+                if (\think\facade\App::isDebug()){
+                    return $this->error($e->getMessage().$e->getFile().$e->getLine());
+                }else{
+                    return $this->error($e->getMessage());
+                }
             }
         }
     }
