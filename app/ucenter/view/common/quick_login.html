@@ -122,30 +122,7 @@
             return false;
 
             function success(data) {
-                if (data.code == 200) {
-                    toast.success(data.msg);
-                    if (data.url == undefined && quickLogin == "quickLogin") {
-                        $('[data-role="login_info"]').append(data.msg);
-                        setTimeout(function () {
-                            window.location.reload();
-                        }, 1500);
-                    } else {
-                        if (data.url == "refresh") {
-                            setTimeout(function () {
-                                location.href = location.href;
-                            }, 1500);
-                        } else {
-                            setTimeout(function () {
-                                location.href = data.url;
-                            }, 1500);
-                        }
-                    }
-                } else {
-                    toast.error(data.msg);
-                    //self.find(".Validform_checktip").text(data.msg);
-                    //刷新验证码
-                    $(".reloadverify").click();
-                }
+                handle_ajax(data);
                 toast.hideLoading();
             }
         });
