@@ -62,7 +62,12 @@ class Common extends Base
      */
     public function clearCache(){
 
+        // 清理缓存
         $res = Cache::clear();
+
+        // 清理运行目录
+        $dirname = runtime_path();
+        $res2 = rmdirs($dirname, false);
 
         if($res) return $this->success('缓存清理成功');
     }
