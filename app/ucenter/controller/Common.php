@@ -152,6 +152,7 @@ class Common extends CommonCommon
             $password = input('post.password', '', 'text'); // 密码
             $captcha = input('post.captcha', '', 'text'); // 验证码
             $login_type = input('post.login_type','password');//登录类型
+            $remember = input('post.remember', 0, 'intval');
 
             if(empty($account)) return $this->error('账号不能为空');
             $commonMemberModel = new CommonMember;
@@ -188,7 +189,7 @@ class Common extends CommonCommon
             }
 
             //登录
-            $res = $commonMemberModel->login($uid);
+            $res = $commonMemberModel->login($uid, $remember);
             if ($res) {
                 $last_url = session('login_http_referer');
                 if(empty($last_url)){
@@ -196,6 +197,7 @@ class Common extends CommonCommon
                 }
                 $token = JWTAuth::builder(['uid'=>$uid]);
                 $token = 'Bearer ' . $token;
+
                 return $this->success('登录成功',['token' => $token],$last_url);
             } else {
                 return $this->error($commonMemberModel->getError());

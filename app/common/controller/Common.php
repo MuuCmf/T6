@@ -6,6 +6,7 @@ use think\facade\Db;
 use think\facade\View;
 use app\common\model\Channel;
 use app\common\model\SeoRule;
+use app\common\model\Member;
 use app\common\logic\Config as ConfigLogic;
 
 /**
@@ -47,6 +48,8 @@ class Common extends Base
      */
 	public function initialize()
     {   
+        //记住登录
+        (new Member())->rembemberLogin();
         //获取应用名
         $this->initModuleName();
         //获取系统配置

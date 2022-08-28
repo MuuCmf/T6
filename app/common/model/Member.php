@@ -171,7 +171,7 @@ class Member extends Model
      * @param  integer $uid 用户ID
      * @return boolean      ture-登录成功，false-登录失败
      */
-    public function login(int $uid)
+    public function login(int $uid, int $remember = 0)
     {
         if($uid )
             /* 检测是否在当前应用注册 */
@@ -198,8 +198,60 @@ class Member extends Model
         //记录行为
         $actionLog = new ActionLog();
         $actionLog->add('user_login', 'member', $uid, $uid);
+        //记住登录
+        if ($remember == 1) {
+            $token = Db::name('user_token')->where('uid', $uid)->value('token');
+            if (empty($token)) {
+                $data_token['uid'] = $uid;
+                $token = create_unique();
+                $data_token['token'] = $token;
+                $data_token['create_time'] = time();
+                
+                Db::name('user_token')->insert($data_token);
+            }
+        }
+        
+        if (!$this->getCookieUid() && $remember) {
+            $expire = 3600 * 24 * 7;
+            cookie('MUU_LOGGED_USER', think_encrypt("{$uid}.{$token}",'muucmf', $expire));
+        }
 
         return true;
+    }
+
+    public function getCookieUid()
+    {
+        static $cookie_uid = null;
+        if (isset($cookie_uid) && $cookie_uid !== null) {
+            return $cookie_uid;
+        }else{
+            $cookie = cookie('MUU_LOGGED_USER');
+            if(!empty($cookie)){
+                $cookie = explode(".", think_decrypt($cookie, 'muucmf'));
+                $map['uid'] = $cookie[0];
+                $user = Db::name('user_token')->where($map)->find();
+                $cookie_uid = ($cookie[1] != $user['token']) ? false : $cookie[0];
+                $cookie_uid = $user['create_time'] - time() >= 3600 * 24 * 7 ? false : $cookie_uid;//过期时间7天
+            }
+        }
+        	
+        return $cookie_uid;
+    }
+
+    /**
+     * 记住登陆状态
+     * @return [type] [description]
+     */
+    public function rembemberLogin()
+    {
+        if(!is_login()){
+            //判断COOKIE
+            $uid = $this->getCookieUid();
+            if ($uid) {
+                $this->login($uid);
+                return $uid;
+            }
+        }
     }
 
     /**
@@ -208,6 +260,7 @@ class Member extends Model
     public function logout(int $uid)
     {
         session(null);
+        cookie('MUU_LOGGED_USER', NULL);
 
         return true;
     }

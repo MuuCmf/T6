@@ -283,14 +283,14 @@ if (!function_exists('mb_ucfirst')) {
  */
 if (!function_exists('text')) {
     function text($text, $addslanshes = false)
-        {
-            $text = nl2br($text);
-            $text = real_strip_tags($text);
-            if ($addslanshes)
-                $text = addslashes($text);
-            $text = trim($text);
-            return $text;
-        }
+    {
+        $text = nl2br($text);
+        $text = real_strip_tags($text);
+        if ($addslanshes)
+            $text = addslashes($text);
+        $text = trim($text);
+        return $text;
+    }
 }
 /**
  * 用于过滤不安全的html标签，输出安全的html

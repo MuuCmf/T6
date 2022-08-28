@@ -340,20 +340,6 @@ if (!function_exists('curl_request')) {
     }
 }
 
-if (!function_exists('build_auth_key')) {
-    /**
-     * 生成系统AUTH_KEY
-     * @author 麦当苗儿 <zuojiazi@vip.qq.com>
-     */
-    function build_auth_key()
-    {
-        $chars = 'abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-        // $chars .= '`~!@#$%^&*()_+-=[]{};:"|,.<>/?';
-        $chars = str_shuffle($chars);
-        return substr($chars, 0, 40);
-    }
-}
-
 if (!function_exists('convert_url_query')) {
     /**
      * convert_url_query  转换url参数为数组
