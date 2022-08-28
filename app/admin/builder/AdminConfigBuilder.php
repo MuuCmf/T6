@@ -168,7 +168,7 @@ class AdminConfigBuilder extends AdminBuilder
 
     public function keyStatus($name = 'status', $title = '状态', $subtitle = null)
     {
-        $map = array(-1 => '删除', 0 => '禁用', 1 => '启用', -2 => '未审核');
+        $map = array(-1 => '删除', 0 => '禁用', 1 => '启用');
         return $this->keySelect($name, $title, $subtitle, $map);
     }
 

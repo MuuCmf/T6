@@ -837,9 +837,9 @@ class AdminListBuilder extends AdminBuilder
         $ids = implode(',',$ids);
         $res = Db::name($table)->where('id','in', $ids)->update(['status' => $status]);
         if ($res) {
-            $this->success('设置成功', $_SERVER['HTTP_REFERER']); 
+            return $this->success('设置成功', $res, $_SERVER['HTTP_REFERER']); 
         }else{
-            $this->error('设置失败');
+            return $this->error('设置失败');
         }
     }
 
@@ -904,27 +904,27 @@ class AdminListBuilder extends AdminBuilder
 
                 $result = Db::name($model)->where($map)->delete();
                 if ($result) {
-                    $this->success(lang('Success trash cleared', ['result' => $result]));
+                    return $this->success(lang('Success trash cleared', ['result' => $result]));
                 }
-                $this->error(lang('Trash already empty'));
+                return $this->error(lang('Trash already empty'));
             } else {
-                $this->error(lang('Tarsh select'));
+                return $this->error(lang('Tarsh select'));
             }
         }
     }
 
     /**
      * 执行彻底删除数据，只适用于无关联的数据表
-     * @param $model
+     * @param $table
      * @param $ids
      * @author 大蒙<59262424@qq.com>
      */
-    public function doDeleteTrue($model, $ids)
+    public function doDeleteTrue($table, $ids)
     {
         $ids = is_array($ids) ? $ids : explode(',', $ids);
-        Db::name($model)->where('id', 'in', $ids)->delete();
+        Db::name($table)->where('id', 'in', $ids)->delete();
 
-        $this->success(lang('Success delete completely'), $_SERVER['HTTP_REFERER']);
+        return $this->success(lang('Success delete completely'), $_SERVER['HTTP_REFERER']);
     }
 
     /**

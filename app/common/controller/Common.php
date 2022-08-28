@@ -5,7 +5,7 @@ use think\facade\Config;
 use think\facade\Db;
 use think\facade\View;
 use app\common\model\Channel;
-use app\common\controller\Base;
+use app\common\model\SeoRule;
 use app\common\logic\Config as ConfigLogic;
 
 /**
@@ -15,6 +15,7 @@ class Common extends Base
 {
     public $shopid = 0;//店铺ID
     public $module;//请求的应用
+    public $app_name;
     public $muu_config_data;
     public $title = '';
     public $keywords = '';
@@ -60,6 +61,8 @@ class Common extends Base
         $this->initRegAndLogin();
         //获取用户基本资料
         $this->initUserBaseInfo();
+        //seo规则
+        $this->initSeo();
     }
 
     /**
@@ -67,7 +70,7 @@ class Common extends Base
      */
     protected function initModuleName()
     {
-        $this->module = $this->params['app'] ?? App('http')->getName();
+        $this->module = $this->app_name = $this->params['app'] ?? App('http')->getName();
     }
 
     private function initMuuConfig()
@@ -127,6 +130,21 @@ class Common extends Base
         View::assign('register_switch', $register_switch);
         $login_url = url('ucenter/Common/login');
         View::assign('login_url', $login_url);
+    }
+
+    private function initSeo()
+    {
+        $app = strtolower(app('http')->getName());
+        $controller = strtolower(request()->controller());
+        $action = strtolower(request()->action());
+
+        // 查询是否有Seo规则
+        $rule = (new SeoRule())->getRule($app, $controller, $action);
+        if($rule){
+            $this->setTitle($rule['seo_title']);
+            $this->setKeywords($rule['seo_keywords']);
+            $this->setDescription($rule['seo_description']);
+        }
     }
 
     public function setTitle($title)
