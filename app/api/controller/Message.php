@@ -78,7 +78,6 @@ class Message extends Api
         $fields = '*';
         $rows = input('rows', 20, 'intval');
         $lists = $this->MessageModel->getListByPage($map, 'id desc,create_time desc', $fields, $rows);
-        $pager = $lists->render();
         $lists = $lists->toArray();
 
         foreach($lists['data'] as &$val){
@@ -87,6 +86,35 @@ class Message extends Api
         unset($val);
 
         return $this->success('success',$lists);
+    }
+
+    /**
+     * 消息详细内容
+     */
+    public function detail()
+    {
+        $uid = get_uid();
+        $id = input('id', '0', 'intval');
+        if(!empty($id)){
+            $map = [
+                'id' => $id,
+                'to_uid' => $uid,
+                'status' => 1
+            ];
+            $data = $this->MessageModel->where($map)->find();
+            $data = $data->toArray();
+            $data = $this->MessageModel->formatData($data);
+            // 设置已读
+            $this->MessageModel->where($map)->update([
+                'is_read' => 1
+            ]);
+
+            return $this->success('success', $data);
+
+        }
+
+        return $this->error('参数错误');
+        
     }
 
     /**
