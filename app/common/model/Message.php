@@ -43,7 +43,7 @@ class Message extends Base
             'to_uids' => $to_uids,
             'type_id' => $type_id,
             'content_id' => $content_id,
-            'send_type' => $send_type
+            'send_type' => $send_type,
         ]);
 
         if( $isPushed !== false ){
@@ -74,7 +74,7 @@ class Message extends Base
             'to_groud_ids' => $to_groud_ids,
             'type_id' => $type_id,
             'content_id' => $content_id,
-            'send_type' => $send_type
+            'send_type' => $send_type,
         ]);
         
         if( $isPushed !== false ){

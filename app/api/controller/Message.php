@@ -65,8 +65,10 @@ class Message extends Api
         $map[] = ['shopid', '=', $this->shopid];
         $map[] = ['status', '=', 1];
         $map[] = ['to_uid', '=', $uid];
-        $map[] = ['type_id', '=', $type_id];
-
+        if(!empty($type_id)){
+            $map[] = ['type_id', '=', $type_id];
+        }
+        
         // 搜索关键字
         $keyword = input('keyword', '', 'text');
         if(!empty($keyword)){

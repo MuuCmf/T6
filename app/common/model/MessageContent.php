@@ -23,7 +23,8 @@ class MessageContent extends Base
             'title' => $title,
             'description' => $description,
             'content' => $content,
-            'args' => $args
+            'args' => $args,
+            'status' => 1
         ];
         // 返回主键ID
         $this->save($content_data);
