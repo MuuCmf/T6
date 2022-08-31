@@ -21,17 +21,17 @@ class Config {
 	 * @return     <type>  ( description_of_the_return_value )
 	 */
 	public function formatData($data)
-	{
+	{   
         if(!empty($data)){
             if (is_object($data)) $data = $data->toArray();
-            
+
             if(!empty($data['status'])){
                 $data['status_str'] = $this->_status[$data['status']];
             }else{
                 //$data['article_config']['status'] = 0;
                 $data['status_str'] = $this->_status[0];
             }
-            if(!is_array($data['comment'])){
+            if(!empty($data['comment'])){
                 $data['comment'] = json_decode($data['comment'],true);
             }
             
@@ -48,9 +48,18 @@ class Config {
                 $data['comment']['audit'] = 0;
                 $data['comment']['audit_str'] = $this->_status[0];
             }
+
+            //站点关闭描述
+            if(empty($data['close_desc'])){
+                $data['close_desc'] = '系统关闭~请稍后访问！';
+            }
+    
+            return $data;
+        }else{
+            $data = (new ConfigModel())->defaultData();
+
+            return $data;
         }
-            
-        return $data;
 	}
 
 }

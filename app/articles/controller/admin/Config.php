@@ -3,16 +3,18 @@ namespace app\articles\controller\admin;
 
 use think\facade\View;
 use think\facade\Cache;
+use app\articles\model\ArticlesConfig as ConfigModel;
 
 class Config extends Admin
 {   
+    protected $ConfigModel;
     /**
      * 构造方法
      */
     public function __construct()
     {
         parent::__construct();
-
+        $this->ConfigModel = new ConfigModel();
     }
 
     /**
@@ -52,7 +54,7 @@ class Config extends Admin
             }
             
             //提交数据
-            if(!empty($config_data['id'])){
+            if($config_data){
                 $msg = '更新配置';
                 $data['id'] = $config_data['id'];
             }else{
@@ -71,6 +73,7 @@ class Config extends Admin
             // 获取店铺配置数据
             $data = $this->config_data;
             View::assign('data',$data);
+
             // 设置页面Title
             $this->setTitle('基础配置');
             // 输出模板

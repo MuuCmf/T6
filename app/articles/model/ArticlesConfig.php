@@ -20,6 +20,7 @@ class ArticlesConfig extends Base
         if(empty($config_data)){
             $config_data= $this->getDataByMap(['shopid' => $shopid]);
             if(empty($config_data)){
+                // 设置默认值
                 $config_data = $this->defaultData($shopid);
             }
             $config_data = (new ConfigLogic())->formatData($config_data);
@@ -30,19 +31,17 @@ class ArticlesConfig extends Base
     }
 
     /**
-     * 设置默认数据
+     * 初始数据
      */
-    public function defaultData($shopid = 0)
+    private function defaultData($shopid = 0)
     {
-        return [
-            'status' => 1,
+        $data = [
+            'id' => 0,
             'shopid' => $shopid,
-            'comment' => [
-                'status' => 0,
-            ],
-            'thumb' => '4:3',
-            'close_desc' => '',
+            'status' => 1,
         ];
+
+        return $data;
     }
 
 }

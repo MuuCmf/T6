@@ -6,13 +6,11 @@ use app\articles\model\ArticlesCategory as CategoryModel;
 use app\articles\logic\Category as CategoryLogic;
 use app\articles\model\ArticlesArticles as ArticlesModel;
 use app\articles\logic\Articles as ArticlesLogic;
-use app\common\model\Module;
 use app\articles\validate\Articles as ArticlesValidate;
 use think\exception\ValidateException;
 
 class Articles extends Admin
 {
-    protected $ModuleModel;
     protected $CategoryModel;
     protected $CategoryLogic;
     protected $ArticlesModel;
@@ -21,7 +19,6 @@ class Articles extends Admin
     public function __construct()
     {
         parent::__construct();
-        $this->ModuleModel = new Module();
         $this->CategoryModel = new CategoryModel(); //分类模型
         $this->CategoryLogic = new CategoryLogic(); //分类逻辑
         $this->ArticlesModel = new ArticlesModel();

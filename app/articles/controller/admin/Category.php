@@ -23,7 +23,7 @@ class Category extends Admin
      */
     public function lists()
     {
-        $category_tree = $this->CategoryModel->tree($this->shopid, 0);
+        $category_tree = $this->CategoryModel->tree($this->shopid, [0,1]);
         if(request()->isAjax()){
             return $this->success('success', $category_tree);
         }
