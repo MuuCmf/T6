@@ -21,7 +21,7 @@ class Member extends Validate
         'email.email'               => '邮箱格式错误',
         'email.unique'              => '邮箱已经存在',
         'mobile.unique'             => '手机号已存在',
-        'mobile.regex'              => '手机格式错误',
+        'mobile.mobile'             => '手机格式错误',
         'password.require'          => '密码不能为空',
         'password.length'           => '密码长度应在6 - 32位之间',
         'confirm_password.require'  => '确认密码不能为空',

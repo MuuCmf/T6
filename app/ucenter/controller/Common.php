@@ -76,7 +76,10 @@ class Common extends CommonCommon
             }
             // 自动获取注册类型
             $type = check_account_type($account);
-
+            // 判断注册类型是否启用
+            if(check_reg_type($type) == false){
+                return $this->error('未启用的注册类型或输入格式错误！');
+            }
             // 验证
             try {
                 validate(Member::class)->check([
@@ -88,7 +91,6 @@ class Common extends CommonCommon
                 ]);
             } catch (ValidateException $e) {
                 // 验证失败 输出错误信息
-                // dump($e->getError());exit;
                 return $this->error($e->getError());
             }
 

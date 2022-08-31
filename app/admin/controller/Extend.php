@@ -3,8 +3,8 @@ namespace app\admin\controller;
 
 use think\facade\Db;
 use think\facade\View;
+use think\facade\Cache;
 use app\admin\builder\AdminConfigBuilder;
-use app\admin\builder\AdminListBuilder;
 use app\admin\model\ExtendConfig as MuuExtendConfigModel;
 
 /**
@@ -40,7 +40,7 @@ class Extend extends Admin
                 }
             }
             // 清理缓存
-            cache('MUUCMF_EXT_CONFIG_DATA', null);
+            Cache::delete(request()->host() . '_MUUCMF_EXT_CONFIG_DATA');
 
             return $this->success('保存成功',$config, 'refresh');
 
@@ -114,7 +114,7 @@ class Extend extends Admin
                 }
             }
             // 清理缓存
-            cache('MUUCMF_EXT_CONFIG_DATA', null);
+            Cache::delete(request()->host() . '_MUUCMF_EXT_CONFIG_DATA');
 
             return $this->success('保存成功',$config, 'refresh');
 
@@ -175,7 +175,7 @@ class Extend extends Admin
                 }
             }
             // 清理缓存
-            cache('MUUCMF_EXT_CONFIG_DATA', null);
+            Cache::delete(request()->host() . '_MUUCMF_EXT_CONFIG_DATA');
     
             return $this->success('保存成功',$config, 'refresh');
 
@@ -249,7 +249,7 @@ class Extend extends Admin
                 }
             }
             // 清理缓存
-            cache('MUUCMF_EXT_CONFIG_DATA', null);
+            Cache::delete(request()->host() . '_MUUCMF_EXT_CONFIG_DATA');
     
             return $this->success('保存成功',$config, 'refresh');
 
@@ -360,7 +360,7 @@ class Extend extends Admin
             $res = $resId = $this->extendConfigModel->edit($data);
 
             if($res){
-                cache('MUUCMF_EXT_CONFIG_DATA', null);
+                Cache::delete(request()->host() . '_MUUCMF_EXT_CONFIG_DATA');
                 //记录行为
                 action_log('update_config', 'extend_config', $resId, is_login());
 
@@ -398,7 +398,7 @@ class Extend extends Admin
         }
 
         if (Db::name('ExtendConfig')->where('id','in', $id)->delete()) {
-            cache('MUUCMF_EXT_CONFIG_DATA', null);
+            Cache::delete(request()->host() . '_MUUCMF_EXT_CONFIG_DATA');
             //记录行为
             action_log('update_config', 'extend_config', $id, is_login());
             return $this->success('删除成功');
