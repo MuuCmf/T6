@@ -17,6 +17,9 @@ class Base
      */
     public function setImgAttr($data, $proportion = '4:3' ,$prefix = 'cover')
     {
+        if(empty($proportion)){
+            $proportion == '4:3';
+        }
         if($proportion == '1:1'){
             $width = 100;
             $height = 100;
@@ -54,6 +57,9 @@ class Base
      */
     public function setCoverAttr($data, $proportion = '4:3')
     {
+        if(empty($proportion)){
+            $proportion == '4:3';
+        }
         if($proportion == '1:1'){
             $width = 100;
             $height = 100;
