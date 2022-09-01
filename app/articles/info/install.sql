@@ -90,20 +90,5 @@ INSERT INTO `muucmf_articles_category` VALUES ('2', '0', '独角兽', '', '0', '
 INSERT INTO `muucmf_articles_category` VALUES ('3', '0', '投融资', '', '0', '1', '1', '4', '1', '0', '0');
 INSERT INTO `muucmf_articles_category` VALUES ('4', '0', '火木动态', '', '0', '1', '1', '3', '1', '0', '0');
 INSERT INTO `muucmf_articles_category` VALUES ('5', '0', '锐观察', '', '0', '1', '1', '4', '1', '0', '0');
-INSERT INTO `muucmf_articles_category` VALUES ('6', '0', '技术创新', 'image/20210930/be43b1b3347858da3b0c74eade685c59.jpg', '0', '1', '1', '5', '1', '0', '1637223542');
-INSERT INTO `muucmf_articles_category` VALUES ('7', '0', 'test', '', '0', '1', '1', '8', '-1', '0', '0');
-INSERT INTO `muucmf_articles_category` VALUES ('8', '0', 'test2', '', '0', '1', '1', '2', '-1', '0', '0');
-INSERT INTO `muucmf_articles_category` VALUES ('9', '0', '测试', '', '6', '0', '0', '0', '1', '1637223661', '1637223661');
-INSERT INTO `muucmf_articles_category` VALUES ('10', '0', 'EWREWREWRW', '', '0', '0', '0', '0', '-1', '1660449056', '1660449065');
--- -----------------------------
--- 表内记录 `muucmf_articles_comment`
--- -----------------------------
-INSERT INTO `muucmf_articles_comment` VALUES ('1', '0', '56', '0', '41', '阿三大苏打飒飒', '0', '1655458216', '1655458216', '', '1');
-INSERT INTO `muucmf_articles_comment` VALUES ('2', '0', '56', '0', '41', '的是否是否是', '0', '1655458379', '1655458379', '', '1');
-INSERT INTO `muucmf_articles_comment` VALUES ('3', '0', '56', '0', '41', '士大夫大师傅', '1', '1655458459', '1655458459', '', '1');
-INSERT INTO `muucmf_articles_comment` VALUES ('4', '0', '56', '0', '40', '士大夫大师傅士大夫撒旦', '0', '1655458826', '1655458826', '', '1');
-INSERT INTO `muucmf_articles_comment` VALUES ('5', '0', '56', '0', '40', '撒犯得上发生', '1', '1655458829', '1655458829', '', '1');
-INSERT INTO `muucmf_articles_comment` VALUES ('6', '0', '56', '0', '40', '的地方大师傅士大夫', '0', '1655861268', '1655861268', '', '1');
-INSERT INTO `muucmf_articles_comment` VALUES ('8', '0', '56', '0', '40', '身上发生的事的', '0', '1655868432', '1655868432', '', '-1');
-INSERT INTO `muucmf_articles_comment` VALUES ('9', '0', '56', '0', '40', '哦哦哦哦哦哦', '0', '1655868440', '1655891599', '', '1');
-INSERT INTO `muucmf_articles_comment` VALUES ('10', '0', '56', '0', '40', 'v从v从vv', '0', '1655892629', '1655892629', '', '-1');
+
+
