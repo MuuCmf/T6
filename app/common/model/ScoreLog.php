@@ -1,12 +1,11 @@
 <?php
 namespace app\common\model;
 
-use think\Model;
 use think\facade\Db;
 /**
  * 用户积分日志模型
  */
-class ScoreLog extends Model
+class ScoreLog extends Base
 {
     
     /**
