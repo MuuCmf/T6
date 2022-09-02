@@ -37,7 +37,7 @@ class Base
             $height = 167;
         }
         if(empty($data[$prefix])){
-            $data[$prefix] = $data[$prefix . '_100'] = $data[$prefix . '_200'] = $data[$prefix . '_300'] = $data[$prefix . '_400'] = $data[$prefix . '_800'] = request()->domain() . '/static/common/images/nopic.png';
+            $data[$prefix . '_100'] = $data[$prefix . '_200'] = $data[$prefix . '_300'] = $data[$prefix . '_400'] = $data[$prefix . '_800'] = request()->domain() . '/static/common/images/nopic.png';
         }else{
             //处理缩微图
             $data[$prefix . '_100'] = get_thumb_image($data[$prefix], intval($width), intval($height));
@@ -77,7 +77,7 @@ class Base
             $height = 167;
         }
         if(empty($data['cover'])){
-            $data['cover'] = $data['cover_100'] = $data['cover_200'] = $data['cover_300'] = $data['cover_400'] = $data['cover_800'] = request()->domain() . '/static/common/images/nopic.png';
+            $data['cover_100'] = $data['cover_200'] = $data['cover_300'] = $data['cover_400'] = $data['cover_800'] = request()->domain() . '/static/common/images/nopic.png';
         }else{
             //处理缩微图
             $data['cover_100'] = get_thumb_image($data['cover'], intval($width), intval($height));
