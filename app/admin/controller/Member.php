@@ -38,37 +38,33 @@ class Member extends Admin
     public function index()
     {
         $search = input('search','','text');
-        if(is_numeric($search)) {
-            //UID查询
-            $map[] = ['uid' ,'=' ,$search];
-        }else{
-            $username = $search;
-            $aUnType = 0;
-            check_username($username, $email, $mobile, $aUnType);
-            //用户名或昵称查询
-            if($username){
-                $mapUsername['username'] = ['like', '%' . $username . '%'];
-                $uid = Db::name('member')->where($mapUsername)->value('id');
-                if($uid){
-                    $map[] = ['uid' ,'=' ,$search];
-                }else{
-                    $map[] = ['nickname' ,'like' ,'%' . (string)$search . '%'];
-                }
+        if(!empty($search)) {
+            $uids = $this->memberModel
+            ->where('username', 'like', '%' . $search . '%')
+            ->whereOr('nickname', 'like', '%' . $search . '%')
+            ->whereOr('mobile', 'like', '%' . $search . '%')
+            ->whereOr('email', 'like', '%' . $search . '%')
+            ->column('uid');
+            if(!empty($uids)){
+                $map[] = ['uid' ,'in' ,$uids];
+            }else{
+                $map[] = ['nickname', 'like', '%' . $search . '%'];
             }
         }
+
         //排序
-        $sort = input('order','','text');
+        $sort = input('order','create_time','text');
         $order='';
         if($sort == 'uid'){
             $order = 'uid desc';
         }
-        if($sort == 'reg_time'){
-            $order = 'reg_time desc';
+        if($sort == 'create_time'){
+            $order = 'create_time desc';
         }
-        if($sort == 'login_time'){
+        if($sort == 'last_login_time'){
             $order = 'last_login_time desc';
         }
-        if($sort == 'login_num'){
+        if($sort == 'login'){
             $order = 'login desc';
         }
         $map[] = ['status','>=', 0];
