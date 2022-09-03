@@ -73,7 +73,7 @@ class Upgrade
     {
         $source = $this->api . "upgrade/download?" . http_build_query($params);
         //地址追加授权域名
-        $source .= "&auth_code=" . Cloud::authCode();
+        $source .= "&auth_code=" . urldecode(Cloud::authCode());
         $ch = curl_init();//初始化一个cURL会话
         curl_setopt($ch, CURLOPT_URL, $source);//抓取url
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);//是否显示头信息
