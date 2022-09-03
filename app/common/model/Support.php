@@ -14,7 +14,7 @@ class Support extends Base
      *
      * @return     <type>  The favorites.
      */
-    public function getSupport($shopid = 0, $app, $info_id, $info_type)
+    public function getSupport($shopid, $app, $info_id, $info_type)
     {   
         if(!empty($shopid) && $shopid != 0){
             $map[] = ['shopid', '=', $shopid];
@@ -30,7 +30,7 @@ class Support extends Base
     /**
      * 判断用户是否点赞
      */
-    public function yesSupport($shopid = 0, $uid, $info_id, $info_type , $app)
+    public function yesSupport($shopid, $uid, $info_id, $info_type , $app)
     {
         if(!empty($shopid) && $shopid != 0){
             $map[] = ['shopid', '=', $shopid];
