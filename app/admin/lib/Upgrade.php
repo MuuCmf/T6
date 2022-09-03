@@ -73,7 +73,7 @@ class Upgrade
     {
         $source = $this->api . "upgrade/download?" . http_build_query($params);
         //地址追加授权域名
-        $source .= "&auth_code=" . urldecode(Cloud::authCode());
+        $source .= "&auth_code=" . urlencode(Cloud::authCode());
         $ch = curl_init();//初始化一个cURL会话
         curl_setopt($ch, CURLOPT_URL, $source);//抓取url
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);//是否显示头信息
@@ -85,9 +85,9 @@ class Upgrade
         $response = curl_getinfo($ch);
         $error = curl_error($ch);//返回一条最近一次cURL操作明确的文本的错误信息。
         curl_close($ch);//关闭一个cURL会话并且释放所有资源
+
         //处理返回的错误信息
         if ($response['content_type'] != 'application/octet-stream') {
-            
             $error = json_decode($data, true);
             throw new Exception($error['msg'],$error['code']);
         }
