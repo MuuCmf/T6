@@ -71,8 +71,8 @@ class Module extends Admin
             //获取应用图标
             if(empty($item['icon'])){
                 //图标所在位置为模块静态目录下（推荐）
-                if(file_exists(PUBLIC_PATH . '/static/' . $item['name'] . '/images/icon.jpg')){
-                    $item['icon_100'] = $item['icon_200'] =$item['icon_300'] =$item['icon_400'] = '/static/'. $item['name'] .'/images/icon.jpg';
+                if(file_exists(PUBLIC_PATH . '/static/' . $item['name'] . '/images/icon.png')){
+                    $item['icon_100'] = $item['icon_200'] =$item['icon_300'] =$item['icon_400'] = '/static/'. $item['name'] .'/images/icon.png';
                 }else{
                     $item['icon_100'] = $item['icon_200'] =$item['icon_300'] =$item['icon_400'] = '/static/admin/images/module_default_icon.png';
                 }

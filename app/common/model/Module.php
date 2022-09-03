@@ -18,8 +18,8 @@ class Module extends Base
             
             if(empty($info['icon'])){
                 //图标所在位置为模块静态目录下（推荐）
-                if(file_exists(PUBLIC_PATH . '/static/' . $info['name'] . '/images/icon.jpg')){
-                    $info['icon_100'] = $info['icon_200'] =$info['icon_300'] =$info['icon_400'] = '/static/'. $info['name'] .'/images/icon.jpg';
+                if(file_exists(PUBLIC_PATH . '/static/' . $info['name'] . '/images/icon.png')){
+                    $info['icon_100'] = $info['icon_200'] =$info['icon_300'] =$info['icon_400'] = '/static/'. $info['name'] .'/images/icon.png';
                 }else{
                     $info['icon_100'] = $info['icon_200'] =$info['icon_300'] =$info['icon_400'] = '/static/admin/images/module_default_icon.png';
                 }
@@ -127,7 +127,7 @@ class Module extends Base
             {
                 // 获取配置数据
                 $info = $this->getInfo($subdir);
-                $info['icon'] = '';
+                //$info['icon'] = '';
                 $info['sort'] = 0;
                 $info['source'] = 'local';
                 // 合并数据表内模块
@@ -386,8 +386,8 @@ class Module extends Base
             $info = $info->toArray();
             if(empty($info['icon'])){
                 //图标所在位置为模块静态目录下（推荐）
-                if(file_exists(PUBLIC_PATH . '/static/' . $name . '/images/icon.jpg')){
-                    $info['icon_100'] = $info['icon_200'] =$info['icon_300'] =$info['icon_400'] = '/static/'. $name .'/images/icon.jpg';
+                if(file_exists(PUBLIC_PATH . '/static/' . $name . '/images/icon.png')){
+                    $info['icon_100'] = $info['icon_200'] =$info['icon_300'] =$info['icon_400'] = '/static/'. $name .'/images/icon.png';
                 }else{
                     $info['icon_100'] = $info['icon_200'] =$info['icon_300'] =$info['icon_400'] = '/static/admin/images/module_default_icon.png';
                 }
