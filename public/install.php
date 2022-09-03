@@ -288,7 +288,7 @@ switch ($_GET['step']) {
         ];
         $func_items = [
             ['name' => 'PDO', 'type' => 'class'],
-            ['name' => 'putenv', 'type' => 'func'],
+            //['name' => 'putenv', 'type' => 'func'],
             ['name' => 'proc_get_status', 'type' => 'func'],
             ['name' => 'fsockopen', 'type' => 'func'],
             ['name' => 'gethostbyname', 'type' => 'func'],

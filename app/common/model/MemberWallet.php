@@ -49,7 +49,7 @@ class MemberWallet extends Base
      * @param bool $revenue [是否写入总收益]
      * @return bool
      */
-    public function income($shopid = 0 ,$uid ,$money ,$revenue = true){
+    public function income($shopid = 0 ,$uid = 0 ,$money = 0 ,$revenue = true){
 
         try {
             $map = [
@@ -87,7 +87,7 @@ class MemberWallet extends Base
      * @param int $shopid [店铺ID]
      * @return bool
      */
-    public function spending($shopid = 0 ,$uid ,$money){
+    public function spending($shopid = 0 ,$uid = 0 ,$money = 0){
         $this->startTrans();
         try {
             $this->initWallet($uid ,$shopid);
