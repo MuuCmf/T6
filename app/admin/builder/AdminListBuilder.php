@@ -266,7 +266,7 @@ class AdminListBuilder extends AdminBuilder
      * @param string $arrvalue 筛选数据（包含ID 和value的数组:array(array('id'=>1,'value'=>'系统'),array('id'=>2,'value'=>'项目'),array('id'=>3,'value'=>'机构'));）
      * @return $this
      */
-    public function select($title = '筛选', $name = 'key', $type = 'select', $des = '', $attr, $arrdb = '', $arrvalue = null)
+    public function select($title = '筛选', $name = 'key', $type = 'select', $des = '', $attr = '', $arrdb = '', $arrvalue = null)
     {
         if (empty($arrdb)) {
             $this->_select[] = ['title' => $title, 'name' => $name, 'type' => $type, 'des' => $des, 'attr' => $attr, 'arrvalue' => $arrvalue];
