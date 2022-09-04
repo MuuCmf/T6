@@ -6,8 +6,6 @@ return [
     'alias' => '文章',
     //版本号
     'version' => '1.0.0',
-    //是否商业模块,1是，0，否
-    'is_com' => 1,
     //模块描述
     'summary' => '文章模块',
     //开发者
@@ -16,6 +14,4 @@ return [
     'website' => 'http://www.muucmf.com',
     //后台入口
     'entry' => 'articles/admin.articles/lists',
-    //允许卸载
-    'uninstall' => 1,
 ];
