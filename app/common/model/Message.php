@@ -25,7 +25,7 @@ class Message extends Base
      * send_type array msg站内信 email邮件 sms短信
      * 
     */
-    public function sendMessageToUid($shopid = 0, $uid = 0, $to_uids, $title = '您有新的消息', $description = '', $content = '', $type_id = 1, $send_type = ['msg','email'])
+    public function sendMessageToUid($shopid = 0, $uid = 0, $to_uids = [], $title = '您有新的消息', $description = '', $content = '', $type_id = 1, $send_type = ['msg','email'])
     {
         // 指定用户ID
         $to_uids = is_array($to_uids) ? $to_uids : explode(',', $to_uids);
@@ -56,7 +56,7 @@ class Message extends Base
     /**
      * 发送消息至用户组
     */
-    public function sendMessageToGroup($shopid = 0, $uid = 0, $to_groud_ids, $title = '您有新的消息', $description = '', $content = '', $type_id = 1, $send_type = ['msg','email'])
+    public function sendMessageToGroup($shopid = 0, $uid = 0, $to_groud_ids = [], $title = '您有新的消息', $description = '', $content = '', $type_id = 1, $send_type = ['msg','email'])
     {
         // 指定用户ID
         $to_groud_ids = is_array($to_groud_ids) ? $to_groud_ids : explode(',', $to_groud_ids);

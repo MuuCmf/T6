@@ -391,7 +391,7 @@ class AdminListBuilder extends AdminBuilder
         return $this->key($name, $title, 'uid');
     }
 
-    public function keyNickname($name = 'uid', $title, $subtitle = null)
+    public function keyNickname($name = 'uid', $title = '', $subtitle = null)
     {
         return $this->key($name, $title, $subtitle, 'nickname');
     }

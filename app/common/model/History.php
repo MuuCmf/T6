@@ -52,7 +52,7 @@ class History extends Base
      * @param $info_id
      * @param $info_type
      */
-    public function addLog($shopid = 0, $app, $uid, $info_id ,$info_type, $metadata)
+    public function addLog($shopid, $app, $uid, $info_id ,$info_type, $metadata)
     {
         // 判断是否存在记录
         $data = $this->yesHistory($shopid, $app, $uid, $info_id, $info_type);
