@@ -168,7 +168,7 @@ CREATE TABLE IF NOT EXISTS `muucmf_author` (
   `cover` varchar(255) NOT NULL DEFAULT '' COMMENT '图片',
   `avatar_card` varchar(255) NOT NULL DEFAULT '' COMMENT '手持身份证照片',
   `certificate` varchar(255) NOT NULL DEFAULT '' COMMENT '资格证书',
-  `content` text NOT NULL COMMENT '讲师详情',
+  `content` text NOT NULL COMMENT '详情',
   `charges` int(11) NOT NULL DEFAULT '0' COMMENT '余额 单位：分',
   `freeze` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '冻结资金 单位：分',
   `total` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '总收益 单位：分',
