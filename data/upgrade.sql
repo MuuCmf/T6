@@ -1,0 +1,1 @@
+ALTER TABLE `muucmf_orders` ADD `refund_result` TEXT NULL COMMENT '退款成功平台返回数据' AFTER `refund_no`;

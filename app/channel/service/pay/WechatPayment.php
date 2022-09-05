@@ -6,8 +6,8 @@ use app\channel\model\WechatMpConfig;
 use EasyWeChat\Factory;
 use think\Exception;
 
-class WechatPayment extends PayService{
-
+class WechatPayment extends PayService
+{
     function __construct($appid)
     {
         $this->type = 'wechat';
@@ -16,6 +16,10 @@ class WechatPayment extends PayService{
         $app =  Factory::payment($config);
         parent::__construct($app);
     }
+
+    /**
+     * 初始化配置
+     */
     public function initConfig($appid)
     {
         //获取配置信息
@@ -74,11 +78,9 @@ class WechatPayment extends PayService{
         $result = $this->app->refund->byOutTradeNumber($refund_info['order_no'], $refund_info['refund_no'], $refund_info['total_fee'],$refund_info['refund_fee'], [
             'refund_desc' => $refund_info['title']
         ]);
-        if ($result['return_code'] == 'SUCCESS' && $result['result_code'] == 'SUCCESS') {
-            return true;
-        }
-        throw new Exception($result['return_msg']);
-
+        //if ($result['return_code'] == 'SUCCESS' && $result['result_code'] == 'SUCCESS') {
+        return $result;
+        //}
     }
 
     /**.
