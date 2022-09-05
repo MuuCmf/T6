@@ -11,7 +11,7 @@ class CapitalFlow extends Base{
      * 生成流水号
      * @return [type] [description]
      */
-    protected function build_flow_no(){
+    public function build_flow_no(){
         return date('Ymd').substr(implode(NULL, array_map('ord', str_split(substr(uniqid(), 7, 13), 1))), 0, 14);
     }
 
@@ -34,6 +34,7 @@ class CapitalFlow extends Base{
         if ($res){
             return $flow_no;
         }
+        
         return false;
     }
 
