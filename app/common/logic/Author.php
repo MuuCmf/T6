@@ -1,6 +1,7 @@
 <?php
 namespace app\common\logic;
 
+use app\common\model\AuthorGroup;
 /*
  * 作者数据逻辑层
  */
@@ -57,6 +58,12 @@ class Author extends Base
 		if($data['uid'] > 0){
 			$data['user_info'] = query_user($data['uid']);
 		}
+
+        if($data['groud_id'] > 0){
+            $data['groud'] = (new AuthorGroup())->where('id', $data['groud_id'])->value('title');
+        }else{
+            $data['groud'] = '';
+        }
 
 		// 状态描述
 		$data['status_str'] = $this->_status[$data['status']];
