@@ -196,6 +196,22 @@ CREATE TABLE IF NOT EXISTS `muucmf_author_group` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='创作者分组' ROW_FORMAT=COMPACT;
 
 --
+-- 表的结构 `muucmf_author_follow`
+--
+
+DROP TABLE IF EXISTS `muucmf_author_follow`;
+CREATE TABLE IF NOT EXISTS `muucmf_author_follow` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+  `shopid` int(11) unsigned NOT NULL COMMENT '平台ID',
+  `uid` int(11) unsigned NOT NULL COMMENT '谁关注',
+  `author_id` int(11) unsigned NOT NULL COMMENT '关注谁',
+  `status` TINYINT(2) NOT NULL COMMENT '状态',
+  `create_time` int(11) unsigned NOT NULL COMMENT '创建时间',
+  `update_time` int(11) unsigned NOT NULL COMMENT '更新时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='创造者关注表' ROW_FORMAT=COMPACT;
+
+--
 -- 表的结构 `muucmf_auth_group`
 --
 
