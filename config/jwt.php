@@ -2,7 +2,7 @@
 
 
 return [
-    'secret'      => env('JWT_SECRET'),
+    'secret'      => env('JWT_SECRET', 'muucmf'),
     //Asymmetric key
     'public_key'  => env('JWT_PUBLIC_KEY'),
     'private_key' => env('JWT_PRIVATE_KEY'),
