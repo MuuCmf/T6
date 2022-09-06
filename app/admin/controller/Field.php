@@ -23,7 +23,8 @@ class Field extends Admin
         parent::__construct();
     }
 
-    /**扩展用户信息分组列表
+    /**
+     * 扩展用户信息分组列表
      */
     public function group()
     {

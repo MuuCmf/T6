@@ -2,19 +2,24 @@
 namespace app\admin\controller;
 
 use think\facade\View;
+use app\admin\builder\AdminConfigBuilder;
+use app\admin\builder\AdminListBuilder;
 use app\common\model\Author as AuthorModel;
 use app\common\logic\Author as AuthorLogic;
+use app\common\model\AuthorGroup as AuthorGroupModel;
 
 class Author extends Admin
 {
     protected $AuthorModel;
     protected $AuthorLogic;
+    protected $AuthorGroupModel;
 
     public function __construct()
     {
         parent::__construct();
         $this->AuthorModel = new AuthorModel();
         $this->AuthorLogic = new AuthorLogic();
+        $this->AuthorGroupModel = new AuthorGroupModel();
     }
 
     /**
@@ -100,6 +105,7 @@ class Author extends Admin
             $data = [];
             $data['id'] = 0;
             $data['uid'] = 0;
+            $data['group_id'] = 0;
             $data['name'] = '';
             $data['description'] = '';
             $data['cover'] = '';
@@ -114,9 +120,15 @@ class Author extends Admin
                 $data = $this->AuthorModel->getDataById($id);
                 $data = $this->AuthorLogic->formatData($data);
             }
-            View::assign('data',$data);
+            View::assign('data', $data);
+            // 获取创作者分组
+            $group_map = [
+                ['status', '=', 1]
+            ];
+            $group = $this->AuthorGroupModel->getList($group_map, 999);
+            View::assign('group', $group);
             // 设置页面Title
-            $this->setTitle($title . '老师');
+            $this->setTitle($title . '创作者');
             // 输出模板
             return View::fetch();
         }
@@ -151,7 +163,7 @@ class Author extends Admin
     }
 
     /**
-     * 检查用户老师绑定状态，禁止用户绑定多个老师
+     * 检查用户创造者绑定状态，禁止用户绑定多个创造者
      */
     public function checkBind()
     {
@@ -163,9 +175,9 @@ class Author extends Admin
             ['uid', '=', $uid]
         ]);
         if($res && $res['id'] != $id){
-            return $this->error('该用户已绑定讲师数据');
+            return $this->error('该用户已绑定创造者数据');
         }else{
-            return $this->success('验证成功，允许绑定讲师');
+            return $this->success('验证成功，允许绑定创造者');
         }
     }
 
@@ -199,6 +211,90 @@ class Author extends Admin
 
         // 输出模板
         return View::fetch();
+    }
+
+    /**
+     * 创造者分组
+     */
+    public function groupList()
+    {
+        //读取数据
+        $map[] = ['status', '>', -1];
+        $list = $this->AuthorGroupModel->getList($map);
+        //显示页面
+        $builder = new AdminListBuilder();
+        $builder
+            ->title('创造者类型')
+            ->suggest('id<=4的不能删除')
+            ->buttonNew(url('groupEdit'))
+            ->setStatusUrl(url('groupStatus'))
+            ->buttonEnable()
+            ->buttonDisable()
+            ->buttonDelete(url('groupStatus'),'删除')
+            ->keyId()
+            ->keyText('title', '名称')
+            ->keyStatus()
+            ->keyDoActionEdit('groupEdit?id=###')
+            ->keyDoActionDelete('groupStatus?ids=###&status=-1')
+            ->data($list)
+            ->display();
+    }
+
+    /**
+     * 编辑分组
+     */
+    public function groupEdit()
+    {
+        $id = input('id', 0, 'intval');
+        if (request()->isPost()) {
+            $data = input();
+            if (!empty($id)) {
+                $res = $this->AuthorGroupModel->edit($data);
+            } else {
+                if ($this->AuthorGroupModel->where('title', '=', $data['title'])->count() > 0) {
+                    return $this->error('已经有同名分组，请使用其他分组名称！');
+                }
+                $res = $this->AuthorGroupModel->edit($data);
+            }
+            if ($res) {
+                return $this->success(empty($id) ? '新增分组成功' : '编辑分组成功', '');
+            } else {
+                return $this->error(empty($id) ? '新增分组失败' : '编辑分组失败');
+            }
+        } else {
+
+            $builder = new AdminConfigBuilder();
+            if ($id != 0) {
+                $profile = $this->AuthorGroupModel->where(['id'=>$id])->find();
+                $builder->title('修改创作者类型');
+            } else {
+                $builder->title('添加创作者类型');
+                $profile = [];
+            }
+            $builder
+                ->keyReadOnly("id", 'ID')
+                ->keyText('title', '名称')
+                ->data($profile);
+            $builder
+                ->buttonSubmit(url('groupEdit'), $id == 0 ? lang('Add') : lang('Edit'))
+                ->buttonBack()
+                ->display();
+        }
+    }
+
+    /**
+     * 设置分组状态
+     */
+    public function groupStatus($ids, $status)
+    {
+        $ids = array_unique((array)$ids);
+        $ids = implode(',',$ids);
+        $rs = $this->AuthorGroupModel->where('id','in', $ids)->update(['status' => $status]);
+        if ($rs) {
+            return $this->success('设置成功', $_SERVER['HTTP_REFERER']); 
+        }else{
+            return $this->error('设置失败');
+        }
     }
 
 }

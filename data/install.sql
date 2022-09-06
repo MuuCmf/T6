@@ -163,26 +163,37 @@ CREATE TABLE IF NOT EXISTS `muucmf_author` (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键ID',
   `shopid` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '店铺ID',
   `uid` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '绑定用户ID',
+  `group_id` INT(11) UNSIGNED NOT NULL COMMENT '分组ID',
   `name` varchar(18) NOT NULL DEFAULT '' COMMENT '真实姓名',
   `description` varchar(140) NOT NULL DEFAULT '' COMMENT '简短描述',
   `cover` varchar(255) NOT NULL DEFAULT '' COMMENT '图片',
   `avatar_card` varchar(255) NOT NULL DEFAULT '' COMMENT '手持身份证照片',
   `certificate` varchar(255) NOT NULL DEFAULT '' COMMENT '资格证书',
   `content` text NOT NULL COMMENT '详情',
-  `charges` int(11) NOT NULL DEFAULT '0' COMMENT '余额 单位：分',
-  `freeze` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '冻结资金 单位：分',
-  `total` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '总收益 单位：分',
-  `create_time` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '创建时间',
-  `update_time` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '更新时间',
   `sort` int(11) NOT NULL DEFAULT '0' COMMENT '排序值',
   `view` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '阅读量',
   `verify` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '认证类型ID',
   `auth` text NOT NULL COMMENT '功能权限 json格式',
   `status` tinyint(4) NOT NULL DEFAULT '0' COMMENT '数据状态',
   `reason` varchar(255) NOT NULL DEFAULT '' COMMENT '拒绝审核原因',
+  `create_time` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '创建时间',
+  `update_time` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '更新时间',
   PRIMARY KEY (`id`) USING BTREE,
   KEY `uid` (`uid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='创作者表' ROW_FORMAT=COMPACT;
+
+--
+-- 表的结构 `muucmf_author_group`
+--
+DROP TABLE IF EXISTS `muucmf_author_group`;
+CREATE TABLE IF NOT EXISTS `muucmf_author_group` (
+  `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+  `title` varchar(64) NOT NULL COMMENT '创作者分组标题',
+  `status` TINYINT(2) NOT NULL COMMENT '状态',
+  `create_time` int(11) NOT NULL COMMENT '创建时间',
+  `update_time` int(11) NOT NULL COMMENT '更新时间',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='创作者分组' ROW_FORMAT=COMPACT;
 
 --
 -- 表的结构 `muucmf_auth_group`
@@ -4501,7 +4512,9 @@ INSERT INTO `muucmf_menu` (`id`, `title`, `pid`, `sort`, `url`, `hide`, `type`, 
 ('F8C08807-1339-95ED-FDEC-8E5D853FC1D8', '菜单管理', 'A4650B98-DAD4-8194-030C-1B2AB4F35CBA', 1, 'channel/admin.Account/menu', 0, 0, '', '微信公众号/H5', 0, 'bars', 'admin'),
 ('F8D89EF4-792E-B14F-8456-09394EDE7C72', '编辑模块', '20216DCF-1138-09A3-346A-C92E08E33677', 0, 'admin/Module/edit', 1, 0, '', '模块管理', 0, '', 'admin'),
 ('FAD7E420-2621-D50C-48AF-BAEEA2F361F5', '应用商店', '7BE5FA0B-7009-AB46-FE7B-A9364ACAF687', 0, 'admin/Appcloud/index', 0, 0, '', '云端', 0, 'cloud', 'admin'),
-('FD6493CE-98CB-A5A7-3236-080E11318831', '备份', '2B76BD2C-80AB-319C-CE6E-1B0E6930B3CC', 0, 'admin/Database/export', 0, 0, '备份数据库', '', 0, '', 'admin');
+('FD6493CE-98CB-A5A7-3236-080E11318831', '备份', '2B76BD2C-80AB-319C-CE6E-1B0E6930B3CC', 0, 'admin/Database/export', 0, 0, '备份数据库', '', 0, '', 'admin'),
+('8553C20D-7FCB-4252-15F4-5ECFC0A56092', '创作者类型', 'D18841ED-C034-2E7A-D0B2-92D0AC647179', 4, 'admin/Author/groupList', 0, 0, '', '创作者管理', 0, 'window-restore', 'admin'),
+('8BBDA16F-8A60-47CE-F4BD-0C3AC4AC7677', '添加、编辑分组', '8553C20D-7FCB-4252-15F4-5ECFC0A56092', 0, 'admin/Author/groupEdit', 0, 0, '', '', 0, '', 'admin');
 
 -- --------------------------------------------------------
 

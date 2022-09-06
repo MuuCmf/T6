@@ -53,26 +53,11 @@ class Author extends Base
         $data = $this->setCoverAttr($data, '1:1');
         $data['content'] = htmlspecialchars_decode($data['content']);
         
-        // 绑定用户的讲师获取用户数据
+        // 绑定用户的创造者获取用户数据
 		if($data['uid'] > 0){
 			$data['user_info'] = query_user($data['uid']);
 		}
 
-		// // 累计总收入
-        // if(isset($data['total'])){
-        //     $data['total'] = sprintf("%.2f",$data['total']/100);
-        // }
-		
-		// // 余额
-        // if(isset($data['charges'])){
-        //     $data['charges'] = sprintf("%.2f",$data['charges']/100);
-        // }
-		
-		// 冻结资金
-		//$data['freeze'] = sprintf("%.2f",$data['freeze']/100);
-		// 可以余额
-        //$data['enable_charges'] = sprintf("%.2f",($data['charges'] - $data['freeze']));
-        
 		// 状态描述
 		$data['status_str'] = $this->_status[$data['status']];
         // 时间处理

@@ -41,7 +41,22 @@
 					<div class="help-block">请填写创作者简短描述</div>
 				</div>
 			</div>
-
+			<div class="form-group">
+				<label class="col-sm-2 control-label">创造者类型</label>
+				<div class="form-controls col-sm-8">
+					<select name="group_id" class="form-control">
+						<option value="">请选择类型</option>
+						{volist name="$group" id="v"}
+						{if $data['group_id'] == $v['id']}
+						<option value="{$v['id']}" selected><b>{$v['title']}</b></option>
+						{else}
+						<option value="{$v['id']}"><b>{$v['title']}</b></option>
+						{/if}
+						{/volist}
+					</select>
+					<div class="help-block">请创造者类型</div>
+				</div>
+			</div>
 			<div class="form-group">
 				<label class="col-sm-2 control-label">创作者图片</label>
 				<div class="form-controls col-sm-8">
@@ -62,23 +77,14 @@
 			<!--关联用户-->
 			<div class="form-group">
 				<label class="col-sm-2 control-label">绑定用户</label>
-				<div class="form-controls col-sm-8">
-					<input type="hidden" name="uid" value="{$data['uid']}">
-					<div class="margin-bottom">
-						<button type="button" class="btn btn-primary" role="button" data-toggle="modal" data-target="#chooseUserModal" data-api="{:url('admin/member/index')}" data-bind-api="{:url('checkBind')}">选择用户</button>
-					</div>
+				<div class="form-controls col-sm-8" bind-user>
+					<button type="button" class="btn btn-primary choose-user-btn" role="button" data-name="chooseUserModal" data-iframe="{:url('admin/member/chooseUser')}" data-toggle="modal" data-scroll-inside="true" data-bind-api="{:url('checkBind')}" data-height="600px">选择用户</button>
 					
-					<div class="choose-user clearfix">
-						{if !empty($data['user_info'] && $data['user_info'] != -1)}
-						<div class="user-avatar">
-							<img src="{$data['user_info']['avatar64']}" />
-						</div>
-						<div class="user-nickname">
-							{$data['user_info']['nickname']}
-						</div>
-						{/if}
+					<div class="choose-user clearfix" id="choose-user-cb">
+						<input type="hidden" name="uid" id="choose-user-uid" value="{$data['user_info']['uid']|default='0'}">
+                        <img src="{$data['user_info']['avatar64']|default=''}" alt="" id="choose-user-avatar" class="user-avatar">
+                        <span id="choose-user-nickname">{$data['user_info']['nickname']|default=''}</span>
 					</div>
-					
 					<div class="help-block">选择绑定的用户</div>
 				</div>
 			</div>
@@ -184,145 +190,6 @@
 		</div>
 	</form>
 </div>
-
-<!--选择用户模态-->
-<div class="modal fade" id="chooseUserModal">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">关闭</span></button>
-			<h4 class="modal-title">选择绑定用户</h4>
-			</div>
-			  <div class="modal-body">
-				  <div class="user-search">
-					  <div class="input-group">
-						<div class="input-control search-box has-icon-left has-icon-right">
-							<input type="hidden" name="api">
-							<input id="inputSearch" type="search" class="form-control search-input empty" name="keyword" placeholder="用户昵称/手机号">
-							<label for="inputSearch" class="input-control-icon-left search-icon"><i class="icon icon-search"></i></label>
-						</div>
-						<span class="input-group-btn">
-							<button class="btn btn-primary" type="button">搜索</button>
-						</span>
-					</div>
-				</div>
-				  <div class="user-section clearfix">
-
-				</div>
-				<div class="user-page">
-					<ul class="pager" data-ride="pager" data-elements="prev,nav,next"></ul>
-				</div>
-			  </div>
-			  <div class="modal-footer">
-				<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-			</div>
-		</div>
-	</div>
-</div>
-<!--选择用户模态 END-->
-<script>
-	/**
-	 * 选择用户列表
-	 */
-	 $(function(){
-		//初始化
-		var id = $('input[name="id"]').val();
-		var user_api = '';
-		var check_bind_api = '';
-		$('.author-edit-section').on('click','[data-target="#chooseUserModal"]',function(){
-			//获取用户API接口
-			user_api= $(this).data('api');
-			//检测用户是否绑定API接口
-			check_bind_api = $(this).data('bind-api');
-			generatingTable(user_api);
-		});
-		/**
-		 * 读取ajax数据并构建数据表格
-		 *
-		 * @param      {<type>}  data    The data
-		 * @param      {<type>}  type    The type
-		 */
-		var generatingTable = function(api,page){
-	        //showLoading();
-	        page = page || 1;
-	        var api = api + '?r=9&page=' + page;
-	        //清空内容
-	        $("#chooseUserModal .user-section").html('');
-            //搜索功能
-            $('#chooseUserModal .user-search input[name="api"]').val(api);
-            $('#chooseUserModal .user-search').unbind("click").on('click','.btn',function(event){
-                event.preventDefault();
-                var keyword = $('#chooseUserModal .user-search input[name="keyword"]').val();
-                var api = $('#chooseUserModal .user-search input[name="api"]').val();
-                var api = api + '&keyword='+ keyword;
-                getModalData(api);
-            });
-            getModalData(api);
-	    };
-
-	    /**
-	     * 获取弹出模态框数据并写入DOM
-	     */
-	    var getModalData = function(api){
-	        var diyPager = $('#chooseUserModal .pager').data('zui.pager');
-            
-            $.get(api,function(data){
-            	//console.log(data);
-                var html_str="";
-                $.each(data.data.data,function(i,n){
-                    html_str += '<div class="user-item clearfix" data-uid='+n.uid+' data-nickname='+n.nickname+' data-avatar='+n.avatar64+'>';
-                    html_str += '<div class="user-avatar"><img src="'+ n.avatar64 +'" /></div>';
-                    html_str += '<div class="user-nickname">'+ n.nickname +'</div>';
-                    html_str += '</div>';
-                });
-                $('#chooseUserModal .user-section').html(html_str);
-                //动态更新分页器
-                diyPager.set(parseInt(data.data.current_page), parseInt(data.data.total), parseInt(data.data.per_page));
-                //hideLoading();
-            });
-	    }
-	    //选择用户点击事件
-	    $('#chooseUserModal .user-section').on('click','.user-item',function(){
-	        var data = $(this).data();
-			//查询该用户是否已绑定其他讲师
-			var uid = data.uid;
-			var params = {
-				'id' : id,
-				'uid' : uid,
-			};
-			$.post(check_bind_api,params,function(res){
-				//console.log(res);
-				if(res.code){
-					//构造DOM结构
-					var html_str = '\
-						<div class="user-avatar">\
-							<img src="'+data.avatar+'" />\
-						</div>\
-						<div class="user-nickname">\
-							'+data.nickname+'\
-						</div>';
-
-					$('.author-edit-section .choose-user').html(html_str);  
-					$('.author-edit-section input[name="uid"]').val(data.uid);
-					//关闭模态框
-					$('#chooseUserModal [data-dismiss="modal"]').click();
-				}else{
-					toast.error(res.msg, 'danger');
-					return false;
-				}
-			});
-	    });
-
-	    //动态绑定分页器页码点击
-	    $('#chooseUserModal .pager').on('onPageChange', function(e, state, oldState) {
-	        if (state.page !== oldState.page) {
-	        	var api = $('[data-target="#chooseUserModal"]').data('api');
-	            generatingTable(api,state.page);
-	        }
-	    });
-	});
-
-</script>
 {/block}
 
 {block name="script"}

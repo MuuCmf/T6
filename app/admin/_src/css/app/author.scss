@@ -67,22 +67,25 @@
 }
 
 .author-edit-section {
-	/*讲师绑定用户表单内样式*/
+	/*绑定用户表单内样式*/
 	.choose-user {
+		margin: 5px 0;
 		.user-avatar {
 			float: left;
 			width: 50px;
 			height: 50px;
-
-			img {
-				width: 100%;
-				border-radius: 50%;
-				overflow: hidden;
-			}
+			border-radius: 50%;
+			overflow: hidden;
+			
 		}
 		.user-nickname {
 			margin-left: 60px;
 			line-height: 50px;
+		}
+		img[src=""]{
+			opacity: 0 !important;
+			width: 0 !important;
+			height: 0 !important;
 		}
 	}
 }
