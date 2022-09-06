@@ -53,7 +53,7 @@ class Upgrade
      * @return bool
      */
     public function checkIgnoreFile($path){
-        $ignore_paths = ['.env','runtime','.idea','.gitignore','data/version.ini','_src'];
+        $ignore_paths = ['.env','config','runtime','.idea','.gitignore','vendor','data/version.ini','_src'];
         foreach ($ignore_paths as $item){
             if (strpos($path,$item) !== false){
                 return true;
