@@ -55,11 +55,11 @@ class Author extends Base
         $data['content'] = htmlspecialchars_decode($data['content']);
         
         // 绑定用户的创造者获取用户数据
-		if($data['uid'] > 0){
+		if(!empty($data['uid'])){
 			$data['user_info'] = query_user($data['uid']);
 		}
 
-        if($data['groud_id'] > 0){
+        if(!empty($data['groud_id'])){
             $data['groud'] = (new AuthorGroup())->where('id', $data['groud_id'])->value('title');
         }else{
             $data['groud'] = '';
