@@ -5,6 +5,7 @@ use app\common\controller\Api;
 use app\common\model\Author as AuthorModel;
 use app\common\logic\Author as AuthorLogic;
 use app\common\model\AuthorFollow as AuthorFollowModel;
+use app\common\logic\AuthorFollow as AuthorFollowLogic;
 
 class Author extends Api
 {   
@@ -107,6 +108,7 @@ class Author extends Api
             if($follow['status'] == 1) $data['status'] = 0;
             if($follow['status'] == 0) $data['status'] = 1;
         }else{
+            $data['shopid'] = $this->shopid;
             $data['uid'] = $uid;
             $data['author_id'] = $author_id;
             $data['status'] = 1;
@@ -140,6 +142,34 @@ class Author extends Api
         }
 
         return $this->error('未关注或缺少参数');
+    }
+
+    /**
+     * 关注创作者列表
+     */
+    public function followList()
+    {
+        $uid = get_uid();
+        $rows = input('rows',20, 'intval');
+        $order_field = input('order_field', 'id', 'text');
+        $order_type = input('order_type', 'desc', 'text');
+        $order = $order_field . ' ' . $order_type;
+
+        // 查询条件
+        $map = [
+            ['shopid', '=', $this->shopid],
+            ['uid', '=', $uid],
+            ['status', '=', 1]
+        ];
+        $fields = '*';
+        $lists = (new AuthorFollowModel())->getListByPage($map,$order,$fields, $rows);
+        $lists = $lists->toArray();
+        foreach($lists['data'] as &$val){
+            $val = (new AuthorFollowLogic())->formatData($val);
+        }
+        unset($val);
+        // ajax请求返回数据
+        return $this->success('success', $lists);
     }
 
 }
