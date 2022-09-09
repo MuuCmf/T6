@@ -138,7 +138,7 @@ CREATE TABLE IF NOT EXISTS `muucmf_attachment` (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'ID',
   `shopid` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '店铺ID',
   `uid` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '用户ID',
-  `filename` char(30) NOT NULL DEFAULT '' COMMENT '附件显示名',
+  `filename` char(128) NOT NULL DEFAULT '' COMMENT '附件显示名',
   `type` varchar(32) NOT NULL DEFAULT '' COMMENT '附件类型',
   `attachment` varchar(255) NOT NULL DEFAULT '' COMMENT '路径',
   `mime` char(30) NOT NULL DEFAULT '' COMMENT 'mimeType',

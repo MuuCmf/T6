@@ -28,3 +28,5 @@ CREATE TABLE IF NOT EXISTS `muucmf_author_follow` (
   `update_time` int(11) unsigned NOT NULL COMMENT '更新时间',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='创造者关注表' ROW_FORMAT=COMPACT;
+
+ALTER TABLE `muucmf_attachment` CHANGE `filename` `filename` CHAR(128) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '' COMMENT '附件显示名';
