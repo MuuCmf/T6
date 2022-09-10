@@ -48,7 +48,12 @@ class Base extends Model{
      */
     public function getListByPage($map,$order='create_time desc',$field='*',$r=20)
     {
-        $list  = $this->where($map)->order($order)->field($field)->paginate(['list_rows'=>$r, 'query'=>request()->param()], false);
+        if(is_array($map)){
+            $list  = $this->where($map)->order($order)->field($field)->paginate(['list_rows'=>$r, 'query'=>request()->param()], false);
+        }else{
+            $list  = $this->whereRaw($map)->order($order)->field($field)->paginate(['list_rows'=>$r, 'query'=>request()->param()], false);
+        }
+        
 
         return $list;
     }
@@ -79,7 +84,11 @@ class Base extends Model{
      */
     public function getDataByMap($map,$field='*')
     {
-        $data = $this->where($map)->field($field)->find();
+        if(is_array($map)){
+            $data = $this->where($map)->field($field)->find();
+        }else{
+            $data = $this->whereRaw($map)->field($field)->find();
+        }
 
         return $data;
        
@@ -96,7 +105,11 @@ class Base extends Model{
      */
     public function getList($map, $limit=10, $order = 'create_time desc' ,$field = '*')
     {
-        $list  = $this->where($map)->limit($limit)->order($order)->field($field)->select();
+        if(is_array($map)){
+            $list  = $this->where($map)->limit($limit)->order($order)->field($field)->select();
+        }else{
+            $list  = $this->whereRaw($map)->limit($limit)->order($order)->field($field)->select();
+        }
 
         return $list;
     }
