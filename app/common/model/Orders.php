@@ -230,6 +230,7 @@ class Orders extends Base
             $date_start = $start + (3600 * $i);
             $date_end = $start + (3600 * ($i + 1));
             $today_total['time'][$i] = ($i).':00-'.($i+1).':00';
+            $map = [];
             $map[] = ['create_time', 'between', [$date_start, $date_end]];
             $map[] = ['paid', '=', 1];
             $map[] = ['shopid', '=', $shopid];
@@ -256,6 +257,7 @@ class Orders extends Base
             $date_start = $start + 86400 * $i;
             $date_end = $start + 86400 * ($i + 1);
             $week_total['time'][$i] ='周'. ($i+1);
+            $map = [];
             $map[] = ['create_time', 'between', [$date_start, $date_end]];
             $map[] = ['paid', '=', 1];
             $map[] = ['shopid', '=', $shopid];
@@ -281,6 +283,7 @@ class Orders extends Base
             $date_start = $start + 86400 * $i;
             $date_end = $start + 86400 * ($i + 1);
             $month_total['time'][$i] = ($i+1) . '日';
+            $map = [];
             $map[] = ['create_time', 'between', [$date_start, $date_end]];
             $map[] = ['paid', '=', 1];
             $map[] = ['shopid', '=', $shopid];
@@ -306,6 +309,7 @@ class Orders extends Base
             $date_start = strtotime($year . '-' .intval($i+1)." first day of");
             $date_end = strtotime($year . '-' .intval($i+1)." last day of") + 86400;
             $year_total['time'][$i] = ($i+1) . '月';
+            $map = [];
             $map[] = ['create_time', 'between', [$date_start, $date_end]];
             $map[] = ['paid', '=', 1];
             $map[] = ['shopid', '=', $shopid];
