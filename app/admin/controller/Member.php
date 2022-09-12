@@ -319,16 +319,15 @@ class Member extends Admin
      */
     public function status($method = null)
     {
-        $id = array_unique((array)input('id/a', 0));
-        if (count(array_intersect(explode(',', config('auth.auth_administrator')), $id)) > 0) {
+        $ids = input('ids');
+        !is_array($ids)&&$ids=explode(',',$ids);
+        if (count(array_intersect(explode(',', config('auth.auth_administrator')), $ids)) > 0) {
             $this->error('不允许对超管进行该操作');
         }
-        $id = is_array($id) ? implode(',', $id) : $id;
-        if (empty($id)) {
+        if (empty($ids)) {
             $this->error('请选择要操作的数据');
         }
-
-        $map[] = ['uid', 'in', $id];
+        $map[] = ['uid', 'in', $ids];
 
         switch (strtolower($method)) {
             case 'forbid':
