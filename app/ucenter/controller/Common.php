@@ -152,7 +152,8 @@ class Common extends CommonCommon
             //获取参数
             $account = input('post.account', '', 'text'); // 账号
             $password = input('post.password', '', 'text'); // 密码
-            $captcha = input('post.captcha', '', 'text'); // 验证码
+            $captcha = input('post.captcha', '', 'text'); // 短信验证码
+            $captcha_pic = input('post.captcha_pic', '', 'text'); // 图形验证码
             $login_type = input('post.login_type','password');//登录类型
             $remember = input('post.remember', 0, 'intval');
 
@@ -163,8 +164,8 @@ class Common extends CommonCommon
                 //密码登录
                 if(empty($password)) return $this->error('密码不能为空');
                 // 检测图形验证码
-                if (check_verify_open('login') && !is_mobile()) {
-                    if (!captcha_check($captcha)) {
+                if (check_verify_open('login')) {
+                    if (!captcha_check($captcha_pic)) {
                         return $this->error('图形验证码错误');
                     }
                 }

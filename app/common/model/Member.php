@@ -144,6 +144,7 @@ class Member extends Model
         }
         // 获取用户数据
         $user = $this->where($map)->find();
+        $verifyModel = new Verify();
         if($user){
             // 行为限制
             $actionLimit = new ActionLimit();
@@ -155,12 +156,15 @@ class Member extends Model
 
             if ($user['uid'] && $user['status']) {
                 /* 验证用户验证码 */
-                $verifyModel = new Verify();
                 if (!$verifyModel->checkVerify($account, $type, $captcha)) {
                     return -2;
                 }else{
                     return $user['uid']; //返回用户ID
                 }
+            }
+        }else{
+            if (!$verifyModel->checkVerify($account, $type, $captcha)) {
+                return -2;
             }
         }
         return -1; //用户不存在或被禁用
