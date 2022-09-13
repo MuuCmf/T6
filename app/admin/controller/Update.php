@@ -129,7 +129,6 @@ class Update extends Admin
                 } else {
                     $upgrade = true;
                 }
-
                 //md5不同，请求远端文件
                 if ($upgrade) {
                     $params = [

@@ -53,12 +53,26 @@ class Upgrade
      * @return bool
      */
     public function checkIgnoreFile($path){
-        $ignore_paths = ['.env','config','runtime','.idea','.gitignore','vendor','data/version.ini','_src'];
-        foreach ($ignore_paths as $item){
-            if (strpos($path,$item) !== false){
-                return true;
+
+        // 仅框架升级检测
+        if($this->app == 'system'){
+            $ignore_paths = [
+                '.env',
+                'config/',
+                'runtime/',
+                '.idea',
+                '.gitignore',
+                'vendor/',
+                '_src/',
+                'data/version.ini'
+            ];
+            foreach ($ignore_paths as $item){
+                if (strpos($path,$item) !== false){
+                    return true;
+                }
             }
         }
+        
         return false;
         
     }
@@ -85,7 +99,6 @@ class Upgrade
         $response = curl_getinfo($ch);
         $error = curl_error($ch);//返回一条最近一次cURL操作明确的文本的错误信息。
         curl_close($ch);//关闭一个cURL会话并且释放所有资源
-
         //处理返回的错误信息
         if ($response['content_type'] != 'application/octet-stream') {
             $error = json_decode($data, true);
@@ -201,6 +214,7 @@ class Upgrade
             'version' =>  $version,
             'auth_code' => $auth_code
         ]);
+
         try {
             $result = json_decode($result,true);
             if (is_array($result) && $result['code'] == 200){
