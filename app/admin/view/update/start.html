@@ -129,57 +129,62 @@
             async upgrade() {
                 let that = this;
                 let step = that.packageTotal / 100;//计算百分比 步进值
-                let item = that.package[that.packageProgress];//当前升级包
-                that.progressVal = Math.floor(that.packageProgress / step);//进度条
-                that.task = '下载中 ' + item.name;//任务名称
-                that.progressTitle = '';
-
-                if(that.appName == 'system' && item.name == 'data/version.ini'){
-                    that.versionPackage.name = item.name
-                    that.versionPackage.md5 = item.md5
-                }
-                $.post("{:url('upgrade')}", {
-                    app_name: that.appName,
-                    version: that.upgradeVersion,
-                    file: item.name,
-                    md5: item.md5
-                }, function (res) {
-                    if (res.data == 'same_version'){
-                        that.sameVersion();
-                    }else{
-                        if (res.code != 200) {
-                            //记录当前错误信息
-                            let err = {
-                                msg: res.msg,
-                                data: item
-                            };
-                            that.errPackage.push(err);
-                            console.log('errPackage',that.errPackage)
-                            // 发生错误跳过版本升级
-                            that.skipUpgradeVersion = 1;
-                        }
-
-                        if (res.code != 401){
-                            //继续执行
-                            that.packageProgress++;
-                            
-                            if (that.packageProgress >= that.packageTotal) {
-                                //执行收尾工作
-                                that.finishUpgrade();
-                            } else {
-                                //执行下一个
-                                that.upgrade();
-                            }
-                        }else{
-                            that.task = '';
-                            that.status = -1;
-                            that.progressTitle = '未经授权,无法更新';
-                            that.task = '';
-                        }
-
+                if(that.package.length > 0){
+                    let item = that.package[that.packageProgress];//当前升级包
+                    that.progressVal = Math.floor(that.packageProgress / step);//进度条
+                    that.task = '下载中 ' + item.name;//任务名称
+                    that.progressTitle = '';
+                    
+                    if(that.appName == 'system' && item.name == 'data/version.ini'){
+                        that.versionPackage.name = item.name
+                        that.versionPackage.md5 = item.md5
                     }
+                    $.post("{:url('upgrade')}", {
+                        app_name: that.appName,
+                        version: that.upgradeVersion,
+                        file: item.name,
+                        md5: item.md5
+                    }, function (res) {
+                        if (res.data == 'same_version'){
+                            that.sameVersion();
+                        }else{
+                            if (res.code != 200) {
+                                //记录当前错误信息
+                                let err = {
+                                    msg: res.msg,
+                                    data: item
+                                };
+                                that.errPackage.push(err);
+                                // 发生错误跳过版本升级
+                                that.skipUpgradeVersion = 1;
+                            }
 
-                })
+                            if (res.code != 401){
+                                //继续执行
+                                that.packageProgress++;
+                                
+                                if (that.packageProgress >= that.packageTotal) {
+                                    //执行收尾工作
+                                    that.finishUpgrade();
+                                } else {
+                                    //执行下一个
+                                    that.upgrade();
+                                }
+                            }else{
+                                that.task = '';
+                                that.status = -1;
+                                that.progressTitle = '未经授权,无法更新';
+                                that.task = '';
+                            }
+
+                        }
+
+                    })
+                }else{
+                    //执行收尾工作
+                    that.finishUpgrade();
+                }
+
             },
             /**
              * 无需升级
@@ -227,10 +232,10 @@
             finishUpgrade() {
                 let that = this;
                 // 问题包处理
-                // if (that.retrying) {
-                //     that.errRetry();
-                //     return false;
-                // }
+                if (that.retrying) {
+                    that.errRetry();
+                    return false;
+                }
                 if(that.skipUpgradeVersion == 1){
                     that.progressTitle = '部分文件下载失败，请刷新重试！';
                     that.task = '';
