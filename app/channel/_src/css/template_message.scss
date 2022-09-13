@@ -1,0 +1,29 @@
+#template-message{
+
+  .tools {
+    padding-top: 10px;
+  }
+  .bind-user{
+    #choose-user-cb{
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 8px 0 16px 0;
+      width: 100px;
+      #choose-user-avatar{
+        width: 64px;
+        height: 64px;
+        border-radius: 50%;
+      }
+      img[src=""]{
+        opacity: 0 !important;
+        width: 0 !important;
+        height: 0 !important;
+      }
+    }
+    .choose-user-btn{
+
+      height: 32px;
+    }
+  }
+}

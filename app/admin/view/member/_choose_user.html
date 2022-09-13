@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>选择用户</title>
+    <!-- Tell the browser to be responsive to screen width -->
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <!-- BOOTSTRAP or ZUI -->
+    <link href="__STATIC__/common/lib/zui/css/zui.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="__STATIC__/common/lib/font-awesome-4.7.0/css/font-awesome.min.css">
+    <!-- Theme style -->
+    <link rel="stylesheet" href="__STATIC__/admin/css/AdminLTE.min.css">
+    <!-- Muu BASE style -->
+    <link href="__STATIC__/admin/css/main.min.css" rel="stylesheet">
+    <script src="__STATIC__/common/lib/zui/lib/jquery/jquery.js"></script>
+
+</head>
+<body>
+<div class="choose-user-body">
+    <div class="user-search">
+        <div class="input-group">
+            <div class="input-control search-box has-icon-left has-icon-right">
+                <input type="hidden" name="api">
+                <input id="inputSearch" type="search" class="form-control search-input empty" value="{$search}" name="keyword" placeholder="用户昵称/UID">
+                <label for="inputSearch" class="input-control-icon-left search-icon"><i class="icon icon-search"></i></label>
+            </div>
+            <span class="input-group-btn">
+				<button class="btn btn-primary" type="button"  id="search" url="{:Url('chooseUser')}">搜索</button>
+            </span>
+        </div>
+    </div>
+    <!-- 数据列表 -->
+    <div class="user-section clearfix">
+        {notempty name="_list"}
+        {volist name="_list" id="vo"}
+        <div class="user-item " data-uid="{$vo.uid}" data-nickname="{$vo.nickname}" data-avatar="{$vo.avatar64}">
+            <div class="user-avatar"><img src="{$vo['avatar64']}" /></div>
+            <div class="user-nickname">{$vo.nickname}</div>
+        </div>
+        {/volist}
+        {else/}
+        {include file="common/_empty" /}
+        {/notempty}
+
+    </div>
+    <!-- 分页 -->
+    <div class="page">
+        {:htmlspecialchars_decode($pager)}
+    </div>
+</div>
+<script>
+    $(function () {
+        /**
+         * 选择用户返回事件
+         */
+        $('.user-item').on('click','',function () {
+            let [uid,nickname,avatar] = [
+                $(this).data('uid'),
+                $(this).data('nickname'),
+                $(this).data('avatar'),
+            ];
+            let parentElem = $('#choose-user-cb',window.parent.document);
+            // 添加用户信息
+            $(parentElem).children('#choose-user-uid').val(uid);
+            $(parentElem).children('#choose-user-nickname').text(nickname);
+            $(parentElem).children('#choose-user-avatar').attr('src',avatar);
+            //关闭ZUI弹窗
+            parent.$('#chooseUserModal').modal('hide')
+        })
+        //搜索功能
+        $("#search").click(function () {
+            var url = $(this).attr('url');
+            var query = $('#inputSearch').val();
+            window.location.href = url + '?oauth_type={$oauth_type}&search=' + query;
+        });
+        //回车搜索
+        $(".search-input").keyup(function (e) {
+            if (e.keyCode === 13) {
+                $("#search").click();
+                return false;
+            }
+        });
+    })
+</script>
+</body>
+</html>

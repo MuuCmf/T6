@@ -1,0 +1,198 @@
+{extend name="common/main"/}
+
+{block name="body"}
+    <div class="main-title cf">
+        <h2>
+            新增、编辑行为规则
+        </h2>
+    </div>
+    <!-- 表单 -->
+    <div class="with-padding">
+        <form id="form" action="{:url()}" method="post" class="form-horizontal">
+            <div class="form-item builder_item">
+                <label class="item-label">行为标识<span class="check-tips">（输入行为标识 英文字母）</span></label>
+
+                <div class="controls">
+                    <input type="text" class="text input-large form-control form-input-width" name="name" value="{$data.name}">
+                </div>
+            </div>
+            <div class="form-item builder_item">
+                <label class="item-label">行为名称<span class="check-tips">（输入行为名称）</span></label>
+
+                <div class="controls">
+                    <input type="text" class="text input-large form-control form-input-width" name="title" value="{$data.title}">
+                </div>
+            </div>
+            <div class="form-item builder_item">
+                <label class="item-label">行为类型<span class="check-tips">（选择行为类型）</span></label>
+
+                <div class="controls">
+                    <select name="type" class=" form-control form-select-size">
+                        {volist name=":get_action_type(null,true)" id="vo"}
+                            <option value="{$key}">{$vo}</option>
+                        {/volist}
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-item builder_item">
+                <label class="item-label">所属应用<span class="check-tips">（选择应用模块）</span></label>
+
+                <div class="controls">
+                    <select name="module" class=" form-control form-select-size">
+                        <option value="">系统</option>
+                        {volist name="modules" id="vo"}
+                        {if $vo['name'] == $data['module']}
+                        <option value="{$vo.name}" selected>{$vo.alias}</option>
+                        {else}
+                        <option value="{$vo.name}">{$vo.alias}</option>
+                        {/if}
+                        {/volist}
+                    </select>
+                </div>
+            </div>
+
+
+            <div class="form-item builder_item">
+                <label class="item-label">行为描述<span class="check-tips">（输入行为描述）</span></label>
+
+                <div class="controls">
+                    <textarea name="remark" class=" form-control form-text-area-size">{$data.remark}</textarea>
+                </div>
+            </div>
+
+            <div class="form-item builder_item">
+                <label class="item-label">积分规则<span class="check-tips">（输入积分规则，不写则只记录日志）</span></label>
+
+                <div class="controls action_rule">
+
+                    {php}if(empty($data['rule'])){{/php}
+                        暂无规则
+                    {php}}{/php}
+
+                    <div class="clearfix">
+                        <div class="pull-left text-center" style="width: 100px">
+                           表名
+                        </div>
+                        <div class="pull-left text-center" style="width: 100px">
+                           积分类型
+                        </div>
+                        <div class="pull-left text-center" style="width: 100px">
+                           积分操作
+                        </div>
+                        <div class="pull-left text-center" style="width: 100px">
+                           周期（小时）
+                        </div>
+                        <div class="pull-left text-center" style="width: 100px">
+                           最大限制次数
+                        </div>
+                    </div>
+                    {volist name="data['rule']" id="rule"}
+                        <div style="margin-bottom: 10px">
+                            <input class="form-control" name="action_rule[table][]" value="{$rule.table}"
+                                   title="执行的表，默认是member" style="width: 100px;display: inline-block">
+                            <select class="form-control" name="action_rule[field][]" title="执行的积分"
+                                    style="width: 100px;display: inline-block">
+                                <option value="0">请选择</option>
+                                {volist name="score" id="s"}
+                                {if condition="$s['id'] eq $rule['field']"}
+                                <option value="{$s.id}" selected>
+                                    {$s.title}
+                                </option>
+                                {else}
+                                <option value="{$s.id}">
+                                    {$s.title}
+                                </option>
+                                {/if}
+                                    
+                                {/volist}
+                            </select>
+                            <input type="text" name="action_rule[rule][]" title="积分的操作，负数表示减积分" value="{$rule.rule}"
+                                   class=" form-control" style="width: 100px;display: inline-block"/>
+                            <input class="form-control" name="action_rule[cycle][]" title="周期" value="{$rule.cycle}"
+                                   style="width: 100px;display: inline-block">
+                            <input class="form-control" name="action_rule[max][]" title="最大限制" value="{$rule.max}"
+                                   style="width: 100px;display: inline-block">
+                            <a href="javascript:" data-role="del_rule">删除规则</a>
+                        </div>
+                    {/volist}
+                </div>
+                <a href="javascript:" data-role="add_rule">新增规则</a>
+            </div>
+
+            <div class="form-item builder_item">
+                <label class="item-label">
+                    日志规则
+                    <span class="check-tips">
+                        （记录日志备注时按此规则来生成，支持[变量|函数]。目前变量有：user,time,model,record,data）
+                    </span>
+                </label>
+
+                <div class="controls">
+                    <textarea name="log" class=" form-control form-text-area-size">{$data.log}</textarea>
+                </div>
+            </div>
+
+            <div class="form-item builder_item">
+                <input type="hidden" name="id" value="{$data.id}"/>
+                <button type="submit" class="btn btn-success submit-btn ajax-post" target-form="form-horizontal">确 定</button>
+                <button class="btn btn-return" onclick="javascript:history.back(-1);return false;">返 回</button>
+            </div>
+        </form>
+    </div>
+
+
+    <div id="rule_list" style="display: none">
+        <div style="margin-bottom: 10px">
+            <input class="form-control" name="action_rule[table][]" value="member" title="所执行的表，默认是member" style="width: 100px;display: inline-block">
+            <select class="form-control" name="action_rule[field][]" title="执行的积分" style="width: 100px;display: inline-block">
+                <option value="0">请选择</option>
+                {volist name="score" id="s"}
+                    <option value="{$s.id}">{$s.title}</option>
+                {/volist}
+            </select>
+            <input type="text" name="action_rule[rule][]" title="积分的操作，负数表示减积分。" value="0" class=" form-control"
+                   style="width: 100px;display: inline-block"/>
+            <input class="form-control" name="action_rule[cycle][]" title="周期（小时）" value="24"
+                   style="width: 100px;display: inline-block">
+            <input class="form-control" name="action_rule[max][]" title="最大限制（次）" value="1"
+                   style="width: 100px;display: inline-block">
+            <a href="javascript:" data-role="del_rule">删除规则</a>
+        </div>
+    </div>
+{/block}
+
+{block name="script"}
+    <script type="text/javascript" charset="utf-8">
+        Think.setValue('type', {$data.type|default = 1});
+    </script>
+
+    <script>
+        $(function () {
+            rebind();
+        })
+
+        var rebind = function () {
+            add_rule();
+            del_rule();
+        }
+        var add_rule = function () {
+
+            $('[data-role="add_rule"]').unbind('click');
+            $('[data-role="add_rule"]').click(function () {
+                $('.action_rule').append($('#rule_list').html())
+                rebind();
+            })
+
+        }
+
+        var del_rule = function () {
+            $('[data-role="del_rule"]').unbind('click');
+            $('[data-role="del_rule"]').click(function () {
+                $(this).closest('div').remove();
+                rebind();
+            })
+        }
+
+    </script>
+{/block}

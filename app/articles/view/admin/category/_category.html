@@ -1,0 +1,20 @@
+<select name="category_id" class="form-control">
+	<option value="">请选择分类</option>
+	{volist name="$category_tree" id="v"}
+	{if $data['category_id'] == $v['id']}
+	<option value="{$v['id']}" selected><b>{$v['title']}</b></option>
+	{else}
+	<option value="{$v['id']}"><b>{$v['title']}</b></option>
+	{/if}
+	{if !empty($v['_child'])}
+		{volist name="$v['_child']" id="_v"}
+		{if $data['category_id'] == $_v['id']}
+		<option value="{$_v['id']}" selected>|----{$_v['title']}</option>
+		{else}
+		<option value="{$_v['id']}">|----{$_v['title']}</option>
+		{/if}
+		{/volist}
+	{/if}
+	{/volist}
+</select>
+<div class="help-block">请选择分类</div>

@@ -1,0 +1,80 @@
+/*消息类型*/
+.message-type-list-section {
+
+    .icon {
+        width: 60px;
+        height: 60px;
+        border-radius: 5px;
+        overflow: hidden;
+        img {
+            width: 60px;
+            height: 60px;
+        }
+    }
+}
+
+/*消息发送列表*/
+.message-send-list-section {
+
+    .user-info {
+        .avatar {
+            float: left;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            overflow: hidden;
+            img {
+                width: 60px;
+                height: 60px;
+            }
+        }
+        .nickname {
+            margin-left: 60px;
+            padding-left: 10px;
+            line-height: 60px;
+        }
+    }
+}
+
+
+/*消息发送页*/
+.send-message-section {
+    padding: 20px;
+    padding-bottom: 80px;
+    .user-info {
+        .user-avatar {
+            float: left;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            overflow: hidden;
+            img {
+                width: 60px;
+                height: 60px;
+            }
+        }
+        .user-nickname {
+            margin-left: 60px;
+            padding-left: 10px;
+            line-height: 60px;
+        }
+    }
+
+    .choose-user-sec {
+
+        .user-group-sec {
+            padding-top: 10px;
+        }
+    }
+    .send-button-section {
+        background-color: #fff;
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 999;
+        text-align: center;
+        padding: 10px 0;
+        border-top: 1px solid #e5e5e5;
+    }
+}

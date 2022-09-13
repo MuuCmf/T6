@@ -1,0 +1,78 @@
+<!-- 成员授权编辑页面 -->
+{extend name="common/main" /}
+{block name="body"}
+<div class="main-title">
+    <h2>用户组成员授权</h2>
+</div>
+
+<!-- 数据列表 -->
+<div class="with-padding">
+    <div class="tab-wrap clearfix">
+        <div class="col-xs-10">
+            <ul class="nav nav-pills">
+                <li><a href="{:url('Auth/access',['group_name'=>input('group_name') ,'group_id'=> $group_id])}">管理后台权限</a></li>
+                <li class="active"><a href="javascript:;">用户授权</a></li>
+            </ul>
+        </div>
+        <div class="col-xs-2 text-right">
+            <select name="group" class="form-control">
+                {volist name="auth_group" id="vo"}
+                {eq name="vo['id']" value="$group_id"}
+                <option value="{:url('admin/Auth/user',['group_id'=>$vo['id'],'group_name'=>$vo['title']])}" selected >
+                    {$vo.title}
+                </option>
+                {else}
+                <option value="{:url('admin/Auth/user',['group_id'=>$vo['id'],'group_name'=>$vo['title']])}">
+                    {$vo.title}
+                </option>
+                {/eq}
+                {/volist}
+            </select>
+        </div>
+    </div>
+
+    {notempty name="_list"}
+	<table class="table table-bordered table-striped">
+    <thead>
+    <tr>
+  		<th class="">UID</th>
+  		<th class="">昵称</th>
+  		<th class="">最近登录时间</th>
+  		<th class="">最后登录IP</th>
+  		<th class="">状态</th>
+  		<th class="">操作</th>
+		</tr>
+    </thead>
+    <tbody>
+		{volist name="_list" id="vo"}
+		<tr>
+			<td>{$vo.uid} </td>
+			<td>{$vo.nickname}</td>
+			<td><span>{$vo.last_login_time|time_format}</span></td>
+			<td><span>{$vo.last_login_ip}</span></td>
+			<td>{$vo.status_text}</td>
+			<td>
+                <a class="btn btn-sm btn-danger ajax-post" href="{:url('Auth/removeFromGroup?uid='.$vo['uid'].'&group_id='.input('group_id'))}" data-confirm="确认执行移除操作？">
+                    移除
+                </a>
+            </td>
+		</tr>
+		{/volist}
+	</tbody>
+    </table>
+    {/notempty}
+
+    <div class="page">
+        {:htmlspecialchars_decode($pager)}
+    </div>
+</div>
+
+{/block}
+
+{block name="script"}
+<script type="text/javascript" charset="utf-8">
+	$('select[name=group]').change(function(){
+		location.href = this.value;
+	});
+</script>
+{/block}

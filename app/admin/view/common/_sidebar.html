@@ -1,0 +1,86 @@
+<aside class="main-sidebar">
+    <!-- sidebar: style can be found in sidebar.less -->
+    <section class="sidebar">
+      {notempty name="module"}
+      <div class="expand-info">
+        <div class="expand-icon">
+          <img src="{$module.icon_200}" />
+        </div>
+        <h3 class="title">{$module.alias}</h3>
+        <p class="version">版本：{$module.version}</p>
+      </div>
+      {/notempty}
+      <!-- sidebar menu: : style can be found in sidebar.less -->
+      {notempty name="admin_menu.child"}
+      {volist name="admin_menu.child" id="sub_menu"}
+      <ul class="sidebar-menu" data-widget="tree">
+        
+        <li class="treeview menu-open">
+          <a>
+              {notempty name="sub_menu.icon"}
+                  <i class="fa fa-{$sub_menu.icon}"></i>
+              {else /}
+                  <i class="fa fa-circle-o"></i>
+              {/notempty}
+              
+              {notempty name="sub_menu.group"}
+                <span>{$sub_menu.group}</span>
+              {/notempty}
+              <span class="pull-right-container">
+                <i class="fa fa-angle-left pull-right"></i>
+              </span>
+          </a>
+          <ul class="treeview-menu menu-open">
+              {volist name="sub_menu.child" id="c_menu"}
+              {if strtolower($c_menu.url) == ($this_app.'/'.$this_controller.'/'.$this_action)}
+              <li data-id="{$c_menu.id}" data-url="{$c_menu.url|url}" class="active">
+              {else /}
+              <li data-id="{$c_menu.id}" data-url="{$c_menu.url|url}">
+              {/if}
+                  <a href="{$c_menu.url|url}">
+                    {notempty name="c_menu.icon"}
+                        <i class="fa fa-{$c_menu.icon}"></i>
+                    {else /}
+                        <i class="fa fa-circle-o"></i>
+                    {/notempty}
+                    {$c_menu.title}
+                </a>
+              </li>
+              {/volist}
+          </ul>
+        </li>
+        
+      </ul>
+      {/volist}
+      {/notempty}
+
+      {notempty name="all_module_list"}
+      {if($this_controller == 'index')}
+      <!--常用应用-->
+      <ul class="sidebar-menu module-menu" data-widget="tree">
+        <li class="treeview menu-open">
+          <a>
+              <i class="fa fa-circle-o"></i>
+              <span>应用入口</span>
+              
+              <span class="pull-right-container">
+                <i class="fa fa-angle-left pull-right"></i>
+              </span>
+          </a>
+          <ul class="treeview-menu module-treeview-menu menu-open">
+            {volist name="all_module_list" id="vo"}
+            <li>
+                <a href="{:url($vo.entry)}">
+                  <img class="icon" src="{$vo.icon_100}" />
+                  <span>{$vo.alias}</span>
+              </a>
+            </li>
+            {/volist}
+          </ul>
+        </li>
+      </ul>
+      {/if}
+      {/notempty}
+    </section>
+    <!-- /.sidebar -->
+  </aside>

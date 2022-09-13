@@ -1,0 +1,128 @@
+{extend name="common/main"/}
+
+{block name="body"}
+    <!-- 标题栏 -->
+    <div class="main-title">
+        <h2>行为规则</h2>
+    </div>
+
+    <div class="with-padding">
+        <div class="row button-box tool-box">
+            <div class="col-xs-8">
+                <a class="btn btn-info" id="action_add" href="{:url('edit')}">
+                    新增
+                </a>
+                <button class="btn btn-success ajax-post" target-form="ids" url="{:url('setstatus',['status'=>1,'Model'=>'action'])}">
+                    启用
+                </button>
+                <button class="btn btn-warning ajax-post" target-form="ids" url="{:url('setstatus',['status'=>0,'Model'=>'action'])}">
+                    禁用
+                </button>
+                <button class="btn btn-danger ajax-post confirm" target-form="ids" url="{:url('setStatus',['status'=>-1,'Model'=>'action'])}">
+                    删除
+                </button>
+            </div>
+
+            <div class="col-xs-4 text-right">
+                <form action="{:url('saveAction')}" id="filter" method="post">        
+                    <div class="select_box">
+                        <select name="module" data-role="select_text" class="form-control" onchange="$('#filter').submit()">
+                            <option value="-1">全部</option>
+                            {volist name="modules" id="vo"}
+                                <option value="{$vo.name|default=''}">{$vo.alias}</option>
+                            {/volist}
+                        </select>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- 数据列表 -->
+        <div class="data-table">
+            <table class="table table-bordered table-striped table-hover muu-table">
+                <thead>
+                <tr>
+                    <th class="row-selected row-selected">
+                        <input class="check-all" id="check-all" type="checkbox"/>
+                        <label for="check-all"></label>
+                    </th>
+                    <th class="">{:lang("ID")}</th>
+                    <th class="">标识</th>
+                    <th class="">名称</th>
+                    <th class="">所属模块</th>
+                    <th class="">积分变动</th>
+                    <th class="">类型</th>
+                    <th class="">规则</th>
+                    <th class="">状态</th>
+                    <th class="">操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                {volist name="list.data" id="vo"}
+                    <tr>
+                        <td>
+                            <input class="ids" id="ids-{$vo.id}" type="checkbox" name="ids[]" value="{$vo.id}">
+                            <label for="ids-{$vo.id}"></label>
+                        </td>
+                        <td>
+                            {$vo.id}
+                        </td>
+                        <td>
+                            <a href="{:url('limit',['action'=>$vo['name']])}" title="查看限制">{$vo.name}</a>
+                        </td>
+                        <td>
+                            {$vo.title}
+                        </td>
+                        <td>
+                            {empty name='vo.alias'}
+                            系统
+                            {else /}
+                            {$vo.alias}
+                            {/empty}</td>
+                        <td>
+                            {$vo.vary}
+                        </td>
+                        <td>
+                            <span>{:get_action_type($vo['type'])}</span>
+                        </td>
+                        <td>
+                            {$vo.remark}
+                        </td>
+                        <td>
+                            {$vo.status_text}
+                        </td>
+                        <td>
+                            <a class="btn btn-sm btn-primary" href="{:url('edit?id='.$vo['id'])}">
+                                编辑
+                            </a>
+                            {if $vo['status'] == 1}
+                                <a href="{:url('setStatus', ['ids'=>$vo['id'],'status'=> 0])}" class="btn btn-sm btn-warning ajax-get">禁用</a>
+                            {/if}
+
+                            {if $vo['status'] == 0}
+                                <a href="{:url('setStatus', ['ids'=>$vo['id'], 'status'=> 1])}" class="btn btn-sm btn-info ajax-get">启用</a>
+                            {/if}
+                            <a href="{:url('setStatus', ['ids'=>$vo['id'], 'status'=> -1])}" class="btn btn-sm btn-danger confirm ajax-post">
+                                删除
+                            </a>
+                        </td>
+                    </tr>
+                {/volist}
+                </tbody>
+            </table>
+        </div>
+        <!-- 分页-->
+        <div class="page">{:htmlspecialchars_decode($page)}</div>
+        <!-- /分页-->
+
+    </div>
+    
+
+{/block}
+{block name="script"}
+    <script type="text/javascript">
+        $(function () {
+
+        })
+    </script>
+{/block}

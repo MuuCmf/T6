@@ -1,0 +1,199 @@
+{extend name="common/main"/}
+
+{block name="body"}
+	<div class="main-title cf">
+		<h2>新增、编辑行为规则</h2>
+	</div>
+
+	<div class="with-padding">
+
+        <form action="{:url('editLimit')}" method="post" class="form-horizontal ajax-form">
+                    
+            <div class="builder_item hidden">
+                <label class="item-label">编号</label>
+                <div class="controls">
+                    <input type="hidden" name="id" value="{$limit.id}" class="text input-large form-control" placeholder="无需填写" readonly="">
+                </div>
+            </div>
+                     
+            <div class="builder_item">
+                <label class="item-label">标题</label>
+                <div class="controls">
+                    <input type="text" name="title" value="{$limit.title}" class="text input-large form-control">
+                </div>
+            </div>
+                      
+            <div class="builder_item">
+                <label class="item-label">名称</label>
+                <div class="controls">
+                    <input type="text" name="name" value="{$limit.name}" class="text input-large form-control">
+                </div>
+            </div>
+                                        
+            <div class="builder_item">
+                <label class="item-label">所属应用</label>
+                <div class="controls">
+                    <select name="module" class="form-control">
+                        <option value="all">系统</option>
+                        {volist name="modules" id="vo"}
+                        <option value="{$vo.name}">{$vo.alias}</option>
+                        {/volist}
+                    </select>
+                </div>
+            </div>
+                    
+            <div class="builder_item">
+                <label class="item-label">频率</label>
+                <div class="controls">
+                    <input type="text" name="frequency" value="{$limit.frequency}" class="text input-large form-control">
+                </div>
+            </div>
+
+                                        
+            <div class="builder_item">
+                <label class="item-label">时间单位<span class="suggest check-tips">（时间单位）</span>
+                    </label>
+                <div class="controls">
+                    <div class="clearfix" style="width:400px;">
+                        <input type="text" name="time_number" value="1" class=" pull-left text input-large form-control" style="width:295px;margin-right:5px">
+                        <select name="time_unit" class="pull-left form-control" style="width:100px">
+                            <option value="second">秒</option>
+                            <option value="minute" selected="">分</option>
+                            <option value="hour">小时</option>
+                            <option value="day">天</option>
+                            <option value="week">周</option>
+                            <option value="month">月</option>
+                            <option value="year">年</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+                                        
+            <div class="builder_item">
+                <label class="item-label">处罚 <span class="suggest check-tips">（可多选）</span>
+                    </label>
+                <div class="controls">
+                    <div class="chosen chosen_punish">
+                        <select data-placeholder="" name="punish[]" class="chosen-select form-control" tabindex="-1" multiple="">
+                            {if in_array('warning', $limit['punish'])}
+                            <option value="warning" selected>警告并禁止</option>
+                            {else}
+                            <option value="warning">警告并禁止</option>
+                            {/if}
+                            {if in_array('logout_account', $limit['punish'])}
+                            <option value="logout_account" selected>强制退出登陆</option>
+                            {else}
+                            <option value="logout_account">强制退出登陆</option>
+                            {/if}
+                            {if in_array('logout_account', $limit['punish'])}
+                            <option value="logout_account" selected>强制退出登陆</option>
+                            {else}
+                            <option value="logout_account">强制退出登陆</option>
+                            {/if}
+                            {if in_array('ban_account', $limit['punish'])}
+                            <option value="ban_account" selected>封停账户</option>
+                            {else}
+                            <option value="ban_account">封停账户</option>
+                            {/if}
+                            {if in_array('ban_ip', $limit['punish'])}
+                            <option value="ban_ip" selected>封IP</option>
+                            {else}
+                            <option value="ban_ip">封IP</option>
+                            {/if}
+                        </select>
+                        
+                        <script>
+                        $(function(){
+                            $('.chosen_punish select.chosen-select').chosen({
+                                lang:'zh_cn',
+                                width:'100%',
+                                no_results_text: '没有找到',    // 当检索时没有找到匹配项时显示的提示文本
+                                disable_search_threshold: 10, // 10 个以下的选择项则不显示检索框
+                                search_contains: true         // 从任意位置开始检索
+                            });
+                        });
+                        </script>
+                    </div>
+                </div>
+            </div>
+
+                                        
+            <div class="builder_item">
+                <label class="item-label">是否发送提醒</label>
+                <div class="controls">
+                    <input id="id_if_message_1" name="if_message" value="1" type="radio">
+                    <label for="id_if_message_1"> 是</label> &nbsp;&nbsp;&nbsp;&nbsp;
+
+                    <input id="id_if_message_0" name="if_message" value="0" type="radio" checked="">
+                    <label for="id_if_message_0"> 不是</label> &nbsp;&nbsp;&nbsp;&nbsp;
+                </div>
+            </div>
+
+                                        
+            <div class="builder_item">
+                <label class="item-label">消息提示内容</label>
+                <div class="controls">
+                    <textarea name="message_content" class="text input-large form-control">
+                        {$limit.message_count}
+                    </textarea>
+                </div>
+            </div>
+                       
+            <div class="builder_item">
+                <label class="item-label">行为<span class="suggest check-tips">（可多选,不选为全部行为）</span></label>
+                <div class="controls">
+                    <div class="chosen chosen_action_list">
+                        <select data-placeholder="" name="action_list[]" class="chosen-select form-control" tabindex="2" multiple="">
+                            {volist name="opt_action" id="vo"}
+                            {if in_array($vo.name, $limit['action_list'])}
+                            <option value="{$vo.name}" selected>{$vo.title}</option>
+                            {else}
+                            <option value="{$vo.name}">{$vo.title}</option>
+                            {/if}
+                            {/volist}
+                        </select>
+                        <script>
+                        $(function(){
+                            $('.chosen_action_list select.chosen-select').chosen({
+                                lang:'zh_cn',
+                                width:'100%',
+                                no_results_text: '没有找到',    // 当检索时没有找到匹配项时显示的提示文本
+                                disable_search_threshold: 10, // 10 个以下的选择项则不显示检索框
+                                search_contains: true         // 从任意位置开始检索
+                            });
+                        });
+                        </script>
+                    </div>
+                </div>
+            </div>
+
+            <div class="builder_item">
+                <label class="item-label">状态</label>
+                <div class="controls">
+                    <select name="status" class="form-control">
+                        <option value="-1">删除</option>
+                        <option value="0">禁用</option>
+                        <option value="1" selected="">启用</option>
+                        <option value="2">未审核</option>
+                    </select>
+                </div>
+            </div>
+
+            <br>
+
+            <div class="form-item">
+                <button class="btn submit-btn btn-success" id="submit" type="submit" target-form="form-horizontal">确定</button>  &nbsp;
+                <button onclick="javascript:history.back(-1);return false;" class="btn btn-return">返回</button>  &nbsp;
+            </div>
+        </form>
+    </div>
+{/block}
+
+{block name="style"}
+<link href="__STATIC__/common/lib/zui/lib/chosen/chosen.min.css" rel="stylesheet">
+{/block}
+{block name="script"}
+<script src="__STATIC__/common/lib/zui/lib/chosen/chosen.min.js"></script>
+{/block}
+

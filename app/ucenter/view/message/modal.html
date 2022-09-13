@@ -1,0 +1,148 @@
+<div class="message">
+    <div class="message-body">
+      <div class="left-navigation">
+        <h4>消息通知</h4>
+        <ul id="myTab" class="nav-tabs">
+          {foreach $type_list as $key=>$val}
+          <li class="">
+            <a href="#" data-toggle="tab" data-type-id="{$val.id}" data-type-title="{$val.title}">{$val.title}</a>
+            {if $val.unread > 0}
+            <span class="information-quantity">{$val.unread}</span>
+            {/if}
+          </li>
+          {/foreach}
+        </ul>
+      </div>
+  
+      <div  class="right-content" id="myTabContent">
+        <div class="system-notice tab-pane" id="system-notice">
+          <div class="content-head clearfix">
+            <h4>系统通知</h4>
+            
+            <button class="close"data-dismiss="modal">×</button>
+            <div class="isread">全部标记为已读</div>
+          </div>
+          <div class="system-notice-list">
+            <ul>
+                <div class="empty">
+                    还没有消息哦~
+                </div>
+            </ul>
+          </div>
+        </div>
+        <div class="paper-section">
+            <ul id="messagePager" class="pager" data-ride="pager" data-elements="prev_icon,nav,next_icon"></ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+  
+  $(function(){
+    var shopid = 0;
+    var type_id = 0;
+    var type_title = '';
+    // 手动进行初始化
+    $('#messagePager').pager({
+        page: 1,
+    });
+
+    // 获取分页器实例对象
+    var messagePager = $('#messagePager').data('zui.pager');
+
+    // 点击消息类型事件
+    $('.message-modal .message .nav-tabs a').click(function(){
+      $('.message .nav-tabs li').removeClass('active');
+      $(this).parent().addClass('active');
+      type_id = $(this).data('type-id');
+      type_title = $(this).data('type-title');
+      $('.message .content-head h4').text(type_title);
+      getList(shopid, type_id, 1);
+    });
+
+    $('#messagePager').on('onPageChange', function(e, state, oldState) {
+      if (state.page !== oldState.page) {
+          getList(shopid, type_id, state.page)
+      }
+    });
+
+    $(".message-modal").on('click', '.operate',function() {
+      $(this).parent().toggleClass("operate-Invert");
+      $(this).parent().nextAll(".operate").removeClass("operate-Invert");
+      $(this).parent().next().slideToggle();
+      $(this).parent().prevAll(".operate").slideUp("slow");
+      $(this).parent().next().nextAll(".operate").slideUp("slow");
+      return false;
+    });
+
+    $('.message-modal .isread').click(function(){
+      var url = "{:url('api/message/isread')}";
+      $.post(url, {}, function (res) {
+        console.log(res)
+        if(res.code == 200){
+          $('.information-quantity').addClass('hidden');
+        }
+      });
+    });
+
+    // 默认点击第一个消息类型
+    $('.message-modal .message .nav-tabs a').first().click();
+
+    function getList(shopid, type_id, page){
+        toast.showLoading()
+        var url = "{:url('api/message/lists')}";
+            url = url + '?page=' + page
+        $.post(url, {
+            type_id : type_id,
+            shopid : 0,
+        }, function (res) {
+            console.log(res);
+            if(res.data.data.length > 0){
+                var html = '';
+                $.each(res.data.data,function(i,n){
+                    html += '<li>'
+                    html += '    <div class="avatar">'
+                    html += '    <img src="'+n.form_user.avatar64+'" alt="">'
+                    html += '    </div>'
+                    html += '    <div class="message-content">'
+                    html += '        <div class="message-types">'
+                    html += '        <h4> '+n.content.title+' </h4>'
+                    html += '        <span class="time">'+n.create_time_str+'</span>'
+                    html += '        </div>'
+                    html += '         <div class="content-detail">'
+                    html += '         <div class="detail">' + n.content.content + '</div>'
+                    html += '         <div class="operate">'
+                    html += '             <span class="expand">展开</span>'
+                    html += '             <span class="put-away">收起</span>'
+                    html += '             <i class="iconfont">&#xeabc;</i>'
+                    html += '         </div>'
+                    html += '         </div>'
+                    html += '    </div>'
+                    html += '</li>'
+                });
+
+                //写入DOM
+                $('.message-body .right-content .system-notice-list ul').html(html);
+
+                // 设置当前页码为 4，并同时设置记录总数为 100， 每页记录数目为 30
+                messagePager.set({
+                    page: res.data.current_page,
+                    recTotal: res.data.total,
+                    recPerPage: res.data.per_page
+                });
+            }else{
+                var html = '';
+                    html += '<div class="empty">'
+                    html += '<div class="image"><img src="__STATIC__/common/images/empty.png" /></div>'
+                    html += '<div class="text">还没有消息哦~</div>'
+                    html += '</div>'
+
+                //写入DOM
+                $('.message-modal .message-body .right-content .system-notice-list ul').html(html);
+            }
+            toast.hideLoading()
+        })
+    }
+  
+  });
+  </script>

@@ -1,0 +1,429 @@
+{extend name="../../common/view/main"/}
+{block name="style"}
+<link href="__STATIC__/common/lib/webuploader/css/webuploader.css" type="text/css" rel="stylesheet">
+<link href="__STATIC__/common/lib/cropper/cropper.min.css" rel="stylesheet">
+<link href="__STATIC__/ucenter/css/main.min.css" rel="stylesheet">
+{/block}
+{block name="body"}
+<div class="main-wrapper">
+
+    <!--用户设置顶部-->
+    <!-- {include file="config/_header"/} -->
+    <!--用户设置顶部end-->
+
+    <div id="main-container" class="container user-config">
+        <div class="row">
+            <div class="col-xs-3">
+                {include file="config/_slide"/}
+            </div>
+            <div class="col-xs-9">
+                <div id="usercenter-content-td ">
+                    <div class="container-fluid common_block_border config-content">
+                        <div id="center">
+                            <div id="center_base">
+                                <div id="center_account">
+                                    <!-- <div class="row">
+                                        <div class="col-xs-12">
+                                            <ul class="nav nav-secondary">
+                                                <li class="active">
+                                                    <a href="#base" data-toggle="tab">
+                                                        用户设置
+                                                    </a>
+                                                </li>
+                                                
+                                            </ul>
+                                        </div>
+                                    </div> -->
+                                    <div class="basic_information">基本信息</div>
+                                    <div class="tab-content">
+                                        <div class="tab-pane active" id="base">
+                                            <div class="with-padding">
+                                                <!--style="padding: 20px" -->
+                                                <div class="row">
+                                                    <!-- 更换头像 -->
+                                                    <div class="ucenter-avatar col-xs-12" data-uid="{$user['uid']}">
+                                                        <!--用来存放item-->
+                                                        <div class="avatar-view">
+                                                            <img src="{$user.avatar256}" alt="">
+                                                        </div>
+
+                                                        <div class="action-box">
+                                                            <!-- <a class="btn btn-block btn-lg btn-warning avatar_upload_btn" data-toggle="modal" data-target="#avatar-modal">
+                                                                            更换头像<i class="iconfont">&#xe661;</i>
+                                                                        </a> -->
+                                                            <button class="avatar_upload_btn" data-toggle="modal"
+                                                                data-target="#avatar-modal">
+                                                                更换头像<i class="iconfont">&#xe661;</i>
+                                                            </button>
+                                                        </div>
+
+                                                        <div class="modal fade" id="avatar-modal">
+                                                            <div class="modal-dialog modal-lg">
+                                                                <div class="modal-content">
+                                                                    <div class="avatar-header">
+                                                                        <h4 class="avatar-title">上传头像</h4>
+                                                                        <button class="close"
+                                                                            data-dismiss="modal">×</button>
+                                                                    </div>
+                                                                    <div class="avatar-body">
+
+                                                                        <!-- <div class="avatar-upload">
+                                                                                        <input class="avatar-data" name="avatar_data" type="hidden">
+                                                                                        <a class="avatar-input" id="upload_avatar" name="avatar_file" type="file">
+                                                                                            上传头像
+                                                                                        </a>
+                                                                                    </div> -->
+                                                                        <div class="row">
+                                                                            <div class="col-md-9">
+                                                                                <div class="avatar-upload">
+                                                                                    <input class="avatar-data"name="avatar_data"type="hidden">
+                                                                                    <a class="avatar-input"id="upload_avatar"name="avatar_file" type="file">
+                                                                                        <i class="iconfont">&#xe610;</i> 上传头像
+                                                                                    </a>
+                                                                                    <p class="description">选择一张本地的图片编辑后上传为头像支持jpg、png、gif图片大小不能超过2m</p>
+                                                                                </div>
+                                                                                <div class="avatar-wrapper"><div></div></div>
+                                                                            </div>
+                                                                            <div class="col-md-3">
+                                                                                <p class="avatar-preview-title">头像预览</p>
+                                                                                <div class="avatar-preview preview-sm">
+                                                                                    <img src="{$user.avatar64}">
+                                                                                </div>
+                                                                                <div class="avatar-preview preview-md">
+                                                                                    <img src="{$user.avatar128}"></div>
+                                                                                <!-- <div class="avatar-preview preview-lg">
+                                                                                    <img src="{$user.avatar256}"></div> -->
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="row avatar-btns">
+                                                                            <!-- <div class="col-md-9">
+
+                                                                            </div> -->
+                                                                            <div class="col-md-3">
+                                                                                <button
+                                                                                    class="btn btn-success btn-block avatar-save"
+                                                                                    data-role="avatar_btn">
+                                                                                    保存
+                                                                                </button>
+                                                                                <div class="avatar-cancel" data-dismiss="modal">取消</div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <!-- 更换头像 -->
+                                                    <div class="col-xs-8 center_info form-horizontal">
+
+
+                                                        {php}if(check_reg_type('username')){{/php}
+                                                        <div class="form-group">
+                                                            <label for="aUsername" class="col-xs-2 control-label">用户名</label>
+                        
+                                                            <div class="col-xs-10">
+                                                                {if $user['nickname']}
+                                                                    <span class="lh32">{$user['username']}</span>
+                                                                {else /}
+                                                                    <input type="text" class="form-control pull-left" id="aUsername" value="" placeholder="{:lang('_USER_NAME_NOT_SET_')}{:lang('_WAVE_')}">
+                                                                    <a class="pull-left lh32 saveUsername" style="margin-left: 10px">修改</a>
+                                                                {/if}
+                                                            </div>
+                                                        </div>
+                                                        {php}}{/php}
+                                                        <div class="form-group">
+                                                            <label for="aEmail"
+                                                                class="col-xs-2 control-label">Email</label>
+                                                            <div class="col-xs-10">
+                                                                {$user.email|default='未设置'}
+                                                                <a class=" lh32"
+                                                                    data-remote="{:url('ucenter/config/account',array('tag'=>'email'))}"
+                                                                    data-toggle="modal">去修改<i
+                                                                        class="iconfont">&#xe661;</i></a>
+                                                            </div>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label for="aMobile"
+                                                                class="col-xs-2 control-label">手机号</label>
+
+                                                            <div class="col-xs-10">
+                                                                {$user.mobile|default='未设置'}
+                                                                <a class=" lh32 "
+                                                                    data-remote="{:url('ucenter/config/account',array('tag'=>'mobile'))}"
+                                                                    data-toggle="modal">去修改<i
+                                                                        class="iconfont">&#xe661;</i>
+                                                                </a>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-xs-8">
+                                                        <form class="form-horizontal center_info ajax-form" role="form"
+                                                            action="{:url('ucenter/config/index')}" method="post">
+                                                            <div class="form-group">
+                                                                <label for="nickname"
+                                                                    class="col-xs-2 control-label">昵称</label>
+
+                                                                <div class="col-xs-10 nickname">
+                                                                    <span
+                                                                        class="lh32 sp_nickname">{$user.nickname|text}</span>
+                                                                    <!-- <input type="text" style="display:none;" class="form-control in_nickname" id="nickname" name="nickname" value="{$user.nickname|text}" placeholder="昵称"> -->
+                                                                    <input type="text" style="display:none;"
+                                                                        class="form-control in_nickname" id="nickname"
+                                                                        name="nickname" value="{$user.nickname|text}"
+                                                                        placeholder="{$user.nickname|text}">
+                                                                </div>
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <label class="col-xs-2 control-label">性别</label>
+
+                                                                <div class="col-xs-10" style="line-height: 33px;">
+                                                                    <label class="radio-inline">
+                                                                        <input name="sex" type="radio" value="1" {eq
+                                                                            name="user.sex" value="1" } checked{/eq}>男
+                                                                    </label>
+                                                                    <label class="radio-inline">
+                                                                        <input name="sex" type="radio" value="2" {eq
+                                                                            name="user.sex" value="2" } checked{/eq}>女
+                                                                    </label>
+                                                                    <label class="radio-inline">
+                                                                        <input name="sex" type="radio" value="0" {eq
+                                                                            name="user.sex" value="0" } checked{/eq}>保密
+                                                                    </label>
+                                                                </div>
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <label for="signature"
+                                                                    class="col-xs-2 control-label">签名</label>
+                                                                <div class="col-xs-10 signature">
+                                                                    <span
+                                                                        class="lh32 sp_signature">{$user.signature|htmlspecialchars}</span>
+                                                                    <textarea id="signature" style="display:none;"
+                                                                        name="signature"
+                                                                        class="form-control te_signature"
+                                                                        style="width: 100%; height: 6em;resize: none"
+                                                                        placeholder='{$user.signature|htmlspecialchars}'>{$user.signature|htmlspecialchars}</textarea>
+                                                                </div>
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <div class="col-sm-offset-2 col-xs-10 editing">
+                                                                    <div class="editing-item">编辑</div>
+                                                                </div>
+                                                                <div class="col-sm-offset-2 col-xs-10 preserve"
+                                                                    style="display:none;">
+                                                                    <button type="submit"
+                                                                        class="btn btn-primary preserve-item">保存</button>
+                                                                </div>
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="clearfix"></div>
+        </div>
+    </div>
+</div>
+{/block}
+
+{block name="script"}
+<script type="text/javascript" charset="utf-8" src="__STATIC__/common/lib/webuploader/js/webuploader.js"></script>
+<script src="__STATIC__/common/lib/cropper/cropper.min.js"></script>
+<script src="__STATIC__/ucenter/js/main.min.js"></script>
+<script>
+    $(function () {
+        $('.editing-item').click(function () {
+            $('.editing').hide();
+            $('.sp_signature').hide();
+            $('.sp_nickname').hide();
+            $('.preserve').show();
+            $('.te_signature').show();
+            $('.in_nickname').show();
+        })
+        $('.preserve-item').click(function () {
+            $('.preserve').hide();
+            $('.te_signature').hide();
+            $('.in_nickname').hide();
+            $('.sp_signature').show();
+            $('.sp_nickname').show();
+            $('.editing').show();
+
+
+        })
+    });
+    //上传头像
+    $(function () {
+        var avatarData = $('[name="avatar_data"]');
+        var path;
+        var uploader = WebUploader.create({
+            // 选完文件后，是否自动上传。
+            auto: false,
+            // swf文件路径
+            swf: 'Uploader.swf',
+            // 文件接收服务端。
+            server: "{:url('api/File/pic',array('uid'=>$user.uid))}",
+            // 选择文件的按钮。可选。
+            // 内部根据当前运行是创建，可能是input元素，也可能是flash.
+            pick: '#upload_avatar',
+            // 只允许选择图片文件。
+            accept: {
+                title: 'Images',
+                extensions: 'gif,jpg,jpeg,bmp,png',
+                mimeTypes: 'image/jpg,image/jpeg,image/png'
+            }
+        });
+        uploader.on('fileQueued', function (file) {
+            uploader.upload();
+            toast.showLoading();
+        });
+        /*上传成功*/
+        uploader.on('uploadSuccess', function (file, ret) {
+            toast.hideLoading();
+
+            if (ret.code == 0) {
+                toast.error(ret.msg);
+                $('.avatar-wrapper').show();
+                $('.avatar-upload').hide();
+            } else {
+                path = ret.data.attachment;
+                var src = ret.data.url;
+                $('.avatar-wrapper').html('<img src="' + src + '" />');
+                $('.avatar-wrapper').show();
+                $('.avatar-upload').hide();
+                $('.avatar-wrapper img').load(function () {
+                    //图片加载完成后初始化裁剪组件
+                    var image = $('.avatar-wrapper img');
+
+                    image.cropper({
+                        aspectRatio: 1,
+                        preview: $('.avatar-preview'),
+                        strict: false,
+                        crop: function (data) {
+                            var json = ['{"x":' + data.detail.x, '"y":' + data
+                                .detail.y, '"height":' + data.detail.height,
+                                '"width":' + data.detail.width, '"rotate":' +
+                                data.detail.rotate + '}'
+                            ].join();
+                            avatarData.val(json);
+                        }
+                    });
+                })
+                //重置队列
+                uploader.reset();
+            }
+        });
+
+        $('[data-role=avatar_btn]').click(function () {
+            var avatarJson = JSON.parse(avatarData.val());
+            var x = parseInt(avatarJson.x);
+            var y = parseInt(avatarJson.y);
+            var w = parseInt(avatarJson.width);
+            var h = parseInt(avatarJson.height);
+
+            var crop = x + ',' + y + ',' + w + ',' + h;
+
+            //检查是否已经裁剪过
+            if (typeof (crop) == 'undefined') {
+                toast.error("还未裁切图片");
+                return;
+            }
+
+            var uid = '{$user.uid}';
+            //提交到服务器
+            var url = "{:url('ucenter/config/avatar')}";
+
+            $.post(url, {
+                uid: uid,
+                crop: crop,
+                path: path
+            }, function (res) {
+                handleAjax(res);
+            });
+        })
+    });
+    //上传头像
+    $(function () {
+        $(window).resize(function () {
+            $("#main-container").css("min-height", $(window).height() - 343);
+        }).resize();
+
+        // 设置当前高亮菜单
+        $("#{$tab}").addClass('active');
+    })
+
+    $(function () {
+        var $sidebar = $('#usercenter-sidebar-td');
+        var $sidebar_xs = $('#usercenter-sidebar-xs');
+        var $sidebar_sm = $('#usercenter-sidebar-sm');
+        var $content = $('#usercenter-content-td');
+
+        function trigger_resp() {
+            var width = $(window).width();
+            if (width < 768) {
+                on_xs();
+            } else {
+                on_sm();
+            }
+        }
+
+        function on_xs() {
+            $sidebar_xs.append($sidebar);
+            $content.css({
+                'padding-left': 0,
+                'padding-right': 0
+            });
+        }
+
+        function on_sm() {
+            $sidebar_sm.prepend($sidebar);
+        }
+
+        trigger_resp();
+
+        $(window).resize(function () {
+            trigger_resp();
+        })
+    })
+
+
+    function center_toggle(name) {
+        var show = $('#' + name + '_panel').css('display');
+        $('.center_panel').hide();
+        $('.center_arrow_right').show();
+        $('.center_arrow_bottom').hide()
+        if (show == 'none') {
+            $('#' + name + '_panel').show();
+            $('#' + name + '_toggle_right').hide();
+            $('#' + name + '_toggle_bottom').show()
+        } else {
+            $('#' + name + '_toggle_right').show();
+            $('#' + name + '_toggle_bottom').hide()
+        }
+    }
+
+    $(function () {
+        $('.saveUsername').click(function () {
+            var username = $(this).prev().val();
+            if (!username) {
+                toast.error("{:lang('_USERNAME_NOT_EMPTY_')}{:lang('_EXCLAMATION_')}");
+                return false;
+            }
+            if (confirm("{:lang('_USERNAME_SET_ONCE_')}{:lang('_QUESTION_')}")) {
+                $.post("{:url('ucenter/config/saveUsername')}", {
+                    username: username
+                }, function (res) {
+                    handleAjax(res);
+                })
+            }
+        })
+    })
+</script>
+{/block}

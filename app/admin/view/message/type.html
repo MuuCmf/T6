@@ -1,0 +1,91 @@
+{extend name="common/main"/}
+{block name="style"}
+<!--图片上传-->
+<script type="text/javascript" charset="utf-8" src="__STATIC__/common/lib/webuploader/js/webuploader.js"></script>
+<link href="__STATIC__/common/lib/webuploader/css/webuploader.css" type="text/css" rel="stylesheet">
+{/block}
+{block name="body"}
+<div class="message-type-list-section">
+    <!-- 标题栏 -->
+    <div class="main-title">
+        <h2>消息类型</h2>
+    </div>
+    <div class="button-box clearfix">
+
+        <div class="col-md-6">
+            <a type="button" class="btn btn-info" href="{:url('typeEdit')}">
+                新增
+            </a>
+            <button class="btn btn-success ajax-post confirm" url="{:url('typeStatus', ['status'=> 1])}" target-form="ids">
+                启用
+            </button>
+            <button class="btn btn-warning ajax-post confirm" url="{:url('typeStatus', ['status'=> 0])}" target-form="ids">
+                禁用
+            </button>
+            <button class="btn btn-danger ajax-post confirm" url="{:url('typeStatus', ['status'=> -1])}" arget-form="ids">
+                删除
+            </button>
+        </div>
+    </div>
+
+    <!-- 数据列表 -->
+    <div class="data-table with-padding">
+        {notempty name="list"}
+        <table class="table table-bordered table-striped muu-table">
+            <thead>
+            <tr>
+                <th class="row-selected row-selected">
+                    <input type="checkbox" class="check-all" id="check-all">
+                    <label for="check-all"></label>
+                </th>
+                <th class="">图标</th>
+                <th class="">名称</th>
+                <th class="">描述</th>
+                <th class="">状态</th>
+                <th class="">操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            {volist name="list" id="vo"}
+                <tr>
+                    <td>
+                        <input class="ids" id="type_{$vo.id}" type="checkbox" name="ids[]" value="{$vo.id}"/>
+                        <label for="type_{$vo.id}"></label>
+                    </td>
+                    
+                    <td>
+                        <div class="icon">
+                            <img src="{$vo['icon_80']}" alt="图标">
+                        </div>
+                    </td>
+                    <td>{$vo.title}</td>
+                    <td>{$vo.description}</td>
+                    <td>
+                        {$vo.status_str}
+                    </td>
+                    <td>
+                        <button type="button" class="btn btn-sm btn-primary" data-name="sendMessageModal" data-iframe="{:url('send',['type_id' => $vo['id']])}" data-toggle="modal" data-size="lg" data-height="600px">群发消息</button>
+                        <a class="btn btn-sm btn-info" href="{:url('typeEdit',['id'=>$vo['id']])}">编辑</a>
+                        {if $vo.status == 1}
+                        <a class="btn btn-sm btn-warning ajax-post" href="{:url('typeStatus',['status'=>0, 'ids'=>$vo['id']])}">禁用</a>
+                        {/if}
+                        {if $vo.status == 0}
+                        <a class="btn btn-sm btn-success ajax-post" href="{:url('typeStatus',['status'=>1, 'ids'=>$vo['id']])}">启用</a>
+                        {/if}
+                        <a class="btn btn-sm btn-danger ajax-post" href="{:url('typeStatus',['status'=>-1, 'ids'=>$vo['id']])}" data-confirm="确认执行删除操作？">删除</a>
+                    </td>
+                </tr>
+            {/volist}
+            </tbody>
+        </table>
+        {else/}
+        {include file="common/_empty"/}
+        {/notempty}
+    </div>
+</div>
+{/block}
+{block name="script"}
+<script>
+
+</script>   
+{/block}

@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>选择用户</title>
+    <!-- Tell the browser to be responsive to screen width -->
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <!-- BOOTSTRAP or ZUI -->
+    <link href="__STATIC__/common/lib/zui/css/zui.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="__STATIC__/common/lib/font-awesome-4.7.0/css/font-awesome.min.css">
+    <!-- Muu BASE style -->
+    <link href="__STATIC__/admin/css/main.min.css" rel="stylesheet">
+    <script src="__STATIC__/common/lib/zui/lib/jquery/jquery.js"></script>
+
+</head>
+<body>
+<div class="with-padding send-message-section">
+    <form action="{:url()}" method="post" class="form-horizontal">
+        <input type="hidden" name="type_id" value="{$type_id}">
+        <!--发送指定用户-->
+        {if !empty($to_uid)}
+        <div class="form-group">
+            <label class="col-sm-2 control-label">接收用户</label>
+			<div class="form-controls col-sm-8">
+                <input type="hidden" value="{$to_uid}" name="to_uid">
+                <div class="user-info">
+                    <div class="user-avatar">
+                        <img src="{$to_user['avatar64']}" />
+                    </div>
+                    <div class="user-nickname">
+                        {$to_user['nickname']}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {else}
+        <!--选择用户-->
+        <div class="form-group choose-user-sec">
+            <label class="col-sm-2 control-label">接收用户</label>
+			<div class="form-controls col-sm-8" style="padding-top: 6px;">
+                <!--遍历用户组-->
+                {volist name="groups" id="one_group"}
+                <input type="checkbox" id="user_group_{$one_group['id']}" name="user_group[]" value="{$one_group['id']}">
+                <label for="user_group_{$one_group['id']}">{$one_group['value']}</label>
+                {/volist}
+            </div>
+        </div>
+        
+        {/if}
+
+        <div class="form-group">
+            <label class="col-sm-2 control-label">发送类型</label>
+			<div class="form-controls col-sm-8" style="padding-top: 6px;">
+                <input type="checkbox" id="systemMessage" value="msg" name="send_type[]" checked>
+                <label for="systemMessage">站内消息</label>
+
+                <input type="checkbox" id="systemEmail" value="email" name="send_type[]">
+                <label for="systemEmail">邮件</label>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-2 control-label">消息类型</label>
+            <div class="form-controls col-sm-8" style="padding-top: 6px;">
+                <div class="message-type clearfix">
+                    {volist name="type" id="vo" }
+                    {if $type_id == $vo.id}
+                    <input type="radio" id="type-{$vo.id}" value="{$vo.id}" name="type_id" checked>
+                    {else}
+                    <input type="radio" id="type-{$vo.id}" value="{$vo.id}" name="type_id">
+                    {/if}
+                    <label for="type-{$vo.id}">{$vo.title}</label>
+                    {/volist}
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-2 control-label">消息内容</label>
+            <div class="form-controls col-sm-8">
+                <div class="form-group">
+                    <input type="text" class="form-control" name="title" placeholder="消息标题">
+                </div>
+                <div class="form-group">
+                    <textarea class="form-control" rows="3" name="description" placeholder="简短描述"></textarea>
+                </div>
+                <div class="form-group">
+                    {:ueditor('content', 'content', '消息详情', 'mini')}
+                </div>
+            </div>
+        </div>
+
+        <div class="send-button-section">
+            <button type="button" class="btn btn-lg btn-success" data-role="submit">发送消息</button>
+            <button type="button" class="btn btn-lg btn-default" data-role="close">取消</button>
+        </div>
+    </form>
+</div>
+
+<script src="__STATIC__/common/lib/zui/js/zui.min.js"></script>
+<script src="__STATIC__/admin/js/main.min.js"></script>
+<script>
+    
+    $(function(){
+        var parentElem = $('#sendMessageModal',window.parent.document);
+
+        $('[data-role="submit"]').click(function(){
+            var query = $('form').serialize();
+            var url = $('form').attr('action');
+            $.post(url,query,function(res){
+                if(res.code == 200){
+                    toast.success(res.msg);
+                    setTimeout(function(){
+                       //关闭ZUI弹窗
+                        parent.$('#sendMessageModal').find('[data-dismiss="modal"]').click();
+                    },1000);
+                }else{
+                    toast.error(res.msg);
+                }
+            },'json');
+        });
+
+
+        $('[data-role="close"]').on('click','',function () {
+            //关闭ZUI弹窗
+            parent.$('#sendMessageModal').find('[data-dismiss="modal"]').click();
+        })
+    });
+
+</script>
+</body>
+</html>

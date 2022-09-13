@@ -1,0 +1,84 @@
+{extend name="common/main"/}
+
+{block name="style"}
+<!--图片上传-->
+<script type="text/javascript" charset="utf-8" src="__STATIC__/common/lib/webuploader/js/webuploader.js"></script>
+<link href="__STATIC__/common/lib/webuploader/css/webuploader.css" type="text/css" rel="stylesheet">
+{/block}
+
+{block name="body"}
+<div class="main-title">
+    <h2>新增、编辑消息内容</h2>
+</div>
+
+<div class="with-padding">
+    <div class="message-type-edit-section">
+        <form action="" method="post" class="form-horizontal ajax-form" role="form">
+            <input type="hidden" name="id" value="{$data['id']}">
+            <div class="builder_item">
+                <label class="item-label">
+                    标题
+                    <span class="check-tips">（请填写消息标题）</span>
+                </label>
+                <div class="controls">
+                    <input type="text" class="form-control" name="title" placeholder="请填写消息标题" value="{$data['title']}">
+                </div>
+            </div>
+
+            <div class="builder_item">
+                <label class="item-label">
+                    简短描述
+                    <span class="check-tips">（请填写消息简短描述）</span>
+                </label>
+                <div class="controls">
+                    <textarea class="form-control" rows="3" name="description" placeholder="请填写消息简短描述">{$data['description']}</textarea>
+                </div>
+            </div>
+
+            <div class="builder_item">
+                <label class="item-label">
+                    消息内容
+                    <span class="check-tips">（请填写消息详细内容）</span>
+                </label>
+                <div class="editor">
+                    {:ueditor('content', 'content', $data['content'])}
+                </div>
+            </div>
+            
+            <div class="builder_item">
+            
+                <label class="item-label">状态设置</label>
+                <div class="controls status-section">
+                    {if $data['status'] == 1}
+                    <input type="radio" name="status" id="is_status-1" value="1" checked> 
+                    <label class="radio-inline" for="is_status-1">启用</label>
+                    <input type="radio" name="status" id="is_status-0" value="0">
+                    <label class="radio-inline" for="is_status-0"> 禁用</label>
+                    {/if}
+                    {if $data['status'] == 0}
+                    <input type="radio" name="status" id="is_status-1" value="1"> 
+                    <label class="radio-inline" for="is_status-1">启用</label>
+                    <input type="radio" name="status" id="is_status-0" value="0" checked>
+                    <label class="radio-inline" for="is_status-0"> 禁用</label>
+                    {/if}
+                </div>
+            </div>
+
+            <div class="builder_item">
+                <label class="item-label"></label>
+                <div class="form-controls">
+                    <button type="submit" class="btn btn-lg btn-primary">确认提交</button>
+                </div>
+            </div>
+            
+        </form>
+    </div>
+
+</div>
+
+
+{/block}
+{block name="script"}
+
+
+{/block}

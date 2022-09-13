@@ -1,0 +1,104 @@
+/*按钮重构*/
+
+.btn-primary {
+    border-color: #11a8bb;
+    background-color: #11a8bb !important;
+    color: #fff;
+    &:hover,&:active {
+        border-color: #11a8bb !important;
+    }
+    &:focus {
+        border-color: #11a8bb!important;
+    }
+}
+.btn-primary.light {
+    border-color: #14c1d7;
+    background-color: #14c1d7 !important;
+    &:hover,&:active {
+        border-color: #14c1d7!important;
+    }
+    &:focus {
+        border-color: #14c1d7!important;
+    }
+}
+.btn-success {
+    border-color: #47D178;
+    background-color: #47D178 !important;
+    color: #fff;
+    &:hover,&:active {
+        border-color: #47D178!important;
+    }
+    &:focus {
+        border-color: #47D178!important;
+    }
+}
+.btn-success.light {
+    border-color: #5fd78a;
+    background-color: #5fd78a !important;
+    &:hover,&:active {
+        border-color: #5fd78a!important;
+    }
+    &:focus {
+        border-color: #5fd78a!important;
+    }
+}
+.btn-danger {
+    border-color: #ee5744;
+    background-color: #ee5744 !important;
+    color: #fff;
+    &:hover,&:active {
+        border-color: #ee5744!important;
+    }
+    &:focus {
+        border-color: #ee5744!important;
+    }
+}
+.btn-danger.light {
+    border-color: #f17060;
+    background-color: #f17060 !important;
+    &:hover,&:active {
+        border-color: #f17060!important;
+    }
+    &:focus {
+        border-color: #f17060!important;
+    }
+}
+.btn-info {
+    border-color: #47d1af;
+    background-color: #47d1af !important;
+    color: #fff;
+    &:hover,&:active {
+        border-color: #47d1af!important;
+    }
+    &:focus {
+        border-color: #47d1af!important;
+    }
+}
+.btn-info.light {
+    border-color: #5fd7ba;
+    background-color: #5fd7ba !important;
+    &:hover,&:active {
+        border-color: #5fd7ba!important;
+    }
+    &:focus {
+        border-color: #5fd7ba!important;
+    }
+}
+.btn-warning {
+    border-color: #f1a325;
+    background-color: #f1a325 !important;
+    color: #ffffff;
+    &:hover,&:active {
+        border-color: #f1a325!important;
+    }
+    &:focus {
+        border-color: #f1a325!important;
+    }
+}
+
+.btn-mini, .btn-sm, .btn-xs {
+    padding: 2px 8px;
+    font-size: 12px;
+    line-height: 1.5;
+    border-radius: 4px;
+}

@@ -1,0 +1,58 @@
+.member-list-section {
+    table {
+        .avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            float: left;
+            overflow: hidden;
+            img {
+                width: 100%;
+            }
+        }
+        .title {
+            height: 60px;
+            line-height: 60px;
+            float: left;
+            margin-left: 10px;
+        }
+    }
+}
+.choose-user-body{
+    .user-search{
+        padding: 20px;
+    }
+    .user-section{
+        padding: 0 14px;
+        .user-item {
+            float: left;
+            width: 172px;
+            margin: 6px;
+            padding: 5px;
+            border: 1px solid #eee;
+            cursor: pointer;
+            height: 62px;
+        }
+        .user-avatar {
+            float: left;
+            width: 50px;
+            height: 50px;
+            img {
+                width: 100%;
+                border-radius: 50%;
+            }
+        }
+
+        .user-nickname {
+            margin-left: 60px;
+            line-height: 28px;
+        }
+    }
+    .user-section::after {
+        content: '';
+        flex: auto;
+    }
+    .page{
+        padding-left: 20px;
+    }
+}

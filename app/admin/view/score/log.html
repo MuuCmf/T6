@@ -1,0 +1,212 @@
+{extend name="common/main"/}
+{block name="body"}
+    <!-- 标题栏 -->
+    <div class="main-title">
+        <h2>
+            积分日志&nbsp;&nbsp;&nbsp;
+            <sub style="color: red">积分日志长期积累会导致整个系统性能下降，请定时清理</sub>
+        </h2>
+    </div>
+    
+    <div class="with-padding">
+    <div class="clearfix button-box tool-box row">
+        <div class="col-xs-8 pd0">
+                <button class="btn btn-danger ajax-get confirm" url="{:url('clear')}">清空</button>
+                <button class="btn btn-danger ajax-post confirm" target-form="ids" url="{:url('remove')}">删除</button>
+            <button class="btn btn-warning select">筛选</button>
+            <button class="btn btn-info" data-role="csv" data-url="{:url('action/csv')}">
+                导出CSV
+            </button>
+        </div>
+
+        <div class="col-xs-4">
+            <div class="search-form  pull-right">
+                <div class="input-group" style="width: 200px" >
+                    <input type="text" name="uid" class="search-input form-control" value="{:input('get.uid','','intval')}"
+                           placeholder="UID">
+                    <span class="input-group-btn">
+                        <a class="btn btn-default" href="javascript:;" id="search"
+                            url="{:url('Action/actionlog')}">
+                            <i class="icon icon-search"></i>
+                        </a>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 数据列表 -->
+    <div class="data-table">
+        {notempty name="list"}
+        <table class="table table-bordered table-striped table-hover muu-table">
+            <thead>
+                <tr>
+                <th class="row-selected row-selected">
+                    <input class="check-all" id="check-all" type="checkbox"/>
+                    <label for="check-all"></label>
+                </th>
+                <th>{:lang("ID")}</th>
+                <th class="">用户</th>
+                <th>积分类型</th>
+                <th class="">调整类型</th>
+                <th class="">执行时间</th>
+                <th class="">操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                {volist name="list" id="vo"}
+                <tr>
+                    <td>
+                        <input class="ids" id="ids-{$vo.id}" type="checkbox" name="ids[]" value="{$vo.id}">
+                        <label for="ids-{$vo.id}"></label>
+                    </td>
+                    <td>{$vo.id} </td>
+                    <td>{:get_action($vo['action_id'],'title')}</td>
+                    <td><a href="{:url('admin/action/actionLog',['uid'=>$vo['uid']])}">{:get_nickname($vo['uid'])}</a></td>
+                    <td>{$vo.ip}</td>
+                    <td>{$vo['remark']}</td>
+                    <td><span>{$vo.create_time|time_format}</span></td>
+
+                    <td>
+                        <a class="btn btn-sm btn-info" href="{:url('admin/action/detail',['id'=>$vo['id']])}">
+                            详情
+                        </a>
+                        <a class="btn btn-sm btn-danger ajax-get" data-confirm="确认执行该操作" href="{:url('admin/action/remove',['ids'=>$vo['id']])}">
+                            删除
+                        </a>
+                    </td>
+                </tr>
+                {/volist}
+            </tbody>
+        </table>
+        {else/}
+        <div class="text-center"> aOh!空空如也~ </div>
+        {/notempty}
+    </div>
+    <!-- 分页 -->
+    <div class="page">
+        {:htmlspecialchars_decode($page)}
+    </div>
+    <!-- /分页-->
+    </div>
+
+    <div class="modal fade" id="select">
+        <div class="modal-dialog">
+            <div class="modal-content" style="height: 298px">
+                <link href="__STATIC__/common/lib/zui/lib/datetimepicker/datetimepicker.css" rel="stylesheet" type="text/css">
+                <script type="text/javascript" src="__STATIC__/common/lib/zui/lib/datetimepicker/datetimepicker.min.js"></script>
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span
+                            class="sr-only">{:lang('_CLOSE_')}</span></button>
+                    <h4 class="modal-title" id="myModalLabel">行为日志筛选</h4>
+                </div>
+                <div class="modal-body">
+                    <form class="ajax-form" method="post" action="{:url('admin/action/actionLog')}">
+
+                        <div class="col-xs-12">
+                            <label>根据时间筛选</label>
+                        </div>
+                        <div class="col-xs-12">
+                        <div class="row">
+                        <div class="col-xs-6">
+                            <input type="text" id="sTime" name="sTime" class="time form-control form-datetime" placeholder="发布时间" readonly="" required/>
+                        </div>
+
+                        <div class="col-xs-6">
+                            <input type="text" id="eTime" name="eTime" class="time_d form-control form-datetime" readonly value="" placeholder="结束时间" required/>
+                        </div>
+                        </div>
+                        </div>
+                        <div class="col-xs-12">
+                            <label>根据行为筛选</label>
+                        </div>
+                        
+
+                        <div class="col-xs-12" style="margin:15px auto;">
+                            <span><p class="pull-left" style="margin-right: 5px">
+                                <input type="submit" data-role="submitscreen" value="确定" class="btn btn-primary send_box">
+                            </p></span>
+
+                            <span><p class="pull-left" style="margin-left: 5px;">
+                                <input type="button" value="取消" class="btn btn-primary send_box" data-dismiss="modal">
+                            </p></span>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{/block}
+
+{block name="script"}
+<script>
+    $('.time').datetimepicker({
+        language:'zh-CN',
+        weekStart:1,
+        todayBtn:1,
+        autoclose:1,
+        todayHighlight:1,
+        startView:2,
+        minView:0,
+        forceParse:0,
+        format: 'yyyy-mm-dd hh:ii'
+    });
+
+    $('.time_d').datetimepicker({
+        language:'zh-CN',
+        weekStart:1,
+        todayBtn:1,
+        autoclose:1,
+        todayHighlight:1,
+        startView:2,
+        minView:0,
+        forceParse:0,
+        format: 'yyyy-mm-dd hh:ii'
+    });
+</script>
+
+<script type="text/javascript">
+$(function(){
+    $("#search").click(function () {
+        var url = $(this).attr('url');
+        var query = $('.search-form').find('input').serialize();
+        query = query.replace(/(&|^)(\w*?\d*?\-*?_*?)*?=?((?=&)|(?=$))/g, '');
+        query = query.replace(/^&/g, '');
+        if (url.indexOf('?') > 0) {
+            url += '&' + query;
+        } else {
+            url += '?' + query;
+        }
+        window.location.href = url;
+    });
+
+    $("#action_add").click(function(){
+        window.location.href = $(this).attr('url');
+    });
+    //回车搜索
+    $(".search-input").keyup(function (e) {
+        if (e.keyCode === 13) {
+            $("#search").click();
+            return false;
+        }
+    });
+
+    //模态框
+    $('.select').click(function () {
+        $('#select').modal();
+    });
+
+    //导出csv
+    $('[data-role="csv"]').click(function(){
+        var data_url=$(this).attr('data-url');
+        var query=''
+        var form=$('input[type=checkbox]:checked.ids').each(function(){
+            query+= ','+$(this).val();
+            if (query.substr(0,1)==',') query=query.substr(1);
+
+        });
+        data_url+='?ids='+query;
+        window.open(data_url);
+    });
+})
+</script>
+{/block}

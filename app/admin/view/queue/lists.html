@@ -1,0 +1,55 @@
+{extend name="common/main"/}
+
+{block name="body"}
+<div class="member-list-section">
+    <!-- 标题栏 -->
+    <div class="main-title">
+        <h2>消息队列  <small>（# 建议开发测试时使用 php think queue:listen # 建议生产环境使用 php think queue:work，建议配合supervisor使用）</small></h2>
+    </div>
+
+    <section class="data-table with-padding clearfix">
+        {notempty name="lists.data"}
+        <table class="table table-bordered table-striped table-hover muu-table " id="table-data">
+            <thead>
+            <tr>
+                <th width="40">
+                    <input class="check-all" id="check-all" type="checkbox">
+                    <label for="check-all"></label>
+                </th>
+                <th>ID</th>
+                <th>类/方法</th>
+                <th>参数</th>
+            </tr>
+            </thead>
+            <tbody>
+            {foreach $lists.data as $k=>$v}
+            <tr>
+                <td>
+                    <input class="ids" id="see_{$k}" name="ids[]" type="checkbox" value="{$k}">
+                    <label for="see_{$v['id']}"></label>
+                </td>
+                <td>{$v['id']}</td>
+                <td class="products" style="width: 600px">
+                    {$v['job']}
+                </td>
+                <td>
+                    {$v['json']}
+                </td>
+            </tr>
+            {/foreach}
+            </tbody>
+        </table>
+        {else /}
+        {include file='common/_empty'}
+        {/notempty}
+    </section>
+    <div class="page-section">
+        {:htmlspecialchars_decode($pager)}
+    </div>
+</div>
+
+{/block}
+
+{block name="script"}
+
+{/block}

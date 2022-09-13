@@ -1,0 +1,81 @@
+li {
+  list-style: none;
+}
+.modal-backdrop {
+  z-index: 1004;
+}
+.muu-main {
+  .main-title {
+    border: 0;
+    margin: 0;
+
+    h2 {
+      margin-top: 5px;
+      font-size:16px;
+      font-weight: 600;
+    }
+  }
+}
+
+/*表单通用样式*/
+form {
+  display: block;
+  overflow: hidden;
+  .form-title {
+    padding: 10px;
+    color: #000;
+    background-color: #f6f6f6;
+  }
+  .form-body {
+    padding: 10px;
+    .control-label {
+      text-align: right;
+      padding-right: 10px;
+    }
+    .radio-controls {
+      padding-top: 7px;
+    }
+  }
+}
+
+.content {
+  min-height: 60px;
+}
+.muu-modal {
+  z-index: 1039;
+}
+.uploader-modal {
+  z-index: 1040;
+}
+.modal-dialog {
+    min-width: 720px!important;
+    left: 0;
+}
+.confirm-modal {
+  .fa {
+    color: red;
+    font-size: 30px;
+  }
+  .title {
+      font-size: 18px;
+      color: #4d4d4d;
+      margin-bottom: 26px;
+  }
+  .desc {
+    font-size:14px;
+  }
+}
+
+
+.empty-content {
+  padding: 50px;
+  text-align: center;
+
+  img {
+    margin: 10px auto;
+    width: auto;
+  }
+}
+
+
+

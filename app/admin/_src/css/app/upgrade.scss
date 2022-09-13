@@ -1,0 +1,80 @@
+//升级
+.update-warp{
+  -moz-user-select:none;
+  -webkit-user-select:none;
+  user-select:none;
+  .main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-bottom: 80px !important;
+
+    table thead,tbody tr,tfoot tr,thead tr {
+      display:table;
+      width:100%;
+      table-layout:fixed;
+    }
+
+    table tbody {
+      display:block;
+      max-height:500px;
+      overflow:scroll;
+      td{
+        white-space: nowrap;
+        -moz-user-select:text;
+        -webkit-user-select:text;
+        user-select: text;
+      }
+    }
+
+    ::-webkit-scrollbar {
+      width: 1px;
+    }
+
+    .error-panel{
+      .error-msg{
+        color: #ff9749;
+      }
+      .error-file{
+        overflow: hidden;
+        text-overflow:ellipsis;
+      }
+    }
+    .upgrade-icon {
+      width: 400px;
+    }
+    .progress {
+      width: 600px;
+      height: 10px;
+      .progress-bar {
+        background-color: #03b8cf;
+      }
+    }
+    .progress-info{
+      width: 600px;
+      display: flex;
+      justify-content: space-between;
+      .task{
+        color: #03b8cf;
+      }
+      .task-error{
+        color: #EA644A;
+      }
+    }
+    .error-panel{
+      width: 600px;
+      margin-top: 40px;
+      .panel-heading{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+    }
+    .btn-menu{
+      padding-top: 80px;
+      .btn-menu button{
+        width: 100px;
+      }
+    }
+  }
+}

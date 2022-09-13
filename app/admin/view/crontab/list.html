@@ -1,0 +1,92 @@
+{extend name="common/main"/}
+
+{block name="body"}
+<div class="crontab-list-section">
+    <!-- 标题栏 -->
+    <div class="main-title">
+        <h2>任务管理</h2>
+    </div>
+    <div class="button-box clearfix">
+
+        <div class="col-md-8">
+            <a type="button" class="btn btn-info" href="{:url('edit')}">
+                新增
+            </a>
+            <button class="btn btn-success ajax-post" url="{:url('status', ['status'=> 1])}" target-form="ids">
+                启用
+            </button>
+            <button class="btn btn-warning ajax-post" url="{:url('status', ['status'=> 0])}" target-form="ids">
+                禁用
+            </button>
+            <button class="btn btn-danger ajax-post confirm" url="{:url('status', ['status'=> -1])}" arget-form="ids">
+                删除
+            </button>
+            <button class="btn btn-danger ajax-post confirm" data-confirm="确认清空日志表！" url="{:url('clear')}">
+                清空日志
+            </button>
+            <span class="check-tips">（服务启动命令 php think crontab start）</span>
+
+        </div>
+    </div>
+    <!-- 数据列表 -->
+    <div class="data-table with-padding">
+        {notempty name="list"}
+        <table class="table table-bordered table-striped muu-table">
+            <thead>
+            <tr>
+                <th class="row-selected row-selected">
+                    <input type="checkbox" class="check-all" id="check-all">
+                    <label for="check-all"></label>
+                </th>
+                <th class="">{:lang('ID')}</th>
+                <th class="">任务名称</th>
+                <th class="">描述</th>
+                <th class="">执行路径</th>
+                <th class="">执行周期</th>
+                <th class="">更新时间</th>
+                <th class="">状态</th>
+                <th class="">操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            {volist name="list" id="vo"}
+            <tr>
+                <td>
+                    <input class="ids" id="crontab-{$vo.id}" type="checkbox" name="ids[]" value="{$vo.id}"/>
+                    <label for="crontab-{$vo.id}"></label>
+                </td>
+                <td>{$vo.id}</td>
+                <td>{$vo.title}</td>
+                <td>{$vo.description}</td>
+                <td>{$vo.execute}</td>
+                <td>{$vo.cycle_str}</td>
+                <td>{$vo.update_time_str}</td>
+                <td>
+                    {if $vo.status == 1}
+                    <span class="label label-success">{$vo.status_str}</span>
+                    {/if}
+                    {if $vo.status == 0}
+                    <span class="label label-warning">{$vo.status_str}</span>
+                    {/if}
+                </td>
+                <td>
+                    <a class="btn btn-sm btn-success" data-height="600px" data-name="crontab-log-Modal" data-iframe="{:url('admin/Crontab/log',['cid' => $vo['id']])}" data-toggle="modal" data-scroll-inside="true" >查看日志</a>
+                    <a class="btn btn-sm btn-primary" href="{:url('edit',['id'=>$vo['id']])}" >编辑</a>
+                    <a class="btn btn-sm btn-danger ajax-post" href="{:url('status',['status'=>-1, 'ids'=>$vo['id']])}" data-confirm="确认执行删除操作？">删除</a>
+                </td>
+            </tr>
+            {/volist}
+
+            </tbody>
+        </table>
+        {else/}
+        {include file="common/_empty"/}
+        {/notempty}
+        <!-- 分页 -->
+        <div class="page">
+            {:htmlspecialchars_decode($pager)}
+        </div>
+        <!-- /分页-->
+    </div>
+</div>
+{/block}

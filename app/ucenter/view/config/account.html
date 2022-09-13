@@ -1,0 +1,83 @@
+<div class="modal-content">
+    <div class="modal-header">
+            <h4 class="modal-title"><i class="modal-icon icon-undefined"></i> <span class="modal-title-name">修改{$cName}</span></h4>
+            <button class="close" data-dismiss="modal">×</button>
+    </div>
+    <div class="modal-body information-popout">
+    <form class="form-horizontal center_info ajax-form" role="form"
+          action="{:url('ucenter/config/account')}" method="post">
+        <div class="form-group">
+            <label for="account" class="col-xs-2 control-label">{$cName}</label>
+
+            <div class="col-xs-10">
+                <input type="text" class="form-control pull-left" id="account" name="account" placeholder="{$cName}">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="verify" class="col-xs-2 control-label">验证码</label>
+
+            <div class="col-xs-10">
+                <input type="text" class="form-control" id="verify" placeholder="验证码" name="verify">
+                <a class="pull-left btn btn-default " data-role="getVerify">获取验证码</a>
+            </div>
+        </div>
+
+        <input type="hidden" class="form-control" name="type" value="{$type}">
+        <input type="hidden" class="form-control" name="uid" value="{:is_login()}">
+
+        <div class="form-group">
+            <div class="col-sm-offset-2 col-xs-10">
+                <!-- <button type="submit" data-role="submit" class="btn btn-primary">确认</button> -->
+                <button type="submit" data-role="submit" class="btn btn-primary">保存</button>
+                <!-- <button class="cancel" data-dismiss="modal">取消</button> -->
+                <div class="cancel" data-dismiss="modal">取消</div>
+            </div>
+        </div>
+    </form>
+</div>
+</div>
+
+<script>
+    $(function () {
+        $("[data-role='getVerify']").click(function () {
+            var $this = $(this);
+            toast.showLoading();
+            var account =$this.parents('.center_info').find('#account').val();
+            var type = $this.parents('.center_info').find('[name="type"]').val();
+            $.post("{:url('api/Verify/send')}", {
+                account: account, 
+                type: type, 
+                action:'config'
+            }, function (res) {
+                toast.hideLoading();
+                if(res.code == 200){
+                    DecTime.obj = $this
+                    DecTime.time = "{:config('extend.SMS_RESEND')}";
+                    $this.attr('disabled',true)
+                    DecTime.dec_time();
+                    toast.success(res.msg);
+                }
+                else{
+                    toast.error(res.msg);
+                }
+            })
+        })
+
+        var DecTime = {
+            obj:0,
+            time:0,
+            dec_time : function(){
+                if(this.time > 0){
+                    this.obj.text('重新获取('+this.time--+'S)')
+                    setTimeout("DecTime.dec_time()",1000)
+                }else{
+                    this.obj.text("获取验证码")
+                    this.obj.attr('disabled',false)
+                }
+            }
+        }
+    })
+
+    
+</script>

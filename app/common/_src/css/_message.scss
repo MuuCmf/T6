@@ -1,0 +1,247 @@
+.message-modal {
+    
+    .modal-dialog {
+        width: 1140px;
+        .modal-body {
+            padding: 0;
+        }
+    }
+    //消息通知
+    .message{
+        width: 1140px;
+        height: 820px;
+        border-radius: 5px;
+        .message-body{
+            display: flex;
+        }
+        .left-navigation{
+            width: 192px;
+            height: 820px;
+            background: #f9f9f9;
+            border-radius: 5px 0 0 5px;
+            text-align: left;
+            padding:61px 0 0 58px;
+            >h4{
+                font-size: 18px;
+                color: #333333;
+                margin: 0;
+            }
+            >ul{
+                border: 0;
+                padding-top: 15px;
+                >li{
+                    font-size: 16px;
+                    color: #666666;
+                    line-height: 32px;
+                    clear:both;
+                    margin: 5px 0;
+                    >a{
+                        font-size: 16px;
+                    }
+                    .information-quantity{
+                        display: inline-block;
+                        height: 16px;
+                        background: #ED5046;
+                        border-radius: 8px;
+                        font-size: 14px;
+                        padding: 0 7px;
+                        line-height: 16px;
+                        color: #fff;
+                        vertical-align: text-top;
+                        margin-left: 5px;
+                    }
+                }
+                >li:hover{
+                    >a{
+                        color: #03b8cf;
+                        font-size: 16px;
+                        border: 1px solid #f9f9f9;
+                        background: #f9f9f9;
+                    }
+                }
+                .active{
+                    >a{
+                        color: #03b8cf;
+                        font-size: 16px;
+                        border: 1px solid #f9f9f9;
+                        background: #f9f9f9;
+                        text-decoration: none;
+                    }
+                }
+            }
+        }
+        .right-content{
+            width: 83%;
+            >div{
+                .content-head{
+                    height: 105px;
+                    border-bottom: 2px solid #f9f9f9;
+                    padding: 0 30px 0 63px;
+                    >h4{
+                        float: left;
+                        font-size: 22px;
+                        color: #222222;
+                        line-height: 105px;
+                        margin: 0;
+                    }
+                    .isread {
+                        float: right;
+                        font-size: 14px;
+                        color: #222222;
+                        line-height: 105px;
+                        margin-left: auto;
+                        cursor: pointer;
+                        &:hover {
+                            color: #03b8cf;
+                        }
+                    }
+                    .close{
+                        margin-left: 20px;
+                        line-height: 105px;
+                    }
+                }
+
+                .system-notice-list{
+                    padding: 0 30px 0 63px;
+                    text-align: left;
+                    overflow-y: auto;
+                    height: 620px;
+                    >ul{
+                        margin: 0;
+                        >li{
+                            display: flex;
+                            border-bottom: 1px solid #ededed;
+                            padding: 21px 0;
+                            .avatar{
+                                width: 64px;
+                                height: 64px;
+                                border-radius: 50%;
+                                >img{
+                                    width: 64px;
+                                height: 64px;
+                                border-radius: 50%;
+                                }
+                            }
+                            .message-content{
+                                width: 90%;
+                                margin-left:14px ;
+                                padding: 6px 0 0;
+                                border: 0;
+                                .message-types{
+                                    display: flex;
+                                    >h4{
+                                        flex: 1;
+                                        margin: 0;
+                                        font-size: 18px;
+                                        color: #222;
+                                    }
+                                    .time{
+                                        width: 160px;
+                                        color: #a1a0a1;
+                                        font-size: 12px;
+                                        padding-left: 12px;
+                                        padding-right: 12px;
+                                        text-align: right;
+                                    }
+                                }
+                                .content-detail{
+                                    height: 48px;
+                                    overflow: hidden;
+                                    .detail {
+                                        float: left;
+                                        width: calc(100% - 71px);
+                                        p{
+                                            margin: 0;
+                                            color: #555555;
+                                            font-size: 16px;
+                                            line-height: 30px;
+                                        }
+                                    }
+                                    .operate {
+                                        width: 71px;
+                                        color: #999999;
+                                        font-size: 14px;
+                                        margin-left: auto;
+                                        line-height: 20px;
+                                        height: 30px;
+                                        -webkit-touch-callout: none;
+                                        -webkit-user-select: none;
+                                        -khtml-user-select: none;
+                                        -moz-user-select: none;
+                                        -ms-user-select: none;
+                                        user-select: none;
+                                        cursor:pointer;
+                                        .put-away{
+                                            display: none;
+                                        }
+                                        .expand{
+                                            display: inline-block;
+                                        }
+                                        .iconfont{
+                                            font-size: 24px;
+                                            padding: 0 5px;
+                                            display: inline-block;
+                                            transform:rotate(180deg);
+                                            -ms-transform:rotate(180deg);
+                                            -moz-transform:rotate(180deg);
+                                            -webkit-transform:rotate(180deg);
+                                            -o-transform:rotate(180deg);
+                                            vertical-align:bottom;
+                                        }
+                                    }
+                                    
+                                }
+
+                                .operate-Invert{
+                                    height: auto;
+                                    overflow: auto;
+                                    .detail {
+                                        p{
+                                            margin: 0;
+                                            color: #555555;
+                                            font-size: 16px;
+                                            line-height: 30px;
+
+                                        }
+                                    }
+                                    .operate{
+                                        .put-away{
+                                            display: inline-block;
+                                        }
+                                        .expand{
+                                            display: none;
+                                        }
+                                        .iconfont{
+                                            transform: rotate(0deg);
+                                            -ms-transform:rotate(0deg);
+                                            -moz-transform:rotate(0deg);
+                                            -webkit-transform:rotate(0deg);
+                                            -o-transform:rotate(0deg);
+                                        }
+                                    }
+                                }
+                            }
+                            
+                        }
+
+                        .empty {
+                            text-align: center;
+                            padding: 60px 0 0 0;
+                            .image {
+                                margin: 20px auto;
+                            }
+                            .text {
+                                font-size: 18px;
+                                color: 999;
+                                font-weight: 500;
+                            }
+                        }
+                    }
+                }
+            }
+            .paper-section {
+                text-align: center;
+            }
+        }
+    }
+}

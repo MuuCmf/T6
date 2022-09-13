@@ -1,0 +1,189 @@
+
+#material-model{
+  .empty{
+    text-align: center;
+    line-height: 400px;
+    color: #00acd6;
+  }
+  .modal-body{
+    min-height: 500px;
+    .material-body{
+      height: 400px;
+      max-height: 400px;
+      overflow-y: auto;
+      padding-right: 10px;
+      .material-item{
+        padding: 5px;
+        cursor: pointer;
+        box-sizing: border-box;
+        overflow: hidden;
+        .boder-default{
+          border-radius: 4px;
+          background-color: #f8f8f8;
+          box-shadow: 1px 1px 6px #c4c4c4;
+          border: 2px solid aliceblue;
+        }
+        //图文
+        .news-box{
+          padding: 2px;
+          height: 240px;
+          img{
+            width: 100%;
+            border-radius: 4px;
+          }
+          .news-text{
+            overflow: hidden;
+            padding: 4px;
+            h4{
+              display: -webkit-box;
+              -webkit-box-orient: vertical;
+              -webkit-line-clamp: 2;
+              overflow: hidden;
+              text-indent: 28px;
+            }
+            p{
+              display: -webkit-box;
+              -webkit-box-orient: vertical;
+              -webkit-line-clamp: 3;
+              overflow: hidden;
+            }
+          }
+        }
+        //图片
+        .image-box{
+          margin: 5px;
+          img{
+            width: 100%;
+            height: 200px;
+            object-fit: contain;
+          }
+        }
+        //语音
+        .voice-box{
+          margin: 5px;
+          height: 100px;
+          overflow: hidden;
+          display: flex;
+          align-items: center;
+          .icon{
+            i{
+              font-size: 34px;
+            }
+          }
+          .voice-name{
+            span{
+              display: -webkit-box;
+              -webkit-box-orient: vertical;
+              -webkit-line-clamp: 3;
+              overflow: hidden;
+            }
+          }
+        }
+
+      }
+
+      //视频
+      .video-box{
+        padding: 2px;
+        height: 240px;
+        img{
+          width: 100%;
+          border-radius: 4px;
+        }
+        .video-text{
+          overflow: hidden;
+          padding: 4px;
+          h4{
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 2;
+            overflow: hidden;
+            text-indent: 28px;
+          }
+          p{
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 3;
+            overflow: hidden;
+          }
+        }
+      }
+      .checked{
+        border: 2px solid #00acd6 !important;
+        box-sizing: border-box;
+      }
+    }
+  }
+
+}
+.edit-auto-reply{
+  .choose-material{
+    margin: 30px 0 10px 0;
+  }
+  #material-image{
+    padding-top: 20px;
+    img{
+      width: 200px;
+      border: 2px solid #dee5e7;
+    }
+  }
+  #material-news{
+    padding-top: 20px;
+    .news{
+      width: 200px;
+      border: 2px solid #dee5e7;
+      padding: 4px;
+      .news-text{
+        p{
+          display: -webkit-box;
+          -webkit-box-orient: vertical;
+          -webkit-line-clamp: 3;
+          overflow: hidden;
+        }
+      }
+    }
+
+  }
+  #material-video{
+    padding-top: 20px;
+    .video{
+      width: 200px;
+      border: 2px solid #dee5e7;
+      padding: 4px;
+      .news-text{
+        p{
+          display: -webkit-box;
+          -webkit-box-orient: vertical;
+          -webkit-line-clamp: 3;
+          overflow: hidden;
+        }
+      }
+    }
+
+  }
+
+  #material-voice{
+    padding-top: 20px;
+    .voice{
+      height: 60px;
+      border: 1px solid #dee5e7;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      .icon{
+        i{
+          font-size: 34px;
+        }
+      }
+      .voice-name{
+        span{
+          display: -webkit-box;
+          -webkit-box-orient: vertical;
+          -webkit-line-clamp: 3;
+          overflow: hidden;
+        }
+      }
+    }
+  }
+}

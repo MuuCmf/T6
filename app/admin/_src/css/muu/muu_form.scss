@@ -1,0 +1,19 @@
+/*表单通用样式*/
+form {
+    display: block;
+    .form-title {
+      padding: 10px;
+      color: #000;
+      background-color: #f6f6f6;
+    }
+    .form-body {
+      padding: 10px;
+      .control-label {
+        text-align: right;
+        padding-right: 10px;
+      }
+      .radio-controls {
+        padding-top: 7px;
+      }
+    }
+}

@@ -1,0 +1,240 @@
+//绑定微信
+.bind-wechat{
+    background: #ffffff;
+    border-radius: 10px;
+    padding: 54px 60px;
+    .wechat-title{
+        margin: 0;
+        font-size: 24px;
+        color: #222222;
+    }
+    .wechat-body {
+        margin-top: 52px;
+        display: flex;
+        .wechat-avatar{
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            position: relative;
+            >img{
+                width: 120px;
+                height: 120px;
+                border-radius: 50%;
+            }
+        }
+    }
+    .wechat-avatar::after {
+        content:'';
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+        background: url(../images/weixin.png) no-repeat;
+        position: absolute;
+        bottom:0px;
+        right: 0px;
+    }
+    .wechat-nickname {
+        margin: 0 50px 0 40px;
+        line-height: 120px;
+        color: #555555;
+        font-size: 18px;
+    }
+    .to-bind {
+        margin-left: 30px;
+        line-height: 124px;
+        .wechat-bind {
+            font-size: 16px;
+            color: #03b8cf;
+            height: 30px;
+            line-height: 30px;
+            cursor:pointer;
+            .iconfont{
+                font-size: 26px;
+                vertical-align: sub;
+            }
+        }
+    }
+    .has-bind {
+        margin-left: 30px;
+        line-height: 36px;
+        .openid {
+            font-size: 16px;
+            margin-top: 30px;
+        }
+        .action {
+            line-height: 40px;
+            .wechat-bind {
+                font-size: 16px;
+                color: #03b8cf;
+                cursor:pointer;
+                margin-right: 30px;
+            }
+            .wechat-unbind {
+                font-size: 16px;
+                color: red;
+                border: 1px solid red;
+                padding: 6px 20px;
+                cursor:pointer;
+            }
+        }
+        
+    }
+}
+
+/* 绑定微信 */
+.wechat-modal{
+    .modal-dialog{
+        width: 660px;
+        max-width: 660px !important;
+        .modal-content{
+            .wechat-header{
+                height: 76px;
+                display: flex;
+                padding: 0 28px 0 34px;
+                border-bottom: 1px solid #e5e5e5;
+                >h4{
+                    font-size: 18px;
+                    color: #222222;
+                    margin: 0;
+                    padding-top: 32px;
+                }
+                .close{
+                    margin-left: auto;
+                }
+            }
+            .wechat-body {
+                .schedule{
+                    width: 446px;
+                    margin: 0 auto;
+                    padding-top:65px; 
+                    .progress-part{
+                        display: flex;
+                        margin: 0 auto;
+                        margin-bottom: 10px;
+                        width: 330px;
+                        padding-left: 40px;
+                        >li {
+                            width: 22px;
+                            height: 22px;
+                            border-radius: 50%;
+                            border: 1px solid #cccccc;
+                            text-align: center;
+                            color: #555555;
+                            font-size: 14px;
+                            .iconfont {
+                                font-size: 12px;
+                            }
+                        }
+                        .finish {
+                            background: #03b8cf;
+                            border: 0;
+                            color: #fff;
+                        }
+                        .progress-line{
+                            width: 176px;
+                            height: 2px;
+                            background: #d1d1d1;
+                            border: 0;
+                            margin-top: 10px;
+                        }
+                    }
+                    .progress-prompt{
+                        display: flex;
+                        margin: 0 auto;
+                        width: 340px;
+                        >li {
+                            flex: 1;
+                            text-align: center;
+                            font-size: 16px;
+                            color: #999999;
+                        }
+                        .finish {
+                            text-align: left;
+                            color: #222222;
+                            padding-left: 10px;
+                        }
+                    }
+                }
+            }
+            .wechat-body.part-two{
+                .content {
+                    width: 100%;
+                    margin: 0;
+                    padding: 60px 0;
+                    .bind{
+                        width: 178px;
+                        height: 178px;
+                        margin: 0 auto;
+                        .qrcode{
+                            position: relative;
+                            width: 178px;
+                            height: 178px;
+                            border: 1px solid #dedede;
+                            padding: 0;
+                            .blur{
+                                width: 200px;
+                                height: 200px;
+                                position: absolute;
+                                top: -1px;
+                                left: 50%;
+                                margin-left: -100px;
+                                background-color: hsla(0,0%,100%,.96);
+                                display: flex;
+                                flex-direction: column;
+                                align-items: center;
+                                padding-top: 50px;
+                                >img{
+                                  width: 50px;
+                                }
+                                .refresh {
+                                    color: #333;
+                                    cursor: pointer;
+                                    &:hover {
+
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    .description{
+                        font-size: 16px;
+                        color: #777777;
+                        margin-top: 30px;
+                        text-align: center;
+                    }
+                }
+            }
+            .part-three{
+                .col-xs-8{
+                    .prompt{
+                        text-align: center;
+                        >p{
+                            color: #222222;
+                            font-size: 24px;
+                            margin-top: 15px;
+                        }
+                    }
+                    .operating{
+                        margin: 0 auto;
+                        padding-top:65px; 
+                        .back{
+                            width: 112px;
+                            height: 44px;
+                            border:1px solid #e2e2e2;
+                            background: #ffffff;
+                            font-size: 16px;
+                            border-radius: 4px;
+                            color: #555555;
+                        }
+                        .close{
+                            border: 0;
+                            background: #03b8cf;
+                            color: #ffffff;
+                            font-weight: 300;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

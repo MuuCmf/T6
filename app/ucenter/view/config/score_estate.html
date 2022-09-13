@@ -1,0 +1,216 @@
+{extend name="../../common/view/main"/}
+{block name="style"}
+<link href="__STATIC__/ucenter/css/main.min.css" rel="stylesheet">
+{/block}
+{block name="body"}
+<div class="main-wrapper">
+    <div id="main-container" class="container user-config">
+        <div class="row">
+            <div class="col-xs-3">
+                {include file="config/_slide"/}
+            </div>
+            <div class="col-xs-9 score_estate">
+                <div id="center">
+                    <div class="estste">
+                        <h4 class="estste-title">积分等级</h4>
+                        <div class="avatar">
+                            <img class="img-circle" src="{$user.avatar64}">
+                            <div class="estste-icon">
+                            </div>
+                        </div>
+                        <div class="level-reached">当前等级<span class="classification"></span></div>
+                        <div class="estate-progress-bar">
+                            <ul class="estate-icon">
+                                <li class="estate1">
+                                    <div class="estate1-item">
+                                        <i class="iconfont">&#xe694;</i>
+                                        <span>1</span>
+                                    </div>
+                                </li>
+                                <li class="estate2">
+                                    <div class="estate2-item">
+                                        <i class="iconfont">&#xe694;</i>
+                                        <span>2</span>
+                                    </div>
+                                </li>
+                                <li class="estate3">
+                                    <div class="estate3-item">
+                                        <i class="iconfont">&#xe694;</i>
+                                        <span>3</span>
+                                    </div>
+                                </li>
+                                <li class="estate4">
+                                    <div class="estate4-item">
+                                        <i class="iconfont">&#xe694;</i>
+                                        <span>4</span>
+                                    </div>
+                                </li>
+                                <li class="estate5">
+                                    <div class="estate5-item">
+                                        <i class="iconfont">&#xe694;</i>
+                                        <span>5</span>
+                                    </div>
+                                </li>
+                                <li class="estate6">
+                                    <div class="estate6-item">
+                                        <i class="iconfont">&#xe694;</i>
+                                        <span>6</span>
+                                    </div>
+                                </li>
+                                <li class="estate7">
+                                    <div class="estate7-item">
+                                        <i class="iconfont">&#xe694;</i>
+                                        <span>7</span>
+                                    </div>
+                                </li>
+                            </ul>
+                            <ul class="progress_bar">
+                                <li class="lv1"></li>
+                                <li class="gap"></li>
+                                <li class="lv2"></li>
+                                <li class="gap"></li>
+                                <li class="lv3"></li>
+                                <li class="gap"></li>
+                                <li class="lv4"></li>
+                                <li class="gap"></li>
+                                <li class="lv5"></li>
+                                <li class="gap"></li>
+                                <li class="lv6"></li>
+                                <li class="gap"></li>
+                                <li class="lv7"></li>
+                            </ul>
+                            <ul class="rank-mark">
+                                <li>LV1</li>
+                                <li>LV2</li>
+                                <li>LV3</li>
+                                <li>LV4</li>
+                                <li>LV5</li>
+                                <li>LV6</li>
+                                <li>LV7</li>
+                            </ul>
+                            <span class="prompt">*等级数据每天早上6点更新</span>
+                        </div>
+                    </div>
+                    <div class="estate-rule">
+                        <div class="estate-rule-header">
+                            <h4 class="estate-rule-title">等级规则</h4>
+                            <div class="score-acquire-rule"><a href="{:url('scorerule')}">积分获取规则<i class="iconfont">&#xe661;</i></a></div>
+                        </div>
+                        <div class="estate-rule-body">
+                            <ul class="part-one">
+                                <li>
+                                    <img src="__STATIC__/ucenter/images/lv1.png" alt="">
+                                    <p>0积分</p>
+                                    <span>LV1实习期</span>
+                                </li>
+                                <li>
+                                    <img src="__STATIC__/ucenter/images/lv2.png" alt="">
+                                    <p>50积分</p>
+                                    <span>LV2试用期</span>
+                                </li>
+                                <li>
+                                    <img src="__STATIC__/ucenter/images/lv3.png" alt="">
+                                    <p>100积分</p>
+                                    <span>LV3转正啦</span>
+                                </li>
+                                <li>
+                                    <img src="__STATIC__/ucenter/images/lv4.png" alt="">
+                                    <p>200积分</p>
+                                    <span>LV4助理</span>
+                                </li>
+                            </ul>
+                            <ul>
+                                <li>
+                                    <img src="__STATIC__/ucenter/images/lv5.png" alt="">
+                                    <p>400积分</p>
+                                    <span>LV5经理</span>
+                                </li>
+                                <li class="lv6-icon">
+                                    <img src="__STATIC__/ucenter/images/lv6.png" alt="">
+                                    <p>800积分</p>
+                                    <span>LV6董事</span>
+                                </li>
+                                <li class="lv7-icon">
+                                    <img src="__STATIC__/ucenter/images/lv7.png" alt="">
+                                    <p>1600积分</p>
+                                    <span>最高等级LV7</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="clearfix"></div>
+        </div>
+    </div>
+</div>
+{/block}
+
+{block name="script"}
+<script src="__STATIC__/ucenter/js/main.min.js"></script>
+<script>
+    $(function () {
+        // 设置当前高亮菜单
+        $("#{$tab}").addClass('active');
+    })
+
+    $(function(){
+        // var value = "{volist name='scores' id='vo' }{$vo.value}{/volist}"
+        var value = 20;
+        console.log(value)
+        if(value >=1600){
+            $('.estate7-item').css({"display":"block"})
+            $('.lv1,.lv2,.lv3,.lv4,.lv5,.lv6,.lv7').css({"background":"transparent"})
+            $(".classification").text("LV7");
+            $('.estste-icon').html("<img src='__STATIC__/ucenter/images/lv7.png'>")
+            $('.estste-icon').css({"width":"90px","right":"-45px"})
+        }else{
+            if(value >=800){
+            $('.estate6-item').css({"display":"block"})
+            $('.lv1,.lv2,.lv3,.lv4,.lv5,.lv6').css({"background":"transparent"})
+            $(".classification").text("LV6");
+            $('.estste-icon').html("<img src='__STATIC__/ucenter/images/director.png'>")
+            }else{
+            if(value >=400){
+            $('.estate5-item').css({"display":"block"})
+            $('.lv1,.lv2,.lv3,.lv4,.lv5').css({"background":"transparent"})
+            $(".classification").text("LV5");
+            $('.estste-icon').html("<img src='__STATIC__/ucenter/images/manager.png'>")
+            }else{
+            if(value >=200){
+            $('.estate4-item').css({"display":"block"})
+            $('.lv1,.lv2,.lv3,.lv4').css({"background":"transparent"})
+            $(".classification").text("LV4");
+            $('.estste-icon').html("<img src='__STATIC__/ucenter/images/assistant.png'>")
+            $('.estste-icon').css({"right":"-16px","width":"40px"})
+            }else{
+            if(value >=100){
+            $('.estate3-item').css({"display":"block"})
+            $('.lv1,.lv2,.lv3').css({"background":"transparent"})
+            $(".classification").text("LV3");
+            $('.estste-icon').html("<img src='__STATIC__/ucenter/images/regularization.png'>")
+            $('.estste-icon').css({"right":"-16px","width":"40px"})
+            }else{
+            if(value >=50){
+            $('.estate2-item').css({"display":"block"})
+            $('.lv1,.lv2').css({"background":"transparent"})
+            $(".classification").text("LV2");
+            $('.estste-icon').html("<img src='__STATIC__/ucenter/images/probation.png'>")
+            $('.estste-icon').css({"right":"-16px","width":"40px"})
+            }else{
+            $('.estate1-item').css({"display":"block"})
+            $('.lv1').css({"background":"transparent"})
+            $(".classification").text("LV1");
+            $('.estste-icon').html("<img src='__STATIC__/ucenter/images/Internship.png'>")
+            $('.estste-icon').css({"right":"-16px","width":"40px"})
+            }
+            }
+        }
+        }
+        }
+        }
+    })
+</script>
+
+
+{/block}

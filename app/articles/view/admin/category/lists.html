@@ -1,0 +1,111 @@
+{extend name="../../admin/view/common/main"/}
+{block name="style"}
+<link href="__ADMIN_CSS__/main.min.css" type="text/css" rel="stylesheet">
+{/block}
+
+{block name="body"}
+<ol class="breadcrumb">
+	<i class="icon icon-angle-left"></i>
+	<li>
+		<a href="{:url('category/lists')}">分类管理</a>
+	</li>
+	<li>
+		分类列表
+	</li>
+</ol>
+<div class="margin-bottom">
+	<a class="btn btn-primary margin-right" href="{:url('admin.category/edit')}" role="button">+ 新增分类</a>
+</div>
+<section class="category-list-section">
+	<div class="category clearfix card">
+        {if empty($category_tree)}
+        {include file="admin/common/_empty"/}
+	    {else /}
+        {volist name="$category_tree" id="row"}
+			<div class="parent-item clearfix">
+				<div class="div-checkbox">
+					<input type="checkbox" name="ids[]" class="ids" id="category_{$row['id']}">
+                	<label for="category_{$row['id']}"></label>
+				</div>
+				<div class="title">
+					<div class="cover">
+						<img src="{$row['cover_100']}" width='30' height="30" />
+					</div>
+					<div class="info type-parent">{$row['title']}</div>
+				</div>
+				<div class="status">
+					{if $row['status']==1}
+					<span class="label label-info">启用</span>
+					{else}
+					<span class="label label-warning">禁用</span>
+					{/if}
+				</div>
+				<div class="action">
+					{if empty($row['pid'])}
+                    <a href="{:url('admin.category/edit', ['pid' => $row['id']])}" class="btn btn-primary btn-sm">
+                        <i class="fa fa-plus-circle"></i> 添加子分类
+                    </a>
+                    {/if}
+                    <a href="{:url('admin.category/edit', ['id' => $row['id']])}" class="btn btn-info btn-sm">
+                        <i class="fa fa-edit"></i> 编辑
+                    </a>
+                    {if $row['status'] == 1}
+                        <a href="{:url('admin.category/status', ['ids'=>$row['id'],'status'=> 0])}" class="btn btn-sm btn-warning ajax-get">禁用</a>
+                    {/if}
+
+                    {if $row['status'] == 0}
+                        <a href="{:url('admin.category/status', ['ids'=>$row['id'], 'status'=> 1])}" class="btn btn-sm btn-info ajax-get">启用</a>
+                    {/if}
+                    <a href="{:url('admin.category/status', ['ids' => $row['id'], 'status'=> -1])}" data-confirm="确认执行删除操作？" class="btn btn-danger btn-sm ajax-get">
+                        <i class="fa fa-times"></i> 删除
+                    </a>
+				</div>
+			</div>
+            {if !empty($row['_child'])}
+			{volist name="$row['_child']" id="child_row"}
+			<div class="child-item clearfix">
+				<div class="div-checkbox">
+					<input type="checkbox" name="ids[]" class="ids" id="child_row_{$child_row['id']}">
+                	<label for="child_row_{$child_row['id']}"></label>
+				</div>
+				<div class="title">
+					<div class="cover">
+						<img src="{$child_row['cover_100']}" width='30' height="30" />
+					</div>
+					<div class="info type-child">{$child_row['title']}</div>
+				</div>
+				<div class="status">
+					{if $row['status']==1}
+					<span class="label label-info">启用</span>
+					{else}
+					<span class="label label-warning">禁用</span>
+					{/if}
+				</div>
+				<div class="action">
+					<a href="{:url('admin.category/edit', ['id' => $child_row['id'], 'pid' => $child_row['pid']])}" class="btn btn-info btn-sm" data-toggle="tooltip" data-placement="bottom">
+                        <i class="fa fa-edit"></i> 编辑
+                    </a>
+
+                    {if $child_row['status'] == 1}
+                        <a href="{:url('admin.category/status',['ids'=>$child_row['id'],'status'=> 0])}" class="btn btn-sm btn-warning ajax-get">禁用</a>
+                    {/if}
+
+                    {if $child_row['status'] == 0}
+                        <a href="{:url('admin.category/status',['ids'=>$child_row['id'], 'status'=> 1])}" class="btn btn-sm btn-info ajax-get">启用</a>
+                    {/if}
+                    <a href="{:url('admin.category/status', ['ids' => $child_row['id'], 'status'=> -1])}" data-confirm="确认执行删除操作？" class="btn btn-danger btn-sm ajax-get">
+                        <i class="fa fa-times"></i> 删除
+                    </a>
+				</div>
+			</div>
+			{/volist}
+            {/if}
+		{/volist}
+		{/if}
+	</div>
+</section>
+{/block}
+
+{block name="script"}
+<script src="__JS__/main.min.js"></script>
+{/block}

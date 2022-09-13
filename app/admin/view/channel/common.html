@@ -1,0 +1,117 @@
+{extend name="common/main"/}
+{block name="style"}
+
+{/block}
+{block name="body"}
+<div class="main-title">
+    <h2>公共导航</h2>
+</div>
+
+<div class="with-padding">
+    <div class="">
+        <a href="javascript:" class="btn btn-info add-new">新增导航</a>
+    </div>
+    <form action="{:url()}" method="post" class="form-horizontal">
+        <ul class="channel-ul">
+            {volist name="list" id="nav"}
+            <li class="clearfix pLi">
+                <input name="nav[1][sort][]" class="sort" type="hidden">
+                <div class="pull-left nav_list">
+            
+                    <select name="nav[1][type][]" class="form-control nav-type margin-right" style="width: 100px;">
+                        {if $nav['type'] == '_custom'}
+                        <option value="app">系统应用</option>
+                        <option value="_custom" selected>自定义链接</option>
+                        {else}
+                        <option value="app" selected>系统应用</option>
+                        <option value="_custom">自定义链接</option>
+                        {/if}
+                    </select>
+            
+                    <select name="nav[1][app][]" class="form-control module margin-right" style="width: 100px;{if $nav['type']=='_custom'}display:none{/if}">
+                        {volist name="module" id="v"}
+                        <option value="{$v.name}" {if strtolower($nav['app']) == strtolower($v['name'])}selected{/if}>{$v.alias}</option>
+                        {/volist}
+                    </select>
+                    <input name="nav[1][title][]" placeholder="请输入标题" class="form-control title margin-right" style="width: 100px;" value="{$nav.title}">
+                    <input name="nav[1][url][]" placeholder="请输入链接" class="form-control url margin-right" style="width: 300px;{if $nav['type']=='app'}display:none{/if}" value=" {$nav.url}">
+                </div>
+            
+                <div class='pull-left new-blank margin-right'>
+                    <input type="hidden" name="nav[1][target][]" class="target_input" value="{$nav.target}">
+                    <input type="checkbox" value="1" class="target" {if condition="$nav['target'] eq 1"}checked{/if}>
+                    <label class="target-blank">
+                        新窗口
+                    </label>
+                </div>
+            
+                <div class='pull-right i-list'>
+                    <a href="javascript:" title="添加一级导航" class="add-one">
+                        <i class="fa fa-plus"></i>
+                    </a>
+                    <a href="javascript:"  title="移除此导航" class="remove-li">
+                        <i class="fa fa-remove"></i>
+                    </a>
+                    <a href="javascript:" title="导航排序">
+                        <i class="fa fa-arrows-alt sort-handle-1"></i>
+                    </a>
+                </div>
+            </li>
+            {/volist}
+        </ul>
+        <div class="form-item">
+            <button class="btn btn-success submit-btn ajax-post no-refresh" id="submit" type="submit" target-form="form-horizontal">保 存</button>
+            <button class="btn btn-return" onclick="javascript:history.back(-1);return false;">返 回</button>
+        </div>
+    </form>
+</div>
+
+<div id="one-nav" class="hide">
+    <li class="clearfix pLi">
+        <input name="nav[1][sort][]" class="sort" type="hidden">
+        <div class="pull-left nav_list">
+            <select name="nav[1][type][]" class="form-control nav-type margin-right" style="width: 100px;">
+                <option value="app" >系统模块</option>
+                <option value="_custom" >自定义链接</option>
+            </select>
+
+            <select name="nav[1][app][]" class="form-control module margin-right" style="width: 100px;">
+                {volist name="module" id="v"}
+                <option value="{$v.name}">{$v.alias}</option>
+                {/volist}
+            </select>
+            <input name="nav[1][title][]" placeholder="请输入标题" class="form-control title margin-right" style="width: 100px;" value="{$module.0.alias}">
+            <input name="nav[1][url][]" placeholder="请输入链接" class="form-control url margin-right" style="width: 300px;display:none" value="{$module.0.entry}">
+        </div>
+
+        <div class='pull-left new-blank'>
+            <input type="hidden" name="nav[1][target][]" class="target_input" value="0">
+            <input type="checkbox" value="1" class="target">
+            <label class="target-blank">
+                新窗口
+            </label>
+        </div>
+
+        <div class='pull-right i-list'>
+            <a href="javascript:" title="添加一级导航"  class="add-one">
+                <i class="fa fa-plus"></i>
+            </a>
+            <a href="javascript:" title="移除此导航" class="remove-li">
+                <i class="fa fa-remove"></i>
+            </a>
+            <a href="javascript:" title="导航排序">
+                <i class="fa fa-arrows-alt sort-handle-1"></i>
+            </a>
+        </div>
+    </li>
+</div>
+
+
+{/block}
+
+{block name="script"}
+    <script src="__STATIC__/common/lib/zui/lib/sortable/zui.sortable.min.js"></script>
+    <script>
+        $.muu.channel_sort();
+    </script>
+{/block}

@@ -1,0 +1,197 @@
+{extend name="common/main"/}
+
+{block name="body"}
+<div class="member-list-section">
+    <!-- 标题栏 -->
+    <div class="main-title">
+        <h2>注册用户列表</h2>
+    </div>
+    <div class="button-box clearfix">
+
+        <div class="col-md-6">
+            <button class="btn btn-success ajax-post confirm" url="{:url('status',array('method'=>'resume'))}" target-form="ids">
+                启用
+            </button>
+            <button class="btn btn-warning ajax-post confirm" url="{:url('status',array('method'=>'forbid'))}" target-form="ids">
+                禁用
+            </button>
+            <button class="btn btn-danger ajax-post confirm" url="{:url('status',array('method'=>'delete'))}" target-form="ids">
+                删除
+            </button>
+            <button class="btn ajax-post btn-danger confirm" data-confirm="确认执行重置用户密码操作" url="{:url('initPass')}" target-form="ids">
+                重置密码
+            </button>
+            
+            <span style="font-size: 14px;color: #999898;margin-left: 11px;">（重置密码后新密码为“123456”）</span>
+        </div>
+
+        <!-- 高级搜索 -->
+        <div class="search-form col-md-6">
+            <div class="pull-right">
+                <div class="" style="display: inline-block;line-height: 32px;">
+                    <div class="title pull-left">排序方式：</div>
+                    <div class="select_box pull-left" style="width:120px">
+                    {php}
+                        $sort = input('order');
+                    {/php}
+                    <select name="order" data-role="select_text" class="form-control">
+                        <option value="uid" {eq name="sort" value="uid"} selected {/eq}>UID</option>
+                        <option value="last_login_time" {eq name="sort" value="last_login_time"} selected {/eq}>登陆时间</option>
+                        <option value="create_time" {eq name="sort" value="create_time"} selected {/eq}>注册时间</option>
+                        <option value="login" {eq name="sort" value="login"} selected {/eq}>登陆次数</option>
+                    </select>
+                    </div>
+                </div>
+
+                <div class="pull-right" style="display: inline-block;line-height: 32px;width:200px;margin-left:10px;">
+                    <div class="input-group">
+                        <input type="text" name="search" class="search-input form-control" value="{:input('search')}"
+                                   placeholder="用户名/昵称/Email/手机/UID">
+                        <span class="input-group-btn">
+                            <a class="btn btn-default" href="javascript:;" id="search" url="{:Url('index')}">
+                                <i class="icon-search"></i>
+                            </a>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 数据列表 -->
+    <div class="data-table with-padding">
+        <table class="table table-bordered table-striped user-table muu-table">
+            <thead>
+            <tr>
+                <th class="row-selected row-selected">
+                    <input type="checkbox" class="check-all" id="check-all">
+                    <label for="check-all"></label>
+                </th>
+                <th class="">{:lang('UID')}</th>
+                <th class="">头像/昵称</th>
+                <th class="">用户名</th>
+                <th class="">邮箱</th>
+                <th class="">手机号</th>
+                <th class="">用户组</th>
+                <th class="">登录次数</th>
+                <th class="">最后登录时间</th>
+                <th class="">最后登录IP</th>
+                <th class="">状态</th>
+                <th class="">操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            {notempty name="_list"}
+            {volist name="_list" id="vo"}
+                <tr>
+                    <td>
+                        <input class="ids" id="user-{$vo.uid}" type="checkbox" name="ids[]" value="{$vo.uid}"/>
+                        <label for="user-{$vo.uid}"></label>
+                    </td>
+                    <td>{$vo.uid}</td>
+                    <td>
+                        <a href="{:url('admin/Member/edit',['uid'=>$vo['uid']])}">
+                            <div class="avatar">
+                                <img src="{$vo['avatar64']}">
+                            </div>
+                            <div class="title text-ellipsis">{$vo.nickname|text}</div>
+                        </a>
+                    </td>
+                    <td>{$vo.username}</td>
+                    <td>{$vo.email}</td>
+                    <td>{$vo.mobile}</td>
+                    <td>
+                        {notempty name="vo.auth_group"}
+                        {volist name="vo.auth_group" id="item"}
+                        <div class="auth_group">
+                            <span>{$item.title}</span> 
+                        </div>  
+                        {/volist}
+                        {/notempty}
+                    </td>
+                    <td>{$vo.login}</td>
+                    <td><span>{$vo.last_login_time|time_format}</span></td>
+                    <td>{$vo['last_login_ip']}
+                    </td>
+                    <td>
+                        {$vo.status_text}
+                    </td>
+                    <td>
+                        <a type="button" class="btn btn-sm btn-success" data-name="sendMessageModal" data-iframe="{:url('admin/Message/send',['to_uid' => $vo['uid']])}" data-toggle="modal" data-size="lg" data-height="600px">发送消息</a>
+                        <a class="btn btn-sm btn-primary" href="{:url('admin/Member/edit',['uid'=>$vo['uid']])}" >编辑</a>
+                        <a class="btn btn-sm btn-danger ajax-post" href="{:url('status',['method'=>'delete', 'ids'=>$vo['uid']])}" data-confirm="确认执行删除操作？">删除</a>
+                    </td>
+                </tr>
+            {/volist}
+            {else/}
+                <td colspan="13" class="text-center">空空如也~</td>
+            {/notempty}
+            </tbody>
+        </table>
+
+        <!-- 分页 -->
+        <div class="page">
+            {:htmlspecialchars_decode($pager)}
+        </div>
+        <!-- /分页-->
+    </div>
+</div>
+{/block}
+{block name="script"}
+<script>
+$(function(){
+//排序
+    $('[data-role="select_text"]').change(function(){
+        var url = window.location.href;
+        var query = $('.select_box').find('select').val();
+        if (url.indexOf('?') > 0) {
+            if(url.indexOf('order') > 0){    
+                url = changeURLArg(url,'order',query);
+            }else{
+                url += '&' + 'order='+query;
+            }
+        } else {
+            url += '?' + 'order='+query;
+        }
+        window.location.href = url;
+    });
+
+    //设置url中参数值
+    function changeURLArg(url,arg,arg_val){
+        var pattern=arg+'=([^&]*)';
+        var replaceText=arg+'='+arg_val; 
+        if(url.match(pattern)){
+            var tmp='/('+ arg+'=)([^&]*)/gi';
+            tmp=url.replace(eval(tmp),replaceText);
+            return tmp;
+        }else{ 
+            if(url.match('[\?]')){ 
+                return url+'&'+replaceText; 
+            }else{ 
+                return url+'?'+replaceText; 
+            } 
+        }
+    }
+
+    //搜索功能
+    $("#search").click(function () {
+        var url = $(this).attr('url');
+        var query = $('.search-form').find('input').serialize();
+        query = query.replace(/(&|^)(\w*?\d*?\-*?_*?)*?=?((?=&)|(?=$))/g, '');
+        query = query.replace(/^&/g, '');
+        if (url.indexOf('?') > 0) {
+            url += '&' + query;
+        } else {
+            url += '?' + query;
+        }
+        window.location.href = url;
+    });
+    //回车搜索
+    $(".search-input").keyup(function (e) {
+        if (e.keyCode === 13) {
+            $("#search").click();
+            return false;
+        }
+    });
+});
+</script>   
+{/block}

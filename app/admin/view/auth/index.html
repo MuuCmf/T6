@@ -1,0 +1,72 @@
+{extend name="common/main" /}
+{block name="body"}
+
+<!-- 标题栏 -->
+<div class="main-title">
+	<h2>用户权限组管理</h2>
+</div>
+
+<div class="tools auth-botton button-box">
+    <a id="add-group" class="btn btn-info" href="{:url('createGroup')}">新增</a>
+    <a class="btn btn-danger" href="{:url('admin/menu/index')}">权限菜单管理</a>
+</div>
+<!-- 数据列表 -->
+<div class="data-table with-padding">
+{notempty name="_list"}
+<table class="table table-bordered table-striped muu-table">
+	<thead>
+	    <tr>
+			<th class="row-selected row-selected">
+				<input class="check-all" id="check-all" type="checkbox"/>
+				<label for="check-all"></label>
+			</th>
+			<th class="">用户组</th>
+			<th class="">描述</th>
+			<th class="">授权</th>
+			<th class="">状态</th>
+			<th class="">操作</th>
+		</tr>
+	</thead>
+	<tbody>
+		
+		{volist name="_list" id="vo"}
+		<tr>
+	        <td>
+	        	<input class="ids" id="ids-{$vo.id}" type="checkbox" name="ids[]" value="{$vo.id}">
+	            <label for="ids-{$vo.id}"></label>
+	        </td>
+			<td><a href="{:url('Auth/editgroup?id='.$vo['id'])}">{$vo.title}</a> </td>
+			<td><span>{:mb_strimwidth($vo['description'],0,60,"...","utf-8")}</span></td>
+
+
+			<td>
+				<a class=" btn btn-danger btn-xs" href="{:url('Auth/access?group_name='.$vo['title'].'&group_id='.$vo['id'])}" >			
+					管理权限
+				</a>
+				<a class=" btn btn-warning btn-xs" href="{:url('Auth/user?group_name='.$vo['title'].'&group_id='.$vo['id'])}" >
+					用户授权
+				</a>
+			</td>
+			<td>{$vo.status_text}</td>
+			<td>
+				<a class="btn btn-sm btn-primary" href="{:url('Auth/editGroup?id='.$vo['id'])}">编辑</a>
+				{eq name="vo.status" value="1"}
+				<a class="btn btn-sm btn-warning ajax-get" href="{:url('Auth/changeStatus?method=forbidGroup&id='.$vo['id'])}" >禁用</a>
+				{else/}
+				<a class="btn btn-sm btn-info ajax-get" href="{:url('Auth/changeStatus?method=resumeGroup&id='.$vo['id'])}" >启用</a>
+				{/eq}
+				<a class="btn btn-sm btn-danger confirm ajax-get" href="{:url('Auth/changeStatus?method=deleteGroup&id='.$vo['id'])}" >删除</a>
+	            </td>
+		</tr>
+		{/volist}
+	</tbody>
+</table>
+{else/}
+	<div class="text-center">空空如也~ </div>
+{/notempty}
+</div>
+
+{/block}
+
+{block name="script"}
+{/block}

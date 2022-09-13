@@ -1,0 +1,109 @@
+<header class="main-header">
+    <!-- Logo -->
+    <a href="#" class="logo">
+      <!-- mini logo for sidebar mini 50x50 pixels -->
+      <span class="logo-mini"><b>M</b>uu</span>
+      <!-- logo for regular state and mobile devices -->
+      <span class="logo-lg"><b>MuuCMF </b>T6</span>
+    </a>
+    <!-- Header Navbar: style can be found in header.less -->
+    <nav class="navbar navbar-static-top">
+      <!-- Sidebar toggle button-->
+      <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button">
+        <span class="sr-only">Toggle navigation</span>
+      </a>
+      <!-- Muu system menus -->
+      <div class="nav-system-menu">
+        <ul class="nav navbar-nav">
+          {volist name="admin_menu.main" id="menu"}
+            {neq name="$menu.type" value="1"}
+            <li data-id="{$menu.id}" data-url="{$menu.url}" class="{$menu.class|default=''}">
+                <a href="{$menu.url|url}">
+                    {notempty name="menu.icon"}
+                        <i class="fa fa-{$menu.icon}"></i>
+                    {else /}
+                        <i class="fa fa-circle-o"></i>
+                    {/notempty}
+                    <span>{$menu.title}</span>
+                </a>
+            {/neq}
+          {/volist}
+        </ul>
+      </div>
+
+      <div class="navbar-custom-menu">
+        <ul class="nav navbar-nav">
+          <!--clear cache-->
+          <li><a href="javascript:;" title="清理缓存" data-id="clear_cache" data-msg="清理缓存成功" data-url="{:url('admin/common/clearCache')}">
+                <i class="fa fa-trash"></i> 
+              </a>
+          </li>
+          <script>
+            $(function(){
+              $('[data-id="clear_cache"]').click(function(){
+                var url = $('[data-id="clear_cache"]').data('url');
+                $.get(url,function(res){
+                  //弹出提示消息
+                  if (res.code == 200) {
+                      toast.success(res.msg, 'success');
+                  } else {
+                      toast.error(res.msg, 'danger');
+                  }
+                });
+              });
+            });
+          </script>
+          <li><a target="_blank" title="访问前台" href="{$this_domain}">
+                <i class="fa fa-copy"></i> 
+              </a>
+          </li>
+          <li class="dropdown user user-menu">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+              <img src="{$auth_user.avatar64}" class="user-image" alt="User Image">
+              <span class="nickname">{$auth_user.nickname}</span>
+            </a>
+            <ul class="dropdown-menu">
+              <!-- User image -->
+              <li class="user-header">
+                <img src="{$auth_user.avatar64}" class="img-circle" alt="User Image">
+                <p>
+                  {$auth_user.nickname}
+                  <small>
+                      {empty name="auth_user['signature']"}
+                        这家伙太懒，不爱写签名
+                      {else /}
+                        {$auth_user.signature}
+                      {/empty}
+                  </small>
+                </p>
+              </li>
+              <!-- Menu Body -->
+
+              <!-- Menu Footer-->
+              <li class="user-footer">
+                <div class="pull-left">
+                  <a target="main_iframe" href="{:url('ucenter/Config/password')}" class="btn btn-default btn-flat">修改密码</a>
+                  <a target="main_iframe" href="{:url('ucenter/Config/index')}" class="btn btn-default btn-flat">修改昵称</a>
+                </div>
+                <div class="pull-right">
+                  <a href="{:url('admin/Common/logout')}" class="btn btn-default btn-flat ajax-get confirm">
+                    退出
+                  </a>
+                </div>
+              </li>
+            </ul>
+          </li>
+
+          <!-- fullscreen Btn-->
+          <li><a id="full-screen" data-toggle="fullscreen">
+                <i class="fa fa-arrows-alt"></i>
+              </a>
+          </li>
+          <!-- Control Sidebar Toggle Button -->
+          <li>
+            <a href="#" data-toggle="control-sidebar"><i class="fa fa-gears"></i></a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+  </header>

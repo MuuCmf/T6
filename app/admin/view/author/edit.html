@@ -1,0 +1,207 @@
+{extend name="common/main"/}
+
+{block name="style"}
+<!--图片上传-->
+<script type="text/javascript" charset="utf-8" src="__STATIC__/common/lib/webuploader/js/webuploader.js"></script>
+<link href="__STATIC__/common/lib/webuploader/css/webuploader.css" type="text/css" rel="stylesheet">
+<link href="__ADMIN_CSS__/main.min.css" rel="stylesheet" type="text/css"/>
+{/block}
+
+{block name="body"}
+<ol class="breadcrumb">
+	<i class="icon icon-angle-left"></i>
+	<li>
+		<a href="{:url('lists')}">创作者管理</a>
+	</li>
+	<li>
+		新增/编辑 创作者
+	</li>
+</ol>
+
+<div class="author-edit-section edit-section">
+	<form action="" method="post" class="form-horizontal form ajax-form card" role="form" id="form1">
+
+		<input type="hidden" name="id" value="{$data['id']}">
+		<div class="form-title">
+			<h4>新增/编辑 创作者</h4>
+		</div>
+		<div class="form-body">
+			<div class="form-group">
+				<label class="col-sm-2 control-label">真实姓名</label>
+				<div class="form-controls col-sm-8">
+					<input type="text" class="form-control" name="name" placeholder="请填写创作者真实姓名" value="{$data['name']}">
+					<div class="help-block">请填写创作者真实姓名</div>
+				</div>
+			</div>
+
+			<div class="form-group">
+				<label class="col-sm-2 control-label">简短描述</label>
+				<div class="form-controls col-sm-8">
+					<textarea class="form-control" rows="3" name="description" placeholder="请填写创作者简短描述">{$data['description']}</textarea>
+					<div class="help-block">请填写创作者简短描述</div>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-2 control-label">创造者类型</label>
+				<div class="form-controls col-sm-8">
+					<select name="group_id" class="form-control">
+						<option value="">请选择类型</option>
+						{volist name="$group" id="v"}
+						{if $data['group_id'] == $v['id']}
+						<option value="{$v['id']}" selected><b>{$v['title']}</b></option>
+						{else}
+						<option value="{$v['id']}"><b>{$v['title']}</b></option>
+						{/if}
+						{/volist}
+					</select>
+					<div class="help-block">请创造者类型</div>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-2 control-label">创作者图片</label>
+				<div class="form-controls col-sm-8">
+					{:single_image_upload('cover', $data['cover'])}
+					<div class="help-block">建议尺寸不小于：600*600px的正方形图片</div>
+				</div>
+			</div>
+
+			<div class="form-group">
+				<label class="col-sm-2 control-label">手持身份证图片</label>
+				<div class="form-controls col-sm-8">
+                    {:single_image_upload('avatar_card', $data['avatar_card'])}
+					<div class="help-block">必须本人手持身份证</div>
+					<div class="help-block">人脸、身份证上的信息需清晰可见</div>
+				</div>
+			</div>
+
+			<!--关联用户-->
+			<div class="form-group">
+				<label class="col-sm-2 control-label">绑定用户</label>
+				<div class="form-controls col-sm-8" bind-user>
+					<button type="button" class="btn btn-primary choose-user-btn" role="button" data-name="chooseUserModal" data-iframe="{:url('admin/member/chooseUser')}" data-toggle="modal" data-scroll-inside="true" data-bind-api="{:url('checkBind')}" data-height="600px">选择用户</button>
+					<button type="button" class="btn btn-danger" role="button" id="clearBindUser">清除绑定</button>
+
+					<div class="choose-user clearfix" id="choose-user-cb">
+						<input type="hidden" name="uid" id="choose-user-uid" value="{$data['user_info']['uid']|default='0'}">
+                        <img src="{$data['user_info']['avatar64']|default=''}" alt="" id="choose-user-avatar" class="user-avatar">
+                        <span id="choose-user-nickname">{$data['user_info']['nickname']|default=''}</span>
+					</div>
+					<div class="help-block">选择绑定的用户</div>
+				</div>
+				<script>
+					$(function(){
+						$('#clearBindUser').click(function(){
+							$('input[name="uid"]').val('');
+							$('#choose-user-nickname').text('');
+							$('#choose-user-avatar').attr('src', '');
+						});
+					})
+				</script>
+			</div>
+			
+			<div class="form-group">
+				<label class="col-sm-2 control-label">详细描述</label>
+				<div class="form-controls col-sm-8">
+                    {:ueditor('content', 'content', $data['content'])}
+				</div>
+			</div>
+
+			<div class="form-group">
+				<label class="col-sm-2 control-label">排序</label>
+				<div class="form-controls col-sm-8">
+					<input type="number" class="form-control" name="sort" value="{$data['sort']}" placeholder="排序" max="255">
+					<div class="help-block">数字越大，越靠前，最大255。</div>
+				</div>
+			</div>
+
+			<div class="form-group">
+				<label class="col-sm-2 control-label">状态</label>
+				<div class="form-controls col-sm-8">
+					<div class="" style="padding-top:7px">
+						{if $data['status'] == 1}
+						<input type="radio" name="status" id="is_status-1" value="1" checked> 
+						<label class="radio-inline" for="is_status-1">启用</label>
+						<input type="radio" name="status" id="is_status-0" value="0"> 
+						<label class="radio-inline" for="is_status-0">禁用</label>
+						<input type="radio" name="status" id="is_status--1" value="-1">
+						<label class="radio-inline" for="is_status--1"> 未审核</label>
+						<input type="radio" name="status" id="is_status--2" value="-2">
+						<label class="radio-inline" for="is_status--2"> 审核未通过</label>
+						{/if}
+						{if $data['status'] == 0}
+						<input type="radio" name="status" id="is_status-1" value="1"> 
+						<label class="radio-inline" for="is_status-1">启用</label>
+						<input type="radio" name="status" id="is_status-0" value="0" checked> 
+						<label class="radio-inline" for="is_status-0">禁用</label>
+						<input type="radio" name="status" id="is_status--1" value="-1">
+						<label class="radio-inline" for="is_status--1"> 未审核</label>
+						<input type="radio" name="status" id="is_status--2" value="-2">
+						<label class="radio-inline" for="is_status--2"> 审核未通过</label>
+						{/if}
+						{if $data['status'] == -1}
+						<input type="radio" name="status" id="is_status-1" value="1"> 
+						<label class="radio-inline" for="is_status-1">启用</label>
+						<input type="radio" name="status" id="is_status-0" value="0"> 
+						<label class="radio-inline" for="is_status-0">禁用</label>
+						<input type="radio" name="status" id="is_status--1" value="-1" checked>
+						<label class="radio-inline" for="is_status--1"> 未审核</label>
+						<input type="radio" name="status" id="is_status--2" value="-2">
+						<label class="radio-inline" for="is_status--2"> 审核未通过</label>
+						{/if}
+						{if $data['status'] == -2}
+						<input type="radio" name="status" id="is_status-1" value="1"> 
+						<label class="radio-inline" for="is_status-1">启用</label>
+						<input type="radio" name="status" id="is_status-0" value="0" > 
+						<label class="radio-inline" for="is_status-0">禁用</label>
+						<input type="radio" name="status" id="is_status--1" value="-1">
+						<label class="radio-inline" for="is_status--1"> 未审核</label>
+						<input type="radio" name="status" id="is_status--2" value="-2" checked>
+						<label class="radio-inline" for="is_status--2"> 审核未通过</label>
+						{/if}
+						{if $data['status'] == -3}
+						<input type="radio" name="status" id="is_status-1" value="1">
+						<label class="radio-inline" for="is_status-1">启用</label>
+						<input type="radio" name="status" id="is_status-0" value="0" > 
+						<label class="radio-inline" for="is_status-0">禁用</label>
+						<input type="radio" name="status" id="is_status--1" value="-1">
+						<label class="radio-inline" for="is_status--1"> 未审核</label>
+						<input type="radio" name="status" id="is_status--2" value="-2">
+						<label class="radio-inline" for="is_status--2"> 审核未通过</label>
+						{/if}
+					</div>
+				</div>
+			</div>
+			
+			<div class="{if $data['status'] == -2}form-group{else}form-group hidden{/if}" id="verifyReason">
+				<label class="col-sm-2 control-label">未通过原因</label>
+				<div class="form-controls col-sm-8">
+					<textarea class="form-control" rows="3" name="reason" placeholder="请填写未通过审核原因">{$data['reason']}</textarea>
+					<div class="help-block">请填写未通过审核原因</div>
+				</div>
+			</div>
+			<script>
+				$(function(){
+					$("input[type='radio']").on("click",function () {
+						if($("input[id='is_status--2']:checked").val()=="-2"){
+							$('#verifyReason').removeClass('hidden');
+						}else{
+							$('#verifyReason').addClass('hidden');
+						}
+					})
+				})
+			</script>
+
+			<div class="form-group">
+				<label class="col-sm-2 control-label"></label>
+				<div class="form-controls col-sm-8">
+					<button type="submit" class="btn btn-primary">确认提交</button>
+				</div>
+			</div>
+		</div>
+	</form>
+</div>
+{/block}
+
+{block name="script"}
+<script src="__ADMIN_JS__/main.min.js"></script>
+{/block}

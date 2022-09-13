@@ -1,0 +1,97 @@
+{extend name="common/main"/}
+{block name="body"}
+    <!-- 标题栏 -->
+    <div class="main-title">
+        <h2>
+            行为限制列表
+        </h2>
+    </div>
+    
+    <div class="with-padding">
+    <div class="clearfix button-box tool-box row">
+        <div class="col-xs-8 pd0">
+            <a type="button" class="btn btn-info" href="{:url('editLimit')}" title="新增">
+                新增
+            </a>
+            <button class="btn btn-success ajax-post" url="{:url('limitStatus',['status'=>'1'])}" target-form="ids">
+                启用
+            </button>
+            <button class="btn btn-warning ajax-post confirm" url="{:url('limitStatus',['status'=>'0'])}" target-form="ids">
+                禁用
+            </button>
+            <button class="btn btn-danger ajax-post confirm" url="{:url('limitStatus',['status'=>'-1'])}" target-form="ids">
+                删除
+            </button>
+        </div>
+
+        <div class="col-xs-4">
+           
+        </div>
+    </div>
+    <!-- 数据列表 -->
+    <div class="data-table">
+        <table class="table table-bordered table-striped table-hover muu-table">
+            <thead>
+                <tr>
+                <th class="row-selected row-selected">
+                    <input class="check-all" id="check-all" type="checkbox"/>
+                    <label for="check-all"></label>
+                </th>
+                <th class="">{:lang("ID")}</th>
+                <th>标题</th>
+                <th>名称</th>
+                <th>频率</th>
+                <th>时间单位</th>
+                <th>处罚</th>
+                <th>发送提醒</th>
+                <th>消息提示内容</th>
+                <th>行为</th>
+                <th>状态</th>
+                <th class="">操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                {notempty name="list"}
+                {volist name="list" id="vo"}
+                <tr>
+                    <td>
+                        <input class="ids" id="ids-{$vo.id}" type="checkbox" name="ids[]" value="{$vo.id}">
+                        <label for="ids-{$vo.id}"></label>
+                    </td>
+                    <td>{$vo.id} </td>
+                    <td>{$vo.title}</td>
+                    <td>{$vo.name}</td>
+                    <td>{$vo.frequency}</td>
+                    <td>{$vo.time}</td>
+                    <td>{$vo.punish}</td>
+                    <td>{$vo.if_message}</td>
+                    <td>{$vo.message_content}</td>
+                    <td>{$vo.action_list}</td>
+                    <td>{$vo.status}</td>
+                    <td>
+                        <a class="btn btn-sm btn-info" href="{:url('admin/action/editLimit',['id'=>$vo['id']])}">
+                            编辑
+                        </a>
+                    </td>
+                </tr>
+                {/volist}
+                {else/}
+                <td colspan="7" class="text-center"> aOh!空空如也~ </td>
+                {/notempty}
+            </tbody>
+        </table>
+    </div>
+    <!-- 分页 -->
+    <div class="page">
+        {:htmlspecialchars_decode($page)}
+    </div>
+    <!-- /分页-->
+    </div>
+
+{/block}
+{block name="script"}
+<script type="text/javascript">
+
+
+</script>
+{/block}

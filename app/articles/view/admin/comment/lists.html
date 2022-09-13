@@ -1,0 +1,161 @@
+{extend name="../../admin/view/common/main"/}
+{block name="style"}
+<link href="__ADMIN_CSS__/main.min.css" type="text/css" rel="stylesheet">
+{/block}
+
+{block name="body"}
+<ol class="breadcrumb">
+	<i class="icon icon-angle-left"></i>
+	<li>
+		<a href="{:url('lists')}">文章管理</a>
+	</li>
+	<li>
+		评论列表
+	</li>
+</ol>
+<div class="action-btn-box margin-bottom">
+</div>
+
+<div class="search-box clearfix margin-bottom row">
+
+	<form action="" method="get" class="search-form" role="form">
+		<div class="col-sm-3">
+			<div class="input-group">
+				<div class="input-control search-box has-icon-left has-icon-right search-example" id="searchboxExample">
+				<input class="form-control" name="keyword" placeholder="关键字" id="" type="text" value="{$keyword}">
+				<label for="inputSearchExample4" class="input-control-icon-left search-icon"><i class="icon icon-search"></i></label>
+				</div>
+				<span class="input-group-btn">
+				<button class="btn btn-primary" type="submit">搜索</button>
+				</span>
+			</div>
+		</div>
+	</form>
+</div>
+
+<div class="action-btn-box margin-bottom">
+	
+	<button class="btn ajax-post btn-info confirm margin-right" 
+		url="{:url('status',['status' => 1])}" 
+		target-form="ids"
+	>
+		启用
+	</button>
+	<button class="btn ajax-post btn-warning confirm margin-right" 
+		url="{:url('status',['status' => 0])}" 
+		target-form="ids"
+	>
+		禁用
+	</button>
+	<button class="btn ajax-post btn-danger margin-right confirm" 
+		data-confirm="您确实要删除吗？（删除后不可恢复）" 
+		url="{:url('status',['status' => -3])}" 
+		target-form="ids"
+	>
+		删除
+	</button>
+</div>
+
+<section class="comment-list-section clearfix">
+
+	<div class="item-section card">
+		
+        {if empty($lists.data)}
+		{include file="admin/common/_empty"/}
+		{else /}
+		
+		<table class="table muu-table">
+			<thead>
+			  <tr>
+				<th>
+					<input type="checkbox" class="check-all" id="check-all">
+		        	<label for="check-all"></label>
+				</th>
+				<th>评价内容</th>
+				<th>文章</th>
+				<th>状态</th>
+				<th>创建时间</th>
+				<th>更新时间</th>
+				<th>操作</th>
+			  </tr>
+			</thead>
+			<tbody>
+				{foreach $lists.data as $k => $v}
+				<tr>
+					<td>
+						<input type="checkbox" name="ids[]" class="ids" id="comment_{$v['id']}" value="{$v['id']}">
+		                <label for="comment_{$v['id']}"></label>
+					</td>
+					<td>
+						<div class="comment">
+							<div class="avatar">
+								<img src="{$v['user_info']['avatar']}" />
+							</div>
+							<div class="info">
+								<div class="nickname">
+									{$v['user_info']['nickname']}
+								</div>
+								<div class="content">
+									{$v['content']}
+								</div>
+							</div>
+							
+						</div>
+					</td>
+					<td>
+						<div class="title ">
+							<div class="text-ellipsis" title="{$v['article']['title']}">{$v['article']['title']}</div>
+						</div>
+					</td>
+
+					<td>
+						{$v['create_time_str']}
+					</td>
+					<td>
+						{$v['update_time_str']}
+					</td>
+					<td>
+						{if $v.status == 1}
+						<span class="label label-success">{$v['status_str']}</span>
+						{/if}
+						{if $v.status == 0}
+						<span class="label label-warning">{$v['status_str']}</span>
+						{/if}
+						{if $v.status == -1}
+						<span class="label label-default">{$v['status_str']}</span>
+						{/if}
+						{if $v.status == -2}
+						<span class="label label-danger">{$v['status_str']}</span>
+						{/if}
+					</td>
+					<td>
+						<div class="action">
+							{if $v['status'] == 1}
+								<a href="{:url('status',['ids'=>$v['id'],'status'=> 0])}" class="btn btn-sm btn-warning ajax-get">禁用</a>
+							{/if}
+			
+							{if $v['status'] == 0}
+								<a href="{:url('status',['ids'=>$v['id'], 'status'=> 1])}" class="btn btn-sm btn-info ajax-get">启用</a>
+							{/if}
+			
+							{if $v['status'] == -1}
+								<button class="btn btn-sm btn-default" data-remote="{:url('verify',['id'=>$v['id']])}" data-toggle="modal" data-title="状态审核">未审核</button>
+							{/if}
+							{if $v['status'] == -2}
+								<button disabled class="btn btn-sm disabled">审核未通过</button>
+							{/if}
+							<a href="{:url('status',['ids'=>$v['id'], 'status'=>-3])}" data-holder-section=".item-section" data-confirm="确认执行删除操作？" class="btn btn-sm btn-danger ajax-get-part"><i class="fa fa-times"></i> 删除</a>
+						</div>
+					</td>
+				</tr>
+				{/foreach}
+			</tbody>
+		</table>
+        {/if}
+	</div>
+</section>
+	
+<div class="page-section">
+	{:htmlspecialchars_decode($pager)}
+</div>
+{/block}

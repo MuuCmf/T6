@@ -1,0 +1,126 @@
+{extend name="../../common/view/main"/}
+{block name="style"}
+<link href="__STATIC__/ucenter/css/main.min.css" rel="stylesheet">
+{/block}
+{block name="body"}
+<div class="main-wrapper" style="padding-bottom: 40px">
+
+    <!--用户设置顶部-->
+    <!-- {include file="config/_header"/} -->
+    <!--用户设置顶部end-->
+
+    <div id="main-container" class="container user-config">
+        <div class="row">
+            <div class="col-xs-3">
+                {include file="config/_slide"/}
+            </div>
+            <div class="col-xs-9">
+                <div id="usercenter-content-td" >
+                    <div class="bind-wechat col-md-12">
+                        <h4 class="wechat-title">绑定微信</h4>
+                        <div class="wechat-body">
+                            <div class="wechat-avatar">
+                            <img src="__STATIC__/ucenter/images/default-minerva-man.png" alt="">
+                            <!-- <img src="__STATIC__/ucenter/images/default-minerva-she.png" alt=""> -->
+                            </div>
+                            
+                            {if $has_bind}
+                            <div class="has-bind">
+                                <div class="openid">
+                                    <span> {$has_bind.openid}</span>
+                                </div>
+                                <div class="action">
+                                    <span class="wechat-bind">已绑定</span>
+                                    <span class="wechat-unbind ajax-post" data-url="{:url('unbind')}" data-confirm="确认解除绑定">解除绑定</span>
+                                </div>
+                            </div>
+                            {else}
+                            <div class="to-bind">
+                                <span class="wechat-bind" data-toggle="modal" data-target="#wechat-modal">去绑定<i class="iconfont">&#xe661;</i></span>
+                            </div>
+                            {/if}
+                        </div>
+                    </div>
+
+                    <div class="modal fade wechat-modal" id="wechat-modal"> 
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="wechat-header">
+                                    <h4>绑定微信</h4>
+                                    <button class="close"data-dismiss="modal">×</button>
+                                </div>
+                                <div class="wechat-body part-two">
+                                    <div class="schedule ">
+                                        <ul class="progress-part">
+                                            <li class="finish">1</li>
+                                            <li class="progress-line"></li>
+                                            <li><i class="iconfont">&#xe7a3;</i></li>
+                                        </ul>
+                                        <ul class="progress-prompt">
+                                            <li class="finish">微信扫码绑定</li>
+                                            <li>完成</li>
+                                        </ul>
+                                    </div>
+                                    <div class="content">
+                                        <div class="bind">
+                                            <div class="qrcode">
+                                                <img class="wechat-qrcode" src="" alt="">
+                                                <div class="blur hidden">
+                                                    <img alt="" src="__STATIC__/common/images/check_success.png">
+                                                    <span>扫码成功</span>
+                                                    <span class="refresh">重新生成二维码</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <p class="description">使用微信扫码，绑定账号</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="clearfix"></div>
+        </div>
+    </div>
+</div>
+{/block}
+
+{block name="script"}
+<script src="__STATIC__/ucenter/js/main.min.js"></script>
+<script>
+    $(function () {
+        // 设置当前高亮菜单
+        $("#{$tab}").addClass('active');
+        //生成二维码
+        scan_qrcode.initWechatQrcode('.wechat-qrcode');
+        //查询扫码状态
+        scan_qrcode.hasScan();
+        //扫码回调
+        callback();
+
+        // 刷新二维码
+        $('.refresh').click(function(){
+            //生成二维码
+            scan_qrcode.initWechatQrcode('.wechat-qrcode');
+            //查询扫码状态
+            scan_qrcode.hasScan();
+            $('.bind .qrcode .blur').addClass('hidden');
+            callback();
+        });
+
+        function callback(){
+            //扫码回调
+            scan_qrcode.callback = function(){
+                // 显示扫码完成
+                $('.bind .qrcode .blur').removeClass('hidden');
+                //console.log(scan_qrcode.userInfo)
+                // 绑定用户
+                $.post("{:url('ucenter/Config/wechat')}", scan_qrcode.userInfo, function (res) {
+                    handle_ajax(res);
+                })
+            }
+        }
+    });
+</script>
+{/block}

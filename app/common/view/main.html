@@ -1,0 +1,29 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!--响应式布局 各模块可以根据需求自定义meta-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    {include file="../../common/view/head" /}
+    {block name="style"}{/block}
+</head>
+<body>
+    {include file="../../common/view/header" /}
+	<!-- 主体 -->
+	<div class="main-wrapper">
+		{block name="body"}{/block}
+	</div>
+	<!-- /主体 -->
+    {include file="../../common/view/footer" /}
+	<!-- 底部 -->
+    {include file="../../common/view/js" /}
+    {block name="script"}{/block}
+    <div class="hidden">
+        <!-- 用于加载统计代码等隐藏元素 -->
+        {block name="hidden"}{/block}
+        {$muu_config_data.COUNT_CODE|raw|htmlspecialchars_decode}
+    </div>
+</div>
+</body>
+</html>

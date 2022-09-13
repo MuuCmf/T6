@@ -1,0 +1,114 @@
+{extend name="common/main"/}
+
+{block name="body"}
+<ol class="breadcrumb">
+    <li>
+        <a href="{php :url('lists')}">提现管理</a>
+    </li>
+    <li>
+        提现列表
+    </li>
+</ol>
+<div class="button-box clearfix">
+
+    <div class="col-md-8">
+        <a type="button" class="btn btn-info" href="{:url('admin/extend/payment')}">提现设置</a>
+    </div>
+
+    <!-- 高级搜索 -->
+    <div class="search-form col-md-4">
+        <form action="" method="get" class="form-horizontal">
+            <div class="input-group">
+                <input type="text" name="keyword" class="form-control" value="{$order_no}">
+                <span class="input-group-btn">
+                    <button class="btn btn-default" type="submit">搜索</button>
+                    </span>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="card">
+    {if empty($lists)}
+    {include file='common/_empty'}
+    {else}
+    {foreach $lists.data as $k=>$v}
+    <div class="withdraw-lists-item">
+        <div class="base-info">
+            <span class="">提现单号：{$v['order_no']}</span>
+            <span class="">
+	            提现时间：{$v['paid_time_str']}
+	        </span>
+            <span class="">
+	            用户：<a href="{:url('admin/member/index',['search' => $v['uid']])}">{$v['user_info']['nickname']}</a>
+	        </span>
+            <span class="pull-right text-right">
+
+	        </span>
+        </div>
+        <table class="table table-bordered muu-table">
+            <thead>
+            <tr>
+                <th>用户</th>
+                <th>提现金额</th>
+                <th>提现状态</th>
+                <th>申请时间</th>
+                <th>完成时间</th>
+                <th>操作</th>
+            </tr>
+            </thead>
+
+            <tbody>
+            <tr>
+                <td style="width: 300px">
+                    <div class="cover">
+                        <img src="{$v['user_info']['avatar']}">
+                    </div>
+                    <div class="info">
+                        <div class="title text-ellipsis">{$v['user_info']['nickname']}</div>
+                    </div>
+                </td>
+                <td>
+                    <span class="text-danger">￥ {$v['price']}</span>
+                </td>
+                <td>
+                    <div class="">
+                        {if $v['paid'] == 1}
+                        <span class="paid-status text-success">{$v['paid_str']}</span>
+                        <span class="paid-status text-success">（{$v['error_str']}）</span>
+                        {else}
+                        <span class="paid-status text-danger">（{$v['error_str']}）</span>
+                        {/if}
+                    </div>
+                </td>
+                <td>
+                    {$v['create_time_str']}
+                </td>
+                <td>
+                    {$v['paid_time_str']}
+                </td>
+                <td style="width: 150px">
+                    <a class="btn btn-sm btn-info" data-remote="{:url('detail', ['id'=>$v['id']])}" data-toggle="modal">
+					    查看详情
+				    </a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    {/foreach}
+    {/if}
+</div>
+<div class="page-section">
+    {:htmlspecialchars_decode($pager)}
+</div>
+
+
+<script>
+
+</script>
+{/block}
+
+{block name="script"}
+
+{/block}

@@ -1,0 +1,174 @@
+/**
+ * 创作者列表页
+ */
+ .author-list-section {
+	.status-nav {
+		li {
+			a {
+				color: #333;
+				&:hover {
+					background-color: #fff;
+					
+				}
+			}
+		}
+		li.active{
+			a {
+				color: #47d1af;
+				background-color: #fff;
+				border-bottom-color: #47d1af;
+				&:hover {
+					background-color: #fff;
+					border-bottom: #47d1af;
+				}
+			}
+		}
+	}
+
+	.items-section {
+		margin-top: 5px;
+		margin-left: -5px;
+		margin-right: -5px;
+		.item {
+			float: left;
+			width: 260px;
+			margin-bottom: 10px;
+			.card {
+				margin: 0 5px;
+				overflow: hidden;
+				.cover {
+					text-align: center;
+					width: 250px;
+					height: 250px;
+					img {
+						width: 100%;
+					}
+				}
+				.info {
+					margin: 0;
+					padding: 0 10px;
+					.title {
+						margin: 10px 0;
+						font-size: 18px;
+					}
+					.description {
+						height: 42px;
+						color: #999;
+						overflow: hidden;
+					}
+				}
+				.action {
+					padding: 10px;
+					text-align: center;
+				}
+			}
+		}
+	}
+}
+
+.author-edit-section {
+	/*绑定用户表单内样式*/
+	.choose-user {
+		margin: 5px 0;
+		.user-avatar {
+			float: left;
+			width: 50px;
+			height: 50px;
+			border-radius: 50%;
+			overflow: hidden;
+			
+		}
+		.user-nickname {
+			margin-left: 60px;
+			line-height: 50px;
+		}
+		img[src=""]{
+			opacity: 0 !important;
+			width: 0 !important;
+			height: 0 !important;
+		}
+	}
+}
+
+#author-Modal {
+	.author-search {
+		padding: 0 0 15px 0;
+		.search-box {
+			padding: 0;
+		}
+	}
+	.author-list {
+		min-height: 300px;
+		.item {
+		    padding: 10px;
+		    border-bottom: 1px solid #eee;
+		    cursor: pointer;
+		    width: 100%;
+
+		    &:hover {
+				background-color:#eee;
+			}
+
+			.image{
+				width:60px;
+				height:60px;
+				float: left;
+			}
+			.content {
+				padding: 0;
+				margin:0 90px 0 90px;
+			}
+
+			.del-btn {
+			    width: 80px;
+			    margin: auto;
+			    display: none;
+			}
+		}
+		.no-data-box {
+
+			.no-data-tips {
+				text-align: center;
+				line-height: 42px;
+				color: #666;
+			}
+		}
+	}
+}
+
+/**
+ * 编辑页部分
+ */
+.edit-section {
+	.author-list {
+
+		.item {
+		    padding: 10px;
+		    cursor: pointer;
+		    width: 100%;
+		    display: block;
+
+		    &:hover {
+				background-color:#f6f6f6;
+			}
+
+			.image{
+				width:60px;
+				height:60px;
+				float: left;
+			}
+			.content {
+				padding: 0;
+				margin:0 90px 0 90px;
+			}
+
+			.del-btn {
+			    width: 80px;
+			    padding-top: 10px;
+			    float: right;
+			}
+		}
+	}
+}
+
+

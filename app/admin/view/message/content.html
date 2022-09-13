@@ -1,0 +1,101 @@
+{extend name="common/main"/}
+
+{block name="body"}
+<div class="message-content-list-section">
+    <!-- 标题栏 -->
+    <div class="main-title">
+        <h2>消息内容管理</h2>
+    </div>
+    <div class="button-box row clearfix">
+
+        <div class="col-md-8">
+            <button class="btn btn-success ajax-post confirm" url="{:url('contentStatus', ['status'=> 1])}" target-form="ids">
+                启用
+            </button>
+            <button class="btn btn-warning ajax-post confirm" url="{:url('contentStatus', ['status'=> 0])}" target-form="ids">
+                禁用
+            </button>
+            <button class="btn btn-danger ajax-post confirm" url="{:url('contentStatus', ['status'=> -1])}" arget-form="ids">
+                删除
+            </button>
+        </div>
+        <!-- 高级搜索 -->
+        <div class="search-form col-md-4">
+            <form method="get" class="form-horizontal">
+                <div class="input-group">
+                    <input type="text" name="keyword" class="form-control" value="{$keyword}">
+                    <span class="input-group-btn">
+                    <button class="btn btn-default" type="submit">搜索</button>
+                    </span>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 数据列表 -->
+    <div class="data-table with-padding">
+        {notempty name="lists.data"}
+        <table class="table table-bordered table-striped muu-table">
+            <thead>
+            <tr>
+                <th class="row-selected row-selected">
+                    <input type="checkbox" class="check-all" id="check-all">
+                    <label for="check-all"></label>
+                </th>
+                <th>标题</th>
+                <th>描述</th>
+                <th>创建时间</th>
+                <th>更新时间</th>
+                <th>状态</th>
+                <th>操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            {volist name="lists.data" id="vo"}
+                <tr>
+                    <td>
+                        <input class="ids" id="type_{$vo.id}" type="checkbox" name="ids[]" value="{$vo.id}"/>
+                        <label for="type_{$vo.id}"></label>
+                    </td>
+                    <td>{$vo.title}</td>
+                    <td>{$vo.description}</td>
+                    <td>{$vo.create_time_str}</td>
+                    <td>{$vo.update_time_str}</td>
+                    <td>
+                        {if $vo.status == 1}
+                        <span class="label label-success">{$vo.status_str}</span>
+                        {/if}
+                        {if $vo.status == 0}
+                        <span class="label label-warning">{$vo.status_str}</span>
+                        {/if}
+                    </td>
+                    <td>
+                        {if $vo.status == 1}
+                        <a class="btn btn-sm btn-warning ajax-post" href="{:url('contentStatus',['status'=>0, 'ids'=>$vo['id']])}">禁用</a>
+                        {/if}
+                        {if $vo.status == 0}
+                        <a class="btn btn-sm btn-success ajax-post" href="{:url('contentStatus',['status'=>1, 'ids'=>$vo['id']])}">启用</a>
+                        {/if}
+                        <a class="btn btn-sm btn-danger ajax-post" href="{:url('contentStatus',['status'=>-1, 'ids'=>$vo['id']])}" data-confirm="确认执行删除操作？">删除</a>
+                    </td>
+                </tr>
+            {/volist}
+            </tbody>
+        </table>
+        {else/}
+        {include file="common/_empty"/}
+        {/notempty}
+    </div>
+
+    <!-- 分页 -->
+    <div class="page">
+        {:htmlspecialchars_decode($pager)}
+    </div>
+    <!-- /分页-->
+</div>
+{/block}
+{block name="script"}
+<script>
+
+</script>   
+{/block}

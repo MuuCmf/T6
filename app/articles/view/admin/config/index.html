@@ -1,0 +1,135 @@
+{extend name="../../admin/view/common/main"/}
+
+{block name="style"}
+<link href="__ADMIN_CSS__/main.min.css" type="text/css" rel="stylesheet">
+{/block}
+
+{block name="body"}
+<ol class="breadcrumb">
+	<li>
+		<a href="{:url('index')}">基础配置</a>
+	</li>
+	<li>
+		基础配置
+	</li>
+</ol>
+<div class="config-section">
+	<div class="config-list-section">
+		<div class="form-files-box card">
+			<!-- 基本设置 start -->
+			<div class="form-file header">基本设置</div>
+			<div class="form-files">
+	
+				<!-- 应用状态 start -->
+				<div class="form-file">
+					<div class="form-label">应用状态</div>
+					<div class="form-value">
+						<span class="margin-left">
+							{$data['status_str']|default=''}
+						</span>
+						<span class="margin-left">
+							可关闭/开启应用
+						</span>
+						
+					</div>
+					<div class="form-edit">
+						<button type="button" data-toggle="modal" data-target="#close-Modal" class="btn btn-primary">设置</button>
+					</div>
+				</div>
+				<!-- 应用状态 end -->
+			</div>
+		</div>
+
+		<div class="form-files-box card">
+			<!-- 显示设置 start -->
+			<div class="form-file header">评论设置</div>
+			<div class="form-files">
+	
+				<!-- 评论开关 start -->
+				<div class="form-file">
+					<div class="form-label">是否启用评论功能</div>
+					<div class="form-value">
+						<span class="title margin-left">
+							{$data.comment.status_str|default=''}
+						</span>
+						<span class="description margin-left">
+							设置是否启用评论
+						</span>
+					</div>
+					<div class="form-edit">
+						<label>
+							<div class="switch {if $data['comment']['status'] == 1}switchOn{/if}" data-role="comment-status" data-value="{$data['comment']['status']}" data-url="{:url()}"></div>
+						</label>
+					</div>
+				</div>
+				<!-- 评论开关 end -->
+
+				<!-- 评论审核开关 start -->
+				<div class="form-file">
+					<div class="form-label">是否启用评论审核</div>
+					<div class="form-value">
+						<span class="title margin-left">
+							{$data.comment.audit_str}
+						</span>
+						<span class="description margin-left">
+							设置是否启用评论审核
+						</span>
+					</div>
+					<div class="form-edit">
+						<label>
+							<div class="switch {if $data['comment']['audit'] == 1}switchOn{/if}" data-role="comment-audit" data-value="{$data['comment']['audit']}" data-url="{:url()}"></div>
+						</label>
+					</div>
+				</div>
+				<!-- 评论审核开关 end -->
+			</div>
+		</div>
+	</div>
+</div>
+
+{include file="admin/config/_modal"/}
+
+
+{/block}
+{block name="script"}
+<script src="__ADMIN_JS__/main.min.js"></script>
+<script>
+	$(function(){
+		$('[data-role="comment-status"]').click(function(e){
+
+			var value = $(this).data('value');
+			if(value == 1){
+				value = 0;
+			}else{
+				value = 1;
+			}
+			var url = $(this).data('url');
+			var data = {
+				'comment[status]' : value,
+			};
+
+			$.post(url, data, function (a) {
+				handle_ajax(a);
+			});
+		});
+
+		$('[data-role="comment-audit"]').click(function(e){
+
+			var value = $(this).data('value');
+			if(value == 1){
+				value = 0;
+			}else{
+				value = 1;
+			}
+			var url = $(this).data('url');
+			var data = {
+				'comment[audit]' : value,
+			};
+
+			$.post(url, data, function (a) {
+				handle_ajax(a);
+			});
+		});
+	});
+</script>
+{/block}

@@ -1,0 +1,108 @@
+{extend name="common/main"/}
+
+{block name="body"}
+<ol class="breadcrumb">
+    <li>
+        <a href="{:url('lists')}">浏览记录</a>
+    </li>
+    <li>
+        浏览记录
+    </li>
+</ol>
+<div class="search-box clearfix margin-bottom row">
+    <form action="" method="get" class="search-form" role="form">
+        <div class="col-sm-2">
+            <select name="app" class="form-control">
+                <option value="all">全部应用</option>
+                {volist name="all_module" id="row"}
+                {if $app == $row['name']}
+                <option selected value="{$row['name']}">{$row['alias']}</option>
+                {else}
+                <option value="{$row['name']}">{$row['alias']}</option>
+                {/if}
+                {/volist}
+            </select>
+        </div>
+        <div class="col-sm-3">
+            <div class="input-group">
+                <div class="input-control search-box has-icon-left has-icon-right search-example" id="searchbox">
+                    <input class="form-control" name="uid" placeholder="用户ID" id="" type="text" value="{$uid}">
+                    <label for="searchbox" class="input-control-icon-left search-icon"><i class="icon icon-search"></i></label>
+                </div>
+                <span class="input-group-btn">
+				<button class="btn btn-primary" type="submit">搜索</button>
+				</span>
+            </div>
+        </div>
+    </form>
+</div>
+
+<section class="see-list-section card clearfix">
+    <table class="table table-bordered table-striped table-hover muu-table " id="table-data">
+        <thead>
+        <tr>
+            <th width="40">
+                <input class="check-all" id="check-all" type="checkbox">
+                <label for="check-all"></label>
+            </th>
+            <th>ID</th>
+            <th>产品</th>
+            <th>用户</th>
+            <th>应用</th>
+            <th>访问时间</th>
+            <th>操作</th>
+        </tr>
+        </thead>
+        <tbody>
+        {foreach $lists as $k=>$v}
+        <tr>
+            <td>
+                <input class="ids" id="see_{$v['id']}" name="ids[]" type="checkbox" value="{$v['id']}">
+                <label for="see_{$v['id']}"></label>
+            </td>
+            <td>{$v['id']}</td>
+            <td class="products" style="width: 600px">
+                <div class="cover">
+                    <img src="{$v['products']['cover_100']}">
+                </div>
+                <div class="info">
+                    <div class="title text-ellipsis">{$v['products']['title']}</div>
+                    {if isset($v['products']['price'])}
+                    <div class="price">现价：{$v['products']['price']}</div>
+                    {/if}
+                </div>
+            </td>
+            <td style="width: 300px">
+                <div class="cover">
+                    <img src="{$v['user_info']['avatar']|default=''}">
+                </div>
+                <div class="info">
+                    <div class="title text-ellipsis">{$v['user_info']['nickname']|default=''}</div>
+                </div>
+            </td>
+            <td>{$v['module_name']}</td>
+            <td>{$v['create_time_str']}</td>
+            <td style="width: 150px">
+                <a href="{:url('status',['ids'=>$v['id'], 'status'=> -1])}" data-confirm="确认执行删除操作？" class="btn btn-sm btn-danger ajax-get"><i class="fa fa-times"></i> 删除</a>
+            </td>
+        </tr>
+        {/foreach}
+        </tbody>
+    </table>
+    {if empty($lists)}
+    {include file='common/_empty'}
+    {/if}
+</section>
+<div class="page-section">
+    {:htmlspecialchars_decode($pager)}
+</div>
+
+
+<script>
+
+</script>
+{/block}
+
+{block name="script"}
+
+{/block}

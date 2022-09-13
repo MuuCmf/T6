@@ -1,0 +1,214 @@
+{extend name="../../admin/view/common/main"/}
+{block name="style"}
+{include file="../../channel/view/admin/common/style" /}
+<!--图片上传-->
+<script type="text/javascript" charset="utf-8" src="__STATIC__/common/lib/webuploader/js/webuploader.js"></script>
+<link href="__STATIC__/common/lib/webuploader/css/webuploader.css" type="text/css" rel="stylesheet">
+<style>
+    .tools{
+        padding-top: 10px;
+    }
+</style>
+{/block}
+{block name="body"}
+<div class="main-title">
+    <h2>公众号配置</h2>
+</div>
+<div class="with-padding">
+    <div class="account-edit-section edit-auto-reply">
+
+        <div class="account-body">
+            <form action="{:url('index')}" method="post" class="form-horizontal ajax-form">
+                <input type="hidden" name="id" value="{$data.id}">
+                
+                <div class="form-item builder_item">
+                    <label class="item-label">公众号名称<span class="check-tips">（公众号名称）</span>
+                    </label>
+                    <input type="text" class="text input-large form-control" name="title" style="width: 400px"
+                           value="{$data.title|default=''}">
+                </div>
+                <div class="form-item builder_item">
+                    <label class="item-label">公众号描述<span class="check-tips">（公众号描述）</span>
+                    </label>
+                    <div class="controls textarea">
+                        <textarea name="desc" cols="30" rows="10" class="form-control">{$data.desc|default=''}</textarea>
+                    </div>
+                </div>
+                <div class="form-item builder_item">
+                    <label class="item-label">公众号图标<span class="check-tips">（请上传公众号图标）</span>
+                    </label>
+                    {:single_image_upload('cover', $data['cover'])}
+                </div>
+                <div class="form-item builder_item">
+                    <label class="item-label">公众号二维码<span class="check-tips">（请上传公众号二维码）</span>
+                    </label>
+                    {:single_image_upload('qrcode', $data['qrcode'])}
+                </div>
+                <div class="form-item builder_item">
+                    <label class="item-label">APPID<span class="check-tips">（应用的独立标识）</span>
+                    </label>
+                    <input type="text" class="text input-large form-control" name="appid" style="width: 400px"
+                           value="{$data.appid|default=''}">
+                </div>
+                <div class="form-item builder_item">
+                    <label class="item-label">AppSecret<span class="check-tips">（应用密匙）</span>
+                    </label>
+                    <input type="text" class="text input-large form-control" name="secret" style="width: 400px"
+                           value="{$data.secret|default=''}">
+                </div>
+                <div class="form-item builder_item">
+                    <label class="item-label">URL<span class="check-tips">（服务器地址(URL)）</span>
+                    </label>
+                    <input type="text" class="text input-large form-control" name="url" style="width: 400px"
+                           value="{$data.url|default=''}" readonly="readonly">
+                    <div class="tools">
+                        <a href="javascript:;" class="copy">复制</a>
+                    </div>
+                </div>
+                <div class="form-item builder_item">
+                    <label class="item-label">TOKEN<span class="check-tips">（TOKEN令牌）</span>
+                    </label>
+                    <input type="text" class="text input-large form-control" data-type="token" name="token" style="width: 400px"
+                           value="{$data.token|default=''}" readonly="readonly">
+                    <div class="tools">
+                        <a href="javascript:;" class="create">生成</a>
+                        <a href="javascript:;" class="edit">编辑</a>
+                        <a href="javascript:;" class="copy">复制</a>
+                    </div>
+                </div>
+                <div class="form-item builder_item">
+                    <label class="item-label">EncodingAESKey<span class="check-tips">（消息加解密密钥）</span>
+                    </label>
+                    <input type="text" class="text input-large form-control" data-type="encoding_aes_key" name="encoding_aes_key" style="width: 400px"
+                           value="{$data.encoding_aes_key|default=''}" readonly="readonly">
+                    <div class="tools">
+                        <a href="javascript:;" class="create">生成</a>
+                        <a href="javascript:;" class="edit">编辑</a>
+                        <a href="javascript:;" class="copy">复制</a>
+                    </div>
+                </div>
+    
+                <div class="form-item">
+                    <label class="item-label"></label>
+                    <div class="controls">
+                        <button type="submit" class="btn submit-btn btn-success" target-form="form-horizontal">
+                            保存
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="create-tips">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">关闭</span></button>
+                <h4 class="modal-title">提示</h4>
+            </div>
+            <div class="modal-body">
+                <p>确定要生成新的吗？</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary" onclick="confirm('create')">确定</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="edit-model">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">关闭</span></button>
+                <h4 class="modal-title">修改</h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <input class="text input-small form-control" type="text" id="edit-val" placeholder="请输入要修改的值" />
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary" onclick="confirm('edit')">确定</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{/block}
+
+{block name="script"}
+<script>
+    var thisElem,newValue;
+    function encodingAESKeyGen() {
+        for (var e = "", t = 0; t < 43; t++) e += "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"[parseInt(61 * Math.random() + 1)];
+        return e
+    }
+    function tokenGen() {
+        for (var t = "", a = 0; a < 32; a++) t += "abcdefghijklmnopqrstuvwxyz0123456789"[parseInt(32 * Math.random())];
+        return t;
+    }
+    function confirm(type){
+        if (type == 'edit'){
+            $(thisElem).val($('#edit-val').val());
+            $('#edit-model').modal('toggle', 'center');
+        }else{
+            $(thisElem).val(newValue);
+            $('#create-tips').modal('toggle', 'center');
+        }
+
+
+    }
+    $(function () {
+
+        $(".create").click(function () {
+            thisElem = $(this).parent().parent().children('input');
+            let type = $(thisElem).data('type');
+            if (type == 'token'){
+                newValue = tokenGen();
+            }else{
+                newValue = encodingAESKeyGen();
+            }
+            $('#create-tips').modal('toggle', 'center')
+        })
+        $(".edit").click(function () {
+            thisElem = $(this).parent().parent().children('input');
+            $('#edit-model').modal('toggle', 'center');
+            $('#edit-val').val($(thisElem).val())
+        })
+
+        /**
+         * 复制
+         */
+        $(".copy").click(function() {
+            var ssrsss = $(this).parent().parent().children('input').val();//获取文本
+            console.log(ssrsss);
+            var flag = copyText(ssrsss); //传递文本
+            toast.info(flag ? "复制成功！" : "复制失败！");
+        })
+        function copyText(text) {
+            var textarea = document.createElement("input");//创建input对象
+            var currentFocus = document.activeElement;//当前获得焦点的元素
+            document.body.appendChild(textarea);//添加元素
+            textarea.value = text;
+            textarea.focus();
+            if(textarea.setSelectionRange)
+                textarea.setSelectionRange(0, textarea.value.length);//获取光标起始位置到结束位置
+            else
+                textarea.select();
+            try {
+                var flag = document.execCommand("copy");//执行复制
+            } catch(eo) {
+                var flag = false;
+            }
+            document.body.removeChild(textarea);//删除元素
+            currentFocus.focus();
+            return flag;
+        }
+    })
+</script>
+{/block}
+

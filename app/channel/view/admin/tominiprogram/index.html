@@ -1,0 +1,75 @@
+{extend name="../../admin/view/common/main"/}
+
+{block name="body"}
+<!-- 标题栏 -->
+<div class="main-title">
+    <h2>跳转小程序列表</h2>
+</div>
+<div class="button-box clearfix">
+
+    <div class="col-md-6">
+        <a type="button" class="btn btn-info" href="{:url('edit',['type' => $type])}">新增</a>
+        <button class="btn btn-danger ajax-post confirm" url="{:url('del')}" target-form="ids">
+            删除
+        </button>
+    </div>
+</div>
+<!-- 数据列表 -->
+<div class="data-table with-padding">
+    <table class="table table-bordered table-striped user-table muu-table">
+        <thead>
+        <tr>
+            <th class="row-selected row-selected">
+                <input type="checkbox" class="check-all" id="check-all">
+                <label for="check-all"></label>
+            </th>
+            <th>APPID</th>
+            <th class="">小程序名称</th>
+            <th class="">小程序码</th>
+            <th class="">类型</th>
+            <th class="">操作</th>
+
+        </tr>
+        </thead>
+        <tbody>
+        {notempty name="lists"}
+        {volist name="lists" id="vo"}
+        <tr>
+            <td>
+                <input class="ids" id="profile-{$vo.id}" type="checkbox" name="id[]" value="{$vo.id}"/>
+                <label for="profile-{$vo.id}"></label>
+            </td>
+            <td>{$vo.appid}</td>
+            <td>{$vo.title}</td>
+            <td>
+                <img style="width: 64px;height: 64px" src="{$vo.qrcode}" alt="">
+            </td>
+            <td>{$vo.type_str}</td>
+            <td>
+                <a class="btn btn-warning" href="{:url('edit',['id'=>$vo['id'],'type' => $type])}" >编辑</a>
+                <a class="btn btn-danger  ajax-post confirm" href="{:url('del',['id'=>$vo['id']])}" >删除</a>
+            </td>
+        </tr>
+        {/volist}
+        {else/}
+        <td colspan="13" class="text-center">
+            空空如也~
+        </td>
+        {/notempty}
+        </tbody>
+    </table>
+
+    <!-- 分页 -->
+    <div class="page">
+        {:htmlspecialchars_decode($page)}
+    </div>
+    <!-- /分页-->
+</div>
+{/block}
+
+{block name="script"}
+<script>
+    $(function(){
+    });
+</script>
+{/block}

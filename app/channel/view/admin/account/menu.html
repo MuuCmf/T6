@@ -1,0 +1,456 @@
+{extend name="../../admin/view/common/main"/}
+{block name="style"}
+{include file="../../channel/view/admin/common/style" /}
+{/block}
+{block name="body"}
+<div class="wechat-menu">
+    <div class="hbox">
+        <div class="inner-left">
+            <div class="menu-view-con">
+                <div class="menu-view">
+                    <div class="menu-view-title">{$Think.config.uni_account.MP_NAME}</div>
+                    <div class="custom-menu-view-body">
+                        <div class="weixin-msg-list">
+                            <ul class="msg-con"></ul>
+                        </div>
+                    </div>
+                    <div class="menu-view-footer" id="menuMain">
+                        <div class="menu-view-footer-left"></div>
+                        <div class="menu-view-footer-right">
+                            <!--父级菜单-->
+                            <div :class="{'choose-menu': selectedIndex[0] == index && selectedIndex[1] < 0}"
+                                 @click="chooseMenu(index,-1)"
+                                 class="footer-parent-item" v-for="(item,index) in menuList">
+                                <div class="text-ellipsis">{{item.name}}</div>
+                                <!--子级菜单-->
+                                <div class="menu-child">
+                                    <div :class="{'choose-menu': selectedIndex[0] == index && selectedIndex[1] == cindex}"
+                                         @click.stop="chooseMenu(index,cindex)"
+                                         class="menu-child-item"
+                                         v-for="(child,cindex) in item.sub_button">
+                                        <div class="text-ellipsis">{{child.name}}</div>
+                                    </div>
+                                    <div @click.stop="addMenu(index,'child')" class="menu-child-item add"
+                                         v-if="item.sub_button.length < 5">
+                                        <i class="fa fa-plus"></i>
+                                    </div>
+                                    <div class="arrow"></div>
+                                </div>
+                                <!--子级菜单-->
+                            </div>
+                            <div @click="addMenu(0,'parent')" class="footer-parent-item add" v-if="menuList.length < 3">
+                                <i class="fa fa-plus"></i>
+                            </div>
+                            <!--父级菜单-->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="inner-right">
+            <div class="edit-after" v-if="selectedMenu">
+                <form class="form-horizontal" name="menu-form">
+                    <div class="form-group">
+                        <label class="col-sm-2" for="menu-name">菜单名称</label>
+                        <div class="col-sm-6">
+                            <input class="form-control" id="menu-name" type="text" v-model="selectedMenu.name">
+                        </div>
+                        <div class="col-sm-4">
+                            <button @click="remove" class="btn btn-danger" type="button">删除菜单</button>
+                        </div>
+                    </div>
+                    <div class="help-block col-sm-12">
+                        字数不超过5个汉字或16个字符；若无二级菜单，可输入20个汉字或60个字符
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2">菜单内容</label>
+                        <div class="col-sm-10" style="margin-top: 5px">
+                            <input :disabled="selectedMenu.disabled" checked id="type-1" name="content_type"
+                                   type="radio" v-model="selectedMenu.type"
+                                   value="media_id">
+                            <label for="type-1">发送消息</label>
+
+                            <input :disabled="selectedMenu.disabled" id="type-0" name="content_type" type="radio"
+                                   v-model="selectedMenu.type" value="view">
+                            <label for="type-0">跳转链接</label>
+
+                            <input :disabled="selectedMenu.disabled" id="type-2" name="content_type"
+                                   type="radio" v-model="selectedMenu.type" value="miniprogram">
+                            <label for="type-2">跳转小程序</label>
+
+                        </div>
+                    </div>
+                    <div class="content">
+                        <div class="send-message" v-if="selectedMenu.type == 'media_id'">
+                            <div class="content-tab">
+                                <div :class="{active : selectedMenu.material_type=='news'}" @click="chooseMaterialType('news')"
+                                     class="tab-item col-sm-3 ">
+                                    图文消息
+                                </div>
+                                <div :class="{active : selectedMenu.material_type=='image'}" @click="chooseMaterialType('image')"
+                                     class="tab-item col-sm-3 ">图片
+                                </div><!--f3f4f8-->
+                                <div :class="{active : selectedMenu.material_type=='voice'}" @click="chooseMaterialType('voice')"
+                                     class="tab-item col-sm-3 ">语音
+                                </div>
+                                <div :class="{active : selectedMenu.material_type=='video'}" @click="chooseMaterialType('video')"
+                                     class="tab-item col-sm-3 ">视频
+                                </div>
+                            </div>
+                            <!--                            选择框-->
+                            <div @click="chooseMaterial" class="content-box" v-if="!selectedMenu.media_id">
+                                <div class="choose">
+                                    <div class="add-icon">
+                                        <i class="fa fa-plus"></i><br>从素材库中选择
+                                    </div>
+                                </div>
+                            </div>
+                            <input id="material-type" type="hidden" v-model="selectedMenu.material_type">
+                            <!--                            已选素材-->
+                            <div class="" v-if="selectedMenu.media_id">
+                                <div class="tab-content col-xs-9">
+                                    <!--                                    图文-->
+                                    <div id="material-news" v-if="selectedMenu.material_type == 'news'">
+                                        <div class="news">
+                                            <img :src="selectedMenu.material.content.news_item[0].thumb_url" alt="">
+                                            <div class="news-text">
+                                                <h4>{{selectedMenu.material.content.news_item[0].title}}</h4>
+                                                <p>{{selectedMenu.material.content.news_item[0].digest}}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!--                                    图片-->
+                                    <div id="material-image" v-if="selectedMenu.material_type == 'image'">
+                                        <img :src="selectedMenu.material.url" alt="">
+                                    </div>
+                                    <!--                                    音频-->
+                                    <div id="material-voice" v-if="selectedMenu.material_type == 'voice'">
+                                        <div class="voice">
+                                            <div class="icon col-md-4"><i aria-hidden="true"
+                                                                          class="fa fa-volume-up"></i></div>
+                                            <div class="col-md-8 voice-name"><span>{{selectedMenu.material.name}}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!--                                    视频-->
+                                    <div id="material-video" v-if="selectedMenu.material_type == 'video'">
+                                        <div class="video">
+                                            <img :src="selectedMenu.material.cover_url" alt="">
+                                            <div class="news-text">
+                                                <h4>{{selectedMenu.material.name}}</h4>
+                                                <p>{{selectedMenu.material.description}}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!--                        跳转网址-->
+                        <div class="jump-url" v-if="selectedMenu.type == 'view'">
+                            <div class="help-block col-sm-12">
+                                粉丝点击该菜单会跳转到以下链接：
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-4" for="link-url">页面地址</label>
+                                <div class="col-sm-6">
+                                    <input class="form-control" id="link-url" placeholder="认证号才可手动输入地址" type="text"
+                                           v-model="selectedMenu.url">
+                                    <div class="help-block col-sm-12">
+                                        必填，必须是正确的URL格式
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!--                        跳转小程序-->
+                        <div class="jump-url" v-if="selectedMenu.type == 'miniprogram'">
+                            <div class="help-block col-sm-12">
+                                粉丝点击该菜单会跳到以下小程序：
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-4" for="mini-link-url">小程序APPID</label>
+                                <div class="col-sm-6">
+                                    <input class="form-control" id="mini-link-url" placeholder="在小程序后台获取"
+                                           type="text" v-model="selectedMenu.appid">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-4" for="mini-page">小程序页面地址</label>
+                                <div class="col-sm-6">
+                                    <input class="form-control" id="mini-page" placeholder="小程序页面路径"
+                                           type="text" v-model="selectedMenu.pagepath">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-4" for="mini-url">备用网页地址</label>
+                                <div class="col-sm-6">
+                                    <input class="form-control" id="mini-url" placeholder="页面地址，当不支持小程序时会跳转此页面" type="text"
+                                           v-model="selectedMenu.url">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="edit-before" v-if="!selectedMenu"><h5>点击左侧菜单进行操作</h5></div>
+        </div>
+    </div>
+    <div class="cm-edit-footer">
+        <button @click="save" class="btn btn-info1 btn-primary"  type="button">保存</button>
+        <button @click="previewView" class="btn btn-info1 btn-primary" type="button">预览</button>
+        <button @click="deleteMenu" class="btn btn-info1 btn-primary" type="button">清空菜单</button>
+    </div>
+
+    <!-- 对话框HTML -->
+    <div class="modal fade" id="clearParentModel">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button class="close" data-dismiss="modal" type="button"><span aria-hidden="true">×</span><span
+                            class="sr-only">关闭</span></button>
+                    <h4 class="modal-title">提示</h4>
+                </div>
+                <div class="modal-body">
+                    添加子菜单后，一级菜单的内容将被清除。确定添加子菜单？
+                </div>
+                <div class="modal-footer">
+                    <button @click="addMenu(continueIndex,'child')" class="btn btn-primary" type="button">保存</button>
+                    <button class="btn btn-default" data-dismiss="modal" type="button">关闭</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div :class="{preview : previewShow}" class="mobile_preview" id="mobileDiv">
+        <div class="mobile_preview-item">
+            <div class="mobile_preview_ft">
+                <div class="pre_menu_list">
+                    <div class="pre_menu_item" v-for="(item,index) in menuList">
+                        <div class="pre_menu_link text-ellipsis">{{item.name}}</div>
+                        <div class="sub_pre_menu_box sub_pre_menu_box_show"
+                             v-if="item.sub_button.length > 0">
+                            <div class="sub_pre_menu_box_item"
+                                 v-for="(child,cindex) in item.sub_button">
+                                <div style="overflow: hidden;text-overflow:ellipsis;white-space: nowrap;">
+                                    {{child.name}}
+                                </div>
+                            </div>
+                            <div class="arrow"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div>
+            <button class="mobile_preview_closed btn btn_default" id="viewClose" @click="previewView">退出预览</button>
+        </div>
+    </div>
+</div>
+{include file="admin/official_account/material" /}
+{/block}
+{block name="script"}
+<script>
+
+    var vm = new Vue({
+        el: '.wechat-menu',
+        data: {
+            menuList: [],
+            selectedMenu: null,
+            selectedIndex: [-1, -1],
+            continueIndex: -1,//清除一级菜单索引
+            previewShow: false,
+        },
+        created() {
+            let that = this;
+            //获取菜单列表
+            $.get('{:url("menu")}', {}, function (res) {
+                that.menuList = res.data;
+                that.menuList.forEach(function (t) {
+                    if (!t.sub_button) {
+                        t.sub_button = [];
+                    }
+                })
+            })
+        },
+        methods: {
+            /**
+             * 添加菜单
+             */
+            addMenu(index, type) {
+                let menu = {};
+                let that = this;
+                menu.name = "新建菜单";
+                menu.type = 'media_id';
+                if (type == 'parent') {
+                    menu.sub_button = [];
+                    that.menuList.push(menu);
+                    let len = that.menuList.length;
+                    setTimeout(function () {
+                        len--;
+                        that.chooseMenu(len, -1);
+                    }, 200)
+                } else {
+                    let len = that.menuList[index].sub_button.length;
+                    if (len < 1 && that.continueIndex == -1) {
+                        that.menuList[index].type = null;
+                        $('#clearParentModel').modal('show');
+                        that.continueIndex = index;
+                    } else {
+                        $('#clearParentModel').modal('hide')
+                        that.continueIndex = -1;
+                        that.menuList[index].sub_button.push(menu);
+                        setTimeout(function () {
+                            that.chooseMenu(index, len);
+                        }, 200)
+                    }
+                }
+            },
+            /**
+             * 预览
+             */
+            previewView() {
+                this.previewShow = !this.previewShow ;
+            },
+            /**
+             * 选择菜单
+             */
+            chooseMenu(index, childIndex) {
+                this.selectedIndex = [index, childIndex];
+                if (childIndex > -1) {
+                    this.selectedMenu = this.menuList[index].sub_button[childIndex];
+                    this.selectedMenu.disabled = false;
+                } else {
+                    this.selectedMenu = this.menuList[index];
+                    //父级有子项 禁用内容选择
+                    if (this.selectedMenu.sub_button.length > 0) {
+                        this.selectedMenu.disabled = true;
+                    }
+                }
+                switch (this.selectedMenu.type) {
+                    case 'view':
+                        this.selectedMenu.url = this.selectedMenu.url ? this.selectedMenu.url : '';
+                        break;
+                    case 'media_id':
+                        if (!this.selectedMenu.material_type) {
+                            this.selectedMenu.material_type = 'news';
+                        }
+                        this.selectedMenu.media_id = this.selectedMenu.media_id ? this.selectedMenu.media_id : '';
+                        break;
+                    case 'miniprogram':
+                        this.selectedMenu.appid = this.selectedMenu.appid ? this.selectedMenu.appid : '';
+                        this.selectedMenu.pagepath = this.selectedMenu.pagepath ? this.selectedMenu.pagepath : '';
+                        this.selectedMenu.url = this.selectedMenu.url ? this.selectedMenu.url : '';
+                        break;
+                }
+            },
+            /**
+             * 上移
+             */
+            moveUp() {
+
+            },
+            /**
+             * 下移
+             */
+            moveDown() {
+
+            },
+            /**
+             * 更改子项
+             */
+            edit() {
+                let index = this.selectedIndex;
+                let menu = JSON.parse(JSON.stringify(this.selectedMenu));
+                if (index[1] > -1) {
+                    this.menuList[index[0]].sub_button[index[1]] = menu;
+                } else {
+                    this.menuList[index[0]] = menu;
+                }
+            },
+            /**
+             * 选择消息类型
+             */
+            chooseMaterialType(type) {
+                this.selectedMenu.material_type = type;
+                this.selectedMenu.media_id = '';
+                this.$forceUpdate();
+            },
+            /**
+             *选择素材
+             **/
+            chooseMaterial() {
+                //是否有素材类型
+                if (!this.selectedMenu.material_type) {
+                    this.selectedMenu.material_type = 'news';
+                    this.$forceUpdate();
+                }
+                setTimeout(function () {
+                    $('#material-model').modal('toggle', 'center')
+                }, 200)
+            },
+            /**
+             * 移除当前菜单
+             */
+            remove() {
+                let index = this.selectedIndex;
+                if (index[1] > -1) {
+                    this.menuList[index[0]].sub_button.splice(index[1], 1);
+                } else {
+                    this.menuList.splice(index[0], 1);
+                }
+                this.selectedIndex = [-1, -1];
+                this.selectedMenu = null;
+            },
+            /**
+             * 保存
+             */
+            save() {
+                $.post("{:url('saveMenu')}", {json: JSON.stringify(this.menuList)}, function (res) {
+                    console.log(res);
+                    alert(res.msg);
+                    if (res.code == 200) {
+                        setTimeout(function () {
+                            location.reload();
+                        }, 500)
+                    }
+                })
+            },
+            /**
+             *移除所有菜单
+             */
+            deleteMenu() {
+                this.selectedMenu = null;
+                this.menuList = [];
+            },
+            /**
+             * 预览菜单选项
+             */
+            selectionPopout(index, childIndex) {
+                this.selectedIndex = [index, childIndex];
+                if (childIndex > -1) {
+                    this.selectedMenu = this.menuList[index].sub_button[childIndex];
+                    this.selectedPreview = this.menuList[index]
+                    console.log(this.selectedPreview)
+
+                } else {
+                    this.selectedMenu = this.menuList[index];
+                }
+            },
+            //选择素材回调
+            chooseMaterialCallback(material) {
+                //剔除无用数据
+                //素材
+                if (this.selectedMenu.material_type == 'news') {
+                    material.content.news_item.forEach(function (t) {
+                        t.content = null;
+                    })
+                }
+                this.selectedMenu.material = material;
+                this.selectedMenu.media_id = material.media_id;
+                this.$forceUpdate();
+                $('#material-model').modal('toggle', 'center')
+                console.log(this.selectedMenu.material)
+            }
+        },
+    })
+
+</script>
+{/block}

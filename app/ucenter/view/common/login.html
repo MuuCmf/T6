@@ -1,0 +1,36 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    {include file="../../common/view/head"/}
+</head>
+
+<body>
+    <div id="main-container" class="container" style="width:500px;height:500px;">
+
+        <div class="login-pages">
+            <div class="logo">
+                <h3>
+                    <a href="{:url('muu/index/index')}"><img src="__STATIC__/common/images/logo.png" alt=""></a>
+                    <span>登录</span>
+                </h3>
+            </div>
+            <div class="login-body clearfix">
+                <div class="login-picture">
+                    <img src="__STATIC__/common/images/login-Picture.png" alt="">
+                    <img class="character" src="__STATIC__/common/images/character.png" alt="">
+                </div>
+                <div class="login-form">
+                    {include file="common/quick_login"/}
+                </div>
+            </div>
+            <div class="filing">
+                    <p>Power&nbsp;by&nbsp;MuuCmf<span>|</span>Copyright&nbsp;©2018-2022&nbsp;北京火木科技有限公司</p>
+                    <p class="filing-item">京ICP备15012581号-2<span>|</span>京ICP备2021025387号-1</p>
+            </div>
+        </div>
+    </div>
+    {include file="../../common/view/js"/}
+</body>
+
+</html>

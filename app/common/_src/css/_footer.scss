@@ -1,0 +1,245 @@
+/*通用footer*/ 
+.footer {
+    background: #fff;
+    .tabbar-item {
+        width: 100%;
+        height: 360px; 
+        background: #20202d;
+        >div {
+            width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            padding-top: 60px;
+  
+            .support {
+                width: 320px;
+    
+                
+                .web-site {
+                    .logo {
+                        
+                        img {
+                            width: auto;
+                            height: 50px;
+                        }
+                    }
+                    h3 {
+                        margin: 0;
+                        color: #03b8cf;
+                        font-size: 22px;
+                        font-weight: 600;
+                        line-height: 50px;
+                    }
+                }
+                
+                .description {
+                    margin-top: 15px;
+                    color: #fff;
+                    overflow: hidden;
+                }
+    
+                .recordnVarchar {
+                    font-size: 14px;
+                    color: #84848f;
+        
+                    >span {
+                        padding-right: 30px;
+                    }
+            
+                    >span::after {
+                        content: "";
+                        width: 1px;
+                        height: 14px;
+                        background: #84848f;
+                        position: absolute;
+                        margin: 4px 15px 0;
+                    }
+                }
+            }
+
+            .product {
+                width: 180px;
+                margin-left: 140px;
+    
+                >h3 {
+                    margin: 0;
+                    color: #fff;
+                    font-size: 16px;
+                }
+    
+                >ul {
+                    margin-top: 30px;
+        
+                    >li {
+                    height: 34px;
+        
+                    >a {
+                        display: block;
+                        font-size: 14px;
+                        color: #828797;
+                        text-decoration: none;
+                        line-height: 34px;
+                    }
+                    }
+        
+                    >li:hover>a {
+                        color: #fff;
+                    }
+                }
+            }
+
+            .contact {
+                width: 260px;
+                >h3 {
+                    margin: 0;
+                    color: #fff;
+                    font-size: 16px;
+                }
+                .contact-us {
+                    margin-top: 30px;
+                    box-sizing:border-box;
+                    
+                    .info-box {
+                        margin-top: 26px;
+                        height: 40px;
+                        
+                        .img {
+                            font-size: 18px;
+                            color: #03b8cf;
+                            width: 30px;
+                            height: 30px;
+                            margin: 5px 16px 0 0;
+                            float: left;
+                            opacity: 0.5;
+                            -webkit-transition: opacity 0.3s ease 0s;
+                            -o-transition: opacity 0.3s ease 0s;
+                            transition: opacity 0.3s ease 0s;
+                            line-height: 30px;
+                        }
+                        .value {
+                            color: #fff;
+                            font-size: 14px;
+                            line-height: 22px;
+                        }
+                        .title {
+                            color: #666;
+                            display: block;
+                            font-size: 12px;
+                            line-height: 22px;
+                        }
+                        &:first-child {
+                            margin-top: 5px!important;
+                        }
+                        &:hover {
+                            .img {
+                                opacity: 1;
+                            }
+                        }
+                    }
+                }
+            }
+    
+            .qrcode {
+                margin-left: 20px;
+        
+                >.contactUs-item {
+                    color: #fff;
+                    font-size: 16px;
+                    margin: 0;
+                }
+        
+                >p {
+                    margin: 0;
+                    font-size: 16px;
+                    color: #828797;
+                    padding-top: 30px;
+                }
+    
+                >div {
+                    display: flex;
+                    margin-top: 23px;
+        
+                    >div {
+                        width: 140px;
+                        margin-right: 20px;
+            
+                        >img {
+                            width: 137px;
+                            height: 137px;
+                        }
+            
+                        >p {
+                            text-align: center;
+                            font-size: 14px;
+                            color: #fff;
+                            margin-top: 8px;
+                        }
+                    }
+                }
+                .QQgroup{
+                    margin: 0;
+                    >p{
+                        color: #fff;
+                        font-size: 14px;
+                    }
+                }
+                .prompt,.getqq {
+                    display: inline-block;
+                    width: 100px;
+                    height: 30px;
+                    background: #707085;
+                    text-align: center;
+                    line-height: 30px;
+                    font-size: 16px;
+                    border-radius: 5px;
+                    margin-top:17px; 
+                    color: #fff;
+                    display: none;
+                }
+                .prompt:before,.getqq:before {
+                    content: "";
+                    width: 10px;
+                    height: 10px;
+                    background: #707085;
+                    position: absolute;
+                    margin: 10px 0 0 -21px;
+                    transform-origin: 0, 0;
+                    transform: rotate(45deg);
+                    -webkit-transform: rotate(45deg);
+                }
+                .getqq {
+                    position: absolute;
+                    margin: -3px 0 0;
+                }
+                .qqCluster {
+                    font-size: 14px;
+                    color: #fff;
+                    margin-top: 20px;
+        
+                    >textarea {
+                        width: 100px;
+                        border: 0px;
+                        resize: none;
+                        height: 22px;
+                        outline: none;
+                        color: #fff;
+                        -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+                        background: #20202d;
+                    }
+                }
+            }
+        }
+    }
+
+    .company {
+        font-size: 14px;
+        color: #84848f;
+        background: #20202d;
+        text-align: center;
+        line-height: 42px;
+        border-top: 1px solid #45454e;
+        a {
+            color: #fff;
+        }
+    }
+}

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>执行记录</title>
+    <!-- Tell the browser to be responsive to screen width -->
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <!-- BOOTSTRAP or ZUI -->
+    <link href="__STATIC__/common/lib/zui/css/zui.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="__STATIC__/common/lib/font-awesome-4.7.0/css/font-awesome.min.css">
+    <!-- Theme style -->
+    <link rel="stylesheet" href="__STATIC__/admin/css/AdminLTE.min.css">
+    <!-- Muu BASE style -->
+    <link href="__STATIC__/admin/css/main.min.css" rel="stylesheet">
+    <script src="__STATIC__/common/lib/zui/lib/jquery/jquery.js"></script>
+
+</head>
+<body>
+<div class="crontab-log-body">
+    <!-- 数据列表 -->
+    <div class="crontab-log-warp clearfix">
+        {notempty name="list"}
+        {volist name="list" id="vo"}
+        <div class="log-item" >
+            <div class="create-time">{$vo.create_time|date='Y-m-d H:i'}</div>
+            <div class="description"><code>{$vo.description}</code></div>
+            {if $vo.status > 0}
+            <div class="status"><span class="label label-success">成功</span></div>
+            {else /}
+            <div class="status"><span class="label label-danger">失败</span></div>
+            {/if}
+
+        </div>
+        {/volist}
+        {else/}
+        {include file="common/_empty" /}
+        {/notempty}
+
+    </div>
+    <!-- 分页 -->
+    <div class="page">
+        {:htmlspecialchars_decode($pager)}
+    </div>
+</div>
+<script>
+    $(function () {
+        $('.page > ul >li').each(function () {
+            let url = $(this).children('a').attr('href');
+            $(this).children('a').attr('href',url + '&cid={$cid}')
+        })
+    })
+</script>
+</body>
+</html>

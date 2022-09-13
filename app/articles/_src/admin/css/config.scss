@@ -1,0 +1,139 @@
+.config-section {
+
+	.config-list-section {
+		.header {
+			font-weight: 600;
+			font-size: 18px;
+			padding: 10px;
+		}
+		
+		.form-files-box {
+			line-height: 1;
+			margin-bottom: 28px;
+			.form-file {
+				position: relative;
+				display: flex;
+				align-items: center;
+				padding: 14px;
+				border-bottom: 1px solid #e8e9eb;
+				color: #4c4c4c;
+				line-height: 40px;
+				.form-label {
+					width: 130px;
+					flex: 0 0 130px;
+					text-align: left;
+					font-size: 14px;
+				}
+				.form-value {
+					flex: 1;
+					text-align: left;
+					color: #999;
+					.logo {
+						margin: 10px auto;
+						width: 64px;
+						img {
+							width:64px;
+						}
+					}
+					.title {
+						
+					}
+					.description {
+						
+					}
+				}
+				.form-edit {
+					width: 120px;
+					height: 48px;
+					text-align: right;
+				}
+			}
+		}
+	}
+}
+
+#tmplmsg-Modal {
+	/*表单内样式*/
+	.choose-user {
+		.user-avatar {
+			float: left;
+			width: 50px;
+			height: 50px;
+
+			img {
+				width: 100%;
+				border-radius: 50%;
+				overflow: hidden;
+			}
+		}
+		.user-nickname {
+			margin-left: 60px;
+			line-height: 50px;
+		}
+	}
+}
+
+.style-Modal {
+	.shop-style-section {
+		width: 430px;
+		margin: 0 auto;
+	}
+	.style {
+		position: relative;
+		width: 120px;
+		height: 120px;
+		overflow: hidden;
+		color: #fff;
+		text-align: center;
+		line-height: 60px;
+		border-radius: 5px;
+		display: inline-block;
+		margin: 10px;
+		cursor: pointer;
+	}
+
+	.shop-style-list {
+
+		.choose {
+			display: none;
+			i {
+				font-size: 30px;
+			}
+		}
+		.active  {
+
+			.choose {
+			    display: block;
+			    position: absolute;
+			    top: 40px;
+			    left: 20px;
+			    width: 80px;
+			    height: 80px;
+			}
+		}
+		
+		
+	}
+}
+
+.style-config, .style-Modal {
+
+	.Green {
+		background-color: #00ce74;
+	}
+	.Blue {
+		background-color: #03b8cf;
+	}
+	.LightRed {
+		background-color: #ea644a;
+	}
+	.Orange {
+		background-color: #ff9900;
+	}
+	.LightPink {
+		background-color: #ffb6c1;
+	}
+	.Magenta {
+		background-color: #8666b8;
+	}
+}

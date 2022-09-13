@@ -1,0 +1,36 @@
+/**
+定时任务编辑
+ */
+.crontab-edit-section{
+  input::-webkit-outer-spin-button,
+  input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  }
+  input[type="number"]{
+  -moz-appearance: textfield;
+  }
+  .cycle{
+    display: flex;
+    .cycle-item{
+      margin: 0 10px;
+    }
+    select{
+      width: 80px;
+      margin-left: 0 !important;
+    }
+  }
+}
+
+/**
+ *@title 计划任务记录
+ */
+.crontab-log-body{
+  .log-item{
+    display: flex;
+    justify-content: space-between;
+    padding: 20px;
+  }
+  .page{
+    padding: 20px;
+  }
+}

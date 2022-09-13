@@ -1,0 +1,179 @@
+{extend name="../../admin/view/common/main"/}
+{block name="style"}
+{include file="../../channel/view/admin/common/style" /}
+{/block}
+
+{block name="body"}
+<div class="main-title">
+    <h2>新增/编辑 自动回复</h2>
+</div>
+<div class="with-padding">
+    <div class="edit-auto-reply">
+        <form class="form-horizontal ajax-post" method="post"  action="{:url('editAutoReply')}?id={$data.id|default=0}">
+            <input type="hidden" name="id" value="{$data.id|default='0'}">
+            <input type="hidden" name="material_json" value="{$data.material_json|default=''}">
+            <div class="form-group">
+                <label for="keyword" class="col-sm-2 required">关键词</label>
+                <div class="col-md-6 col-sm-10">
+                    <input id="keyword" type="text" class="form-control" value="{$data.keyword|default=''}" name="keyword"  placeholder="用户输入关键字">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label  class="col-sm-2 required">回复类型</label>
+                <div class="col-md-6 col-sm-10" style="padding-top: 5px">
+                    <input id="msg-type-1" name="msg_type" value="1" type="radio" v-model="msgType">
+                    <label for="msg-type-1">文本</label>
+                    <input id="msg-type-2" name="msg_type" value="2" type="radio" v-model="msgType">
+                    <label for="msg-type-2">素材</label>
+                </div>
+            </div>
+
+            <div class="form-group" v-if="msgType == 1">
+                <label  class="col-sm-2 required">文本消息</label>
+                <div class="col-md-6 col-sm-10" style="padding-top: 5px">
+                    <textarea class="form-control" name="text" id="" cols="30" rows="10">{$data.text|default=''}</textarea>
+                </div>
+            </div>
+
+            <div class="form-group material" v-if="msgType == 2">
+                <label  class="col-sm-2 required">素材消息</label>
+                <div class="col-md-6 col-sm-10">
+                    <div class="">
+                        <ul class="nav nav-tabs">
+                            <li :class="{'active':materialType == 'news'}"><a href="###" data-target="#material-news" data-toggle="tab" @click="setMaterialType('news')">图文</a></li>
+                            <li :class="{'active':materialType == 'image'}"><a href="###" data-target="#material-image" data-toggle="tab" @click="setMaterialType('image')">图片</a></li>
+                            <li :class="{'active':materialType == 'voice'}"><a href="###" data-target="#material-voice" data-toggle="tab" @click="setMaterialType('voice')">音乐</a></li>
+                            <li :class="{'active':materialType == 'video'}"><a href="###" data-target="#material-video" data-toggle="tab" @click="setMaterialType('video')">视频</a></li>
+                        </ul>
+                    </div>
+                    <div class="">
+                        <input type="hidden" name="media_id" v-model="material.media_id">
+                        <input type="hidden" id="material-type" name="material_type" v-model="materialType">
+                        <div class="tab-content col-xs-9">
+                            <div class="tab-pane fade" id="material-news" :class="{'active in':materialType == 'news'}">
+                                <div class="news" v-if="material.content">
+                                    <img :src="material.content.news_item[0].thumb_url" alt="">
+                                    <div class="news-text">
+                                        <h4>{{material.content.news_item[0].title}}</h4>
+                                        <p>{{material.content.news_item[0].digest}}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="material-image" :class="{'active in':materialType == 'image'}">
+                                <img :src="material.url" alt="" v-if="material.url">
+                            </div>
+                            <div class="tab-pane fade" id="material-voice" :class="{'active in':materialType == 'voice'}">
+                                <div class="voice" v-if="material.media_id">
+                                    <div class="icon col-md-4"><i class="fa fa-volume-up" aria-hidden="true"></i></div>
+                                    <div class="col-md-8 voice-name"><span>{{material.name}}</span></div>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="material-video" :class="{'active in':materialType == 'video'}">
+                                <div class="video" v-if="material.media_id">
+                                    <img :src="material.cover_url" alt="">
+                                    <div class="news-text">
+                                        <h4>{{material.name}}</h4>
+                                        <p>{{material.description}}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <button type="button" class="btn btn-primary choose-material" @click="chooseMaterial()"><i class="icon icon-cloud-upload"></i> 选择素材</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label  class="col-sm-2">备注</label>
+                <div class="col-md-6 col-sm-10">
+                    <textarea class="form-control" name="remark" cols="30" rows="10">{$data.remark|default=''}</textarea>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="keyword" class="col-sm-2">类型</label>
+                <div class="col-md-6 col-sm-10">
+                    <select class="form-control" name="type" v-model="type">
+                        <option value="1">关注回复</option>
+                        <option value="2">自动回复</option>
+                        <option value="3">扫码登录</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="keyword" class="col-sm-2">排序</label>
+                <div class="col-md-6 col-sm-10">
+                    <input id="sort" type="text" class="form-control" value="{$data.sort|default=0}" name="sort"  placeholder="用户输入关键字">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label  class="col-sm-2">状态</label>
+                <div class="col-md-6 col-sm-10" style="padding-top: 5px">
+                    <input id="status-0" name="status" value="0" class="form-control" type="radio" v-model="status">
+                    <label for="status-0">禁用</label>
+                    <input id="status-1" name="status" value="1" class="form-control" type="radio" v-model="status">
+                    <label for="status-1">启用</label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-10">
+                    <button type="submit" class="btn btn-info">保存</button>
+                    <button type="button" class="btn btn-return" onclick="javascript:history.back(-1); return false;">返回</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{include file="admin/account/material" /}
+{/block}
+
+{block name="script"}
+<script>
+
+    var vm = new Vue({
+        el: '.edit-auto-reply',
+        data: {
+            msgType:1,
+            materialType:'news',
+            material:{},
+            type:'{$data.type|default=2}',
+            status:'{$data.status|default=1}'
+        },
+        created:function () {
+            //编辑时 初始化
+            var id = $('input[name=id]').val();
+            if (id > 0){
+                this.material = JSON.parse($("input[name=material_json]").val());
+            }
+            let msgType = '{$data.msg_type|default="text"}';
+            if (msgType == 'text'){
+                this.msgType = 1;
+            }else{
+                this.msgType = 2;
+                this.materialType = msgType;
+            }
+
+        },
+        methods: {
+            chooseMaterial(){
+                $('#material-model').modal('toggle', 'center')
+            },
+            setMaterialType(type){
+                this.materialType = type;
+                this.material = {};
+            },
+            //选择素材回调
+            chooseMaterialCallback(material){
+                $('#material-model').modal('toggle', 'center')
+                this.material = material;
+                $('input[name=material_json]').val(JSON.stringify(material))
+                console.log(material)
+            }
+        },
+    })
+</script>
+{/block}

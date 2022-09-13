@@ -1,0 +1,342 @@
+{extend name="common/main"/}
+
+{block name="style"}
+<!--图片上传-->
+<script type="text/javascript" charset="utf-8" src="__STATIC__/common/lib/webuploader/js/webuploader.js"></script>
+<link href="__STATIC__/common/lib/webuploader/css/webuploader.css" type="text/css" rel="stylesheet">
+{if $micro_is_setup == true}
+<!--DIY链接至依赖静态资源-->
+{:htmlspecialchars_decode($link_static_tmpl)}
+{/if}
+{/block}
+
+{block name="body"}
+
+<div class="main-title">
+    <h2>新增、编辑公告</h2>
+</div>
+
+<div class="with-padding">
+    <div class="announce-edit-section">
+        <form action="" method="post" class="form-horizontal ajax-form" role="form">
+            <input type="hidden" name="id" value="{$data['id']}">
+
+            <div class="builder_item">
+                <label class="item-label">
+                    公告类型
+                    <span class="check-tips">（请选择公告类型）</span>
+                </label>
+                <div class="controls">
+                    {if $data['type'] == 0}
+                    <input type="radio" name="type" id="type-0" value="0" checked>
+                    <label class="radio-inline" for="type-0">文本</label>
+                    <input type="radio" name="type" id="type-1" value="1"> 
+                    <label class="radio-inline" for="type-1">图片</label>
+                    {/if}
+                    {if $data['type'] == 1}
+                    <input type="radio" name="type" id="type-0" value="0">
+                    <label class="radio-inline" for="type-0">文本</label>
+                    <input type="radio" name="type" id="type-1" value="1" checked> 
+                    <label class="radio-inline" for="type-1">图片</label>
+                    {/if}
+                </div>
+            </div>
+
+            <div class="builder_item {if $data.type == 0}hide{/if}" data-role="image-type-group">
+                <label class="item-label">
+                    图片
+                    <span class="check-tips">（图片建议尺寸：80*80px）</span>
+                </label>
+                <div class="controls">
+                    {:single_image_upload('cover', $data['cover'], true)}
+                </div>
+            </div>
+
+            <div class="builder_item">
+                <label class="item-label">
+                    标题
+                    <span class="check-tips">（请填写消息类型标题）</span>
+                </label>
+                <div class="controls">
+                    <input type="text" class="form-control" name="title" placeholder="请填写消息类型标题" value="{$data['title']}">
+                </div>
+            </div>
+
+            <div class="builder_item">
+                <label class="item-label">
+                    排序
+                    <span class="check-tips">（数字越大，越靠前，最大999。）</span>
+                </label>
+                <div class="controls">
+                    <input type="number" class="form-control" name="sort" value="{$data['sort']}" placeholder="排序" max="999">
+                </div>
+            </div>
+
+            <div class="builder_item">
+                <label class="item-label">
+                    描述
+                    <span class="check-tips">（请填写公告简短描述）</span>
+                </label>
+                <div class="editor">
+                    {:ueditor('content', 'content', $data['content'])}
+                </div>
+            </div>
+            {if $micro_is_setup == 1}
+            <!--安装了自定义页面后可调用该方式做公告链接-->
+            <div class="builder_item this-page" data-this-page="announce" id="pageType" data-page-type="announce">
+                <label class="item-label">
+                    公告链接至
+                    <span class="check-tips">（点击公告弹出信息链接到的页面）</span>
+                </label>
+                <div class="form-controls clearfix">
+                    <div class="link-to">
+                        <div class="clearfix" data-rule="links_list">
+                            <div class="link-to-left">
+                                <button class="btn" type="button" data-toggle="modal" data-target="#linkTypeModal">
+                                    选择链接
+                                </button>
+                            </div>
+                        
+                            <div class="link-to-right">
+                                <div class="link_title">
+                                    <ol class="breadcrumb">
+                                      <li>{if !empty($data['link']['type_title'])}{$data['link']['type_title']}{/if}</li>
+                                      <li class="active">{if !empty($data['link']['title'])}{$data['link']['title']}{/if}</li>
+                                    </ol>
+                                </div>
+                            </div>
+                            <!--链接至隐藏域START-->
+                            <input type="hidden" name="link_title" value="{$data['link']['title']|default=''}">
+                            <input type="hidden" name="link_type" value="{$data['link']['type']|default=''}">
+                            <input type="hidden" name="link_type_title" value="{$data['link']['type_title']|default=''}">
+                            <textarea type="hidden" name="link_param" class="hidden">{$data['link']['param']|default=''}</textarea>
+                            <!--链接至隐藏域END-->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--END-->
+            {/if}
+            
+            <div class="builder_item">
+            
+                <label class="item-label">状态设置</label>
+                <div class="controls status-section">
+                    {if $data['status'] == 1}
+                    <input type="radio" name="status" id="is_status-1" value="1" checked> 
+                    <label class="radio-inline" for="is_status-1">启用</label>
+                    <input type="radio" name="status" id="is_status-0" value="0">
+                    <label class="radio-inline" for="is_status-0"> 禁用</label>
+                    {/if}
+                    {if $data['status'] == 0}
+                    <input type="radio" name="status" id="is_status-1" value="1"> 
+                    <label class="radio-inline" for="is_status-1">启用</label>
+                    <input type="radio" name="status" id="is_status-0" value="0" checked>
+                    <label class="radio-inline" for="is_status-0"> 禁用</label>
+                    {/if}
+                </div>
+            </div>
+
+
+                
+            <div class="builder_item">
+                <label class="item-label"></label>
+                <div class="form-controls">
+                    <button type="submit" class="btn btn-lg btn-primary">确认提交</button>
+                </div>
+            </div>
+            
+        </form>
+    </div>
+
+</div>
+
+<!--连接至选择模态框-->
+<div class="modal fade" id="linkTypeModal">
+	<div class="modal-dialog">
+	    <div class="modal-content">
+	    	<div class="modal-header">
+	        	<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">关闭</span></button>
+	        <h4 class="modal-title">选择连接类型</h4>
+	    	</div>
+	      	<div class="modal-body">
+				<!--端类型，需要后端赋值-->
+				<input type="hidden" id="portType" value="{$port_type|default='mobile'}" />
+				<div class="links-items">
+					{notempty name="links"}
+					{foreach $links as $k => $vo}
+					<div class="title" data-app-name="{$vo.name}">{$vo.alias}</div>
+					<ul class="link-type-ul clearfix">
+						{notempty name="vo.links"}
+						{foreach $vo.links as $key => $list_vo}
+						<li class="col-xs-3">
+							<!--详情类-->
+							
+							<a 
+							data-app-name="{$vo.name}" 
+							data-api="{$list_vo['api']|default=''}" 
+							data-category-api="{$list_vo['category_api']|default=''}" 
+							data-link-type="{$list_vo['link_type']|default=''}" 
+							data-link-type-title="{$list_vo['link_type_title']|default=''}" 
+							>
+								<i class="fa fa-{$list_vo['icon']|default=''}"></i>
+								<p>
+									{$list_vo['link_type_title']}
+								</p>
+							</a>
+							
+						</li>
+						{/foreach}
+						{/notempty}
+					</ul>
+					{/foreach}
+					{/notempty}
+				</div>
+	      	</div>
+	    </div>
+	</div>
+</div>
+
+<!--内部页面列表 链接至模态框-->
+<div class="modal fade" id="linkConfigModal">
+	<div class="modal-dialog">
+	    <div class="modal-content">
+	    	<div class="modal-header">
+	        	<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">关闭</span></button>
+	        	<h4 class="modal-title">链接至</h4>
+	    	</div>
+	      	<div class="modal-body">
+
+	      		<div class="link-section">
+
+	        	</div>
+				<div class="link-page">
+                    <ul class="pager" data-ride="pager" data-elements="prev,nav,next"></ul>
+                </div>
+	      	</div>
+	      	<div class="modal-footer">
+	            <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+	            <button type="button" data-rule="list-link-submit" class="btn btn-primary submit">确认</button>
+	        </div>
+	    </div>
+	</div>
+</div>
+<!--链接至模态框 END-->
+
+<!--图标选择模态框-->
+<div class="modal fade" id="iconModal">
+	<div class="modal-dialog">
+	    <div class="modal-content">
+	    	<div class="modal-header">
+	        	<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">关闭</span></button>
+	        <h4 class="modal-title">选择图标</h4>
+	    	</div>
+	      	<div class="modal-body">
+	      		<div class="upload-icon">
+					<div class="btn-custom uploadImgBtn">上传自定义图标</div>
+	      		</div>
+	      		<div class="upload-list"></div>
+	      		<h3>系统图标</h3>
+
+	      		<ul class="nav nav-tabs" role="tablist">
+					{notempty name="icon_list"}
+					{foreach $icon_list as $k=>$vo}
+					{if $k == $config_data['style']}
+					<li role="presentation"  class="active">
+						<a href="#{$k}" aria-controls="{$k}" role="tab" data-toggle="tab">{$k}</a>
+					</li>
+					{else}
+					<li role="presentation">
+						<a href="#{$k}" aria-controls="{$k}" role="tab" data-toggle="tab">{$k}</a>
+					</li>
+					{/if}
+					{/foreach}
+					{/notempty}
+				</ul>
+				
+				<div class="tab-content">
+					{notempty name="icon_list"}
+					{foreach $icon_list as $k=>$vo}
+					<div role="tabpanel" class="tab-pane {if $k == $config_data['style']} active{/if}" id="{$k}">
+						<div class="icon-section">
+							{foreach $vo as $c_k=>$c_v}
+							<span data-icon-url="{$c_v['url']}">
+								<img src="{$c_v['url']}" />
+							</span>
+							{/foreach}
+						</div>
+					</div>
+					{/foreach}
+					{/notempty}
+				</div>
+	      	</div>
+	    </div>
+	</div>
+</div>
+
+<!--富文本编辑器模态框-->
+<div class="modal fade" id="customTextEditorModal">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">关闭</span></button>
+				<h4 class="modal-title">自定义文本</h4>
+			</div>
+			<div class="modal-body">
+				<div class="ueditor-box">
+				{:ueditor('content', 'content')}
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+				<button type="button" class="btn btn-primary" data-rule="save">保存</button>
+			</div>
+		</div>
+	</div>
+</div>
+<!--富文本编辑器模态框END-->
+
+<!--自定义HTML模态框-->
+<div class="modal fade" id="customHtmlModal">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">关闭</span></button>
+				<h4 class="modal-title">自定义html</h4>
+			</div>
+			<div class="modal-body">
+				<div class="html-box">
+					<textarea class="form-control" name="content" rows="10"></textarea>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+				<button type="button" class="btn btn-primary" data-rule="save">保存</button>
+			</div>
+		</div>
+	</div>
+</div>
+<!--自定义HTML模态框END-->
+
+{/block}
+{block name="script"}
+<script>
+    $(function(){
+        $('input[name="type"]').click(function(){
+            $('input[name="type"]').each(function(){
+                if($(this).prop('checked')){
+                    var result = $(this).val();
+                    console.log(result);
+
+                    if(result == 1){
+                        $('[data-role="image-type-group"]').removeClass('hide');
+                    }else{
+                        $('[data-role="image-type-group"]').addClass('hide');
+                    }
+                }
+            });
+        });
+    });
+</script>
+
+{/block}

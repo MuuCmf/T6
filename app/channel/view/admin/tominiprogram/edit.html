@@ -1,0 +1,75 @@
+{extend name="../../admin/view/common/main"/}
+
+{block name="style"}
+<!--上传-->
+<script type="text/javascript" charset="utf-8" src="__STATIC__/common/lib/webuploader/js/webuploader.js"></script>
+<link href="__STATIC__/common/lib/webuploader/css/webuploader.css" type="text/css" rel="stylesheet">
+{/block}
+{block name="body"}
+<div class="main-title">
+    <h2>编辑</h2>
+</div>
+
+<div class="with-padding">
+
+    <section class="module-edit cards clearfix">
+        <form action="" method="post" class="form-horizontal ajax-form" role="form">
+
+            <input type="hidden" name="id" value="{$data['id']|default=0}">
+            <div class="">
+                <div class="form-body">
+
+                    <!--基础信息-->
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">APPID</label>
+                        <div class="form-controls col-sm-8">
+                            <input type="text" class="form-control" name="appid" placeholder="请填写小程序APPID" value="{$data['appid']|default=''}">
+                            <div class="help-block">请填写小程序APPID</div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">标 题</label>
+                        <div class="form-controls col-sm-8">
+                            <input type="text" class="form-control" name="title" placeholder="请填写小程序标题" value="{$data['title']|default=''}">
+                            <div class="help-block">请填写小程序标题</div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">小程序码</label>
+                        <div class="form-controls col-sm-8">
+                            {:single_image_upload('qrcode', $data['qrcode'] ?? '', false)}
+                            <div class="help-block">封面建议尺寸：800*800px</div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">小程序类型</label>
+                        <div class="form-controls col-sm-8">
+                            <select name="type" readonly="" class="form-select-size form-control">
+                                {if $type == 'weixin_app'}<option value="weixin_app" selected>微信小程序</option>{/if}
+                                {if $type == 'alipay_app'}<option value="weixin_app" selected>支付宝小程序</option>{/if}
+                                {if $type == 'baidu_app'}<option value="weixin_app" selected>百度小程序</option>{/if}
+                            </select>
+                            <div class="help-block">封面建议尺寸：800*800px</div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label"></label>
+                        <div class="form-controls col-sm-8">
+                            <button type="submit" class="btn btn-lg btn-primary" data-role="submit">确认提交</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </section>
+
+</div>
+
+{/block}
+{block name="script"}
+
+{/block}

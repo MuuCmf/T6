@@ -1,0 +1,131 @@
+.article-list-section {
+
+	table {
+		.cover {
+			float:left;
+			width:90px;
+			margin-right:10px;
+			img {
+				border-radius: 5px;
+			}
+		}
+	
+		.info {
+			margin-left: 100px;
+			font-size:14px;
+			width:300px;
+			overflow:hidden;
+			.title {
+				font-size:14px;
+				font-weight:600;
+				line-height: 24px;
+				color:#000;
+			}
+			.description {
+				font-size: 13px;
+				color: #666;
+			}
+			a {
+				color:#666;
+			}
+		}	
+		.action {
+			width: 220px;
+		}
+	}
+	
+}
+
+.article-edit-section {
+	.tab-menu {
+		
+		margin-bottom: 10px;
+		li {
+			background-color: #fff;
+		}
+		li.active>a {
+			background-color: #03b8cf;
+			border-color: #03b8cf;
+		}
+	}
+	.form-body {
+		padding-top: 20px;
+
+		.expense {
+			padding-top: 3px;
+			margin-bottom: 10px;
+		}
+	
+		.price-input {
+			padding: 10px;
+			background: #f6f6f6;
+		}
+	
+		.try-radio-chonse {
+	
+		}
+		.try-time,.try-video,.try-audio {
+			padding: 10px 0;
+		}
+
+		/*系列表部分样式*/
+		.play-type-more {
+			.add-chapter {
+				margin-bottom: 20px;
+			}
+			.chapter {
+				padding: 10px;
+				
+				border: 1px solid #f2f2f2;
+				margin-bottom: 10px;
+
+				.lessons {
+					
+					.lessons-item {
+						margin: 10px 0;
+						background-color: #f2f2f2;
+						.lessons-index {
+							float: left;
+							width: 60px;
+							text-align: center;
+							padding-top: 20px;
+							color: #666;
+						}
+						.lessons-edit {
+							position: relative;
+							padding: 10px;
+							margin-left: 60px;
+							.form-group {
+								margin: 0 0 10px 0;
+								.label {
+									color: #666;
+								}
+							}
+							.lessons-try {
+								position: absolute;
+								top: 10px;
+								right: 40px;
+								line-height: 26px;
+								label {
+									padding-top: 0;
+								}
+							}
+							.lessons-del {
+								position: absolute;
+								top: 10px;
+								right: 10px;
+								width: 26px;
+								height: 26px;
+								text-align: center;
+								line-height: 26px;
+								cursor: pointer;
+							}
+						}
+					}
+					
+				}
+			}
+		}
+	}
+	
+}

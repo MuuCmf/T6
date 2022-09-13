@@ -1,0 +1,6 @@
+/.idea
+/.vscode
+*.log
+
+# gulp
+node_modules/
