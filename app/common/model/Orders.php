@@ -35,7 +35,7 @@ class Orders extends Base
      * @param  integer $paid [description]
      * @return [type]        [description]
      */
-    public function yesSale($shopid= 0, $app= '', $uid, $id, $type)
+    public function yesSale($shopid, $app, $uid, $id, $type)
     {   
         $where = 'shopid = :shopid AND app = :app AND order_info_id = :id AND order_info_type = :type AND paid = 1 AND uid = :uid AND (end_time > :time OR end_time = 0)';
         
