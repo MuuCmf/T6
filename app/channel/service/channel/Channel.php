@@ -3,6 +3,7 @@ namespace app\channel\service\channel;
 
 use app\channel\model\WechatConfig;
 use app\channel\model\WechatMpConfig;
+use app\channel\model\DouyinMpConfig;
 use think\Exception;
 
 class Channel{
@@ -18,7 +19,7 @@ class Channel{
             case 'weixin_h5':
                 $data = (new WechatConfig())->getWechatConfigByShopId($shopid);
                 if (empty($data)){
-                    throw  new Exception('公众号配置文件不存在');
+                    throw  new Exception('微信公众号配置文件不存在');
                 }
                 break;
             //微信小程序
@@ -29,7 +30,17 @@ class Channel{
                 ];
                 $data = (new WechatMpConfig())->where($map)->find();
                 if (empty($data)){
-                    throw  new Exception('小程序配置信息不存在');
+                    throw  new Exception('微信小程序配置信息不存在');
+                }
+                break;
+            case 'douyin_mp':
+                //获取配置信息
+                $map = [
+                    ['shopid' ,'=' , $shopid],
+                ];
+                $data = (new DouyinMpConfig())->where($map)->find();
+                if (empty($data)){
+                    throw  new Exception('抖音小程序配置信息不存在');
                 }
                 break;
         }

@@ -12,6 +12,7 @@ class Channel extends Base
     public static $_channel = [
         'weixin_h5' => '微信公众号',
         'weixin_mp' => '微信小程序',
+        'douyin_mp' => '抖音小程序',
         'alipay' => '支付宝',
         'pc' => 'pc端',
         'admin' => '管理端'
