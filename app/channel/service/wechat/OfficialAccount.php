@@ -13,6 +13,8 @@ use think\facade\Cache;
 class OfficialAccount extends Wechat {
     function __construct()
     {
+        $shopid = request()->param('shopid') ?? 0;
+        $this->shopid = $shopid;
         $this->type = 'wechat_official_account';
         //服务配置文件
         $config = $this->config =  $this->initConfig();
@@ -22,7 +24,6 @@ class OfficialAccount extends Wechat {
     public function initConfig()
     {
         //获取配置信息
-        $this->shopid = Cache::get('shopid') ?: 0;
         $data = (new WechatConfig())->getWechatConfigByShopId($this->shopid);
         if (empty($data)){
             throw  new Exception('公众号配置文件不存在');

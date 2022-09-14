@@ -270,8 +270,8 @@ class WechatOfficialAccount extends Api
         $user = $user->getRaw();
         //处理用户数据
         $MemberModel = new Member();
-        $user['oauth_type'] = 'weixin_h5';//1为公众号授权
-        $user['shopid'] = $this->shopid;//1为公众号授权
+        $user['oauth_type'] = 'weixin_h5';
+        $user['shopid'] = $this->shopid;
         $user['avatar'] = $user['headimgurl'];
         $user = $MemberModel->oauth($user);
         $MemberModel->updateLogin($user['uid']);

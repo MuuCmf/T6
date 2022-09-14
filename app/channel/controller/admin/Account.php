@@ -75,6 +75,9 @@ class Account extends MuuAdmin {
             return $this->error('网络异常，请稍后再试');
 
         }else{
+            //实例化公众号
+            $app = \app\channel\facade\wechat\OfficialAccount::getApp();
+
             //查询微信平台配置
             $data = $this->wechatConfigModel->getWechatConfigByShopId($this->shopid);
             if (!$data){

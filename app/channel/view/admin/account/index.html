@@ -207,7 +207,7 @@
             var ssrsss = $(this).parent().parent().children('input').val();//获取文本
             console.log(ssrsss);
             var flag = copyText(ssrsss); //传递文本
-            toast.info(flag ? "复制成功！" : "复制失败！");
+            toast.success(flag ? "复制成功！" : "复制失败！");
         })
         function copyText(text) {
             var textarea = document.createElement("input");//创建input对象

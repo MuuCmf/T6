@@ -404,12 +404,13 @@
              */
             save() {
                 $.post("{:url('saveMenu')}", {json: JSON.stringify(this.menuList)}, function (res) {
-                    console.log(res);
-                    alert(res.msg);
                     if (res.code == 200) {
-                        setTimeout(function () {
-                            location.reload();
-                        }, 500)
+                        toast.success(res.msg);
+                        // setTimeout(function () {
+                        //     location.reload();
+                        // }, 500)
+                    }else{
+                        toast.error(res.msg);
                     }
                 })
             },
