@@ -31,7 +31,7 @@
                     <label class="item-label">公众号描述<span class="check-tips">（公众号描述）</span>
                     </label>
                     <div class="controls textarea">
-                        <textarea name="desc" cols="30" rows="10" class="form-control">{$data.desc|default=''}</textarea>
+                        <textarea name="desc" cols="30" rows="3" class="form-control">{$data.desc|default=''}</textarea>
                     </div>
                 </div>
                 <div class="form-item builder_item">
@@ -86,6 +86,26 @@
                         <a href="javascript:;" class="edit">编辑</a>
                         <a href="javascript:;" class="copy">复制</a>
                     </div>
+                </div>
+
+                <div class="form-item builder_item">
+                    <label class="item-label">
+                        H5端访问控制<span class="check-tips">（H5端访问控制）</span>
+                    </label>
+                    <div class="controls radio">
+                        {if $data.request.only_wechat == 1}
+                        <input type="radio" name="only_wechat" value="1" class="oneplus-radio" id="only_wechat_1" checked>
+                        <label for="only_wechat_1">仅微信内访问</label>
+                        <input type="radio" name="only_wechat" value="0" class="oneplus-radio" id="only_wechat_0">
+                        <label for="only_wechat_0">开放访问</label>
+                        {else}
+                        <input type="radio" name="only_wechat" value="1" class="oneplus-radio" id="only_wechat_1">
+                        <label for="only_wechat_1">仅微信内访问</label>
+                        <input type="radio" name="only_wechat" value="0" class="oneplus-radio" id="only_wechat_0" checked>
+                        <label for="only_wechat_0">开放访问</label>
+                        {/if}
+                    </div>
+
                 </div>
     
                 <div class="form-item">

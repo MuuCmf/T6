@@ -63,6 +63,11 @@ class Account extends MuuAdmin {
         if (request()->isPost()) {
             $config = input('post.');
             $config['shopid'] = $this->shopid;
+
+            if(isset($config['only_wechat'])){
+                $request = ['only_wechat' => $config['only_wechat']];
+                $config['request'] = json_encode($request);
+            }
             $res = $this->wechatConfigModel->edit($config);
             if ($res){
                 return $this->success('保存成功',$config, 'refresh');
@@ -75,7 +80,7 @@ class Account extends MuuAdmin {
             if (!$data){
                 $data['id'] = 0;
                 $data['cover'] = "";
-                $data['url'] = $this->wechatConfigModel->callbackUrl();
+                $data['url'] = $this->wechatConfigModel->callbackUrl($this->shopid);
             }
             View::assign('data', $data);
             $this->setTitle('公众号配置');

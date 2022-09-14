@@ -4922,10 +4922,10 @@ CREATE TABLE `muucmf_wechat_config` (
   `appid` varchar(18) NOT NULL COMMENT '应用的独立标识',
   `secret` varchar(60) NOT NULL COMMENT '应用密匙',
   `encoding_aes_key` varchar(60) NOT NULL COMMENT '消息加解密密钥',
-  `url` varchar(255) NOT NULL COMMENT '服务器配置地址',
   `token` varchar(40) NOT NULL COMMENT 'token',
   `menu_json` text NULL COMMENT '公众号菜单配置',
   `tmplmsg` varchar(1000) NOT NULL DEFAULT '' COMMENT '模板消息配置',
+  `request` VARCHAR(512) NOT NULL COMMENT '请求配置',
   `create_time` int(11) UNSIGNED NOT NULL COMMENT '创建日期',
   `update_time` int(11) UNSIGNED NOT NULL COMMENT '更新日期',
   PRIMARY KEY (`id`)

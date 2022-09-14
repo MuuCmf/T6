@@ -29,10 +29,19 @@ class WechatConfig extends Base{
         )->find();
         if ($config){
             $config = $config->toArray();
+            // 固定URL地址
+            $config['url'] = $this->callbackUrl($shopid);
             if(!empty($config['tmplmsg'])){
                 $config['tmplmsg'] = json_decode($config['tmplmsg'], true);
             }else{
                 $config['tmplmsg'] = [];
+            }
+            if(!empty($config['request'])){
+                $config['request'] = json_decode($config['request'], true);
+            }else{
+                $config['request'] = [
+                    'only_wechat' => 1
+                ];
             }
         }else{
             //初始化数据
@@ -43,6 +52,10 @@ class WechatConfig extends Base{
             $config['qrcode'] = '';
             $config['appid'] = '';
             $config['secret'] = '';
+            $config['url'] = $this->callbackUrl($shopid);
+            $config['request'] = [
+                'only_wechat' => 1
+            ];
 
         }
 
@@ -53,7 +66,8 @@ class WechatConfig extends Base{
      * @title 获取回调地址
      * @return string
      */
-    public function callbackUrl(){
-        return request()->domain() . "/channel/official/callback";
+    public function callbackUrl($shopid = 0){
+        //return request()->domain() . "/channel/official/callback";
+        return url('channel/official/callback', ['shopid' => 0], false, true);
     }
 }
