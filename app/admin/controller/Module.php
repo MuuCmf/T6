@@ -136,33 +136,14 @@ class Module extends Admin
             $res = $this->ModuleModel->install($aName);
             
             if ($res === true) {
-                return $this->success('安装模块成功。', '', cookie('__forward__'));
+                return $this->success('安装成功。', '', cookie('__forward__'));
             } else {
-                return $this->error('安装模块失败。' . $this->ModuleModel->error);
+                return $this->error('安装失败。' . $this->ModuleModel->error);
             }
 
         } else {
-            $builder = new AdminConfigBuilder();
-            $builder->title($module['alias'] . '-' . '模块安装向导');
-            $builder
-                ->keyId()
-                ->keyReadOnly('name', '模块目录（唯一标识）')
-                ->keyText('alias', '模块中文名不能为空。')
-                ->keyReadOnly('version', '版本')
-                ->keyText('icon', '图标')
-                ->keyTextArea('summary', '模块介绍')
-                ->keyReadOnly('developer', '开发者')
-                ->keyText('entry', '前台入口')
-                ->keyText('entry', '后台入口')
-                ->keyRadio('mode', '安装模式', '', ['install' => '覆盖安装模式']);
-            
-            $builder->group('安装选项', 'name,alias,version,mode,add_nav');
-            
-            $module['mode'] = 'install';
-            $builder->data($module);
-            $builder->buttonSubmit();
-            $builder->buttonBack();
-            $builder->display();
+            View::assign('module', $module);
+            return View::fetch();
         }
     }
 
@@ -171,43 +152,25 @@ class Module extends Admin
      */
     public function uninstall()
     {
-        $aId = input('id', 0, 'intval');
-        $aNav = input('remove_nav', 0, 'intval');
-
-        $module = $this->ModuleModel->where('id', $aId)->find();
+        $id = input('id', 0, 'intval');
+        $module = $this->ModuleModel->where('id', $id)->find();
         
         if (request()->isPost()) {
             $aWithoutData = input('withoutData', 1, 'intval');//是否保留数据
-            $res = $this->ModuleModel->uninstall($aId, $aWithoutData);
+            $res = $this->ModuleModel->uninstall($id, $aWithoutData);
 
             if ($res == true) {
-                if ($aNav) {
-                    Db::name('channel')->where(['url' => $module['entry']])->delete();
-                    cache('common_nav', null);
-                }
-                cache('admin_modules', null);
+                //删除菜单
+                Db::name('menu')->where(['module' => $module['name']])->delete();
                 //删除module表中记录
-                $this->ModuleModel->where(['id' => $aId])->delete();
+                $this->ModuleModel->where(['id' => $id])->delete();
                 return $this->success('卸载模块成功。','', cookie('__forward__'));
             } else {
-                return $this->error('卸载模块失败。' . $this->ModuleModel->error);
+                return $this->error('卸载模块失败。');
             }
-
         }else{
-            $builder = new AdminConfigBuilder();
-            $builder->title($module['alias'] . '——'.'卸载模块');
-            $module['remove_nav'] = 1;
-            $builder->keyReadOnly('id', '模块编号');
-            $builder->suggest('<span class="text-danger">'.'请谨慎操作，此操作无法还原'.'</span>');
-            $builder->keyReadOnly('alias', '卸载的模块');
-            $builder->keyBool('withoutData', '是否保留模块数据'.'?', '默认保留模块数据');
-            $builder->keyBool('remove_nav', '移除导航', '卸载后自动卸载掉对应的菜单');
-
-            $module['withoutData'] = 1;
-            $builder->data($module);
-            $builder->buttonSubmit();
-            $builder->buttonBack();
-            $builder->display();
+            View::assign('module', $module);
+            return View::fetch();
         }
     }
 
