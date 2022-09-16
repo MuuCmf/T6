@@ -33,7 +33,7 @@ class ArticlesConfig extends Base
     /**
      * 初始数据
      */
-    private function defaultData($shopid = 0)
+    public function defaultData($shopid = 0)
     {
         $data = [
             'id' => 0,
