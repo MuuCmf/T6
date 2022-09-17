@@ -27,6 +27,19 @@ class DouyinMiniProgram extends Base
     }
 
     /**
+     * 微信回调
+     */
+    public function callback()
+    {
+
+
+        return json([
+            'err_no' => 0,
+            'err_tips' => 'success'
+        ]);
+    }
+
+    /**
      * code 换取用户信息
      * @param $code
      */

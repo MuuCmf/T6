@@ -32,6 +32,8 @@ class DouyinMiniProgram extends MuuAdmin{
                 'description' => $params['description'],
                 'appid' => $params['appid'],
                 'secret' => $params['secret'],
+                'token' => $params['token'],
+                'salt' => $params['salt']
             ];
             $map = [
                 ['shopid' ,'=' ,$this->shopid],
@@ -48,6 +50,10 @@ class DouyinMiniProgram extends MuuAdmin{
             $config = $this->MiniProgramModel->where([
                 ['shopid' ,'=' ,$this->shopid],
             ])->find();
+
+            // 设置回调地址
+            $callback_url = url('channel/douyin/callback', ['shopid'=>$this->shopid], false, true);
+            $config['callback'] = $callback_url;
             
             $builder = new AdminConfigBuilder();
             $builder->title('抖音小程序配置')->suggest('基于第三方授权各项参数配置');
@@ -57,12 +63,20 @@ class DouyinMiniProgram extends MuuAdmin{
                 ->keyText('appid', 'APPID', 'APPID是小程序的ID，请您妥善保管.')
                 ->keyText('secret', 'AppSecret', 'AppSecret是小程序的密钥，具有该账户完全的权限，请您妥善保管.')
                 ->keyTextArea('description', '小程序描述', '小程序描述')
+                ->keyText('token', 'Token', 'Token（令牌）.')
+                ->keyText('salt', 'SALT', 'SALT')
+                ->keyReadOnly('callback', 'URL(服务器地址)', '用于接收抖音异步通知消息.')
                 ->group('抖音小程序配置', [
                     'title',
                     'appid',
                     'secret',
                     'description',
-                ]);
+                ])
+                ->group('支付设置', [
+                    'token',
+                    'salt',
+                    'callback'
+                ]);;
             $builder->data($config);
             $builder->buttonSubmit();
             $builder->display();

@@ -10,3 +10,9 @@ Route::group('official',function (){
     Route::rule('hasScan' ,'channel/api.WechatOfficialAccount/hasScan');
     Route::rule('scanLogin' ,'channel/api.WechatOfficialAccount/scanLogin');
 });
+
+//抖音小程序
+Route::group('douyin',function (){
+    Route::rule('callback' ,'channel/api.DouyinMiniprogram/callback');
+    Route::rule('qrcode' ,'channel/api.DouyinMiniprogram/qrcode');
+});

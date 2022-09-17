@@ -15,12 +15,14 @@ class DouyinMp
      **/
     public function __construct()
     {
-        $this->api = 'https://open-sandbox.douyin.com';
+        $this->api = 'https://developer.toutiao.com';
         //服务配置文件
         $config = $this->config = $this->initConfig();
 
         $this->appid = $config['appid'];
         $this->secret = $config['secret'];
+        $this->salt = $config['salt'];
+        $this->token = $config['token'];
     }
 
     public function initConfig()
@@ -38,6 +40,8 @@ class DouyinMp
         return [
             'appid' => $data['appid'],
             'secret' => $data['secret'],
+            'token' => $data['token'],
+            'salt' => $data['salt']
         ];
     }
 
@@ -92,8 +96,8 @@ class DouyinMp
         $params = $params;
         $params['app_id'] = $this->appid;
         $params['valid_time'] = 172800;
-        $params['sign'] = '';
-        var_dump($params);exit;
+        $params['sign'] = $this->sign($params);
+
         $access_token = $this->accessToken = $this->getAccessToken();
         if($access_token){
             $result = $this->sendPost('/api/apps/ecpay/v1/create_order?access_token=' . $access_token, $params);
@@ -116,7 +120,10 @@ class DouyinMp
         return $this->sendPost('/api/apps/qrcode',$params);
     }
 
-    public function sign()
+    /**
+     * 请求签名
+     */
+    public function sign($map)
     {
         $rList = array();
         foreach($map as $k =>$v) {
@@ -131,10 +138,29 @@ class DouyinMp
                 continue;
             array_push($rList, $value);
         }
-        array_push($rList, "your_payment_salt");
+        array_push($rList, $this->salt);
         sort($rList, 2);
         return md5(implode('&', $rList));
-        
+    }
+
+    /**
+     * 回调验签
+     * @param array $map 验签参数
+     * @return stirng
+    */
+    public function handler($map){
+        $rList = array();
+        array_push($rList, $this->token);
+        foreach($map as $k =>$v) {
+            if ( $k == "type" || $k=='msg_signature')
+                continue;
+            $value = trim(strval($v));
+            if ($value == "" || $value == "null")
+                continue;
+            array_push($rList, $value);
+        }
+        sort($rList,2);
+        return sha1(implode($rList));
     }
 
     /**
