@@ -1,6 +1,9 @@
 <?php
 namespace app\channel\service\bytedance;
 
+use app\channel\model\DouyinMpConfig;
+use think\Exception;
+
 class DouyinMp
 {
     private $appid;
@@ -13,8 +16,29 @@ class DouyinMp
     public function __construct()
     {
         $this->api = 'https://open-sandbox.douyin.com';
-        $this->appid = '';
-        $this->secret = '';
+        //服务配置文件
+        $config = $this->config = $this->initConfig();
+
+        $this->appid = $config['appid'];
+        $this->secret = $config['secret'];
+    }
+
+    public function initConfig()
+    {
+        $this->shopid = request()->param('shopid') ?? 0;
+        //获取配置信息
+        $map = [
+            ['shopid' ,'=' ,$this->shopid],
+        ];
+        $data = (new DouyinMpConfig())->where($map)->find();
+        if (empty($data)){
+            throw  new Exception('小程序配置信息不存在');
+        }
+        $data = $data->toArray();
+        return [
+            'appid' => $data['appid'],
+            'secret' => $data['secret'],
+        ];
     }
 
     /**
@@ -60,6 +84,27 @@ class DouyinMp
         
     }
 
+    /**
+     * 预下单接口
+     */
+    public function createOrder($params)
+    {
+        $params = $params;
+        $params['app_id'] = $this->appid;
+        $params['valid_time'] = 172800;
+        $params['sign'] = '';
+        var_dump($params);exit;
+        $access_token = $this->accessToken = $this->getAccessToken();
+        if($access_token){
+            $result = $this->sendPost('/api/apps/ecpay/v1/create_order?access_token=' . $access_token, $params);
+            
+            return json_decode($result, true);
+        }
+    }
+
+    /**
+     * 生成二维码
+     */
     public function createQRCode($path)
     {
         $params = [
@@ -69,6 +114,27 @@ class DouyinMp
         ];
 
         return $this->sendPost('/api/apps/qrcode',$params);
+    }
+
+    public function sign()
+    {
+        $rList = array();
+        foreach($map as $k =>$v) {
+            if ($k == "other_settle_params" || $k == "app_id" || $k == "sign" || $k == "thirdparty_id")
+                continue;
+            $value = trim(strval($v));
+            $len = strlen($value);
+            if ($len > 1 && substr($value, 0,1)=="\"" && substr($value,$len, $len-1)=="\"")
+                $value = substr($value,1, $len-1);
+            $value = trim($value);
+            if ($value == "" || $value == "null")
+                continue;
+            array_push($rList, $value);
+        }
+        array_push($rList, "your_payment_salt");
+        sort($rList, 2);
+        return md5(implode('&', $rList));
+        
     }
 
     /**
