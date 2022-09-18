@@ -31,6 +31,8 @@ class DouyinMiniProgram extends MuuAdmin{
                 'title' => $params['title'],
                 'description' => $params['description'],
                 'appid' => $params['appid'],
+                'weixin_merchant_uid' => $params['weixin_merchant_uid'],
+                'alipay_merchant_uid' => $params['alipay_merchant_uid'],
                 'secret' => $params['secret'],
                 'token' => $params['token'],
                 'salt' => $params['salt']
@@ -63,6 +65,8 @@ class DouyinMiniProgram extends MuuAdmin{
                 ->keyText('appid', 'APPID', 'APPID是小程序的ID，请您妥善保管.')
                 ->keyText('secret', 'AppSecret', 'AppSecret是小程序的密钥，具有该账户完全的权限，请您妥善保管.')
                 ->keyTextArea('description', '小程序描述', '小程序描述')
+                ->keyText('weixin_merchant_uid', '微信支付商户号', '进件完成返回的微信支付商户号.')
+                ->keyText('alipay_merchant_uid', '支付宝商户号', '进件完成返回的支付宝商户号.')
                 ->keyText('token', 'Token', 'Token（令牌）.')
                 ->keyText('salt', 'SALT', 'SALT')
                 ->keyReadOnly('callback', 'URL(服务器地址)', '用于接收抖音异步通知消息.')
@@ -73,6 +77,8 @@ class DouyinMiniProgram extends MuuAdmin{
                     'description',
                 ])
                 ->group('支付设置', [
+                    'weixin_merchant_uid',
+                    'alipay_merchant_uid',
                     'token',
                     'salt',
                     'callback'

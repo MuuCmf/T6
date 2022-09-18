@@ -4067,6 +4067,8 @@ CREATE TABLE  IF NOT EXISTS `muucmf_douyin_mp_config` (
   `description` varchar(500) NOT NULL COMMENT '描述',
   `appid` varchar(40) NOT NULL COMMENT '应用ID',
   `secret` varchar(60) NOT NULL COMMENT '应用密匙',
+  `weixin_merchant_uid` VARCHAR(128) NOT NULL DEFAULT '' COMMENT '进件完成微信支付商户号',
+  `alipay_merchant_uid` VARCHAR(128) NOT NULL DEFAULT '' COMMENT '进件完成支付宝商户号',
   `token` varchar(128) NOT NULL DEFAULT '' COMMENT 'token',
   `salt` varchar(128) NOT NULL DEFAULT '' COMMENT 'salt',
   `tmplmsg` varchar(500) NOT NULL DEFAULT '' COMMENT '模板消息',
