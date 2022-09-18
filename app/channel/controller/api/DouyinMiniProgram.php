@@ -4,16 +4,13 @@ namespace app\channel\controller\api;
 use app\common\controller\Base;
 use app\common\model\Member;
 use app\common\model\MemberSync;
-use app\channel\facade\wechat\MiniProgram as MiniProgramServer;
+use app\channel\facade\bytedance\MiniProgram as MiniProgramServer;
 use thans\jwt\facade\JWTAuth;
-use think\facade\Cache;
 
 /**
- * 微信小程序服务类
- * Class MiniProgram
- * @package app\channel\controller\service
+ * 抖音小程序接口
  */
-class WechatMiniProgram extends Base
+class DouyinMiniProgram extends Base
 {
     protected $MemberSyncModel;
     protected $MemberModel;
@@ -30,19 +27,33 @@ class WechatMiniProgram extends Base
     }
 
     /**
+     * 微信回调
+     */
+    public function callback()
+    {
+
+
+        return json([
+            'err_no' => 0,
+            'err_tips' => 'success'
+        ]);
+    }
+
+    /**
      * code 换取用户信息
      * @param $code
      */
-    public function code($code)
+    public function code($code, $anonymous_code)
     {
-        $result = MiniProgramServer::user($code);
-        if (!isset($result['openid'])){
-            return $this->error($result['errmsg']);
+        $result = MiniProgramServer::code2Session($code, $anonymous_code);
+        if($result['err_no'] != 0){
+            return $this->error($result['err_tips']);
         }
+        
         //查询是否注册过
         $map = [];
-        $map[] = ['openid','=',$result['openid']];
-        $map[] = ['type','=', 'weixin_mp'];
+        $map[] = ['openid','=',$result['data']['openid']];
+        $map[] = ['type','=', 'douyin_mp'];
         $user = $this->MemberSyncModel->getDataByMap($map);
         if ($user){
             $user = query_user($user['uid'],['uid','nickname','avatar','email','mobile','realname','sex','qq','score1']);
@@ -59,19 +70,28 @@ class WechatMiniProgram extends Base
 
     }
 
+    /**
+     * 登录
+     */
     public function login()
     {
         $params = input('param.');
-        $oauth = MiniProgramServer::user($params['code']);
-        $result = MiniProgramServer::decryptData($oauth['session_key'],$params['iv'],$params['encrypted_data']);
+        $oauth = MiniProgramServer::code2Session($params['code'], $params['anonymous_code']);
+        if($oauth['err_no'] != 0){
+            return $this->error($oauth['err_tips']);
+        }
+        if(!empty($params['userInfo'])){
+            $userInfo = json_decode($params['userInfo'], true);
+        }
+
         $data = [
-            'unionid'   => $oauth['unionid'] ?? '',
-            'openid'    => $oauth['openid'],
-            'nickname'  => $result['nickName'],
-            'avatar'    => $result['avatarUrl'],
-            'sex'       => $result['gender'],
+            'unionid'   => $oauth['data']['unionid'] ?? '',
+            'openid'    => $oauth['data']['openid'],
+            'nickname'  => $userInfo['nickName'],
+            'avatar'    => $userInfo['avatarUrl'],
+            'sex'       => $userInfo['gender'],
             'shopid'    => $params['shopid'],
-            'oauth_type' => 'weixin_mp'
+            'oauth_type' => 'douyin_mp'
         ];
         $user = $this->MemberModel->oauth($data);
         if ($user){
@@ -97,7 +117,7 @@ class WechatMiniProgram extends Base
             'page' => $path,
             'width' => $width
         ];
-        $result = MiniProgramServer::unlimitQrcode($scene, $option);
+        $result = MiniProgramServer::createQRCode($scene, $option);
         Header("Content-type: image/jpeg");//直接输出显示jpg格式图片
         echo $result;
     }

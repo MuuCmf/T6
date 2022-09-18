@@ -4,6 +4,7 @@ namespace app\api\controller;
 use app\common\controller\Api;
 use app\common\logic\Orders as OrdersLogic;
 use \app\common\model\Orders as OrdersModel;
+use app\channel\facade\bytedance\MiniProgram as DouyinMiniProgramServer;
 use think\Exception;
 use think\facade\Db;
 use think\Request;
@@ -48,6 +49,7 @@ class Orders extends Api
                 // 设置元数据
                 if(isset($this->params['formId'])){
                     $metadata = [
+                        // 微信小程序formId
                         'formId' => $this->params['formId']
                     ];
                     $order_data['metadata'] = json_encode($metadata);
@@ -69,6 +71,11 @@ class Orders extends Api
                     }
                 }
                 Db::commit();
+
+                // 抖音小程序订单同步
+                if($order['channel'] == 'douyin_mp'){
+                    DouyinMiniProgramServer::ordersPush($order['order_no']);
+                }
 
                 return $this->success('创建订单成功',$order);
             }catch (Exception $e){

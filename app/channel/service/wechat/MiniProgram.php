@@ -4,19 +4,18 @@ namespace app\channel\service\wechat;
 use app\channel\model\WechatMpConfig;
 use EasyWeChat\Factory;
 use think\Exception;
-use think\facade\Cache;
 
 /**
  * 微信小程序类
  * Class MiniProgram
  * @package app\channel\service\wechat
  */
-class MiniProgram extends Wechat{
+class MiniProgram extends Wechat
+{
     function __construct()
     {
         $this->type = 'wechat_mini_program';
         //服务配置文件
-
         $config = $this->config = $this->initConfig();
         $app = Factory::miniProgram($config);
         parent::__construct($app);

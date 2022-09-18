@@ -9,10 +9,12 @@ use app\common\model\MemberSync;
 use app\common\model\MemberWallet;
 use app\common\model\Orders as OrdersModel;
 use app\channel\facade\wechat\OfficialAccount;
-use app\channel\facade\wechat\MiniProgram;
+use app\channel\facade\wechat\MiniProgram as WeixinMiniProgramServer;
+use app\channel\facade\bytedance\MiniProgram as DouyinMiniProgramServer;
 use think\Exception;
 use think\facade\Db;
 use think\Request;
+use think\facade\Log;
 
 class Pay extends Api 
 {
@@ -46,23 +48,12 @@ class Pay extends Api
                 $this->OrderLogic = new $order_namespace;
                 $order_data = $this->OrderLogic->formatData($order_data);
 
-                // 获取用户openid
-                $openid = MemberSync::where([
-                    ['shopid', '=', $this->shopid],
-                    ['uid' , '=', request()->uid],
-                    ['type', '=', $order_data['channel']]
-                ])->value('openid');
-                
-
                 //初始化支付数据
                 $title = $order_data['products']['title'];
                 if (mb_strlen($title, 'utf8') > 20){
                     $title = mb_substr($title, 0, 20, 'utf8') . '...';
                 }
-                $pay_data['body'] = $title;
-                $pay_data['out_trade_no'] = $order_data['order_no'];
-                $pay_data['total_fee'] = intval($order_data['paid_fee'] * 100);
-                $pay_data['openid'] = $openid;
+                
                 //支付回调
                 if (isset($this->params['notify_url'])){
                     $pay_data['notify_url'] = $this->params['notify_url'];
@@ -76,8 +67,34 @@ class Pay extends Api
                 }
                 // 获取支付参数
                 $config = ChannelServer::config($order_data['channel'] ,$this->shopid);
-                $PayService = PayServer::init($config['appid'], $this->params['pay_channel']);
-                $pay = $PayService->server->pay($pay_data);
+                // 微信支付
+                if($order_data['channel'] == 'weixin_h5' || $order_data['channel'] == 'weixin_mp'){
+                    // 获取用户openid
+                    $openid = MemberSync::where([
+                        ['shopid', '=', $this->shopid],
+                        ['uid' , '=', request()->uid],
+                        ['type', '=', $order_data['channel']]
+                    ])->value('openid');
+
+                    $pay_data['openid'] = $openid;
+                    $pay_data['subject'] = $title;
+                    $pay_data['body'] = $title;
+                    $pay_data['out_trade_no'] = $order_data['order_no'];
+                    $pay_data['total_fee'] = intval($order_data['paid_fee'] * 100);
+                    // 发起支持
+                    $PayService = PayServer::init($config['appid'], $this->params['pay_channel']);
+                    $pay = $PayService->server->pay($pay_data);
+                }
+                // 抖音支付
+                if($order_data['channel'] == 'douyin_mp'){
+                    $pay_data['subject'] = $title;
+                    $pay_data['body'] = $title;
+                    $pay_data['out_order_no'] = $order_data['order_no'];
+                    $pay_data['total_amount'] = intval($order_data['paid_fee'] * 100);
+
+                    $pay = DouyinMiniProgramServer::createOrder($pay_data);
+                }
+
                 //更改支付渠道标识
                 $channel_map = [
                     // 主键ID
@@ -86,6 +103,7 @@ class Pay extends Api
                     'pay_channel' => $this->params['pay_channel']
                 ];
                 $this->OrderModel->edit($channel_map);
+
                 return $this->success('success',$pay);
             }catch (Exception $e){
                 return $this->error($e->getMessage());
@@ -95,7 +113,6 @@ class Pay extends Api
 
     /**
      * 退款
-     * (待完善)
      */
     public function refund()
     {
@@ -183,25 +200,73 @@ class Pay extends Api
      */
     public function callback()
     {
-        $notify_xml = file_get_contents("php://input");
-        $jsonxml = json_encode(simplexml_load_string($notify_xml, 'SimpleXMLElement', LIBXML_NOCDATA));
-        $notify = json_decode($jsonxml, true);
-        //实例化支付服务
-        $config = ChannelServer::config($this->params['channel'] ,$this->shopid);
-        $PayService = PayServer::init($config['appid'], $this->params['pay_channel']);
-        //返回商户订单号
-        $order_no = $PayService->server->notify($notify);
-        //判断订单是否已支付
-        if (!$order_no){
-            $this->payXmlMsg('FAIL','通信失败，请稍后再通知我');
+        $notify_data = file_get_contents("php://input");
+        
+        if($this->params['channel'] == 'weixin_mp' || $this->params['channel'] == 'weixin_h5'){
+            $jsonxml = json_encode(simplexml_load_string($notify_data, 'SimpleXMLElement', LIBXML_NOCDATA));
+            $notify = json_decode($jsonxml, true);
+            //实例化支付服务
+            $config = ChannelServer::config($this->params['channel'] ,$this->shopid);
+            $PayService = PayServer::init($config['appid'], $this->params['pay_channel']);
+            //返回商户订单号
+            $order_no = $PayService->server->notify($notify);
+            //判断订单是否已支付
+            if (!$order_no){
+                return $this->payXmlMsg('FAIL','通信失败，请稍后再通知我');
+            }
+
+            $result = $this->updateOrders($this->params['channel'], $order_no);
+
+            return $this->payXmlMsg('SUCCESS');
         }
+
+        if($this->params['channel'] == 'douyin_mp'){
+            if(empty($notify_data)){
+                return false;
+            }
+            $content = json_decode($notify_data, true);
+            //Log::write($content);
+            $sign = DouyinMiniProgramServer::handler($content);
+            if($sign == $content['msg_signature']){
+                $msg = json_decode($content['msg'],true); 
+                $order_no = $msg['cp_orderno'];
+                // 这里更新应用业务逻辑代码，使用$msg跟应用订单比对更新订单,可以用 $content['type']判断是支付回调还是退款回调，payment支付回调 refund退款回调。
+
+                if($content['type'] == 'payment'){
+                    $this->updateOrders($this->params['channel'], $order_no);
+                }
+
+                // 同步订单
+                DouyinMiniProgramServer::ordersPush($order_no);
+                
+                return $this->payDouyinMsg(0, 'success');
+            }
+        }
+    }
+
+    /**
+     * 更新订单
+     */
+    protected function updateOrders($channel, $order_no)
+    {
         // 获取订单数据
         $order_info =$this->OrderModel->getDataByOrderNo($order_no);
         if (!$order_info){
-            $this->payXmlMsg('FAIL','没有查询到订单');
+            if($this->params['channel'] == 'weixin_mp' || $this->params['channel'] == 'weixin_h5'){
+                return $this->payXmlMsg('FAIL','没有查询到订单');
+            }
+            if($this->params['channel'] == 'douyin_mp'){
+                return $this->payDouyinMsg(-1, 'error');
+            }
         }
         if ($order_info['paid'] == 1){
-            $this->payXmlMsg('SUCCESS', '订单支付完成');
+            if($this->params['channel'] == 'weixin_mp' || $this->params['channel'] == 'weixin_h5'){
+                return $this->payXmlMsg('SUCCESS', '订单支付完成');
+            }
+            if($this->params['channel'] == 'douyin_mp'){
+                return $this->payDouyinMsg(0, 'success');
+            }
+            
         }
         //实例化订单逻辑
         if($order_info['order_info_type'] == 'vipcard'){
@@ -211,21 +276,22 @@ class Pay extends Api
         }
         $this->OrderService = new $order_namespace;
         $result = $this->OrderService->paySuccess($order_info);
-        
-        //订单流水
-        $this->CapitalFlowModel->createFlow([
-            'uid' => $order_info['uid'],
-            'order_no' => $order_info['order_no'],
-            'price' => $order_info['paid_fee'],
-            'shopid' => $this->params['shopid'],
-            'app' => $this->params['app'],
-            'channel' => $this->params['channel'],
-        ]);
 
         //消息通知
         $this->sendPaySuccessTmplmsg($order_info['channel'], $order_info);
-    
-        return $this->payXmlMsg();
+
+        return $result;
+    }
+
+    /**
+     * 返回信息
+     */
+    protected function payDouyinMsg($code = 0, $msg = 'success')
+    {
+        return json([
+            'err_no' => $code,
+            'err_tips' => $msg
+        ]);
     }
 
     /**
@@ -359,7 +425,7 @@ class Pay extends Api
                         ],
                     ],
                 ];
-                $res = @MiniProgram::sendTemplateMsg($msg);
+                $res = @WeixinMiniProgramServer::sendTemplateMsg($msg);
 
                 return $res;
             }
