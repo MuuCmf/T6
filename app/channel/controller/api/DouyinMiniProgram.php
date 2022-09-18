@@ -106,18 +106,12 @@ class DouyinMiniProgram extends Base
      * 获取小程序码：适用于需要的码数量极多，或仅临时使用的业务场景
      * @return mixed
      */
-    public function unlimitQrcode()
+    public function createQrcode()
     {
         //小程序路径
         $path = input('param.path');
-        //二维码url参数
-        $scene = input('param.scene','');
-        $width = input('param.width','500');
-        $option = [
-            'page' => $path,
-            'width' => $width
-        ];
-        $result = MiniProgramServer::createQRCode($scene, $option);
+
+        $result = MiniProgramServer::createQRCode($path);
         Header("Content-type: image/jpeg");//直接输出显示jpg格式图片
         echo $result;
     }
