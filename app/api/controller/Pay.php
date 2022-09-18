@@ -113,7 +113,6 @@ class Pay extends Api
 
     /**
      * 退款
-     * (待完善)
      */
     public function refund()
     {
@@ -203,7 +202,6 @@ class Pay extends Api
     {
         $notify_data = file_get_contents("php://input");
         
-
         if($this->params['channel'] == 'weixin_mp' || $this->params['channel'] == 'weixin_h5'){
             $jsonxml = json_encode(simplexml_load_string($notify_data, 'SimpleXMLElement', LIBXML_NOCDATA));
             $notify = json_decode($jsonxml, true);
@@ -227,7 +225,7 @@ class Pay extends Api
                 return false;
             }
             $content = json_decode($notify_data, true);
-            Log::write($content);
+            //Log::write($content);
             $sign = DouyinMiniProgramServer::handler($content);
             if($sign == $content['msg_signature']){
                 $msg = json_decode($content['msg'],true); 
@@ -235,8 +233,11 @@ class Pay extends Api
                 // 这里更新应用业务逻辑代码，使用$msg跟应用订单比对更新订单,可以用 $content['type']判断是支付回调还是退款回调，payment支付回调 refund退款回调。
 
                 if($content['type'] == 'payment'){
-                    $result = $this->updateOrders($this->params['channel'], $order_no);
+                    $this->updateOrders($this->params['channel'], $order_no);
                 }
+
+                // 同步订单
+                DouyinMiniProgramServer::ordersPush($order_no);
                 
                 return $this->payDouyinMsg(0, 'success');
             }
