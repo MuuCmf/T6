@@ -3,7 +3,6 @@ namespace app\channel\service\bytedance;
 
 use app\channel\model\DouyinMpConfig;
 use app\common\model\Orders as OrdersModel;
-use app\common\logic\Orders as OrdersLogic;
 use think\Exception;
 
 class DouyinMp
@@ -13,6 +12,8 @@ class DouyinMp
     private $secret;
     private $token;
     private $salt;
+    private $alipayMerchantUid;
+    private $weixinMerchantUid;
     private $api;
 
     /**
@@ -24,11 +25,13 @@ class DouyinMp
         //服务配置文件
         $config = $this->config = $this->initConfig();
 
-        $this->title = $config['title'];
-        $this->appid = $config['appid'];
-        $this->secret = $config['secret'];
-        $this->salt = $config['salt'];
-        $this->token = $config['token'];
+        $this->title             = $config['title'];
+        $this->appid             = $config['appid'];
+        $this->secret            = $config['secret'];
+        $this->salt              = $config['salt'];
+        $this->token             = $config['token'];
+        $this->alipayMerchantUid = $config['alipay_merchant_uid'];
+        $this->weixinMerchantUid = $config['weixin_merchant_uid'];
     }
 
     public function initConfig()
@@ -48,7 +51,9 @@ class DouyinMp
             'appid' => $data['appid'],
             'secret' => $data['secret'],
             'token' => $data['token'],
-            'salt' => $data['salt']
+            'salt' => $data['salt'],
+            'weixin_merchant_uid' => $data['weixin_merchant_uid'],
+            'alipay_merchant_uid' => $data['alipay_merchant_uid']
         ];
     }
 
@@ -188,6 +193,70 @@ class DouyinMp
         $params['access_token'] = $this->getAccessToken();
 
         $result = $this->sendPost('/api/apps/order/v2/push',$params);
+        return json_decode($result, true);
+    }
+
+    /**
+     * 结算分账
+     */
+    public function settle($settle_no, $order_no)
+    {
+        $params = [
+            'app_id' => $this->appid,
+            'out_settle_no' => $settle_no,
+            'out_order_no' => $order_no,
+            'settle_desc' => '主动结算',
+        ];
+        $params['sign'] = $this->sign($params);
+
+        $result = $this->sendPost('/api/apps/order/v2/push',$params);
+        return json_decode($result, true);
+    }
+
+    /**
+     * 商户余额查询
+     * @param $channel_type 提现渠道枚举值:alipay: 支付宝wx: 微信 hz: 抖音支付
+     */
+    public function merchantbalance($channel_type)
+    {
+        if($channel_type == 'alipay'){
+            $merchant_uid = $this->alipayMerchantUid;
+        }
+        if($channel_type == 'wx'){
+            $merchant_uid = $this->weixinMerchantUid;
+        }
+        $params = [
+            'app_id' => $this->appid,
+            'merchant_uid' => $merchant_uid, // 进件完成返回的商户号
+            'channel_type' => $channel_type, // 提现渠道枚举值:alipay: 支付宝wx: 微信 hz: 抖音支付
+        ];
+        $params['sign'] = $this->sign($params);
+
+        $result = $this->sendPost('/api/apps/ecpay/saas/query_merchant_balance',$params);
+        return json_decode($result, true);
+    }
+
+    /**
+     * 商户提现
+     */
+    public function merchantWithdraw($withdraw_amount, $channel_type, $out_order_id)
+    {
+        if($channel_type == 'alipay'){
+            $merchant_uid = $this->alipayMerchantUid;
+        }
+        if($channel_type == 'wx'){
+            $merchant_uid = $this->weixinMerchantUid;
+        }
+        $params = [
+            'app_id' => $this->appid,
+            'merchant_uid' => $merchant_uid, // 进件完成返回的商户号
+            'channel_type' => $channel_type, // 提现渠道枚举值:alipay: 支付宝wx: 微信 hz: 抖音支付
+            'withdraw_amount' => $withdraw_amount, // 提现金额；单位分
+            'out_order_id' => $out_order_id, // 外部单号（开发者侧）；唯一标识一笔提现请求
+        ];
+        $params['sign'] = $this->sign($params);
+
+        $result = $this->sendPost('/api/apps/ecpay/saas/merchant_withdraw',$params);
         return json_decode($result, true);
     }
 

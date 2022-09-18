@@ -31,7 +31,20 @@ class DouyinMiniProgram extends Base
      */
     public function callback()
     {
+        $notify_data = file_get_contents("php://input");
+        if(empty($notify_data)){
+            return false;
+        }
+        $content = json_decode($notify_data, true);
+        //Log::write($content);
+        $sign = MiniProgramServer::handler($content);
+        if($sign == $content['msg_signature']){
+            $msg = json_decode($content['msg'],true); 
+            // 分账回调
+            if($content['type'] == 'settle'){
 
+            }
+        }
 
         return json([
             'err_no' => 0,

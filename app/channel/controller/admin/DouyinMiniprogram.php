@@ -90,6 +90,14 @@ class DouyinMiniProgram extends MuuAdmin{
     }
 
     /**
+     * 抖音订单结算列表
+     */
+    public function settle()
+    {
+        
+    }
+
+    /**
      * @title 模板消息通知
      * @return \think\response\View
      */
