@@ -4056,8 +4056,29 @@ INSERT INTO `muucmf_district` (`id`, `name`, `level`, `upid`) VALUES
 -- --------------------------------------------------------
 
 --
+-- 表的结构 `muucmf_douyin_mp_config`
+--
+
+DROP TABLE IF EXISTS `muucmf_douyin_mp_config`;
+CREATE TABLE  IF NOT EXISTS `muucmf_douyin_mp_config` (
+  `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+  `shopid` int(11) UNSIGNED NOT NULL COMMENT '商户ID',
+  `title` varchar(20) NOT NULL COMMENT '小程序名称',
+  `description` varchar(500) NOT NULL COMMENT '描述',
+  `appid` varchar(40) NOT NULL COMMENT '应用ID',
+  `secret` varchar(60) NOT NULL COMMENT '应用密匙',
+  `token` varchar(128) NOT NULL DEFAULT '' COMMENT 'token',
+  `salt` varchar(128) NOT NULL DEFAULT '' COMMENT 'salt',
+  `tmplmsg` varchar(500) NOT NULL DEFAULT '' COMMENT '模板消息',
+  `create_time` int(11) UNSIGNED NOT NULL COMMENT '创建日期',
+  `update_time` int(11) UNSIGNED NOT NULL COMMENT '更新日期',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='抖音小程序配置表' ROW_FORMAT=COMPACT;
+
+--
 -- 表的结构 `muucmf_evaluate`
 --
+
 DROP TABLE IF EXISTS `muucmf_evaluate`;
 CREATE TABLE IF NOT EXISTS `muucmf_evaluate` (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '自增ID',
@@ -4530,7 +4551,8 @@ INSERT INTO `muucmf_menu` (`id`, `title`, `pid`, `sort`, `url`, `hide`, `type`, 
 ('FAD7E420-2621-D50C-48AF-BAEEA2F361F5', '应用商店', '7BE5FA0B-7009-AB46-FE7B-A9364ACAF687', 0, 'admin/Appcloud/index', 0, 0, '', '云端', 0, 'cloud', 'admin'),
 ('FD6493CE-98CB-A5A7-3236-080E11318831', '备份', '2B76BD2C-80AB-319C-CE6E-1B0E6930B3CC', 0, 'admin/Database/export', 0, 0, '备份数据库', '', 0, '', 'admin'),
 ('8553C20D-7FCB-4252-15F4-5ECFC0A56092', '创作者类型', 'D18841ED-C034-2E7A-D0B2-92D0AC647179', 4, 'admin/Author/groupList', 0, 0, '', '创作者管理', 0, 'window-restore', 'admin'),
-('8BBDA16F-8A60-47CE-F4BD-0C3AC4AC7677', '添加、编辑分组', '8553C20D-7FCB-4252-15F4-5ECFC0A56092', 0, 'admin/Author/groupEdit', 0, 0, '', '', 0, '', 'admin');
+('8BBDA16F-8A60-47CE-F4BD-0C3AC4AC7677', '添加、编辑分组', '8553C20D-7FCB-4252-15F4-5ECFC0A56092', 0, 'admin/Author/groupEdit', 0, 0, '', '', 0, '', 'admin'),
+('7472E236-A4ED-6AC7-712E-3479158D5E21', '抖音小程序配置', 'A4650B98-DAD4-8194-030C-1B2AB4F35CBA', 30, 'channel/admin.DouyinMiniprogram/index', 0, 0, '', '抖音小程序', 0, '', 'admin');
 
 -- --------------------------------------------------------
 

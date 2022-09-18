@@ -33,3 +33,21 @@ ALTER TABLE `muucmf_attachment` CHANGE `filename` `filename` CHAR(128) CHARACTER
 ALTER TABLE `muucmf_capital_flow` CHANGE `channel` `channel` VARCHAR(20) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT '' COMMENT '来源/去向balance：余额；wechat:微信';
 ALTER TABLE `muucmf_wechat_config` ADD `request` VARCHAR(512) NOT NULL COMMENT '请求配置' AFTER `tmplmsg`;
 ALTER TABLE `muucmf_wechat_config` DROP `url`;
+
+CREATE TABLE  IF NOT EXISTS `muucmf_douyin_mp_config` (
+  `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+  `shopid` int(11) UNSIGNED NOT NULL COMMENT '商户ID',
+  `title` varchar(20) NOT NULL COMMENT '小程序名称',
+  `description` varchar(500) NOT NULL COMMENT '描述',
+  `appid` varchar(40) NOT NULL COMMENT '应用ID',
+  `secret` varchar(60) NOT NULL COMMENT '应用密匙',
+  `token` varchar(128) NOT NULL DEFAULT '' COMMENT 'token',
+  `salt` varchar(128) NOT NULL DEFAULT '' COMMENT 'salt',
+  `tmplmsg` varchar(500) NOT NULL DEFAULT '' COMMENT '模板消息',
+  `create_time` int(11) UNSIGNED NOT NULL COMMENT '创建日期',
+  `update_time` int(11) UNSIGNED NOT NULL COMMENT '更新日期',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='抖音小程序配置表' ROW_FORMAT=COMPACT;
+
+INSERT INTO `muucmf_menu` (`id`, `title`, `pid`, `sort`, `url`, `hide`, `type`, `tip`, `group`, `is_dev`, `icon`, `module`) VALUES
+('7472E236-A4ED-6AC7-712E-3479158D5E21', '抖音小程序配置', 'A4650B98-DAD4-8194-030C-1B2AB4F35CBA', 30, 'channel/admin.DouyinMiniprogram/index', 0, 0, '', '抖音小程序', 0, '', 'admin');
