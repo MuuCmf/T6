@@ -215,8 +215,8 @@ class Pay extends Api
                 return $this->payXmlMsg('FAIL','通信失败，请稍后再通知我');
             }
 
-            $result = $this->updateOrders($this->params['channel'], $order_no);
-
+            $this->updateOrders($order_no);
+            
             return $this->payXmlMsg('SUCCESS');
         }
 
@@ -233,7 +233,7 @@ class Pay extends Api
                 // 这里更新应用业务逻辑代码，使用$msg跟应用订单比对更新订单,可以用 $content['type']判断是支付回调还是退款回调，payment支付回调 refund退款回调。
 
                 if($content['type'] == 'payment'){
-                    $this->updateOrders($this->params['channel'], $order_no);
+                    $this->updateOrders($order_no);
                 }
 
                 // 同步订单
@@ -247,7 +247,7 @@ class Pay extends Api
     /**
      * 更新订单
      */
-    protected function updateOrders($channel, $order_no)
+    protected function updateOrders($order_no)
     {
         // 获取订单数据
         $order_info =$this->OrderModel->getDataByOrderNo($order_no);
@@ -277,9 +277,19 @@ class Pay extends Api
         $this->OrderService = new $order_namespace;
         $result = $this->OrderService->paySuccess($order_info);
 
+        //订单流水
+        $this->CapitalFlowModel->createFlow([
+            'uid' => $order_info['uid'],
+            'order_no' => $order_info['order_no'],
+            'price' => $order_info['paid_fee'],
+            'shopid' => $order_info['shopid'],
+            'app' => $order_info['app'],
+            'channel' => $order_info['channel'],
+        ]);
+
         //消息通知
         $this->sendPaySuccessTmplmsg($order_info['channel'], $order_info);
-
+       
         return $result;
     }
 
