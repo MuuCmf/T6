@@ -109,7 +109,7 @@ class DouyinMiniProgram extends Base
     public function createQrcode()
     {
         //小程序路径
-        $path = input('param.path');
+        $path = input('path');
 
         $result = MiniProgramServer::createQRCode($path);
         Header("Content-type: image/jpeg");//直接输出显示jpg格式图片

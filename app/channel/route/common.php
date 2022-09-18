@@ -14,5 +14,5 @@ Route::group('official',function (){
 //抖音小程序
 Route::group('douyin',function (){
     Route::rule('callback' ,'channel/api.DouyinMiniprogram/callback');
-    Route::rule('qrcode' ,'channel/api.DouyinMiniprogram/qrcode');
+    Route::rule('qrcode' ,'channel/api.DouyinMiniProgram/createQrcode');
 });
