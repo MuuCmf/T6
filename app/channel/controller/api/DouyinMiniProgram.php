@@ -4,6 +4,7 @@ namespace app\channel\controller\api;
 use app\common\controller\Base;
 use app\common\model\Member;
 use app\common\model\MemberSync;
+use app\common\model\Orders;
 use app\channel\facade\bytedance\MiniProgram as MiniProgramServer;
 use app\channel\model\DouyinMpSettle as DouyinMpSettleModel;
 use thans\jwt\facade\JWTAuth;
@@ -28,7 +29,7 @@ class DouyinMiniProgram extends Base
     }
 
     /**
-     * 微信回调
+     * 回调
      */
     public function callback()
     {
@@ -47,16 +48,24 @@ class DouyinMiniProgram extends Base
                 // 结算分账成功
                 if($msg['status'] == 'SUCCESS'){
                     $DouyinMpSettleModel = new DouyinMpSettleModel;
+                    $OrdersModel = new Orders();
                     // 查询结算数据
                     $has = $DouyinMpSettleModel->where([
                         'settle_no' => $cp_settle_no,
                         'order_no' => $msg['order_id']
                     ])->find();
-                    if($has){
+                    $order_info = $OrdersModel->where([
+                        'order_no' => $msg['order_id']
+                    ])->find();
+                    if($has && $order_info){
                         $DouyinMpSettleModel->edit([
                             'id' => $has['id'],
                             'status' => 1, // 结算完成
                             'finish_time' => $msg['settled_at']
+                        ]);
+                        $OrdersModel->edit([
+                            'id' => $order_info['id'],
+                            'settle' => 1
                         ]);
                     }
                 }
