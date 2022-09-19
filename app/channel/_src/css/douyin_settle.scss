@@ -1,0 +1,55 @@
+
+/* 未结算订单 */
+.orders-list-section {
+    .orders-lists {
+
+        padding: 15px;
+    
+        .order-lists-item {
+        
+            .base-info {
+                line-height: 32px;
+    
+                span {
+                    display: inline-block;
+                    margin-right: 60px;
+                    color: #666;
+                }
+            }
+    
+            table .cover {
+                float:left;
+                width:100px;
+            }
+    
+            table .cover img {
+                border-radius: 5px;
+                width: 100px;
+            }
+    
+            table .info {
+                margin-left: 110px;
+                padding-left: 10px;
+                font-size:14px;
+                width:360px;
+                overflow:hidden;
+    
+                .title {
+                    font-size:14px;
+                    font-weight:600;
+                    line-height: 32px;
+                    color:#666;
+                }
+    
+                .type {
+                    display: inline-block;
+                    padding: 0 5px;
+                    color: #fff;
+                    background: rgba(0,0,0,.5);
+                    border-radius: 3px;
+                }
+            }
+    
+        }
+    }
+}

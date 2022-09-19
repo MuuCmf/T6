@@ -4077,6 +4077,24 @@ CREATE TABLE  IF NOT EXISTS `muucmf_douyin_mp_config` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='抖音小程序配置表' ROW_FORMAT=COMPACT;
 
+
+--
+-- 表的结构 `muucmf_douyin_mp_settle`
+--
+DROP TABLE IF EXISTS `muucmf_douyin_mp_settle`;
+CREATE TABLE  IF NOT EXISTS `muucmf_douyin_mp_settle` (
+  `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+  `shopid` int(11) UNSIGNED NOT NULL COMMENT '平台ID',
+  `settle_no` varchar(64) NOT NULL COMMENT '结算单号',
+  `order_no` varchar(64) NOT NULL COMMENT '关联订单号',
+  `price` int(11) NOT NULL COMMENT '金额',
+  `douyin_settle_no` varchar(128) NOT NULL DEFAULT '' COMMENT '平台生成分账单号',
+  `status` tinyint(2) NOT NULL COMMENT '分账状态 0已发起 1已完成',
+  `create_time` int(11) UNSIGNED NOT NULL COMMENT '创建日志',
+  `update_time` int(11) UNSIGNED NOT NULL COMMENT '更新日志',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='抖音结算分账表';
+
 --
 -- 表的结构 `muucmf_evaluate`
 --
@@ -4679,6 +4697,7 @@ CREATE TABLE `muucmf_orders` (
   `receipt` varchar(255) DEFAULT NULL COMMENT '发票抬头',
   `ip` varchar(128) NOT NULL DEFAULT '' COMMENT 'ip地址',
   `metadata` text NULL COMMENT '元数据',
+  `settle` tinyint(2) NOT NULL DEFAULT '0' COMMENT '是否结算分账',
   `end_time` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '订单有效期结束时间戳',
   `create_time` int(11) UNSIGNED NOT NULL COMMENT '创建时间',
   `update_time` int(11) UNSIGNED NOT NULL COMMENT '更新时间',

@@ -6,6 +6,8 @@ use app\admin\controller\Admin as MuuAdmin;
 use app\channel\logic\TemplateMessage;
 use app\channel\model\DouyinMpConfig;
 use app\channel\model\DouyinMpSettle as DouyinMpSettleModel;
+use app\common\model\Orders as OrdersModel;
+use app\common\logic\Orders as OrdersLogic;
 use think\facade\View;
 
 class DouyinMiniProgram extends MuuAdmin{
@@ -134,6 +136,57 @@ class DouyinMiniProgram extends MuuAdmin{
         $this->setTitle('结算列表');
         // 输出模板
         return View::fetch();
+    }
+
+    /**
+     * 未结算订单列表
+     */
+    public function settleOrders()
+    {
+        $OrdersModel = new OrdersModel();
+        $OrdersLogic = new OrdersLogic();
+
+        $keyword = input('keyword', '', 'text');
+        View::assign('keyword', $keyword);
+        $status = input('status') == null?'all':input('status');
+        View::assign('status', $status);
+        $rows = input('rows', 20, 'intval');
+
+        // 查询条件
+        $map = [
+            'paid' => 1,
+            'channel' => 'douyin_mp',
+            'settle' => 0
+        ];
+
+        // 获取列表
+        $lists = $OrdersModel->getListByPage($map, 'id DESC', '*', $rows);
+        $pager = $lists->render();
+        $lists = $lists->toArray();
+        
+        foreach($lists['data'] as &$val){
+            $val = $OrdersLogic->formatData($val);
+        }
+        unset($val);
+
+        // ajax请求返回数据
+        if(request()->isAjax()){
+            return $this->success('success', $lists);
+        }
+        View::assign('pager',$pager);
+        View::assign('lists',$lists);
+
+        // 记录当前列表页的cookie
+        Cookie('__forward__', $_SERVER['REQUEST_URI']);
+
+        $this->setTitle('结算列表');
+        // 输出模板
+        return View::fetch();
+    }
+
+    public function balance()
+    {
+
     }
 
     /**
