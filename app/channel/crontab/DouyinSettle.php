@@ -35,7 +35,7 @@ class DouyinSettle
             $map = [
                 ['shopid', '=', $shopid],
                 ['paid', '=', 1],
-                ['paid_time', '<', time() + (7 * 24 * 60 * 60)],
+                ['paid_time', '<', time() - (7 * 24 * 60 * 60)],
             ];
             $lists = $this->OrderModel->where($map)->field('id')->select()->toArray();
             if (!empty($lists)){
