@@ -5,6 +5,7 @@ use app\common\controller\Base;
 use app\common\model\Member;
 use app\common\model\MemberSync;
 use app\channel\facade\bytedance\MiniProgram as MiniProgramServer;
+use app\channel\model\DouyinMpSettle as DouyinMpSettleModel;
 use thans\jwt\facade\JWTAuth;
 
 /**
@@ -40,9 +41,25 @@ class DouyinMiniProgram extends Base
         $sign = MiniProgramServer::handler($content);
         if($sign == $content['msg_signature']){
             $msg = json_decode($content['msg'],true); 
-            // 分账回调
+            // 结算分账回调
             if($content['type'] == 'settle'){
-
+                $cp_settle_no = $msg['cp_settle_no'];
+                // 结算分账成功
+                if($msg['status'] == 'SUCCESS'){
+                    $DouyinMpSettleModel = new DouyinMpSettleModel;
+                    // 查询结算数据
+                    $has = $DouyinMpSettleModel->where([
+                        'settle_no' => $cp_settle_no,
+                        'order_no' => $msg['order_id']
+                    ])->find();
+                    if($has){
+                        $DouyinMpSettleModel->edit([
+                            'id' => $has['id'],
+                            'status' => 1, // 结算完成
+                            'finish_time' => $msg['settled_at']
+                        ]);
+                    }
+                }
             }
         }
 

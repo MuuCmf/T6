@@ -34,7 +34,7 @@
 
 <div class="margin-bottom">
     <a class="btn" href="{:url('settle')}">结算列表</a>
-    <a class="btn btn-info" href="{:url('settleOrders')}">未结算订单</a>
+    <a class="btn btn-info" href="{:url('orders')}">未结算订单</a>
 </div>
 
 <section class="orders-list-section clearfix">
@@ -84,6 +84,7 @@
                                 <img src="{$v['products']['cover_100']}">
                             </div>
                             <div class="info">
+                                <div class="app">{$v['app']}</div>
                                 <div class="title text-ellipsis">{$v['products']['title']}</div>
                                 <div class="type">{$v['products']['type_str']}</div>
                             </div>
@@ -108,31 +109,15 @@
                                 {else}
                                 <span class="paid-status text-danger">{$v['paid_str']}</span>
                                 {/if}
-    
-                                {if $v['order_info_type'] != 'vipcard'}
-                                {if $v['evaluate'] === 0 || empty($v['evaluate'])}
-                                <span class="text-danger">未评价</span>
-                                {else}
-                                <span class="text-success">已评价</span>
-                                    {if !empty($v['evaluate']['reply'])}
-                                    <small>（已回复）</small>
-                                    {/if}
-                                {/if}
-                                {/if}
                             </div>
                         </td>
                         <td>
-                            <a href="{:url('detail',['id'=>$v['id']])}" class="btn btn-info">详情</a>
-                            {if $v['status'] == 1}
-                            <a href="{:url('edit',['id'=>$v['id']])}" class="btn btn-primary">编辑</a>
+                            {if $v['can_settle'] == 1}
+                            <a href="{:url('manualSettle',['order_no'=>$v['order_no']])}" class="btn btn-primary">手动结算</a>
+                            {else /}
+                            <button type="button" class="btn btn-default" disabled>手动结算</button>
                             {/if}
-                            {if $v['paid'] == 0 && $v['status'] == 1}
-                            <a href="{:url('status',['id'=>$v['id'],'status'=>0])}" class="btn btn-danger ajax-post" data-confirm="确认执行取消操作？">取消</a>
-                            {/if}
-                            {if $v['status'] == 0}
-                            <a disabled href="#" class="btn disabled">已取消</a>
-                            <a href="{:url('status',['id'=>$v['id'],'status'=>-1])}" class="btn btn-danger ajax-post" data-confirm="确认执行删除操作？">删除</a>
-                            {/if}
+
                         </td>
                     </tr>
                 </tbody>

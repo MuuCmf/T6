@@ -141,7 +141,7 @@ class DouyinMiniProgram extends MuuAdmin{
     /**
      * 未结算订单列表
      */
-    public function settleOrders()
+    public function orders()
     {
         $OrdersModel = new OrdersModel();
         $OrdersLogic = new OrdersLogic();
@@ -154,6 +154,7 @@ class DouyinMiniProgram extends MuuAdmin{
 
         // 查询条件
         $map = [
+            'shopid' => $this->shopid,
             'paid' => 1,
             'channel' => 'douyin_mp',
             'settle' => 0
@@ -166,6 +167,11 @@ class DouyinMiniProgram extends MuuAdmin{
         
         foreach($lists['data'] as &$val){
             $val = $OrdersLogic->formatData($val);
+            // 是否允许结算
+            $val['can_settle'] = 0;
+            if($val['paid_time'] + (86400 *7) < time()){
+                $val['can_settle'] = 1;
+            }
         }
         unset($val);
 
@@ -184,9 +190,31 @@ class DouyinMiniProgram extends MuuAdmin{
         return View::fetch();
     }
 
-    public function balance()
+    /**
+     * 手动触发结算分账
+     */
+    public function manualSettle()
     {
+        $order_no = input('order_no', '', 'text');
+        if(!empty($order_no)){
+            $order_info = $this->OrderModel->where('order_no', $order_no)->find();
+            $settle_no = build_order_no();
+            $result = $this->DouyinMpService->settle($settle_no, $order_no);
+            $result = json_decode($result, true);
+            if($result['err_no'] == 0){
+                $this->DouyinMpSettleModel->edit([
+                    'settle_no' => $settle_no,
+                    'order_no' => $order_no,
+                    'price' => $order_info['paid_fee'],
+                    'douyin_settle_no' => $result['settle_no'],
+                    'status' => 0
+                ]);
 
+                return $this->success('手动结算发送成功');
+            }
+            return $this->error('手动结算发送失败');
+        }
+        return $this->error('参数错误');
     }
 
     /**
