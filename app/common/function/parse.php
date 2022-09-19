@@ -562,7 +562,7 @@ if (!function_exists('build_order_no')) {
      * 生成唯一订单号
      */
     function build_order_no(){
-        return date('Ymd').substr(implode(NULL, array_map('ord', str_split(substr(uniqid(), 7, 13), 1))), 0, 10);
+        return date('Ymd').substr(microtime(),2,6).sprintf('%04d', mt_rand(0, 9999));
     }
 }
 
@@ -571,7 +571,7 @@ if (!function_exists('build_serial_no')) {
      * 生成唯一流水号
      */
     function build_serial_no(){
-        return date('Ymd').time().substr(implode(NULL, array_map('ord', str_split(substr(uniqid(), 7, 13), 1))), 0, 10);
+        return build_order_no();
     }
 }
 
