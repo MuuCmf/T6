@@ -5,14 +5,17 @@ use app\admin\builder\AdminConfigBuilder;
 use app\admin\controller\Admin as MuuAdmin;
 use app\channel\logic\TemplateMessage;
 use app\channel\model\DouyinMpConfig;
+use app\channel\model\DouyinMpSettle as DouyinMpSettleModel;
 use think\facade\View;
 
 class DouyinMiniProgram extends MuuAdmin{
     private $MiniProgramModel;
+    protected $DouyinMpSettleModel;
     function __construct()
     {
         parent::__construct();
         $this->MiniProgramModel = new DouyinMpConfig();
+        $this->DouyinMpSettleModel = new DouyinMpSettleModel();
     }
 
     /**
@@ -94,7 +97,43 @@ class DouyinMiniProgram extends MuuAdmin{
      */
     public function settle()
     {
+        $keyword = input('keyword', '', 'text');
+        View::assign('keyword', $keyword);
+        $status = input('status') == null?'all':input('status');
+        View::assign('status', $status);
+        $rows = input('rows', 20, 'intval');
+
+        // 获取查询条件
+        $map = [];
+        if($status == 'all'){
+            $map[] = ['status', 'in', [0,1]];
+        }else{
+            $map[] = ['status', '=', $status];
+        }
         
+        // 获取列表
+        $lists = $this->DouyinMpSettleModel->getListByPage($map, 'id DESC', '*', $rows);
+        $pager = $lists->render();
+        $lists = $lists->toArray();
+        
+        foreach($lists['data'] as &$val){
+            $val = $this->DouyinMpSettleModel->formatData($val);
+        }
+        unset($val);
+
+        // ajax请求返回数据
+        if(request()->isAjax()){
+            return $this->success('success', $lists);
+        }
+        View::assign('pager',$pager);
+        View::assign('lists',$lists);
+
+        // 记录当前列表页的cookie
+        Cookie('__forward__', $_SERVER['REQUEST_URI']);
+
+        $this->setTitle('结算列表');
+        // 输出模板
+        return View::fetch();
     }
 
     /**
