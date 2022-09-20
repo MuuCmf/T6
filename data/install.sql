@@ -4572,7 +4572,9 @@ INSERT INTO `muucmf_menu` (`id`, `title`, `pid`, `sort`, `url`, `hide`, `type`, 
 ('FD6493CE-98CB-A5A7-3236-080E11318831', '备份', '2B76BD2C-80AB-319C-CE6E-1B0E6930B3CC', 0, 'admin/Database/export', 0, 0, '备份数据库', '', 0, '', 'admin'),
 ('8553C20D-7FCB-4252-15F4-5ECFC0A56092', '创作者类型', 'D18841ED-C034-2E7A-D0B2-92D0AC647179', 4, 'admin/Author/groupList', 0, 0, '', '创作者管理', 0, 'window-restore', 'admin'),
 ('8BBDA16F-8A60-47CE-F4BD-0C3AC4AC7677', '添加、编辑分组', '8553C20D-7FCB-4252-15F4-5ECFC0A56092', 0, 'admin/Author/groupEdit', 0, 0, '', '', 0, '', 'admin'),
-('7472E236-A4ED-6AC7-712E-3479158D5E21', '抖音小程序配置', 'A4650B98-DAD4-8194-030C-1B2AB4F35CBA', 30, 'channel/admin.DouyinMiniprogram/index', 0, 0, '', '抖音小程序', 0, '', 'admin');
+('7472E236-A4ED-6AC7-712E-3479158D5E21', '抖音小程序配置', 'A4650B98-DAD4-8194-030C-1B2AB4F35CBA', 30, 'channel/admin.DouyinMiniprogram/index', 0, 0, '', '抖音小程序', 0, '', 'admin'),
+('835882C7-20C1-B7B3-1373-330D0F3E9262', '未结算订单', 'A59BE3B9-EDD9-673E-3FAC-D7AD8FC39F38', 0, 'channel/admin.DouyinMiniprogram/orders', 0, 0, '', '', 0, '', 'admin'),
+('A59BE3B9-EDD9-673E-3FAC-D7AD8FC39F38', '结算分账', 'A4650B98-DAD4-8194-030C-1B2AB4F35CBA', 31, 'channel/admin.DouyinMiniprogram/settle', 0, 0, '', '抖音小程序', 0, 'jpy', 'admin');
 
 -- --------------------------------------------------------
 
