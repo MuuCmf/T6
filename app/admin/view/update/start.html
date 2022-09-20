@@ -271,7 +271,11 @@
                 $.post("{:url('admin/module/install')}", {
                     name: that.appName,
                 }, function (res) {
-                    that.progressTitle = '安装完成';
+                    if(res.code == 200){
+                        that.progressTitle = '安装完成';
+                    }else{
+                        that.progressTitle = '发生错误：' + res.msg;
+                    }
                 })
             },
             back() {

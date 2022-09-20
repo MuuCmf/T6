@@ -2,7 +2,7 @@
 namespace app\common\model;
 
 use think\facade\Db;
-use think\exception\ValidateException;
+use think\Exception;
 
 class Module extends Base
 {
@@ -197,8 +197,7 @@ class Module extends Base
         $module = $this->getModule($name);
 
         if ($module['is_setup'] == 1) {
-            $this->error = '模块已安装。';
-            return false;
+            throw new Exception('应用已安装');
         }
 
         // 更新info内配置数据
@@ -225,22 +224,6 @@ class Module extends Base
                 }
             }
 
-            //导入前台权限,auth_rule
-            if(!empty($data['auth_rule'])){
-                $auth_rule = json_decode($data['auth_rule'], true);
-                if (!empty($auth_rule)) {
-                    $this->cleanAuthRules($module['name']);
-                    if ($this->addAuthRule($auth_rule)) {
-                        $log .= '&nbsp;&nbsp;>权限成功导入。<br/>';
-                    }
-                    //设置默认的权限
-                    $default_rule = json_decode($data['default_rule'], true);
-                    if ($this->addDefaultRule($default_rule, $module['name'])) {
-                        $log .= '&nbsp;&nbsp;>默认权限设置成功。<br/>';
-                    }
-                }
-            }
-            
             if(!empty($data['action'])){
                 //导入
                 $action = json_decode($data['action'], true);
@@ -283,10 +266,8 @@ class Module extends Base
                         //替换表前缀
                         $value = str_replace(" `{$orginal}", " `{$prefix}", $value);
                         $msg = "创建数据表{$name}";
-                        if (false !== Db::execute($value)) {
-                            $log .= '&nbsp;&nbsp;>'.$msg . '...成功;';
-                        } else {
-                            $log .= '&nbsp;&nbsp;>'.$msg . '...失败;';
+                        if (true !== Db::execute($value)) {
+                            throw new Exception($msg . '...失败;');
                         }
                     } 
                     //写入前清空
@@ -309,11 +290,9 @@ class Module extends Base
         // 写入数据库
         $rs = $this->update($module);
         if ($rs === false) {
-            $this->error = '应用数据修改失败';
-            return false;
+            throw new Exception('应用数据修改失败');
         }
 
-        $this->error = $log;
         return true;
     }
 
@@ -474,15 +453,6 @@ class Module extends Base
         foreach ($action as $v) {
             unset($v['id']);
             Db::name('ActionLimit')->insert($v);
-        }
-        return true;
-    }
-
-    private function addAuthRule($auth_rule)
-    {
-        foreach ($auth_rule as $v) {
-            unset($v['id']);
-            Db::name('AuthRule')->insert($v);
         }
         return true;
     }

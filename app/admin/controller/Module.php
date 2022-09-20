@@ -2,11 +2,11 @@
 
 namespace app\admin\controller;
 
+use think\Exception;
 use app\admin\lib\Upgrade as UpgradeServer;
 use think\facade\Db;
 use think\facade\View;
 use app\common\service\Tree;
-use app\admin\builder\AdminConfigBuilder;
 use app\admin\model\Menu as MenuModel;
 use app\common\model\Module as ModuleModel;
 
@@ -138,12 +138,14 @@ class Module extends Admin
 
         if (request()->isPost()) {
             //执行guide中的内容
-            $res = $this->ModuleModel->install($aName);
-            
-            if ($res === true) {
-                return $this->success('安装成功。', '', cookie('__forward__'));
-            } else {
-                return $this->error('安装失败。' . $this->ModuleModel->error);
+            try {
+                $res = $this->ModuleModel->install($aName);
+                
+                if ($res === true) {
+                    return $this->success('安装成功。', '', cookie('__forward__'));
+                } 
+            } catch (Exception $e) {
+                return $this->error($e->getMessage());
             }
 
         } else {
