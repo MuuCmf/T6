@@ -266,7 +266,7 @@ class Module extends Base
                         //替换表前缀
                         $value = str_replace(" `{$orginal}", " `{$prefix}", $value);
                         $msg = "创建数据表{$name}";
-                        if (true !== Db::execute($value)) {
+                        if (false === Db::execute($value)) {
                             throw new Exception($msg . '...失败;');
                         }
                     } 

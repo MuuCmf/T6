@@ -155,7 +155,9 @@ class Update extends Admin
         if (request()->isAjax()) {
             $params = request()->post();
             try {
-                
+                //执行升级sql
+                $this->UpgradeServer->executeUpgradeSql($this->app_name);
+
                 if ($params['skip'] == 0) {
                     
                     // 系统更新
@@ -166,25 +168,16 @@ class Update extends Admin
                             'app_name' => $this->app_name,
                             'version'  => $params['version']
                         ];
-                        //更新应用版本号
+                        //更新系统版本号
                         $this->UpgradeServer->downFile($params, root_path() . 'data/version.ini');
                     }else{
-                        // 应用更新
-                        if($params['scene'] == 'setup'){
-                            // 执行安装
-                            (new ModuleModel())->install($this->app_name);
-                        }else{
-                            //更新应用版本号
-                            Db::name('module')->where('name','=', $this->app_name)->update(['version' => $params['version']]);
-                        }
+                        //更新应用版本号
+                        Db::name('module')->where('name','=', $this->app_name)->update(['version' => $params['version']]);
                     }
                 }
 
-                //执行sql
-                $this->UpgradeServer->executeUpgradeSql($this->app_name);
-
                 //返回
-                return $this->success('完成');
+                return $this->success('更新完成');
             } catch (Exception $e) {
                 return $this->error($e->getMessage());
             }

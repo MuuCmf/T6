@@ -250,12 +250,17 @@
                     scene: that.scene,
                     skip: that.skipUpgradeVersion ? 1 : 0,
                 }, function (res) {
-                    that.status = 1;
-                    if(that.scene == 'setup'){
-                        that.progressTitle = '下载完成';
-                        that.setupApp();
+                    if(res.code == 200){
+                        //that.progressTitle = '安装完成';
+                        that.status = 1;
+                        if(that.scene == 'setup'){
+                            that.progressTitle = '开始安装';
+                            that.setupApp();
+                        }else{
+                            that.progressTitle = '升级完成';
+                        }
                     }else{
-                        that.progressTitle = '升级完成';
+                        that.progressTitle = '发生错误：' + res.msg;
                     }
                     
                     that.task = '';
