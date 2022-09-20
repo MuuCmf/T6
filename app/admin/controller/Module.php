@@ -83,6 +83,11 @@ class Module extends Admin
                 $item['icon_200'] = get_thumb_image($item['icon'], intval($width*2), intval($height*2));
                 $item['icon_300'] = get_thumb_image($item['icon'], intval($width*3), intval($height*3));
                 $item['icon_400'] = get_thumb_image($item['icon'], intval($width*4), intval($height*4));
+
+                if(strpos($item['icon'], 'https://') !== false && file_exists(PUBLIC_PATH . '/static/' . $item['name'] . '/images/icon.png')){
+                    //图标所在位置为模块静态目录下（推荐）
+                    $item['icon_100'] = $item['icon_200'] = $item['icon_300'] = $item['icon_400'] = '/static/'. $item['name'] .'/images/icon.png';
+                }
             }
         }
         unset($item);

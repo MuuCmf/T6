@@ -14,25 +14,30 @@ class Module extends Base
     public function getAll($where = [])
     {
         $list = $this->where($where)->order('sort desc')->select()->toArray();
-        foreach($list as &$info){
+        foreach($list as & $item){
             
-            if(empty($info['icon'])){
+            if(empty($item['icon'])){
                 //图标所在位置为模块静态目录下（推荐）
-                if(file_exists(PUBLIC_PATH . '/static/' . $info['name'] . '/images/icon.png')){
-                    $info['icon_100'] = $info['icon_200'] =$info['icon_300'] =$info['icon_400'] = '/static/'. $info['name'] .'/images/icon.png';
+                if(file_exists(PUBLIC_PATH . '/static/' . $item['name'] . '/images/icon.png')){
+                    $item['icon_100'] = $item['icon_200'] =$item['icon_300'] =$item['icon_400'] = '/static/'. $item['name'] .'/images/icon.png';
                 }else{
-                    $info['icon_100'] = $info['icon_200'] =$info['icon_300'] =$info['icon_400'] = '/static/admin/images/module_default_icon.png';
+                    $item['icon_100'] = $item['icon_200'] =$item['icon_300'] =$item['icon_400'] = '/static/admin/images/module_default_icon.png';
                 }
             }else{
                 $width = 100;
                 $height = 100;
-                $info['icon_100'] = get_thumb_image($info['icon'], intval($width), intval($height));
-                $info['icon_200'] = get_thumb_image($info['icon'], intval($width*2), intval($height*2));
-                $info['icon_300'] = get_thumb_image($info['icon'], intval($width*3), intval($height*3));
-                $info['icon_400'] = get_thumb_image($info['icon'], intval($width*4), intval($height*4));
+                $item['icon_100'] = get_thumb_image($item['icon'], intval($width), intval($height));
+                $item['icon_200'] = get_thumb_image($item['icon'], intval($width*2), intval($height*2));
+                $item['icon_300'] = get_thumb_image($item['icon'], intval($width*3), intval($height*3));
+                $item['icon_400'] = get_thumb_image($item['icon'], intval($width*4), intval($height*4));
+
+                if(strpos($item['icon'], 'https://') !== false && file_exists(PUBLIC_PATH . '/static/' . $item['name'] . '/images/icon.png')){
+                    //图标所在位置为模块静态目录下（推荐）
+                    $item['icon_100'] = $item['icon_200'] = $item['icon_300'] = $item['icon_400'] = '/static/'. $item['name'] .'/images/icon.png';
+                }
             }
         }
-        unset($info);
+        unset($item);
 
         return $list;
     }
@@ -82,10 +87,15 @@ class Module extends Base
                             'source' => 'cloud'
                         ];
                     }else{
-                        $has_id = $this->where('name', $v['app']['name'])->value('id');
+                        $has_data = $this->where('name', $v['app']['name'])->find();
+                        $icon = $has_data['icon'];
+                        if(empty($has_data['icon'])){
+                            $icon = $v['app']['cover_400'];
+                        }
                         $data[] = [
-                            'id' => $has_id,
-                            'source' => 'cloud'
+                            'id' => $has_data['id'],
+                            'source' => 'cloud',
+                            'icon' => $icon
                         ];
                     }
                 }
@@ -398,6 +408,11 @@ class Module extends Base
                 $info['icon_200'] = get_thumb_image($info['icon'], intval($width*2), intval($height*2));
                 $info['icon_300'] = get_thumb_image($info['icon'], intval($width*3), intval($height*3));
                 $info['icon_400'] = get_thumb_image($info['icon'], intval($width*4), intval($height*4));
+                
+                if(strpos($info['icon'], 'https://') !== false && file_exists(PUBLIC_PATH . '/static/' . $info['name'] . '/images/icon.png')){
+                    //图标所在位置为模块静态目录下（推荐）
+                    $info['icon_100'] = $info['icon_200'] = $info['icon_300'] = $info['icon_400'] = '/static/'. $info['name'] .'/images/icon.png';
+                }
             }
         }
         
