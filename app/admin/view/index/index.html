@@ -3,7 +3,7 @@
 {block name="body"}
     <div class="index-content-box">
         <div class="">
-            <div class="count clearfix">
+            <div class="count row clearfix">
                 <div class="col-lg-3 col-xs-6">
                     <div class="small-box bg-green">
                         <div class="inner">
@@ -13,7 +13,7 @@
                         <div class="small-icon-box">
                             <i class="icon icon-tasks"></i>
                         </div>
-                        <a href="{:url('action/actionlog')}" class="small-box-footer">
+                        <a href="{:url('action/log')}" class="small-box-footer">
                             更多 <i class="icon-circle-arrow-right"></i>
                         </a>
                     </div>
@@ -27,7 +27,7 @@
                         <div class="small-icon-box">
                             <i class="icon icon-user"></i>
                         </div>
-                        <a href="{:url('user/index')}" class="small-box-footer">
+                        <a href="{:url('member/index')}" class="small-box-footer">
                             更多 <i class="icon-circle-arrow-right"></i>
                         </a>
                     </div>
@@ -41,7 +41,7 @@
                         <div class="small-icon-box">
                             <i class="icon icon-bar-chart-alt"></i>
                         </div>
-                        <a href="{:url('user/index')}" class="small-box-footer">
+                        <a href="{:url('member/index')}" class="small-box-footer">
                             更多 <i class="icon-circle-arrow-right"></i>
                         </a>
                     </div>
@@ -55,7 +55,7 @@
                         <div class="small-icon-box">
                             <i class="icon icon-group"></i>
                         </div>
-                        <a href="{:url('user/index?order=login_time')}" class="small-box-footer">
+                        <a href="{:url('member/index?order=last_login_time')}" class="small-box-footer">
                             更多 <i class="icon-circle-arrow-right"></i>
                         </a>
                     </div>
