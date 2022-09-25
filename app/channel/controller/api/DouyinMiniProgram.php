@@ -8,6 +8,7 @@ use app\common\model\Orders;
 use app\channel\facade\bytedance\MiniProgram as MiniProgramServer;
 use app\channel\model\DouyinMpSettle as DouyinMpSettleModel;
 use thans\jwt\facade\JWTAuth;
+use think\Exception;
 
 /**
  * 抖音小程序接口
@@ -44,30 +45,37 @@ class DouyinMiniProgram extends Base
             $msg = json_decode($content['msg'],true); 
             // 结算分账回调
             if($content['type'] == 'settle'){
-                $cp_settle_no = $msg['cp_settle_no'];
-                // 结算分账成功
-                if($msg['status'] == 'SUCCESS'){
-                    $DouyinMpSettleModel = new DouyinMpSettleModel;
-                    $OrdersModel = new Orders();
-                    // 查询结算数据
-                    $has = $DouyinMpSettleModel->where([
-                        'settle_no' => $cp_settle_no,
-                        'order_no' => $msg['order_id']
-                    ])->find();
-                    $order_info = $OrdersModel->where([
-                        'order_no' => $msg['order_id']
-                    ])->find();
-                    if($has && $order_info){
-                        $DouyinMpSettleModel->edit([
-                            'id' => $has['id'],
-                            'status' => 1, // 结算完成
-                            'finish_time' => $msg['settled_at']
-                        ]);
-                        $OrdersModel->edit([
-                            'id' => $order_info['id'],
-                            'settle' => 1
-                        ]);
+                try{
+                    // 开发者侧分账单号
+                    $cp_settle_no = $msg['cp_settle_no'];
+                    // 结算分账成功
+                    if($msg['status'] == 'SUCCESS'){
+                        $DouyinMpSettleModel = new DouyinMpSettleModel;
+                        $OrdersModel = new Orders();
+                        // 查询结算数据
+                        $has = $DouyinMpSettleModel->where([
+                            'settle_no' => $cp_settle_no,
+                            'order_no' => $msg['order_id']
+                        ])->find();
+                        $order_info = $OrdersModel->where([
+                            'order_no' => $msg['order_id']
+                        ])->find();
+                        if($has && $order_info){
+                            $DouyinMpSettleModel->edit([
+                                'id' => $has['id'],
+                                'status' => 1, // 结算完成
+                            ]);
+                            $OrdersModel->edit([
+                                'id' => $order_info['id'],
+                                'settle' => 1
+                            ]);
+                        }
                     }
+                } catch (Exception $e){
+                    return json([
+                        'err_no' => 400,
+                        'err_tips' => "business fail"
+                    ]);
                 }
             }
         }

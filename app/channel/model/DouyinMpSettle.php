@@ -21,16 +21,16 @@ class DouyinMpSettle extends Base
      */
     public function handle($data)
     {
+        $data['price'] = sprintf("%.2f",floatval($data['price']/100));
         $data['status_str'] = $this->_status[$data['status']];
 
-        if(!empty($data['create_time'])){
-            $data['create_time_str'] = time_format($data['create_time']);
-            $data['create_time_friendly_str'] = friendly_date($data['create_time']);
-        }
-        if(!empty($data['update_time'])){
-            $data['update_time_str'] = time_format($data['update_time']);
-            $data['update_time_friendly_str'] = friendly_date($data['update_time']);
-        }
+        $data['create_time_str'] = time_format($data['create_time']);
+        $data['create_time_friendly_str'] = friendly_date($data['create_time']);
+    
+        $data['update_time_str'] = time_format($data['update_time']);
+        $data['update_time_friendly_str'] = friendly_date($data['update_time']);
+        
+        
 
         return $data;
     }

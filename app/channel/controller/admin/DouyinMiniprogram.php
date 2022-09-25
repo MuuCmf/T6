@@ -6,6 +6,7 @@ use app\admin\controller\Admin as MuuAdmin;
 use app\channel\logic\TemplateMessage;
 use app\channel\model\DouyinMpConfig;
 use app\channel\model\DouyinMpSettle as DouyinMpSettleModel;
+use app\channel\service\bytedance\DouyinMp as DouyinMpService;
 use app\common\model\Orders as OrdersModel;
 use app\common\logic\Orders as OrdersLogic;
 use think\facade\View;
@@ -119,7 +120,7 @@ class DouyinMiniProgram extends MuuAdmin{
         $lists = $lists->toArray();
         
         foreach($lists['data'] as &$val){
-            $val = $this->DouyinMpSettleModel->formatData($val);
+            $val = $this->DouyinMpSettleModel->handle($val);
         }
         unset($val);
 
@@ -172,6 +173,13 @@ class DouyinMiniProgram extends MuuAdmin{
             if($val['paid_time'] + (86400 *7) < time()){
                 $val['can_settle'] = 1;
             }
+
+            // 查询是否有分账数据
+            $val['has_settle'] = 0;
+            $has_settle = $this->DouyinMpSettleModel->where('order_no', $val['order_no'])->find();
+            if(!empty($has_settle)){
+                $val['has_settle'] = 1;
+            }
         }
         unset($val);
 
@@ -196,25 +204,83 @@ class DouyinMiniProgram extends MuuAdmin{
     public function manualSettle()
     {
         $order_no = input('order_no', '', 'text');
+        $OrdersModel = new OrdersModel();
         if(!empty($order_no)){
-            $order_info = $this->OrderModel->where('order_no', $order_no)->find();
+            $order_info = $OrdersModel->where('order_no', $order_no)->find();
             $settle_no = build_order_no();
-            $result = $this->DouyinMpService->settle($settle_no, $order_no);
-            $result = json_decode($result, true);
+            // 查询是否已有该订单分账数据
+            $has_settle = $this->DouyinMpSettleModel->where('order_no', '=', $order_no)->find();
+
+            // 预写入分账表
+            $settle_id = 0;
+            if(empty($has_settle)){
+                $settle_id = $this->DouyinMpSettleModel->edit([
+                    'settle_no' => $settle_no,
+                    'order_no' => $order_no,
+                    'price' => $order_info['paid_fee'],
+                    'status' => 0
+                ]);
+            }
+            // 请求结算分账
+            $result = (new DouyinMpService)->settle($settle_no, $order_no);
+            // "err_no" => 0
+            // "err_tips" => "success"
+            // "settle_no" => "7147090344914766092"
             if($result['err_no'] == 0){
+                // 更新结算分账表
                 $this->DouyinMpSettleModel->edit([
+                    'id' => $settle_id,
                     'settle_no' => $settle_no,
                     'order_no' => $order_no,
                     'price' => $order_info['paid_fee'],
                     'douyin_settle_no' => $result['settle_no'],
                     'status' => 0
                 ]);
+                // 更改分账状态
+                $OrdersModel->edit([
+                    'id' => $order_info['id'],
+                    'settle' => 1
+                ]);
 
                 return $this->success('手动结算发送成功');
+            }else{
+                return $this->error($result['err_tips']);
             }
-            return $this->error('手动结算发送失败');
         }
         return $this->error('参数错误');
+    }
+
+    /**
+     * 结算及分账结果查询
+     */
+    public function manualSettleQuery()
+    {
+        $order_no = input('order_no', '', 'text');
+        // 查询订单数据
+        $OrdersModel = new OrdersModel();
+        $order_info = $OrdersModel->where('order_no', $order_no)->find();
+        // 查询分账表数据
+        $has_settle = $this->DouyinMpSettleModel->where('order_no', '=', $order_no)->find();
+        $settle_no = $has_settle['settle_no'];
+       
+        $result = (new DouyinMpService)->settleQuery($settle_no);
+        if($result['err_no'] == 0){
+            // 更新结算分账表
+            $this->DouyinMpSettleModel->edit([
+                'id' => $has_settle['id'],
+                'douyin_settle_no' => $result['settle_info']['settle_no'],
+                'status' => 1
+            ]);
+            // 更改分账状态
+            $OrdersModel->edit([
+                'id' => $order_info['id'],
+                'settle' => 1
+            ]);
+
+            return $this->success('校验成功');
+        }else{
+            return $this->error($result['err_tips']);
+        }
     }
 
     /**

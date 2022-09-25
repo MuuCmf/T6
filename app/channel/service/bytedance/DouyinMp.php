@@ -1,6 +1,7 @@
 <?php
 namespace app\channel\service\bytedance;
 
+use think\facade\Cache;
 use app\channel\model\DouyinMpConfig;
 use app\common\model\Orders as OrdersModel;
 use think\Exception;
@@ -62,18 +63,24 @@ class DouyinMp
      **/
     public function getAccessToken()
     {
-        $params = [
-            'appid' => $this->appid,
-            'secret' => $this->secret,
-            'grant_type' => 'client_credential'
-        ];
-
-        $result = $this->sendPost('/api/apps/v2/token',$params);
-        $result = json_decode($result, true);
-        if($result['err_no'] == 0){
-            return $result['data']['access_token'];
+        $access_token = Cache::get(request()->host() . '_bytedance_access_token_' . $this->shopid);
+        if(!$access_token){
+            $params = [
+                'appid' => $this->appid,
+                'secret' => $this->secret,
+                'grant_type' => 'client_credential'
+            ];
+    
+            $result = $this->sendPost('/api/apps/v2/token',$params);
+            $result = json_decode($result, true);
+            if($result['err_no'] == 0){
+                Cache::set(request()->host() . '_bytedance_access_token_' . $this->shopid, $result['data']['access_token'], 3600);
+                return $result['data']['access_token'];
+            }
+        }else{
+            return $access_token;
         }
-
+        
         return false;
     }
 
@@ -200,7 +207,8 @@ class DouyinMp
      * 结算分账
      */
     public function settle($settle_no, $order_no)
-    {
+    {   
+        //$access_token = $this->getAccessToken();
         $params = [
             'app_id' => $this->appid,
             'out_settle_no' => $settle_no,
@@ -209,7 +217,22 @@ class DouyinMp
         ];
         $params['sign'] = $this->sign($params);
 
-        $result = $this->sendPost('/api/apps/order/v2/push',$params);
+        $result = $this->sendPost('/api/apps/ecpay/v1/settle',$params);
+        return json_decode($result, true);
+    }
+
+    /**
+     * 查询结算分账
+     */
+    public function settleQuery($settle_no)
+    {   
+        $params = [
+            'app_id' => $this->appid,
+            'out_settle_no' => $settle_no,
+        ];
+        $params['sign'] = $this->sign($params);
+
+        $result = $this->sendPost('/api/apps/ecpay/v1/query_settle',$params);
         return json_decode($result, true);
     }
 

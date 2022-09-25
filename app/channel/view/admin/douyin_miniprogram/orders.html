@@ -73,7 +73,7 @@
                         <th>应支付金额</th>
                         <th>订单有效期至</th>
                         <th>支付状态</th>
-                        <th width=200>操作</th>
+                        <th width=240>操作</th>
                     </tr>
                 </thead>
     
@@ -113,9 +113,15 @@
                         </td>
                         <td>
                             {if $v['can_settle'] == 1}
-                            <a href="{:url('manualSettle',['order_no'=>$v['order_no']])}" class="btn btn-primary">手动结算</a>
+                            <a href="{:url('manualSettle',['order_no'=>$v['order_no']])}" class="btn btn-primary ajax-post">手动结算</a>
                             {else /}
                             <button type="button" class="btn btn-default" disabled>手动结算</button>
+                            {/if}
+
+                            {if $v['has_settle'] == 1}
+                            <a href="{:url('manualSettleQuery',['order_no'=>$v['order_no']])}" class="btn btn-warning ajax-post">查询校验结算数据</a>
+                            {else /}
+                            <button type="button" class="btn btn-default" disabled>查询校验结算数据</button>
                             {/if}
 
                         </td>
