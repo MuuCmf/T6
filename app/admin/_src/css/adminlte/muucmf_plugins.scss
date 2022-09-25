@@ -7,6 +7,19 @@
   padding-top: 0;
   margin-top: 50px;
 }
+.module-menu {
+  .module-treeview-menu {
+    li {
+      .icon {
+          width: 32px;
+          height: 32px;
+          border-radius: 10px;
+          overflow: hidden;
+      }
+    }
+  }
+}
+
 .skin-blue-light, 
 .skin-black-light, 
 .skin-green-light, 
@@ -98,6 +111,7 @@
       }
     }
   }
+
 }
 
 .skin-blue, 
@@ -342,6 +356,33 @@
         }
         p {
           display: none;
+        }
+      }
+
+      .sidebar-menu {
+        .treeview {
+          >a {
+            display: none;
+          }
+        }
+        .treeview-menu {
+          display: block!important;
+          >li {
+            >a {
+              padding: 8px 5px 8px 12px;
+              span {
+                display: none;
+              }
+            }
+          }
+        }
+
+        .module-treeview-menu {
+          >li {
+            >a {
+              padding: 8px 5px 8px 3px;
+            }
+          }
         }
       }
     }
