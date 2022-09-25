@@ -251,7 +251,7 @@ if (!function_exists('multi_image_upload')) {
     }
 }
 
-if (!function_exists('single_file_upload')) {
+if (!function_exists('single_audio_upload')) {
     /**
      * 音频上传组件
      * @param  string $name      唯一标示
@@ -566,7 +566,9 @@ if (!function_exists('single_video_upload')) {
     function single_video_upload($name, $video ,$input = false){
 
         $upload = "上传视频";
+        // 获取视频地址
         $video_path = get_attachment_src($video);
+
         $api = url('api/file/upload');
         //$input_name = $name;
         //兼容name数组形式
@@ -576,28 +578,15 @@ if (!function_exists('single_video_upload')) {
         // html 结构体
         $html = <<<EOF
         <div id="upload_single_video_{$name}" class="single-video-upload video-upload controls">
-            <div class="upload-video-box">
         EOF;
-        if(!empty($video)){
         $html .= <<<EOF
-            <div class="box-item">
-                <video controls >
-                    <source src="{$video_path}" ></source>
-                    您的浏览器暂不支持播放该视频，请升级至最新版浏览器。
-                </video>
-                <div class="remove-box text-center opacity del_btn">删除</div>
-            </div>
-            EOF;
-        }
-
-        $html .= <<<EOF
-            </div>
             <div class="progress-box"></div>
-            <div class="input-group">
         EOF;
+        // 显示输入框
         if ($input == true){
             if($vod_driver == 'tencent'){
                 $html .= <<<EOF
+                <div class="input-group">
                     <input type="text" class="form-control attach" name="{$name}" value="{$video}">
                     <span class="input-group-btn">
                         <button class="btn btn-default btn-upload" type="button">
@@ -605,33 +594,39 @@ if (!function_exists('single_video_upload')) {
                             <input class="vos-upload" type="file" accept="video/*" />
                         </button>
                     </span>
+                </div>
                 EOF;
             }else{
                 $html .= <<<EOF
+                <div class="input-group">
                     <input type="text" class="form-control attach" name="{$name}" value="{$video}">
                     <span class="input-group-btn">
                         <button class="btn btn-default btn-upload" type="button">{$upload}</button>
                     </span>
+                </div>
                 EOF;
             }
         }else{
             if($vod_driver == 'tencent'){
                 $html .= <<<EOF
+                <div class="input-group">
                     <input type="hidden" class="form-control attach" name="{$name}" value="{$video}">
                     <button class="btn btn-default btn-upload" type="button">
                         {$upload}
                         <input class="vos-upload" type="file" accept="video/*" />
                     </button>
+                </div>
                 EOF;
             }else{
                 $html .= <<<EOF
+                <div class="input-group">
                     <input type="hidden" class="form-control attach" name="{$name}" value="{$video}">
                     <button  class="btn btn-default btn-upload" type="button">{$upload}</button>
+                </div>
                 EOF;
             }
         }
         $html .= <<<EOF
-            </div>
         </div>
         EOF;
 
@@ -712,15 +707,6 @@ if (!function_exists('single_video_upload')) {
                                 success: function(resp) {
                                     // 写入文本框
                                     $('#upload_single_video_{$name} input[name="{$name}"]').val(params.video.url);
-                                    $('#upload_single_video_{$name}').find('.upload-video-box').html(
-                                        '<div class="box-item">' +
-                                            '<video controls >' + 
-                                                '<source src="' + params.video.url + '" ></source>' +
-                                                '您的浏览器暂不支持播放该视频，请升级至最新版浏览器。' +
-                                            '</video>' +
-                                        '<div class="remove-box text-center opacity del_btn">删除</div>' +
-                                    '</div>'
-                                    );
                                 },
                                 error: function(a, b, c) {
                                     alert('写入数据错误');
@@ -802,15 +788,7 @@ if (!function_exists('single_video_upload')) {
                     uploader_{$name}.on('uploadSuccess', function (file, data) {
                         if (data.code) {
                             $("#upload_single_video_{$name} input[name='{$name}']").val(data.data.attachment);
-                            $("#upload_single_video_{$name}").find('.upload-video-box').html(
-                                '<div class="box-item">' +
-                                        '<video controls >' + 
-                                            '<source src="' + data.data.url + '" ></source>' +
-                                            '您的浏览器暂不支持播放该视频，请升级至最新版浏览器。' +
-                                        '</video>' +
-                                    '<div class="remove-box text-center opacity del_btn">删除</div>' +
-                                '</div>'
-                            );
+                            
                             //重启webuploader,可多次上传
                             uploader_{$name}.reset();
                         } else {
@@ -859,26 +837,6 @@ if (!function_exists('single_video_upload')) {
                     $('.single-video-upload').on('click','.del_btn',function(){
                         $(this).parent().parent().next().find("[name='{$name}']").val('');
                         $(this).parent().remove();
-                    })
-                    //视频input 改变后加载
-                    $('.single-video-upload').on('blur','input[name="{$name}"]',function(){
-                        var val = $(this).val();
-                        if (val == ''){
-                            $(this).parent().prev().children().remove();
-                        }else{
-                            if (val.indexOf('http') == -1){
-                                val = "/attachment/" + val;
-                            }
-                            $(this).parent().prev().html(
-                                '<div class="box-item">' +
-                                        '<video controls >' + 
-                                            '<source src="' + val + '" ></source>' +
-                                            '您的浏览器暂不支持播放该视频，请升级至最新版浏览器。' +
-                                        '</video>' +
-                                    '<div class="remove-box text-center opacity del_btn">删除</div>' +
-                                '</div>'
-                            );
-                        }
                     })
                 })
             </script>
@@ -1142,6 +1100,15 @@ if (!function_exists('get_attachment_filename')) {
         $filename = $Attachment->getFileName($attachment);
 
         return $filename;
+    }
+}
+
+if (!function_exists('get_attachment_file_id')) {
+    function get_attachment_file_id($attachment){
+        $Attachment = new Attachment();
+        $file_id = $Attachment->getFileID($attachment);
+
+        return $file_id;
     }
 }
 

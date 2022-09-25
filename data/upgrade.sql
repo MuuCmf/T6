@@ -66,3 +66,11 @@ CREATE TABLE  IF NOT EXISTS `muucmf_douyin_mp_settle` (
   `update_time` int(11) UNSIGNED NOT NULL COMMENT '更新日志',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='抖音结算分账表';
+
+UPDATE `muucmf_extend_config` SET `value` = '1:配置项\r\n2:阿里云OSS\r\n3:腾讯云COS\r\n4:阿里云短信\r\n5:腾讯云短信\r\n6:微信支付\r\n7:支付宝支付\r\n8:提现配置\r\n9:腾讯云点播' WHERE `muucmf_extend_config`.`id` = 1;
+
+INSERT INTO `muucmf_extend_config` (`id`, `name`, `type`, `title`, `group`, `extra`, `remark`, `create_time`, `update_time`, `status`, `value`, `sort`) VALUES
+(43, 'WX_PAY_CERT', 'string', '微信支付cert证书', 6, '', '', 0, 0, 1, 'file/20220804/f8b77dcab71db6c2af4f939271bbaa37.pem', 0),
+(44, 'WX_PAY_KEY', 'string', '微信支付Key证书', 6, '', '', 0, 0, 1, 'file/20220804/b75d77e45e429c81a1550cd976504c60.pem', 0),
+(45, 'VOD_TENCENT_KEY_SWITCH', 'radio', 'key防盗链开关', 9, '0:不启用\r\n1:启用', '腾讯云点播key防盗链开关', 0, 0, 1, '0', 0),
+(46, 'VOD_TENCENT_KEY_VALUE', 'string', '防盗链 Key', 9, '', '腾讯云点播 防盗链Key值', 0, 0, 1, '', 0);

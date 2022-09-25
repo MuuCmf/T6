@@ -268,31 +268,20 @@ class Extend extends Admin
                 ->group('基础配置', [
                     'VOD_UPLOAD_DRIVER'
                 ]);
-            
-            // // 阿里云OSS参数配置
-            // $builder
-            //     ->keyText('OSS_ALIYUN_ACCESSKEYID', 'AccessKeyID', 'Access Key ID是您访问阿里云API的密钥，具有该账户完全的权限，请您妥善保管.')
-            //     ->keyText('OSS_ALIYUN_ACCESSKEYSECRET', 'AccessKeySecret', 'Access Key Secret是您访问阿里云API的密钥，具有该账户完全的权限，请您妥善保管.')
-            //     ->keyText('OSS_ALIYUN_ENDPOINT', 'Endpoint', '如：oss-cn-beijing.aliyuncs.com.')
-            //     ->keyText('OSS_ALIYUN_BUCKET', 'Bucket', 'Bucket.')
-            //     ->keyText('OSS_ALIYUN_BUCKET_DOMAIN', 'Bucket域名', 'Bucket域名.')
-            //     ->group('阿里云OSS', [
-            //         'OSS_ALIYUN_ACCESSKEYID', 
-            //         'OSS_ALIYUN_ACCESSKEYSECRET',
-            //         'OSS_ALIYUN_ENDPOINT',
-            //         'OSS_ALIYUN_BUCKET',
-            //         'OSS_ALIYUN_BUCKET_DOMAIN'
-            //     ]);
 
             // 腾讯云VOD参数配置
             $builder
                 ->keyText('VOD_TENCENT_SECRETID', 'SecretID', 'SecretID 是您项目的安全密钥，具有该账户完全的权限，请妥善保管.')
                 ->keyText('VOD_TENCENT_SECRETKEY', 'SecretKEY', 'SecretKEY 是您项目的安全密钥，具有该账户完全的权限，请妥善保管.')
                 ->keyText('VOD_TENCENT_SUBAPPID', 'SubAppId', 'SubAppId 是您云点播平台子应用ID，请妥善保管.')
-                ->group('腾讯云COS', [
+                ->keyRadio('VOD_TENCENT_KEY_SWITCH', 'key防盗链开关', 'key防盗链开关', [0 => '不启用', 1 => '启用'])
+                ->keyText('VOD_TENCENT_KEY_VALUE', '防盗链 Key', '必须由大小写字母（a - Z）或者数字（0 - 9）组成，长度在8 - 20个字符之间')
+                ->group('腾讯云点播', [
                     'VOD_TENCENT_SECRETID',
                     'VOD_TENCENT_SECRETKEY',
                     'VOD_TENCENT_SUBAPPID',
+                    'VOD_TENCENT_KEY_SWITCH',
+                    'VOD_TENCENT_KEY_VALUE'
                 ]);
 
             $builder->data($list);

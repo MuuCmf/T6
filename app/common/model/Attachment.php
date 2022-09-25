@@ -609,6 +609,16 @@ class Attachment extends Model
     }
 
     /**
+     * 获取文件名
+     */
+    public function getFileID($attachment)
+    {
+        $file_id = $this->where('attachment', $attachment)->value('file_id');
+
+        return $file_id;
+    }
+
+    /**
      * 写入、更新数据表
      */
     public function edit($data)
