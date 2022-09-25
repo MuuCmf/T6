@@ -215,14 +215,17 @@ class DouyinMiniProgram extends MuuAdmin{
             $settle_id = 0;
             if(empty($has_settle)){
                 $settle_id = $this->DouyinMpSettleModel->edit([
+                    'shopid' => $this->shopid,
                     'settle_no' => $settle_no,
                     'order_no' => $order_no,
                     'price' => $order_info['paid_fee'],
                     'status' => 0
                 ]);
             }
+            
             // 请求结算分账
             $result = (new DouyinMpService)->settle($settle_no, $order_no);
+            
             // "err_no" => 0
             // "err_tips" => "success"
             // "settle_no" => "7147090344914766092"
@@ -230,6 +233,7 @@ class DouyinMiniProgram extends MuuAdmin{
                 // 更新结算分账表
                 $this->DouyinMpSettleModel->edit([
                     'id' => $settle_id,
+                    'shopid' => $this->shopid,
                     'settle_no' => $settle_no,
                     'order_no' => $order_no,
                     'price' => $order_info['paid_fee'],
@@ -239,7 +243,7 @@ class DouyinMiniProgram extends MuuAdmin{
                 // 更改分账状态
                 $OrdersModel->edit([
                     'id' => $order_info['id'],
-                    'settle' => 1
+                    'settle' => 0
                 ]);
 
                 return $this->success('手动结算发送成功');
