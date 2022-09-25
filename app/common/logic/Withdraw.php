@@ -23,7 +23,8 @@ class Withdraw extends Base
     public function formatData($data)
     {
         //用户数据
-        $data['price'] = sprintf("%.2f",$data['price']/100);
+        $data['price'] = sprintf("%.2f",floatval($data['price']/100));
+        $data['real_price'] = sprintf("%.2f",floatval($data['real_price']/100));
         $data['paid_str'] = $this->_paid[$data['paid']];
         $data['error_str'] = $this->_error[$data['error']];
         if($data['paid_time'] == 0){
