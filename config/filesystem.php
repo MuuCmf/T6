@@ -19,6 +19,10 @@ return [
             // 可见性
             'visibility' => 'public',
         ],
+        'nfc' => [
+            'type'     => 'local',
+            'root'       => app()->getRootPath() . 'public/localfolder',
+        ],
         // 更多的磁盘配置信息
     ],
 ];
