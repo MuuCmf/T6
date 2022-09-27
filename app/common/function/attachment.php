@@ -561,7 +561,7 @@ if (!function_exists('single_audio_upload')) {
 
 if (!function_exists('single_video_upload')) {
     /**
-     * 视频上传
+     * 视频上传(仅支持本地和云点播方式)
      */
     function single_video_upload($name, $video ,$input = false){
 
@@ -760,6 +760,7 @@ if (!function_exists('single_video_upload')) {
             EOF;
 
         }else{
+            // 本地上传
             $html .= <<<EOF
             <script>
                 $(function () {

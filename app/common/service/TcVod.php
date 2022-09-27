@@ -20,7 +20,9 @@ class TcVod
             "currentTimeStamp" => intval($current),
             "expireTime" => intval($expired),
             "random" => rand(),
-            "vodSubAppId" => intval($subAppId)
+            "vodSubAppId" => intval($subAppId),
+            "procedure" => "SimpleAesEncryptPreset", // 系统预置任务流
+            "taskNotifyMode" => "none"
         );
 
         // 计算签名

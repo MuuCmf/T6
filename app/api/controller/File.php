@@ -187,4 +187,13 @@ class File extends Api
         }
     }
 
+    /**
+     * 删除附件数据风险较大，仅可删除自身上传数据
+     * （前台暂不提供）
+     */
+    public function delete()
+    {
+
+    }
+
 }

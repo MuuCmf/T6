@@ -6,7 +6,6 @@ use app\common\service\TcVod;
 
 class Vod extends Api
 {
-
     public function sign()
     {
         $secretId = config('extend.VOD_TENCENT_SECRETID');

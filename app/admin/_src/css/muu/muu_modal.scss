@@ -13,3 +13,203 @@
     height: auto;
   }
 }
+
+
+//云点播模态框
+.uploader-vod-modal {
+  .modal-body {
+      padding: 0;
+  }
+  .material-head {
+      border-bottom: 1px solid #ddd;
+      padding: 0 10px 10px 10px;
+      .progress-box {
+          width:calc(100% - 86px);
+          height: 40px;
+          .progress {
+              margin-bottom: 0;
+          }
+      }
+      .btn-uploader {
+          height: 40px;
+          uploader-btn {
+              padding: 5px 10px;
+              height: 40px;
+              line-height: 28px;
+              font-size: 14px;
+              position: relative;
+              cursor: pointer;
+              color: #888;
+              background: #fafafa;
+              border: 1px solid #ddd;
+              border-radius: 4px;
+              overflow: hidden;
+              display: inline-block;
+              *display: inline;
+              *zoom: 1;
+              input {
+                  position: absolute;
+                  font-size: 100px;
+                  right: 0;
+                  top: 0;
+                  opacity: 0;
+                  filter: alpha(opacity=0);
+                  cursor: pointer
+              }
+          }
+      }
+  }
+  .material-body {
+      height: 407px;
+      padding: 0;
+      .lists {
+          min-height: 300px;
+          display: flex;
+          display: -webkit-flex;
+          display: -moz-flex;
+          display: -ms-flex;
+          padding: 10px 10px 10px;
+          flex-wrap: wrap;
+          max-height: 360px;
+          overflow-y: auto;
+          overflow-x: hidden;
+          p.loading {
+              display: block;
+              flex: 1;
+              text-align: center;
+              font-size: 16px;
+              color: #999;
+              padding: 60px 0;
+          }
+          .item {
+              flex: none;
+              position: relative;
+              margin: 10px;
+              text-align: center;
+              vertical-align: middle;
+              
+              &:hover {
+                  outline: #3296fa solid 2px;
+                  cursor: pointer;
+              }
+              .name {
+                  position: absolute;
+                  bottom: 0;
+                  left: 0;
+                  width: 100%;
+                  line-height: 34px;
+                  background: rgba(0,0,0,.5);
+                  color: #fff;
+                  padding: 0 20px;
+                  text-align: left;
+                  z-index: 2;
+              }
+          }
+      }
+
+      .image-container {
+          .item {
+              width: calc(20% - 20px);
+              background-color: #eee;
+              background-size: contain;
+              background-repeat: no-repeat;
+              background-position: 50% 50%;
+              &:before {
+                  content: "";
+                  display: inline-block;
+                  padding-bottom: 100%;
+                  width: .1px;
+                  vertical-align: middle;
+              }
+              .time {
+  
+              }
+          }
+      }
+      .audio-container {
+          .item {
+              position: relative;
+              text-align: center;
+              border: 1px solid #e8e9eb;
+              width: calc(25% - 20px);
+              height: 150px;
+              img {
+                  width: 60px;
+                  height: 60px;
+                  margin-top: 18px;
+              }
+              .time {
+                  color: #999;
+                  line-height: 34px;
+              }
+          }
+      }
+      .video-container {
+          .item {
+              position: relative;
+              text-align: center;
+              border: 1px solid #e8e9eb;
+              width: calc(25% - 20px);
+              height: 150px;
+              img {
+                  width: 60px;
+                  height: 60px;
+                  margin-top: 18px;
+              }
+              .time {
+                  color: #999;
+                  line-height: 34px;
+              }
+          }
+      }
+      .attachment-page {
+          padding: 0 10px;
+          text-align: right;
+          .pager {
+              margin: 5px 0;
+          }
+      }
+      .mask {
+          position: absolute;
+          top: 0;
+          right: 0;
+          bottom: 0;
+          left: 0;
+          z-index: 5;
+          background-color: rgba(0,0,0,.5);
+          text-align: center;
+          display: none;
+          .icon {
+              color: #fff;
+              font-size: 32px;
+              position: absolute;
+              top: 50%;
+              left: 50%;
+              -webkit-transform: translate(-50%,-50%);
+              -moz-transform: translate(-50%,-50%);
+              transform: translate(-50%,-50%);
+          }
+      }
+      .del {
+          position: absolute;
+          width: 34px;
+          line-height: 34px;
+          text-align: center;
+          background-color: #3296fa;
+          cursor: pointer;
+          bottom: 0;
+          right: 0;
+          z-index: 6;
+          display: none;
+      }
+  }
+  .modal-footer {
+      border-top: 0;
+      text-align: center;
+      padding: 0 0 30px 0;
+      .btn {
+          display: inline-block;
+          min-width: 140px;
+      }
+  }
+}
