@@ -570,9 +570,6 @@ if (!function_exists('single_video_upload')) {
         $video_path = get_attachment_src($video);
 
         $api = url('api/file/upload');
-        //$input_name = $name;
-        //兼容name数组形式
-        $name = preg_replace('/\[.*?\]/', '', $name);
         // 获取是否启用云点播
         $vod_driver = config('extend.VOD_UPLOAD_DRIVER');
         // html 结构体
