@@ -4333,7 +4333,7 @@ CREATE TABLE IF NOT EXISTS `muucmf_follow` (
 -- 表的结构 `muucmf_history`
 --
 DROP TABLE IF EXISTS `muucmf_history`;
-CREATE TABLE `muucmf_history` (
+CREATE TABLE IF NOT EXISTS `muucmf_history` (
   `id` bigint(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键ID',
   `shopid` int(11) NOT NULL DEFAULT '0' COMMENT '店铺ID',
   `app` varchar(60) NOT NULL COMMENT '关联的应用唯一标识',
@@ -4347,12 +4347,30 @@ CREATE TABLE `muucmf_history` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='内容浏览记录' ROW_FORMAT=COMPACT;
 
+
+--
+-- 表的结构 `muucmf_jobs`
+--
+
+DROP TABLE IF EXISTS `muucmf_jobs`;
+CREATE TABLE IF NOT EXISTS `muucmf_jobs` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `queue` varchar(255) NOT NULL,
+  `payload` longtext NOT NULL,
+  `attempts` tinyint(3) unsigned NOT NULL,
+  `reserved` tinyint(3) unsigned NOT NULL,
+  `reserved_at` int(10) unsigned DEFAULT NULL,
+  `available_at` int(10) unsigned NOT NULL,
+  `created_at` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 --
 -- 表的结构 `muucmf_keywords`
 --
 
 DROP TABLE IF EXISTS `muucmf_keywords`;
-CREATE TABLE `muucmf_keywords` (
+CREATE TABLE IF NOT EXISTS `muucmf_keywords` (
   `id` bigint(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键ID',
   `shopid` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '店铺ID',
   `uid` int(11) UNSIGNED NOT NULL COMMENT 'UID',
@@ -4406,7 +4424,7 @@ CREATE TABLE IF NOT EXISTS `muucmf_member` (
 --
 
 DROP TABLE IF EXISTS `muucmf_member_sync`;
-CREATE TABLE `muucmf_member_sync` (
+CREATE TABLE IF NOT EXISTS `muucmf_member_sync` (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键ID',
   `shopid` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '店铺ID',
   `uid` int(11) UNSIGNED NOT NULL COMMENT '用户ID',
@@ -4425,7 +4443,7 @@ CREATE TABLE `muucmf_member_sync` (
 --
 
 DROP TABLE IF EXISTS `muucmf_member_wallet`;
-CREATE TABLE `muucmf_member_wallet` (
+CREATE TABLE IF NOT EXISTS `muucmf_member_wallet` (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键ID',
   `uid` int(11) UNSIGNED NOT NULL COMMENT '用户ID',
   `shopid` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '店铺ID',
@@ -4627,7 +4645,7 @@ CREATE TABLE IF NOT EXISTS `muucmf_message_content` (
 --
 
 DROP TABLE IF EXISTS `muucmf_message_type`;
-CREATE TABLE `muucmf_message_type` (
+CREATE TABLE IF NOT EXISTS`muucmf_message_type` (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键ID',
   `shopid` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '店铺ID',
   `title` varchar(64) NOT NULL COMMENT '类型标题',
@@ -4671,7 +4689,7 @@ CREATE TABLE IF NOT EXISTS `muucmf_module` (
 --
 
 DROP TABLE IF EXISTS `muucmf_orders`;
-CREATE TABLE `muucmf_orders` (
+CREATE TABLE IF NOT EXISTS `muucmf_orders` (
   `id` bigint(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键ID',
   `shopid` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '店铺ID',
   `app` varchar(60) NOT NULL COMMENT '关联应用唯一标识',
@@ -4714,7 +4732,7 @@ CREATE TABLE `muucmf_orders` (
 -- --------------------------------------------------------
 
 DROP TABLE IF EXISTS `muucmf_qrcode_login`;
-CREATE TABLE `muucmf_qrcode_login` (
+CREATE TABLE IF NOT EXISTS `muucmf_qrcode_login` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键ID',
   `scene_key` varchar(100) NOT NULL COMMENT '场景值',
   `metadata` text COMMENT '元数据',
@@ -4937,7 +4955,7 @@ CREATE TABLE IF NOT EXISTS `muucmf_vip_card` (
 --
 
 DROP TABLE IF EXISTS `muucmf_wechat_auto_reply`;
-CREATE TABLE `muucmf_wechat_auto_reply` (
+CREATE TABLE IF NOT EXISTS `muucmf_wechat_auto_reply` (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键ID',
   `shopid` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '店铺ID',
   `keyword` varchar(100) NOT NULL COMMENT '关键字',
@@ -4961,7 +4979,7 @@ CREATE TABLE `muucmf_wechat_auto_reply` (
 --
 
 DROP TABLE IF EXISTS `muucmf_wechat_config`;
-CREATE TABLE `muucmf_wechat_config` (
+CREATE TABLE IF NOT EXISTS `muucmf_wechat_config` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键ID',
   `shopid` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '店铺ID',
   `title` varchar(24) NOT NULL COMMENT '应用标题',
@@ -4987,7 +5005,7 @@ CREATE TABLE `muucmf_wechat_config` (
 --
 
 DROP TABLE IF EXISTS `muucmf_wechat_mp_config`;
-CREATE TABLE `muucmf_wechat_mp_config` (
+CREATE TABLE IF NOT EXISTS `muucmf_wechat_mp_config` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键ID',
   `shopid` int(11) UNSIGNED NOT NULL COMMENT '店铺ID',
   `title` varchar(20) NOT NULL COMMENT '小程序名称',
@@ -5009,7 +5027,7 @@ CREATE TABLE `muucmf_wechat_mp_config` (
 --
 
 DROP TABLE IF EXISTS `muucmf_withdraw`;
-CREATE TABLE `muucmf_withdraw` (
+CREATE TABLE IF NOT EXISTS `muucmf_withdraw` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键ID',
   `shopid` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '店铺ID',
   `uid` int(11) NOT NULL COMMENT '用户ID',

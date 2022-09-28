@@ -74,3 +74,15 @@ INSERT INTO `muucmf_extend_config` (`id`, `name`, `type`, `title`, `group`, `ext
 (44, 'WX_PAY_KEY', 'string', '微信支付Key证书', 6, '', '', 0, 0, 1, 'file/20220804/b75d77e45e429c81a1550cd976504c60.pem', 0),
 (45, 'VOD_TENCENT_KEY_SWITCH', 'radio', 'key防盗链开关', 9, '0:不启用\r\n1:启用', '腾讯云点播key防盗链开关', 0, 0, 1, '0', 0),
 (46, 'VOD_TENCENT_KEY_VALUE', 'string', '防盗链 Key', 9, '', '腾讯云点播 防盗链Key值', 0, 0, 1, '', 0);
+
+CREATE TABLE IF NOT EXISTS `muucmf_jobs` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `queue` varchar(255) NOT NULL,
+  `payload` longtext NOT NULL,
+  `attempts` tinyint(3) unsigned NOT NULL,
+  `reserved` tinyint(3) unsigned NOT NULL,
+  `reserved_at` int(10) unsigned DEFAULT NULL,
+  `available_at` int(10) unsigned NOT NULL,
+  `created_at` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;

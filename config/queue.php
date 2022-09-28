@@ -12,15 +12,15 @@
 return [
     'default'     => 'redis',
     'connections' => [
-        // 'sync'     => [
-        //     'type' => 'sync',
-        // ],
-        // 'database' => [
-        //     'type'       => 'database',
-        //     'queue'      => 'default',
-        //     'table'      => 'jobs',
-        //     'connection' => null,
-        // ],
+        'sync'     => [
+            'type' => 'sync',
+        ],
+        'database' => [
+            'type'       => 'database',
+            'queue'      => 'default',
+            'table'      => 'jobs',
+            'connection' => null,
+        ],
         'redis'    => [
             'type'       => 'redis',
             'queue'      => 'default',
