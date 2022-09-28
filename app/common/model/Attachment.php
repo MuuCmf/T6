@@ -2,7 +2,6 @@
 
 namespace app\common\model;
 
-use think\Model;
 use think\facade\Db;
 use think\facade\Filesystem;
 use think\Image;
@@ -11,7 +10,7 @@ use OSS\Core\OssException;
 use Qcloud\Cos\Client as CosClient;
 use Qcloud\Cos\Exception\ServiceResponseException;
 
-class Attachment extends Model
+class Attachment extends Base
 {
     // 开启自动写入时间戳字段
     protected $autoWriteTimestamp = true;

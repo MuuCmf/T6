@@ -51,11 +51,12 @@
 
                 $.each(res.data.data,function(i,n){
                     var background_image = 'background-image: url('+ n.url +');';
-                    var url = n.url;
+                    var attachment = n.attachment;
                     var filename = n.filename;
+                    var file_id = n.file_id;
 
                     if(type == 'image'){
-                        html_text += '<div class="item" data-type="'+type+'" style="'+background_image+'" data-id='+ n.id +' data-url="'+url+'" data-filename="'+filename+'">'+
+                        html_text += '<div class="item" data-type="'+type+'" style="'+background_image+'" data-id='+ n.id +' data-url="'+url+'" data-filename="'+filename+'" data-file-id="'+file_id+'">'+
                                  '  <div class="name text-ellipsis">'+ n.filename +'</div>'+
                                  '  <div class="mask">'+
                                  '      <i class="icon icon-check"></i>'+
@@ -67,9 +68,9 @@
                     }
                     if(type == 'audio'){
                         
-                        html_text += '<div class="item" data-type="'+type+'" data-id='+ n.id +' data-url="'+url+'" data-filename="'+filename+'">'+
-                                 '  <img src="/web/resource/images/icon-voice.png" alt="" />'+
-                                 '  <div class="time">创建于：'+n.create_time_str+'</div>'+
+                        html_text += '<div class="item" data-type="'+type+'" data-id='+ n.id +' data-url="'+attachment+'" data-filename="'+filename+'">'+
+                                 '  <img src="/static/common/images/icon-voice.png" alt="'+filename+'" />'+
+                                 '  <div class="time">fileID：'+n.file_id+'</div>'+
                                  '  <div class="name text-ellipsis">'+ n.filename +'</div>'+
                                  '  <div class="mask">'+
                                  '      <i class="icon icon-check"></i>'+
@@ -81,9 +82,9 @@
                     }
                     if(type == 'video'){
                         
-                        html_text += '<div class="item" data-type="'+type+'" data-id='+ n.id +' data-url="'+url+'" data-filename="'+filename+'">'+
-                                 '  <img src="/web/resource/images/icon-video.png" alt="" />'+
-                                 '  <div class="time">创建于：'+n.create_time_str+'</div>'+
+                        html_text += '<div class="item" data-type="'+type+'" data-id='+ n.id +' data-url="'+attachment+'" data-filename="'+filename+'">'+
+                                 '  <img src="/static/common/images/icon-video.png" alt="'+filename+'" />'+
+                                 '  <div class="time">fileID：'+n.file_id+'</div>'+
                                  '  <div class="name text-ellipsis">'+ n.filename +'</div>'+
                                  '  <div class="mask">'+
                                  '      <i class="icon icon-check"></i>'+
@@ -188,7 +189,9 @@
             '               <div class="material-body">'+
             '                    <div class="lists '+type+'-container"></div>'+
             '                    <div class="attachment-page">'+
-            '                       <ul id="attachmentPage" data-ride="pager" class="pager" data-elements="prev,nav,next,page_of_total_text"></ul>'+
+            '                       <ul id="attachmentPage" data-ride="pager" class="pager" data-elements="prev,nav,next,page_of_total_text">'+
+            '                           <span class="loading">加载中...</span>'+
+            '                       </ul>'+
             '                   </div>'+
             '               </div>'+
             '           </div>\n' +
@@ -369,7 +372,7 @@
                 input_group.next().find('img').attr('src',item_url);
             }
             //写入路径
-            input_group.find('input').val(item_url);
+            input_group.find('input.attach').val(item_url);
             
             //关闭模态框
             $(this).parents('.uploader-vod-modal').find('[data-dismiss="modal"]').click();
