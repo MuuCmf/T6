@@ -61,6 +61,7 @@ class Comment extends Base
             if(empty($article_id)) return $this->error('参数错误');
             if(empty($content)) return $this->error('内容不能为空');
 
+            $status = 1;
             if($this->config_data['comment']['audit'] == 1){
                 $status = -1;
             }
