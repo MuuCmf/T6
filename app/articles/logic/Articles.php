@@ -1,11 +1,13 @@
 <?php
 namespace app\articles\logic;
 
+use app\articles\controller\api\Support;
 use app\articles\model\ArticlesCategory as CategoryModel;
 use app\articles\logic\Category as CategoryLogic;
 use app\articles\model\ArticlesConfig as ConfigModel;
 use app\articles\logic\Config as ConfigLogic;
 use app\common\model\Favorites as FavoritesModel;
+use app\common\model\Support as SupportModel;
 
 /*
  * 数据逻辑层
@@ -26,6 +28,7 @@ class Articles extends Base
     protected $ConfigModel;
     protected $ConfigLogic;
     protected $FavoritesModel;
+    protected $SupportModel;
     protected $CategoryModel;
     protected $CategoryLogic;
 
@@ -34,6 +37,7 @@ class Articles extends Base
         $this->ConfigModel = new ConfigModel();
         $this->ConfigLogic = new ConfigLogic();
         $this->FavoritesModel = new FavoritesModel();
+        $this->SupportModel = new SupportModel();
         $this->CategoryModel = new CategoryModel();
         $this->CategoryLogic = new CategoryLogic();
     }
@@ -105,10 +109,18 @@ class Articles extends Base
             $data['content'] = htmlspecialchars_decode($data['content']);
             
             //判断是否收藏
-            if($uid > 0 && $this->FavoritesModel->yesFavorites($shopid, get_module_name(), $uid, $id, 'articles')){
+            // yesFavorites($shopid, $app, $uid, $info_id, $info_type)
+            if($uid > 0 && $this->FavoritesModel->yesFavorites($shopid, 'articles', $uid, $id, 'Articles')){
                 $data['favorites_yesno'] = 1;
             }else{
                 $data['favorites_yesno'] = 0;
+            }
+
+            //判断是否点赞
+            if($uid > 0 && $this->SupportModel->yesSupport($shopid, 'articles', $uid, $id, 'Articles')){
+                $data['support_yesno'] = 1;
+            }else{
+                $data['support_yesno'] = 0;
             }
             
             $data['status_str'] = $this->_status[$data['status']];

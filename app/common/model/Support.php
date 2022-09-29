@@ -30,7 +30,7 @@ class Support extends Base
     /**
      * 判断用户是否点赞
      */
-    public function yesSupport($shopid, $uid, $info_id, $info_type , $app)
+    public function yesSupport($shopid, $app, $uid, $info_id, $info_type)
     {
         if(!empty($shopid) && $shopid != 0){
             $map[] = ['shopid', '=', $shopid];
