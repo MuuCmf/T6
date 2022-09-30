@@ -29,10 +29,10 @@ class Announce
         
         // 图片处理
         if(isset($data['cover'])){
-            $data['cover_src_80'] = get_thumb_image($data['cover'], 80, 80);
-            $data['cover_src_120'] = get_thumb_image($data['cover'], 120, 120);
-            $data['cover_src_200'] = get_thumb_image($data['cover'], 200, 200);
-            $data['cover_src_400'] = get_thumb_image($data['cover'], 400, 400);
+            $data['cover_80'] = get_thumb_image($data['cover'], 80, 80);
+            $data['cover_120'] = get_thumb_image($data['cover'], 120, 120);
+            $data['cover_200'] = get_thumb_image($data['cover'], 200, 200);
+            $data['cover_400'] = get_thumb_image($data['cover'], 400, 400);
         }
 
         // 连接至数据处理

@@ -99,10 +99,11 @@ class Announce extends Admin
             // 处理连接至数据
             if(!empty($data['link_type']) || !empty($data['link_title'])){
                 $link_to = [
+                    'app' => $data['link_app'],
                     'type' => $data['link_type'],
                     'title' => $data['link_title'],
                     'type_title' => $data['link_type_title'],
-                    'param' => $data['link_param']
+                    'param' => json_decode($data['link_param'], true)
                 ];
                 $data['link_to'] = json_encode($link_to);
             }
@@ -120,6 +121,12 @@ class Announce extends Admin
             if(!empty($id)){
                 $data = $this->AnnounceModel->getDataById($id);
                 $data = $this->AnnounceLogic->formatData($data);
+                if(!empty($data['link']) && !empty($data['link']['param'])){
+                    $link = $data['link'];
+                    $link['param'] = json_encode($link['param']);
+                    $data['link'] = $link;
+                }
+                
             }else{
                 // 初始化数据
                 $data = [];

@@ -16,7 +16,8 @@ class Announce extends Api
         $this->logic = new AnnounceLogic();
     }
 
-    public function detail(){
+    public function detail()
+    {
         $id = input('get.id',0);
         $data = $this->model->getDataById($id);
         $data = $this->logic->formatData($data);

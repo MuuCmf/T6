@@ -106,6 +106,7 @@
                                 </div>
                             </div>
                             <!--链接至隐藏域START-->
+                            <input type="hidden" name="link_app" value="{$data['link']['app']|default=''}">
                             <input type="hidden" name="link_title" value="{$data['link']['title']|default=''}">
                             <input type="hidden" name="link_type" value="{$data['link']['type']|default=''}">
                             <input type="hidden" name="link_type_title" value="{$data['link']['type_title']|default=''}">
@@ -222,101 +223,6 @@
 	</div>
 </div>
 <!--链接至模态框 END-->
-
-<!--图标选择模态框-->
-<div class="modal fade" id="iconModal">
-	<div class="modal-dialog">
-	    <div class="modal-content">
-	    	<div class="modal-header">
-	        	<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">关闭</span></button>
-	        <h4 class="modal-title">选择图标</h4>
-	    	</div>
-	      	<div class="modal-body">
-	      		<div class="upload-icon">
-					<div class="btn-custom uploadImgBtn">上传自定义图标</div>
-	      		</div>
-	      		<div class="upload-list"></div>
-	      		<h3>系统图标</h3>
-
-	      		<ul class="nav nav-tabs" role="tablist">
-					{notempty name="icon_list"}
-					{foreach $icon_list as $k=>$vo}
-					{if $k == $config_data['style']}
-					<li role="presentation"  class="active">
-						<a href="#{$k}" aria-controls="{$k}" role="tab" data-toggle="tab">{$k}</a>
-					</li>
-					{else}
-					<li role="presentation">
-						<a href="#{$k}" aria-controls="{$k}" role="tab" data-toggle="tab">{$k}</a>
-					</li>
-					{/if}
-					{/foreach}
-					{/notempty}
-				</ul>
-				
-				<div class="tab-content">
-					{notempty name="icon_list"}
-					{foreach $icon_list as $k=>$vo}
-					<div role="tabpanel" class="tab-pane {if $k == $config_data['style']} active{/if}" id="{$k}">
-						<div class="icon-section">
-							{foreach $vo as $c_k=>$c_v}
-							<span data-icon-url="{$c_v['url']}">
-								<img src="{$c_v['url']}" />
-							</span>
-							{/foreach}
-						</div>
-					</div>
-					{/foreach}
-					{/notempty}
-				</div>
-	      	</div>
-	    </div>
-	</div>
-</div>
-
-<!--富文本编辑器模态框-->
-<div class="modal fade" id="customTextEditorModal">
-	<div class="modal-dialog modal-lg">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">关闭</span></button>
-				<h4 class="modal-title">自定义文本</h4>
-			</div>
-			<div class="modal-body">
-				<div class="ueditor-box">
-				{:ueditor('content', 'content')}
-				</div>
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-				<button type="button" class="btn btn-primary" data-rule="save">保存</button>
-			</div>
-		</div>
-	</div>
-</div>
-<!--富文本编辑器模态框END-->
-
-<!--自定义HTML模态框-->
-<div class="modal fade" id="customHtmlModal">
-	<div class="modal-dialog modal-lg">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">关闭</span></button>
-				<h4 class="modal-title">自定义html</h4>
-			</div>
-			<div class="modal-body">
-				<div class="html-box">
-					<textarea class="form-control" name="content" rows="10"></textarea>
-				</div>
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-				<button type="button" class="btn btn-primary" data-rule="save">保存</button>
-			</div>
-		</div>
-	</div>
-</div>
-<!--自定义HTML模态框END-->
 
 {/block}
 {block name="script"}
