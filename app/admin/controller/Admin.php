@@ -48,7 +48,6 @@ class Admin extends Base
     {
         // 判断登陆
         $this->needLogin();
-        $this->recordRequest();
         $this->setTitle();
         // 当前系统域名
         View::assign('this_domain',request()->domain());
@@ -309,14 +308,6 @@ class Admin extends Base
             return false;
         }
         return true;
-    }
-
-    /**
-     * 记录请求
-     */
-    public function recordRequest(){
-        $result = (new \app\admin\lib\Cloud())->recordRequest();
-        return $result;
     }
 
     /**
