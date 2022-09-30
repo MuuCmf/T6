@@ -3,7 +3,7 @@
 /**
  * 百度富文本编辑器
  */
-function ueditor($id = 'myeditor', $name = 'content', $default='', $config='', $style='', $param='', $width='100%')
+function ueditor($id = 'myeditor', $name = 'content', $default='', $config='', $style='')
 {
     $url = url("api/file/ueditor");
 

@@ -29,6 +29,7 @@ class File extends Api
     /* 通用文件上传 */
     public function upload()
     {   
+        $shopid = input('shopid', 0, 'intval');
         // 强制上传方法，默认自动
         $enforce = input('enforce', 'auto', 'text');
         $uid = get_uid();
@@ -38,7 +39,7 @@ class File extends Api
             return $this->error('未选择文件');
         }
 
-        $result = $this->Attachment->upload($files, 'file', $uid, $enforce);
+        $result = $this->Attachment->upload($shopid, $files, 'file', $uid, $enforce);
 
         if(is_array($result)){
             return $this->result(200, '上传成功', $result);
@@ -53,7 +54,8 @@ class File extends Api
      */
     public function avatar()
     {
-        $uid = is_login();
+        $shopid = input('shopid', 0, 'intval');
+        $uid = get_uid();
         /* 调用文件上传组件上传文件 */
         $files = request()->file();
         
@@ -63,7 +65,7 @@ class File extends Api
             return json($return);
         }
         
-        $arr = $this->Attachment->upload($files,'avatar',$uid);
+        $arr = $this->Attachment->upload($shopid,$files,'avatar',$uid);
 
         if(is_array($arr)){
             $return['code'] = 1;
@@ -82,6 +84,7 @@ class File extends Api
      */
     public function ueditor(){
 
+        $shopid = input('shopid', 0, 'intval');
         $action = input('action', '', 'text');
         switch($action){
             
@@ -97,7 +100,7 @@ class File extends Api
                     return json($return);
                 }
 
-                $res = $this->Attachment->upload($files,'file');
+                $res = $this->Attachment->upload($shopid,$files,'file');
                 
                 $result['state'] ='SUCCESS';
                 $result['url'] = $res['url'];
@@ -112,7 +115,7 @@ class File extends Api
                     return json($return);
                 }
 
-                $arr = $this->Attachment->Attachment($files,'base64');
+                $arr = $this->Attachment->Attachment($shopid,$files,'base64');
                 
                 $result['state'] ='SUCCESS';
                 $result['url'] = $arr['url'];
@@ -129,7 +132,7 @@ class File extends Api
                     return json($return);
                 }
 
-                $arr = $this->Attachment->upload($files,'file');
+                $arr = $this->Attachment->upload($shopid,$files,'file');
 
                 if(is_array($arr)){
                     $result['state'] ='SUCCESS';
@@ -152,7 +155,7 @@ class File extends Api
                     return json($return);
                 }
 
-                $arr = $this->Attachment->upload($files,'file');
+                $arr = $this->Attachment->upload($shopid,$files,'file');
 
                 if(is_array($arr)){
                     $result['state'] ='SUCCESS';

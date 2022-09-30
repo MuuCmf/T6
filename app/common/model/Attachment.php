@@ -29,16 +29,16 @@ class Attachment extends Base
      *
      * @return     <type>  ( description_of_the_return_value )
      */
-    public function upload($files, $type = "file", $uid = 0, $enforce = 'auto')
+    public function upload($shopid, $files, $type = "file", $uid = 0, $enforce = 'auto')
     {
         if($type=='file'){
-            $result = $this->file($files, $enforce);
+            $result = $this->file($shopid, $files, $enforce);
         }
         if($type=='avatar'){
-            $result = $this->avatar($files, $uid);
+            $result = $this->avatar($shopid, $files, $uid);
         }
         if($type=='base64'){
-            $result = $this->base64($files);
+            $result = $this->base64($shopid, $files);
         }
 
         return $result;
@@ -50,7 +50,7 @@ class Attachment extends Base
      * @param      <type>         $files  The files
      * @return     array|boolean  ( description_of_the_return_value )
      */
-    public function file($files, $enforce  = 'auto')
+    public function file($shopid, $files, $enforce  = 'auto')
     {   
         if (empty($files)) {
             return false;
@@ -85,27 +85,28 @@ class Attachment extends Base
                 {
                     case 'image':
                         $file_dir = 'images';
+                        $driver = config('extend.PICTURE_UPLOAD_DRIVER');
                     break;
                     case 'audio':
                         $file_dir = 'audio';
+                        $driver = config('extend.FILE_UPLOAD_DRIVER');
                     break;
                     case 'video':
                         $file_dir = 'video';
+                        $driver = config('extend.FILE_UPLOAD_DRIVER');
                     break;
                     default:
                         $file_dir = 'file';
-                }
-                //获取上传驱动
-                if($enforce == 'auto'){
-                    // 获取上传驱动
-                    if($file_dir == 'images'){
-                        $driver = config('extend.PICTURE_UPLOAD_DRIVER');
-                    }else{
                         $driver = config('extend.FILE_UPLOAD_DRIVER');
-                    }
                 }
+
+                // 传shopid写入对应SHOPID目录
+                if(!empty($shopid)){
+                    $file_dir = $shopid . DIRECTORY_SEPARATOR . $file_dir;
+                }
+                
+                // 强制本地驱动
                 if($enforce == 'local'){
-                    // 强制本地驱动
                     $driver = 'local';
                 }
 
@@ -116,10 +117,6 @@ class Attachment extends Base
                 $data['attachment'] = $savename;
                 $data['attachment'] = str_replace("\\","/",$data['attachment']);
                 
-                if($driver == 'local'){
-                    // 本地无需处理
-                }
-
                 // 阿里云OSS
                 if($driver == 'aliyun') {
                     $oss_res = $this->ossUpload('attachment/' . $data['attachment'], $file->getPathname());
@@ -169,7 +166,7 @@ class Attachment extends Base
      * @param      <type>         $files  The files
      * @return     array|boolean  ( description_of_the_return_value )
      */
-    private function Avatar($files, $uid)
+    private function Avatar($shopid, $files, $uid)
     {
         if (empty($files)) {
             return false;
@@ -196,7 +193,13 @@ class Attachment extends Base
                 $data['size'] = $file->getSize();
                 $data['mime'] = $file->getMime();
                 $data['type'] = 'image';  // 类型用字符串 pic file audio video
-                $savename = Filesystem::disk('public')->putFile( 'avatar/' . $uid, $file);
+
+                // 传shopid写入对应SHOPID目录
+                $file_dir = 'avatar';
+                if(!empty($shopid)){
+                    $file_dir = $shopid . DIRECTORY_SEPARATOR . 'avatar';
+                }
+                $savename = Filesystem::disk('public')->putFile( $file_dir . DIRECTORY_SEPARATOR . $uid, $file);
                 // 成功上传后 获取上传信息
                 $data['attachment'] = $savename;
                 $data['attachment'] = str_replace("\\","/",$data['attachment']);
@@ -254,83 +257,7 @@ class Attachment extends Base
      */
     public function base64($files)
     {
-        $aData = $files;
-        if ($aData == '' || $aData == 'undefined') {
-            return false;
-        }
 
-        $result = [];
-        if (preg_match('/^(data:\s*image\/(\w+);base64,)/', $aData, $result)) {
-            $base64_body = substr(strstr($aData, ','), 1);
-
-            empty($aExt) && $aExt = $result[2];
-        } else {
-            $base64_body = $aData;
-        }
-
-        empty($aExt) && $aExt = 'jpg';
-
-        $md5 = md5($base64_body);
-        $sha1 = sha1($base64_body);
-
-        $file_info = $this->where(['sha1'=>$sha1])->find();
-        
-        if ($file_info) {
-            $file_res = [];
-            $data = $file_info->toArray();
-            $file_res['filename'] = $data['filename'];
-            $file_res['size'] = $data['size'];
-            $file_res['attachment'] = $data['attachment'];
-            $file_res['url'] = get_attachment_src($data['attachment']);
-
-        } else {
-            //不存在则上传并返回信息
-            //获取上传驱动
-            $driver = config('extend.PICTURE_UPLOAD_DRIVER');
-            if($driver == 'local'){
-                // 本地无需处理
-            }
-            $date = date('Y-m-d');
-            $saveName = uniqid();
-            $savePath = '/attachment/images/' . $date . '/';
-
-            $path = $savePath . $saveName . '.' . $aExt;
-            if($driver == 'local'){
-                //本地上传
-                if(!file_exists('.' . $savePath)){
-                    mkdir('.' . $savePath, 0777, true);
-                }
-                
-                $data = base64_decode($base64_body);
-                $rs = file_put_contents('.' . $path, $data);
-            }
-            else{
-                $rs = false;
-                //使用云存储
-                $name = get_addon_class($driver);
-                if (class_exists($name)) {
-                    $class = new $name();
-                    if (method_exists($class, 'uploadBase64')) {
-                        $path = $class->uploadBase64($base64_body,$path);
-                        $rs = true;
-                    }
-                }
-            }
-            if ($rs) {
-                
-                $pic['path'] = $path;
-                $pic['driver'] = $driver;
-                $pic['md5'] = $md5;
-                $pic['sha1'] = $sha1;
-                $pic['status'] = 1;
-                $pic['create_time'] = time();
-                $id = Db::name('attachment')->insertGetId($pic);
-
-                return ['id' => $id, 'path' => get_pic_src($path)];
-            } else {
-                return false;
-            }
-        }
     }
 
 
