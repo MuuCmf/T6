@@ -141,7 +141,7 @@ CREATE TABLE IF NOT EXISTS `muucmf_attachment` (
   `filename` char(128) NOT NULL DEFAULT '' COMMENT '附件显示名',
   `type` varchar(32) NOT NULL DEFAULT '' COMMENT '附件类型',
   `attachment` varchar(255) NOT NULL DEFAULT '' COMMENT '路径',
-  `mime` char(30) NOT NULL DEFAULT '' COMMENT 'mimeType',
+  `mime` char(128) NOT NULL DEFAULT '' COMMENT 'mimeType',
   `ext` char(20) NOT NULL DEFAULT '' COMMENT '扩展名',
   `size` bigint(20) UNSIGNED NOT NULL DEFAULT '0' COMMENT '附件大小',
   `md5` varchar(255) NOT NULL DEFAULT '' COMMENT 'MD5',
