@@ -674,9 +674,8 @@ if (!function_exists('single_file_upload')) {
                 pick: {id:'#upload_single_file_{$name} .btn-upload',multiple: false},
                 // 只允许选择文件
                 accept: {
-                    title: 'File',
-                    extensions: 'md,txt,xls,xlsx,doc,docx,ppt,pptx,pdf,zip',
-                    // mimeTypes: 'application/*,application/msexcel,application/msdoc'
+                    title: 'file',
+                    extensions: 'md,txt,xls,xlsx,docx,doc,ppt,pptx,pdf,zip',
                 }
             });
             uploader_{$name}.on('fileQueued', function (file) {
