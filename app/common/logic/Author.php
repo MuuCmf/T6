@@ -40,7 +40,7 @@ class Author extends Base
         }
 
         if(!empty($keyword)){
-            $map[] = ['title', 'like', '%'. $keyword .'%'];
+            $map[] = ['name', 'like', '%'. $keyword .'%'];
         }
         
         return $map;
