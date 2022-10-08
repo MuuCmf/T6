@@ -78,59 +78,11 @@ class Orders extends Base
      */
     public function formatData($data)
     {
-        if (is_object($data)){
-            $data = $data->toArray();
-        }
-
-        //订单状态
-        $data['status_str'] = $this->_status[$data['status']];
-        //售后退款状态
-        $data['refund_str'] = $this->_refund[$data['refund']];
-        //支付类型
-        $data['channel_str'] = Channel::$_channel[$data['channel']];
-        //买家信息
-        $data['user_info'] = query_user($data['uid'],['nickname','avatar','mobile','email','create_time']);
-        if (is_array($data['user_info'])){
-            //格式化用户注册时间
-            $data['user_info'] = $this->setTimeAttr($data['user_info']);
-        }else{
-            $data['user_info'] = [];
-        }
-        //订单架构
-        if(isset($data['price'])){
-            $data['price'] = sprintf("%.2f",$data['price']/100);
-        }
-        //实际支付金额
-        if(isset($data['paid_fee'])) {
-            $data['paid_fee'] = sprintf("%.2f",$data['paid_fee']/100);
-        }
-        //支付状态
-        $data['paid_str'] = $this->_paid[$data['paid']];
-        //支付时间
-        $data = $this->setTimeAttr($data);
-        //商品信息
-        $data['products'] = json_decode($data['products'],true);
-        $data['products']['cover_100'] = get_thumb_image($data['products']['cover'], 100,100);
-        $data['products']['cover_200'] = get_thumb_image($data['products']['cover'], 200,200);
-        $data['products']['cover_300'] = get_thumb_image($data['products']['cover'], 300,300);
-        $data['products']['cover_400'] = get_thumb_image($data['products']['cover'], 400,400);
-        $data['products']['cover_800'] = get_thumb_image($data['products']['cover'], 800,800);
-        $data['products']['price'] = sprintf("%.2f",$data['products']['price']/100); //商品单价
-        $data['products']['type'] = $data['products']['type'] ?? 0;
-        //地址
-        $data['address_info'] = $data['address_id'] ? (new \app\common\model\Address())->getDataById($data['address_id']) : [];
-        //物流数据
-        $data['logistic'] = json_decode($data['logistic'],true);
-        //是否已评价,已评价获取评价内容，未评价值为0
-        if($data['paid'] == 1){
-            $evaluate_map = [];
-            $evaluate_map[] = ['uid','=',$data['uid']];
-            $evaluate_map[] = ['order_no','=',$data['order_no']];
-            $evaluate_map[] = ['shopid','=',$data['shopid']];
-            $data['evaluate'] = (new \app\common\model\Evaluate())->getThisEvaluate($evaluate_map);
-        }else{
-            $data['evaluate'] = 0;
-        }
+        $order_namespace = "app\\{$data['app']}\\logic\\Orders";
+        $appOrdersLogic = new $order_namespace;
+        
+        $data = $appOrdersLogic->formatData($data);
+        
         return $data;
     }
 }

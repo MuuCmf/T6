@@ -141,7 +141,7 @@ class Extend extends Admin
             $opt = [0 => '关闭' ,1 => '开启'];
             $builder
                 ->keySelect('WITHDRAW_STATUS', '提现开关', '如有特殊情况，可暂时关闭提现',$opt)
-                ->keyText('WITHDRAW_TAX_RATE', '提现税率', '默认千分之五（千分比）')
+                ->keyText('WITHDRAW_TAX_RATE', '提现费率', '默认千分之五（单位：千分比）')
                 ->keyText('WITHDRAW_DAY_NUM', '每日可提现次数', '一天最多可提现多少次')
                 ->keyText('WITHDRAW_MIN_PRICE', '单次最小提现金额', '一次最少提现金额')
                 ->keyText('WITHDRAW_MAX_PRICE', '单次最大提现金额', '一次最大提现金额')
@@ -259,12 +259,12 @@ class Extend extends Admin
             $list = $this->extendConfigModel->lists();
 
             $builder = new AdminConfigBuilder();
-            $builder->title('云点播配置')->suggest('基于第三方云点播各项参数配置');
+            $builder->title('音视频点播配置')->suggest('基于第三方音视频点播各项参数配置');
             
             // 基础配置
             $opt = ['disable' => '不启用', 'tencent' => '腾讯云'];
             $builder
-                ->keySelect('VOD_UPLOAD_DRIVER', '云点播', '云点播上传驱动', $opt)
+                ->keySelect('VOD_UPLOAD_DRIVER', '音视频点播', '音视频点播上传驱动', $opt)
                 ->group('基础配置', [
                     'VOD_UPLOAD_DRIVER'
                 ]);
