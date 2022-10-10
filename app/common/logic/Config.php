@@ -12,7 +12,6 @@ class Config extends Base
         //站点基础配置
         'SITE_CLOSE',
         'SITE_CLOSE_HINT',
-        'WEB_SITE_STYLE',
         'WEB_SITE_NAME',
         'WEB_SITE_DESCRIPTION',
         'WEB_SITE_LOGO',
@@ -45,7 +44,6 @@ class Config extends Base
         'SERVICE_WEIXIN_QRCODE_300',
         'SERVICE_WEIXIN_QRCODE_400',
         'SERVICE_WEIXIN_QRCODE_800',
-        'SERVICE_WEIXINKF',
         //提现
         'WITHDRAW_STATUS',
         'WITHDRAW_TAX_RATE',
