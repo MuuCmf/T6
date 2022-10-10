@@ -411,8 +411,6 @@ INSERT INTO `muucmf_config` (`id`, `name`, `type`, `title`, `group`, `extra`, `r
 (10144, 'SERVICE_CONSULT', 'string', '咨询&服务', 2, '', '咨询&服务Eamil|电话号码', 0, 0, 1, 'service@hoomuu.cn', 2),
 (10145, 'SERVICE_BUSINESS', 'string', '商务合作', 2, '', '商务合作邮箱或电话号码', 0, 0, 1, 'business@hoomuu.cn', 3),
 (10146, 'SERVICE_KF_QRCODE', 'pic', '客服二维码', 2, '', '客服二维码', 0, 1653285638, 1, '', 4),
-(10147, 'SERVICE_WEIXINKF', 'string', '微信客服链接', 2, '', '使用详情 https://work.weixin.qq.com/kf', 0, 1653285496, 1, '', 8),
-(10148, 'WEB_SITE_STYLE', 'style', '站点风格', 1, 'Blue\r\nGreen\r\nOrange\r\nLightRed\r\nLightPink\r\nMagenta', '请选择客户端展示的风格色系', 0, 1640327457, 1, 'Blue', 3),
 (10149, 'WEB_SITE_DESCRIPTION', 'textarea', '站点简短描述', 1, '', '请完善站点简短描述', 0, 1640325379, 1, '<p>MuuCmf T6 开源低代码应用开发框架</p>\r\n<p>北京火木科技有限公司 版权所有并提供技术支持</p>', 1),
 (10150, 'SERVICE_WEIXIN_QRCODE', 'pic', '公众号二维码', 2, '', '关注公众号二维码', 0, 1653285668, 1, '', 5),
 (10151, 'COPYRIGHT_MAIN', 'string', '版权主体', 6, '', '版权归属主体名称', 0, 0, 1, '北京火木科技有限公司', 0),

@@ -246,34 +246,7 @@
                                 </script>
                             {/case}
 
-                            {case value="style"}
-                                <!--风格样式-->
-                                <div class="style-config clearfix {$config.name}">
-                                    <input type="hidden" name="config[{$config.name}]" value="{$config['value']}" />
-                                    {php}
-                                        $config['extra'] = explode("\r\n", $config['extra']);
-                                    {/php}
-                                    {volist name="$config['extra']" id="vo"}
-                                    <div class="style {$vo} {if $config['value']==$vo} active{/if}" data-style="{$vo}" >
-                                        {$vo}
-                                        <div class="choose"><i class="fa fa-check"></i></div>	
-                                    </div>
-                                    {/volist}
-                                </div>
-                                <script>
-                                $(function(){
-                                    //更新店铺风格
-                                    $('.style-config.{$config.name} .style').click(function(e){
-                                        $('.style-config.{$config.name} .style').removeClass('active');
-                                        $(this).addClass('active');
-                                        var style = $(this).data('style');
-                                        console.log(style);
-                                        $('[name="config[{$config.name}]"]').val(style);
-                                    });
-                                });
-                                </script>
-                                <!-- 店铺风格设置模态框 end -->
-                            {/case}
+
                         {/switch}
 
                     </div>

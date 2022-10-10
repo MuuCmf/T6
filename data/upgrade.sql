@@ -88,3 +88,6 @@ CREATE TABLE IF NOT EXISTS `muucmf_jobs` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 ALTER TABLE `muucmf_attachment` CHANGE `mime` `mime` CHAR(128) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '' COMMENT 'mimeType';
+
+DELETE FROM `muucmf_config` WHERE `muucmf_config`.`id` = 10147;
+DELETE FROM `muucmf_config` WHERE `muucmf_config`.`id` = 10148;
