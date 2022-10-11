@@ -88,26 +88,6 @@
                     </div>
                 </div>
 
-                <div class="form-item builder_item">
-                    <label class="item-label">
-                        H5端访问控制<span class="check-tips">（H5端访问控制）</span>
-                    </label>
-                    <div class="controls radio">
-                        {if $data.request.only_wechat == 1}
-                        <input type="radio" name="only_wechat" value="1" class="oneplus-radio" id="only_wechat_1" checked>
-                        <label for="only_wechat_1">仅微信内访问</label>
-                        <input type="radio" name="only_wechat" value="0" class="oneplus-radio" id="only_wechat_0">
-                        <label for="only_wechat_0">开放访问</label>
-                        {else}
-                        <input type="radio" name="only_wechat" value="1" class="oneplus-radio" id="only_wechat_1">
-                        <label for="only_wechat_1">仅微信内访问</label>
-                        <input type="radio" name="only_wechat" value="0" class="oneplus-radio" id="only_wechat_0" checked>
-                        <label for="only_wechat_0">开放访问</label>
-                        {/if}
-                    </div>
-
-                </div>
-    
                 <div class="form-item">
                     <label class="item-label"></label>
                     <div class="controls">
