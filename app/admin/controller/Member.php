@@ -406,24 +406,23 @@ class Member extends Admin
     function chooseUser(){
         $search = input('search','','text');
         $oauth_type = input('oauth_type','','text');//授权条件
-        if(is_numeric($search)) {
-            //UID查询
-            $map[] = ['m.uid','=',$search];
-        }else{
-            $nickname = $search;
-            //用户名或昵称查询
-            if($nickname){
-                $mapNickname = ['nickname' ,'like', '%' . $nickname . '%'];
-                $uid = Db::name('member')->where($mapNickname)->value('id');
-                if($uid){
-                    $map[] = ['m.uid','=',$search];
-                }else{
-                    $map[] = ['m.nickname' ,'like', '%' . (string)$search . '%'];
-                }
-            }
-        }
 
+        //用户名或昵称查询
+        $uids = $this->memberModel
+        ->where('uid', '=', $search)
+        ->where('username', 'like', '%' . $search . '%')
+        ->whereOr('nickname', 'like', '%' . $search . '%')
+        ->whereOr('mobile', 'like', '%' . $search . '%')
+        ->whereOr('email', 'like', '%' . $search . '%')
+        ->column('uid');
+        if(!empty($uids)){
+            $map[] = ['m.uid' ,'in' ,$uids];
+        }else{
+            $map[] = ['m.nickname' ,'like', '%' . (string)$search . '%'];
+        }
+        
         $map[] = ['m.status','>=', 0];
+        
         // 每页显示数量
         $rows = input('rows', 15, 'intval');
         if (empty($oauth_type)){
