@@ -103,7 +103,7 @@ class Announce extends Admin
                     'type' => $data['link_type'],
                     'title' => $data['link_title'],
                     'type_title' => $data['link_type_title'],
-                    'param' => $data['link_param']
+                    'param' => json_decode($data['link_param'], true)
                 ];
                 $data['link_to'] = json_encode($link_to);
             }
