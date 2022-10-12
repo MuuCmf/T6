@@ -99,6 +99,7 @@ class Announce extends Admin
             // 处理连接至数据
             if(!empty($data['link_type']) || !empty($data['link_title'])){
                 $link_to = [
+                    'app' => $data['link_app'],
                     'type' => $data['link_type'],
                     'title' => $data['link_title'],
                     'type_title' => $data['link_type_title'],
