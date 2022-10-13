@@ -4907,10 +4907,10 @@ CREATE TABLE IF NOT EXISTS `muucmf_vip` (
   `app` varchar(60) NOT NULL COMMENT '应用唯一标识',
   `uid` int(11) NOT NULL COMMENT '开通用户ID',
   `card_id` int(11) NOT NULL COMMENT '卡项ID',
-  `card_no` varchar(128) NOT NULL COMMENT '会员卡号',
+  `card_no` varchar(128) NOT NULL DEFAULT '' COMMENT '会员卡号',
   `end_time` int(11) NOT NULL COMMENT '到期时间',
   `status` tinyint(2) NOT NULL COMMENT '会员状态',
-  `order_no` int(11) NOT NULL COMMENT '开通时对应订单号',
+  `order_no` VARCHAR(128) NOT NULL DEFAULT '' COMMENT '开通时对应订单号',
   `create_time` int(11) UNSIGNED NOT NULL COMMENT '创建时间',
   `update_time` int(11) UNSIGNED NOT NULL COMMENT '更新时间',
   PRIMARY KEY (`id`)

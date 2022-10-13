@@ -91,3 +91,5 @@ ALTER TABLE `muucmf_attachment` CHANGE `mime` `mime` CHAR(128) CHARACTER SET utf
 
 DELETE FROM `muucmf_config` WHERE `muucmf_config`.`id` = 10147;
 DELETE FROM `muucmf_config` WHERE `muucmf_config`.`id` = 10148;
+
+ALTER TABLE `muucmf_vip` CHANGE `order_no` `order_no` VARCHAR(128) NOT NULL DEFAULT '' COMMENT '开通时对应订单号';
