@@ -254,6 +254,7 @@ class VipOrders extends OrdersLogic
         // 更新VIP会员数据
         (new VipModel)->edit([
             'id' => $vip_data_id,
+            'shopid' => $shopid,
             'app' => $app,
             'uid' => $uid,
             'card_id' => $info_id,
