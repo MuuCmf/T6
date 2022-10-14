@@ -40,6 +40,9 @@ class VipCard extends Base
         $quarter_price = empty($data['quarter_price']) ? 0 : intval($data['quarter_price'] * 100);
         $year_price = empty($data['year_price']) ? 0 : intval($data['year_price'] * 100);
         $forever_price = empty($data['forever_price']) ? 0 : intval($data['forever_price'] * 100);
+        //权益描述
+        $content = '';
+        if(!empty($data['content'])) $content = $data['content'];
         //组装数据
         $data = [
             'id' => intval($data['id']),
@@ -53,7 +56,7 @@ class VipCard extends Base
             'year_price' => $year_price,
             'forever_price' => $forever_price,
             'category_ids' => $category_ids,
-            'content' => $data['content'],
+            'content' => $content,
             'discount' => $data['discount'],
             'config' => $config,
             'status' => intval($data['status']),
