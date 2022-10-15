@@ -124,7 +124,7 @@ class Articles extends Admin
         View::assign('data',$data);
 
         // 获取分类树
-        $category_tree = $this->CategoryModel->tree($this->shopid, 0);
+        $category_tree = $this->CategoryModel->tree($this->shopid, 1);
         View::assign('category_tree', $category_tree);
 
         $this->setTitle($title.'文章');
