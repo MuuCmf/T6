@@ -68,11 +68,11 @@ class File extends Api
         $arr = $this->Attachment->upload($shopid,$files,'avatar',$uid);
 
         if(is_array($arr)){
-            $return['code'] = 1;
+            $return['code'] = 200;
             $return['msg'] = 'Upload successful';
             $return['data'] = $arr;
         }else{
-            $return['code'] = 1;
+            $return['code'] = 0;
             $return['msg'] =$this->Attachment->getError();
         }
 

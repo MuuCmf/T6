@@ -177,13 +177,13 @@ class Attachment extends Base
             //处理已存在图片
             $pic_info = $this->where(['sha1'=>$sha1])->find();
             if(!empty($pic_info)){
-                $img = [];
+                $avatar = [];
                 $data = $pic_info->toArray();
-                $img['filename'] = $data['filename'];
-                $img['ext'] = $data['ext'];
-                $img['size'] = $data['size'];
-                $img['attachment'] = $data['attachment'];
-                $img['url'] = get_attachment_src($data['attachment']);
+                $avatar['filename'] = $data['filename'];
+                $avatar['ext'] = $data['ext'];
+                $avatar['size'] = $data['size'];
+                $avatar['attachment'] = $data['attachment'];
+                $avatar['url'] = get_attachment_src($data['attachment']);
             }else{
                 //构建返回数据
                 $data['filename'] = $file->getOriginalName();
