@@ -12,7 +12,7 @@ class ArticlesCategory extends Base
     /**
      * 获取分类树
      */
-    public function tree(int $shopid = 0, $status = 0)
+    public function tree(int $shopid = 0, $status)
     {   
         $map[] = ['shopid', '=', $shopid];
         if(is_array($status)){
