@@ -23,11 +23,10 @@ class Articles extends Base
     {
         $keyword = input('keyword', '', 'text');
         $category_id = input('category_id', 0, 'intval');
-        $status = input('status') == null?'all':input('status');
         $rows = input('rows', 20, 'intval');
 
         // 获取查询条件
-        $map = $this->ArticlesLogic->getMap($this->shopid, $keyword, $category_id, $status);
+        $map = $this->ArticlesLogic->getMap($this->shopid, $keyword, $category_id, 1);
         // 获取列表
         $lists = $this->ArticlesModel->getListByPage($map, 'sort DESC,id DESC', '*', $rows);
         $pager = $lists->render();
