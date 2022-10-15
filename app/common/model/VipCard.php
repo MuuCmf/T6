@@ -77,7 +77,7 @@ class VipCard extends Base
         //获取用户未到期的所有会员卡
         $vipModel = new Vip();
 
-        $where = "`shopid`={$shopid} and `app`='{$app}' and `uid`={$uid} and (`end_time` > ".time()." or `end_time`=0)";
+        $where = "`shopid`={$shopid} and `app`='{$app}' and `uid`={$uid} and (`end_time` > ".time()." or `end_time`=0) and `status`=1";
         $vip_card_list = $vipModel->whereRaw($where)->select()->toArray();
         if(!empty($vip_card_list)){
             foreach($vip_card_list as &$val){
