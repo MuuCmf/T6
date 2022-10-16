@@ -277,16 +277,6 @@ class Pay extends Api
         $this->OrderService = new $order_namespace;
         $result = $this->OrderService->paySuccess($order_info);
 
-        //订单流水
-        $this->CapitalFlowModel->createFlow([
-            'uid' => $order_info['uid'],
-            'order_no' => $order_info['order_no'],
-            'price' => $order_info['paid_fee'],
-            'shopid' => $order_info['shopid'],
-            'app' => $order_info['app'],
-            'channel' => $order_info['channel'],
-        ]);
-
         //消息通知
         $this->sendPaySuccessTmplmsg($order_info['channel'], $order_info);
        
