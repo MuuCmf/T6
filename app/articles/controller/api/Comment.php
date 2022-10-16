@@ -62,8 +62,10 @@ class Comment extends Base
             if(empty($content)) return $this->error('内容不能为空');
 
             $status = 1;
+            $tip = '';
             if($this->config_data['comment']['audit'] == 1){
                 $status = -1;
+                $tip = '，需要审核后显示';
             }
             $res = $this->CommentModel->edit([
                 'shopid' => $this->shopid,
@@ -74,7 +76,7 @@ class Comment extends Base
             ]);
             
             if($res){
-                return $this->success('评论成功', $res);
+                return $this->success('评论成功' . $tip, $res);
             }else{
                 return $this->error('评论失败');
             }
