@@ -45,8 +45,9 @@ class Account extends MuuAdmin {
             $json = input('post.json');
             $menu = json_decode($json,true);
             $res = \app\channel\facade\wechat\OfficialAccount::createMenu($menu);
+
             if ($res['errcode'] != 0){
-                $this->error($res['errmsg']);
+                return $this->error($res['errmsg']);
             }
             $updateRes = $this->wechatConfigModel->where('shopid',$this->shopid)->save(['menu_json'=>$json]);
             if ($updateRes){
