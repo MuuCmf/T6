@@ -75,6 +75,8 @@ class MemberWallet extends Base
             if ($result !== false){
                 return true;
             }
+
+            return false;
         }catch (Exception $e){
             throw new Exception($e->getMessage());
         }
