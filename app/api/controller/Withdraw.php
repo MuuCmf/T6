@@ -119,6 +119,7 @@ class Withdraw extends Api
                     'shopid' => $data['shopid'],
                     'app' => 'system',
                     'channel' => $data['channel'],
+                    'remark' => '用户提现',
                 ]);
                 if (!$result_capital_flow)  throw new Exception('写入资金流失失败');
 
