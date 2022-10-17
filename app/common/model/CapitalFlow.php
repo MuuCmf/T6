@@ -1,7 +1,8 @@
 <?php
 namespace app\common\model;
 
-class CapitalFlow extends Base{
+class CapitalFlow extends Base
+{
     protected $autoWriteTimestamp = true;
     
     public function getPriceAttr($value,$data){
@@ -15,7 +16,8 @@ class CapitalFlow extends Base{
         return date('Ymd').substr(implode(NULL, array_map('ord', str_split(substr(uniqid(), 7, 13), 1))), 0, 14);
     }
 
-    public function createFlow($data){
+    public function createFlow($data)
+    {
         $flow_no = $this->build_flow_no();
         //生成订单流水
         $flow_data = [
@@ -53,5 +55,21 @@ class CapitalFlow extends Base{
         $total = $this->where($map)->count();
 
         return $total;
+    }
+
+    /**
+     * 数据处理
+     */
+    public function handle($data)
+    {
+        if(!empty($data['create_time'])){
+            $data['create_time_str'] = time_format($data['create_time']);
+            $data['create_time_friendly_str'] = friendly_date($data['create_time']);
+        }
+        if(!empty($data['update_time'])){
+            $data['update_time_str'] = time_format($data['update_time']);
+            $data['update_time_friendly_str'] = friendly_date($data['update_time']);
+        }
+        return $data;
     }
 }
