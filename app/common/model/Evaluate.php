@@ -5,13 +5,10 @@ namespace app\common\model;
  * Class Evaluate
  * @package app\common\model
  */
-class Evaluate extends Base {
+class Evaluate extends Base 
+{
     protected $autoWriteTimestamp = true;
-    function __construct(array $data = [])
-    {
-        parent::__construct($data);
-    }
-
+    
     /**
      * 获取统计数据
      * @return [type] [description]

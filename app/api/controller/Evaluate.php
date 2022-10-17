@@ -9,8 +9,8 @@ use \app\common\logic\Orders as OrderLogic;
 
 class Evaluate extends Api 
 {
-    protected $model;
-    protected $logic;
+    protected $EvaluateModel;
+    protected $EvaluateLogic;
     protected $OrderModel;
     protected $OrderLogic;
     protected $middleware = [
@@ -19,8 +19,8 @@ class Evaluate extends Api
     function __construct()
     {
         parent::__construct();
-        $this->logic = new EvaluateLogic();
-        $this->model = new EvaluateModel();
+        $this->EvaluateLogic = new EvaluateLogic();
+        $this->EvaluateModel = new EvaluateModel();
         $this->OrderModel = new OrderModel();
         $this->OrderLogic = new OrderLogic();
     }
@@ -37,15 +37,18 @@ class Evaluate extends Api
             ['type','=',$type],
             ['type_id','=',$type_id]
         ];
-        $rows = $params['rows'] ?? 10;
-        $page = $params['page'] ?? 1;
-        $lists = $this->model->where($map)->page($page,$rows)->order('id DESC')->select();
+        $rows = input('rows', 10, 'intval');
+        $order_field = input('order_field', 'id', 'text');
+        $order_type = input('order_type', 'desc', 'text');
+        $order =  $order_field . ' ' . $order_type;
+        $fields = '*';
+        $lists = $this->EvaluateModel->getListByPage($map, $order, $fields, $rows);
         foreach ($lists as &$item){
-            $item = $this->logic->formatData($item);
+            $item = $this->EvaluateLogic->formatData($item);
         }
         unset($item);
-        $count = $this->model->where($map)->count();
-        return $this->success('SUCCESS',['data' => $lists,'total' => $count]);
+
+        return $this->success('SUCCESS', $lists);
     }
 
     /**
@@ -105,7 +108,8 @@ class Evaluate extends Api
         return $this->error('提交失败，请稍后再试');
     }
 
-    public function detail(){
+    public function detail()
+    {
         $uid = request()->uid;
         $order_no = input('get.order_no');
         //获取评价数据
@@ -114,8 +118,8 @@ class Evaluate extends Api
             ['order_no','=',$order_no],
             ['uid','=',$uid]
         ];
-        $result = $this->model->getDataByMap($map);
-        $result = $this->logic->formatData($result);
+        $result = $this->EvaluateModel->getDataByMap($map);
+        $result = $this->EvaluateLogic->formatData($result);
         return $this->success('SUCCESS',$result);
     }
 }
