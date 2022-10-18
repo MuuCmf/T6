@@ -29,6 +29,7 @@ class Announce
         
         // 图片处理
         if(isset($data['cover'])){
+            $data['cover_original'] = get_attachment_src($data['cover']);
             $data['cover_80'] = get_thumb_image($data['cover'], 80, 80);
             $data['cover_120'] = get_thumb_image($data['cover'], 120, 120);
             $data['cover_200'] = get_thumb_image($data['cover'], 200, 200);
