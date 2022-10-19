@@ -17,7 +17,7 @@
 
 <div class="search-box clearfix margin-bottom row">
 
-	<form action="{:url('article', array('action'=> 'lists'))}" method="get" class="search-form" role="form">
+	<form action="{:url('lists')}" method="get" class="search-form" role="form">
 		<div class="col-sm-2">
 			<select name="category_id" class="form-control">
 				<option value="0">全部分类</option>
@@ -41,12 +41,12 @@
 		</div>
 		<div class="col-sm-3">
 			<div class="input-group">
-				<div class="input-control search-box has-icon-left has-icon-right search-example" id="searchboxExample">
-				<input class="form-control" name="keyword" placeholder="关键字" id="" type="text" value="{$keyword}">
-				<label for="inputSearchExample4" class="input-control-icon-left search-icon"><i class="icon icon-search"></i></label>
+				<div class="input-control search-box has-icon-left has-icon-right">
+					<input class="form-control" name="keyword" placeholder="关键字" id="" type="text" value="{$keyword}">
+					<label class="input-control-icon-left search-icon"><i class="icon icon-search"></i></label>
 				</div>
 				<span class="input-group-btn">
-				<button class="btn btn-primary" type="submit">搜索</button>
+					<button class="btn btn-primary" type="submit">搜索</button>
 				</span>
 			</div>
 		</div>
@@ -107,12 +107,23 @@
 							<img src="{$v['cover_400']}">
 						</div>
 						<div class="info">
-							<div class="title text-ellipsis">{$v['title']}</div>
+							<div class="title text-ellipsis" title="{$v['title']}">{$v['title']}</div>
 							<div class="description text-ellipsis-2">{$v['description']}</div>
 						</div>
 					</td>
 					<td>
-						{$v['status_str']}
+						{if $v.status == 1}
+						<span class="label label-success">{$v['status_str']}</span>
+						{/if}
+						{if $v.status == 0}
+						<span class="label label-warning">{$v['status_str']}</span>
+						{/if}
+						{if $v.status == -1}
+						<span class="label label-default">{$v['status_str']}</span>
+						{/if}
+						{if $v.status == -2}
+						<span class="label label-danger">{$v['status_str']}</span>
+						{/if}
 					</td>
 					<td>
 						{$v['create_time_str']}
@@ -137,6 +148,7 @@
 							{if $v['status'] == -2}
 								<button disabled class="btn btn-sm disabled">审核未通过</button>
 							{/if}
+							<a href="{:url('admin.comment/lists', ['article_id'=>$v['id']])}" class="btn btn-sm btn-success"> 评论</a>
 							<a href="{:url('status', ['ids'=>$v['id'], 'status'=> -3])}" data-confirm="确认执行删除操作？" class="btn btn-sm btn-danger ajax-get"><i class="fa fa-times"></i> 删除</a>
 						</div>
 					</td>

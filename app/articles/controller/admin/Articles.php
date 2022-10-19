@@ -34,7 +34,7 @@ class Articles extends Admin
         View::assign('keyword', $keyword);
         $category_id = input('category_id', 0, 'intval');
         View::assign('category_id', $category_id);
-        $status = input('status') == null?'all':input('status');
+        $status = input('status', [0,1,-1,-2]);
         View::assign('status', $status);
         $rows = input('rows', 20, 'intval');
 

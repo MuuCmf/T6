@@ -21,9 +21,10 @@
 	<form action="" method="get" class="search-form" role="form">
 		<div class="col-sm-3">
 			<div class="input-group">
-				<div class="input-control search-box has-icon-left has-icon-right search-example" id="searchboxExample">
-				<input class="form-control" name="keyword" placeholder="关键字" id="" type="text" value="{$keyword}">
-				<label for="inputSearchExample4" class="input-control-icon-left search-icon"><i class="icon icon-search"></i></label>
+				<div class="input-control search-box has-icon-left has-icon-right">
+				<input type="hidden" name="article_id" value="{$article_id}" />
+				<input class="form-control" name="keyword" placeholder="关键字" type="text" value="{$keyword}">
+				<label class="input-control-icon-left search-icon"><i class="icon icon-search"></i></label>
 				</div>
 				<span class="input-group-btn">
 				<button class="btn btn-primary" type="submit">搜索</button>

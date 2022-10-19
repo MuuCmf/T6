@@ -34,7 +34,7 @@ class Comment extends Admin
         View::assign('keyword', $keyword);
         $article_id = input('article_id', 0, 'intval');
         View::assign('article_id', $article_id);
-        $status = input('status') == null?'all':input('status');
+        $status = input('status', [0,1,-1,-2]);
         View::assign('status', $status);
         // 获取查询条件
         $map = $this->CommentLogic->getMap($this->shopid, $keyword, $article_id, $status);

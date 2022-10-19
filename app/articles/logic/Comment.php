@@ -32,11 +32,11 @@ class Comment extends Base
      * 内容状态
      */
 	public $_status = [
-        '1'  => '启用',
-        '0'  => '禁用',
-        '-1' => '未审核',
-        '-2' => '审核未通过',
-        '-3' => '已删除',
+        1  => '启用',
+        0  => '禁用',
+        -1 => '未审核',
+        -2 => '审核未通过',
+        -3 => '已删除',
     ];
 
     /**
@@ -57,16 +57,15 @@ class Comment extends Base
             $map[] = ['shopid', '=', $shopid];
         }
         
-        if($status == 'all'){
-            $map[] = ['status', '>=', -2];
-        }elseif($status == 0){
-            $map[] = ['status', '>=', $status];
-        }else{
+        if(is_numeric($status)){
             $map[] = ['status', '=', $status];
+        }
+        if(is_array($status)){
+            $map[] = ['status', 'in', $status];
         }
 
         if(!empty($keyword)){
-            $map[] = ['title', 'like', "%'. $keyword .'%"];
+            $map[] = ['content', 'like', '%'. $keyword .'%'];
         }
         
         //文章id
