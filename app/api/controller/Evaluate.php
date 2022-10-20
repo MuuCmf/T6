@@ -54,7 +54,8 @@ class Evaluate extends Api
     /**
      * 题交和修改评价
      */
-    public function edit(){
+    public function edit()
+    {
         $params = request()->param();
         $uid = request()->uid;
         $id = 0;
@@ -66,7 +67,7 @@ class Evaluate extends Api
         $evaluate_map[] = ['uid','=',$uid];
         $evaluate_map[] = ['order_no','=',$params['order_no']];
         $evaluate_map[] = ['shopid','=',$this->shopid];
-        $is_have = $this->model->getDataByMap($evaluate_map);
+        $is_have = $this->EvaluateModel->getDataByMap($evaluate_map);
         if($is_have && $is_have['status'] == 1){
             if($is_have['create_time'] != $is_have['update_time']){
                 $this->error('您已经评价过了');
@@ -94,7 +95,7 @@ class Evaluate extends Api
             'value' => $params['value'],
             'status' => 1
         ];
-        $res = $this->model->edit($data);
+        $res = $this->EvaluateModel->edit($data);
         if ($res){
             //更改订单评价状态
             $order_info = $this->OrderModel->getDataByOrderNo($params['order_no']);

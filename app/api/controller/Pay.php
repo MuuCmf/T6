@@ -112,6 +112,43 @@ class Pay extends Api
     }
 
     /**
+     * 查询支付平台订单
+     */
+    public function query()
+    {
+        try {
+            $order_no = $this->params['order_no'];
+            $order_data = $this->OrderModel->getDataByOrderNo($order_no);
+            if (!$order_data){
+                throw new Exception('订单不存在');
+            }
+
+            // 获取支付参数
+            $config = ChannelServer::config($order_data['channel'] ,$this->shopid);
+            // 微信支付
+            if($order_data['channel'] == 'weixin_h5' || $order_data['channel'] == 'weixin_mp'){
+
+                // 发起支持
+                $PayService = PayServer::init($config['appid'], $this->params['pay_channel']);
+                $result = $PayService->server->queryByOutTradeNumber($order_no);
+
+                return $this->success('success',$result);
+            }
+
+        }catch (Exception $e){
+            return $this->error($e->getMessage());
+        }
+    }
+
+    /**
+     * 关闭支付平台订单
+     */
+    public function close()
+    {
+
+    }
+
+    /**
      * 退款
      */
     public function refund()
