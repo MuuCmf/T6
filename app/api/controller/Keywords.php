@@ -79,25 +79,29 @@ class Keywords extends Api
     {
         $params = input();
         $uid = get_uid();
-        // 组装数据
-        $data = [
-            'uid' => $uid,
-            'shopid' => $params['shopid'],
-            'keyword' => $params['keyword'],
-            'status' => 1
-        ];
-        // 查询该用户是否查询过
-        $has_keyword = $this->model->getDataByMap($data);
-        if($has_keyword){
-            $data['id'] = $has_keyword['id'];
-        }
-        // 写入数据
-        $result = $this->model->edit($data);
 
-        if($result){
-            return $this->success('success', $result);
-        }else{
-            return $this->error('error');
+        if(!empty(trim($params['keyword']))){
+            // 组装数据
+            $data = [
+                'uid' => $uid,
+                'shopid' => $params['shopid'],
+                'keyword' => trim($params['keyword']),
+                'status' => 1
+            ];
+            // 查询该用户是否查询过
+            $has_keyword = $this->model->getDataByMap($data);
+            if($has_keyword){
+                $data['id'] = $has_keyword['id'];
+            }
+            // 写入数据
+            $result = $this->model->edit($data);
+
+            if($result){
+                return $this->success('success', $result);
+            }else{
+                return $this->error('error');
+            }
         }
+        return $this->error('error');
     }
 }
