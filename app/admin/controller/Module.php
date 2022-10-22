@@ -4,6 +4,7 @@ namespace app\admin\controller;
 
 use think\Exception;
 use app\admin\lib\Upgrade as UpgradeServer;
+use app\admin\lib\Cloud;
 use think\facade\Db;
 use think\facade\View;
 use app\common\service\Tree;
@@ -56,7 +57,8 @@ class Module extends Admin
         };
 
         $upgradeServer = new UpgradeServer();
-        $modules = $this->ModuleModel->getListByPage($map,'sort desc,id desc','*',20);
+        $modules = $this->ModuleModel->getListByPage($map,'sort desc,id desc','*',15);
+        $cloud = new Cloud();
         foreach($modules as &$item){
             if($item['source'] == 'cloud'){
                 //获取云端版本
@@ -66,6 +68,12 @@ class Module extends Admin
                 ]);
                 $item['new_version'] = isset($result['data']['version']) ? $result['data']['version'] : $item['version'];
                 $item['upgrade'] = get_upgrade_status($item['version'],$item['new_version']) ? 1 : 0;
+                
+                $item['expired'] = 0;
+                $auth = $cloud->needAuthorization($item['name']);
+                if (is_array($auth) && $auth['code'] == 0 && $auth['data'] == 'end_auth'){
+                    $item['expired'] = 1;
+                }
             }
             
             //获取应用图标

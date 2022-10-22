@@ -51,6 +51,30 @@
                       color: #333;
                     }
                 }
+
+                .app-action{
+                    display: flex;
+                    .go{
+                        flex: 1;
+                    }
+                    .upgrade{
+                        width: 72.95px;
+                        margin-left: 5px;
+                    }
+                } 
+            
+                .app-manage {
+                    margin-top: 5px; 
+                    display: flex;
+                    flex-wrap: wrap;
+                    align-items: flex-start;
+                    align-content: flex-start;
+                    justify-content: space-between;
+                    .btn {
+                    
+                        width: 32%;
+                    }
+                }
             }
         }
     }

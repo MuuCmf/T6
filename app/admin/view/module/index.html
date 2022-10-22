@@ -1,32 +1,7 @@
 {extend name="common/main"/}
 
 {block name="style"}
-<style>
-    .action{
-        display: flex;
 
-    }
-    .action .go{
-        flex: 1;
-    }
-    .action .upgrade{
-        width: 72.95px;
-        margin-left: 5px;
-    }
-
-    .manage {
-        margin-top: 5px; 
-        display: flex;
-        flex-wrap: wrap;
-        align-items: flex-start;
-        align-content: flex-start;
-        justify-content: space-between;
-    }
-    .manage .btn {
-        
-        width: 32%;
-    }
-</style>
 {/block}
 {block name="body"}
     <div class="main-title">
@@ -81,18 +56,25 @@
                             
                             <div class="card-actions clearfix">
                             {if $vo['is_setup'] == 1}
-                                <div class="action">
+                                <div class="app-action">
                                     <!--进入-->
                                     <a class="btn btn-info go" href="{:url($vo.entry)}">进入应用</a>
-                                    {if $vo['upgrade'] == 1}
                                     <!--更新-->
+                                    {if $vo['upgrade'] == 1}
+                                    {if $vo['expired'] == 1}
+                                    <a class="btn btn-danger upgrade" href="javascript:;" data-rule="upgradeExpired">
+                                        <i class="fa fa-cloud-download" aria-hidden="true"></i> 
+                                        更新
+                                    </a>
+                                    {else}
                                     <a class="btn btn-danger upgrade" href="{:url('admin/Update/index',['appid' => $vo.appid ,'app_name' => $vo.name])}">
                                         <i class="fa fa-cloud-download" aria-hidden="true"></i> 
                                         更新
                                     </a>
                                     {/if}
+                                    {/if}
                                 </div>
-                                <div class="manage">
+                                <div class="app-manage">
                                     <a class="btn btn-primary " href="{:url('edit', ['id' => $vo['id']])}">编辑</a>
                                     <a class="btn btn-warning" href="{:url('menu', ['app' => $vo['name']])}">权限菜单</a>
                                     <button type="button" class="btn btn-danger" data-remote="{:url('uninstall', ['id' => $vo['id']])}" data-toggle="modal" data-size="sm">卸载</a>
@@ -127,5 +109,7 @@
 
 {/block}
 {block name="script"}
+<script>
 
+</script>
 {/block}
