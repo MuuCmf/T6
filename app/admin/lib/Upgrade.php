@@ -185,16 +185,20 @@ class Upgrade
             $sql_path = $this->getAppRootPath($app) . 'info' . DIRECTORY_SEPARATOR . 'upgrade.sql';
         }
 
-        $sql = (new SqlFile())->getSqlFromFile($sql_path,false,['muucmf_' => config('database.connections.mysql.prefix')]);
-        if ($sql){
-            foreach ($sql as $s){
-                try {
-                    @Db::query($s);
-                }catch (\Exception $e){
-                    //忽略错误 继续执行
+        $content = file_get_contents($sql_path);
+        if(!empty($content)){
+            $sql = (new SqlFile())->getSqlFromFile($sql_path,false,['muucmf_' => config('database.connections.mysql.prefix')]);
+            if ($sql){
+                foreach ($sql as $s){
+                    try {
+                        @Db::query($s);
+                    }catch (\Exception $e){
+                        //忽略错误 继续执行
+                    }
                 }
             }
         }
+
         return true;
     }
 
