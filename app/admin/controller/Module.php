@@ -4,7 +4,7 @@ namespace app\admin\controller;
 
 use think\Exception;
 use app\admin\lib\Upgrade as UpgradeServer;
-use app\admin\lib\Cloud;
+use app\admin\lib\Cloud as CloudServer;
 use think\facade\Db;
 use think\facade\View;
 use app\common\service\Tree;
@@ -58,7 +58,7 @@ class Module extends Admin
 
         $upgradeServer = new UpgradeServer();
         $modules = $this->ModuleModel->getListByPage($map,'sort desc,id desc','*',15);
-        $cloud = new Cloud();
+        $cloud = new CloudServer();
         foreach($modules as &$item){
             if($item['source'] == 'cloud'){
                 //获取云端版本
@@ -133,6 +133,35 @@ class Module extends Admin
         View::assign('data',$data);
 
         return View::fetch();
+    }
+
+    /**
+     * 获取云端最新版本
+     */
+    public function cv()
+    {
+        $name = input('name', '', 'text');
+        $module = $this->ModuleModel->getModule($name);
+        if(!empty($module)){
+            $upgradeServer = new UpgradeServer();
+            $cloud = new CloudServer();
+            if($module['source'] == 'cloud'){
+                //获取云端版本
+                $result = $upgradeServer->cloudVersion(['app_name' => $module['name']]);
+                $module['new_version'] = isset($result['data']['version']) ? $result['data']['version'] : $module['version'];
+                $module['upgrade'] = get_upgrade_status($module['version'],$module['new_version']) ? 1 : 0;
+                
+                $module['expired'] = 0;
+                $auth = $cloud->needAuthorization($module['name']);
+                if (is_array($auth) && $auth['code'] == 0 && $auth['data'] == 'end_auth'){
+                    $module['expired'] = 1;
+                }
+            }
+
+            return $this->success('success', $module);
+        }else{
+            return $this->error('应用不存在');
+        }
     }
 
     /**
