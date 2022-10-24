@@ -66,7 +66,7 @@ class Support extends Base
 
             $result = $this->SupportModel->edit($f_data);
             if ($result){
-                $this->ArticlesModel->setStep($info_id,'support',$inc_value);
+                $this->ArticlesModel->setStep($info_id, 'support', $inc_value);
 
                 return $this->success($msg_tip . '成功', $f_data['status']);
             }else{

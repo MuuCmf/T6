@@ -9,7 +9,7 @@ class ArticlesArticles extends Base
     protected $autoWriteTimestamp = true; 
 
     //获取用户文章数的总阅读量
-    public function _totalView($uid=0)
+    public function _totalView(int $uid)
     {
         $total = cache("article_total_view_uid_{$uid}");
         if(!$total){
@@ -31,7 +31,7 @@ class ArticlesArticles extends Base
      * @param int $value
      * @return bool
      */
-    public function setStep($id ,$field = 'view' ,$value = 1)
+    public function setStep(int $id , string $field , int $value = 1)
     {
         // 查询值是否为0
         $count = $this->where('id', $id)->value($field);

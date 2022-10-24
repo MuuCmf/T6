@@ -128,7 +128,7 @@ class Comment extends Base
 
             $result = $this->SupportModel->edit($f_data);
             if ($result){
-                $rs = $this->CommentModel->setStep($info_id,'support',$inc_value);
+                $rs = $this->CommentModel->setStep($info_id, 'support', $inc_value);
                 return $this->success($msg_tip . '成功', $f_data['status']);
             }else{
                 return $this->error($msg_tip . '失败');

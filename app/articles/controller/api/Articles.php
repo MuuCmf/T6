@@ -52,7 +52,7 @@ class Articles extends Base
             $data = $this->ArticlesLogic->formatData($data);
             if(!empty($data)){
                 //增加浏览数
-                $this->ArticlesModel->setStep($id);
+                $this->ArticlesModel->setStep($id, 'view', 1);
                 //写入浏览记录
                 if(!empty($uid)){
                     $products = [

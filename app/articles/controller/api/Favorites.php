@@ -81,7 +81,7 @@ class Favorites extends Base
 
             $result = $this->FavoritesModel->edit($f_data);
             if ($result){
-                $this->ArticlesModel->setStep($info_id,'favorites',$inc_value);
+                $this->ArticlesModel->setStep($info_id, 'favorites', $inc_value);
 
                 return $this->success($msg_tip . '成功', $f_data['status']);
             }else{
