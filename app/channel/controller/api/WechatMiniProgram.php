@@ -64,10 +64,14 @@ class WechatMiniProgram extends Base
         $params = input('param.');
         $oauth = MiniProgramServer::user($params['code']);
         $result = MiniProgramServer::decryptData($oauth['session_key'],$params['iv'],$params['encrypted_data']);
+        $nickname = $result['nickName'];
+        if($nickname == '微信用户'){
+            $nickname = rand_nickname(config('system.USER_NICKNAME_PREFIX'));
+        }
         $data = [
             'unionid'   => $oauth['unionid'] ?? '',
             'openid'    => $oauth['openid'],
-            'nickname'  => $result['nickName'],
+            'nickname'  => $nickname,
             'avatar'    => $result['avatarUrl'],
             'sex'       => $result['gender'],
             'shopid'    => $params['shopid'],
