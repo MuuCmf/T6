@@ -15,7 +15,7 @@ class VipCard extends Base
     /**
      * 获取各应用卡片列表
      */
-    public function getCardData($shopid = 0, $app = '')
+    public function getCardData(int $shopid, string $app)
     {
         $map[] = ['shopid', '=', $shopid];
         $map[] = ['app', '=', $app];
@@ -30,7 +30,7 @@ class VipCard extends Base
     /**
      * 获取商品可以会员卡列表
      */
-    public function getProductAbleCardsList($shopid = 0, $app, $product_id, $product_type)
+    public function getProductAbleCardsList(int $shopid, string $app, int $product_id, string $product_type)
     {
         // 获取应用所有启用中会员卡
         $map[] = ['shopid', '=', $shopid];
@@ -72,7 +72,7 @@ class VipCard extends Base
     /**
      * 获取用户可用并最优惠的VIP卡
      */
-    public function getUserAbleCard($shopid = 0, $app, $uid, $product_id, $product_type)
+    public function getUserAbleCard(int $shopid, string $app, int $uid, int $product_id, string $product_type)
     {
         //获取用户未到期的所有会员卡
         $vipModel = new Vip();

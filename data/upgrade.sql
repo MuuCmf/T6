@@ -93,3 +93,5 @@ DELETE FROM `muucmf_config` WHERE `muucmf_config`.`id` = 10147;
 DELETE FROM `muucmf_config` WHERE `muucmf_config`.`id` = 10148;
 
 ALTER TABLE `muucmf_vip` CHANGE `order_no` `order_no` VARCHAR(128) NOT NULL DEFAULT '' COMMENT '开通时对应订单号';
+
+ALTER TABLE `muucmf_vip_card` CHANGE `card_bg` `card_bg` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL COMMENT '会员卡背景';
