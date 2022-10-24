@@ -464,19 +464,6 @@ class Member extends Model
     }
 
     /**
-     * 随机生成一个邮箱地址
-     */
-    public function randEmail()
-    {
-        $email = create_rand(10) . '@muucmf.cn';
-        if ($this->where('email',$email)->count() > 0) {
-            return $this->randEmail();
-        } else {
-            return $email;
-        }
-    }
-
-    /**
      * 获取用户名
      */
     public function getUsername(int $uid)
@@ -586,7 +573,7 @@ class Member extends Model
                     'password'  => user_md5('123456', Config::get('auth.auth_key')),
                     'avatar'    => $data['avatar'],
                     'sex'       => $data['sex'],
-                    'email'     => $this->randEmail(),
+                    'email'     => rand_email(),
                     'status'    =>  1
                 ];
                 $result = $this->save($member_data);
@@ -667,7 +654,7 @@ class Member extends Model
         //用户名称
         $username = $username ?: rand_username('用户');
         $password = $password ?: 123456;
-        $email = $email ?: $this->randEmail();
+        $email = $email ?: rand_email();
         return $this->register($username,$nickname,$password,$email,$mobile);
     }
 
