@@ -35,16 +35,15 @@ if (!function_exists('friendly_date')) {
         if($type=='normal'){
             if( $dTime < 60 ){
                 if($dTime < 10){
-                    return lang('_JUST_');    //by yangjs
+                    return '刚刚';    //by yangjs
                 }else{
-                    return intval(floor($dTime / 10) * 10).lang('_SECONDS_AGO_');
+                    return intval(floor($dTime / 10) * 10) . '秒前';
                 }
             }elseif( $dTime < 3600 ){
-                return intval($dTime/60).lang('_MINUTES_AGO_');
+                return intval($dTime/60) . '分钟前';
                 //今天的数据.年份相同.日期相同.
             }elseif( $dYear==0 && $dDay == 0  ){
-                //return intval($dTime/3600).lang('_HOURS_AGO_');
-                return lang('_TODAY_').date('H:i',$sTime);
+                return '今天' . date('H:i',$sTime);
             }elseif($dYear==0){
                 return date("m月d日 H:i",$sTime);
             }else{
@@ -52,17 +51,17 @@ if (!function_exists('friendly_date')) {
             }
         }elseif($type=='mohu'){
             if( $dTime < 60 ){
-                return $dTime.lang('_SECONDS_AGO_');
+                return $dTime. '分钟前';
             }elseif( $dTime < 3600 ){
-                return intval($dTime/60).lang('_MINUTES_AGO_');
+                return intval($dTime/60). '分钟前';
             }elseif( $dTime >= 3600 && $dDay == 0  ){
-                return intval($dTime/3600).lang('_HOURS_AGO_');
+                return intval($dTime/3600). '小时前';
             }elseif( $dDay > 0 && $dDay<=7 ){
-                return intval($dDay).lang('_DAYS_AGO_');
+                return intval($dDay). '天前';
             }elseif( $dDay > 7 &&  $dDay <= 30 ){
-                return intval($dDay/7) . lang('_WEEK_AGO_');
+                return intval($dDay/7) . '周前';
             }elseif( $dDay > 30 ){
-                return intval($dDay/30) . lang('_A_MONTH_AGO_');
+                return intval($dDay/30) . '月前';
             }
             //full: Y-m-d , H:i:s
         }elseif($type=='full'){
@@ -71,11 +70,11 @@ if (!function_exists('friendly_date')) {
             return date("Y-m-d",$sTime);
         }else{
             if( $dTime < 60 ){
-                return $dTime.lang('_SECONDS_AGO_');
+                return $dTime. '秒前';
             }elseif( $dTime < 3600 ){
-                return intval($dTime/60).lang('_MINUTES_AGO_');
+                return intval($dTime/60). '分钟前';
             }elseif( $dTime >= 3600 && $dDay == 0  ){
-                return intval($dTime/3600).lang('_HOURS_AGO_');
+                return intval($dTime/3600). '小时前';
             }elseif($dYear==0){
                 return date("Y-m-d H:i:s",$sTime);
             }else{
