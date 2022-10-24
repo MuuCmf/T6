@@ -369,23 +369,23 @@ class Common extends CommonCommon
         $aNickname = input('post.nickname', '', 'text');
 
         if (empty($aNickname)) {
-            $this->error('昵称不能为空！');
+            return $this->error('昵称不能为空！');
         }
 
         $length = mb_strlen($aNickname, 'utf-8'); // 当前数据长度
         if ($length < config('system.USER_NICKNAME_MIN_LENGTH') || $length > config('system.USER_NICKNAME_MAX_LENGTH')) {
-            $this->error('昵称长度在' .config('system.USER_NICKNAME_MIN_LENGTH').'-'.config('system.USER_NICKNAME_MAX_LENGTH'). '之间');
+            return $this->error('昵称长度在' .config('system.USER_NICKNAME_MIN_LENGTH').'-'.config('system.USER_NICKNAME_MAX_LENGTH'). '之间');
         }
 
-        $memberModel = model('member');
+        $memberModel = new CommonMember;
         $uid = $memberModel->where(['nickname' => $aNickname])->value('uid');
         if ($uid) {
-            $this->error(lang('_ERROR_NICKNAME_EXIST_'));
+            return $this->error('该昵称已经存在');
         }
         preg_match('/^(?!_|\s\')[A-Za-z0-9_\x80-\xff\s\']+$/', $aNickname, $result);
 
         if (!$result) {
-            $this->error('只允许中文、字母和数字和下划线');
+            return $this->error('只允许中文、字母和数字和下划线');
         }
 
         return $this->success('验证成功');
