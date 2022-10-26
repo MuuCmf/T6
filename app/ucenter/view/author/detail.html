@@ -18,10 +18,28 @@
                     <img src="{$data['cover_200']}" alt="{$data.name}" />
                 </div>
                 <h2 class="name">{$data.name}</h2>
+                {if condition="is_login()"}
                 <a href="javascript:void(0);" class="btn follow-btn" data-id="{$data.id}">
-                    <i class="icon-group_add"></i>
+                    <i class="fa fa-user-plus" aria-hidden="true"></i>
+                    {if condition="$has_follow"}
+                    已关注
+                    {else/}
                     关注Ta
+                    {/if}
                 </a>
+                {else/}
+                    {if condition="$open_quick_login"}
+                    <a href="javascript:void(0);" class="btn follow-btn" data-id="{$data.id}" data-login="quick_do_login" data-remote="{:url('ucenter/Common/quickLogin')}" data-show-header="false" data-toggle="modal">
+                        <i class="fa fa-user-plus" aria-hidden="true"></i>
+                        关注Ta
+                    </a>
+                    {else/}
+                    <a href="{$login_url}" class="btn follow-btn" data-id="{$data.id}" data-login="quick_do_login" data-remote="{:url('ucenter/Common/quickLogin')}" data-show-header="false" data-toggle="modal">
+                        <i class="fa fa-user-plus" aria-hidden="true"></i>
+                        关注Ta
+                    </a>
+                    {/if}
+                {/if}
                 <div class="description">
                     {$data.description}...
                 </div>
@@ -41,6 +59,17 @@
 {/block}
 
 {block name="script"}
-
+<script>
+    $(function(){
+        $('.follow-btn').click(function(){
+            var url="{:url('api/author/follow')}";
+            $.post(url, {
+                author_id: "{$data.id}",
+            }, function(res){
+                handle_ajax(res);
+            });
+        });
+    })
+</script>
 
 {/block}
