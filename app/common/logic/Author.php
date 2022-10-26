@@ -51,36 +51,39 @@ class Author extends Base
      */
     public function formatData($data)
     {
-        $data = $this->setCoverAttr($data, '1:1');
-        $data['content'] = htmlspecialchars_decode($data['content']);
+        if(!empty($data)){
+            $data = $this->setCoverAttr($data, '1:1');
+            $data['content'] = htmlspecialchars_decode($data['content']);
+            
+            // 绑定用户的创造者获取用户数据
+            if(!empty($data['uid'])){
+                $data['user_info'] = query_user($data['uid']);
+            }
+
+            if(!empty($data['groud_id'])){
+                $data['groud'] = (new AuthorGroup())->where('id', $data['groud_id'])->value('title');
+            }else{
+                $data['groud'] = '';
+            }
+
+            // 状态描述
+            $data['status_str'] = $this->_status[$data['status']];
+            // 时间处理
+            if(!empty($data['create_time'])){
+                $data['create_time_str'] = time_format($data['create_time']);
+                $data['create_time_friendly_str'] = friendly_date($data['create_time']);
+            }
+
+            if(!empty($data['update_time'])){
+                $data['update_time_str'] = time_format($data['update_time']);
+                $data['update_time_friendly_str'] = friendly_date($data['update_time']);
+            }
+
+            if(!empty($data['start_time'])){
+                $data['start_time_str'] = time_format($data['start_time']);
+            }
+        }
         
-        // 绑定用户的创造者获取用户数据
-		if(!empty($data['uid'])){
-			$data['user_info'] = query_user($data['uid']);
-		}
-
-        if(!empty($data['groud_id'])){
-            $data['groud'] = (new AuthorGroup())->where('id', $data['groud_id'])->value('title');
-        }else{
-            $data['groud'] = '';
-        }
-
-		// 状态描述
-		$data['status_str'] = $this->_status[$data['status']];
-        // 时间处理
-        if(!empty($data['create_time'])){
-            $data['create_time_str'] = time_format($data['create_time']);
-            $data['create_time_friendly_str'] = friendly_date($data['create_time']);
-        }
-
-        if(!empty($data['update_time'])){
-            $data['update_time_str'] = time_format($data['update_time']);
-            $data['update_time_friendly_str'] = friendly_date($data['update_time']);
-        }
-
-        if(!empty($data['start_time'])){
-            $data['start_time_str'] = time_format($data['start_time']);
-        }
         
         return $data;
     }

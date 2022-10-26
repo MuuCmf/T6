@@ -1,6 +1,11 @@
 {extend name="../../common/view/main"/}
 {block name="style"}
 <link href="__STATIC__/ucenter/css/main.min.css" rel="stylesheet">
+<style>
+    body {
+        background-color: #fff;
+    }
+</style>
 {/block}
 {block name="body"}
 <div class="">
@@ -10,17 +15,27 @@
         </div>
 
         <div class="list clearfix">
+            {empty name="$lists.data"}
+            {include file="../../common/view/empty"/}
+            {else /}
             {foreach $lists.data as $k=>$v}
             <div class="item" data-type="author_list_item" data-id="{$v['id']}">
                 <div class="image">
-                    <img src="{$v['cover_400']}" />
+                    <a href="{:url('detail', ['id' => $v.id])}" title="{$v.name}">
+                        <img src="{$v['cover_400']}" alt="{$v.name}" />
+                    </a>
                 </div>
                 <div class="content">
-                    <div class="title h3 text-ellipsis">{$v['name']}</div>
+                    <div class="title h3 text-ellipsis">
+                        <a href="{:url('detail', ['id' => $v.id])}" title="{$v.name}">
+                            {$v['name']}
+                        </a>
+                    </div>
                     <div class="description text-ellipsis-2">{$v['description']}</div>
                 </div>
             </div>
             {/foreach}
+            {/empty}
         </div>
 
         <div class="page-section">

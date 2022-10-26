@@ -70,26 +70,15 @@ class Author extends Common
     {
         $id = input('id',0,'intval');
 
+        $data = [];
         if(!empty($id)){
             $data = $this->AuthorModel->getDataById($id);
             $data = $this->AuthorLogic->formatData($data);
-
-            //查询条件
-            $map = [
-                ['shopid', '=', $this->shopid],
-                ['author_id', '=', $id],
-                ['status', '=', 1]
-            ];
-            
-            if(!empty($data)){
-                // ajax请求返回数据
-                return $this->success('success', $data);
-            }else{
-                return $this->error('error');
-            }
         }
+        View::assign('data', $data);
 
-        View::fetch();
+        $this->setTitle($data['name']);
+        return View::fetch();
     }
 
     /**

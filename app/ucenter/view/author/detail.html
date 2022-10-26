@@ -1,0 +1,46 @@
+{extend name="../../common/view/main"/}
+{block name="style"}
+<link href="__STATIC__/ucenter/css/main.min.css" rel="stylesheet">
+<style>
+    body {
+        background-color: #fff;
+    }
+</style>
+{/block}
+{block name="body"}
+
+<div class="author-detail-section">
+
+    <div class="author-header clearfix">
+        <div class="bg-mask">
+            <div class="author-box">
+                <div class="avatar">
+                    <img src="{$data['cover_200']}" alt="{$data.name}" />
+                </div>
+                <h2 class="name">{$data.name}</h2>
+                <a href="javascript:void(0);" class="btn follow-btn" data-id="{$data.id}">
+                    <i class="icon-group_add"></i>
+                    关注Ta
+                </a>
+                <div class="description">
+                    {$data.description}...
+                </div>
+            </div>
+            
+        </div>
+    </div>
+
+    <div class="author-content">
+        <div class="content">
+            {:htmlspecialchars_decode($data.content)}
+        </div>
+    </div>
+
+</div>
+
+{/block}
+
+{block name="script"}
+
+
+{/block}
