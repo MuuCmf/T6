@@ -1,0 +1,36 @@
+{extend name="../../common/view/main"/}
+{block name="style"}
+<link href="__STATIC__/ucenter/css/main.min.css" rel="stylesheet">
+{/block}
+{block name="body"}
+<div class="">
+    <div class="author-lists-section">
+        <div class="title clearfix">
+            <h2>创作者列表</h2>
+        </div>
+
+        <div class="list clearfix">
+            {foreach $lists.data as $k=>$v}
+            <div class="item" data-type="author_list_item" data-id="{$v['id']}">
+                <div class="image">
+                    <img src="{$v['cover_400']}" />
+                </div>
+                <div class="content">
+                    <div class="title h3 text-ellipsis">{$v['name']}</div>
+                    <div class="description text-ellipsis-2">{$v['description']}</div>
+                </div>
+            </div>
+            {/foreach}
+        </div>
+
+        <div class="page-section">
+            {:htmlspecialchars_decode($pager)}
+        </div>
+    </div>
+</div>
+{/block}
+
+{block name="script"}
+
+
+{/block}

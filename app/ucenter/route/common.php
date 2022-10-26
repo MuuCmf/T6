@@ -3,7 +3,7 @@
 
 use think\facade\Route;
 
-Route::get('/','ucenter/config/index');
+Route::get('config/','ucenter/config/index');
 
 
 

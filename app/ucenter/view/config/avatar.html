@@ -6,58 +6,57 @@
 {/block}
 
 {block name="body"}
-<div class="main-wrapper">
-    <!--用户设置顶部-->
-    {include file="config/_header"/}
-    <!--用户设置顶部end-->
 
-    <div id="main-container" class="container user-config">
-        <div class="row">
-            <div class="col-md-3">
-                {include file="config/_slide"/}
-            </div>
-            <div class="col-md-9">
-                <div class="ucenter-avatar col-xs-12" data-uid="{$user['uid']}">
-                    <!--用来存放item-->
-                    <div class="avatar-view">
-                        <img src="{$user.avatar256}" alt="">
-                    </div>
+<!--用户设置顶部-->
+{include file="config/_header"/}
+<!--用户设置顶部end-->
 
-                    <div class="action-box">
-                        <button class="btn btn-block btn-lg btn-warning avatar_upload_btn" data-toggle="modal" data-target="#avatar-modal">
-                            更换头像
-                        </button>
-                    </div>
+<div id="main-container" class="user-config">
+    <div class="row">
+        <div class="col-md-3">
+            {include file="config/_slide"/}
+        </div>
+        <div class="col-md-9">
+            <div class="ucenter-avatar col-xs-12" data-uid="{$user['uid']}">
+                <!--用来存放item-->
+                <div class="avatar-view">
+                    <img src="{$user.avatar256}" alt="">
+                </div>
 
-                    <div class="modal fade" id="avatar-modal">
-                        <div class="modal-dialog modal-lg">
-                            <div class="modal-content">
-                                <div class="avatar-body">
-                                    <div class="avatar-upload">
-                                        <input class="avatar-data" name="avatar_data" type="hidden">
-                                        <a class="avatar-input" id="upload_avatar" name="avatar_file" type="file">
-                                            上传头像
-                                        </a>
+                <div class="action-box">
+                    <button class="btn btn-block btn-lg btn-warning avatar_upload_btn" data-toggle="modal" data-target="#avatar-modal">
+                        更换头像
+                    </button>
+                </div>
+
+                <div class="modal fade" id="avatar-modal">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="avatar-body">
+                                <div class="avatar-upload">
+                                    <input class="avatar-data" name="avatar_data" type="hidden">
+                                    <a class="avatar-input" id="upload_avatar" name="avatar_file" type="file">
+                                        上传头像
+                                    </a>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-9">
+                                        <div class="avatar-wrapper"></div>
                                     </div>
-                                    <div class="row">
-                                        <div class="col-md-9">
-                                            <div class="avatar-wrapper"></div>
-                                        </div>
-                                        <div class="col-md-3">
-                                            <div class="avatar-preview preview-lg"><img src="{$user.avatar256}"></div>
-                                            <div class="avatar-preview preview-md"><img src="{$user.avatar128}"></div>
-                                            <div class="avatar-preview preview-sm"><img src="{$user.avatar64}"></div>
-                                        </div>
+                                    <div class="col-md-3">
+                                        <div class="avatar-preview preview-lg"><img src="{$user.avatar256}"></div>
+                                        <div class="avatar-preview preview-md"><img src="{$user.avatar128}"></div>
+                                        <div class="avatar-preview preview-sm"><img src="{$user.avatar64}"></div>
                                     </div>
-                                    <div class="row avatar-btns">
-                                        <div class="col-md-9">
-                                            
-                                        </div>
-                                        <div class="col-md-3">
-                                            <button class="btn btn-success btn-block avatar-save" data-role="avatar_btn" >
-                                                保存头像
-                                            </button>
-                                        </div>
+                                </div>
+                                <div class="row avatar-btns">
+                                    <div class="col-md-9">
+                                        
+                                    </div>
+                                    <div class="col-md-3">
+                                        <button class="btn btn-success btn-block avatar-save" data-role="avatar_btn" >
+                                            保存头像
+                                        </button>
                                     </div>
                                 </div>
                             </div>
@@ -68,6 +67,7 @@
         </div>
     </div>
 </div>
+
 {/block}
 
 {block name="script"}

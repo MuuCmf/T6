@@ -1,6 +1,7 @@
 <?php
-namespace app\author\controller;
+namespace app\ucenter\controller;
 
+use think\facade\View;
 use app\common\controller\Common;
 use app\common\model\Author as AuthorModel;
 use app\common\logic\Author as AuthorLogic;
@@ -44,13 +45,19 @@ class Author extends Common
         $map = $this->AuthorLogic->getMap($this->shopid, $keyword, 1);
         $fields = '*';
         $lists = $this->AuthorModel->getListByPage($map,$order,$fields, $rows);
+        $pager = $lists->render();
         $lists = $lists->toArray();
         foreach($lists['data'] as &$val){
             $val = $this->AuthorLogic->formatData($val);
         }
         unset($val);
-        // ajax请求返回数据
-        return $this->success('success', $lists);
+        View::assign('pager',$pager);
+        View::assign('lists',$lists);
+        
+        // 设置页面TITLE
+        $this->setTitle('创作者列表');
+        // 输出模板
+        return View::fetch();
     }
 
     /**
@@ -80,9 +87,9 @@ class Author extends Common
             }else{
                 return $this->error('error');
             }
-        }else{
-            return $this->error('缺少参数');
         }
+
+        View::fetch();
     }
 
     /**
