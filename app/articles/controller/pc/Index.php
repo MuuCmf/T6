@@ -4,6 +4,7 @@ namespace app\articles\controller\pc;
 use think\facade\View;
 use app\common\controller\Common;
 use app\common\model\History;
+use app\articles\model\ArticlesCategory as CategoryModel;
 use app\articles\model\ArticlesArticles as ArticlesModel;
 use app\articles\logic\Articles as ArticlesLogic;
 
@@ -26,7 +27,15 @@ class Index extends Common
     public function lists()
     {
         $keyword = input('keyword', '', 'text');
+        View::assign('keyword', $keyword);
         $category_id = input('category_id', 0, 'intval');
+        View::assign('category_id', $category_id);
+        $category = [];
+        if(!empty($category_id)){
+            $category = (new CategoryModel)->getDataById($category_id);
+        }
+        View::assign('category', $category);
+
         $rows = input('rows', 20, 'intval');
         // 获取查询条件
         $map = $this->ArticlesLogic->getMap($this->shopid, $keyword, $category_id, 1);
@@ -42,6 +51,10 @@ class Index extends Common
 
         View::assign('pager', $pager);
         View::assign('lists', $lists);
+
+        // 获取分类
+        $category_tree = (new CategoryModel)->tree($this->shopid, 1);
+        View::assign('category_tree',$category_tree);
 
         return View::fetch();
     }
@@ -91,7 +104,7 @@ class Index extends Common
     }
     
 
-    private function _category($id=0)
+    private function _category()
     {
         $category_tree = $this->CategoryModel->tree($this->shopid, 1);
         View::assign('now_category',$category_tree);

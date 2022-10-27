@@ -1,4 +1,211 @@
 
+.articles-lists-section {
+    width: 1200px;
+    margin: 0 auto;
+
+    .articles-lists-box {
+
+
+        .items {
+
+            .item {
+                .cover {
+                    float: left;
+                    width: 200px;
+                    height: 150px;
+                    .image {
+                        border-radius: 5px;
+                    }
+                }
+                .content {
+                    margin-left: 210px;
+                    height: 150px;
+                    .title {
+                        font-size: 20px;
+                        font-weight: 600;
+                        a {
+                            color: #000;
+                            &:hover {
+                                color: #03b8cf;
+                            }
+                        }
+                    }
+                    .description {
+                        font-size: 14px;
+                        color: #666;
+                    }
+                }
+
+                &:hover {
+                    a {
+                        color: #03b8cf;
+                    }
+                }
+            }
+        }
+    }
+
+    .right-block {
+
+        /*变量块标题*/  
+        .slide-title {
+            padding: 0 0 10px 0;
+            .extend-line {
+                width: 5px;
+                height: 22px;
+                float: left;
+                background-color: #03b8cf;
+                margin: 3px 0 3px 0;
+            }
+            .title {
+                margin: 0;
+                margin-left: 15px;
+                color: #000;
+                font-size: 18px;
+                line-height: 28px;
+            }
+        }
+
+        .category-section {
+            .list-group {
+                a {
+                    font-size: 16px;
+                    font-weight: 600;
+                    color: #666;
+                    &:hover {
+                        color: #03b8cf;
+                        text-decoration: none;
+                    }
+                }
+                a.active {
+                    color: #fff;
+                    background-color: #03b8cf;
+                    border-color: #03b8cf;
+                    &:hover {
+                        color: #fff!important;
+                        text-decoration: none;
+                    }
+                }
+            }
+        }
+    
+        /*热门*/
+        .hot-section {
+            .list-group {
+                .top-item {
+                    position: relative;
+                    margin-bottom: 10px;
+                    .cover {
+                        position: relative;
+                        .image {
+                            display: block;
+                        }
+                        .bg {
+                            position: absolute;
+                            top: 0;
+                            bottom: 0;
+                            left: 0;
+                            right: 0;
+                            background: rgba(0,0,0,.4);
+                            z-index: 3;
+                        }
+                        .num {
+                            position: absolute;
+                            top: 0;
+                            left: 10px;
+                            z-index: 4;
+                            color: #ff9900;
+                            font-size: 36px;
+                            font-style: italic;
+                        }
+                        .num1 {
+                            top: 0;
+                            left: -8px;
+                            display: block;
+                            width: 80px;
+                            height: 32px;
+                            background: url('../../images/top.png') no-repeat;
+                            background-size: 60px 68px;
+                            background-position: 0 0;
+                        }
+                        .num2 {
+                            top: 0;
+                            left: -8px;
+                            display: block;
+                            width: 80px;
+                            height: 32px;
+                            background: url('../../images/top.png') no-repeat;
+                            background-size: 60px 68px;
+                            background-position: 0 -35px;
+                        }
+                    }
+                    .content {
+                        position: absolute;
+                        left: 0;
+                        right: 0;
+                        bottom: 0;
+                        z-index: 5;
+                        padding: 10px;
+                        .title {
+                            color: #fff;
+                            line-height: 22px;
+                        }
+                        .info {
+                            color: #fff;
+                        }
+                    }
+                }
+                .other-item {
+                    position: relative;
+                    margin-bottom: 10px;
+                    .cover {
+                        float: left;
+                        width: 80px;
+                        img {
+                            display: block;
+                            margin: 0;
+                        }
+                    }
+                    .content {
+                        position: relative;
+                        margin-left: 80px;
+                        padding: 0 0 0 10px;
+                        height: 60px;
+                        a {
+                            .title {
+                                margin: 5px 0 10px 0;
+                                font-weight: 600;
+                                font-size: 14px;
+                                color: #000;
+                            }
+                            &:hover {
+                                text-decoration: none;
+                                .title {
+                                    color: #03b8cf;
+                                }
+                            }
+                        }
+                        
+                        .description {
+                            color: #666;
+                        }
+                        .info {
+                            position: absolute;
+                            left: 0;
+                            right: 0;
+                            bottom: 0;
+                            padding: 0 0 0 10px;
+                            .create-time {
+                                float: left;
+                                color: #999;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
 
 
 .articles-detail-section {
@@ -7,8 +214,9 @@
 
     .articles-title {
         .title {
-
+            
             h2 {
+                color: #000;
                 font-size: 32px;
                 font-weight: 500;
             }

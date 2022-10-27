@@ -8,16 +8,43 @@
 </style>
 {/block}
 {block name="body"}
-    <div id="main-container" class="container">
+    <div id="main-container" class="articles-lists-section">
+        <ol class="breadcrumb">
+            <li><a href="/">首页</a></li>
+            <li><a href="{:url('/articles/lists')}">文章列表</a></li>
+            <li class="active">
+                {if empty($category_id)}
+                全部分类
+                {else /}
+                {$category.title}
+                {/if}
+            </li>
+          </ol>
         <div class="row">
-            <div class="col-md-8">
-                <div class="common_block_border">
+            <div class="col-md-9">
+                <div class="articles-lists-box">
                 {include file="pc/common/_category"/}
-                    <div class="common_content_box">
-                        <section id="contents">
+                    <div class="">
+                        <section class="items clearfix">
                             {notempty name="lists"}
                             {volist name="lists.data" id="v"}
-                                
+                            <div class="item">
+                                <div class="cover">
+                                    <a href="{:url('/articles/detail', ['id'=>$v.id])}">
+                                        <img class="image" src="{$v.cover_200}" alt="{$v.title}" />
+                                    </a>
+                                </div>
+                                <div class="content">
+                                    <div class="title">
+                                        <a href="{:url('/articles/detail', ['id'=>$v.id])}">
+                                            {$v.title}
+                                        </a>
+                                    </div>
+                                    <div class="description text-ellipsis-2">
+                                        {$v.description}
+                                    </div>
+                                </div>
+                            </div>
                             {/volist}
                             {else/}
                                 <div style="font-size:1em;padding:2em 0;color: #ccc;text-align: center">
@@ -25,17 +52,35 @@
                                 </div>
                             {/notempty}
                         </section>
-                        <div class="text-right">
-                            
+                        <div class="pager-section">
+                            {:htmlspecialchars_decode($pager)}
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-3">
 
-                <div class="right_block">
-                    <div class="right_block_item">
-                        <div class="right_block_title">
+                <div class="right-block">
+                    <div class="category-section">
+                        <div class="slide-title clearfix">
+                            <div class="extend-line"></div>
+                            <h3 class="title">分类</h3>
+                        </div>
+                        <ul class="list-group">
+                            <a class="list-group-item {if empty($category_id)}active{/if}" href="{:url('/articles/lists')}">
+                                全部分类
+                            </a>
+                            {foreach $category_tree as $k => $v}
+                            <a class="list-group-item {if !empty($category_id) && ($category_id == $v['id'] || $category_id == $v['pid'])}active{/if}" href="{:url('/articles/lists', ['category_id' => $v.id])}">
+                                  {$v['title']}
+                            </a>
+                            {/foreach}
+                        </ul>
+                    </div>
+                </div>
+                <div class="right-block">
+                    <div class="right-block-item">
+                        <div class="right-block-title">
                             <h3>最新更新</h3>
                         </div>
                         
