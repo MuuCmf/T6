@@ -1,0 +1,27 @@
+
+
+
+.articles-detail-section {
+    width: 1200px;
+    margin: 0 auto;
+
+    .articles-title {
+        .title {
+
+            h2 {
+                font-size: 32px;
+                font-weight: 500;
+            }
+        }
+        
+    }
+
+    .news-content {
+
+        .content {
+            p {
+                font-size: 16px;
+            }
+        }
+    }
+}

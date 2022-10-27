@@ -1,5 +1,5 @@
 <?php
-namespace app\articles\pc\controller;
+namespace app\articles\controller\pc;
 
 use think\facade\View;
 use app\common\controller\Common;
@@ -60,13 +60,15 @@ class Index extends Common
 
         $data = $this->ArticlesModel->getDataById($id);
         $data = $this->ArticlesLogic->formatData($data);
-        View::assign('info', $data);
+        View::assign('data', $data);
+        
         //未审核内容并不是作者浏览时报错
         if($data['status'] != 1){
             return $this->error('内容审核中...');
         }
 
-        if(!empty($data) && !empty(get_uid())){
+        if(!empty($data)){
+            $uid = get_uid();
             //增加浏览数
             $this->ArticlesModel->setStep($id, 'view', 1);
             //写入浏览记录
@@ -83,6 +85,7 @@ class Index extends Common
 
         /*用户所要文章访问量*/
         $articles_total_view = $this->ArticlesModel->_totalView($data['author_id']);
+        View::assign('articles_total_view', $articles_total_view);
 
         return View::fetch();
     }

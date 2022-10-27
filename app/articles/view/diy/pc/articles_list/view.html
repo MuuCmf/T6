@@ -9,7 +9,7 @@
 					{if $vars['dev'] == true}
 					查看更多
 					{else/}
-					<a href="{:url('articles/Index/lists')}" title="更多文章">
+					<a href="{:url('/articles/lists')}" title="更多文章">
 						查看更多
 					</a>
 					{/if}
@@ -21,7 +21,7 @@
                 {if $vars['data']['style'] == 0}
                 <div class="item-style0" data-type="article_list_item" data-id="{$article_data['id']}">
 					{if $vars['dev'] == false}
-					<a href="{:url('articles/Index/detail', ['id'=>$article_data['id']])}">
+					<a href="{:url('/articles/detail', ['id'=>$article_data['id']])}">
 					{/if}
                     <div class="image"><img src="{$article_data['cover_200']}" /></div>
                     <div class="content">
@@ -38,7 +38,7 @@
                 {if $vars['data']['style'] == 1}
                 <div class="item-style1" data-type="article_list_item" data-id="{$article_data['id']}">
                     {if $vars['dev'] == false}
-					<a href="{:url('articles/Index/detail', ['id'=>$article_data['id']])}">
+					<a href="{:url('/articles/detail', ['id'=>$article_data['id']])}">
 					{/if}
                     <div class="content" style="background-image: url({$article_data['cover_400']});">
                         <div class="bg"></div>
@@ -56,7 +56,7 @@
                 {if $vars['data']['style'] == 2}
                 <div class="item-style2 clearfix" data-type="article_list_item" data-id="{$article_data['id']}">
 					{if $vars['dev'] == false}
-					<a href="{:url('articles/Index/detail', ['id'=>$article_data['id']])}">
+					<a href="{:url('/articles/detail', ['id'=>$article_data['id']])}">
 					{/if}
 						<div class="title h3 text-ellipsis">{$article_data['title']}</div>
 						<div class="create-time">
