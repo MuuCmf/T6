@@ -16,7 +16,10 @@ class ArticlesList
     public $_type    = 'articles_list';
     public $_icon    = 'group';
     public $_api = [];
-    public $_teminal = ['mobile','pc'];
+    public $_teminal = [
+        'mobile',
+        'pc'
+    ];
     public $_template     = [
         'mobile' => [
             'script' => APP_PATH . 'articles/view/diy/mobile/articles_list/script.html',

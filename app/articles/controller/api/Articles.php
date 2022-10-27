@@ -29,7 +29,6 @@ class Articles extends Base
         $map = $this->ArticlesLogic->getMap($this->shopid, $keyword, $category_id, 1);
         // 获取列表
         $lists = $this->ArticlesModel->getListByPage($map, 'sort DESC,id DESC', '*', $rows);
-        $pager = $lists->render();
         $lists = $lists->toArray();
         
         foreach($lists['data'] as &$val){

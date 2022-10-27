@@ -34,7 +34,8 @@ class ArticlesCategory extends Base
         return $list;
     }
 
-    public function category($data){
+    public function category($data)
+    {
         //获取分类数据
         if(!empty($data['category_id'])){
             $data['category'] = $this->getDataById($data['category_id']);

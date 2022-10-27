@@ -4,7 +4,6 @@
 CREATE TABLE IF NOT EXISTS `muucmf_articles_articles` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '自增ID',
   `shopid` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '店铺ID',
-  `uid` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '用户ID',
   `title` varchar(50) NOT NULL COMMENT '标题',
   `keywords` varchar(255) NOT NULL DEFAULT '' COMMENT '关键字，多个用,分割',
   `description` varchar(200) NOT NULL COMMENT '描述',
@@ -23,6 +22,7 @@ CREATE TABLE IF NOT EXISTS `muucmf_articles_articles` (
   `f_support` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '自定义点赞量',
   `source` varchar(200) DEFAULT NULL COMMENT '来源url',
   `reason` varchar(100) DEFAULT NULL COMMENT '审核失败原因',
+  `author_id` INT(11) NULL DEFAULT '0' COMMENT '创作者ID',
   `create_time` int(11) unsigned NOT NULL,
   `update_time` int(11) unsigned NOT NULL,
   PRIMARY KEY (`id`) USING BTREE
