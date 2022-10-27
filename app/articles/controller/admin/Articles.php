@@ -80,6 +80,7 @@ class Articles extends Admin
 
         if (request()->isPost()) {
             $data = input();
+            $data['shopid'] = $this->shopid;
             // 数据验证
             try {
                 validate(ArticlesValidate::class)->check([
@@ -90,7 +91,6 @@ class Articles extends Admin
                 ]);
             } catch (ValidateException $e) {
                 // 验证失败 输出错误信息
-                // dump($e->getError());exit;
                 return $this->error($e->getError());
             }
 

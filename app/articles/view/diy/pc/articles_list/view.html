@@ -3,59 +3,76 @@
 	<div class="object-drag articles-list">
         <div class="articles-list-preview">
             <div class="title clearfix">
-                <h3>{$vars['data']['title']}</h3>
-                <small class="more">查看更多 </small>
+				<h2>{$vars['data']['title']}</h2>
+				<span class="sub-title">{$vars['data']['sub_title']}</span>
+            	<small class="more">
+					{if $vars['dev'] == true}
+					查看更多
+					{else/}
+					<a href="{:url('/articles/lists')}" title="更多文章">
+						查看更多
+					</a>
+					{/if}
+				</small>
             </div>
             <div class="list rank{$vars['data']['rank']|default=0} clearfix">
 			{notempty name="vars.data.list"}
             {foreach $vars['data']['list'] as $key=>$article_data}
-            {if $vars['data']['style'] == 0}
-                <div class="item small" data-type="article_list_item" data-id="{$article_data['id']}">
-                        
-                    <div class="image" style="background-image:url({$article_data['cover_200']})"></div>
+                {if $vars['data']['style'] == 0}
+                <div class="item-style0" data-type="article_list_item" data-id="{$article_data['id']}">
+					{if $vars['dev'] == false}
+					<a href="{:url('/articles/detail', ['id'=>$article_data['id']])}">
+					{/if}
+                    <div class="image"><img src="{$article_data['cover_200']}" /></div>
                     <div class="content">
                         <div class="title h3 text-ellipsis-2">{$article_data['title']}</div>
-                        <div class="info">
-                            <div class="category">{$article_data['category']['title']}</div>
-                            <div class="pop-info">
-                                <div class="view">
-                                    <i class="fa fa-eye" aria-hidden="true"></i> {$article_data['view']}
-                                </div>
-                            </div>
+                        <div class="info clearfix">
+                            <div class="a-category">{$article_data['category']['title']}</div>
                         </div>
                     </div>
+					{if $vars['dev'] == false}
+					</a>
+					{/if}
                 </div>
-            {/if}
-            {if $vars['data']['style'] == 1}
-                <div class="item big" data-type="article_list_item" data-id="{$article_data['id']}">
-                    <div class="image">
-                        <img src="{$article_data['cover_800']}" />
-                        <div class="type-container">{$article_data['category']['title']}</div>
-                    </div>
-                    <div class="content">
-                        <div class="title h3 text-ellipsis">{$article_data['title']}</div>
-                        <div class="description text-ellipsis">{$article_data['description']}</div>
-                        <div class="info">
-                            <div class="type">
-                                <div class="view">
-                                    <i class="fa fa-eye" aria-hidden="true"></i> {$article_data['view']}
-                                </div>
-                            
-                                <div class="favorites">
-                                    <i class="fa fa-star-o" aria-hidden="true"></i>
-                                    <span class="favorites-num">{$article_data['favorites']}</span>
-                                </div>
-                            </div>
+                {/if}
+                {if $vars['data']['style'] == 1}
+                <div class="item-style1" data-type="article_list_item" data-id="{$article_data['id']}">
+                    {if $vars['dev'] == false}
+					<a href="{:url('/articles/detail', ['id'=>$article_data['id']])}">
+					{/if}
+                    <div class="content" style="background-image: url({$article_data['cover_400']});">
+                        <div class="bg"></div>
+                        <div class="title h3 text-ellipsis-2">{$article_data['title']}</div>
+                        
+                        <div class="info clearfix">
+                            <div class="a-category">{$article_data['category']['title']}</div>
                         </div>
                     </div>
+					{if $vars['dev'] == false}
+					</a>
+					{/if}
                 </div>
-            {/if}
+                {/if}
+                {if $vars['data']['style'] == 2}
+                <div class="item-style2 clearfix" data-type="article_list_item" data-id="{$article_data['id']}">
+					{if $vars['dev'] == false}
+					<a href="{:url('/articles/detail', ['id'=>$article_data['id']])}">
+					{/if}
+						<div class="title h3 text-ellipsis">{$article_data['title']}</div>
+						<div class="create-time">
+							{$article_data['create_time_str']}
+						</div>
+					{if $vars['dev'] == false}
+					</a>
+					{/if}
+                </div>
+                {/if}
             {/foreach}
 			{/notempty}
             </div>
         </div>
 	</div>
-	{if $vars['dev'] == true}
+    {if $vars['dev'] == true}
 	<div class="diy-preview-controller articles-list">
 		<div class="panel panel-info">
 		 	<div class="panel-heading">
@@ -72,9 +89,16 @@
 					    	<input type="text" class="form-control" name="title" value="{$vars['data']['title']|default=''}">
 					    </div>
 				  	</div>
+
+					<div class="form-group">
+						<label class="col-sm-3 control-label">副标题</label>
+						<div class="col-sm-9">
+							<input type="text" class="form-control" name="sub_title" value="{$vars['data']['sub_title']|default=''}">
+						</div>
+					</div>
 			 		
 				  	<div class="form-group">
-					    <label class="col-sm-3">文章分类</label>
+					    <label class="col-sm-3">分类</label>
 					    <div class="col-sm-9">
 						   	<select class="form-control" name="category_id" data-category-id="{$vars['data']['category_id']|default=0}">
 								<option value="0">所有</option>
@@ -147,17 +171,23 @@
 					    <label class="col-sm-3">样式选择</label>
 					    <div class="col-sm-9">
 						    <select class="form-control" name="style">
-								{if $vars['data']['style']==0}
-						    	<option value="0" selected>小图</option>
-						    	{else}
-						    	<option value="0">小图</option>
+								{if $vars['data']['style'] == 0}
+						    	<option value="0" selected>样式一</option>
+                                <option value="1">样式二</option>
+                                <option value="2">样式三</option>
 						    	{/if}
 
-								{if $vars['data']['style']==1}
-								<option value="1" selected>大图</option>
-								{else}
-								<option value="1">大图</option>
-								{/if}
+                                {if $vars['data']['style'] == 1}
+						    	<option value="0">样式一</option>
+                                <option value="1" selected>样式二</option>
+                                <option value="2">样式三</option>
+						    	{/if}
+
+                                {if $vars['data']['style'] == 2}
+						    	<option value="0">样式一</option>
+                                <option value="1">样式二</option>
+                                <option value="2" selected>样式三</option>
+						    	{/if}
 							</select>
 					    </div>
 				  	</div>
@@ -176,6 +206,6 @@
         <div class="up-btn"><i class="fa fa-chevron-circle-up fa-2x"></i></div>
         <div class="down-btn"><i class="fa fa-chevron-circle-down fa-2x"></i></div>
     </div>
-	{/if}
+    {/if}
 </div>
 <!--文章列表END-->

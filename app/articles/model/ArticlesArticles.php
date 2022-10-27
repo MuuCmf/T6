@@ -9,18 +9,10 @@ class ArticlesArticles extends Base
     protected $autoWriteTimestamp = true; 
 
     //获取用户文章数的总阅读量
-    public function _totalView(int $uid)
+    public function _totalView(int $author_id)
     {
-        $total = cache("article_total_view_uid_{$uid}");
-        if(!$total){
-            $res = $this->where(['uid'=>$uid])->select();
-            $total=0;
-            foreach($res as $value){ 
-                $total = $total+$value['view'];
-            }
-            unset($value);
-            cache("article_total_view_uid_{$uid}",$total,3600);
-        }
+        $total = $this->where(['author_id'=>$author_id])->sum('view');
+
         return $total;
     }
 

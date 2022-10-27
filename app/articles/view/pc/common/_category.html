@@ -1,0 +1,16 @@
+<div class="category-section">
+    <div class="slide-title clearfix">
+        <div class="extend-line"></div>
+        <h3 class="title">分类</h3>
+    </div>
+    <ul class="list-group">
+        <a class="list-group-item {if empty($category_id)}active{/if}" href="{:url('articles/pc.Index/lists')}">
+            全部分类
+        </a>
+        {foreach $category_tree as $k => $v}
+        <a class="list-group-item {if !empty($category_id) && ($category_id == $v['id'] || $category_id == $v['pid'])}active{/if}" href="{:url('articles/pc.Index/lists', ['category_id' => $v.id])}">
+                {$v['title']}
+        </a>
+        {/foreach}
+    </ul>
+</div>

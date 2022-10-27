@@ -1,0 +1,50 @@
+<div class="hot-section">
+    <div class="slide-title clearfix">
+        <div class="extend-line"></div>
+        <h3 class="title">热门</h3>
+    </div>
+    <ul class="list-group">
+        {foreach $hot_lists as $k => $v}
+        {if 2 > $k}
+        <div class="item top-item clearfix">
+            <a href="{:url('articles/pc.Index/detail', ['id'=>$v.id])}" title="{$v.title}">
+            <div class="cover">
+                <img class="image" src="{$v['cover_400']}">
+                <div class="bg"></div>
+                <span class="num num{:intval($k+1)}"></span>
+            </div>
+            <div class="content">
+                <h3 class="title text-ellipsis-2">{$v['title']}</h3>
+                <div class="info">
+                    <div class="category">
+                        {$v['category']['title']}
+                    </div>
+                </div>
+            </div>
+            </a>
+        </div>
+        {else}
+        <div class="item other-item clearfix">
+            <div class="cover">
+                <a href="{:url('articles/pc.Index/detail', ['id'=>$v.id])}" title="{$v.title}">
+                    <img class="image" src="{$v['cover_400']}">
+                </a>
+                <div class="bg"></div>
+                <span class="num num{php echo intval($k+1)}"></span>
+            </div>
+            <div class="content">
+                <a href="{:url('articles/pc.Index/detail', ['id'=>$v.id])}" title="{$v.title}">
+                    <h3 class="title text-ellipsis-2">{$v['title']}</h3>
+                </a>
+                <div class="info">
+                    <div class="create-time">
+                        <span><i class="fa fa-clock-o" aria-hidden="true"></i></span> {$v['create_time_str']}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {/if}
+
+        {/foreach}
+    </ul>
+</div>

@@ -83,7 +83,6 @@ class Comment extends Base
     {
         // 获取店铺配置数据
         $shopid = intval($data['shopid']);
-        $config_data = Cache::get('MUUCMF_ARTICLES_CONFIG_DATA_' . $shopid);
 
         if(!empty($data)){
             $id = $data['id'];
@@ -101,7 +100,7 @@ class Comment extends Base
             $data['article'] = $this->ArticlesModel->getDataById($data['article_id']);
             $data['user_info'] = query_user($data['uid']);
             //判断是否点赞
-            if($this->SupportModel->yesSupport($shopid, get_uid(), $data['id'], 'Comment' , 'Articles')){
+            if($this->SupportModel->yesSupport($shopid, 'articles', get_uid(), $data['id'], 'Comment')){
                 $data['support_yesno'] = 1;
             }else{
                 $data['support_yesno'] = 0;
