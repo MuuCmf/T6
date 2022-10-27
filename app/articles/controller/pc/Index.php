@@ -17,6 +17,10 @@ class Index extends Common
         parent::__construct();
         $this->ArticlesModel = new ArticlesModel();
         $this->ArticlesLogic = new ArticlesLogic();
+        // 热门文章
+        $this->_hot();
+        // 分类树
+        $this->_category();
     }
 
 
@@ -52,10 +56,9 @@ class Index extends Common
         View::assign('pager', $pager);
         View::assign('lists', $lists);
 
-        // 获取分类
-        $category_tree = (new CategoryModel)->tree($this->shopid, 1);
-        View::assign('category_tree',$category_tree);
-
+        // 设置页面TITLE
+        $this->setTitle(!empty($category_id)? $category['title'] : '全部文章');
+        // 输出页面
         return View::fetch();
     }
 
@@ -100,16 +103,40 @@ class Index extends Common
         $articles_total_view = $this->ArticlesModel->_totalView($data['author_id']);
         View::assign('articles_total_view', $articles_total_view);
 
+        $this->setTitle($data['title']);
+        $this->setDescription($data['description']);
+
+        // 输出页面
         return View::fetch();
+    }
+
+    /**
+     * 热门文章
+     */
+    private function _hot($category_id = 0)
+    {
+        $map[] = ['shopid', '=', $this->shopid];
+        $map[] = ['status', '=', 1];
+        // 获取查询条件
+        $map = $this->ArticlesLogic->getMap($this->shopid, '', $category_id, 1);
+        // 获取列表
+        $hot_lists = $this->ArticlesModel->getList($map, 10, 'view DESC,id DESC');
+        $hot_lists = $hot_lists->toArray();
+        
+        foreach($hot_lists as &$val){
+            $val = $this->ArticlesLogic->formatData($val);
+        }
+        unset($val);
+
+        View::assign('hot_lists', $hot_lists);
     }
     
 
     private function _category()
     {
-        $category_tree = $this->CategoryModel->tree($this->shopid, 1);
-        View::assign('now_category',$category_tree);
-
-        return $category_tree;
+        // 获取分类
+        $category_tree = (new CategoryModel)->tree($this->shopid, 1);
+        View::assign('category_tree',$category_tree);
     }
 
     
