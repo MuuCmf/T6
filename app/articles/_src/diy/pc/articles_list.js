@@ -31,7 +31,7 @@
 									html_text += '<div class="title h3 text-ellipsis-2">'+ n.title +'</div>';
 									html_text += '<div class="info">';
 										if(n.category){
-										html_text += '<div class="category"> '+ n.category.title +'</div>';
+										html_text += '<div class="a-category"> '+ n.category.title +'</div>';
 										}
 									html_text += '</div>';
 								html_text += '</div>';
@@ -44,7 +44,7 @@
                                 html_text += '<div class="bg"></div>';
                                 html_text += '<div class="title h3 text-ellipsis-2">'+ n.title +'</div>';
                                 html_text += '<div class="info clearfix">';
-                                    html_text += '<div class="category">'+ n.category.title+'</div>';
+                                    html_text += '<div class="a-category">'+ n.category.title+'</div>';
                                 html_text += '</div>';
                             html_text += '</div>';
                             html_text += '</div>';
