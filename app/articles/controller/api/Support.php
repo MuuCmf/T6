@@ -35,7 +35,7 @@ class Support extends Base
             if (empty($info_id)){
                 return $this->error('数据异常');
             }
-            //是否有收藏记录
+            //是否有点赞记录
             $map = [
                 ['info_id','=',$info_id],
                 ['info_type','=',$info_type],

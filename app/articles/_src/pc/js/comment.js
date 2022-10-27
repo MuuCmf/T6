@@ -2,8 +2,9 @@ $(function(){
 
 	var loadCommentList = function(url, data, page, callback){
 		
-		var url = url + '?page='+page;
+		var url = url + '&page='+page;
         var loading_html = '<div class="loading">加载中...</div>';
+		var empty_html = '<div class="empty">还没有评论哦！</div>';
         $('[data-role="list-section"]').html(loading_html);
 		$.ajax({
 			type: 'get',
@@ -23,7 +24,7 @@ $(function(){
 
 			            item_html += '<div class="item clearfix" data-type="comment_item" data-id="'+ n.id +'">';
                             item_html += '<div class="avatar">';
-                                item_html += '<img src="'+ n.user_info.avatar +'" />';
+                                item_html += '<img src="'+ n.user_info.avatar64 +'" />';
                             item_html += '</div>';
                             item_html += '<div class="content">';
                                 item_html += '<div class="nickname">'+ n.user_info.nickname +'</div>';
@@ -37,7 +38,7 @@ $(function(){
                                         if(n.support == 0){
                                             item_html += '<p>赞</p>';
                                         }else{
-                                            item_html += '<p>' + n.support_str + '</p>';
+                                            item_html += '<p>' + n.support + '</p>';
                                         }
 										item_html += '</div>';
 									}else{
@@ -46,7 +47,7 @@ $(function(){
                                         if(n.support == 0){
                                             item_html += '<p>赞</p>';
                                         }else{
-                                            item_html += '<p>' + n.support_str + '</p>';
+                                            item_html += '<p>' + n.support + '</p>';
                                         }
 										item_html += '</div>';
 									}

@@ -60,13 +60,13 @@
             <div class="action-section">
                 <!--点赞按钮容器-->
                 <div class="support-section">
-                    <div class="support-btn {if $data['support_yesno']==1}active{/if}" data-url="{:url('articles/api/comment/lists')}" data-id="{$data['id']}">
+                    <div class="support-btn {if $data['support_yesno']==1}active{/if}" data-url="{:url('articles/api.support/action', ['info_id'=>$data.id])}" data-id="{$data['id']}">
                         <i class="fa fa-thumbs-up" aria-hidden="true"></i>
                     </div>
                 </div>
                 <!--收藏按钮容器-->
                 <div class="favorites-section">
-                    <div class="favorites-btn {if $data['favorites_yesno']==1}active{/if}" data-url="{:url('articles/api/comment/lists')}" data-id="{$data['id']}">
+                    <div class="favorites-btn {if $data['favorites_yesno']==1}active{/if}" data-url="{:url('articles/api.favorites/action', ['info_id'=>$data.id])}" data-id="{$data['id']}">
                         <i class="fa fa-star" aria-hidden="true"></i>
                     </div>
                 </div>
@@ -79,7 +79,7 @@
                     <h3 class="title">参与评论</h3>
                 </div>
                 <div class="add-comment clearfix">
-                    <form action="{:url('articles/api/articles/comment')}" method="post" class="comment-form">
+                    <form action="{:url('articles/api.comment/add')}" method="post" class="comment-form">
                         <input type="hidden" name="uid" value="{:get_uid()}" />
                         <input type="hidden" name="article_id" value="{$data['id']}" />
                         {if condition="is_login()"}
@@ -104,7 +104,7 @@
                         <div class="form-comment">
                             <textarea class="textarea" name="content" rows="3" placeholder="发布评论"></textarea>
                             <div class="comment-submit-box">
-                                <button type="submit" class="btn">发布评论</button>
+                                <button type="submit" class="btn btn-info">发布评论</button>
                             </div>
                         </div>
                     </form>
@@ -114,7 +114,7 @@
                     <div class="extend-line"></div>
                     <h3 class="title">评论列表</h3>
                 </div>
-                <div class="comment-list-section" data-url="{:url('articles/api.comment/lists')}" data-support-url="{:url('articles/api/support/lists')}">
+                <div class="comment-list-section" data-url="{:url('articles/api.comment/lists', ['article_id'=>$data.id])}" data-support-url="{:url('articles/api.comment/support')}">
                     <div class="list-section" data-role="list-section">
                         <div class="loading">加载中...</div>
                     </div>
@@ -132,10 +132,12 @@
                     {include file="pc/common/_hot" /}
                 </div>
             </div>
-            
+
             <div class="right_block">
                 <section class="">
-                    <a rel="nofollow" class="btn btn-lg btn-info btn-block btn-articles" href="{:url('articles/pc.Index/lists')}" target="_blank">阅读更多内容，狠戳这里</a>
+                    <a rel="nofollow" class="btn btn-lg btn-info btn-block btn-articles" href="{:url('articles/pc.Index/lists')}" target="_blank">
+                        阅读更多内容，狠戳这里
+                    </a>
                 </section>
             </div>
             
@@ -205,7 +207,8 @@
             var id = $(this).data('id');
             var url = $(this).data('url');
             var data = {
-                article_id:id
+                info_id:id,
+                info_type: 'Articles'
             };
             $.post(url,data,function(ret){
                 
@@ -222,56 +225,17 @@
             });
         });
 
-        //评论点赞
-        $('.comment-list-section').on('click','.support',function(e){
-            var _this = $(this);
-            //评论ID
-            var id = _this.data('id');
-            //评论点赞接口
-            var url = $('.comment-list-section').data('support-url');
-            var data = {
-                comment_id:id
-            };
-            $.post(url,data,function(ret){
-                //console.log(ret);
-                if(ret.code == 200){
-                    var support_num = Math.round(_this.find('p').text());
-                    if(support_num == '赞') support_num = 0;
-                    //return;
-                    if(_this.hasClass('active')){
-                    //取消操作
-                    _this.removeClass('active');
-                    _this.find('.fa').removeClass('fa-heart-');
-                    _this.find('.fa').addClass('fa-heart-o');
-                    //数字减少
-                    if(Math.round(support_num) === support_num){
-                        _this.find('p').text(support_num-1);
-                    }
-                    }else{
-                    //点赞操作
-                    _this.addClass('active');
-                    _this.find('.fa').removeClass('fa-heart-o');
-                    _this.find('.fa').addClass('fa-heart');
-                    //数字增加
-                    if(Math.round(support_num) === support_num){
-                        _this.find('p').text(support_num+1);
-                    }
-                    }
-                }
-            });
-        });
-
-        //用户收藏
+        //文章收藏
         $('.favorites-section').on('click','.favorites-btn',function(){
             var _this = $(this);
             var id = $(this).data('id');
             var url = $(this).data('url');
             var data = {
-                article_id:id,
+                info_id: id,
+                info_type: 'Articles'
             };
             $.post(url,data,function(ret){
                 if(ret.code == 200){
-                    //console.log(ret);
                     if($('.favorites-btn').hasClass('active')){
                         $('.favorites-btn').removeClass('active');
                     }else{
@@ -282,6 +246,44 @@
                     return false;
                 }
                 
+            });
+        });
+
+        //评论点赞
+        $('.comment-list-section').on('click','.support',function(e){
+            var _this = $(this);
+            //评论ID
+            var id = _this.data('id');
+            //评论点赞接口
+            var url = $('.comment-list-section').data('support-url');
+            var data = {
+                info_id: id,
+                info_type: 'Comment'
+            };
+            $.post(url,data,function(ret){
+                if(ret.code == 200){
+                    var support_num = Math.round(_this.find('p').text());
+                    if(support_num == '赞') support_num = 0;
+                    if(_this.hasClass('active')){
+                        //取消操作
+                        _this.removeClass('active');
+                        _this.find('.fa').removeClass('fa-heart');
+                        _this.find('.fa').addClass('fa-heart-o');
+                        //数字减少
+                        if(Math.round(support_num) === support_num){
+                            _this.find('p').text(support_num-1);
+                        }
+                    }else{
+                        //点赞操作
+                        _this.addClass('active');
+                        _this.find('.fa').removeClass('fa-heart-o');
+                        _this.find('.fa').addClass('fa-heart');
+                        //数字增加
+                        if(Math.round(support_num) === support_num){
+                            _this.find('p').text(support_num+1);
+                        }
+                    }
+                }
             });
         });
     });

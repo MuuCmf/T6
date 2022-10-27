@@ -10,4 +10,7 @@ Route::rule('api/comment/lists', 'articles/api.comment/lists');
 Route::rule('api/comment/add', 'articles/api.comment/add')->middleware(\app\common\middleware\CheckAuth::class);
 Route::rule('api/comment/support', 'articles/api.comment/support')->middleware(\app\common\middleware\CheckAuth::class);
 
+// 点赞
+Route::rule('api/support/action', 'articles/api.support/action');
+
 
