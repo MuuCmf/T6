@@ -2,186 +2,134 @@
 
 namespace muucmf;
 
-/**
- * RSA签名类
- */
+
+// 通用签名工具，基于openssl扩展，提供使用私钥生成签名和使用公钥验证签名的接口
 class Rsa
 {
 
-    public $publicKey = '';
-    public $privateKey = '';
-    private $_privKey;
-
     /**
-     * * private key
+     * @desc 使用私钥生成签名字符串
+     * @param array $assocArr 入参数组
+     * @param string $rsaPriKeyStr 私钥原始字符串，不含PEM格式前后缀
+     * @return string 签名结果字符串
+     * @throws Exception
      */
-    private $_pubKey;
-
-    /**
-     * * public key
-     */
-    private $_keyPath;
-
-    /**
-     * * the keys saving path
-     */
-
-    /**
-     * * the construtor,the param $path is the keys saving path
-     */
-    function __construct($publicKey = null, $privateKey = null)
+    public static function sign(array $assocArr, $rsaPriKeyStr)
     {
-        $this->setKey($publicKey, $privateKey);
-    }
-
-    /**
-     * 设置公钥和私钥
-     * @param string $publicKey 公钥
-     * @param string $privateKey 私钥
-     */
-    public function setKey($publicKey = null, $privateKey = null)
-    {
-        if (!is_null($publicKey))
-            $this->publicKey = $publicKey;
-        if (!is_null($privateKey))
-            $this->privateKey = $privateKey;
-    }
-
-    /**
-     * * setup the private key
-     */
-    private function setupPrivKey()
-    {
-        if (is_resource($this->_privKey))
-        {
-            return true;
+        $sign = '';
+        if (empty($rsaPriKeyStr) || empty($assocArr)) {
+            return $sign;
         }
-        $pem = chunk_split($this->privateKey, 64, "\n");
-        $pem = "-----BEGIN PRIVATE KEY-----\n" . $pem . "-----END PRIVATE KEY-----\n";
-        $this->_privKey = openssl_pkey_get_private($pem);
-        return true;
+
+        if (!function_exists('openssl_pkey_get_private') || !function_exists('openssl_sign')) {
+            throw new Exception("openssl扩展不存在");
+        }
+
+        $rsaPriKeyPem = self::convertRSAKeyStr2Pem($rsaPriKeyStr, 1);
+
+        $priKey = openssl_pkey_get_private($rsaPriKeyPem);
+
+        if (isset($assocArr['sign'])) {
+            unset($assocArr['sign']);
+        }
+        // 参数按字典顺序排序
+        ksort($assocArr); 
+
+        $parts = array();
+        foreach ($assocArr as $k => $v) {
+            $parts[] = $k . '=' . $v;
+        }
+        $str = implode('&', $parts);
+
+        openssl_sign($str, $sign, $priKey);
+        openssl_free_key($priKey);
+
+        return base64_encode($sign);
     }
 
     /**
-     * * setup the public key
+     * @desc 使用公钥校验签名
+     * @param array $assocArr 入参数据，签名属性名固定为rsaSign
+     * @param string $rsaPubKeyStr 公钥原始字符串，不含PEM格式前后缀
+     * @return bool true 验签通过|false 验签不通过
+     * @throws Exception
      */
-    private function setupPubKey()
+    public static function checkSign(array $assocArr, $rsaPubKeyStr)
     {
-        if (is_resource($this->_pubKey))
-        {
-            return true;
+        if (!isset($assocArr['rsaSign']) || empty($assocArr) || empty($rsaPubKeyStr)) {
+            return false;
         }
-        $pem = chunk_split($this->publicKey, 64, "\n");
-        $pem = "-----BEGIN PUBLIC KEY-----\n" . $pem . "-----END PUBLIC KEY-----\n";
-        $this->_pubKey = openssl_pkey_get_public($pem);
-        return true;
+
+        if (!function_exists('openssl_pkey_get_public') || !function_exists('openssl_verify')) {
+            throw new Exception("openssl扩展不存在");
+        }
+
+        $sign = $assocArr['rsaSign'];
+        unset($assocArr['rsaSign']);
+
+        if (empty($assocArr)) {
+            return false;
+        }
+        // 参数按字典顺序排序
+        ksort($assocArr); 
+
+        $parts = array();
+        foreach ($assocArr as $k => $v) {
+            $parts[] = $k . '=' . $v;
+        }
+        $str = implode('&', $parts);
+
+        $sign = base64_decode($sign);
+
+        $rsaPubKeyPem = self::convertRSAKeyStr2Pem($rsaPubKeyStr);
+        $pubKey = openssl_pkey_get_public($rsaPubKeyPem);
+
+        $result = (bool)openssl_verify($str, $sign, $pubKey);
+        openssl_free_key($pubKey);
+
+        return $result;
     }
+
 
     /**
-     * * encrypt with the private key
+     * @desc 将密钥由字符串（不换行）转为PEM格式
+     * @param string $rsaKeyStr 原始密钥字符串
+     * @param int $keyType 0 公钥|1 私钥，默认0
+     * @return string PEM格式密钥
+     * @throws Exception
      */
-    public function privEncrypt($data)
+    public static function convertRSAKeyStr2Pem($rsaKeyStr, $keyType = 0)
     {
-        if (!is_string($data))
-        {
-            return null;
+
+        $pemWidth = 64;
+        $rsaKeyPem = '';
+
+        $begin = '-----BEGIN ';
+        $end = '-----END ';
+        $key = ' KEY-----';
+        $type = $keyType ? 'PRIVATE' : 'PUBLIC';
+
+        $keyPrefix = $begin . $type . $key;
+        $keySuffix = $end . $type . $key;
+
+        $rsaKeyPem .= $keyPrefix . "\n";
+        $rsaKeyPem .= wordwrap($rsaKeyStr, $pemWidth, "\n", true) . "\n";
+        $rsaKeyPem .= $keySuffix;
+
+        if (!function_exists('openssl_pkey_get_public') || !function_exists('openssl_pkey_get_private')) {
+            return false;
         }
-        $this->setupPrivKey();
-        $r = openssl_private_encrypt($data, $encrypted, $this->_privKey);
-        if ($r)
-        {
-            return base64_encode($encrypted);
+
+        if ($keyType == 0 && false == openssl_pkey_get_public($rsaKeyPem)) {
+            return false;
         }
-        return null;
+
+        if ($keyType == 1 && false == openssl_pkey_get_private($rsaKeyPem)) {
+            return false;
+        }
+
+        return $rsaKeyPem;
     }
 
-    /**
-     * * decrypt with the private key
-     */
-    public function privDecrypt($encrypted)
-    {
-        if (!is_string($encrypted))
-        {
-            return null;
-        }
-        $this->setupPrivKey();
-        $encrypted = base64_decode($encrypted);
-        $r = openssl_private_decrypt($encrypted, $decrypted, $this->_privKey);
-        if ($r)
-        {
-            return $decrypted;
-        }
-        return null;
-    }
-
-    /**
-     * * encrypt with public key
-     */
-    public function pubEncrypt($data)
-    {
-        if (!is_string($data))
-        {
-            return null;
-        }
-        $this->setupPubKey();
-        $r = openssl_public_encrypt($data, $encrypted, $this->_pubKey);
-        if ($r)
-        {
-            return base64_encode($encrypted);
-        }
-        return null;
-    }
-
-    /**
-     * * decrypt with the public key
-     */
-    public function pubDecrypt($crypted)
-    {
-        if (!is_string($crypted))
-        {
-            return null;
-        }
-        $this->setupPubKey();
-        $crypted = base64_decode($crypted);
-        $r = openssl_public_decrypt($crypted, $decrypted, $this->_pubKey);
-        if ($r)
-        {
-            return $decrypted;
-        }
-        return null;
-    }
-
-    /**
-     * 构造签名
-     * @param string $dataString 被签名数据
-     * @return string
-     */
-    public function sign($dataString)
-    {
-        $this->setupPrivKey();
-        $signature = false;
-        openssl_sign($dataString, $signature, $this->_privKey);
-        return base64_encode($signature);
-    }
-
-    /**
-     * 验证签名
-     * @param string $dataString 被签名数据
-     * @param string $signString 已经签名的字符串
-     * @return number 1签名正确 0签名错误
-     */
-    public function verify($dataString, $signString)
-    {
-        $this->setupPubKey();
-        $signature = base64_decode($signString);
-        $flg = openssl_verify($dataString, $signature, $this->_pubKey);
-        return $flg;
-    }
-
-    public function __destruct()
-    {
-        is_resource($this->_privKey) && @openssl_free_key($this->_privKey);
-        is_resource($this->_pubKey) && @openssl_free_key($this->_pubKey);
-    }
 
 }
