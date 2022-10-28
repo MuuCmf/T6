@@ -11,6 +11,7 @@ use app\common\model\Orders as OrdersModel;
 use app\channel\facade\wechat\OfficialAccount;
 use app\channel\facade\wechat\MiniProgram as WeixinMiniProgramServer;
 use app\channel\facade\bytedance\MiniProgram as DouyinMiniProgramServer;
+use app\channel\facade\baidu\MiniProgram as BaiduMiniProgramServer;
 use think\Exception;
 use think\facade\Db;
 use think\Request;
@@ -56,19 +57,19 @@ class Pay extends Api
                 
                 //支付回调
                 if (isset($this->params['notify_url'])){
-                    $pay_data['notify_url'] = $this->params['notify_url'];
+                    $notify_url = $this->params['notify_url'];
                 }else{
                     $notify_url = request()->domain() . "/api/pay/callback";
                     $notify_url .= "/channel/{$order_data['channel']}";
                     $notify_url .= "/pay_channel/{$this->params['pay_channel']}";
                     $notify_url .= "/shopid/{$order_data['shopid']}";
                     $notify_url .= "/app/{$order_data['app']}";
-                    $pay_data['notify_url'] = $notify_url;
                 }
-                // 获取支付参数
-                $config = ChannelServer::config($order_data['channel'] ,$this->shopid);
+                
                 // 微信支付
                 if($order_data['channel'] == 'weixin_h5' || $order_data['channel'] == 'weixin_mp'){
+                    // 获取支付参数
+                    $config = ChannelServer::config($order_data['channel'] ,$this->shopid);
                     // 获取用户openid
                     $openid = MemberSync::where([
                         ['shopid', '=', $this->shopid],
@@ -81,18 +82,29 @@ class Pay extends Api
                     $pay_data['body'] = $title;
                     $pay_data['out_trade_no'] = $order_data['order_no'];
                     $pay_data['total_fee'] = intval($order_data['paid_fee'] * 100);
+                    $pay_data['notify_url'] = $notify_url;
                     // 发起支持
                     $PayService = PayServer::init($config['appid'], $this->params['pay_channel']);
-                    $pay = $PayService->server->pay($pay_data);
+                    $result_pay = $PayService->server->pay($pay_data);
                 }
-                // 抖音支付
+                // 抖音小程序支付
                 if($order_data['channel'] == 'douyin_mp'){
                     $pay_data['subject'] = $title;
                     $pay_data['body'] = $title;
                     $pay_data['out_order_no'] = $order_data['order_no'];
                     $pay_data['total_amount'] = intval($order_data['paid_fee'] * 100);
+                    $pay_data['notify_url'] = $notify_url;
 
-                    $pay = DouyinMiniProgramServer::createOrder($pay_data);
+                    $result_pay = DouyinMiniProgramServer::createOrder($pay_data);
+                }
+                // 百度小程序支付
+                if($order_data['channel'] == 'baidu_mp'){
+                    $pay_data['dealTitle'] = $title;
+                    $pay_data['tpOrderId'] = $order_data['order_no'];
+                    $pay_data['totalAmount'] = intval($order_data['paid_fee'] * 100);
+                    $pay_data['notifyUrl'] = $notify_url;
+
+                    $result_pay = BaiduMiniProgramServer::createOrder($pay_data);
                 }
 
                 //更改支付渠道标识
@@ -104,7 +116,7 @@ class Pay extends Api
                 ];
                 $this->OrderModel->edit($channel_map);
 
-                return $this->success('success',$pay);
+                return $this->success('success',$result_pay);
             }catch (Exception $e){
                 return $this->error($e->getMessage());
             }
@@ -419,7 +431,7 @@ class Pay extends Api
             }
         }
 
-        // 小程序消息
+        // 微信小程序消息
         if($channel == 'weixin_mp'){
             // 获取配置
             $weixin_mp_config = (new \app\channel\model\WechatMpConfig())->getWechatMpConfigByShopId($this->shopid);

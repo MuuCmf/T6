@@ -32,6 +32,7 @@ class BaiduMiniprogram extends MuuAdmin
                 'pay_appid' => $params['pay_appid'],
                 'pay_appkey' => $params['pay_appkey'],
                 'dealId' => $params['dealId'],
+                'rsa_public_key' => $params['rsa_public_key'],
                 'rsa_private_key' => $params['rsa_private_key']
             ];
             $map = [
@@ -71,7 +72,8 @@ class BaiduMiniprogram extends MuuAdmin
                 ->keyText('pay_appid', 'APP ID', '支付服务信息内 APP ID.')
                 ->keyText('pay_appkey', 'APP KEY', '支付服务信息内 APP KEY.')
                 ->keyText('dealId', 'dealId', '支付服务信息内 dealld.')
-                ->keyTextArea('rsa_private_key', '验签私钥', '私钥原始字符串，不含PEM格式前后缀')
+                ->keyTextArea('rsa_public_key', '平台公钥', '支付服务信息内 平台公钥')
+                ->keyTextArea('rsa_private_key', '支付验签私钥', '私钥原始字符串，不含PEM格式前后缀')
                 ->keyReadOnlyText('callback', 'URL(服务器地址)', '用于接收百度异步回调消息.')
                 ->group('百度小程序配置', [
                     'title',
@@ -84,6 +86,7 @@ class BaiduMiniprogram extends MuuAdmin
                     'pay_appid',
                     'pay_appkey',
                     'dealId',
+                    'rsa_public_key',
                     'rsa_private_key',
                     'callback'
                 ]);;
