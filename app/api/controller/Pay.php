@@ -277,7 +277,6 @@ class Pay extends Api
                 return false;
             }
             $content = json_decode($notify_data, true);
-            //Log::write($content);
             $sign = DouyinMiniProgramServer::handler($content);
             if($sign == $content['msg_signature']){
                 $msg = json_decode($content['msg'],true); 
@@ -291,8 +290,29 @@ class Pay extends Api
                 // 同步订单
                 DouyinMiniProgramServer::ordersPush($order_no);
                 
-                return $this->payDouyinMsg(0, 'success');
+                return DouyinMiniProgramServer::returnMsg(0, 'success');
             }
+        }
+
+        if($this->params['channel'] == 'baidu_mp'){
+            if(empty($notify_data)){
+                return false;
+            }
+            $content = json_decode($notify_data, true);
+            $sign = BaiduMiniProgramServer::checkSign($content);
+            if($sign){
+                
+                $order_no = $content['tpOrderId'];
+                // 这里更新应用业务逻辑代码，使用$msg跟应用订单比对更新订单,可以用 $content['type']判断是支付回调还是退款回调，payment支付回调 refund退款回调。
+
+                if($content['status'] == 2){
+                    $this->updateOrders($order_no);
+                }
+
+                return BaiduMiniProgramServer::returnMsg(0, 'success');
+            }
+            // 返回验签失败
+            return BaiduMiniProgramServer::returnMsg(-1, 'checkSign fail');
         }
     }
 
@@ -308,7 +328,7 @@ class Pay extends Api
                 return $this->payXmlMsg('FAIL','没有查询到订单');
             }
             if($this->params['channel'] == 'douyin_mp'){
-                return $this->payDouyinMsg(-1, 'error');
+                return DouyinMiniProgramServer::returnMsg(-1, 'error');
             }
         }
         if ($order_info['paid'] == 1){
@@ -316,7 +336,10 @@ class Pay extends Api
                 return $this->payXmlMsg('SUCCESS', '订单支付完成');
             }
             if($this->params['channel'] == 'douyin_mp'){
-                return $this->payDouyinMsg(0, 'success');
+                return DouyinMiniProgramServer::returnMsg(0, 'success');
+            }
+            if($this->params['channel'] == 'baidu_mp'){
+                return BaiduMiniProgramServer::returnMsg(0, 'success');
             }
             
         }
@@ -333,17 +356,6 @@ class Pay extends Api
         $this->sendPaySuccessTmplmsg($order_info['channel'], $order_info);
        
         return $result;
-    }
-
-    /**
-     * 返回信息
-     */
-    protected function payDouyinMsg($code = 0, $msg = 'success')
-    {
-        return json([
-            'err_no' => $code,
-            'err_tips' => $msg
-        ]);
     }
 
     /**

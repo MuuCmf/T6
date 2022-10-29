@@ -99,13 +99,50 @@ class BaiduMp
      */
     public function createQRCode($path)
     {
-        $params = [
-            'access_token' => $this->getAccessToken(),
-            'appname' => 'douyin',
-            'path' => $path,
-        ];
+        
+    }
 
-        return $this->sendPost('/api/apps/qrcode',$params);
+    /**
+     * 回调验签
+     * @param array $map 验签参数
+     * @return stirng
+    */
+    public function checkSign($assocArr){
+
+        $sign = $assocArr['rsaSign'];
+        unset($assocArr['rsaSign']);
+
+        if (empty($assocArr)) {
+            return false;
+        }
+        // 参数按字典顺序排序
+        ksort($assocArr); 
+
+        $parts = array();
+        foreach ($assocArr as $k => $v) {
+            $parts[] = $k . '=' . $v;
+        }
+        $str = implode('&', $parts);
+        $sign = base64_decode($sign);
+
+        $rsaPublicKeyStr = $this->rsa_public_key;
+        $res = (new Rsa($rsaPublicKeyStr, null))->verify($str, $sign);
+
+        return $res;
+    }
+
+    /**
+     * 渠道回调数据返回
+     */
+    public function returnMsg($code = 0, $msg = 'success', $isConsumed = 2)
+    {
+        return json([
+            'errno' => $code,
+            'msg' => $msg,
+            'data' => [
+                'isConsumed' => $isConsumed
+            ]
+        ]);
     }
 
     /**

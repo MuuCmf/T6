@@ -72,18 +72,12 @@ class DouyinMiniProgram extends Base
                         }
                     }
                 } catch (Exception $e){
-                    return json([
-                        'err_no' => 400,
-                        'err_tips' => "business fail"
-                    ]);
+                    return MiniProgramServer::returnMsg(400, 'business fail');
                 }
             }
         }
 
-        return json([
-            'err_no' => 0,
-            'err_tips' => 'success'
-        ]);
+        return MiniProgramServer::returnMsg(0, 'success');
     }
 
     /**
