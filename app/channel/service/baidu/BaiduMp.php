@@ -61,33 +61,34 @@ class BaiduMp
     {
         $result['dealId'] = $this->dealId;
         $result['appKey'] = $this->pay_appkey;
-        $result['totalAmount'] = $params['totalAmount'];
+        $result['totalAmount'] = (string)$params['totalAmount'];
         $result['tpOrderId'] = $params['tpOrderId'];
         $result['notifyUrl'] = $params['notifyUrl'];
-        $result['dealTitle'] = $params['dealTitle'];
-        $result['signFieldsRange'] = 1; // 用于区分验签字段范围，signFieldsRange 的值：0：原验签字段 appKey+dealId+tpOrderId；1：包含 totalAmount 的验签，验签字段包括appKey+dealId+tpOrderId+totalAmount。固定值为 1 。
+        $result['dealTitle'] = urlencode($params['dealTitle']);
+        $result['signFieldsRange'] = '1'; // 用于区分验签字段范围，signFieldsRange 的值：0：原验签字段 appKey+dealId+tpOrderId；1：包含 totalAmount 的验签，验签字段包括appKey+dealId+tpOrderId+totalAmount。固定值为 1 。
         // 生成签名
         $assocArr = [
-            'appKey' => $this->appkey,
-            'dealId' => $this->dealId,
-            'tpOrderId' => $params['tpOrderId'],
-            'totalAmount' =>$params['totalAmount']
+            'appKey' => $result['appKey'],
+            'dealId' => $result['dealId'],
+            'tpOrderId' => $result['tpOrderId'],
+            'totalAmount' => $result['totalAmount']
         ];
-        if (isset($assocArr['sign'])) {
-            unset($assocArr['sign']);
-        }
+
         // 参数按字典顺序排序
         ksort($assocArr); 
 
-        $parts = array();
+        $parts = [];
         foreach ($assocArr as $k => $v) {
             $parts[] = $k . '=' . $v;
         }
         $str = implode('&', $parts);
 
-        $rsaPriKeyStr = $this->rsa_private_key;
-        $rsaSign = (new Rsa(null, $rsaPriKeyStr))->sign($str);
+        $rsaSign = (new Rsa(null, $this->rsa_private_key))->sign($str);
         $result['rsaSign'] = $rsaSign;
+        $result['bizInfo'] = '';
+        $result['payResultUrl'] = '';
+        $result['inlinePaySign'] = '';
+        $result['promotionTag'] = '';
 
         return $result;
         
@@ -122,7 +123,6 @@ class BaiduMp
             $parts[] = $k . '=' . $v;
         }
         $str = implode('&', $parts);
-        $sign = base64_decode($sign);
 
         $rsaPublicKeyStr = $this->rsa_public_key;
         $res = (new Rsa($rsaPublicKeyStr, null))->verify($str, $sign);

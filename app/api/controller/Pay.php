@@ -102,7 +102,7 @@ class Pay extends Api
                 if($order_data['channel'] == 'baidu_mp'){
                     $pay_data['dealTitle'] = $title;
                     $pay_data['tpOrderId'] = $order_data['order_no'];
-                    $pay_data['totalAmount'] = intval($order_data['paid_fee'] * 100);
+                    $pay_data['totalAmount'] = (string)intval($order_data['paid_fee'] * 100);
                     $pay_data['notifyUrl'] = $notify_url;
 
                     $result_pay = BaiduMiniProgramServer::createOrder($pay_data);

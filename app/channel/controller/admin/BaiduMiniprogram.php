@@ -21,6 +21,9 @@ class BaiduMiniprogram extends MuuAdmin
     {
         if (request()->isPost()){
             $params = input('post.');
+            $rsa_public_key = str_replace("\r\n", "", $params['rsa_public_key']);
+            $rsa_private_key = str_replace("\r\n", "", $params['rsa_private_key']);
+
             $data = [
                 'id' => 0,
                 'shopid' => $this->shopid,
@@ -32,8 +35,8 @@ class BaiduMiniprogram extends MuuAdmin
                 'pay_appid' => $params['pay_appid'],
                 'pay_appkey' => $params['pay_appkey'],
                 'dealId' => $params['dealId'],
-                'rsa_public_key' => str_replace("\n", "", $params['rsa_public_key']),
-                'rsa_private_key' => str_replace("\n", "", $params['rsa_private_key'])
+                'rsa_public_key' => $rsa_public_key,
+                'rsa_private_key' => $rsa_private_key
             ];
             $map = [
                 ['shopid' ,'=' ,$this->shopid],

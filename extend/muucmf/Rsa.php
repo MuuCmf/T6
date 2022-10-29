@@ -57,7 +57,7 @@ class Rsa
             return true;
         }
         $pem = chunk_split($this->privateKey, 64, "\n");
-        $pem = "-----BEGIN PRIVATE KEY-----\n" . $pem . "-----END PRIVATE KEY-----\n";
+        $pem = "-----BEGIN RSA PRIVATE KEY-----\n" . $pem . "-----END RSA PRIVATE KEY-----\n";
         $this->_privKey = openssl_pkey_get_private($pem);
         return true;
     }
@@ -161,6 +161,7 @@ class Rsa
         $this->setupPrivKey();
         $signature = false;
         openssl_sign($dataString, $signature, $this->_privKey);
+
         return base64_encode($signature);
     }
 
@@ -174,7 +175,8 @@ class Rsa
     {
         $this->setupPubKey();
         $signature = base64_decode($signString);
-        $flg = openssl_verify($dataString, $signature, $this->_pubKey);
+        $flg = (bool)openssl_verify($dataString, $signature, $this->_pubKey);
+
         return $flg;
     }
 
