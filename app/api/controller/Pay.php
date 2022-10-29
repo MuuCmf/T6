@@ -252,7 +252,7 @@ class Pay extends Api
     {
         $notify_data = file_get_contents("php://input");
         // 记录日志
-        Log::record($notify_data);
+        Log::write($notify_data);
 
         if($this->params['channel'] == 'weixin_mp' || $this->params['channel'] == 'weixin_h5'){
             $jsonxml = json_encode(simplexml_load_string($notify_data, 'SimpleXMLElement', LIBXML_NOCDATA));
@@ -274,7 +274,7 @@ class Pay extends Api
 
         if($this->params['channel'] == 'douyin_mp'){
             if(empty($notify_data)){
-                return false;
+                return DouyinMiniProgramServer::returnMsg(-1, 'error');
             }
             $content = json_decode($notify_data, true);
             $sign = DouyinMiniProgramServer::handler($content);
@@ -296,15 +296,13 @@ class Pay extends Api
 
         if($this->params['channel'] == 'baidu_mp'){
             if(empty($notify_data)){
-                return false;
+                return BaiduMiniProgramServer::returnMsg(-1, 'error');
             }
-            $content = json_decode($notify_data, true);
+
+            parse_str($notify_data, $content);
             $sign = BaiduMiniProgramServer::checkSign($content);
             if($sign){
-                
                 $order_no = $content['tpOrderId'];
-                // 这里更新应用业务逻辑代码，使用$msg跟应用订单比对更新订单,可以用 $content['type']判断是支付回调还是退款回调，payment支付回调 refund退款回调。
-
                 if($content['status'] == 2){
                     $this->updateOrders($order_no);
                 }

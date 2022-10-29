@@ -5,6 +5,7 @@ use app\admin\controller\Admin as MuuAdmin;
 use app\channel\facade\bytedance\MiniProgram as MiniProgramServer;
 use app\channel\facade\wechat\MiniProgram;
 use muucmf\Rsa;
+use app\channel\facade\baidu\MiniProgram as BaiduMiniProgramServer;
 
 class Debug extends MuuAdmin
 {
@@ -21,7 +22,7 @@ class Debug extends MuuAdmin
 
         $assocArr = [
             'appKey' => 'MMNhiT',
-            'dealID' => '3993162964',
+            'dealId' => '3993162964',
             'tpOrderId' => '202210297654920221',
             'totalAmount' => '11300'
         ];
@@ -66,6 +67,19 @@ class Debug extends MuuAdmin
         $res = (new Rsa($rsaPublicKeyStr, null))->verify($str, $sign);
 
         dump($res);
+
+    }
+
+    public function callback()
+    {
+        $notify_data = 'unitPrice=10&orderId=93969718697904&payTime=1667056401&dealId=3993162964&tpOrderId=202210299506610976&count=1&totalMoney=10&hbBalanceMoney=0&userId=1510248121&promoMoney=0&promoDetail=&hbMoney=0&giftCardMoney=0&payMoney=10&payType=1087&returnData=&partnerId=6000001&rsaSign=oUUM%2BPSb73EosdtaRKiTyrGC1hGmcUBfETIWE61bDvupi8C6oDxeCvKXWIP8J3U6hdqqtNIDEvUK67CHOx2lmL4AU5s8hUtEFAki0szBCSMBXY3ad9d9KrGmHo3SlzwgNS1fG4%2FojfLmcNBF26NS%2FIminFsSHDoQdUoqSjr3vEQ%3D&status=2';
+
+        parse_str($notify_data, $content);
+        dump($content);
+        $sign = BaiduMiniProgramServer::checkSign($content);
+
+        dump($sign);
+
 
     }
 

@@ -64,7 +64,7 @@ class BaiduMp
         $result['totalAmount'] = (string)$params['totalAmount'];
         $result['tpOrderId'] = $params['tpOrderId'];
         $result['notifyUrl'] = $params['notifyUrl'];
-        $result['dealTitle'] = urlencode($params['dealTitle']);
+        $result['dealTitle'] = $params['dealTitle'];
         $result['signFieldsRange'] = '1'; // 用于区分验签字段范围，signFieldsRange 的值：0：原验签字段 appKey+dealId+tpOrderId；1：包含 totalAmount 的验签，验签字段包括appKey+dealId+tpOrderId+totalAmount。固定值为 1 。
         // 生成签名
         $assocArr = [
@@ -108,24 +108,23 @@ class BaiduMp
      * @return stirng
     */
     public function checkSign($assocArr){
+        if (empty($assocArr)) {
+            return false;
+        }
 
         $sign = $assocArr['rsaSign'];
         unset($assocArr['rsaSign']);
 
-        if (empty($assocArr)) {
-            return false;
-        }
         // 参数按字典顺序排序
         ksort($assocArr); 
 
-        $parts = array();
+        $parts = [];
         foreach ($assocArr as $k => $v) {
             $parts[] = $k . '=' . $v;
         }
         $str = implode('&', $parts);
 
-        $rsaPublicKeyStr = $this->rsa_public_key;
-        $res = (new Rsa($rsaPublicKeyStr, null))->verify($str, $sign);
+        $res = (new Rsa($this->rsa_public_key, null))->verify($str, $sign);
 
         return $res;
     }
@@ -135,13 +134,16 @@ class BaiduMp
      */
     public function returnMsg($code = 0, $msg = 'success', $isConsumed = 2)
     {
-        return json([
+        $result = [
             'errno' => $code,
             'msg' => $msg,
-            'data' => [
+        ];
+        if($code == 0){
+            $result['data'] = [
                 'isConsumed' => $isConsumed
-            ]
-        ]);
+            ];
+        }
+        return json($result);
     }
 
     /**
