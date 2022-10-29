@@ -1,6 +1,10 @@
 <?php
 namespace app\api\controller;
 
+use think\Exception;
+use think\facade\Db;
+use think\Request;
+use think\facade\Log;
 use app\channel\facade\channel\Channel as ChannelServer;
 use app\channel\facade\channel\Pay as PayServer;
 use app\common\controller\Api;
@@ -12,10 +16,7 @@ use app\channel\facade\wechat\OfficialAccount;
 use app\channel\facade\wechat\MiniProgram as WeixinMiniProgramServer;
 use app\channel\facade\bytedance\MiniProgram as DouyinMiniProgramServer;
 use app\channel\facade\baidu\MiniProgram as BaiduMiniProgramServer;
-use think\Exception;
-use think\facade\Db;
-use think\Request;
-use think\facade\Log;
+
 
 class Pay extends Api 
 {
@@ -250,7 +251,9 @@ class Pay extends Api
     public function callback()
     {
         $notify_data = file_get_contents("php://input");
-        
+        // 记录日志
+        Log::record($notify_data);
+
         if($this->params['channel'] == 'weixin_mp' || $this->params['channel'] == 'weixin_h5'){
             $jsonxml = json_encode(simplexml_load_string($notify_data, 'SimpleXMLElement', LIBXML_NOCDATA));
             $notify = json_decode($jsonxml, true);
