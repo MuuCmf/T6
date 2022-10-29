@@ -66,6 +66,7 @@ class BaiduMp
         $result['notifyUrl'] = $params['notifyUrl'];
         $result['dealTitle'] = $params['dealTitle'];
         $result['signFieldsRange'] = 1; // 用于区分验签字段范围，signFieldsRange 的值：0：原验签字段 appKey+dealId+tpOrderId；1：包含 totalAmount 的验签，验签字段包括appKey+dealId+tpOrderId+totalAmount。固定值为 1 。
+        // 生成签名
         $assocArr = [
             'appKey' => $this->appkey,
             'dealId' => $this->dealId,
@@ -87,8 +88,6 @@ class BaiduMp
         $rsaPriKeyStr = $this->rsa_private_key;
         $rsaSign = (new Rsa(null, $rsaPriKeyStr))->sign($str);
         $result['rsaSign'] = $rsaSign;
-
-        //$result = json_encode($result);
 
         return $result;
         
