@@ -98,3 +98,21 @@ ALTER TABLE `muucmf_vip_card` CHANGE `card_bg` `card_bg` VARCHAR(255) CHARACTER 
 
 ALTER TABLE `muucmf_orders` ADD `form_id` VARCHAR(255) NULL COMMENT 'formId 表单ID' AFTER `settle`;
 
+CREATE TABLE IF NOT EXISTS `muucmf_baidu_mp_config` (
+  `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '规则id,自增主键',
+  `shopid` int(11) NOT NULL COMMENT '商户ID',
+  `title` varchar(20) NOT NULL COMMENT '小程序名称',
+  `description` varchar(500) NOT NULL COMMENT '描述',
+  `appid` varchar(40) NOT NULL COMMENT '应用ID',
+  `appkey` varchar(128) NOT NULL COMMENT 'appkey',
+  `secret` varchar(60) NOT NULL COMMENT '应用密匙',
+  `pay_appid` varchar(128) DEFAULT NULL COMMENT '支付服务APP ID',
+  `pay_appkey` varchar(128) DEFAULT NULL COMMENT '支付服务APP KEY',
+  `dealId` varchar(128) DEFAULT NULL COMMENT '支付服务 dealId',
+  `rsa_public_key` text COMMENT '平台公钥',
+  `rsa_private_key` text COMMENT '验签私钥',
+  `create_time` int(11) UNSIGNED NOT NULL COMMENT '创建日期',
+  `update_time` int(11) UNSIGNED NOT NULL COMMENT '更新日期',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='百度小程序配置表' ROW_FORMAT=COMPACT;
+
