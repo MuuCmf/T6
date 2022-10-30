@@ -11,7 +11,8 @@ use app\common\model\Orders as OrdersModel;
 use app\common\logic\Orders as OrdersLogic;
 use think\facade\View;
 
-class DouyinMiniProgram extends MuuAdmin{
+class DouyinMiniprogram extends MuuAdmin
+{
     private $MiniProgramModel;
     protected $DouyinMpSettleModel;
     function __construct()

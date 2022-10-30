@@ -67,6 +67,8 @@ class Orders extends Base
     public $_pay_channel = [
         'weixin' => '微信',
         'alipay' => '支付宝',
+        'douyin' => '抖音',
+        'baidu'  => '百度',
         'offline' => '线下支付',
         'score' => '积分',
         'convert' => '兑换码',

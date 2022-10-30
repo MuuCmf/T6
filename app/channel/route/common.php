@@ -5,14 +5,26 @@ use think\facade\Route;
 //微信公众号
 Route::group('official',function (){
     Route::rule('callback' ,'channel/api.WechatOfficialAccount/callback');
+    Route::rule('oauth' ,'channel/api.WechatOfficialAccount/oauth');
     Route::rule('oauthCallback' ,'channel/api.WechatOfficialAccount/oauthCallback');
     Route::rule('qrcode' ,'channel/api.WechatOfficialAccount/qrcode');
     Route::rule('hasScan' ,'channel/api.WechatOfficialAccount/hasScan');
     Route::rule('scanLogin' ,'channel/api.WechatOfficialAccount/scanLogin');
 });
 
+//微信小程序
+Route::group('weixin',function (){
+
+});
+
 //抖音小程序
 Route::group('douyin',function (){
-    Route::rule('callback' ,'channel/api.DouyinMiniprogram/callback');
+    Route::rule('callback' ,'channel/api.DouyinMiniProgram/callback');
     Route::rule('qrcode' ,'channel/api.DouyinMiniProgram/createQrcode');
+});
+
+//百度小程序
+Route::group('baidu',function (){
+    Route::rule('callback' ,'channel/api.BaiduMiniProgram/callback');
+    Route::rule('qrcode' ,'channel/api.BaiduMiniProgram/createQrcode');
 });

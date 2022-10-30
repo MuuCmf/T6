@@ -364,6 +364,17 @@ class DouyinMp
     }
 
     /**
+     * 渠道回调数据返回
+     */
+    public function returnMsg($code = 0, $msg = 'success')
+    {
+        return json([
+            'err_no' => $code,
+            'err_tips' => $msg
+        ]);
+    }
+
+    /**
      * post请求
      **/
     private function sendPost($url,$data)

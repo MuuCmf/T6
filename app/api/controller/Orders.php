@@ -46,13 +46,9 @@ class Orders extends Api
                     $order_data = $appOrdersService->create($this->params);
                 }
 
-                // 设置元数据
+                // 设置表单ID数据
                 if(isset($this->params['formId'])){
-                    $metadata = [
-                        // 微信小程序formId
-                        'formId' => $this->params['formId']
-                    ];
-                    $order_data['metadata'] = json_encode($metadata);
+                    $order_data['form_id'] = $this->params['formId'];
                 }
                 
                 //写入订单

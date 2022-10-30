@@ -1,5 +1,5 @@
 <?php
-namespace app\channel\facade\bytedance;
+namespace app\channel\facade\baidu;
 
 use think\Facade;
 
@@ -12,6 +12,6 @@ class MiniProgram extends Facade {
     protected static function getFacadeClass()
     {
         // 返回当前类代理的类
-        return 'app\channel\service\bytedance\DouyinMp';
+        return 'app\channel\service\baidu\BaiduMp';
     }
 }
