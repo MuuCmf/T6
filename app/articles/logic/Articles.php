@@ -88,21 +88,21 @@ class Articles extends Base
     /**
      * 数据格式化
      */
-    public function formatData($data = [])
+    public function formatData($data)
     {
         if(!empty($data)){
             $shopid = intval($data['shopid']);
-            // 获取应用配置数据
-            $config_data = (new ConfigModel)->getConfig($data['shopid']);
+
             // 获取uid
             $uid = get_uid();
             
             $id = $data['id'];
             $data = $this->setCoverAttr($data, '4:3');
-            
+
             // 获取分类数据
             if(!empty($data['category_id'])){
-                $data['category'] = $this->CategoryModel->getDataById($data['category_id'])->toArray();
+                $category = $this->CategoryModel->getDataById($data['category_id']);
+                $data['category'] = $this->CategoryLogic->formatData($category);
             }
 
             $data['content'] = htmlspecialchars_decode($data['content']);

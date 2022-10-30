@@ -46,10 +46,11 @@ class Category {
             $data['status_str'] = $this->_status[$data['status']];
         }
 
-        
-        $data['cover_100'] = get_thumb_image($data['cover'], 100, 100);
-        $data['cover_200'] = get_thumb_image($data['cover'], 200, 200);
-        $data['cover_400'] = get_thumb_image($data['cover'], 400, 400);
+        if(!empty($data['cover'])){
+            $data['cover_100'] = get_thumb_image($data['cover'], 100, 100);
+            $data['cover_200'] = get_thumb_image($data['cover'], 200, 200);
+            $data['cover_400'] = get_thumb_image($data['cover'], 400, 400);
+        }
         
         //时间戳格式化
         if(isset($data['create_time'])){
