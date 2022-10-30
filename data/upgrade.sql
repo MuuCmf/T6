@@ -96,3 +96,5 @@ ALTER TABLE `muucmf_vip` CHANGE `order_no` `order_no` VARCHAR(128) NOT NULL DEFA
 
 ALTER TABLE `muucmf_vip_card` CHANGE `card_bg` `card_bg` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL COMMENT '会员卡背景';
 
+ALTER TABLE `muucmf_orders` ADD `form_id` VARCHAR(255) NULL COMMENT 'formId 表单ID' AFTER `settle`;
+

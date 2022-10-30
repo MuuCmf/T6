@@ -4720,6 +4720,7 @@ CREATE TABLE IF NOT EXISTS `muucmf_orders` (
   `ip` varchar(128) NOT NULL DEFAULT '' COMMENT 'ip地址',
   `metadata` text NULL COMMENT '元数据',
   `settle` tinyint(2) NOT NULL DEFAULT '0' COMMENT '是否结算分账',
+  `form_id` VARCHAR(255) NULL COMMENT 'formId 表单ID',
   `end_time` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '订单有效期结束时间戳',
   `create_time` int(11) UNSIGNED NOT NULL COMMENT '创建时间',
   `update_time` int(11) UNSIGNED NOT NULL COMMENT '更新时间',
