@@ -45,7 +45,7 @@ class Orders extends Api
                     $appOrdersService = new $order_namespace;
                     $order_data = $appOrdersService->create($this->params);
                 }
-
+                
                 // 设置表单ID数据
                 if(isset($this->params['formId'])){
                     $order_data['form_id'] = $this->params['formId'];
@@ -66,12 +66,12 @@ class Orders extends Api
                         $appOrdersService->step($order);
                     }
                 }
-                Db::commit();
-
                 // 抖音小程序订单同步
                 if($order['channel'] == 'douyin_mp'){
                     DouyinMiniProgramServer::ordersPush($order['order_no']);
                 }
+
+                Db::commit();
 
                 return $this->success('创建订单成功',$order);
             }catch (Exception $e){

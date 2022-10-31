@@ -452,8 +452,8 @@ class Pay extends Api
             if (empty($weixin_mp_config['tmplmsg']['tmplmsg']['pay_success'])){
                 return false;
             }
-            $order_info['metadata'] = json_decode($order_info['meatdata'], true);
-            $form_id = $order_info['metadata']['formId'];
+            
+            $form_id = $order_info['form_id'];
             $msg_list = [];
             if (in_array('manager', $weixin_mp_config['tmplmsg']['to']) && !empty($weixin_config['tmplmsg']['manager_uid'])){
                 $msg_item['openid'] = get_openid($this->shopid, $weixin_mp_config['tmplmsg']['manager_uid'], $channel);

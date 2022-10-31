@@ -80,15 +80,15 @@ class VipCard extends Base
         $where = "`shopid`={$shopid} and `app`='{$app}' and `uid`={$uid} and (`end_time` > ".time()." or `end_time`=0) and `status`=1";
         $vip_card_list = $vipModel->whereRaw($where)->select()->toArray();
         if(!empty($vip_card_list)){
+            $logic = new VipLogic();
             foreach($vip_card_list as &$val){
-                $logic = new VipLogic();
                 $val = $logic->formatData($val);
             }
             unset($val);
         }else{
             return null;
         }
-
+        
         //获取商品数据
         $file_name = ucfirst($app) . ucfirst($product_type);
         $namespace = "app\\{$app}\\model\\{$file_name}";
@@ -99,6 +99,11 @@ class VipCard extends Base
         if(!empty($product_data)){
             //循环查询会员卡是否支持该课程，删除不支持的会员卡元素
             foreach($vip_card_list as $key => &$val){
+                if(empty($val['vip_card_info'])){
+                    unset($vip_card_list[$key]);
+                    continue;
+                }
+                
                 if(!in_array($product_data['category_id'], $val['vip_card_info']['category_ids_arr'])){
                     unset($vip_card_list[$key]);
                 }else{
@@ -115,7 +120,9 @@ class VipCard extends Base
             if(!empty($vip_card_list) && count($vip_card_list)>=1){
                 $discount_arr = [];
                 foreach($vip_card_list as $key => $val){
-                    $discount_arr[$key] = $val['vip_card_info']['discount']; 
+                    if(!empty($val['vip_card_info'])){
+                        $discount_arr[$key] = $val['vip_card_info']['discount']; 
+                    }
                 }
                 asort($discount_arr);
                 $key = key($discount_arr);

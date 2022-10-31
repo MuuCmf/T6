@@ -82,11 +82,20 @@ class VipCard extends Base
             $category_ids_arr = [];
         }
         $data['category_ids_arr'] = $category_ids_arr;
-        $data['month_price'] = sprintf("%.2f",$data['month_price']/100);
-        $data['quarter_price'] = sprintf("%.2f",$data['quarter_price']/100);
-        $data['year_price'] = sprintf("%.2f",$data['year_price']/100);
-        $data['forever_price'] = sprintf("%.2f",$data['forever_price']/100);
 
+        if(!empty($data['month_price'])){
+            $data['month_price'] = sprintf("%.2f",$data['month_price']/100);
+        }
+        if(!empty($data['quarter_price'])){
+            $data['quarter_price'] = sprintf("%.2f",$data['quarter_price']/100);
+        }
+        if(!empty($data['year_price'])){
+            $data['year_price'] = sprintf("%.2f",$data['year_price']/100);
+        }
+        if(!empty($data['forever_price'])){
+            $data['forever_price'] = sprintf("%.2f",$data['forever_price']/100);
+        }
+        
         if($data['discount'] == 0){
             $data['discount_str'] = '免费';
         }else{
