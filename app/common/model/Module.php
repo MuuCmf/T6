@@ -13,7 +13,7 @@ class Module extends Base
      */
     public function getAll($where = [])
     {
-        $list = $this->where($where)->order('sort desc')->select()->toArray();
+        $list = $this->where($where)->order('sort desc,id desc')->select()->toArray();
         foreach($list as & $item){
             
             if(empty($item['icon'])){
