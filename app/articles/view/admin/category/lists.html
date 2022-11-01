@@ -28,9 +28,11 @@
                 	<label for="category_{$row['id']}"></label>
 				</div>
 				<div class="title">
+					{notempty name="row.cover_100"}
 					<div class="cover">
 						<img src="{$row['cover_100']}" width='30' height="30" />
 					</div>
+					{/notempty}
 					<div class="info type-parent">{$row['title']}</div>
 				</div>
 				<div class="status">
