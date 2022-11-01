@@ -199,11 +199,11 @@ class WechatOfficialAccount extends Api
                 $data = [
                     'openid'    =>  $oauth_info['openid'],
                     'unionid'   =>  $oauth_info['unionid'],
-                    'sex'       =>  $oauth_info['sex'],
                     'oauth_type'    =>  'weixin_h5',
                     'shopid'    =>  $this->shopid,
-                    'avatar'    =>  $oauth_info['avatar'],
-                    'nickname'  =>  rand_nickname(config('system.USER_NICKNAME_PREFIX'))
+                    'nickname'  =>  rand_nickname(config('system.USER_NICKNAME_PREFIX')),
+                    'avatar' => !empty($oauth_info['avatar'])?$oauth_info['avatar']:'',
+                    'sex' => !empty($oauth_info['sex'])?$oauth_info['sex']:0,
                 ];
                 $user = $MemberModel->oauth($data);
                 $MemberModel->updateLogin($user['uid']);

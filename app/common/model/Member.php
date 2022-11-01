@@ -547,9 +547,10 @@ class Member extends Model
     }
 
     /**
-     * 授权
+     * 微信授权
      */
-    public function oauth($data){
+    public function oauth($data)
+    {
         $syncModel = new MemberSync();
         //是否已有授权信息
         $sync = $syncModel->where('openid',$data['openid'])->find();
@@ -562,18 +563,21 @@ class Member extends Model
                 $has_union = $syncModel->where('unionid',$data['unionid'])->find();
                 if ($has_union) $has_union = $has_union->toArray();
             }
+            //初始UID
+            $uid = 0;
+            
             if (isset($has_union)){
                 $uid = $has_union['uid'];
             }else{
                 $member_data = [
-                    //'uid'       => 'default',
+                    'uid' => $uid,
                     'shopid'    => $data['shopid'],
                     'nickname'  => $data['nickname'],
                     'username'  => rand_username(''),
                     'password'  => user_md5('123456', Config::get('auth.auth_key')),
                     'avatar'    => $data['avatar'],
                     'sex'       => $data['sex'],
-                    'email'     => rand_email(),
+                    // 'email'     => rand_email(),
                     'status'    =>  1
                 ];
                 $result = $this->save($member_data);
