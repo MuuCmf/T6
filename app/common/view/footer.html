@@ -81,21 +81,9 @@
   </div>
 </div>
 <script>
-    
-    // 点击复制qq群号码
-    function groupnumber() {
-      var groupnumber = $('#groupnumber')
-      groupnumber.select();//选择对象
-      document.execCommand("Copy");//执行浏览器命令
-      $('.getqq').css({"display":"inline-block"})
-      setTimeout("$('.getqq').css({'display':'none'})",2000)
-    };
-    //点击复制邮箱地址
-    function email(){
-      var email = $("#e-mail")
-      email.select();
-      document.execCommand('Copy');
-      $('.prompt').css({"display":"block"})
-      setTimeout("$('.prompt').css({'display':'none'})",2000)
-    };
+  $(function(){
+    $("img.lazy").lazyload({
+        effect: "fadeIn"
+    });
+  })
 </script>

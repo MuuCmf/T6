@@ -23,7 +23,9 @@
 					{if $vars['dev'] == false}
 					<a href="{:url('/articles/detail', ['id'=>$article_data['id']])}">
 					{/if}
-                    <div class="image"><img src="{$article_data['cover_200']}" /></div>
+                    <div class="image">
+						<img data-original="{$article_data['cover_200']}" class="lazy">
+					</div>
                     <div class="content">
                         <div class="title h3 text-ellipsis-2">{$article_data['title']}</div>
                         <div class="info clearfix">

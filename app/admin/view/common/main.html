@@ -47,6 +47,7 @@
 <input data-toggle="version" value="{$version}" type="hidden" />
 <!-- ./wrapper -->
 <script src="__STATIC__/common/lib/zui/js/zui.min.js"></script>
+<script src="__STATIC__/common/lib/jquery.lazyload/jquery.lazyload.js"></script>
 <script src="__STATIC__/admin/js/adminlte.min.js"></script>
 <!-- main -->
 <script src="__STATIC__/admin/js/main.min.js"></script>
@@ -54,6 +55,9 @@
 <script>
 $(document).ready(function(){
     $('.muu-wrapper').fadeIn(200); // 1000等于1秒
+    $("img.lazy").lazyload({
+        effect: "fadeIn"
+    });
 });
 </script>
 </body>
