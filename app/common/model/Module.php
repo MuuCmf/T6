@@ -125,8 +125,10 @@ class Module extends Base
             closedir ( $handle );
         }
 
+        // 排除无效目录
+        $exclude = ['.htaccess','extra','lang','admin','common','api','channel','index','ucenter'];
         foreach($dir as $k=>$v){
-            if($v == '.htaccess' || $v == 'extra' || $v == 'lang'){
+            if(in_array($v, $exclude)){
               unset($dir[$k]);
             }
         }
@@ -137,7 +139,6 @@ class Module extends Base
             {
                 // 获取配置数据
                 $info = $this->getInfo($subdir);
-                //$info['icon'] = '';
                 $info['sort'] = 0;
                 $info['source'] = 'local';
                 // 合并数据表内模块
@@ -150,16 +151,18 @@ class Module extends Base
                 $module[] = $info;
             }
         }
+        
         if(!empty($module)){
             //写入数据库
             $this->saveAll($module);
         }
-
+        
         // 获取所有本地未安装应用
         $list = $this->where([
             ['source', '=', 'local'],
             ['is_setup', '=', 0]
         ])->select();
+
         if(!empty($list)){
             foreach ($list as $v) {
                 if (!is_dir(APP_PATH . '/' . $v['name']))
@@ -357,6 +360,14 @@ class Module extends Base
         $this->where('id', $id)->save($module);
 
         return true;
+    }
+
+    /**
+     * 更新本地应用
+     */
+    public function localUpgrade($name)
+    {
+
     }
 
     /**

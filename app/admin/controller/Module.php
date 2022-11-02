@@ -60,8 +60,8 @@ class Module extends Admin
         $modules = $this->ModuleModel->getListByPage($map,'sort desc,id desc','*',15);
         $cloud = new CloudServer();
         foreach($modules as &$item){
+            // 云端应用数据处理
             if($item['source'] == 'cloud'){
-                //获取云端版本
                 $result = $upgradeServer->cloudVersion([
                     'app_name' => $item['name'],
                     'appid'    => $item['appid']
@@ -74,6 +74,11 @@ class Module extends Admin
                 if (is_array($auth) && $auth['code'] == 0 && $auth['data'] == 'end_auth'){
                     $item['expired'] = 1;
                 }
+            }
+            // 本地应用数据处理
+            if($item['source'] == 'local'){
+                // 获取文件配置信息
+                $info = $this->ModuleModel->getModule($item['name']);
             }
             
             //获取应用图标
@@ -97,6 +102,7 @@ class Module extends Admin
                     $item['icon_100'] = $item['icon_200'] = $item['icon_300'] = $item['icon_400'] = '/static/'. $item['name'] .'/images/icon.png';
                 }
             }
+            
         }
         unset($item);
 
