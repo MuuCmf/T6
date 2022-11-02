@@ -40,7 +40,7 @@ class Category extends Admin
      */
     public function tree()
     {
-        $category_tree = $this->CategoryModel->tree($this->shopid, 0);
+        $category_tree = $this->CategoryModel->tree($this->shopid, 1);
         return $this->success('success', $category_tree);
     }
 
