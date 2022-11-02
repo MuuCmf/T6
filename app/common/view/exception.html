@@ -305,7 +305,7 @@ if (!function_exists('echo_value')) {
 </head>
 <body>
     <?php if (\think\facade\App::isDebug()) { ?>
-        <?php foreach ($traces as $index => $trace) { ?>
+    <?php foreach ($traces as $index => $trace) { ?>
     <div class="exception">
         <div class="message">
             <div class="info">
@@ -348,14 +348,14 @@ if (!function_exists('echo_value')) {
             </ol>
         </div>
     </div>
-        <?php } ?>
+    <?php } ?>
     <?php } else { ?>
     <div class="exception">
         <div class="system-message">
             <div class="image">
                 <img src="/static/common/images/error.svg" alt="" width="150" />
             </div>
-            <h1>参数错误，请稍后访问</h1>
+            <h1>服务器发生错误，请稍后访问！</h1>
         </div>
     </div>
     <?php } ?>
@@ -406,9 +406,12 @@ if (!function_exists('echo_value')) {
     </div>
     <?php } ?>
 
+    <?php if (\think\facade\App::isDebug()) { ?>
     <div class="copyright">
         <p>Powered by <a href="https://www.muucmf.cc/">MuuCmf T6</a></p>
     </div>
+    <?php } ?>
+    
     <?php if (\think\facade\App::isDebug()) { ?>
     <script>
         function $(selector, node){
