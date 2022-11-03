@@ -2,6 +2,8 @@
 namespace app\channel\controller\api;
 
 use app\common\controller\Api;
+use app\channel\logic\OfficialAccount as OfficialAccountLogic;
+use app\channel\model\WechatConfig;
 use app\common\model\Member;
 use app\common\model\MemberSync;
 use app\common\model\QrcodeLogin;
@@ -30,6 +32,22 @@ class WechatOfficialAccount extends Api
     {
         parent::__construct();
     }
+
+    /**
+     * 获取公众号配置
+     */
+    public function config()
+    {
+        //获取公众号配置
+        $weixin_h5 = (new WechatConfig())->where('shopid', $this->params['shopid'])->field('title,desc,cover,qrcode,appid')->find();
+        if ($weixin_h5){
+            $weixin_h5 = $weixin_h5->toArray();
+            $weixin_h5 = (new OfficialAccountLogic())->formatData($weixin_h5);
+        }
+        
+        return $this->success('success',$weixin_h5);
+    }
+
     /**
      * 微信回调
      */

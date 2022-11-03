@@ -2,6 +2,7 @@
 namespace app\channel\model;
 
 use app\common\model\Base;
+use app\channel\logic\OfficialAccount;
 
 /**
  * 公众号配置表
@@ -22,11 +23,7 @@ class WechatConfig extends Base{
      */
     function getWechatConfigByShopId($shopid = 0)
     {
-        $config = $this->where(
-            [
-                ['shopid','=',$shopid]
-            ]
-        )->find();
+        $config = $this->where([['shopid','=',$shopid]])->find();
         if ($config){
             $config = $config->toArray();
             // 固定URL地址
@@ -43,6 +40,7 @@ class WechatConfig extends Base{
                     'only_wechat' => 1
                 ];
             }
+
         }else{
             //初始化数据
             $config['id'] = 0;
@@ -66,8 +64,8 @@ class WechatConfig extends Base{
      * @title 获取回调地址
      * @return string
      */
-    public function callbackUrl($shopid = 0){
-        //return request()->domain() . "/channel/official/callback";
-        return url('channel/official/callback', ['shopid' => 0], false, true);
+    public function callbackUrl($shopid = 0)
+    {
+        return url('channel/official/callback', ['shopid' => $shopid], false, true);
     }
 }
