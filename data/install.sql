@@ -167,6 +167,7 @@ CREATE TABLE IF NOT EXISTS `muucmf_author` (
   `name` varchar(18) NOT NULL DEFAULT '' COMMENT '真实姓名',
   `description` varchar(140) NOT NULL DEFAULT '' COMMENT '简短描述',
   `cover` varchar(255) NOT NULL DEFAULT '' COMMENT '图片',
+  `professional` VARCHAR(64) NULL DEFAULT '' COMMENT '职称',
   `avatar_card` varchar(255) NOT NULL DEFAULT '' COMMENT '手持身份证照片',
   `certificate` varchar(255) NOT NULL DEFAULT '' COMMENT '资格证书',
   `content` text NOT NULL COMMENT '详情',

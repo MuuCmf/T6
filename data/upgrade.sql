@@ -118,3 +118,5 @@ CREATE TABLE IF NOT EXISTS `muucmf_baidu_mp_config` (
 
 INSERT INTO `muucmf_menu` (`id`, `title`, `pid`, `sort`, `url`, `hide`, `type`, `tip`, `group`, `is_dev`, `icon`, `module`) VALUES
 ('0762BC67-2FAC-2C3D-94F0-9292DF07DEDE', '百度小程序配置', 'A4650B98-DAD4-8194-030C-1B2AB4F35CBA', 40, 'channel/admin.BaiduMiniprogram/index', 0, 0, '', '百度小程序', 0, '', 'admin');
+
+ALTER TABLE `muucmf_author` ADD `professional` VARCHAR(64) NULL DEFAULT '' COMMENT '职称' AFTER `cover`;
