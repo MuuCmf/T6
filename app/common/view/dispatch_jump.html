@@ -32,7 +32,7 @@
                 <img src="/static/common/images/{$codeText}.svg" alt="" width="150" />
             </div>
             <h1>{$msg}</h1>
-            {if !empty($wait)}
+            {if !empty($wait) && !empty($url)}
             <p class="jump">
                 页面即将跳转 <span id="wait">{$wait}</span>
             </p>
@@ -55,10 +55,12 @@
                 })();
             </script>
             {/if}
+            {if !empty($url)}
             <p class="clearfix" style="margin-top: 20px;">
                 <a href="javascript:history.go(-1);" class="btn btn-grey">返 回</a>
                 <a href="{$url}" class="btn btn-primary">跳 转</a>
             </p>
+            {/if}
         </div>
         <div class="copyright">
             <p>Powered by <a href="https://www.muucmf.cc/">MuuCmf T6</a></p>

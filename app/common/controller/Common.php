@@ -29,12 +29,19 @@ class Common extends Base
     public function __construct()
     {
         // 判断站点是否关闭
-        if (strtolower(App('http')->getName()) != 'install' && strtolower(App('http')->getName()) != 'admin') {
-            
+        if (strtolower(App('http')->getName()) != 'ucenter' && strtolower(App('http')->getName()) != 'admin') {
             if (!Config::get('system.SITE_CLOSE')) {
-                header("Content-Type: text/html; charset=utf-8");
-                echo Config::get('system.SITE_CLOSE_HINT');
-                exit;
+                $type = (request()->isJson() || request()->isAjax()) ? 'json' : 'html';
+                $result = [
+                    'code' => 0,
+                    'msg' => '站点临时关闭，请稍后访问',
+                ];
+                if ($type == 'html') {
+                    $response = view(config('app.dispatch_error_tmpl'), $result);
+                } else if ($type == 'json') {
+                    $response = json($result);
+                }
+                throw new \think\exception\HttpResponseException($response);
             }
         }
         $this->params = request()->param();
