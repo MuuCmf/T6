@@ -222,14 +222,16 @@
      *
      * @return     {boolean}  { description_of_the_return_value }
      */
-    let modal_confirm = function(confirmText,callback) {
+    let modal_confirm = function(confirmText, callback, type = 'error') {
 
         if(confirmText == ''){
             confirmText = '确认执行该操作？';
         }
-        
-        // 自定义模态框样式
-        let custom = '<div class="text-center">'+
+
+        let custom = '';
+        if(type == 'error'){
+            // 自定义模态框样式
+            custom = '<div class="confirm-info text-center '+ type +'">'+
                         '<i class="fa fa-exclamation-circle"></i>'+
                         '<p class="title">系统提示</p>'+
                         '<p class="desc">'+ confirmText +'</p>'+
@@ -238,6 +240,18 @@
                             '<button type="button" class="btn" data-dismiss="modal">取消</button>'+
                         '</div>'+
                     '</div>';
+        }else{
+            // 自定义模态框样式
+            custom = '<div class="confirm-info text-center '+ type +'">'+
+                        '<i class="fa fa-check-circle"></i>'+
+                        '<p class="title">系统提示</p>'+
+                        '<p class="desc">'+ confirmText +'</p>'+
+                        '<div class="btns text-center">'+
+                            '<button class="btn btn-info confirm margin-right" type="button">确认</button>'+
+                            '<button type="button" class="btn" data-dismiss="modal">取消</button>'+
+                        '</div>'+
+                    '</div>';
+        }
 
         let modal_html = '<div class="modal fade confirm-modal" id="tip_Modal">'+
                         '<div class="modal-dialog modal-tip">'+

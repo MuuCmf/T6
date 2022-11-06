@@ -278,18 +278,31 @@ a {
  */
 /*弹出提示框*/
 .confirm-modal {
-  .fa {
-    font-size:36px;
-    color: #dd4b39;
+  .confirm-info {
+    padding-top: 20px;
+    
+    .title {
+      font-size:20px;
+      font-weight: 400;
+      padding: 10px;
+    }
+    .desc {
+      height: auto;
+    }
   }
-  .title {
-    font-size:20px;
-    font-weight: 400;
-    padding: 10px;
+  .confirm-info.error {
+    .fa {
+      font-size:36px;
+      color: #dd4b39;
+    }
   }
-  .desc {
-    height: auto;
+  .confirm-info.success {
+    .fa {
+      font-size:36px;
+      color: #00ce74;
+    }
   }
+  
   .btns {
     padding: 20px 0;
     .btn {
