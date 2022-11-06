@@ -38,7 +38,7 @@
 		};
 		var qrcode_pay_expire = setInterval(function(){
             $.post(url,data,function($res){
-              if($res.code == 200 && res.data.paid == 1){
+              if($res.code == 200 && $res.data.paid == 1){
                 window.clearInterval(qrcode_pay_expire);
                 //支付成功业务逻辑
                 toast.success('支付成功，页面即将跳转~', 'success');
@@ -47,7 +47,6 @@
                   location.href = $res.url;
                 }, 1500);
               }
-              //console.log($login_res);
             });
           }, 1000);
 	})

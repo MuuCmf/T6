@@ -266,7 +266,11 @@ class Pay extends Api
         // 记录日志
         Log::write($notify_data);
 
-        if($this->params['channel'] == 'weixin_mp' || $this->params['channel'] == 'weixin_h5'){
+        if($this->params['pay_channel'] == 'weixin' && (
+            $this->params['channel'] == 'weixin_mp' || 
+            $this->params['channel'] == 'weixin_h5' || 
+            $this->params['channel'] == 'pc'
+        )){
             $jsonxml = json_encode(simplexml_load_string($notify_data, 'SimpleXMLElement', LIBXML_NOCDATA));
             $notify = json_decode($jsonxml, true);
             //实例化支付服务
