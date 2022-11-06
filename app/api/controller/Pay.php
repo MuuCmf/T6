@@ -68,7 +68,11 @@ class Pay extends Api
                 }
                 
                 // 微信支付
-                if($order_data['channel'] == 'weixin_h5' || $order_data['channel'] == 'weixin_mp'){
+                if($this->params['pay_channel'] == 'weixin' && (
+                    $order_data['channel'] == 'weixin_h5' || 
+                    $order_data['channel'] == 'weixin_mp' || 
+                    $order_data['channel'] == 'pc'
+                )){
                     // 获取支付参数
                     $config = ChannelServer::config($order_data['channel'] ,$this->shopid);
                     // 获取用户openid
@@ -84,9 +88,13 @@ class Pay extends Api
                     $pay_data['out_trade_no'] = $order_data['order_no'];
                     $pay_data['total_fee'] = intval($order_data['paid_fee'] * 100);
                     $pay_data['notify_url'] = $notify_url;
-                    // 发起支持
+                    // 发起支付
                     $PayService = PayServer::init($config['appid'], $this->params['pay_channel']);
-                    $result_pay = $PayService->server->pay($pay_data);
+                    $trade_type = 'JSSDK';
+                    if($order_data['channel'] == 'pc'){
+                        $trade_type = 'NATIVE';
+                    }
+                    $result_pay = $PayService->server->pay($pay_data, $trade_type);
                 }
                 // 抖音小程序支付
                 if($order_data['channel'] == 'douyin_mp'){
