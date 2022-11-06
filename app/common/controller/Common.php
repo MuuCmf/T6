@@ -46,6 +46,7 @@ class Common extends Base
         }
         $this->params = request()->param();
         $this->shopid = $this->params['shopid'] ?? 0;
+
         // 控制器初始化
         $this->initialize();
     }
@@ -57,6 +58,8 @@ class Common extends Base
     {   
         //记住登录
         (new Member())->rembemberLogin();
+        //获取shopid
+        $this->initShopid();
         //获取应用名
         $this->initModuleName();
         //获取系统配置
@@ -73,6 +76,11 @@ class Common extends Base
         $this->initUserBaseInfo();
         //seo规则
         $this->initSeo();
+    }
+
+    protected function initShopid()
+    {
+        View::assign('shopid', $this->shopid);
     }
 
     /**

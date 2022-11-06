@@ -21,7 +21,13 @@ class Channel{
                 if (empty($data)){
                     throw  new Exception('微信公众号配置文件不存在');
                 }
-                break;
+            break;
+            case 'pc':
+                $data = (new WechatConfig())->getWechatConfigByShopId($shopid);
+                if (empty($data)){
+                    throw  new Exception('微信公众号配置文件不存在');
+                }
+            break;
             //微信小程序
             case 'weixin_mp':
                 //获取配置信息
@@ -38,11 +44,14 @@ class Channel{
                 $map = [
                     ['shopid' ,'=' , $shopid],
                 ];
-                $data = (new DouyinMpConfig())->where($map)->find();
+            $data = (new DouyinMpConfig())->where($map)->find();
                 if (empty($data)){
                     throw  new Exception('抖音小程序配置信息不存在');
                 }
-                break;
+            break;
+
+            default:
+                $data = [];
         }
         return $data;
     }

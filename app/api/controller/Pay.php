@@ -66,7 +66,9 @@ class Pay extends Api
                     $notify_url .= "/shopid/{$order_data['shopid']}";
                     $notify_url .= "/app/{$order_data['app']}";
                 }
-                
+
+                // 初始返回url
+                $return_url = '';
                 // 微信支付
                 if($this->params['pay_channel'] == 'weixin' && (
                     $order_data['channel'] == 'weixin_h5' || 
@@ -90,11 +92,15 @@ class Pay extends Api
                     $pay_data['notify_url'] = $notify_url;
                     // 发起支付
                     $PayService = PayServer::init($config['appid'], $this->params['pay_channel']);
-                    $trade_type = 'JSSDK';
+                    $trade_type = 'JSAPI';
                     if($order_data['channel'] == 'pc'){
                         $trade_type = 'NATIVE';
                     }
                     $result_pay = $PayService->server->pay($pay_data, $trade_type);
+
+                    if(isset($result_pay['code_url'])){
+                        $return_url = url('channel/pay/weixin', ['order_no' => $order_no, 'code_url' => $result_pay['code_url']]);
+                    }
                 }
                 // 抖音小程序支付
                 if($order_data['channel'] == 'douyin_mp'){
@@ -125,7 +131,7 @@ class Pay extends Api
                 ];
                 $this->OrderModel->edit($channel_map);
 
-                return $this->success('success',$result_pay);
+                return $this->success('success',$result_pay, $return_url);
             }catch (Exception $e){
                 return $this->error($e->getMessage());
             }
@@ -148,8 +154,6 @@ class Pay extends Api
             $config = ChannelServer::config($order_data['channel'] ,$this->shopid);
             // 微信支付
             if($order_data['channel'] == 'weixin_h5' || $order_data['channel'] == 'weixin_mp'){
-
-                // 发起支持
                 $PayService = PayServer::init($config['appid'], $this->params['pay_channel']);
                 $result = $PayService->server->queryByOutTradeNumber($order_no);
 

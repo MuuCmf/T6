@@ -29,8 +29,9 @@ class Orders extends Api
      * @title 下单
      * @return \think\Response|void
      */
-    public function create(){
-        if (request()->isAjax()){
+    public function create()
+    {
+        if (request()->isPost()){
             Db::startTrans();
             try {
                 //具体业务 分发到相应程序订单类
@@ -91,7 +92,8 @@ class Orders extends Api
      * @throws \think\db\exception\DbException
      * @throws \think\db\exception\ModelNotFoundException
      */
-    public function list(){
+    public function list()
+    {
         
         $uid = request()->uid;
         $status = input('status');
@@ -125,12 +127,16 @@ class Orders extends Api
     /**
      * @title 订单详情
      */
-    public function detail(){
+    public function detail()
+    {
         $order_no = $this->params['order_no'];
         $order_data = $this->OrdersModel->getDataByOrderNo($order_no);
         $order_data = $this->OrdersLogic->formatData($order_data);
-        return $this->success('success',$order_data);
-    }
 
+        // pc端商品路径
+        $return_url = url($order_data['app'] . '/' . $order_data['products']['link']['url'], $order_data['products']['link']['param']);
+
+        return $this->success('success',$order_data, $return_url);
+    }
 
 }
