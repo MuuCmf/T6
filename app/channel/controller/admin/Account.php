@@ -65,10 +65,6 @@ class Account extends MuuAdmin {
             $config = input('post.');
             $config['shopid'] = $this->shopid;
 
-            if(isset($config['only_wechat'])){
-                $request = ['only_wechat' => $config['only_wechat']];
-                $config['request'] = json_encode($request);
-            }
             $res = $this->wechatConfigModel->edit($config);
             if ($res){
                 return $this->success('保存成功',$config, 'refresh');
