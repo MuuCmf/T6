@@ -66,10 +66,10 @@ class Cloud
         $web_domain = request()->host();
         $web_host   = request()->ip();
         $lock_str   = $web_domain . '|' . $web_host;
-        $code = Cache::get('cloud_auth');
+        $code = Cache::get(request()->host() . '_cloud_auth');
         if (!$code || $code['time'] < time()){
             $code = self::encrypt_code($lock_str ,6000,'muu');
-            Cache::set('cloud_auth',['time' => time() + 60 * 30 ,'code' => $code]);
+            Cache::set(request()->host() . '_cloud_auth',['time' => time() + 60 * 30 ,'code' => $code]);
         }else{
             $code = $code['code'];
         }
