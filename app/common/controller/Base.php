@@ -6,7 +6,6 @@ namespace app\common\controller;
 use think\exception\HttpResponseException;
 use think\exception\ValidateException;
 use think\facade\Env;
-use think\facade\Request;
 use think\Response;
 use think\Validate;
 

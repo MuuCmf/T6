@@ -5,6 +5,7 @@ namespace app\admin\controller;
 use app\admin\lib\Cloud;
 use think\facade\Db;
 use think\facade\View;
+use think\Request;
 use app\common\controller\Base;
 use app\admin\model\Menu;
 use app\admin\model\AuthRule;
@@ -15,24 +16,22 @@ use app\common\model\Module as ModuleModel;
  */
 class Admin extends Base
 {
-
-    protected $middleware = [
-        // 鉴权中间件
-        // 'app\common\middleware\CheckAuth::class'
-    ];
-
     /**
      * 是否批量验证
      * @var bool
      */
     protected $batchValidate = false;
-
     protected $title;
     protected $moduleModel;
     public $isRoot;
     protected $menu = [];
     public $shopid = 0;//店铺Id，sass平台拓展
     public $app_name = ''; // 应用标识
+
+    protected $middleware = [
+        // 鉴权中间件
+        'app\admin\middleware\CheckRule::class'
+    ];
     /**
      * 构造方法
      * @access public
@@ -42,15 +41,13 @@ class Admin extends Base
         $this->moduleModel = new ModuleModel();
         // 控制器初始化
         $this->initialize();
+        
     }
 
     public function initialize()
     {
-        // 判断登陆
-        $this->needLogin();
+        $this->setRoot();
         $this->setTitle();
-        // 当前系统域名
-        View::assign('this_domain',request()->domain());
         // 当前模块、控制器及方法名
         $this->app_name = strtolower(app('http')->getName());
         $controller = strtolower(request()->controller());
@@ -58,11 +55,6 @@ class Admin extends Base
         View::assign('this_app', $this->app_name);
         View::assign('this_controller',$controller );
         View::assign('this_action',$action);
-        // 检查权限
-        $rule = strtolower($this->app_name . '/' . $controller . '/' . $action);
-        if(!$this->checkRule($rule, get_uid())){
-            throw new \think\Exception('非法操作');
-        }
         // 当前应用模块信息
         $module = $this->moduleModel->getModule($this->app_name);
         View::assign('module', $module);
@@ -80,20 +72,12 @@ class Admin extends Base
     }
 
     /**
-     * 判断登录
+     * 是否超管
      */
-    public function needLogin(){
-
-        $uid = is_login();
-        if($uid == 1){
-            $this->isRoot = 1;
-        }
-        if (!$uid) {// 还没登录 跳转到登录页面
-            if($uid) return $uid;
-            // 调整至前台登陆页
-            $this->redirect(url('ucenter/common/login'));
-        }
-
+    public function setRoot()
+    {
+        $uid = get_uid();
+        if($uid == 1) $this->isRoot = 1;
         return $uid;
     }
 
@@ -115,7 +99,6 @@ class Admin extends Base
                 continue;//继续循环
             }
         }
-
         return $all_module_list;
     }
 
@@ -220,7 +203,7 @@ class Admin extends Base
         return $menus;
     }
 
-        /**
+    /**
      * 通用分页列表数据集获取方法
      *
      *  可以通过url参数传递where条件,例如:  userList.html?name=asdfasdfasdfddds
@@ -295,7 +278,7 @@ class Admin extends Base
      * @param string $mode check模式
      * @return boolean
      */
-    final protected function checkRule($rule, $uid, $type = 1, $mode = 'url')
+    final protected function checkRule($rule, $uid, $type = AuthRule::RULE_URL, $mode = 'url')
     {
         if ($this->isRoot) {
             return true;//管理员允许访问任何页面
