@@ -588,14 +588,16 @@ class Member extends Model
                 (new AuthGroup())->addToGroup($this->id ,1);
                 $uid = $this->id;
             }
-
-
-            $sync = $syncModel->edit([
+            $update_data = [
                 'uid'       => $uid,
                 'openid'    => $data['openid'],
-                'unionid'   => $data['unionid'],
                 'type'      => $data['oauth_type']
-            ]);
+            ];
+            if(!empty($data['unionid'])){
+                $update_data['unionid'] = $data['unionid'];
+            }
+
+            $sync = $syncModel->edit($update_data);
             //存入授权记录
             if(!$sync){
                 throw new Exception('存入用户授权记录失败');
