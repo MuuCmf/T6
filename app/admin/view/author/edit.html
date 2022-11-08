@@ -45,7 +45,7 @@
 			<div class="form-group">
 				<label class="col-sm-2 control-label">职称</label>
 				<div class="form-controls col-sm-8">
-					<input type="text" class="form-control" name="professional" placeholder="请填写创作者职称" value="{$data['professional']}">
+					<input type="text" class="form-control" name="professional" placeholder="请填写创作者职称" value="{$data['professional']|default=''}">
 					<div class="help-block">如：全栈工程师、原创插画师等</div>
 				</div>
 			</div>

@@ -112,6 +112,7 @@ class Author extends Admin
             $data['avatar_card'] = '';
             $data['certificate'] = '';
             $data['content'] = '';
+            $data['professional'] = '';
             $data['sort'] = 0;
             $data['status'] = 0;
             $data['reason'] = '';
