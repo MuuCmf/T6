@@ -189,6 +189,7 @@ class WechatOfficialAccount extends Api
         $ticket = $result['ticket'];
         $qrcode = OfficialAccount::getQrcodeUrl($ticket);
         $fp = fopen($qrcode, 'rb');
+        ob_clean();
         fpassthru($fp);
     }
 
