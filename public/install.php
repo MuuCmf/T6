@@ -922,8 +922,7 @@ SECRET = {$secret}";
     @file_put_contents('../.env', $_env);
 
 
-$database = "
-<?php
+$database = "<?php
 
 return [
     // 默认使用的数据库连接配置
@@ -986,8 +985,7 @@ return [
 
 @file_put_contents('../config/database.php', $database);
 
-$auth = "
-<?php
+$auth = "<?php
 
 return[
     // 权限设置

@@ -335,7 +335,6 @@ class Admin extends Base
         $msg = array_merge(['success' => '操作成功！', 'error' => '操作失败', 'url' => ''], (array)$msg);
         
         if (Db::name($table)->where($where)->update($data) !== false) {
-            //dump($this->success($msg['success'], '', $msg['url']));
             return $this->success($msg['success'], '', $msg['url']);
         } else {
             return $this->error($msg['error'], '', $msg['url']);

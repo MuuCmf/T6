@@ -15,22 +15,6 @@ class Base
     private $debug = [];
     
     /**
-     * 是否批量验证
-     * @var bool
-     */
-    protected $batchValidate = false;
-
-    /**
-     * 系统设置
-     * @var array
-     */
-    protected $system = [];
-
-    protected $uid = 0;
-
-    protected $token = '';
-
-    /**
      * 验证数据
      * @access protected
      * @param  array        $data     数据

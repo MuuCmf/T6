@@ -1,4 +1,5 @@
 <?php
+
 namespace app\admin\controller;
 
 use think\facade\Config;
