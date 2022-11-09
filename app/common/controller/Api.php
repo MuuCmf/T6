@@ -6,7 +6,6 @@ use thans\jwt\facade\JWTAuth;
 
 class Api extends Base
 {
-
     public $shopid = 0;//店铺ID
     public $module;//请求的应用
     public $app_name; 

@@ -1,11 +1,8 @@
 <?php
-
 namespace app\admin\controller;
 
-use app\admin\lib\Cloud;
 use think\facade\Db;
 use think\facade\View;
-use think\Request;
 use app\common\controller\Base;
 use app\admin\model\Menu;
 use app\admin\model\AuthRule;

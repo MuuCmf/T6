@@ -1,6 +1,4 @@
 <?php
-declare (strict_types = 1);
-
 namespace app\common\controller;
 
 use think\exception\HttpResponseException;
@@ -31,21 +29,6 @@ class Base
     protected $uid = 0;
 
     protected $token = '';
-    /**
-     * 构造方法
-     * @access public
-     */
-    public function __construct()
-    {
-        // 控制器初始化
-        $this->initialize();
-    }
-
-    // 初始化
-    protected function initialize()
-    {
-        
-    }
 
     /**
      * 验证数据
