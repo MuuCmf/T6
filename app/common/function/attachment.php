@@ -761,9 +761,7 @@ if (!function_exists('get_thumb_image')) {
                 return request()->domain() . '/static/common/images/nopic.png';
             }
             $attach = $Attachment->getThumbImage($picture['attachment'], $width, $height, $replace);
-
             return get_attachment_src($attach['src']);
-            
         }else{
             return $attachment;
         }

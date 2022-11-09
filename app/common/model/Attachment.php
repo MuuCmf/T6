@@ -350,50 +350,17 @@ class Attachment extends Base
             return $info;
         }else{
             // 远程图片处理
-            // 阿里云OSS
             if(strtolower($driver) == 'aliyun'){
-                try {
-                    $oldimageinfo = getimagesize(config('extend.OSS_ALIYUN_BUCKET_DOMAIN') . '/attachment/' . $attachment);
-                    $old_image_width = intval($oldimageinfo[0]);
-                    $old_image_height = intval($oldimageinfo[1]);
-                    if ($height == "auto") $height = $old_image_height * $width / $old_image_width;
-                    if ($width == "auto") $width = $old_image_width * $width / $old_image_height;
-                    if (intval($height) == 0 || intval($width) == 0) {
-                        return 0;
-                    }
-                    $src = config('extend.OSS_ALIYUN_BUCKET_DOMAIN') . '/attachment/' . $attachment . '?x-oss-process=image/resize,m_fill,h_'.$height.',w_'.$width;
-                    $info['src'] = $src;
-                    $info['width'] = $old_image_width;
-                    $info['height'] = $old_image_height;
-                    return $info;
-                } catch (\Exception $e) {
-                    // 返还本地路径
-                    $info = $this->localThumb($attachment, $width, $height, $replace);
-                    $info['src'] = get_attachment_url() . $info['src'];
-                    return $info;
-                }
+                $src = config('extend.OSS_ALIYUN_BUCKET_DOMAIN') . '/attachment/' . $attachment . '?x-oss-process=image/resize,m_fill,h_'.$height.',w_'.$width;
+                $info['src'] = $src;
             }
-            // 腾讯云COS
+
             if(strtolower($driver) == 'tencent'){
-                try {
-                    $oldimageinfo = getimagesize(config('extend.COS_TENCENT_BUCKET_DOMAIN') . '/attachment/' . $attachment);
-                    $old_image_width = intval($oldimageinfo[0]);
-                    $old_image_height = intval($oldimageinfo[1]);
-                    if ($height == "auto") $height = $old_image_height * $width / $old_image_width;
-                    if ($width == "auto") $width = $old_image_width * $width / $old_image_height;
-    
-                    $src = config('extend.COS_TENCENT_BUCKET_DOMAIN') . '/attachment/' . $attachment . '?imageView2/1/w/'.$width.'/h/'.$height;
-                    $info['src'] = $src;
-                    $info['width'] = $old_image_width;
-                    $info['height'] = $old_image_height;
-                    return $info;
-                } catch (\Exception $e) {
-                    // 返还本地路径
-                    $info = $this->localThumb($attachment, $width, $height, $replace);
-                    $info['src'] = get_attachment_url() . $info['src'];
-                    return $info;
-                }
+                $src = config('extend.COS_TENCENT_BUCKET_DOMAIN') . '/attachment/' . $attachment . '?imageView2/1/w/'.$width.'/h/'.$height;
+                $info['src'] = $src;
             }
+
+            return $info;
         }
     }
 
