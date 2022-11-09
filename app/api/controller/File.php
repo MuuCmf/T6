@@ -90,6 +90,7 @@ class File extends Api
             
             case 'config':
                 $result = json_decode(preg_replace("/\/\*[\s\S]+?\*\//", "", file_get_contents(PUBLIC_PATH . '/static/common/lib/ueditor/php/config.json')), true);
+                return json($result);
             break;
 
             case 'uploadimage':
@@ -101,10 +102,9 @@ class File extends Api
                 }
 
                 $res = $this->Attachment->upload($shopid,$files,'file');
-                
-                $result['state'] ='SUCCESS';
-                $result['url'] = $res['url'];
-                
+                $res['state'] = 'SUCCESS';
+
+                return json($res);
             break;
 
             case 'uploadscrawl':
@@ -117,9 +117,9 @@ class File extends Api
 
                 $arr = $this->Attachment->Attachment($shopid,$files,'base64');
                 
-                $result['state'] ='SUCCESS';
+                $result['state'] = 'SUCCESS';
                 $result['url'] = $arr['url'];
-
+                return json($result);
             break;
 
             case 'uploadfile':
@@ -135,7 +135,7 @@ class File extends Api
                 $arr = $this->Attachment->upload($shopid,$files,'file');
 
                 if(is_array($arr)){
-                    $result['state'] ='SUCCESS';
+                    $result['state'] = 'SUCCESS';
                     $result['url'] = $arr['url'];
                     $result['original'] = $arr['filename'];
                 }else{
@@ -172,7 +172,7 @@ class File extends Api
             default:
             break;
         }
-        return json($result);
+
     }
 
     /**
