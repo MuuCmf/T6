@@ -182,4 +182,14 @@ class Update extends Admin
             }
         }
     }
+
+    /**
+     * 获取云端最新版本
+     */
+    public function last()
+    {
+        $cloud_version = $this->UpgradeServer->cloudVersion();
+
+        return json($cloud_version);
+    }
 }

@@ -240,7 +240,35 @@ $(function(){
     }; // 图表配置项，可以留空来使用默认的配置
 });
 
-</script>
+$(function(){
+    // 获取云端最新版本
+    var url = "{:url('update/last')}";
+    var local_version = "{$version}";
+    var last_version = '';
+    $.post(url, {}, function(res){
+        console.log(res);
+        if(res.code == 200){
+            last_version = res.data.version;
+            if(local_version != last_version){
+                new $.zui.Messager('云端有新版本可升级', {
+					placement: 'bottom-right',
+					type: 'danger',
+					close: true,
+					icon: 'ok-sign',
+					time: 0,
+					actions: [{
+						name: 'upgrade',
+						icon: 'cloud-upload',
+						text: '立即升级',
+						action: function() {
+							window.location="{:url('admin/Update/index')}"
+						}
+					}]
+				}).show();
+            }
+        }
+    });
+});
 
 </script>
 
