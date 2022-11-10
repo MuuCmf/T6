@@ -1,24 +1,24 @@
 <?php return array (
   'root' => 
   array (
-    'pretty_version' => 'dev-develop',
-    'version' => 'dev-develop',
+    'pretty_version' => '1.0.0+no-version-set',
+    'version' => '1.0.0.0',
     'aliases' => 
     array (
     ),
-    'reference' => 'bc25500a39ac8fddcd4725830070a9bbf6864500',
+    'reference' => NULL,
     'name' => 'topthink/think',
   ),
   'versions' => 
   array (
     'adbario/php-dot-notation' => 
     array (
-      'pretty_version' => '2.4.0',
-      'version' => '2.4.0.0',
+      'pretty_version' => '2.5.0',
+      'version' => '2.5.0.0',
       'aliases' => 
       array (
       ),
-      'reference' => '39ece8d385ce2f5e03718c693932d83ab0cb5972',
+      'reference' => '081e2cca50c84bfeeea2e3ef9b2c8d206d80ccae',
     ),
     'aferrandini/phpqrcode' => 
     array (
@@ -85,12 +85,12 @@
     ),
     'guzzlehttp/guzzle' => 
     array (
-      'pretty_version' => '7.4.5',
-      'version' => '7.4.5.0',
+      'pretty_version' => '7.5.0',
+      'version' => '7.5.0.0',
       'aliases' => 
       array (
       ),
-      'reference' => '1dd98b0564cb3f6bd16ce683cb755f94c10fbd82',
+      'reference' => 'b50a2a1251152e43f6a37f0fa053e730a67d25ba',
     ),
     'guzzlehttp/guzzle-services' => 
     array (
@@ -103,21 +103,21 @@
     ),
     'guzzlehttp/promises' => 
     array (
-      'pretty_version' => '1.5.1',
-      'version' => '1.5.1.0',
+      'pretty_version' => '1.5.2',
+      'version' => '1.5.2.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'fe752aedc9fd8fcca3fe7ad05d419d32998a06da',
+      'reference' => 'b94b2807d85443f9719887892882d0329d1e2598',
     ),
     'guzzlehttp/psr7' => 
     array (
-      'pretty_version' => '2.4.0',
-      'version' => '2.4.0.0',
+      'pretty_version' => '2.4.3',
+      'version' => '2.4.3.0',
       'aliases' => 
       array (
       ),
-      'reference' => '13388f00956b1503577598873fffb5ae994b5737',
+      'reference' => '67c26b443f348a51926030c83481b85718457d3d',
     ),
     'guzzlehttp/uri-template' => 
     array (
@@ -127,33 +127,6 @@
       array (
       ),
       'reference' => 'b945d74a55a25a949158444f09ec0d3c120d69e2',
-    ),
-    'league/flysystem' => 
-    array (
-      'pretty_version' => '1.1.9',
-      'version' => '1.1.9.0',
-      'aliases' => 
-      array (
-      ),
-      'reference' => '094defdb4a7001845300334e7c1ee2335925ef99',
-    ),
-    'league/flysystem-cached-adapter' => 
-    array (
-      'pretty_version' => '1.1.0',
-      'version' => '1.1.0.0',
-      'aliases' => 
-      array (
-      ),
-      'reference' => 'd1925efb2207ac4be3ad0c40b8277175f99ffaff',
-    ),
-    'league/mime-type-detection' => 
-    array (
-      'pretty_version' => '1.11.0',
-      'version' => '1.11.0.0',
-      'aliases' => 
-      array (
-      ),
-      'reference' => 'ff6248ea87a9f116e78edd6002e39e5128a0d4dd',
     ),
     'monolog/monolog' => 
     array (
@@ -175,30 +148,30 @@
     ),
     'nesbot/carbon' => 
     array (
-      'pretty_version' => '2.61.0',
-      'version' => '2.61.0.0',
+      'pretty_version' => '2.63.0',
+      'version' => '2.63.0.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'bdf4f4fe3a3eac4de84dbec0738082a862c68ba6',
+      'reference' => 'ad35dd71a6a212b98e4b87e97389b6fa85f0e347',
     ),
     'overtrue/socialite' => 
     array (
-      'pretty_version' => '3.5.2',
-      'version' => '3.5.2.0',
+      'pretty_version' => '3.5.3',
+      'version' => '3.5.3.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'ddc7cd7248aca391ffa423502e3485c68ed02b18',
+      'reference' => '0d1a29e853cdb01e636715fe96290ed4b62106bc',
     ),
     'overtrue/wechat' => 
     array (
-      'pretty_version' => '5.29.1',
-      'version' => '5.29.1.0',
+      'pretty_version' => '5.31.0',
+      'version' => '5.31.0.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'ea5bca713aa79d8d15c108265297566478439e6e',
+      'reference' => 'cfd0feb6e0bee504d2f39d141e2b382d25fc441b',
     ),
     'pclzip/pclzip' => 
     array (
@@ -211,12 +184,12 @@
     ),
     'phpmailer/phpmailer' => 
     array (
-      'pretty_version' => 'v6.6.3',
-      'version' => '6.6.3.0',
+      'pretty_version' => 'v6.6.5',
+      'version' => '6.6.5.0',
       'aliases' => 
       array (
       ),
-      'reference' => '9400f305a898f194caff5521f64e5dfa926626f3',
+      'reference' => '8b6386d7417526d1ea4da9edb70b8352f7543627',
     ),
     'phpoffice/phpexcel' => 
     array (
@@ -386,12 +359,12 @@
     ),
     'symfony/cache' => 
     array (
-      'pretty_version' => 'v5.4.11',
-      'version' => '5.4.11.0',
+      'pretty_version' => 'v5.4.15',
+      'version' => '5.4.15.0',
       'aliases' => 
       array (
       ),
-      'reference' => '5a0fff46df349f0db3fe242263451fddf5277362',
+      'reference' => '60e87188abbacd29ccde44d69c5392a33e888e98',
     ),
     'symfony/cache-contracts' => 
     array (
@@ -445,12 +418,12 @@
     ),
     'symfony/http-foundation' => 
     array (
-      'pretty_version' => 'v5.4.11',
-      'version' => '5.4.11.0',
+      'pretty_version' => 'v5.4.15',
+      'version' => '5.4.15.0',
       'aliases' => 
       array (
       ),
-      'reference' => '0a5868e0999e9d47859ba3d918548ff6943e6389',
+      'reference' => '75bd663ff2db90141bfb733682459d5bbe9e29c3',
     ),
     'symfony/polyfill-mbstring' => 
     array (
@@ -499,12 +472,12 @@
     ),
     'symfony/psr-http-message-bridge' => 
     array (
-      'pretty_version' => 'v2.1.2',
-      'version' => '2.1.2.0',
+      'pretty_version' => 'v2.1.3',
+      'version' => '2.1.3.0',
       'aliases' => 
       array (
       ),
-      'reference' => '22b37c8a3f6b5d94e9cdbd88e1270d96e2f97b34',
+      'reference' => 'd444f85dddf65c7e57c58d8e5b3a4dbb593b1840',
     ),
     'symfony/service-contracts' => 
     array (
@@ -517,12 +490,12 @@
     ),
     'symfony/translation' => 
     array (
-      'pretty_version' => 'v5.4.11',
-      'version' => '5.4.11.0',
+      'pretty_version' => 'v5.4.14',
+      'version' => '5.4.14.0',
       'aliases' => 
       array (
       ),
-      'reference' => '7a1a8f6bbff269f434a83343a0a5d36a4f8cfa21',
+      'reference' => 'f0ed07675863aa6e3939df8b1bc879450b585cab',
     ),
     'symfony/translation-contracts' => 
     array (
@@ -542,12 +515,12 @@
     ),
     'symfony/var-dumper' => 
     array (
-      'pretty_version' => 'v4.4.44',
-      'version' => '4.4.44.0',
+      'pretty_version' => 'v4.4.47',
+      'version' => '4.4.47.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'f19951007dae942cc79b979c1fe26bfdfbeb54ed',
+      'reference' => '1069c7a3fca74578022fab6f81643248d02f8e63',
     ),
     'symfony/var-exporter' => 
     array (
@@ -569,57 +542,57 @@
     ),
     'tencentcloud/common' => 
     array (
-      'pretty_version' => '3.0.707',
-      'version' => '3.0.707.0',
+      'pretty_version' => '3.0.763',
+      'version' => '3.0.763.0',
       'aliases' => 
       array (
       ),
-      'reference' => '1b3fa852900395401a966744ef37177fad0dfa66',
+      'reference' => '4ad8d09d9f78ca11d17a2b6e1e42cc91416a758c',
     ),
     'tencentcloud/sms' => 
     array (
-      'pretty_version' => '3.0.707',
-      'version' => '3.0.707.0',
+      'pretty_version' => '3.0.763',
+      'version' => '3.0.763.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'f597ff13b4c295633c5e708d04b9ab88706d1703',
+      'reference' => 'b9ad0018d3b49b0d0cb0f0951b659c62b832ae96',
     ),
     'thans/tp-jwt-auth' => 
     array (
-      'pretty_version' => 'v1.2.1',
-      'version' => '1.2.1.0',
+      'pretty_version' => 'v1.3.1',
+      'version' => '1.3.1.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'ca4ff3b58d15b8a8816889b38387ba1d4964997f',
+      'reference' => 'ab5efcc0fd920df81fea2c404c34bb967ef13aba',
     ),
     'topthink/framework' => 
     array (
-      'pretty_version' => 'v6.0.13',
-      'version' => '6.0.13.0',
+      'pretty_version' => 'v6.1.1',
+      'version' => '6.1.1.0',
       'aliases' => 
       array (
       ),
-      'reference' => '126d5b2cbacb73d6e2a85cbc7a2c6ee59d0b3fa6',
+      'reference' => '2cb56f3e6f3c479fe90ea5f28d38d3b5ef6c4210',
     ),
     'topthink/think' => 
     array (
-      'pretty_version' => 'dev-develop',
-      'version' => 'dev-develop',
+      'pretty_version' => '1.0.0+no-version-set',
+      'version' => '1.0.0.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'bc25500a39ac8fddcd4725830070a9bbf6864500',
+      'reference' => NULL,
     ),
     'topthink/think-captcha' => 
     array (
-      'pretty_version' => 'v3.0.7',
-      'version' => '3.0.7.0',
+      'pretty_version' => 'v3.0.8',
+      'version' => '3.0.8.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'a450602932a5d9ba183e288b79921ba3b9a92331',
+      'reference' => '52fba122c953995bec3013c635025172491ae299',
     ),
     'topthink/think-helper' => 
     array (
@@ -641,21 +614,21 @@
     ),
     'topthink/think-multi-app' => 
     array (
-      'pretty_version' => 'v1.0.14',
-      'version' => '1.0.14.0',
+      'pretty_version' => 'v1.0.15',
+      'version' => '1.0.15.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'ccaad7c2d33f42cb1cc2a78d6610aaec02cea4c3',
+      'reference' => '387e0dac059c20f92cac5da41a871e10829c1c97',
     ),
     'topthink/think-orm' => 
     array (
-      'pretty_version' => 'v2.0.54',
-      'version' => '2.0.54.0',
+      'pretty_version' => 'v2.0.55',
+      'version' => '2.0.55.0',
       'aliases' => 
       array (
       ),
-      'reference' => '97b061b47616301ff29fbd4c35ed9184e1162e4e',
+      'reference' => 'e1974a4c3b1b4c5b808fcc0863fc254e711dee13',
     ),
     'topthink/think-queue' => 
     array (
@@ -677,12 +650,12 @@
     ),
     'topthink/think-trace' => 
     array (
-      'pretty_version' => 'v1.4',
-      'version' => '1.4.0.0',
+      'pretty_version' => 'v1.5',
+      'version' => '1.5.0.0',
       'aliases' => 
       array (
       ),
-      'reference' => '9a9fa8f767b6c66c5a133ad21ca1bc96ad329444',
+      'reference' => '55027fd79abb744f32a3be8d9e1ccf873a3ca9b7',
     ),
     'topthink/think-view' => 
     array (
@@ -695,12 +668,21 @@
     ),
     'topthink/think-worker' => 
     array (
-      'pretty_version' => 'v3.0.6',
-      'version' => '3.0.6.0',
+      'pretty_version' => 'v3.0.7',
+      'version' => '3.0.7.0',
       'aliases' => 
       array (
       ),
-      'reference' => '21dc442aaa50594466ed3ed767af0a68b8b75364',
+      'reference' => '9ba54333f337ee2c3f06054bb896bba9696d926c',
+    ),
+    'wechatpay/wechatpay' => 
+    array (
+      'pretty_version' => '1.4.6',
+      'version' => '1.4.6.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => 'edbdb6bb19e0818b0576043b265ff1b1e188d668',
     ),
     'workerman/crontab' => 
     array (
@@ -722,12 +704,12 @@
     ),
     'workerman/workerman' => 
     array (
-      'pretty_version' => 'v3.5.31',
-      'version' => '3.5.31.0',
+      'pretty_version' => 'v3.5.32',
+      'version' => '3.5.32.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'b73ddc45b3c7299f330923a2bde23ca6e974fd96',
+      'reference' => '10b24f0aaed93e5a29f3fdd68f3334b5b142c4bc',
     ),
   ),
 );
