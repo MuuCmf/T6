@@ -1,9 +1,10 @@
 <?php
 namespace app\channel\service\pay;
 
-use app\common\model\Orders;
-use app\channel\model\WechatMpConfig;
 use EasyWeChat\Factory;
+use WeChatPay\Builder;
+use WeChatPay\Crypto\Rsa;
+use WeChatPay\Util\PemUtil;
 use think\Exception;
 
 class WechatPayment extends PayService
@@ -25,23 +26,27 @@ class WechatPayment extends PayService
         //获取配置信息
         $mchid = config('extend.WX_PAY_MCH_ID');
         $key = config('extend.WX_PAY_KEY_SECRET');
+        $serial = config('extend.WX_PAY_CERT_SERIAL');
         if (empty($mchid)){
             throw new Exception('请填写商户ID');
         }
         if (empty($key)){
             throw new Exception('请填写商户密钥');
         }
+        if (empty($serial)){
+            throw new Exception('请填写商户API证书序列号');
+        }
         return [
             'app_id' => $appid,
             'mch_id' => $mchid,
             'key' => $key,
+            'serial' => $serial,  // 商户API证书序列号
             'cert_path' => app()->getRootPath() . 'public/attachment/' . config('extend.WX_PAY_CERT'),
             'key_path' => app()->getRootPath() . 'public/attachment/' . config('extend.WX_PAY_KEY'),
             'notify_url' => request()->domain() . "/api/pay/callback",
             'sandbox' => $this->sandbox,//沙盒模式开关
         ];
     }
-
 
     /**
      * 支付
@@ -125,5 +130,45 @@ class WechatPayment extends PayService
 //        ];
         return $this->app->transfer->toBalance($data);
 
+    }
+
+    /**
+     * 获取APIv3微信支付平台证书
+     * 首次手动下载命令
+     * composer exec CertificateDownloader.php -- -m 商户号 -s 商户证书序列号 -f 商户的私钥文件 -k ApiV3Key -o 保存的路径
+     */
+    public function getFormCert()
+    {
+        // 商户号
+        $merchantId = $this->config['mch_id'];
+        // 从本地文件中加载「商户API私钥」，「商户API私钥」会用来生成请求的签名
+        $merchantPrivateKeyFilePath = 'file://' . $this->config['key_path'];
+        $merchantPrivateKeyInstance = Rsa::from($merchantPrivateKeyFilePath, Rsa::KEY_TYPE_PRIVATE);
+
+        // 「商户API证书」的「证书序列号」
+        $merchantCertificateSerial = $this->config['serial'];
+
+        // 从本地文件中加载「微信支付平台证书」，用来验证微信支付应答的签名
+        $platformCertificateFilePath = 'file://' . app()->getRootPath() . 'public/attachment/cert/wechatpay.pem';
+        $platformPublicKeyInstance = Rsa::from($platformCertificateFilePath, Rsa::KEY_TYPE_PUBLIC);
+
+        // 从「微信支付平台证书」中获取「证书序列号」
+        $platformCertificateSerial = PemUtil::parseCertificateSerialNo($platformCertificateFilePath);
+
+        // 构造一个 APIv3 客户端实例
+        $instance = Builder::factory([
+            'mchid'      => $merchantId,
+            'serial'     => $merchantCertificateSerial,
+            'privateKey' => $merchantPrivateKeyInstance,
+            'certs'      => [
+                $platformCertificateSerial => $platformPublicKeyInstance,
+            ],
+        ]);
+
+        // 发送请求
+        $resp = $instance->chain('v3/certificates')->get(
+            ['debug' => true] // 调试模式，https://docs.guzzlephp.org/en/stable/request-options.html#debug
+        );
+        echo $resp->getBody(), PHP_EOL;
     }
 }

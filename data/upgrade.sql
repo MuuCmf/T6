@@ -122,3 +122,6 @@ INSERT INTO `muucmf_menu` (`id`, `title`, `pid`, `sort`, `url`, `hide`, `type`, 
 ALTER TABLE `muucmf_author` ADD `professional` VARCHAR(64) NULL DEFAULT '' COMMENT '职称' AFTER `cover`;
 
 ALTER TABLE `muucmf_wechat_config` DROP `request`;
+
+INSERT INTO `muucmf_extend_config` (`id`, `name`, `type`, `title`, `group`, `extra`, `remark`, `create_time`, `update_time`, `status`, `value`, `sort`) VALUES
+(47, 'WX_PAY_CERT_SERIAL', 'string', '微信支付商户API证书序列号', 6, '', '微信支付商户API证书序列号', 0, 0, 1, '', 0);

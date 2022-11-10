@@ -509,4 +509,16 @@ class Pay extends Api
             }
         }
     }
+
+    public function debug()
+    {
+        // 获取支付参数
+        $config = ChannelServer::config('weixin_h5' ,$this->shopid);
+        // 发起支付
+        $PayService = PayServer::init($config['appid'], 'weixin');
+        
+        $result = $PayService->server->getFormCert();
+        
+        echo $result;
+    }
 }
