@@ -128,6 +128,33 @@
       ),
       'reference' => 'b945d74a55a25a949158444f09ec0d3c120d69e2',
     ),
+    'league/flysystem' => 
+    array (
+      'pretty_version' => '1.1.10',
+      'version' => '1.1.10.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => '3239285c825c152bcc315fe0e87d6b55f5972ed1',
+    ),
+    'league/flysystem-cached-adapter' => 
+    array (
+      'pretty_version' => '1.1.0',
+      'version' => '1.1.0.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => 'd1925efb2207ac4be3ad0c40b8277175f99ffaff',
+    ),
+    'league/mime-type-detection' => 
+    array (
+      'pretty_version' => '1.11.0',
+      'version' => '1.11.0.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => 'ff6248ea87a9f116e78edd6002e39e5128a0d4dd',
+    ),
     'monolog/monolog' => 
     array (
       'pretty_version' => '2.8.0',
@@ -593,6 +620,15 @@
       array (
       ),
       'reference' => '52fba122c953995bec3013c635025172491ae299',
+    ),
+    'topthink/think-filesystem' => 
+    array (
+      'pretty_version' => 'v1.0.1',
+      'version' => '1.0.1.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => 'cfc510520db9bcd22d8d80f51d7e415a2f470af6',
     ),
     'topthink/think-helper' => 
     array (
