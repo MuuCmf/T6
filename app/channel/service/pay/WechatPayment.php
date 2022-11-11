@@ -132,6 +132,43 @@ class WechatPayment extends PayService
 
     }
 
+    public function toBalanceV3($data)
+    {
+        try {
+            // 商户号
+            $merchantId = $this->config['mch_id'];
+            // 从本地文件中加载「商户API私钥」，「商户API私钥」会用来生成请求的签名
+            $merchantPrivateKeyFilePath = 'file://' . $this->config['key_path'];
+            $merchantPrivateKeyInstance = Rsa::from($merchantPrivateKeyFilePath, Rsa::KEY_TYPE_PRIVATE);
+            // 「商户API证书」的「证书序列号」
+            $merchantCertificateSerial = $this->config['serial'];
+            // 构造一个 APIv3 客户端实例
+            $instance = Builder::factory([
+                'mchid'      => $merchantId,
+                'serial'     => $merchantCertificateSerial,
+                'privateKey' => $merchantPrivateKeyInstance,
+            ]);
+
+            $resp = $instance
+            ->chain('v3/transfer/batches')
+            ->post(['json' => [
+                
+            ]]);
+        
+            echo $resp->getStatusCode(), PHP_EOL;
+            echo $resp->getBody(), PHP_EOL;
+        } catch (\Exception $e) {
+            // 进行错误处理
+            echo $e->getMessage(), PHP_EOL;
+            if ($e instanceof \GuzzleHttp\Exception\RequestException && $e->hasResponse()) {
+                $r = $e->getResponse();
+                echo $r->getStatusCode() . ' ' . $r->getReasonPhrase(), PHP_EOL;
+                echo $r->getBody(), PHP_EOL, PHP_EOL, PHP_EOL;
+            }
+            echo $e->getTraceAsString(), PHP_EOL;
+        }
+    }
+
     /**
      * 获取APIv3微信支付平台证书
      * 首次手动下载命令

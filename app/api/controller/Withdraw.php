@@ -48,7 +48,7 @@ class Withdraw extends Api
      */
     public function withdraw(){
         $uid = get_uid();
-        $price = input('price', 0, 'intval');
+        $price = input('price', '', 'text');
         $price = intval($price * 100); // 单位转为分
         $channel = input('channel', 'weixin_h5', 'text');
         $pay_channel = input('pay_channel', 'weixin', 'text');
@@ -89,7 +89,7 @@ class Withdraw extends Api
             //用户钱包模型
             $WalletModel = new MemberWallet();
             $wallet = $WalletModel->where('uid',$uid)->find()->toArray();
-            if (!intval($wallet['balance'] - $wallet['freeze']) >= $data['price']) {
+            if (intval($wallet['balance'] - $wallet['freeze']) < $data['price']) {
                 throw new Exception('账户余额不足');
             }
             //冻结资金
@@ -131,7 +131,7 @@ class Withdraw extends Api
                 ];
                 $cash_with = $this->WithdrawModel->edit($submit_data);
             }else{
-                //解冻冻结资金
+                //解冻冻结资金(返还至用户余额)
                 $WalletModel->freeze($data['shopid'], $data['uid'], $data['price'], 0);
                 //付款到零钱失败
                 $submit_data = [
