@@ -142,11 +142,20 @@ class WechatPayment extends PayService
             $merchantPrivateKeyInstance = Rsa::from($merchantPrivateKeyFilePath, Rsa::KEY_TYPE_PRIVATE);
             // 「商户API证书」的「证书序列号」
             $merchantCertificateSerial = $this->config['serial'];
+            // 从本地文件中加载「微信支付平台证书」，用来验证微信支付应答的签名
+            $platformCertificateFilePath = 'file://' . app()->getRootPath() . 'public/attachment/cert/wechatpay.pem';
+            $platformPublicKeyInstance = Rsa::from($platformCertificateFilePath, Rsa::KEY_TYPE_PUBLIC);
+    
+            // 从「微信支付平台证书」中获取「证书序列号」
+            $platformCertificateSerial = PemUtil::parseCertificateSerialNo($platformCertificateFilePath);
             // 构造一个 APIv3 客户端实例
             $instance = Builder::factory([
                 'mchid'      => $merchantId,
                 'serial'     => $merchantCertificateSerial,
                 'privateKey' => $merchantPrivateKeyInstance,
+                'certs'      => [
+                    $platformCertificateSerial => $platformPublicKeyInstance,
+                ],
             ]);
 
             $resp = $instance
@@ -162,10 +171,11 @@ class WechatPayment extends PayService
             echo $e->getMessage(), PHP_EOL;
             if ($e instanceof \GuzzleHttp\Exception\RequestException && $e->hasResponse()) {
                 $r = $e->getResponse();
-                echo $r->getStatusCode() . ' ' . $r->getReasonPhrase(), PHP_EOL;
-                echo $r->getBody(), PHP_EOL, PHP_EOL, PHP_EOL;
+                //echo $r->getStatusCode() . ' ' . $r->getReasonPhrase(), PHP_EOL;
+                echo $r->getBody(), PHP_EOL;
+                exit;
             }
-            echo $e->getTraceAsString(), PHP_EOL;
+            //echo $e->getTraceAsString(), PHP_EOL;
         }
     }
 
@@ -204,8 +214,55 @@ class WechatPayment extends PayService
 
         // 发送请求
         $resp = $instance->chain('v3/certificates')->get(
-            ['debug' => true] // 调试模式，https://docs.guzzlephp.org/en/stable/request-options.html#debug
+            ['debug' => false] // 调试模式，https://docs.guzzlephp.org/en/stable/request-options.html#debug
         );
-        echo $resp->getBody(), PHP_EOL;
+
+        //echo $resp->getBody(), PHP_EOL;
+        $res = json_decode($resp->getBody(), true);
+
+        if(is_array($res) && !empty($res['data'])){
+            foreach($res['data'] as $v){
+                $cert_content = $this->decryptToString($v['encrypt_certificate']['associated_data'], $v['encrypt_certificate']['nonce'], $v['encrypt_certificate']['ciphertext']);
+
+                //$path = app()->getRootPath() . 'public/attachment/cert/wechatpay_' . $v['serial_no'] . '.pem';
+                $path = app()->getRootPath() . 'public/attachment/cert/wechatpay.pem';
+                @file_put_contents($path, $cert_content);
+                chmod($path, 0777);
+            }
+        }
     }
+
+    const KEY_LENGTH_BYTE = 32;
+	const AUTH_TAG_LENGTH_BYTE = 16;
+    /**
+	 * Decrypt AEAD_AES_256_GCM ciphertext
+	 *
+	 * @param string    $associatedData     AES GCM additional authentication data
+	 * @param string    $nonceStr           AES GCM nonce
+	 * @param string    $ciphertext         AES GCM cipher text
+	 *
+	 * @return string|bool      Decrypted string on success or FALSE on failure
+	 */
+	public function decryptToString($associatedData, $nonceStr, $ciphertext) {
+		$ciphertext = \base64_decode($ciphertext);
+		if (strlen($ciphertext) <= self::AUTH_TAG_LENGTH_BYTE) {
+			return false;
+		}
+
+		// ext-sodium (default installed on >= PHP 7.2)
+		if (function_exists('\sodium_crypto_aead_aes256gcm_is_available') && \sodium_crypto_aead_aes256gcm_is_available()) {
+			return \sodium_crypto_aead_aes256gcm_decrypt($ciphertext, $associatedData, $nonceStr, $this->config['key']);
+		}
+
+		// openssl (PHP >= 7.1 support AEAD)
+		if (PHP_VERSION_ID >= 70100 && in_array('aes-256-gcm', \openssl_get_cipher_methods())) {
+			$ctext = substr($ciphertext, 0, -self::AUTH_TAG_LENGTH_BYTE);
+			$authTag = substr($ciphertext, -self::AUTH_TAG_LENGTH_BYTE);
+
+			return \openssl_decrypt($ctext, 'aes-256-gcm', $this->config['key'], \OPENSSL_RAW_DATA, $nonceStr,
+				$authTag, $associatedData);
+		}
+
+		throw new \RuntimeException('AEAD_AES_256_GCM需要PHP 7.1以上或者安装libsodium-php');
+	}
 }

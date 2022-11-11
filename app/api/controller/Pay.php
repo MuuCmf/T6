@@ -510,7 +510,11 @@ class Pay extends Api
         }
     }
 
-    public function debug()
+    /**
+     * 获取v3微信平台证书
+     * 该接口可放入计划任务，每日更新证书信息，避免证书过期
+     */
+    public function getV3cert()
     {
         // 获取支付参数
         $config = ChannelServer::config('weixin_h5' ,$this->shopid);
