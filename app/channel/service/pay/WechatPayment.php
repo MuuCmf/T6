@@ -63,8 +63,11 @@ class WechatPayment extends PayService
             $data['notify_url'] = $notify_url;
         }
         $res = $this->app->order->unify($data);
+        if ($res['return_code'] == 'FAIL'){
+            throw new Exception($res['return_msg']);
+        }
         if ($res['result_code'] == 'FAIL'){
-            throw new Exception($res['err_code_des']);
+            throw new Exception($res['err_code'] . ':' . $res['err_code_des']);
         }
         if($trade_type == 'JSAPI'){
             $res = $this->app->jssdk->sdkConfig($res['prepay_id']);
