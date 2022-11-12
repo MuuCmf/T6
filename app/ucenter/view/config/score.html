@@ -43,6 +43,7 @@
                             <span class="acquire-manner">获取方式</span>
                             <span class="acquire-time">获取时间</span>
                         </div>
+                        {notempty name="$lists.data"}
                         <ul class="detail">
                             {foreach $lists.data as $k => $v}
                             <li>
@@ -53,6 +54,9 @@
                             </li>
                             {/foreach}
                         </ul>
+                        {else}
+                        {include file="../../common/view/empty"/}
+                        {/notempty}
                     </div>
                     <div class="paging">
                         <div style="text-align:center;">
