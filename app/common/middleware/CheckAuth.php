@@ -60,7 +60,7 @@ class CheckAuth extends JWTAuth
             // 捕获黑名单宽限期
             $payload = $this->auth->auth(false);
             $uid = $payload['uid']->getValue();
-        } catch (TokenBlacklistException $e) { 
+        } catch (TokenBlacklistException $exception) { 
             // 捕获黑名单，退出登录或者已经自动刷新，当前token就会被拉黑
             // 浏览器端基于session部分判断
             if(is_login()){
@@ -86,7 +86,6 @@ class CheckAuth extends JWTAuth
                 }
             }
         }
-
         $request->uid = $uid;
         $response = $next($request);
 
