@@ -2,6 +2,8 @@
 namespace app\common\controller;
 
 use think\Request;
+use thans\jwt\exception\JWTException;
+use thans\jwt\facade\JWTAuth;
 
 class Api extends Base
 {

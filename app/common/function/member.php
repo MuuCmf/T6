@@ -5,6 +5,8 @@ use muucmf\Auth;
 use app\common\model\Member;
 use app\common\model\MemberWallet;
 use app\common\model\MemberSync;
+use thans\jwt\exception\JWTException;
+use thans\jwt\facade\JWTAuth;
 
 /**
  * 检测用户是否登录
@@ -14,6 +16,22 @@ use app\common\model\MemberSync;
 if (!function_exists('is_login')) {
     function is_login()
     {   
+        $header = request()->header();
+        if(isset($header['authorization'])){
+            $token = JWTAuth::getToken();
+            if(!empty($token)){
+                try{
+                    $payload = JWTAuth::decode($token);
+                    $uid = $payload['uid']->getValue();
+                }catch (JWTException $exception) {
+                    // 如果捕获到此异常，即代表 refresh 也过期了，用户无法刷新令牌，需要重新登录。
+                    $uid = 0;
+                }
+
+                request()->uid = $uid;
+            }
+        }
+
         if(!empty(request()->uid)){
             return request()->uid;
         }
