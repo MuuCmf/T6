@@ -164,6 +164,11 @@ a {
   margin-top: 10px;
 }
 
+.container-fixed {
+  width: 1200px;
+  padding: 0;
+}
+
 /*悬浮样式end*/
 .user-card {
   height: 230px;
@@ -273,9 +278,6 @@ a {
 
 /*提示信息颜色end*/
 
-/**
- * 确认操作默认框
- */
 /*弹出提示框*/
 .confirm-modal {
   .confirm-info {

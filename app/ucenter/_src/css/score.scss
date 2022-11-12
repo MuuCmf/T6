@@ -1,0 +1,540 @@
+//我的积分页
+.integral{
+    background: #ffffff;
+    border-radius: 10px;
+    padding: 54px 60px;
+    .integral-content{
+        .integral-title{
+            font-size: 24px;
+            color: #222222;
+            margin: 0;
+        }
+        >.score-type {
+            display: flex;
+            padding-top: 29px;
+            >.item {
+                flex: 1;
+                min-width: 190px;
+                height: 88px;
+                border-radius:10px;
+                display: flex;
+                .gold-coin{
+                    padding: 25px 27px 0 24px;
+                    >img{
+                        width: 49px;
+                        height: 45px;
+                    }
+                }
+                .quantity{
+                    >p{
+                        margin: 17px 0 -5px;
+                        font-size: 16px;
+                    }
+                    >span{
+                        font-size: 24px;
+                        padding-left: 5px;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                        -o-text-overflow: ellipsis;
+                        white-space:nowrap;
+                        width: 84px;
+                        display: block;
+                    }
+                }
+            }
+            .integrate{
+                background: linear-gradient(-46deg, rgba(255,169,93,.4), rgba(248,202,100,.4));
+                color: #6b5139;
+            }
+            .Mspecimen{
+                background: linear-gradient(-46deg, rgba(255,120,93,.4), rgba(248,152,100,.4));
+                color: #785c56;
+                margin-left: 13px;
+            }
+        }
+    }
+    .integral-detail{
+        padding-top: 49px;
+        .integral-detail-header{
+            display: flex;
+            height: 28px;
+            .detail-title{
+                font-size: 24px;
+                color: #222222;
+                margin: 0;
+            }
+            .score-acquire-rule{
+                margin-left: auto;
+                margin-right: -6px;
+                >a{
+                    font-size: 16px;
+                    color: #03b8cf;
+                    >span{
+                        display: inline-block;
+                        height: 26px;
+                    }
+                    .iconfont{
+                        font-size: 26px;
+                        line-height: 28px;
+                        vertical-align: bottom;
+                    }
+                }
+            }
+        }
+        
+        .integral-detail-body{
+            padding-top: 19px;
+            .detail-header{
+                height: 54px;
+                background: #eaf3fe;
+                // display: flex;
+                // justify-content: space-around;
+                line-height: 54px;
+                >span{
+                    display: inline-block;
+                    color: #44566C;
+                    font-size: 16px;
+                    text-align: center;
+                }
+                .integrate-type{
+                    // width: 142px;
+                    width: 12%;
+                }
+                .change-integrate{
+                    // width:187px;
+                    width: 23%;
+                }
+                .acquire-manner{
+                    // width:263px;
+                    width: 32%;
+                }
+                .acquire-time{
+                    // width: 211px;
+                    width: 26%;
+                }
+            }
+            .detail{
+                padding: 0;
+                >li{
+                    // display: flex;
+                    // justify-content: space-around;
+                    font-size: 16px;
+                    height: 55px;
+                    padding-top: 10px;
+                    border-bottom:1px solid #f0f0f0;
+                    >span{
+                        display: inline-block;
+                        text-align: center;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                        -o-text-overflow: ellipsis;
+                        white-space: nowrap;
+                    }
+                    .integrate-type{
+                        color: #555555;
+                        // width: 142px;
+                        width: 12%;
+                    }
+                    .change-integrate{
+                        color: #e77f22;
+                        font-size: 20px;
+                        // width: 185px;
+                        width: 23%;
+                    }
+                    .acquire-manner{
+                        color: #555555;
+                        // width: 263px;
+                        width: 32%;
+                    }
+                    .acquire-time{
+                        color: #999999;
+                        // width: 211px;
+                        width: 26%;
+                        >span{
+                            padding-left:4px; 
+                        }
+                    }
+                }
+            }
+        }
+        .paging{
+            padding-top: 53px;
+            text-align: center;
+            .box{
+                -webkit-user-select:none;
+                -moz-user-select:none;
+                -ms-user-sclect:none;
+                user-select:none;
+                .pagination-btn{
+                    width: 30px;
+                    height: 30px;
+                    border: 0;
+                    background: #f4f4f5;
+                }
+                #pagination-prev{
+                    transform: rotate(-90deg);
+                }
+                #pagination-next{
+                    transform: rotate(90deg);
+                    margin-left: 4px;
+                }
+                .pagination-wrap{
+                    margin: 0;
+                    >li{
+                        width: 30px;
+                        height: 30px;
+                        border: 0;
+                        background: #f4f4f5;
+                        border-radius: 2px;
+                        color: #737274;
+                        line-height: 30px;
+                        margin: 0 4px;
+                    }
+                    .pagination-current{
+                        color: #ffffff;
+                        background: #03b8cf;
+                        border: 0;
+                    }
+                    .pagination-ellipsis{
+                        top: 2px;
+                    }
+                }
+            }
+            .my-page{
+                .my-page-group{
+                    .my-page-cell{
+                        width: 28px;
+                        height: 28px;
+                        min-width: 28px;
+                        background: #f4f4f5;
+                        color: #737274;
+                        -webkit-user-select:none;
+                        -moz-user-select:none;
+                        -ms-user-sclect:none;
+                        user-select:none;
+                    }
+                    .my-page-omit{
+                        -webkit-user-select:none;
+                        -moz-user-select:none;
+                        -ms-user-sclect:none;
+                        user-select:none;
+                    }
+                    .my-page-cell:hover{
+                        background: #03b8cf;
+                        border: 0;
+                        color: #ffffff;
+                    }
+                    .my-page-checked{
+                        background: #03b8cf;
+                        border: 0;
+                        color: #ffffff;
+                    }
+                }
+                .my-page-prev{
+                    transform: rotate(180deg);
+                }
+                .my-page-prev,.my-page-next{
+                    width: 28px;
+                    height: 28px;
+                    margin: 0 5px;
+                    line-height: 26px;
+                    -webkit-user-select: none;
+                    -moz-user-select: none;
+                    -ms-user-select: none;
+                    user-select: none;
+                    .iconfont{
+                        font-size: 20px;
+                    }
+                }
+                .my-page-prev:hover,.my-page-next:hover{
+                    border: 1px solid #ddd;
+                }
+            }
+        }
+    }
+}
+//积分规则
+.scorerule{
+    background: #ffffff;
+    border-radius: 10px;
+    padding: 54px 0 54px 60px;
+    .scorerule-content{
+        .scorerule-title{
+            font-size: 24px;
+            color: #222222;
+            margin: 0;
+        }
+        .integrate-etails{
+            padding-top:48px;
+            >div{
+                >h4{
+                    color: #03b8cf;
+                    font-size: 22px;
+                    margin: 0;
+                }
+                >ul{
+                    margin: 0;
+                    >li{
+                        >p{
+                           font-size: 16px;
+                           color: #222222;
+                           margin: 10px 0 0;
+                        }
+                        >span{
+                            color: #777777;
+                            font-size: 16px;
+                            padding-left: 23px;
+                        }
+                    }
+                }
+            }
+            .forum{
+                margin-top: 20px;
+            }
+        }
+    }
+    .expiry-date{
+        padding-top: 44px;
+        >h4{
+            margin: 0;
+            font-size: 24px;
+            color: #222222;
+            margin-bottom: 13px;
+        }
+        >ul{
+            >li{
+               color: #222222;
+               font-size: 16px; 
+               padding-left: 22px;
+               position: relative;
+            }
+            >li::before{
+                content: '';
+                width: 6px;
+                height: 6px;
+                border-radius: 50%;
+                background: #333333;
+                position: absolute;
+                left: 7px;
+                top: 11px;
+            }
+        }
+    }
+}
+//积分等级
+.score_estate{
+    padding: 54px 60px;
+    background: #ffffff;
+    border-radius: 10px;
+    .estste{
+        .estste-title{
+            color: #222222;
+            font-size: 24px;
+            margin: 0;
+        }
+        .avatar{
+            width: 128px;
+            height: 128px;
+            margin: 38px auto 0;
+            border: 7px solid #ffffff; 
+            border-radius: 50%;
+            box-shadow: 0px 0px 21px 3px rgba(163, 163, 163, 0.14);
+            position: relative;
+            .estste-icon{
+                width: 62px;
+                height: 45px;
+                position: absolute;
+                right: -28px;
+                bottom: -2px;
+            }
+        }
+        .level-reached{
+            font-size: 18px;
+            color: #555555;
+            text-align: center;
+            line-height: 40px;
+            padding-top: 20px;
+            >span{
+                font-size: 24px;
+                color: #03b8cf;
+                padding-left: 14px;
+                vertical-align: bottom;
+            }
+        }
+        .estate-progress-bar {
+            // background: linear-gradient(-46deg,#93dbff,#55e3f5);
+            .estate-icon{
+                margin: 0;
+                display: flex;
+                height: 53px;
+                list-style: none;
+                >li{
+                   width: 113px;
+                   margin-right: 5px;
+                    >div{
+                        width: 33px;
+                        height: 33px;
+                        margin: 0 auto;
+                        position: relative;
+                        .iconfont{
+                            font-size: 33px;
+                            color: #5ae3f6;
+                        }
+                        >span{
+                            font-size: 18px;
+                            color: #ffffff;
+                            position: absolute;
+                            left: 11px;
+                            bottom: -3px;
+                        }
+                    }
+                    .estate1-item{
+                        display: none;
+                    }
+                    .estate2-item{
+                        display: none;
+                        .iconfont{
+                            color: #62e1f7;
+                        }
+                    }
+                    .estate3-item{
+                        display: none;
+                        .iconfont{
+                            color: #6ce0f9;
+                        }
+                    }
+                    .estate4-item{
+                        display: none;
+                        .iconfont{
+                            color: #75dffa;
+                        }
+                    }
+                    .estate5-item{
+                        display: none;
+                        .iconfont{
+                            color: #7edefb;
+                        }
+                    }
+                    .estate6-item{
+                        display: none;
+                        .iconfont{
+                            color: #87ddfd;
+                        }
+                    }
+                    .estate7-item{
+                        display: none;
+                        .iconfont{
+                            color: #95dbff;
+                        }
+                    }
+                }
+            }
+            .progress_bar {
+                height: 9px;
+                display: flex;
+                margin: 0;
+                background: linear-gradient(-46deg,  #95DBFF,#55E3F5);
+                border-radius: 9px;
+                list-style: none;
+                >li{
+                    width: 113px;
+                    // margin-right: 5px;
+                    background: #e1e1e1;
+                }
+                .gap{
+                    width: 5px;
+                    background: #ffffff;
+                }
+                .lv1{
+                    border-radius: 5px 0 0 5px;
+                }
+                .lv7{
+                    margin: 0;
+                    border-radius: 0 5px 5px 0;
+                }
+            }
+            .rank-mark{
+                display: flex;
+                margin: 0;
+                padding-top: 12px;
+                list-style: none;
+                >li{
+                    width: 113px;
+                    margin-right: 5px;
+                    text-align: center;
+                    color: #777777;
+                    font-size: 16px;
+                }
+            }
+            .prompt{
+                font-size: 16px;
+                color: #999999;
+                display: inline-block;
+                margin-top: 40px;
+            }
+        }
+    }
+    .estate-rule {
+        padding-top: 64px;
+        .estate-rule-header{
+            display: flex;
+            .estate-rule-title{
+                color: #222222;
+                font-size: 24px;
+                margin: 0;
+                line-height: 46px;
+            }
+            .score-acquire-rule{
+                margin:0 -7px 0 auto;
+                font-size: 16px;
+                line-height: 46px;
+                >a{
+                    color: #03b8cf;
+                    
+                    .iconfont{
+                        font-size: 24px;
+                        vertical-align: bottom;
+                        margin-left: 3px;
+                    }
+                }
+            }
+        }
+        .estate-rule-body{
+            padding-top: 10px;
+            >ul{
+                display: flex;
+                // justify-content: space-between;
+                margin: 0;
+                padding-top:50px; 
+                list-style: none;
+                >li{
+                    text-align: center;
+                    >p{
+                        color: #222222;
+                        font-size: 18px;
+                        margin: 0;
+                        padding-top: 30px;
+                    }
+                    >span{
+                        font-size: 14px;
+                        color: #999999;
+                    }
+                }
+                .lv6-icon{
+                    margin-left: 76px;
+                }
+                .lv7-icon{
+                    margin: -5px 0 0 22px;
+                    >p{
+                        padding: 0;
+                        margin-top: -4px;
+                    }
+                }
+            }
+            .part-one{
+                padding: 50px 21px 0 17px; 
+                justify-content: space-between;
+            }
+        }
+    }
+}
