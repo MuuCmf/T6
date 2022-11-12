@@ -30,12 +30,12 @@ class Vip extends Base
                     $card_data = $card_data->toArray();
                 }
                 $data['vip_card_info'] = (new VipCardLogic())->formatData($card_data);
-    
-                $data = $this->setStatusAttr($data,$this->_status);
-                $data = $this->setTimeAttr($data);
-                if($data['end_time'] == 0){
-                    $data['end_time_str'] = '永久';
-                }
+            }
+
+            $data = $this->setStatusAttr($data,$this->_status);
+            $data = $this->setTimeAttr($data);
+            if($data['end_time'] == 0){
+                $data['end_time_str'] = '永久';
             }
         }
         return $data;
