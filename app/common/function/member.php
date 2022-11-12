@@ -245,7 +245,7 @@ if (!function_exists('check_reg_type')) {
         if($switch){
             $switch = explode(',',$switch);
             if(in_array($t[$type],$switch)){
-            return true;
+                return true;
             }
         }
         return false;
@@ -262,6 +262,7 @@ if (!function_exists('check_login_type')) {
         $t[1] = $t['username'] ='username';
         $t[2] = $t['email'] ='email';
         $t[3] = $t['mobile'] ='mobile';
+        $t[4] = $t['qrcode'] = 'qrcode';
 
         $switch = config('system.USER_LOGIN_SWITCH');
         if($switch){

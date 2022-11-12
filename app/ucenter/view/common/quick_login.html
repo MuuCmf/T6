@@ -1,9 +1,11 @@
 <div class="login-main">
     <div class="login-box">
+        {if check_login_type('qrcode')}
         <div class="ewm login-method"  data-type="scan">
             <div>微信扫码登录</div>
             <span class="iconfont" id="ewm">&#xe678;</span>
         </div>
+        {/if}
         <div class="password-login">
             <div class=" login-method" data-type="normal">
                 <div>密码登录</div>
@@ -93,6 +95,7 @@
         <p class="scan-status">请使用微信扫描二维码登录</p>
         <a class="reset-qrcode hidden">重新生成</a>
     </div>
+    
     <div class="register-section">
         还没有账号? <a class="" href="{:url('ucenter/common/register',array('type'=>'mobile'))}">立即注册</a>
     </div>
