@@ -223,8 +223,6 @@
             $('.sp_signature').show();
             $('.sp_nickname').show();
             $('.editing').show();
-
-
         })
     });
     //上传头像
@@ -237,7 +235,7 @@
             // swf文件路径
             swf: 'Uploader.swf',
             // 文件接收服务端。
-            server: "{:url('api/File/pic',array('uid'=>$user.uid))}",
+            server: "{:url('api/File/avatar')}",
             // 选择文件的按钮。可选。
             // 内部根据当前运行是创建，可能是input元素，也可能是flash.
             pick: '#upload_avatar',

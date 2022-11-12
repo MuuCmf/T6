@@ -312,12 +312,7 @@ class Config extends Common
             }else{
                 return $this->error('保存失败');
             }
-        }else{
-            
-            View::assign('tab', 'avatar');
-            return View::fetch();
         }
-        
     }
 
     /**
