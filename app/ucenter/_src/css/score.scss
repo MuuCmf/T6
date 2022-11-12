@@ -14,9 +14,9 @@
             padding-top: 29px;
             >.item {
                 flex: 1;
-                min-width: 190px;
                 height: 88px;
                 border-radius:10px;
+                margin: 0 5px;
                 display: flex;
                 .gold-coin{
                     padding: 25px 27px 0 24px;
@@ -42,11 +42,21 @@
                     }
                 }
             }
-            .integrate{
+            .integrate.score1{
                 background: linear-gradient(-46deg, rgba(255,169,93,.4), rgba(248,202,100,.4));
                 color: #6b5139;
             }
-            .Mspecimen{
+            .integrate.score2{
+                background: linear-gradient(-46deg, rgba(255,120,93,.4), rgba(248,152,100,.4));
+                color: #785c56;
+                margin-left: 13px;
+            }
+            .integrate.score3{
+                background: linear-gradient(-46deg, rgba(255,120,93,.4), rgba(248,152,100,.4));
+                color: #785c56;
+                margin-left: 13px;
+            }
+            .integrate.score4{
                 background: linear-gradient(-46deg, rgba(255,120,93,.4), rgba(248,152,100,.4));
                 color: #785c56;
                 margin-left: 13px;
@@ -154,100 +164,6 @@
                             padding-left:4px; 
                         }
                     }
-                }
-            }
-        }
-        .paging{
-            padding-top: 53px;
-            text-align: center;
-            .box{
-                -webkit-user-select:none;
-                -moz-user-select:none;
-                -ms-user-sclect:none;
-                user-select:none;
-                .pagination-btn{
-                    width: 30px;
-                    height: 30px;
-                    border: 0;
-                    background: #f4f4f5;
-                }
-                #pagination-prev{
-                    transform: rotate(-90deg);
-                }
-                #pagination-next{
-                    transform: rotate(90deg);
-                    margin-left: 4px;
-                }
-                .pagination-wrap{
-                    margin: 0;
-                    >li{
-                        width: 30px;
-                        height: 30px;
-                        border: 0;
-                        background: #f4f4f5;
-                        border-radius: 2px;
-                        color: #737274;
-                        line-height: 30px;
-                        margin: 0 4px;
-                    }
-                    .pagination-current{
-                        color: #ffffff;
-                        background: #03b8cf;
-                        border: 0;
-                    }
-                    .pagination-ellipsis{
-                        top: 2px;
-                    }
-                }
-            }
-            .my-page{
-                .my-page-group{
-                    .my-page-cell{
-                        width: 28px;
-                        height: 28px;
-                        min-width: 28px;
-                        background: #f4f4f5;
-                        color: #737274;
-                        -webkit-user-select:none;
-                        -moz-user-select:none;
-                        -ms-user-sclect:none;
-                        user-select:none;
-                    }
-                    .my-page-omit{
-                        -webkit-user-select:none;
-                        -moz-user-select:none;
-                        -ms-user-sclect:none;
-                        user-select:none;
-                    }
-                    .my-page-cell:hover{
-                        background: #03b8cf;
-                        border: 0;
-                        color: #ffffff;
-                    }
-                    .my-page-checked{
-                        background: #03b8cf;
-                        border: 0;
-                        color: #ffffff;
-                    }
-                }
-                .my-page-prev{
-                    transform: rotate(180deg);
-                }
-                .my-page-prev,.my-page-next{
-                    width: 28px;
-                    height: 28px;
-                    margin: 0 5px;
-                    line-height: 26px;
-                    -webkit-user-select: none;
-                    -moz-user-select: none;
-                    -ms-user-select: none;
-                    user-select: none;
-                    .iconfont{
-                        font-size: 20px;
-                    }
-                }
-                .my-page-prev:hover,.my-page-next:hover{
-                    border: 1px solid #ddd;
                 }
             }
         }

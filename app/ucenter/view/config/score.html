@@ -19,23 +19,15 @@
                 <div class="integral-content">
                     <h4 class="integral-title">我的积分</h4>
                     <div class="score-type">
-                        <div class="item integrate">
+                        {foreach $scores as $k => $v}
+                        <div class="item score{$v.id} integrate">
                             <div class="gold-coin"><img src="__STATIC__/ucenter/images/species.png" alt=""></div>
                             <div class="quantity">
-                                <p>现有积分</p>
-                                <span class="">001122</span>
-                                <!-- {volist name="scores" id="vo"}
-                                <span class="">{$vo.value}</span>
-                                {/volist} -->
+                                <p>{$v.title}</p>
+                                <span class="">{$v.value} {$v.unit}</span>
                             </div>
                         </div>
-                        <div class="item Mspecimen">
-                            <div class="gold-coin"><img src="__STATIC__/ucenter/images/species.png" alt=""></div>
-                            <div class="quantity">
-                                <p>现有M币</p>
-                                <span class="">001122</span>
-                            </div>
-                        </div>
+                        {/foreach}
                     </div> 
                 </div>
                 
@@ -52,48 +44,20 @@
                             <span class="acquire-time">获取时间</span>
                         </div>
                         <ul class="detail">
+                            {foreach $lists.data as $k => $v}
                             <li>
-                                <span class="integrate-type">积分</span>
-                                <span class="change-integrate">+20</span>
-                                <span class="acquire-manner">论坛回复帖子</span>
-                                <span class="acquire-time">2022-03-04<span>11:32</span></span>
+                                <span class="integrate-type">{$v.type.title}</span>
+                                <span class="change-integrate">{if $v.action == 'inc'}+{else}-{/if} {$v.value}</span>
+                                <span class="acquire-manner">{$v.remark}</span>
+                                <span class="acquire-time">{$v.create_time_friendly_str}</span>
                             </li>
-                            <li>
-                                <span class="integrate-type">积分</span>
-                                <span class="change-integrate">+200</span>
-                                <span class="acquire-manner">登录网站</span>
-                                <span class="acquire-time">2022-03-04<span>11:32</span></span>
-                            </li>
-                            <li>
-                                <span class="integrate-type">M币</span>
-                                <span class="change-integrate">+1</span>
-                                <span class="acquire-manner">论坛添加帖子</span>
-                                <span class="acquire-time">2022-03-04<span>11:32</span></span>
-                            </li>
-                            <li>
-                                <span class="integrate-type">积分</span>
-                                <span class="change-integrate">+20</span>
-                                <span class="acquire-manner">论坛回复帖子</span>
-                                <span class="acquire-time">2022-03-04<span>11:32</span></span>
-                            </li>
-                            <li>
-                                <span class="integrate-type">积分</span>
-                                <span class="change-integrate">+200</span>
-                                <span class="acquire-manner">登录网站</span>
-                                <span class="acquire-time">2022-03-04<span>11:32</span></span>
-                            </li>
-                            <li>
-                                <span class="integrate-type">M币</span>
-                                <span class="change-integrate">+1</span>
-                                <span class="acquire-manner">论坛添加帖子</span>
-                                <span class="acquire-time">2022-03-04<span>11:32</span></span>
-                            </li>
+                            {/foreach}
                         </ul>
                     </div>
                     <div class="paging">
-                    <!-- <div class="box" id="wrap1"></div> -->
                         <div style="text-align:center;">
                             <div class="my-page">
+                                {:htmlspecialchars_decode($pager)}
                             </div>
                         </div>
                     </div> 
@@ -108,38 +72,11 @@
 
 {block name="script"}
 <script src="__STATIC__/ucenter/js/main.min.js"></script>
-<script src="__STATIC__/ucenter/lib/paging/my-page.js"></script>
-<script src="__STATIC__/ucenter/lib/paging/pagination.js"></script>
 <script>
     $(function () {
         // 设置当前高亮菜单
         $("#{$tab}").addClass('active');
     });
-
-// var total_amount = 100;
-// var onPagechange = function(page){
-//     console.log('当前页码',page)
-// }
-// var obj = {
-//     wrapid:'wrap1',//页面显示分页器容器id
-//     total:total_amount,//总条数
-//     pagesize:10,//每页显示条数
-//     currentPage:1,//当前页
-//     onPagechange:onPagechange,
-//     //btnCount:7,页数过多时，显示省略号的边界页码按钮数量，可省略，且值大于5的奇数
-// }
-// pagination.init(obj);
-myPageInit({
-    pages:20,
-    currentPage:1,
-    element:'.my-page',
-    callback:function(page){
-        console.log("当前页码",page)
-    }
-})
-
-
 </script>
-
 
 {/block}

@@ -40,7 +40,7 @@ class ScoreType extends Model
      * @param string $map
      * @return mixed
      */
-    public function getType($map = '')
+    public function getType(array $map)
     {
         $type = $this->where($map)->find();
         return $type;

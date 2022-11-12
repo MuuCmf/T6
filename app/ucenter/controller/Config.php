@@ -11,6 +11,7 @@ use app\common\model\Attachment;
 use app\common\model\Verify;
 use app\common\model\Member;
 use app\common\model\ScoreType;
+use app\common\model\ScoreLog;
 use app\common\model\Action;
 
 class Config extends Common
@@ -18,6 +19,14 @@ class Config extends Common
     protected $middleware = [
         'app\\common\\middleware\\CheckAuth',
     ];
+
+    public function __construct()
+    {
+        parent::__construct();
+        
+        $user = query_user(get_uid());
+        View::assign('user', $user);
+    }
 
     /**
      * 用户中心
@@ -174,7 +183,7 @@ class Config extends Common
         }
     }
 
-        /**
+    /**
      * 绑定手机号
      */
     public function mobile()
@@ -259,10 +268,7 @@ class Config extends Common
                 return $this->error($commonMemberModel->error);
             }
         }else{
-            //调用基本信息
-            $user = query_user(is_login(),['nickname', 'signature', 'email', 'mobile', 'avatar', 'sex']);
-            //显示页面
-            View::assign('user', $user);
+            
             View::assign('tab', 'password');
             return View::fetch(); 
         }
@@ -307,12 +313,7 @@ class Config extends Common
                 return $this->error('保存失败');
             }
         }else{
-            //dump(config());
-            // 基本信息
-            $user = query_user(is_login(),['nickname', 'avatar']);
             
-            //显示页面
-            View::assign('user', $user);
             View::assign('tab', 'avatar');
             return View::fetch();
         }
@@ -325,105 +326,47 @@ class Config extends Common
      */
     public function score()
     {
-        $scoreModel = new ScoreType();
-
-        $scores = $scoreModel->getTypeList(['status'=>1]);
+        $scoreTypeModel = new ScoreType();
+        // 用户积分类型列表
+        $scores = $scoreTypeModel->getTypeList(['status'=>1]);
         foreach ($scores as &$v) {
-            $v['value'] = $scoreModel->getUserScore(is_login(), $v['id']);
+            $v['value'] = $scoreTypeModel->getUserScore(is_login(), $v['id']);
         }
-
         unset($v);
         View::assign('scores', $scores);
 
-        $level = config('system.USER_LEVEL');
-        View::assign('level', $level);
-
-        $self = query_user(get_uid(), array('nickname','avatar' ,'score1', 'score2', 'score3', 'score4'));
-
-        View::assign('user', $self);
-
-        $actionModel = new Action();
-        $action = $actionModel->getAction(['status' => 1]);
-        $action_module = [];
-        
-        foreach ($action as &$v) {
-            $v['rule_array'] = unserialize($v['rule']);
-            if(is_array($v['rule_array'])){
-                foreach ($v['rule_array'] as &$o) {
-                    if (is_numeric($o['rule'])) {
-                        $o['rule'] = $o['rule'] > 0 ? '+' . intval($o['rule']) : $o['rule'];
-                    }
-                    $o['score'] = $scoreModel->getType(['id' => $o['field']]);
-                }
-            }
-            if ($v['rule_array'] != false) {
-                $action_module[$v['module']]['action'][] = $v;
+        // 获取积分日志列表
+        $scoreLogModel = new ScoreLog();
+        $lists = $scoreLogModel->getListByPage([
+            ['uid', '=', get_uid()],
+        ], 'create_time desc', '*', 10);
+        $pager = $lists->render();
+        $lists = $lists->toArray();
+        foreach($lists['data'] as &$v){
+            $type = $scoreTypeModel->getType(['id' => $v['type']])->toArray();
+            $v['type'] = $type;
+            if(!empty($v['create_time'])){
+                $v['create_time_str'] = time_format($v['create_time']);
+                $v['create_time_friendly_str'] = friendly_date($v['create_time']);
             }
         }
         unset($v);
+        View::assign('pager', $pager);
+        View::assign('lists', $lists);
 
-        // foreach ($action_module as $key => &$a) {
-        //     if (empty($a['action'])) {
-        //         unset($action_module[$key]);
-        //     }
-        //     $a['module'] = model('common/Module')->getModule($key);
-        // }
-        // unset($a);
-        View::assign('action_module', $action_module);
-        
+        // 设置页面TITLE
+        $this->setTitle('我的积分');
         View::assign('tab', 'score');
+        // 输出模板
         return View::fetch();
     }
 
     //积分规则
     public function scorerule()
     {
-        $scoreModel = new ScoreType();
 
-        $scores = $scoreModel->getTypeList(['status'=>1]);
-        foreach ($scores as &$v) {
-            $v['value'] = $scoreModel->getUserScore(is_login(), $v['id']);
-        }
-        unset($v);
-        View::assign('scores', $scores);
-
-        $level = config('system.USER_LEVEL');
-        View::assign('level', $level);
-
-        $self = query_user(get_uid(), array('nickname','avatar' ,'score1', 'score2', 'score3', 'score4'));
-
-        View::assign('user', $self);
-
-        $actionModel = new Action();
-        $action = $actionModel->getAction(['status' => 1]);
-        $action_module = [];
-        
-        foreach ($action as &$v) {
-            $v['rule_array'] = unserialize($v['rule']);
-            if(is_array($v['rule_array'])){
-                foreach ($v['rule_array'] as &$o) {
-                    if (is_numeric($o['rule'])) {
-                        $o['rule'] = $o['rule'] > 0 ? '+' . intval($o['rule']) : $o['rule'];
-                    }
-                    $o['score'] = $scoreModel->getType(['id' => $o['field']]);
-                }
-            }
-            if ($v['rule_array'] != false) {
-                $action_module[$v['module']]['action'][] = $v;
-            }
-        }
-        unset($v);
-
-        // foreach ($action_module as $key => &$a) {
-        //     if (empty($a['action'])) {
-        //         unset($action_module[$key]);
-        //     }
-        //     $a['module'] = model('common/Module')->getModule($key);
-        // }
-        // unset($a);
-        View::assign('action_module', $action_module);
-        
         View::assign('tab', 'scorerule');
+        $this->setTitle('积分规则');
         return View::fetch();
     }
 
@@ -444,40 +387,10 @@ class Config extends Common
         $level = config('system.USER_LEVEL');
         View::assign('level', $level);
 
-        $self = query_user(get_uid(), array('nickname','avatar' ,'score1', 'score2', 'score3', 'score4'));
-
-        View::assign('user', $self);
-
-        $actionModel = new Action();
-        $action = $actionModel->getAction(['status' => 1]);
-        $action_module = [];
-        
-        foreach ($action as &$v) {
-            $v['rule_array'] = unserialize($v['rule']);
-            if(is_array($v['rule_array'])){
-                foreach ($v['rule_array'] as &$o) {
-                    if (is_numeric($o['rule'])) {
-                        $o['rule'] = $o['rule'] > 0 ? '+' . intval($o['rule']) : $o['rule'];
-                    }
-                    $o['score'] = $scoreModel->getType(['id' => $o['field']]);
-                }
-            }
-            if ($v['rule_array'] != false) {
-                $action_module[$v['module']]['action'][] = $v;
-            }
-        }
-        unset($v);
-
-        // foreach ($action_module as $key => &$a) {
-        //     if (empty($a['action'])) {
-        //         unset($action_module[$key]);
-        //     }
-        //     $a['module'] = model('common/Module')->getModule($key);
-        // }
-        // unset($a);
-        View::assign('action_module', $action_module);
-        
         View::assign('tab', 'score_estate');
+        // 设置页面title
+        $this->setTitle('积分等级');
+        // 输出模板
         return View::fetch();
     }
 
