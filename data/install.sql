@@ -419,7 +419,7 @@ INSERT INTO `muucmf_config` (`id`, `name`, `type`, `title`, `group`, `extra`, `r
 (10013, 'USER_NICKNAME_MIN_LENGTH', 'num', '昵称长度最小值', 3, '', '昵称长度最小值', 1531177781, 1631278545, 1, '2', 20),
 (10014, 'USER_NICKNAME_MAX_LENGTH', 'num', '昵称长度最大值', 3, '', '昵称长度最大值', 1531177781, 1631278555, 1, '32', 21),
 (10053, 'MAIL_SMTP_SSL', 'select', '启用SSL验证功能', 5, '0:关闭\r\n1:开启', '是否启用SMTP验证功能', 0, 1631757419, 1, '1', 0),
-(10135, 'USER_LOGIN_SWITCH', 'checkbox', '用户登录开关', 3, 'username:用户名\r\nemail:邮箱\r\nmobile:手机号', '允许用户登录的方式', 0, 1631278375, 1, 'username,email,mobile', 2),
+(10135, 'USER_LOGIN_SWITCH', 'checkbox', '用户登录开关', 3, 'username:用户名\r\nemail:邮箱\r\nmobile:手机号\r\nqrcode:扫码（需正确配置公众号）', '允许用户登录的方式', 0, 1631278375, 1, 'username,email,mobile', 2),
 (10136, 'USER_USERNAME_MIN_LENGTH', 'num', '用户名长度最小值', 3, '', '用户名长度最小值', 0, 1631522578, 1, '2', 10),
 (10137, 'USER_USERNAME_MAX_LENGTH', 'num', '用户名长度最大值', 3, '', '用户名长度最大值', 0, 1631522594, 1, '32', 11),
 (10138, 'OPEN_QUICK_LOGIN', 'radio', '用户快捷登录', 3, '1:启用\r\n0:关闭', '开启后在页面弹出快捷登陆框', 0, 1658731272, 1, '1', 3),
@@ -4209,7 +4209,8 @@ INSERT INTO `muucmf_extend_config` (`id`, `name`, `type`, `title`, `group`, `ext
 (43, 'WX_PAY_CERT', 'string', '微信支付cert证书', 6, '', '', 0, 0, 1, 'file/20220804/f8b77dcab71db6c2af4f939271bbaa37.pem', 0),
 (44, 'WX_PAY_KEY', 'string', '微信支付Key证书', 6, '', '', 0, 0, 1, 'file/20220804/b75d77e45e429c81a1550cd976504c60.pem', 0),
 (45, 'VOD_TENCENT_KEY_SWITCH', 'radio', 'key防盗链开关', 9, '0:不启用\r\n1:启用', '腾讯云点播key防盗链开关', 0, 0, 1, '0', 0),
-(46, 'VOD_TENCENT_KEY_VALUE', 'string', '防盗链 Key', 9, '', '腾讯云点播 防盗链Key值', 0, 0, 1, '', 0);
+(46, 'VOD_TENCENT_KEY_VALUE', 'string', '防盗链 Key', 9, '', '腾讯云点播 防盗链Key值', 0, 0, 1, '', 0),
+(47, 'WX_PAY_CERT_SERIAL', 'string', '微信支付商户API证书序列号', 6, '', '微信支付商户API证书序列号', 0, 0, 1, '', 0);
 
 -- --------------------------------------------------------
 
