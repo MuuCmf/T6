@@ -146,16 +146,16 @@ class Module extends Admin
     public function cv()
     {
         $name = input('name', '', 'text');
-        $module = $this->ModuleModel->getModule($name);
+        $module = $this->ModuleModel->getModule($name, 'name, version, is_setup, source');
         if(!empty($module)){
             $upgradeServer = new UpgradeServer();
             $cloud = new CloudServer();
             if($module['source'] == 'cloud'){
                 //获取云端版本
                 $result = $upgradeServer->cloudVersion(['app_name' => $module['name']]);
-                $module['new_version'] = isset($result['data']['version']) ? $result['data']['version'] : $module['version'];
-                $module['upgrade'] = get_upgrade_status($module['version'],$module['new_version']) ? 1 : 0;
-                
+                $module['cloud_version'] = isset($result['data']['version']) ? $result['data']['version'] : $module['version'];
+                $module['upgrade'] = get_upgrade_status($module['version'],$module['cloud_version']) ? 1 : 0;
+                $module['remark'] = isset($result['data']['remark']) ? $result['data']['remark'] : '';
                 $module['expired'] = 0;
                 $auth = $cloud->needAuthorization($module['name']);
                 if (is_array($auth) && $auth['code'] == 0 && $auth['data'] == 'end_auth'){
