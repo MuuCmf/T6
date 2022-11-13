@@ -1,5 +1,8 @@
 <?php
 namespace app\api\controller;
+
+use app\common\validate\Address as AddressValidate;
+use think\exception\ValidateException;
 use app\common\controller\Api;
 use app\common\model\Address as AddressModel;
 use app\common\logic\Address as AddressLogic;
@@ -42,14 +45,16 @@ class Address extends Api
         return $this->success('获取成功！',$data);
     }
 
-    public function detail(){
+    public function detail()
+    {
         $id = input('get.id',0);
         $data = $this->model->getDataById($id);
         $data = $this->logic->formatData($data);
         return $this->success('获取成功！',$data);
     }
 
-    public function lists(){
+    public function lists()
+    {
         $uid = request()->uid;
         //初始化查询条件
         $map = [
@@ -64,7 +69,12 @@ class Address extends Api
         unset($item);
         return $this->success('获取成功！',$lists);
     }
-    public function edit(){
+
+    /**
+     * 新增/编辑地址
+     */
+    public function edit()
+    {
         if (request()->isPost()){
             $param = request()->post();
             $uid = request()->uid;
@@ -82,18 +92,12 @@ class Address extends Api
                 'status' => 1
             ];
 
-            // 验证数据
-            if(empty($data['name'])){
-                $this->error('姓名不能为空！');
-            }
-            if(empty($data['phone'])){
-                $this->error('手机号码不能为空！');
-            }
-            if(empty($data['pos_province']) || empty($data['pos_city']) || empty($data['pos_district'])){
-                $this->error('所在地区未选择！');
-            }
-            if(empty($data['address'])){
-                $this->error('详细地址不能为空！');
+            // 数据验证
+            try {
+                validate(AddressValidate::class)->check($data);
+            } catch (ValidateException $e) {
+                // 验证失败 输出错误信息
+                return $this->error($e->getError());
             }
 
             //写入数据

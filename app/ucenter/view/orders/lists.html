@@ -108,10 +108,7 @@
                                         </div>
                                     </td>
                                     <td >
-                                        <a href="{:url('detail',array('order_no'=>$v['order_no']))}" class="btn btn-info btn-sm">
-                                            详情
-                                        </a>
-    
+
                                         {if $v['status'] == 1}
                                         <button type="button" class="btn btn-success btn-sm" data-order-no="{$v.order_no}" data-role="pay">
                                             立即支付
@@ -122,7 +119,9 @@
                                         {/if}
     
                                         {if $v['status'] == 2 && 0 >= $v['refund']}
-                                        
+                                        <button type="button" class="btn btn-danger btn-sm" data-order-no="{$v.order_no}" data-role="refund">
+                                            申请退款
+                                        </button>
                                         {/if}
     
                                         {if $v['status'] == 3 && ($v.app == 'minishop' || $v.app == 'scoreshop')}
@@ -137,6 +136,10 @@
                                                 发货信息
                                             </a>
                                             {/if}
+
+                                            <button type="button" class="btn btn-danger btn-sm" data-order-no="{$v.order_no}" data-role="refund">
+                                                申请退款
+                                            </button>
     
                                             {if 1 > $v['refund']}
                                             <a href="{:url('status',['id'=>$v['id'],'status'=>4])}" class="btn btn-danger btn-sm confirm ajax-post" data-confirm="确认执行用户收货操作！">
