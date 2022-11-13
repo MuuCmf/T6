@@ -50,12 +50,19 @@ class Orders extends Common
         $order =  $order_field . ' ' . $order_type;
         $fields = '*';
         $lists = $this->OrdersModel->getListByPage($map, $order, $fields, $rows);
+        $pager = $lists->render();
         $lists = $lists->toArray();
         foreach($lists['data'] as &$val){
             $val = $this->OrdersLogic->formatData($val);
         }
         unset($val);
+        View::assign('pager', $pager);
+        View::assign('lists', $lists);
 
+        // 设置菜单识别TAB
+        View::assign('tab', 'orders');
+        $this->setTitle('我的订单');
+        // 输出模板
         return View::fetch();
         
     }
@@ -71,7 +78,10 @@ class Orders extends Common
 
         // pc端商品路径
         $return_url = url($order_data['app'] . '/' . $order_data['products']['link']['url'], $order_data['products']['link']['param']);
-
+        // 设置菜单识别TAB
+        View::assign('tab', 'orders');
+        $this->setTitle('我的订单');
+        // 输出模板
         return View::fetch();
     }
 

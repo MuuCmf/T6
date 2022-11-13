@@ -1,0 +1,176 @@
+{extend name="../../common/view/main"/}
+{block name="style"}
+<link href="__STATIC__/ucenter/css/main.min.css" rel="stylesheet">
+<link rel="stylesheet" href="__STATIC__/ucenter/lib/paging/my-page.css">
+{/block}
+{block name="body"}
+
+<div id="main-container" class="user-config">
+    <div class="container-fixed">
+        <div class="col-xs-3">
+            {include file="common/_slide"/}
+        </div>
+        <div class="col-xs-9">
+            <div id="center" class="orders-lists">
+                
+                <!--列表容器-->
+                <div class="items">
+                    {foreach $lists.data as $k=>$v}
+                    <div class="item">
+                        <div class="base-info">
+                            <span class="">订单号：{$v['order_no']}</span>
+                            {if $v['paid'] == 1}
+                            <span class="">
+                                支付时间：{$v['paid_time_str']|default=''}
+                            </span>
+                            {else}
+                            <span class="">
+                                支付时间：未支付
+                            </span>
+                            {/if}
+                            <span class="">
+                                用户：{$v['user_info'] ? $v['user_info']['nickname'] : '用户已删除'}
+                            </span>
+                            <span class="pull-right text-right status">
+                                {if $v['refund'] > 0}
+                                    {$v['refund_str']}
+                                {else}
+                                {$v['status_str']}
+                                {/if}
+                            </span>
+                        </div>
+                        <table class="table table-bordered muu-table">
+                            <thead>
+                                <tr>
+                                    <th>订单信息</th>
+                                    <th>应支付金额</th>
+                                    <th>数量/规格</th>
+                                    <th>支付状态</th>
+                                    <th width=205>操作</th>
+                                </tr>
+                            </thead>
+    
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <div class="cover">
+                                            <img src="{$v['products']['cover_100']}">
+                                        </div>
+                                        <div class="info">
+                                            <div class="title text-ellipsis">{$v['products']['title']}</div>
+                                            <div class="description text-ellipsis">{$v['products']['description']}</div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="text-danger">￥ {$v['delivery_fee']}</span>
+                                        <br />
+                                        <span class="text-danger">￥ {$v['paid_fee']}</span>
+                                    </td>
+                                    <td>
+                                        {if $v['order_info_type'] == 'goods'}
+                                        <p>数量：{$v['products']['quantity']}</p>
+                                        <p>规格：{$v['products']['sku']}</p>
+                                        {/if}
+                                    </td>
+                                    <td>
+                                        <div class="">
+                                            {if $v['paid'] == 1}
+                                            <span class="paid-status text-success">{$v['paid_str']}</span>
+                                            {else}
+                                            <span class="paid-status text-danger">{$v['paid_str']}</span>
+                                            {/if}
+    
+                                            {if $v['status'] == 3}
+                                            {if $v['evaluate'] == 0 || empty($v['evaluate'])}
+                                            <span class="text-danger">未评价</span>
+                                            {else}
+                                            <span class="text-success">已评价</span>
+                                            {/if}
+                                            {/if}
+                                        </div>
+                                    </td>
+                                    <td >
+                                        <a href="{:url('detail',array('id'=>$v['id']))}" class="btn btn-info">详情</a>
+    
+                                        {if $v['status'] == 1}
+                                            <a href="{:url('status',['id'=>$v['id'],'status'=>0])}" class="btn btn-danger ajax-get" data-confirm="确认执行取消操作？">取消订单</a>
+                                        {/if}
+    
+                                        {if $v['status'] == 2 && 0 >= $v['refund']}
+                                            {if $v['products']['express'] == 1}
+                                            <button type="button" data-toggle="modal" data-target="#deliveType0Modal" class="btn btn-primary" data-id="{$v['id']}">发货</button>
+                                            {/if}
+                                            {if $v['products']['express'] == 0}
+                                            <button type="button" data-toggle="modal" data-target="#deliveType1Modal" class="btn btn-primary" data-id="{$v['id']}">发货</button>
+                                            {/if}
+                                        {/if}
+    
+                                        {if $v['status'] == 3}
+                                            {if $v['products']['express'] == 1}
+                                            <a data-url="{:url('logistic',['id'=>$v['id']])}" data-id="{$v['id']}" data-toggle="modal" data-target="#logisticModal" class="btn btn-primary">物流查询</a>
+                                            <button type="button" data-toggle="modal" data-target="#deliveType0Modal" class="btn btn-info" data-id="{$v['id']}">更改物流</button>
+                                            {/if}
+                                            {if $v['products']['express'] == 0}
+                                            <a data-url="{:url('detail',['id'=>$v['id']])}" data-id="{$v['id']}" data-toggle="modal" data-target="#sendOutModal" class="btn btn-primary">发货信息</a>
+                                            {/if}
+    
+                                            {if $v['refund'] < 1}
+                                            <a href="{:url('status',['id'=>$v['id'],'status'=>4])}" data-id="{$v['id']}" class="btn btn-danger confirm ajax-post" data-confirm="确认执行用户收货操作！">确认收货</a>
+                                            {/if}
+                                        {/if}
+    
+                                        {if $v['status'] == 4}
+                                        <a data-url="{:url('logistic',['id'=>$v['id']])}" data-id="{$v['id']}" data-toggle="modal" data-target="#logisticModal" class="btn btn-primary">物流查询</a>
+                                        {/if}
+    
+                                        {if $v['refund'] > 0}
+                                        <a data-url="{:url('refund', ['id'=>$v['id']])}" data-id="{$v['id']}" data-refund="{$v['refund']}" data-toggle="modal" data-target="#refundModal" class="btn btn-danger" >
+                                            {if $v['refund'] == 1}
+                                                退款申请中
+                                            {/if}
+                                            {if $v['refund'] == 2}
+                                                退货中
+                                            {/if}
+                                            {if $v['refund'] == 3}
+                                                已退货
+                                            {/if}
+                                            {if $v['refund'] == 4}
+                                                退款完成
+                                            {/if}
+                                        </a>
+                                        {/if}
+    
+                                        {if $v['status'] == 0}
+                                        <a disabled href="#" class="btn disabled">已取消</a>
+                                        <a href="{:url('status',['id'=>$v['id'],'status'=>-1])}" class="btn btn-danger ajax-get" data-confirm="确认执行删除操作？">删除</a>
+                                        {/if}
+    
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    {/foreach}
+                    {if empty($lists.data)}
+                    {include file='../../common/view/empty'}
+                    {/if}
+                </div>
+
+            </div>
+        </div>
+        <div class="clearfix"></div>
+    </div>
+</div>
+
+{/block}
+
+{block name="script"}
+<script src="__STATIC__/ucenter/js/main.min.js"></script>
+<script>
+    $(function () {
+        // 设置当前高亮菜单
+        $("#{$tab}").addClass('active');
+    });
+</script>
+
+{/block}
