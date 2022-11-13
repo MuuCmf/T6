@@ -224,6 +224,8 @@
      */
     let modal_confirm = function(confirmText, callback, type = 'error') {
 
+        $('#tip_Modal').remove();
+        
         if(confirmText == ''){
             confirmText = '确认执行该操作？';
         }
@@ -271,6 +273,7 @@
         $('#tip_Modal').on('click','.confirm',function(){
             if (typeof callback === "function") {
                 callback();
+                $('#tip_Modal').remove();
             }
             //关闭模态框
             $('[data-dismiss="modal"]').click();

@@ -48,8 +48,10 @@ class Pay extends Api
                     throw new Exception('订单不存在');
                 }
                 //更新渠道
-                if(!empty($this->params['channel'])){
-                    $this->OrderModel->edit(['id'=>$order_data['id'],'channel'=>$channel]);
+                if(!empty($channel) && $channel != $order_data['channel']){
+                    $order_no = build_order_no(); // 更好渠道后更新订单号
+                    $this->OrderModel->edit(['id'=>$order_data['id'], 'order_no' => $order_no, 'channel'=>$channel]);
+                    $order_data['order_no'] = $order_no;
                     $order_data['channel'] = $channel;
                 }
                 //数据处理
@@ -94,7 +96,7 @@ class Pay extends Api
                     $pay_data['openid'] = $openid;
                     $pay_data['subject'] = $title;
                     $pay_data['body'] = $title;
-                    $pay_data['out_trade_no'] = $order_data['order_no'];
+                    $pay_data['out_trade_no'] = $order_no;
                     $pay_data['total_fee'] = intval($order_data['paid_fee'] * 100);
                     $pay_data['notify_url'] = $notify_url;
                     // 发起支付
@@ -113,7 +115,7 @@ class Pay extends Api
                 if($order_data['channel'] == 'douyin_mp'){
                     $pay_data['subject'] = $title;
                     $pay_data['body'] = $title;
-                    $pay_data['out_order_no'] = $order_data['order_no'];
+                    $pay_data['out_order_no'] = $order_no;
                     $pay_data['total_amount'] = intval($order_data['paid_fee'] * 100);
                     $pay_data['notify_url'] = $notify_url;
 
@@ -122,7 +124,7 @@ class Pay extends Api
                 // 百度小程序支付
                 if($order_data['channel'] == 'baidu_mp'){
                     $pay_data['dealTitle'] = $title;
-                    $pay_data['tpOrderId'] = $order_data['order_no'];
+                    $pay_data['tpOrderId'] = $order_no;
                     $pay_data['totalAmount'] = (string)intval($order_data['paid_fee'] * 100);
                     $pay_data['notifyUrl'] = $notify_url;
 
