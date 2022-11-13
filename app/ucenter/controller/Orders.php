@@ -31,9 +31,9 @@ class Orders extends Common
     public function lists()
     {
         $uid = get_uid();
-        $status = input('status');
         $rows = input('rows', 15, 'intval');
         $status = input('status', 'all');
+        View::assign('status', $status);
         $map = [
             ['shopid','=',$this->shopid],
             ['uid','=',$uid],

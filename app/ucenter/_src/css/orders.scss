@@ -3,4 +3,46 @@
     border-radius: 10px;
     padding: 54px 20px;
 
+    .items {
+
+        .item {
+            border: 0;
+            .base-info {
+                margin-bottom: 5px;
+
+                .status {
+                    text-align: right;
+                    color: red;
+                    margin-right: 0;
+                }
+            }
+            table {
+
+                .products {
+                    .cover {
+                        float: left;
+                        width: 80px;
+                        height: 80px;
+                        img {
+                            display: block;
+                            border-radius: 5px;
+                        }
+                    }
+                    .info {
+                        margin: 0;
+                        margin-left: 86px;
+                        width: 180px;
+                        .title {
+                            font-size: 14px;
+                            font-weight: 600;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    .page-section {
+        text-align: center;
+    }
+
 }

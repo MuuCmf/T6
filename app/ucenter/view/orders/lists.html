@@ -12,13 +12,23 @@
         </div>
         <div class="col-xs-9">
             <div id="center" class="orders-lists">
-                
+                <ul class="nav nav-tabs">
+                    <li class="{if $status==='all'}active{/if}"><a href="{:url('lists', ['status' => 'all'])}">所有</a></li>
+                    <li class="{if $status==='1'}active{/if}"><a href="{:url('lists', ['status'=>1])}">待付款</a></li>
+                    <li class="{if $status==='2'}active{/if}"><a href="{:url('lists', ['status'=>2])}">待发货</a></li>
+                    <li class="{if $status==='3'}active{/if}"><a href="{:url('lists', ['status'=>3])}">待收货</a></li>
+                    <li class="{if $status==='4'}active{/if}"><a href="{:url('lists', ['status'=>4])}">待评价</a></li>
+                    <li class="{if $status==='5'}active{/if}"><a href="{:url('lists', ['status'=>5])}">已完成</a></li>
+                </ul>
                 <!--列表容器-->
                 <div class="items">
                     {foreach $lists.data as $k=>$v}
                     <div class="item">
                         <div class="base-info">
-                            <span class="">订单号：{$v['order_no']}</span>
+                            <span class="">订单号：{$v['order_no']|default=''}</span>
+                            <span class="">
+                                下单时间：{$v['create_time_str']|default=''}
+                            </span>
                             {if $v['paid'] == 1}
                             <span class="">
                                 支付时间：{$v['paid_time_str']|default=''}
@@ -28,9 +38,7 @@
                                 支付时间：未支付
                             </span>
                             {/if}
-                            <span class="">
-                                用户：{$v['user_info'] ? $v['user_info']['nickname'] : '用户已删除'}
-                            </span>
+
                             <span class="pull-right text-right status">
                                 {if $v['refund'] > 0}
                                     {$v['refund_str']}
@@ -43,9 +51,9 @@
                             <thead>
                                 <tr>
                                     <th>订单信息</th>
-                                    <th>应支付金额</th>
+                                    <th>金额</th>
                                     <th>数量/规格</th>
-                                    <th>支付状态</th>
+                                    <th>状态</th>
                                     <th width=205>操作</th>
                                 </tr>
                             </thead>
@@ -53,18 +61,25 @@
                             <tbody>
                                 <tr>
                                     <td>
-                                        <div class="cover">
-                                            <img src="{$v['products']['cover_100']}">
+                                        <div class="products clearfix">
+                                            <div class="cover">
+                                                <img src="{$v['products']['cover_100']}">
+                                            </div>
+                                            <div class="info">
+                                                <div class="title text-ellipsis">{$v['products']['title']}</div>
+                                                <div class="description text-ellipsis">{$v['products']['description']}</div>
+                                            </div>
                                         </div>
-                                        <div class="info">
-                                            <div class="title text-ellipsis">{$v['products']['title']}</div>
-                                            <div class="description text-ellipsis">{$v['products']['description']}</div>
-                                        </div>
+                                        
                                     </td>
                                     <td>
-                                        <span class="text-danger">￥ {$v['delivery_fee']}</span>
+                                        <span class="text-danger">
+                                            运费：￥ {$v['delivery_fee']}
+                                        </span>
                                         <br />
-                                        <span class="text-danger">￥ {$v['paid_fee']}</span>
+                                        <span class="text-danger">
+                                            应付：￥ {$v['paid_fee']}
+                                        </span>
                                     </td>
                                     <td>
                                         {if $v['order_info_type'] == 'goods'}
@@ -79,7 +94,7 @@
                                             {else}
                                             <span class="paid-status text-danger">{$v['paid_str']}</span>
                                             {/if}
-    
+                                            <br />
                                             {if $v['status'] == 3}
                                             {if $v['evaluate'] == 0 || empty($v['evaluate'])}
                                             <span class="text-danger">未评价</span>
@@ -155,7 +170,9 @@
                     {include file='../../common/view/empty'}
                     {/if}
                 </div>
-
+                <div class="page-section">
+                    {:html_entity_decode($pager)}
+                </div>
             </div>
         </div>
         <div class="clearfix"></div>
