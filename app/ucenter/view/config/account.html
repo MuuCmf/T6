@@ -4,38 +4,38 @@
             <button class="close" data-dismiss="modal">×</button>
     </div>
     <div class="modal-body information-popout">
-    <form class="form-horizontal center_info ajax-form" role="form"
-          action="{:url('ucenter/config/account')}" method="post">
-        <div class="form-group">
-            <label for="account" class="col-xs-2 control-label">{$cName}</label>
+        <form class="form-horizontal center_info ajax-form" role="form"
+            action="{:url('ucenter/config/account')}" method="post">
+            <div class="form-group">
+                <label for="account" class="col-xs-2 control-label">{$cName}</label>
 
-            <div class="col-xs-10">
-                <input type="text" class="form-control pull-left" id="account" name="account" placeholder="{$cName}">
+                <div class="col-xs-10">
+                    <input type="text" class="form-control pull-left" id="account" name="account" placeholder="{$cName}">
+                </div>
             </div>
-        </div>
 
-        <div class="form-group">
-            <label for="verify" class="col-xs-2 control-label">验证码</label>
+            <div class="form-group">
+                <label for="verify" class="col-xs-2 control-label">验证码</label>
 
-            <div class="col-xs-10">
-                <input type="text" class="form-control" id="verify" placeholder="验证码" name="verify">
-                <a class="pull-left btn btn-default " data-role="getVerify">获取验证码</a>
+                <div class="col-xs-10">
+                    <input type="text" class="form-control" id="verify" placeholder="验证码" name="verify">
+                    <a class="pull-left btn btn-default " data-role="getVerify">获取验证码</a>
+                </div>
             </div>
-        </div>
 
-        <input type="hidden" class="form-control" name="type" value="{$type}">
-        <input type="hidden" class="form-control" name="uid" value="{:is_login()}">
+            <input type="hidden" class="form-control" name="type" value="{$type}">
+            <input type="hidden" class="form-control" name="uid" value="{:is_login()}">
 
-        <div class="form-group">
-            <div class="col-sm-offset-2 col-xs-10">
-                <!-- <button type="submit" data-role="submit" class="btn btn-primary">确认</button> -->
-                <button type="submit" data-role="submit" class="btn btn-primary">保存</button>
-                <!-- <button class="cancel" data-dismiss="modal">取消</button> -->
-                <div class="cancel" data-dismiss="modal">取消</div>
+            <div class="form-group">
+                <div class="col-sm-offset-2 col-xs-10">
+                    <!-- <button type="submit" data-role="submit" class="btn btn-primary">确认</button> -->
+                    <button type="submit" data-role="submit" class="btn btn-primary">保存</button>
+                    <!-- <button class="cancel" data-dismiss="modal">取消</button> -->
+                    <div class="cancel" data-dismiss="modal">取消</div>
+                </div>
             </div>
-        </div>
-    </form>
-</div>
+        </form>
+    </div>
 </div>
 
 <script>

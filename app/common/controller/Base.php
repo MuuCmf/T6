@@ -77,7 +77,8 @@ class Base
     protected function success($msg = '',  $data = '', $url = '', int $wait = 3, array $header = []): Response
     {
         if (empty($url) && isset($_SERVER["HTTP_REFERER"])) {
-            $url = $_SERVER["HTTP_REFERER"];
+            //$url = $_SERVER["HTTP_REFERER"];
+            $url = 'refresh';
         } elseif ($url) {
             if(is_object($url)){
                 $url = $url->build();

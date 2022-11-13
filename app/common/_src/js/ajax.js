@@ -203,12 +203,12 @@
         } else {
             toast.error(data.msg, 'danger');
         }
-
+        
         //需要跳转的话就跳转
         var interval = 1*1000;
         if (data.url == "refresh") {
             setTimeout(function () {
-                location.href = location.href;
+                location.reload();
             }, interval);
         } else if (data.url) {
             setTimeout(function () {

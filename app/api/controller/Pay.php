@@ -42,10 +42,17 @@ class Pay extends Api
         if (request()->isPost()){
             try {
                 $order_no = $this->params['order_no'];
+                $channel = empty($this->params['channel'])?'':$this->params['channel'];
                 $order_data = $this->OrderModel->getDataByOrderNo($order_no);
                 if (!$order_data){
                     throw new Exception('订单不存在');
                 }
+                //更新渠道
+                if(!empty($this->params['channel'])){
+                    $this->OrderModel->edit(['id'=>$order_data['id'],'channel'=>$channel]);
+                    $order_data['channel'] = $channel;
+                }
+                //数据处理
                 $order_namespace = "app\\{$order_data['app']}\\logic\\Orders";
                 $this->OrderLogic = new $order_namespace;
                 $order_data = $this->OrderLogic->formatData($order_data);

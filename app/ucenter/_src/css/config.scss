@@ -19,6 +19,16 @@
 
 .user-config {
     margin: 38px auto 20px auto!important;
+    .left-slide {
+        float: left;
+        width: 238px;
+    }
+    .right-content {
+        float: left;
+        width: 924px;
+        margin-left: 38px;
+        display: block;
+    }
 }
 //基本信息页
 .config-content {
@@ -316,11 +326,7 @@
         }
     }
 }
-// .modal-dialog{
-//     width: 630px;
-//     max-width: 630px !important;
-//     height: 455px;
-// }
+
 .modal-content {
     .modal-header{
         height: 75px;

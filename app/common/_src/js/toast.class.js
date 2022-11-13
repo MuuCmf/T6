@@ -35,6 +35,13 @@ var toast = {
     warning: function (text, title) {
         toast.show(text, {placement: 'center',type:'warning',close: true});
     },
+    /**
+     * 默认提示
+     * @param {*} text 
+     */
+    default: function (text) {
+        toast.show(text, {placement: 'center',type:'default',close: true});
+    },
 
     show: function (text, option) {
         var zui = $.zui;
