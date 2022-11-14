@@ -4,15 +4,15 @@ namespace app\api\controller;
 use app\common\controller\Api;
 use app\common\model\Evaluate as EvaluateModel;
 use app\common\logic\Evaluate as EvaluateLogic;
-use app\common\model\Orders as OrderModel;
-use \app\common\logic\Orders as OrderLogic;
+use app\common\model\Orders as OrdersModel;
+use \app\common\logic\Orders as OrdersLogic;
 
 class Evaluate extends Api 
 {
     protected $EvaluateModel;
     protected $EvaluateLogic;
-    protected $OrderModel;
-    protected $OrderLogic;
+    protected $OrdersModel;
+    protected $OrdersLogic;
     protected $middleware = [
         'app\\common\\middleware\\CheckAuth' => ['except' => 'lists']
     ];
@@ -21,8 +21,8 @@ class Evaluate extends Api
         parent::__construct();
         $this->EvaluateLogic = new EvaluateLogic();
         $this->EvaluateModel = new EvaluateModel();
-        $this->OrderModel = new OrderModel();
-        $this->OrderLogic = new OrderLogic();
+        $this->OrdersModel = new OrdersModel();
+        $this->OrdersLogic = new OrdersLogic();
     }
 
     public function lists()
@@ -56,16 +56,23 @@ class Evaluate extends Api
      */
     public function edit()
     {
-        $params = request()->param();
-        $uid = request()->uid;
+        $order_no = input('order_no');
+        $type = input('type', '', 'text');
+        $type_id = input('type_id', 0, 'intval');
+        $content = input('content', '', 'text');
+        $images = input('images', '', 'text');
+        $value = input('value');
+        $uid = get_uid();
         $id = 0;
-        if(empty($params['content'])){
-            $this->error('评价内容不能为空');
+        if(empty($content)){
+            return $this->error('评价内容不能为空');
         }
+        //获取订单数据
+        $order_data = $this->OrdersModel->getDataByOrderNo($order_no);
         //检测是否已评论
         $evaluate_map = [];
         $evaluate_map[] = ['uid','=',$uid];
-        $evaluate_map[] = ['order_no','=',$params['order_no']];
+        $evaluate_map[] = ['order_no','=',$order_no];
         $evaluate_map[] = ['shopid','=',$this->shopid];
         $is_have = $this->EvaluateModel->getDataByMap($evaluate_map);
         if($is_have && $is_have['status'] == 1){
@@ -75,9 +82,8 @@ class Evaluate extends Api
             $id = $is_have['id'];
         }
         //处理评价图片
-        $images = '';
-        if(!empty($params['images'])){
-            $images = $params['images'];
+        if(!empty($images)){
+            $images = $images;
             $images = explode(',', $images);
         }
         
@@ -85,26 +91,25 @@ class Evaluate extends Api
         $data = [
             'id' => $id,
             'shopid' => $this->shopid,
-            'app' => get_module_name(),
+            'app' => $order_data['app'],
             'uid' => $uid,
-            'type' => $params['type'],
-            'type_id' => intval($params['type_id']),
-            'order_no' => $params['order_no'],
-            'content' => html_entity_decode($params['content']),
+            'type' => $type,
+            'type_id' => intval($type_id),
+            'order_no' => $order_no,
+            'content' => html_entity_decode($content),
             'images' => json_encode($images),
-            'value' => $params['value'],
+            'value' => $value,
             'status' => 1
         ];
         $res = $this->EvaluateModel->edit($data);
         if ($res){
             //更改订单评价状态
-            $order_info = $this->OrderModel->getDataByOrderNo($params['order_no']);
-            $order_data = [
-                'id' => $order_info['id'],
+            $order_edit_data = [
+                'id' => $order_data['id'],
                 'status' => 5, //已评价
             ];
-            $this->OrderModel->edit($order_data);
-            return $this->success('提交成功',$res);
+            $this->OrdersModel->edit($order_edit_data);
+            return $this->success('提交成功', $res);
         }
         return $this->error('提交失败，请稍后再试');
     }

@@ -53,3 +53,115 @@
     }
 
 }
+
+/*评价表单部分*/
+.evaluate-section {
+	background-color: #fff;
+
+  	/*5分评价*/
+  	.add-evaluate-box {
+		padding: 10px;
+  		.submit {
+  			padding: 0;
+  		}
+  		.start-item {
+  			padding: 10px 0;
+  			margin: 0 auto;
+  			text-align: center;
+  		}
+  	}
+
+  	.detail-evaluate-box {
+  		border-top:1px solid #f2f2f2;
+
+  		.content {
+  			padding:10px;
+  			margin:10px;
+  			
+  			font-size: 14px;
+  			color: #666;
+  		}
+  		.images {
+  			padding:10px;
+  			margin:10px;
+  			border-bottom:1px solid #f2f2f2;
+  			.item {
+  				display: inline-block;
+  				border:1px solid #f2f2f2;
+  				width: 60px;
+  				height: 60px;
+  				overflow: hidden;
+  				margin-right: 5px;
+  			}
+  		}
+
+  		.evaluate-score {
+  			padding: 10px 0;
+  			text-align: center;
+  		}
+
+  		.tip-box {
+  			padding:10px;
+  			margin: 10px;
+  			color: #666;
+  		}
+  	}
+
+	.star_score { 
+		background:url('../../common/images/star_h.png');
+		height:48px; 
+		position:relative; 
+		margin: 0 auto;
+		margin-bottom: 20px;
+
+		a{
+			height:48px; 
+			display:block; 
+			text-indent:-999em; 
+			position:absolute;
+			left:0;
+
+			&:hover{ 
+				background:url('../../common/images/star.png');
+				left:0;
+			}
+		}
+		a.clibg{ 
+			background:url('../../common/images/star.png');
+			left:0;
+		}
+	}
+
+	/*星星样式*/
+	.show_number{ 
+		padding-left:50px; 
+		padding-top:20px;
+
+		li{ 
+			width:240px; 
+			border:1px solid #ccc; 
+			padding:10px; 
+			margin-right:5px; 
+			margin-bottom:20px;
+
+			span{ 
+				display:inline-block; 
+				line-height:21px;
+			}
+		}
+	}
+	.atar_show{
+		background:url('../../images/star_h.png'); 
+		width:240px; 
+		height:48px;  
+		position:relative; 
+		margin: 0 auto;
+		margin-bottom: 20px;
+
+		.show_star{ 
+			background:url('../../images/star.png');
+			height:48px; 
+			width:240px;
+		}
+	}
+}
