@@ -52,9 +52,9 @@
                                 <tr>
                                     <th>订单信息</th>
                                     <th>金额</th>
-                                    <th>数量/规格</th>
+                                    <th width=150>数量/规格</th>
                                     <th>状态</th>
-                                    <th width=205>操作</th>
+                                    <th width=100>操作</th>
                                 </tr>
                             </thead>
     
@@ -79,6 +79,15 @@
                                         </span>
                                         <br />
                                         {/if}
+                                        {if $v.app == 'scoreshop'}
+                                        <span class="text-danger">
+                                            单价：积分 {$v['price']}
+                                        </span>
+                                        <br />
+                                        <span class="text-danger">
+                                            应付：积分 {$v['paid_fee']}
+                                        </span>
+                                        {else}
                                         <span class="text-danger">
                                             单价：￥ {$v['price']}
                                         </span>
@@ -86,6 +95,7 @@
                                         <span class="text-danger">
                                             应付：￥ {$v['paid_fee']}
                                         </span>
+                                        {/if}
                                     </td>
                                     <td>
                                         {if $v['order_info_type'] == 'goods'}
@@ -110,7 +120,7 @@
                                             {/if}
                                         </div>
                                     </td>
-                                    <td >
+                                    <td class="action">
 
                                         {if $v['status'] == 1}
                                         <button type="button" class="btn btn-success btn-sm" data-order-no="{$v.order_no}" data-role="pay">
@@ -122,14 +132,16 @@
                                         {/if}
     
                                         {if $v['status'] == 2 && 0 >= $v['refund']}
-                                        <button type="button" class="btn btn-danger btn-sm" data-order-no="{$v.order_no}" data-role="refund">
-                                            申请退款
-                                        </button>
+                                        {if $v.app == 'minishop'}
+                                            <a href="{:url($v.app . '/api.orders/refund')}" class="btn btn-default btn-sm ajax-post" target-form="action-form-{$v.id}" data-confirm="确认申请退款操作？">
+                                                申请退款
+                                            </a>
+                                        {/if}
                                         {/if}
     
                                         {if $v['status'] == 3 && ($v.app == 'minishop' || $v.app == 'scoreshop')}
                                             {if $v['products']['express'] == 1}
-                                            <a data-url="{:url('logistic',['id'=>$v['id']])}" data-toggle="modal" data-target="#logisticModal" class="btn btn-primary btn-sm">
+                                            <a data-url="{:url($v.app.'/api.Orders/logistic',['id'=>$v['id']])}" data-toggle="modal" data-target="#logisticModal" class="btn btn-primary btn-sm">
                                                 物流查询
                                             </a>
                                             {/if}
@@ -140,12 +152,14 @@
                                             </a>
                                             {/if}
 
-                                            <button type="button" class="btn btn-danger btn-sm" data-order-no="{$v.order_no}" data-role="refund">
+                                            {if $v.app == 'minishop'}
+                                            <a href="{:url($v.app . '/api.orders/refund')}" class="btn btn-default btn-sm ajax-post" target-form="action-form-{$v.id}" data-confirm="确认申请退款操作？">
                                                 申请退款
-                                            </button>
+                                            </a>
+                                            {/if}
     
                                             {if 1 > $v['refund']}
-                                            <a href="{:url('status',['id'=>$v['id'],'status'=>4])}" class="btn btn-danger btn-sm confirm ajax-post" data-confirm="确认执行用户收货操作！">
+                                            <a href="{:url('status',['id'=>$v['id'],'status'=>4])}" class="btn btn-danger btn-sm confirm ajax-post" data-confirm="确认执行确认收货操作！">
                                                 确认收货
                                             </a>
                                             {/if}
@@ -156,14 +170,14 @@
                                             立即评价
                                         </a>
                                         {if ($v.app == 'minishop' || $v.app == 'scoreshop')}
-                                        <a data-url="{:url('logistic',['id'=>$v['id']])}" data-toggle="modal" data-target="#logisticModal" class="btn btn-primary btn-sm">
+                                        <a data-url="{:url($v.app.'/api.Orders/logistic',['id'=>$v['id']])}" data-toggle="modal" data-target="#logisticModal" class="btn btn-primary btn-sm">
                                             物流查询
                                         </a>
                                         {/if}
                                         {/if}
     
                                         {if $v['refund'] > 0}
-                                        <a data-url="{:url('refund', ['id'=>$v['id']])}" data-refund="{$v['refund']}" data-toggle="modal" data-target="#refundModal" class="btn btn-danger btn-sm" >
+                                        <a data-url="{:url('refund', ['id'=>$v['id']])}" data-refund="{$v['refund']}" data-toggle="modal" data-target="#refundModal" class="btn btn-default btn-sm disabled" disabled>
                                             {if $v['refund'] == 1}
                                                 退款申请中
                                             {/if}
@@ -211,6 +225,57 @@
     </div>
 </div>
 
+<!--物流查询模态框-->
+<div class="modal fade" id="logisticModal">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+				<h3 class="modal-title">物流查询</h3>
+			</div>
+			<div class="modal-body we7-form form-horizontal">
+				<div class="kdniao_delivery_main">
+					<div class="base_info">
+					</div>
+					<div class="api_info">
+						<p>【订 单 号】：<span class="kdniao_OrderCode"></span></p>
+						<p>【快递公司】：<span class="kdniao_shipperName"></span><span class="kdniao_shipperCode"></span></p>
+						<p>【运单号码】：<span class="kdniao_logisticCode"></span></p>
+						<div class="kdniao_delivery_info">
+
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!--虚拟商品发货信息查询模态框-->
+<div class="modal fade" id="sendOutModal">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+				<h3 class="modal-title">发货信息查询</h3>
+			</div>
+			<div class="modal-body form-horizontal">
+				<div class="delivery_info">
+
+				</div>
+			</div>
+
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+			</div>
+		</div>
+	</div>
+</div>
+
 {/block}
 
 {block name="script"}
@@ -222,7 +287,7 @@
     });
 
     $(function (){
-
+        // 立即支付
         $('[data-role="pay"]').click(function(){
             var order_no = $(this).data('order-no');
             pay(order_no);
@@ -252,8 +317,44 @@
                 });
             }
         });
+    });
 
-        
+    $(function(){
+		//物流查询模态框处理
+		$('[data-target="#logisticModal"]').click(function(){
+			var _this = $(this);
+			var url = _this.data('url');
+			var id = _this.data('id');
+			var data = {
+				id : id
+			};
+			$.post(url,data,function (ret) {
+				//console.log(ret);
+				if(ret.code){
+					$('.kdniao_OrderCode').text(ret.data.OrderCode);
+					$('.kdniao_shipperName').text(ret.data.ShipperName);
+					$('.kdniao_shipperCode').text(ret.data.ShipperCode);
+					$('.kdniao_logisticCode').text(ret.data.LogisticCode);
+
+					if(ret.data.Traces) {
+						var _html = '<ul class="list-group">';
+						$.each(ret.data.Traces,function(index,value){
+							_html += '<li class="list-group-item">'+
+									'<span class="text-info">'+ value.AcceptTime + '</span>' +
+									'<span>'+ value.AcceptStation + '</span>' +
+									'<span class="text-danger">'+ value.Remark + '</span>' +
+									'</li>';
+						});
+						_html += '</ul>';
+						$('.kdniao_delivery_main .kdniao_delivery_info').html(_html);
+
+					}else{
+						$('.kdniao_delivery_main .kdniao_delivery_info').text('未查询到物流数据');
+					}				}else{
+					$('.kdniao_delivery_main .kdniao_delivery_info').text(ret.msg);
+				}
+			})
+		});
     });
 </script>
 
