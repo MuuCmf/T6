@@ -508,6 +508,7 @@ class Member extends Model
             //验证唯一性
             $map_nickname[] = ['nickname', '=', $nickname];
             $map_nickname[] = ['uid','<>', $uid];
+            $map_nickname[] = ['status','in', [0,1]];
             $had_nickname = $this->where($map_nickname)->count();
             if ($had_nickname > 0) {
                 throw new Exception('昵称已被人使用');
