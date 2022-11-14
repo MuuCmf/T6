@@ -12,6 +12,7 @@
         </div>
         <div class="right-content">
             <div id="center" class="orders-lists">
+                <h4 class="lists-title">我的订单</h4>
                 <ul class="nav nav-tabs clearfix">
                     <li class="{if $status==='all'}active{/if}"><a href="{:url('lists', ['status' => 'all'])}">所有</a></li>
                     <li class="{if $status==='1'}active{/if}"><a href="{:url('lists', ['status'=>1])}">待付款</a></li>

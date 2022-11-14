@@ -68,7 +68,7 @@ class Config extends Common
             View::assign('user', $user);
             // $this->_getExpandInfo();
             // 当前方法赋值变量
-            View::assign('tab', 'index');
+            View::assign('tab', 'base');
 
             return View::fetch();
         }

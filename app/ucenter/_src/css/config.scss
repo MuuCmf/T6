@@ -22,6 +22,42 @@
     .left-slide {
         float: left;
         width: 238px;
+
+        .menu{
+            width: 238px;
+            background: #ffffff;
+            border-radius: 10px;
+            padding:60px 0 60px 56px;
+            .title {
+                font-size: 18px;
+                color: #333333;
+                font-weight: 600;
+                margin-bottom: 15px;
+            }
+            ul{
+                border: 0;
+                >li{
+                    margin-bottom: 10px;
+                    >a{
+                    font-size: 16px;
+                    color: #666666;
+                    border: 0;
+                    padding: 0;
+                    }
+                    >a:hover{
+                        background: #ffffff;
+                        color: #03b8cf;
+                    }
+                }
+                .active{
+                    >a{
+                       color: #03b8cf; 
+                       background: #ffffff;
+                       border: 0;
+                    }
+                }
+            }
+        }
     }
     .right-content {
         float: left;
@@ -34,15 +70,11 @@
 .config-content {
     background-color: #fff;
     border-radius: 10px;
-    padding-left: 70px;
-    padding-top: 1px;
-    .basic_information {
+    padding:54px 90px 0 60px;
+    .basic-title {
         font-size: 24px;
         color: #222222;
-        margin-top: 50px;
-    }
-    .with-padding{
-        padding: 0;
+        margin: 0;
     }
 
     .ucenter-avatar {
@@ -286,42 +318,6 @@
                 text-align: center;
                 line-height: 64px;
                 color: #ffffff;
-            }
-        }
-    }
-}
-
-.menu{
-    width: 238px;
-    background: #ffffff;
-    border-radius: 10px;
-    padding:60px 0 60px 56px;
-    .integrate,.management{
-        font-size: 18px;
-        color: #333333;
-        font-weight: 600;
-        margin-bottom: 15px;
-    }
-    ul{
-        border: 0;
-        >li{
-            margin-bottom: 10px;
-            >a{
-            font-size: 16px;
-            color: #666666;
-            border: 0;
-            padding: 0;
-            }
-            >a:hover{
-                background: #ffffff;
-                color: #03b8cf;
-            }
-        }
-        .active{
-            >a{
-               color: #03b8cf; 
-               background: #ffffff;
-               border: 0;
             }
         }
     }
