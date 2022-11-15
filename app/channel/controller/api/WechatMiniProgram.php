@@ -63,26 +63,42 @@ class WechatMiniProgram extends Api
     {
         $params = input('param.');
         $oauth = MiniProgramServer::user($params['code']);
-        $result = MiniProgramServer::decryptData($oauth['session_key'],$params['iv'],$params['encrypted_data']);
-        $nickname = $result['nickName'];
-        if($nickname == '微信用户'){
-            $nickname = rand_nickname(config('system.USER_NICKNAME_PREFIX'));
+        if (!isset($oauth['openid'])){
+            return $this->error($oauth['errmsg']);
         }
-        $data = [
-            'unionid'   => $oauth['unionid'] ?? '',
-            'openid'    => $oauth['openid'],
-            'nickname'  => $nickname,
-            'avatar'    => $result['avatarUrl'],
-            'sex'       => $result['gender'],
-            'shopid'    => $params['shopid'],
-            'oauth_type' => 'weixin_mp'
-        ];
-        $user = $this->MemberModel->oauth($data);
+        //查询是否注册过
+        $map[] = ['openid','=',$oauth['openid']];
+        $map[] = ['type','=', 'weixin_mp'];
+        $user = $this->MemberSyncModel->getDataByMap($map);
+        // 已登录过
+        if (!empty($user)){
+            $user = query_user($user['uid'],['uid','nickname','avatar','email','mobile','realname','sex','qq','score1']);
+            $this->MemberModel->updateLogin($user['uid']);
+        }else{
+            // 未登录过，创建用户
+            $result = MiniProgramServer::decryptData($oauth['session_key'],$params['iv'],$params['encrypted_data']);
+            $nickname = $result['nickName'];
+            if($nickname == '微信用户'){
+                $nickname = rand_nickname(config('system.USER_NICKNAME_PREFIX'));
+            }
+            $data = [
+                'unionid'   => $oauth['unionid'] ?? '',
+                'openid'    => $oauth['openid'],
+                'nickname'  => $nickname,
+                'avatar'    => $result['avatarUrl'],
+                'sex'       => $result['gender'],
+                'shopid'    => $params['shopid'],
+                'oauth_type' => 'weixin_mp'
+            ];
+            $user = $this->MemberModel->oauth($data);
+        }
+
         if ($user){
             $token = JWTAuth::builder(['uid'=>$user['uid']]);
             $token = 'Bearer ' . $token;
             return $this->success('success',['token'=>$token]);
         }
+
         return $this->error('需要登录','login');
     }
 
