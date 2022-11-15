@@ -58,7 +58,10 @@ class Upgrade
         if($this->app == 'system'){
             $ignore_paths = [
                 '.env',
-                'config/',
+                'config/auth.php',
+                'config/cache.php',
+                'config/database.php',
+                'config/jwt.php',
                 'runtime/',
                 '.idea',
                 '.gitignore',
