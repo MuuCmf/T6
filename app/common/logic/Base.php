@@ -45,7 +45,6 @@ class Base
             $data[$prefix . '_300'] = get_thumb_image($data[$prefix], intval($width*3), intval($height*3));
             $data[$prefix . '_400'] = get_thumb_image($data[$prefix], intval($width*4), intval($height*4));
             $data[$prefix . '_800'] = get_thumb_image($data[$prefix], intval($width*8), intval($height*8));
-            $data[$prefix . '_800'] = get_thumb_image($data[$prefix], intval($width*8), intval($height*8));
             $data[$prefix . '_original'] = get_attachment_src($data[$prefix]);
         }
         return $data;
@@ -57,37 +56,9 @@ class Base
      */
     public function setCoverAttr($data, $proportion = '4:3')
     {
-        if(empty($proportion)){
-            $proportion = '4:3';
-        }
-        if($proportion == '1:1'){
-            $width = 100;
-            $height = 100;
-        }
-        if($proportion == '4:3'){
-            $width = 100;
-            $height = 75;
-        }
-        if($proportion == '16:9'){
-            $width = 100;
-            $height = 56;
-        }
-        if($proportion == '3:5'){
-            $width = 100;
-            $height = 167;
-        }
-        if(empty($data['cover'])){
-            $data['cover_100'] = $data['cover_200'] = $data['cover_300'] = $data['cover_400'] = $data['cover_800'] = request()->domain() . '/static/common/images/nopic.png';
-        }else{
-            //处理缩微图
-            $data['cover_100'] = get_thumb_image($data['cover'], intval($width), intval($height));
-            $data['cover_200'] = get_thumb_image($data['cover'], intval($width*2), intval($height*2));
-            $data['cover_300'] = get_thumb_image($data['cover'], intval($width*3), intval($height*3));
-            $data['cover_400'] = get_thumb_image($data['cover'], intval($width*4), intval($height*4));
-            $data['cover_800'] = get_thumb_image($data['cover'], intval($width*8), intval($height*8));
-        }
-        return $data;
+        return $this->setImgAttr($data, $proportion ,'cover');
     }
+
     public function setTitleAttr($data)
     {
         if(empty($data['title'])){
