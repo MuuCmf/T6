@@ -43,7 +43,8 @@
         "tencent/tls-sig-api-v2": "^1.1",
         "pclzip/pclzip": "^2.8",
         "wechatpay/wechatpay": "^1.4",
-        "phpoffice/phpspreadsheet": "^1.25"
+        "phpoffice/phpspreadsheet": "^1.25",
+        "firebase/php-jwt": "^6.3"
     },
     "require-dev": {
         "symfony/var-dumper": "^4.2",

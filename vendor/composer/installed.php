@@ -83,6 +83,15 @@
       ),
       'reference' => '523407fb06eb9e5f3d59889b3978d5bfe94299c8',
     ),
+    'firebase/php-jwt' => 
+    array (
+      'pretty_version' => 'v6.3.1',
+      'version' => '6.3.1.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => 'ddfaddcb520488b42bca3a75e17e9dd53c3667da',
+    ),
     'guzzlehttp/command' => 
     array (
       'pretty_version' => '1.2.2',
