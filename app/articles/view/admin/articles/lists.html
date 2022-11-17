@@ -89,6 +89,7 @@
 						<label for="check-all"></label>
 					</th>
 					<th>标题</th>
+					<th>排序</th>
 					<th>状态</th>
 					<th>创建时间</th>
 					<th>更新时间</th>
@@ -110,6 +111,9 @@
 							<div class="title text-ellipsis" title="{$v['title']}">{$v['title']}</div>
 							<div class="description text-ellipsis-2">{$v['description']}</div>
 						</div>
+					</td>
+					<td>
+						{$v.sort}
 					</td>
 					<td>
 						{if $v.status == 1}

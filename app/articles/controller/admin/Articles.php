@@ -40,8 +40,13 @@ class Articles extends Admin
 
         // 获取查询条件
         $map = $this->ArticlesLogic->getMap($this->shopid, $keyword, $category_id, $status);
+        // 排序
+        $order_field = input('order_field', 'id', 'text');
+        $order_type = input('order_type', 'desc', 'text');
+        $order = 'sort DESC,' . $order_field . ' ' . $order_type;
+        $fields = '*';
         // 获取列表
-        $lists = $this->ArticlesModel->getListByPage($map, 'sort DESC,id DESC', '*', $rows);
+        $lists = $this->ArticlesModel->getListByPage($map, $order, '*', $rows);
         $pager = $lists->render();
         $lists = $lists->toArray();
         
