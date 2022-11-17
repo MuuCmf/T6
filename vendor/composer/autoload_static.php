@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit7848363caa8413931e8a77cecbb55bfc
+class ComposerStaticInitac45ff169f515b2b533382511c236d7e
 {
     public static $files = array (
         'a4a119a56e50fbb293281d9a48007e0e' => __DIR__ . '/..' . '/symfony/polyfill-php80/bootstrap.php',
@@ -19,16 +19,17 @@ class ComposerStaticInit7848363caa8413931e8a77cecbb55bfc
         '0d59ee240a4cd96ddbb4ff164fccea4d' => __DIR__ . '/..' . '/symfony/polyfill-php73/bootstrap.php',
         '35fab96057f1bf5e7aba31a8a6d5fdde' => __DIR__ . '/..' . '/topthink/think-orm/stubs/load_stubs.php',
         'a1105708a18b76903365ca1c4aa61b02' => __DIR__ . '/..' . '/symfony/translation/Resources/functions.php',
-        'd767e4fc2dc52fe66584ab8c6684783e' => __DIR__ . '/..' . '/adbario/php-dot-notation/src/helpers.php',
-        '65fec9ebcfbb3cbb4fd0d519687aea01' => __DIR__ . '/..' . '/danielstjules/stringy/src/Create.php',
         'b067bc7112e384b61c701452d53a14a8' => __DIR__ . '/..' . '/mtdowling/jmespath.php/src/JmesPath.php',
+        '65fec9ebcfbb3cbb4fd0d519687aea01' => __DIR__ . '/..' . '/danielstjules/stringy/src/Create.php',
+        'd767e4fc2dc52fe66584ab8c6684783e' => __DIR__ . '/..' . '/adbario/php-dot-notation/src/helpers.php',
+        '2cffec82183ee1cea088009cef9a6fc3' => __DIR__ . '/..' . '/ezyang/htmlpurifier/library/HTMLPurifier.composer.php',
         '66453932bc1be9fb2f910a27947d11b6' => __DIR__ . '/..' . '/alibabacloud/client/src/Functions.php',
         'f0e7e63bbb278a92db02393536748c5f' => __DIR__ . '/..' . '/overtrue/wechat/src/Kernel/Support/Helpers.php',
         '6747f579ad6817f318cc3a7e7a0abb93' => __DIR__ . '/..' . '/overtrue/wechat/src/Kernel/Helpers.php',
         'cd5441689b14144e5573bf989ee47b34' => __DIR__ . '/..' . '/qcloud/cos-sdk-v5/src/Common.php',
         'cc25fa796cd7d2989f16cf9daf45371d' => __DIR__ . '/..' . '/thans/tp-jwt-auth/src/helper.php',
-        '1cfd2761b63b0a29ed23657ea394cb2d' => __DIR__ . '/..' . '/topthink/think-captcha/src/helper.php',
         'cc56288302d9df745d97c934d6a6e5f0' => __DIR__ . '/..' . '/topthink/think-queue/src/common.php',
+        '1cfd2761b63b0a29ed23657ea394cb2d' => __DIR__ . '/..' . '/topthink/think-captcha/src/helper.php',
     );
 
     public static $prefixLengthsPsr4 = array (
@@ -49,6 +50,10 @@ class ComposerStaticInit7848363caa8413931e8a77cecbb55bfc
         'a' => 
         array (
             'app\\' => 4,
+        ),
+        'Z' => 
+        array (
+            'ZipStream\\' => 10,
         ),
         'W' => 
         array (
@@ -94,6 +99,7 @@ class ComposerStaticInit7848363caa8413931e8a77cecbb55bfc
             'Psr\\EventDispatcher\\' => 20,
             'Psr\\Container\\' => 14,
             'Psr\\Cache\\' => 10,
+            'PhpOffice\\PhpSpreadsheet\\' => 25,
             'PHPMailer\\PHPMailer\\' => 20,
         ),
         'O' => 
@@ -103,7 +109,9 @@ class ComposerStaticInit7848363caa8413931e8a77cecbb55bfc
         ),
         'M' => 
         array (
+            'MyCLabs\\Enum\\' => 13,
             'Monolog\\' => 8,
+            'Matrix\\' => 7,
         ),
         'L' => 
         array (
@@ -133,6 +141,7 @@ class ComposerStaticInit7848363caa8413931e8a77cecbb55bfc
         ),
         'C' => 
         array (
+            'Complex\\' => 8,
             'Carbon\\' => 7,
         ),
         'A' => 
@@ -165,13 +174,13 @@ class ComposerStaticInit7848363caa8413931e8a77cecbb55bfc
         ),
         'think\\' => 
         array (
-            0 => __DIR__ . '/..' . '/topthink/framework/src/think',
-            1 => __DIR__ . '/..' . '/topthink/think-helper/src',
-            2 => __DIR__ . '/..' . '/topthink/think-image/src',
-            3 => __DIR__ . '/..' . '/topthink/think-orm/src',
-            4 => __DIR__ . '/..' . '/topthink/think-queue/src',
-            5 => __DIR__ . '/..' . '/topthink/think-template/src',
-            6 => __DIR__ . '/..' . '/topthink/think-filesystem/src',
+            0 => __DIR__ . '/..' . '/topthink/think-helper/src',
+            1 => __DIR__ . '/..' . '/topthink/think-orm/src',
+            2 => __DIR__ . '/..' . '/topthink/framework/src/think',
+            3 => __DIR__ . '/..' . '/topthink/think-filesystem/src',
+            4 => __DIR__ . '/..' . '/topthink/think-image/src',
+            5 => __DIR__ . '/..' . '/topthink/think-queue/src',
+            6 => __DIR__ . '/..' . '/topthink/think-template/src',
         ),
         'thans\\jwt\\' => 
         array (
@@ -184,6 +193,10 @@ class ComposerStaticInit7848363caa8413931e8a77cecbb55bfc
         'app\\' => 
         array (
             0 => __DIR__ . '/../..' . '/app',
+        ),
+        'ZipStream\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/maennchen/zipstream-php/src',
         ),
         'Workerman\\Crontab\\' => 
         array (
@@ -288,8 +301,8 @@ class ComposerStaticInit7848363caa8413931e8a77cecbb55bfc
         ),
         'Psr\\Http\\Message\\' => 
         array (
-            0 => __DIR__ . '/..' . '/psr/http-factory/src',
-            1 => __DIR__ . '/..' . '/psr/http-message/src',
+            0 => __DIR__ . '/..' . '/psr/http-message/src',
+            1 => __DIR__ . '/..' . '/psr/http-factory/src',
         ),
         'Psr\\Http\\Client\\' => 
         array (
@@ -307,6 +320,10 @@ class ComposerStaticInit7848363caa8413931e8a77cecbb55bfc
         array (
             0 => __DIR__ . '/..' . '/psr/cache/src',
         ),
+        'PhpOffice\\PhpSpreadsheet\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/phpoffice/phpspreadsheet/src/PhpSpreadsheet',
+        ),
         'PHPMailer\\PHPMailer\\' => 
         array (
             0 => __DIR__ . '/..' . '/phpmailer/phpmailer/src',
@@ -319,9 +336,17 @@ class ComposerStaticInit7848363caa8413931e8a77cecbb55bfc
         array (
             0 => __DIR__ . '/..' . '/aliyuncs/oss-sdk-php/src/OSS',
         ),
+        'MyCLabs\\Enum\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/myclabs/php-enum/src',
+        ),
         'Monolog\\' => 
         array (
             0 => __DIR__ . '/..' . '/monolog/monolog/src/Monolog',
+        ),
+        'Matrix\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/markbaker/matrix/classes/src',
         ),
         'League\\MimeTypeDetection\\' => 
         array (
@@ -379,6 +404,10 @@ class ComposerStaticInit7848363caa8413931e8a77cecbb55bfc
         array (
             0 => __DIR__ . '/..' . '/easywechat-composer/easywechat-composer/src',
         ),
+        'Complex\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/markbaker/complex/classes/src',
+        ),
         'Carbon\\' => 
         array (
             0 => __DIR__ . '/..' . '/nesbot/carbon/src/Carbon',
@@ -404,9 +433,12 @@ class ComposerStaticInit7848363caa8413931e8a77cecbb55bfc
             array (
                 0 => __DIR__ . '/..' . '/aferrandini/phpqrcode/lib',
             ),
-            'PHPExcel' => 
+        ),
+        'H' => 
+        array (
+            'HTMLPurifier' => 
             array (
-                0 => __DIR__ . '/..' . '/phpoffice/phpexcel/Classes',
+                0 => __DIR__ . '/..' . '/ezyang/htmlpurifier/library',
             ),
         ),
     );
@@ -421,7 +453,7 @@ class ComposerStaticInit7848363caa8413931e8a77cecbb55bfc
         'JsonException' => __DIR__ . '/..' . '/symfony/polyfill-php73/Resources/stubs/JsonException.php',
         'PclZip' => __DIR__ . '/..' . '/pclzip/pclzip/pclzip.lib.php',
         'PhpToken' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/PhpToken.php',
-        'Stringable' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/Stringable.php',
+        'Stringable' => __DIR__ . '/..' . '/myclabs/php-enum/stubs/Stringable.php',
         'UnhandledMatchError' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/UnhandledMatchError.php',
         'ValueError' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/ValueError.php',
     );
@@ -429,11 +461,11 @@ class ComposerStaticInit7848363caa8413931e8a77cecbb55bfc
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit7848363caa8413931e8a77cecbb55bfc::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit7848363caa8413931e8a77cecbb55bfc::$prefixDirsPsr4;
-            $loader->prefixesPsr0 = ComposerStaticInit7848363caa8413931e8a77cecbb55bfc::$prefixesPsr0;
-            $loader->fallbackDirsPsr0 = ComposerStaticInit7848363caa8413931e8a77cecbb55bfc::$fallbackDirsPsr0;
-            $loader->classMap = ComposerStaticInit7848363caa8413931e8a77cecbb55bfc::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInitac45ff169f515b2b533382511c236d7e::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInitac45ff169f515b2b533382511c236d7e::$prefixDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInitac45ff169f515b2b533382511c236d7e::$prefixesPsr0;
+            $loader->fallbackDirsPsr0 = ComposerStaticInitac45ff169f515b2b533382511c236d7e::$fallbackDirsPsr0;
+            $loader->classMap = ComposerStaticInitac45ff169f515b2b533382511c236d7e::$classMap;
 
         }, null, ClassLoader::class);
     }
