@@ -152,8 +152,8 @@ class Common extends CommonCommon
             //获取参数
             $account = input('post.account', '', 'text'); // 账号
             $password = input('post.password', '', 'text'); // 密码
-            $captcha = input('post.captcha', '', 'text'); // 短信验证码
-            $captcha_pic = input('post.captcha_pic', '', 'text'); // 图形验证码
+            $verify = input('post.verify', '', 'text'); // 短信验证码
+            $captcha = input('post.captcha', '', 'text'); // 图形验证码
             $login_type = input('post.login_type','password');//登录类型
             $remember = input('post.remember', 0, 'intval');
 
@@ -165,7 +165,7 @@ class Common extends CommonCommon
                 if(empty($password)) return $this->error('密码不能为空');
                 // 检测图形验证码
                 if (check_verify_open('login')) {
-                    if (!captcha_check($captcha_pic)) {
+                    if (!captcha_check($captcha)) {
                         return $this->error('图形验证码错误');
                     }
                 }
@@ -175,7 +175,7 @@ class Common extends CommonCommon
                 if($uid == -2) return $this->error('密码错误');
             }else{
                 //验证码登录
-                $uid = $commonMemberModel->verifyUserCaptcha($account, $captcha);
+                $uid = $commonMemberModel->verifyUserCaptcha($account, $verify);
                 if($uid == -2) return $this->error('验证码错误');
                 //快捷登录，第一次登录的用户默认生成新用户
                 if($uid == -1) {
