@@ -10,7 +10,7 @@
 
         <div class="col-md-8">
             <button type="button" class="btn btn-primary" data-name="sendMessageModal" data-iframe="{:url('send')}" data-toggle="modal" data-size="lg" data-height="600px">群发消息</button>
-            <button class="btn btn-danger ajax-post confirm" url="{:url('messageStatus', ['status'=> -1])}" arget-form="ids">
+            <button class="btn btn-danger ajax-post confirm" url="{:url('messageStatus', ['status'=> -1])}" target-form="ids">
                 删除
             </button>
         </div>
@@ -54,20 +54,26 @@
                         <label for="type_{$vo.id}"></label>
                     </td>
                     <td>
+                        {if !empty($vo.form_user) && $vo.form_user != -1}
                         <div class="user-info">
                             <div class="avatar">
                                 <img src="{$vo.form_user.avatar64}">
                             </div>
                             <div class="nickname text-ellipsis">{$vo.form_user.nickname|text}</div>
                         </div>
+                        {/if}
                     </td>
                     <td>
+                        {if !empty($vo.to_uid) && !empty($vo.to_user) && $vo.to_user != -1}
                         <div class="user-info">
                             <div class="avatar">
                                 <img src="{$vo.to_user.avatar64}">
                             </div>
                             <div class="nickname text-ellipsis">{$vo.to_user.nickname|text}</div>
                         </div>
+                        {else}
+                        <div class="user-info">用户不存在</div>
+                        {/if}
                     </td>
                     <td>
                         <div class="msg-content">
