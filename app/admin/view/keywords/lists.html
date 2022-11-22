@@ -66,7 +66,7 @@
                     <td>{$vo.id}</td>
                     <td>{$vo.keyword}</td>
                     <td>
-                        {if !empty($vo.uid)}
+                        {if !empty($vo.uid) && !empty($vo.user_info) && $vo.user_info != -1}
                         <div class="user-info">
                             <div class="avatar">
                                 <img src="{$vo.user_info.avatar64}">

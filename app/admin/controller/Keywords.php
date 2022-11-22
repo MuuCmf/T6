@@ -50,7 +50,6 @@ class Keywords extends Admin
         $lists = $this->KeywordsModel->getListByPage($map, 'create_time desc', $fields, $rows);
         $pager = $lists->render();
         $lists = $lists->toArray();
-
         foreach($lists['data'] as &$val){
             $val = $this->KeywordsLogic->formatData($val);
         }

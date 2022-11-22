@@ -93,9 +93,13 @@ class Keywords extends Api
             if($has_keyword){
                 $data['id'] = $has_keyword['id'];
             }
-            // 写入数据
-            $result = $this->model->edit($data);
-
+            if(!empty($data['keyword'])){
+                // 写入数据
+                $result = $this->model->edit($data);
+            }else{
+                $result = false;
+            }
+            
             if($result){
                 return $this->success('success', $result);
             }else{
