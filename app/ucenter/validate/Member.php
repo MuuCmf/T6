@@ -25,8 +25,21 @@ class Member extends Validate
         'password.require'          => '密码不能为空',
         'password.length'           => '密码长度应在6 - 32位之间',
         'confirm_password.require'  => '确认密码不能为空',
+        'confirm_password.length'   => '确认密码长度应在6 - 32位之间',
         'confirm_password.confirm'  => '两次输入的密码不匹配',  
     ];
+
+    // edit 验证场景定义
+    public function sceneMi()
+    {
+    	return $this->only(['email','mobile','password','confirm_password'])
+        	->append('email', 'email')
+            ->remove('email', 'unique')
+            ->append('mobile', 'mobile')
+            ->remove('mobile', 'unique')
+            ->append('password', 'require|length:6,32')
+            ->append('confirm_password', 'require|length:6,32|confirm:password');
+    }    
 
     // 自定义验证规则
     /**

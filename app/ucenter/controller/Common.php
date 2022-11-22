@@ -261,24 +261,34 @@ class Common extends CommonCommon
         if (request()->isPost()) {
             $account = $username= input('post.account','','text');
             $password = input('post.password','','text');
+            $confirm_password = input('post.confirm_password', '', 'text'); // 确认密码
             $verify = input('post.verify',0,'intval');//验证码
 
-            //传入数据判断
-            if(empty($account) || empty($password) || empty($verify)){
-                return $this->error('数据不能为空');
-            }
             check_username($username, $email, $mobile, $type);
-
+            // 验证
+            try {
+                validate(Member::class)->scene('mi')->check([
+                    'email' => $email,
+                    'mobile' => $mobile,
+                    'password' => $password,
+                    'confirm_password' => $confirm_password,
+                ]);
+            } catch (ValidateException $e) {
+                // 验证失败 输出错误信息
+                return $this->error($e->getError());
+            }
+            
             //检查验证码是否正确
             $verifyModel = new Verify();
             $ret = $verifyModel->checkVerify($account,$type,$verify,0);
             if(!$ret){//验证码错误
                 return $this->error('验证码错误');
             }
-            $resend_time =  config('system.SMS_RESEND');
+            $resend_time =  config('extend.SMS_RESEND');
             if(time() > session('verify_time') + $resend_time ){//验证超时
                 return $this->error('验证码超时');
             }
+
             //获取用户UID
             switch ($type) {
                 case 'mobile':
@@ -289,20 +299,16 @@ class Common extends CommonCommon
                 break;
             }
             if (!$uid) {
-                return $this->error('用户不存在');
+                return $this->error('用户不存在，请确认输入的信息正确！');
             }
             //设置新密码
-            $password = user_md5($password, config('database.user_auth'));
-            $data['id'] = $uid;
+            $password = user_md5($password, config('auth.auth_key'));
+            $data['uid'] = $uid;
             $data['password'] = $password;
-            var_dump($data);exit;
-            $ret = Db::name('Member')->update($data,['id'=>$uid]);
+            $ret = Db::name('Member')->update($data);
             if($ret){
-                //返回成功信息前处理
-                // clean_query_user_cache($uid, 'password');//删除缓存
-                Db::name('user_token')->where('uid=' . $uid)->delete();
                 //返回数据
-                return $this->success('操作成功', url('Member/login'));
+                return $this->success('操作成功，密码已重置', '', url('ucenter/Common/login'));
             }else{
                 return $this->error('操作失败');
             }
