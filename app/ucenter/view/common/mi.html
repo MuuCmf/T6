@@ -1,0 +1,195 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    {include file="../../common/view/head"/}
+</head>
+<body>
+<div id="main-container" class="container">
+    <div class="reset">
+        <div class="reset-body clearfix">
+            <div class="reset-type-tab">
+                <ul>
+                    <li class="active">
+                        <a href="#email_reset" data-toggle="tab">通过邮箱重置</a>
+                    </li>
+                    <li class="">
+                        <a href="#mobile_reset" data-toggle="tab">通过手机重置</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="reset-form-section">
+                <form action="" method="post">
+                    <div class="tab-content">      
+                        <!--通过邮箱重置-->
+                        <div class="tab-pane active" id="email_reset">
+                            <div class="form-group clearfix">
+                                <input type="text" id="email" class="form-control new-input" placeholder="请输入邮箱地址" name="account" />
+                            </div>
+                            <div class="form-group row clearfix">
+                                <div class="col-xs-8">
+                                    <input type="text" class="form-control new-input pull-left" placeholder="请输入邮箱验证码" name="verify" />
+                                </div>
+                                <div class="col-xs-4">
+                                    <button type="button"  class="btn btn-block get-verify" data-role="getVerify"  data-type="email" data-url="{:url('api/verify/send')}" >
+                                        获取验证码
+                                    </button>
+                                </div> 
+                            </div>
+                        </div>
+                        <!--通过邮箱重置 END-->
+
+                        <!--通过手机重置-->
+                        <div class="tab-pane" id="mobile_reset">
+                            <div class="form-group clearfix">
+                                <input type="text" id="mobile" class="form-control new-input" placeholder="请输入手机号" name="account" disabled />
+                            </div>
+                            <div class="form-group row clearfix">
+                                <div class="col-xs-8">
+                                    <input type="text" class="form-control new-input pull-left" placeholder="请输入手机验证码" name="verify" disabled />
+                                </div>
+                                <div class="col-xs-4">
+                                    <button type="button" class="btn btn-block get-verify" data-role="getVerify" data-type="mobile" data-url="{:url('api/verify/send')}" disabled>
+                                        获取验证码
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <!--通过手机重置 END-->
+                        
+                        <div class="form-group clearfix">
+                            <div class="password-block input-group">
+                                <input type="password" id="inputPassword" class="form-control new-input" placeholder="请输入新密码"  name="password">
+                                <span  class="see iconfont input-group-addon" data-type="hidden">&#xe67a;</span>
+                            </div>
+                        </div>
+                        <div class="form-group clearfix">
+                            <div class="password-block input-group">
+                                <input type="password" class="form-control new-input" placeholder="再次输入密码" name="confirm_password">
+                                <span  class="see iconfont input-group-addon" data-type="hidden">&#xe67a;</span>
+                            </div>
+                        </div>
+                        {if condition="check_verify_open('reset')"}
+                        <div class="form-group row clearfix">
+                            <div class="col-xs-8">
+                                <input type="text" id="verifyCode" class="form-control new-input" placeholder="验证码" nullmsg="请填写验证码" datatype="*5-5" name="captcha">
+                            </div>
+                            <div class="col-xs-4 lg_lf_fm_verify">
+                                <img class="verifyimg reloadverify img-responsive" alt="点击切换" src="{:captcha_src()}" style="cursor:pointer; height:45px">
+                            </div>
+                            <div class="col-xs-12 Validform_checktip text-warning lg_lf_fm_tip"></div>
+                        </div>
+                        {/if}
+
+                        <button type="button" data-type="submit" class="btn btn-submit btn-block btn-lg">确认重置密码</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{include file="../../common/view/js"/}
+{block name="script"}
+<script type="text/javascript">
+    // 切换密码重置方式
+    $(function(){
+        $('.reset-type-tab li a').click(function(){
+            $('.tab-pane').find('input').attr('disabled',true);
+            $('.tab-pane').eq($('.reset-type-tab li a').index(this)).find('input').attr('disabled',false);
+            $('.tab-pane').eq($('.reset-type-tab li a').index(this)).find('button').attr('disabled',false);
+        })
+    })
+
+    $(function(){
+        // 提交表单
+        $('button[data-type="submit"]').click(function(){
+            toast.showLoading();
+            var self = $("form");
+            $.post(self.attr("action"), self.serialize(), success, "json");
+            return false;
+            function success(data) {
+                if (data.code) {
+                    toast.success(data.msg + '页面即将跳转！', '温馨提示');
+                    setTimeout(function () {
+                        window.location.href = data.url
+                    }, 1500);
+                } else {
+                    toast.error(data.msg, '温馨提示');
+                    //刷新验证码
+                    $(".reloadverify").click();
+                }
+                toast.hideLoading();
+            }
+        });
+    });
+
+    $(".form-group").on("click", ".see", function () {
+    let type = $(this).data('type');
+    if(type == 'hidden'){
+        $(this).data('type','show');
+        $(this).html('&#xe6b1;');
+        $(this).prev().attr("type", "text");
+    }else{
+        $(this).data('type','hidden');
+        $(this).html('&#xe67a;');
+        $(this).prev().attr("type", "password");
+    }
+ });  
+
+    $(function () {
+        // 图形验证码
+        var verifyimg = $(".verifyimg").attr("src");
+        $(".reloadverify").click(function () {
+            if (verifyimg.indexOf('?') > 0) {
+                $(".verifyimg").attr("src", verifyimg + '&random=' + Math.random());
+            } else {
+                $(".verifyimg").attr("src", verifyimg.replace(/\?.*$/, '') + '?' + Math.random());
+            }
+        });
+    });
+
+    $(function () {
+        // 获取验证码
+        $("[data-role='getVerify']").click(function () {
+            var $this = $(this);
+            var url = $this.data('url');
+            toast.showLoading();
+            var account = $this.parents('.tab-pane').find('[name="account"]').val();
+            var type = $this.data('type');
+            
+            $.post(url, {
+                account: account, 
+                type: type, 
+            }, function (res) {
+                toast.hideLoading();
+                if (res.code == 200) {
+                    DecTime.obj = $this
+                    DecTime.time = "{:config('extend.SMS_RESEND')}";
+                    $this.attr('disabled',true)
+                    DecTime.dec_time();
+                    toast.success(res.msg);
+                }else{
+                    toast.error(res.msg);
+                }
+                
+            })
+        })
+    })
+
+    var DecTime = {
+        obj : 0,
+        time : 0,
+        dec_time : function(){
+            if(this.time > 0){
+                this.time = this.time - 1
+                this.obj.text('重新获取' + this.time + 'S')
+                setTimeout("DecTime.dec_time()",1000)
+            }else{
+                this.obj.text("获取验证码")
+                this.obj.attr('disabled',false)
+            }
+        }
+    }
+</script>
+{/block}   
+</body>
+</html>

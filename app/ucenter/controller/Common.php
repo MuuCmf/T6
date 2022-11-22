@@ -260,14 +260,15 @@ class Common extends CommonCommon
     {
         if (request()->isPost()) {
             $account = $username= input('post.account','','text');
-            $type = input('post.type','','text');
             $password = input('post.password','','text');
             $verify = input('post.verify',0,'intval');//验证码
+
             //传入数据判断
-            if(empty($account) || empty($type) || empty($password) || empty($verify)){
+            if(empty($account) || empty($password) || empty($verify)){
                 return $this->error('数据不能为空');
             }
-            check_username($username, $email, $mobile, $aUnType);
+            check_username($username, $email, $mobile, $type);
+
             //检查验证码是否正确
             $verifyModel = new Verify();
             $ret = $verifyModel->checkVerify($account,$type,$verify,0);
@@ -281,10 +282,10 @@ class Common extends CommonCommon
             //获取用户UID
             switch ($type) {
                 case 'mobile':
-                $uid = Db::name('Member')->where(['mobile' => $account])->value('id');
+                $uid = Db::name('Member')->where(['mobile' => $account])->value('uid');
                 break;
                 case 'email':
-                $uid = Db::name('Member')->where(['email' => $account])->value('id');
+                $uid = Db::name('Member')->where(['email' => $account])->value('uid');
                 break;
             }
             if (!$uid) {
@@ -294,7 +295,7 @@ class Common extends CommonCommon
             $password = user_md5($password, config('database.user_auth'));
             $data['id'] = $uid;
             $data['password'] = $password;
-
+            var_dump($data);exit;
             $ret = Db::name('Member')->update($data,['id'=>$uid]);
             if($ret){
                 //返回成功信息前处理
@@ -305,6 +306,9 @@ class Common extends CommonCommon
             }else{
                 return $this->error('操作失败');
             }
+        }else{
+            $this->setTitle('重置密码');
+            return View::fetch();
         }
     }
 
