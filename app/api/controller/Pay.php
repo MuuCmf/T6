@@ -94,7 +94,8 @@ class Pay extends Api
                     ])->value('openid');
 
                     $pay_data['openid'] = $openid;
-                    $pay_data['subject'] = $title;
+                    //该参数会引起部分情况返回【请求中含有未在api文档中定义的参数】的提示，暂注释
+                    //$pay_data['subject'] = $title;
                     $pay_data['body'] = $title;
                     $pay_data['out_trade_no'] = $order_no;
                     $pay_data['total_fee'] = intval($order_data['paid_fee'] * 100);
