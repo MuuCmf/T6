@@ -46,17 +46,20 @@ class WechatMiniProgram extends Api
         $user = $this->MemberSyncModel->getDataByMap($map);
         if (!empty($user)){
             $user = query_user($user['uid'],['uid','nickname','avatar','email','mobile','realname','sex','qq','score1']);
-            $this->MemberModel->updateLogin($user['uid']);
-            $token = JWTAuth::builder(['uid'=>$user['uid']]);
-            $token = 'Bearer ' . $token;
-            $res = [
-                'token'     => $token
-            ];
-            return $this->success('success',$res);
+            if(is_array($user)){
+                $this->MemberModel->updateLogin($user['uid']);
+                $token = JWTAuth::builder(['uid'=>$user['uid']]);
+                $token = 'Bearer ' . $token;
+                $res = [
+                    'token'     => $token
+                ];
+                return $this->success('success',$res);
+            }else{
+                return $this->error('error','用户已禁用或删除');
+            }
         }else{
             return $this->error('error','没有查询到用户信息');
         }
-
     }
 
     public function login()
