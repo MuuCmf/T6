@@ -5,7 +5,7 @@ use app\admin\controller\Admin as MuuAdmin;
 use app\channel\logic\TemplateMessage;
 use app\channel\model\WechatAutoReply;
 use app\channel\model\WechatConfig;
-use think\facade\Config;
+use think\Exception;
 use think\facade\View;
 
 /**
@@ -46,16 +46,20 @@ class Account extends MuuAdmin {
         if (request()->isAjax()){
             $json = input('post.json');
             $menu = json_decode($json, true);
-            $res = \app\channel\facade\wechat\OfficialAccount::createMenu($menu);
+            try {
+                $res = \app\channel\facade\wechat\OfficialAccount::createMenu($menu);
 
-            if ($res['errcode'] != 0){
-                return $this->error($res['errmsg']);
+                if ($res['errcode'] != 0){
+                    return $this->error($res['errmsg']);
+                }
+                $updateRes = $this->wechatConfigModel->where('shopid',$this->shopid)->save(['menu_json'=>$json]);
+                if ($updateRes){
+                    return $this->success('更新成功','refresh');
+                }
+                return $this->error('更新失败');
+            }catch (\Exception $e){
+                return $this->error($e->getMessage());
             }
-            $updateRes = $this->wechatConfigModel->where('shopid',$this->shopid)->save(['menu_json'=>$json]);
-            if ($updateRes){
-                return $this->success('更新成功','refresh');
-            }
-            return $this->error('更新失败');
         }
     }
     /**
