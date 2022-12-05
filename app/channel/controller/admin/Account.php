@@ -23,7 +23,8 @@ class Account extends MuuAdmin {
         $this->autoReplyModel = new WechatAutoReply;
     }
 
-    public function menu(){
+    public function menu()
+    {
         if (request()->isAjax()){
             $menu = $data = $this->wechatConfigModel->where(['shopid' => $this->shopid])->value('menu_json');
             if ($menu){
@@ -40,10 +41,11 @@ class Account extends MuuAdmin {
     /**
      * 保存菜单
      */
-    public function saveMenu(){
+    public function saveMenu()
+    {
         if (request()->isAjax()){
             $json = input('post.json');
-            $menu = json_decode($json,true);
+            $menu = json_decode($json, true);
             $res = \app\channel\facade\wechat\OfficialAccount::createMenu($menu);
 
             if ($res['errcode'] != 0){
