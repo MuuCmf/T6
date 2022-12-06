@@ -153,7 +153,7 @@ class Database extends Admin{
                 }
             }
         } else {
-            $this->error('请指定要修复的表');
+            return $this->error('请指定要修复的表');
         }
     }
 
@@ -182,7 +182,7 @@ class Database extends Admin{
                 }
             }
         } else {
-            $this->error('请指定要修复的表');
+            return $this->error('请指定要修复的表');
         }
     }
 
@@ -196,12 +196,12 @@ class Database extends Admin{
             $path  = realpath(config('system.DATA_BACKUP_PATH')) . DIRECTORY_SEPARATOR . $name;
             array_map("unlink", glob($path));
             if(count(glob($path))){
-                $this->error('备份文件删除失败，请检查权限！');
+                return $this->error('备份文件删除失败，请检查权限！');
             } else {
-                $this->success('备份文件删除成功！');
+                return $this->success('备份文件删除成功！');
             }
         } else {
-            $this->error('参数错误！');
+            return $this->error('参数错误！');
         }
     }
 
@@ -345,7 +345,7 @@ class Database extends Admin{
             }
 
         } else {
-            $this->error('参数错误！');
+            return $this->error('参数错误！');
         }
     }
 
