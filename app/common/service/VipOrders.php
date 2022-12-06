@@ -251,8 +251,8 @@ class VipOrders extends OrdersLogic
         }
         //订单内有效期
         $end_time = $time;
-        // 更新VIP会员数据
-        (new VipModel)->edit([
+        //初始化更新数据
+        $vip_edit_data = [
             'id' => $vip_data_id,
             'shopid' => $shopid,
             'app' => $app,
@@ -261,7 +261,13 @@ class VipOrders extends OrdersLogic
             'order_no' => $order_info['order_no'],
             'end_time' => $end_time,
             'status' => 1
-        ]);
+        ];
+        //新开通生成card_no
+        if($vip_data_id == 0){
+            $vip_edit_data['card_no'] = build_order_no();
+        }
+        // 更新VIP会员数据
+        (new VipModel)->edit($vip_edit_data);
 
         return $order_info;
     }
