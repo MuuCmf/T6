@@ -222,6 +222,8 @@ class Author extends Admin
         //读取数据
         $map[] = ['status', '>', -1];
         $list = $this->AuthorGroupModel->getList($map);
+        // 记录当前列表页的cookie
+        cookie('__forward__', $_SERVER['REQUEST_URI']);
         //显示页面
         $builder = new AdminListBuilder();
         $builder
@@ -258,7 +260,7 @@ class Author extends Admin
                 $res = $this->AuthorGroupModel->edit($data);
             }
             if ($res) {
-                return $this->success(empty($id) ? '新增分组成功' : '编辑分组成功', '');
+                return $this->success(empty($id) ? '新增分组成功' : '编辑分组成功', $res, Cookie('__forward__'));
             } else {
                 return $this->error(empty($id) ? '新增分组失败' : '编辑分组失败');
             }
@@ -272,9 +274,11 @@ class Author extends Admin
                 $builder->title('添加创作者类型');
                 $profile = [];
             }
+            
             $builder
                 ->keyReadOnly("id", 'ID')
                 ->keyText('title', '名称')
+                ->keyStatus('status','状态')
                 ->data($profile);
             $builder
                 ->buttonSubmit(url('groupEdit'), $id == 0 ? lang('Add') : lang('Edit'))
