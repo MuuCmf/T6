@@ -73,12 +73,19 @@
                 </div>
             </td>
             <td style="width: 300px">
-                <div class="cover">
-                    <img src="{$v['user_info']['avatar']|default=''}">
-                </div>
-                <div class="info">
-                    <div class="title text-ellipsis">{$v['user_info']['nickname']|default=''}</div>
-                </div>
+                {if !empty($v.uid) && !empty($v.user_info) && $v.user_info != -1}
+                <a class="user-info" href="{:url('admin/Member/edit',['uid'=>$v['uid']])}">
+                    <div class="avatar">
+                        <img src="{$v['user_info']['avatar']}">
+                    </div>
+                    <div class="info text-ellipsis">
+                        <div class="uid">uid：{$v.user_info.uid|default=0}</div>
+                        <div class="nickname">{$v.user_info.nickname|default=""}</div>
+                    </div>
+                </a>
+                {else}
+                用户不存在
+                {/if}
             </td>
             <td>{$v['module_name']}</td>
             <td>{$v['create_time_str']}</td>

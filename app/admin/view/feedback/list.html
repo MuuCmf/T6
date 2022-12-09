@@ -46,12 +46,19 @@
                         <label for="feedback-{$vo.id}"></label>
                     </td>
                     <td>
-                        <a href="{:url('admin/Member/detail',['uid'=>$vo['uid']])}">
+                        {if !empty($vo.uid) && !empty($vo.user_info) && $vo.user_info != -1}
+                        <a class="user-info" href="{:url('admin/Member/edit',['uid'=>$vo['uid']])}">
                             <div class="avatar">
                                 <img src="{$vo['user_info']['avatar']}">
                             </div>
-                            <div class="title text-ellipsis">{$vo.user_info.nickname|text}</div>
+                            <div class="info text-ellipsis">
+                                <div class="uid">uid：{$vo.user_info.uid|default=0}</div>
+                                <div class="nickname">{$vo.user_info.nickname|default=""}</div>
+                            </div>
                         </a>
+                        {else}
+                        用户不存在
+                        {/if}
                     </td>
                     <td>{$vo.content}</td>
                     <td></td>

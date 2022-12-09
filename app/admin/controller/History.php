@@ -46,7 +46,8 @@ class History extends Admin{
             'all_module' => $all_module,
             'app'   =>  $app
         ]);
-        return view();
+        $this->setTitle('浏览记录');
+        return View::fetch();
     }
 
     /**
@@ -65,7 +66,7 @@ class History extends Admin{
 
         $res = $this->HistoryModel->where('id', 'in', $ids)->update($data);
         if($res){
-            return $this->success($title . '成功');
+            return $this->success($title . '成功', $res, 'refresh');
         }else{
             return $this->error($title . '失败');
         }
