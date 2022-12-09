@@ -8,6 +8,7 @@ use app\admin\builder\AdminConfigBuilder;
 use app\admin\builder\AdminSortBuilder;
 
 use app\common\model\Member as MemberModel;
+use app\common\model\MemberSync as MemberSyncModel;
 use app\admin\model\AuthRule;
 use app\admin\model\AuthGroup;
 use app\common\model\ScoreLog as ScoreLogModel;
@@ -322,10 +323,10 @@ class Member extends Admin
         $ids = input('ids');
         !is_array($ids)&&$ids=explode(',',$ids);
         if (count(array_intersect(explode(',', config('auth.auth_administrator')), $ids)) > 0) {
-            $this->error('不允许对超管进行该操作');
+            return $this->error('不允许对超管进行该操作');
         }
         if (empty($ids)) {
-            $this->error('请选择要操作的数据');
+            return $this->error('请选择要操作的数据');
         }
         $map[] = ['uid', 'in', $ids];
 
@@ -337,7 +338,9 @@ class Member extends Admin
                 return $this->resume('Member', $map);
                 break;
             case 'delete':
-                return $this->delete('Member', $map);
+                (new MemberSyncModel())->where($map)->delete();
+                (new MemberModel())->where($map)->delete();
+                return $this->success('删除用户成功', '', 'refresh');
                 break;
             default:
                 return $this->error('参数错误');
@@ -403,7 +406,8 @@ class Member extends Admin
      * @return \think\response\View
      * @throws \think\db\exception\DbException
      */
-    function chooseUser(){
+    function chooseUser()
+    {
         $search = input('search','','text');
         $oauth_type = input('oauth_type','','text');//授权条件
 
