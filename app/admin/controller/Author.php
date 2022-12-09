@@ -75,9 +75,9 @@ class Author extends Admin
         if(request()->isAjax()){
             return $this->success('success', $lists);
         }
-
-        
         View::assign('lists',$lists);
+        // 设置页面title
+        $this->setTitle('创作者列表');
         // 输出模板
         return View::fetch();
     }
