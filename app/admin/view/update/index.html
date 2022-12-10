@@ -6,17 +6,13 @@
     <div class="clearfix with-padding">
 
         <div class="clearfix">
-            <div class="alert alert-danger-inverse with-icon">
-                <i class="icon-info-sign"></i>
-                <div class="content">更新时请注意备份网站数据和相关数据库文件！官方不强制要求用户跟随官方意愿进行更新尝试！</div>
-            </div>
             <div class="alert alert-primary-inverse with-icon">
                 <i class="icon-info-sign"></i>
                 <div class="content">每次升级自动备份原文件，路径 ：{$backupPath}</div>
             </div>
             <div class="alert alert-danger-inverse with-icon">
                 <i class="icon-info-sign"></i>
-                <div class="content">在线升级需要在系统设置中关闭网站，<a class="alert-link" href="{:url('admin/config/group',['id'=>4])}">点击这里关闭网站</a>！</div>
+                <div class="content">在线升级建议在系统设置中关闭网站，<a class="alert-link" href="{:url('admin/config/group',['id'=>4])}">点击这里关闭网站</a>！</div>
             </div>
 
             {if $upgrade}
