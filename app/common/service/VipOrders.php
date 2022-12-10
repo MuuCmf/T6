@@ -97,6 +97,9 @@ class VipOrders extends OrdersLogic
                     case 'year':
                     $time = strtotime('+1 year',$vip_data['end_time']);
                     break;
+                    case 'forever':
+                    $time = 0;
+                    break;
                 }
             }else{
                 //已过期用户
@@ -109,6 +112,9 @@ class VipOrders extends OrdersLogic
                     break;
                     case 'year':
                     $time = strtotime('+1 year');
+                    break;
+                    case 'forever':
+                    $time = 0;
                     break;
                 }
             }
@@ -123,6 +129,8 @@ class VipOrders extends OrdersLogic
                 break;
                 case 'year':
                 $time = strtotime('+1 year');
+                case 'forever':
+                $time = 0;
                 break;
             }
         }
