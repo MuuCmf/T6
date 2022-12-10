@@ -52,7 +52,7 @@ class Articles extends Base
      * @param  string $status        
      * @return [type]                [description]
      */
-    public function getMap($shopid, $keyword = '',$category_id = '', $status = '')
+    public function getMap($shopid, $keyword, $category_id, $status)
     {
         //初始化查询条件
         $map = [];
