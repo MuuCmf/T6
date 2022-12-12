@@ -96,7 +96,6 @@ class Author extends Admin
         if (request()->isPost()) {
             $data = input();
             $data['shopid'] = $this->shopid;
-            $data['auth'] = '';
             // 数据验证
             try {
                 validate(AuthorValidate::class)->scene('edit')->check($data);
