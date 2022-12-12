@@ -174,7 +174,7 @@ CREATE TABLE IF NOT EXISTS `muucmf_author` (
   `sort` int(11) NOT NULL DEFAULT '0' COMMENT '排序值',
   `view` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '阅读量',
   `verify` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '认证类型ID',
-  `auth` text NOT NULL COMMENT '功能权限 json格式',
+  `auth` text NULL COMMENT '功能权限 json格式',
   `status` tinyint(4) NOT NULL DEFAULT '0' COMMENT '数据状态',
   `reason` varchar(255) NOT NULL DEFAULT '' COMMENT '拒绝审核原因',
   `create_time` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '创建时间',

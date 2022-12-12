@@ -2,6 +2,8 @@
 namespace app\admin\controller;
 
 use think\facade\View;
+use think\exception\ValidateException;
+use app\common\validate\Author as AuthorValidate;
 use app\admin\builder\AdminConfigBuilder;
 use app\admin\builder\AdminListBuilder;
 use app\common\model\Author as AuthorModel;
@@ -94,6 +96,14 @@ class Author extends Admin
         if (request()->isPost()) {
             $data = input();
             $data['shopid'] = $this->shopid;
+            $data['auth'] = '';
+            // 数据验证
+            try {
+                validate(AuthorValidate::class)->scene('edit')->check($data);
+            } catch (ValidateException $e) {
+                // 验证失败 输出错误信息
+                return $this->error($e->getError());
+            }
             $res = $this->AuthorModel->edit($data);
             if($res){
                 return $this->success($title . '成功',$res, url('lists'));

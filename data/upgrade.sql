@@ -127,3 +127,5 @@ INSERT INTO `muucmf_extend_config` (`id`, `name`, `type`, `title`, `group`, `ext
 (47, 'WX_PAY_CERT_SERIAL', 'string', '微信支付商户API证书序列号', 6, '', '微信支付商户API证书序列号', 0, 0, 1, '', 0);
 
 UPDATE `muucmf_config` SET `extra` = 'username:用户名\r\nemail:邮箱\r\nmobile:手机号\r\nqrcode:扫码（需正确配置公众号）' WHERE `muucmf_config`.`id` = 10135;
+
+ALTER TABLE `muucmf_author` CHANGE `auth` `auth` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL COMMENT '功能权限 json格式';
