@@ -89,13 +89,21 @@
 					</td>
 					<td>
 						<div class="comment">
+							{if is_array($v.user_info)}
 							<div class="avatar">
 								<img src="{$v['user_info']['avatar']}" />
 							</div>
+							{/if}
 							<div class="info">
+								{if is_array($v.user_info)}
 								<div class="nickname">
 									{$v['user_info']['nickname']}
 								</div>
+								{else}
+								<div class="nickname">
+									用户不存在
+								</div>
+								{/if}
 								<div class="content">
 									{$v['content']}
 								</div>
