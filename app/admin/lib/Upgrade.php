@@ -164,7 +164,7 @@ class Upgrade
         $ip   = request()->ip();
         $params['domain'] = $domain;
         $params['ip'] = $ip;
-        $params['channel'] = 'T6';
+        $params['issue'] = 'T6';
         $output = curl_request($api, $params);
         // 初始化返回数据
         $result = [
