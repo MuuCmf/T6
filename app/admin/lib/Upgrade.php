@@ -160,6 +160,11 @@ class Upgrade
     public function cloudVersion($params = [])
     {
         $api = $this->api . 'app/version';
+        $domain = request()->host();
+        $ip   = request()->ip();
+        $params['domain'] = $domain;
+        $params['ip'] = $ip;
+        $params['channel'] = 'T6';
         $output = curl_request($api, $params);
         // 初始化返回数据
         $result = [

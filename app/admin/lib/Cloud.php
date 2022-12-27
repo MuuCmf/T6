@@ -22,7 +22,8 @@ class Cloud
         $url = $this->api . 'request/record';
         $result = curl_request($url,[
             'domain'  =>  $domain,
-            'ip' =>  $ip
+            'ip' =>  $ip,
+            'channel' => 'T6'
         ]);
         try {
             $result = json_decode($result,true);
