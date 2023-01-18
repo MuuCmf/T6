@@ -226,4 +226,12 @@ class Menu extends Admin {
             return View::fetch();
         }
     }
+
+    public function sidebar()
+    {
+        //当前管理菜单
+        $admin_menu = $this->getMenus();
+
+        return $this->success('SUCCESS', $admin_menu);
+    }
 }
