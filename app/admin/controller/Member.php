@@ -246,7 +246,7 @@ class Member extends Admin
                 $member[$key] = $field_data;
             }
             $builder = new AdminConfigBuilder();
-            $builder->title('用户扩展资料详情');
+            $builder->title('用户资料管理');
             $builder->keyUid()
                     ->keySingleImage('avatar','头像','')
                     ->keyText('email','邮箱')
