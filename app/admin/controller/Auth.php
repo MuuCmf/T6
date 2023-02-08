@@ -1,22 +1,13 @@
 <?php
 namespace app\admin\controller;
 
-use think\App;
 use think\facade\Db;
 use think\facade\View;
-
 use app\admin\model\AuthRule;
 use app\admin\model\AuthGroup;
-use app\common\model\Module as ModuleModel;
 
-/**
- * 权限管理控制器
- */
 class Auth extends Admin
 {
-    /**
-     * 权限管理首页
-     */
     public function index()
     {   
         $map[] = ['module','=','admin'];
@@ -36,11 +27,7 @@ class Auth extends Admin
      */
     public function createGroup()
     {
-        if (empty($this->auth_group)) {
-            View::assign('auth_group', array('title' => null, 'id' => null, 'description' => null, 'rules' => null,));//排除notice信息
-        }
         $this->setTitle('创建用户组');
-
         return View::fetch('edit_group');
     }
 
@@ -80,7 +67,7 @@ class Auth extends Admin
             if ($res === false) {
                 return $this->error('操作失败');
             } else {
-                $back_url = url('admin/AuthManager/index');
+                $back_url = url('admin/Auth/index');
                 if(!empty($data['back_url'])){
                     $back_url = $data['back_url'];
                 }
@@ -138,23 +125,22 @@ class Auth extends Admin
             ['status', '>=', 0]
         ];
         $list = Db::table($l_table . ' m')->join($r_table . ' a ',' m.uid=a.uid')->where($where)->order('m.uid desc')
-            ->paginate(20,false,[
-                'query'=> ['group_id'=>$group_id],
-            ]);
+            ->paginate([
+                'list_rows' => 20,
+                'query' => [
+                    'group_id' => $group_id
+                ],
+            ], false);
         // 获取分页显示
         $pager = $list->render();
+        View::assign('pager', $pager);
         // 转数组
         $list = $list->toArray()['data'];
         // 更改状态值
         int_to_string($list);
+        View::assign('_list', $list);
 
         $this->setTitle('用户授权');
-        
-        View::assign('_list', $list);
-        View::assign('pager', $pager);
-        View::assign('auth_group', $auth_group);
-        View::assign('group_id', $group_id);
-        
         return View::fetch();
     }
 
@@ -212,24 +198,6 @@ class Auth extends Admin
         View::assign('auth_rules', $child_rules);
 
         return View::fetch();
-    }
-
-    //预处理规则，去掉未安装的模块
-    public function getNodeListFromModule($modules)
-    {
-        $node_list = [];
-        foreach ($modules as $module) {
-            if ($module['is_setup']) {
-
-                $node = array('name' => $module['name'], 'alias' => $module['alias']);
-                $map = array('module' => $module['name'], 'type' => AuthRule::RULE_URL, 'status' => 1);
-
-                $node['child'] = Db::name('AuthRule')->where($map)->select();
-                $node_list[] = $node;
-            }
-
-        }
-        return $node_list;
     }
 
     /**
@@ -341,7 +309,7 @@ class Auth extends Admin
         return $nodes;
     }
 
-    public function check_url_re( $value = array() ){
+    public function check_url_re( $value = []){
 
         if(empty($value['module']) || $value['module'] == ''){
             if (stripos($value['url'], app('http')->getName()) !== 0) {
