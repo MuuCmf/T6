@@ -5013,7 +5013,6 @@ CREATE TABLE IF NOT EXISTS `muucmf_wechat_config` (
   `token` varchar(40) NOT NULL COMMENT 'token',
   `menu_json` text NULL COMMENT '公众号菜单配置',
   `tmplmsg` varchar(1000) NOT NULL DEFAULT '' COMMENT '模板消息配置',
-  `request` VARCHAR(512) NOT NULL COMMENT '请求配置',
   `create_time` int(11) UNSIGNED NOT NULL COMMENT '创建日期',
   `update_time` int(11) UNSIGNED NOT NULL COMMENT '更新日期',
   PRIMARY KEY (`id`)
