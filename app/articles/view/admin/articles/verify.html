@@ -1,0 +1,41 @@
+<form action="{:url('verify')}" method="post" class="form-horizontal form ajax-form" role="form" id="form1">
+    <input type="hidden" name="id" value="{$data['id']}">
+		
+    <div class="form-body">
+        <div class="form-group">
+            <label class="col-sm-2 control-label">状态设置</label>
+            <div class="fform-control-static col-sm-8 status-section">
+                <input type="radio" name="status" id="is_status--1" value="1" checked>
+                <label class="radio-inline" for="is_status--1"> 审核通过</label>
+                <input type="radio" name="status" id="is_status--2" value="-2">
+                <label class="radio-inline" for="is_status--2"> 审核未通过</label>
+            </div>
+        </div>
+
+        <div class="{if $data['status'] == -2}form-group{else}form-group hidden{/if}" id="statusReason">
+            <label class="col-sm-2 control-label">未通过原因</label>
+            <div class="form-controls col-sm-8">
+                <textarea class="form-control" rows="3" name="reason" placeholder="请填写未通过审核原因">{$data['reason']}</textarea>
+                <div class="help-block">请填写未通过审核原因</div>
+            </div>
+        </div>
+        <script>
+            $(function(){
+                $(".status-section input[type='radio']").on("click",function () {
+                    if($("input[id='is_status--2']:checked").val()=="-2"){
+                        $('#statusReason').removeClass('hidden');
+                    }else{
+                        $('#statusReason').addClass('hidden');
+                    }
+                })
+            })
+        </script>
+
+        <div class="form-group">
+            <label class="col-sm-2 control-label"></label>
+            <div class="form-controls col-sm-8">
+                <button type="submit" class="btn btn-lg btn-primary">确认提交</button>
+            </div>
+        </div>
+    </div>
+</form>

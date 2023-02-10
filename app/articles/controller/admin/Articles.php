@@ -167,6 +167,32 @@ class Articles extends Admin
 
     public function verify()
     {
-        
+        $id = input('id',0,'intval');
+        if (request()->isPost()) {
+            $data['id'] = $id;
+            $status = input('status', 0, 'intval');
+            $data['status'] = $status;
+            $reason = input('reason', '', 'text');
+            if(!empty($reason)){
+                $data['reason'] = $reason;
+            }
+
+            $res = $this->ArticlesModel->edit($data);
+
+            if($res){
+                return $this->success('操作成功');
+            }else{
+                return $this->error('操作失败');
+            }
+        }
+
+        if(!empty($id)){
+            $data = $this->ArticlesModel->getDataById($id);
+            $data = $this->ArticlesLogic->formatData($data);
+        }
+        View::assign('data',$data);
+
+        // 输出模板
+        return View::fetch();
     }
 }
