@@ -84,9 +84,9 @@ class Message extends Admin
             $res = $this->MessageTypeModel->edit($data);
             
             if ($res) {
-                $this->success($title.'成功', $res, Cookie('__forward__'));
+                return $this->success($title.'成功', $res, Cookie('__forward__'));
             } else {
-                $this->error($title.'失败');
+                return $this->error($title.'失败');
             }
 
         }else{
@@ -347,9 +347,9 @@ class Message extends Admin
             $res = $this->MessageContentModel->edit($data);
             
             if ($res) {
-                $this->success($title.'成功', $res, Cookie('__forward__'));
+                return $this->success($title.'成功', $res, Cookie('__forward__'));
             } else {
-                $this->error($title.'失败');
+                return $this->error($title.'失败');
             }
 
         }else{
