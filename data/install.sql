@@ -4392,7 +4392,7 @@ DROP TABLE IF EXISTS `muucmf_keywords`;
 CREATE TABLE IF NOT EXISTS `muucmf_keywords` (
   `id` bigint(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键ID',
   `shopid` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '店铺ID',
-  `uid` int(11) UNSIGNED NOT NULL COMMENT 'UID',
+  `uid` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'UID',
   `keyword` varchar(90) NOT NULL COMMENT '关键词',
   `sort` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '排序',
   `recommend` tinyint(2) NOT NULL DEFAULT '0' COMMENT '是否推荐',

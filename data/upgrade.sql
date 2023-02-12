@@ -129,3 +129,5 @@ INSERT INTO `muucmf_extend_config` (`id`, `name`, `type`, `title`, `group`, `ext
 UPDATE `muucmf_config` SET `extra` = 'username:用户名\r\nemail:邮箱\r\nmobile:手机号\r\nqrcode:扫码（需正确配置公众号）' WHERE `muucmf_config`.`id` = 10135;
 
 ALTER TABLE `muucmf_author` CHANGE `auth` `auth` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL COMMENT '功能权限 json格式';
+
+ALTER TABLE `muucmf_keywords` CHANGE `uid` `uid` INT(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'UID';

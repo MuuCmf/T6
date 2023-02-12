@@ -105,6 +105,7 @@ class Keywords extends Admin
                 // 初始化数据
                 $data = [];
                 $data['id'] = 0;
+                $data['uid'] = 0;
                 $data['keyword'] = '';
                 $data['sort'] = 0;
                 $data['recommend'] = 0;
