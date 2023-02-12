@@ -4953,7 +4953,7 @@ CREATE TABLE IF NOT EXISTS `muucmf_vip_card` (
   `title` varchar(64) NOT NULL COMMENT 'VIP会员名',
   `description` varchar(255) NOT NULL COMMENT '简短描述',
   `cover` varchar(255) NOT NULL COMMENT '图标',
-  `card_bg` varchar(255) NOT NULL COMMENT '会员卡背景',
+  `card_bg` varchar(255) NOT NULL DEFAULT '' COMMENT '会员卡背景',
   `category_ids` varchar(512) NOT NULL COMMENT '支持的分类IDS',
   `discount` double NOT NULL COMMENT '折扣 0免费 1:1折',
   `month_price` int(11) NOT NULL COMMENT '月份价格，单位:分',
