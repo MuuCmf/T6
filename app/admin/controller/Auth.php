@@ -111,7 +111,7 @@ class Auth extends Admin
         $group_id = input('group_id', 1, 'intval');
         View::assign('group_id', $group_id);
         if (empty($group_id)) {
-            $this->error('参数错误');
+            return $this->error('参数错误');
         }
         // 权限组列表
         $auth_group = Db::name('AuthGroup')->where(['status' => 1, 'module' => 'admin', 'type' => AuthGroup::TYPE_ADMIN])->field('id,title,rules')->select()->toArray();

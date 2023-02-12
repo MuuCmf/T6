@@ -115,10 +115,10 @@ class Withdraw extends Admin{
                 ]);
                 if (!$result_capital_flow)  throw new Exception('写入资金流失失败');
                 Db::commit();
-                $this->success('处理成功');
+                return $this->success('处理成功');
             }catch (Exception $e){
                 Db::rollback();
-                $this->error($e->getMessage());
+                return $this->error($e->getMessage());
             }
         }
     }

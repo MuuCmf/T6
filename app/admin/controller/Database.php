@@ -58,7 +58,7 @@ class Database extends Admin{
                 break;
 
             default:
-                $this->error('参数错误！');
+                return $this->error('参数错误！');
         }
         //渲染模板
         $this->setTitle($title);
@@ -140,16 +140,16 @@ class Database extends Admin{
                 $list = Db::query("OPTIMIZE TABLE `{$tables}`");
 
                 if($list){
-                    $this->success('数据表修复完成');
+                    return $this->success('数据表修复完成');
                 } else {
-                    $this->error('数据表修复出错请重试');
+                    return $this->error('数据表修复出错请重试');
                 }
             } else {
                 $list = Db::query("OPTIMIZE TABLE `{$tables}`");
                 if($list){
-                    $this->success('数据表' .$tables. '修复完成');
+                    return $this->success('数据表' .$tables. '修复完成');
                 } else {
-                    $this->error('数据表' .$tables. '修复出错');
+                    return $this->error('数据表' .$tables. '修复出错');
                 }
             }
         } else {
@@ -222,13 +222,15 @@ class Database extends Admin{
             ];
 
             //检查备份目录是否可写
-            is_writeable($config['path']) || $this->error('备份目录不存在或不可写，请检查后重试！');
+            if(is_writeable($config['path'])){
+                return $this->error('备份目录不存在或不可写，请检查后重试！');
+            }
             
             //检查是否有正在执行的任务
             $lock = "{$config['path']}backup.lock";
             
             if(is_file($lock)){
-                $this->error('检测到有一个备份任务正在执行，请稍后再试！');
+                return $this->error('检测到有一个备份任务正在执行，请稍后再试！');
             } else {
                 //创建锁文件
                 file_put_contents($lock, time());

@@ -150,7 +150,7 @@ class Config extends Admin
         $id = array_unique((array)input('id', 0));
 
         if (empty($id)) {
-            $this->error('参数错误');
+            return $this->error('参数错误');
         }
 
         if ($this->ConfigModel->where('id','in', $id)->delete()) {
