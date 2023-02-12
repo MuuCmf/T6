@@ -12,21 +12,21 @@
             <div class="builder_item hidden">
                 <label class="item-label">编号</label>
                 <div class="controls">
-                    <input type="hidden" name="id" value="{$limit.id}" class="text input-large form-control" placeholder="无需填写" readonly="">
+                    <input type="hidden" name="id" value="{$limit.id|default=0}" class="text input-large form-control" placeholder="无需填写" readonly="">
                 </div>
             </div>
                      
             <div class="builder_item">
                 <label class="item-label">标题</label>
                 <div class="controls">
-                    <input type="text" name="title" value="{$limit.title}" class="text input-large form-control">
+                    <input type="text" name="title" value="{$limit.title|default=''}" class="text input-large form-control">
                 </div>
             </div>
                       
             <div class="builder_item">
                 <label class="item-label">名称</label>
                 <div class="controls">
-                    <input type="text" name="name" value="{$limit.name}" class="text input-large form-control">
+                    <input type="text" name="name" value="{$limit.name|default=''}" class="text input-large form-control">
                 </div>
             </div>
                                         
@@ -45,14 +45,14 @@
             <div class="builder_item">
                 <label class="item-label">频率</label>
                 <div class="controls">
-                    <input type="text" name="frequency" value="{$limit.frequency}" class="text input-large form-control">
+                    <input type="text" name="frequency" value="{$limit.frequency|default=1}" class="text input-large form-control">
                 </div>
             </div>
 
-                                        
             <div class="builder_item">
-                <label class="item-label">时间单位<span class="suggest check-tips">（时间单位）</span>
-                    </label>
+                <label class="item-label">
+                    时间单位<span class="suggest check-tips">（时间单位）</span>
+                </label>
                 <div class="controls">
                     <div class="clearfix" style="width:400px;">
                         <input type="text" name="time_number" value="1" class=" pull-left text input-large form-control" style="width:295px;margin-right:5px">
@@ -68,11 +68,11 @@
                     </div>
                 </div>
             </div>
-
-                                        
+            
             <div class="builder_item">
-                <label class="item-label">处罚 <span class="suggest check-tips">（可多选）</span>
-                    </label>
+                <label class="item-label">
+                    处罚 <span class="suggest check-tips">（可多选）</span>
+                </label>
                 <div class="controls">
                     <div class="chosen chosen_punish">
                         <select data-placeholder="" name="punish[]" class="chosen-select form-control" tabindex="-1" multiple="">
@@ -134,9 +134,7 @@
             <div class="builder_item">
                 <label class="item-label">消息提示内容</label>
                 <div class="controls">
-                    <textarea name="message_content" class="text input-large form-control">
-                        {$limit.message_count}
-                    </textarea>
+                    <textarea name="message_content" class="text input-large form-control">{$limit.message_count}</textarea>
                 </div>
             </div>
                        

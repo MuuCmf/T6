@@ -1,26 +1,25 @@
 <?php
 namespace app\admin\controller;
 
-use think\App;
 use think\facade\Db;
 use think\facade\View;
-
 use app\common\model\Action as ActionModel;
 use app\common\model\ActionLimit as ActionLimitModel;
+use app\common\model\ActionLog as ActionLogModel;
 use app\common\model\Module as ModuleModel;
 use app\common\model\ScoreType as ScoreTypeModel;
 
 /**
  * 行为控制器
  */
-class Action extends Admin {
-
+class Action extends Admin
+{
     /**
      * 行为日志列表
      */
     public function log(){
         //获取列表数据
-        $aUid=input('get.uid',0,'intval');
+        $aUid = input('get.uid',0,'intval');
         if($aUid) $map[] = ['uid', '=', $aUid];
 
         //按时间和行为筛选
@@ -61,10 +60,14 @@ class Action extends Admin {
     /**
      * 查看行为日志
      */
-    public function detail($id = 0){
+    public function detail()
+    {
+        $id = input('id', 0, 'intval');
+        if(empty($id)){
+            return $this->error('参数错误');
+        }
 
-        empty($id) && $this->error('参数错误');
-        $info = Db::name('ActionLog')->find($id);
+        $info = (new ActionLogModel())->find($id);
         View::assign('info', $info);
 
         $this->setTitle('行为日志详情');
@@ -76,7 +79,9 @@ class Action extends Admin {
      * 删除日志
      * @param mixed $ids
      */
-    public function remove($ids = 0){
+    public function remove()
+    {
+        $ids = input('ids');
         if(empty($ids)){
             return $this->error('参数错误');
         }
@@ -86,7 +91,7 @@ class Action extends Admin {
         if (is_numeric($ids)){
             $map[] = ['id', '=', $ids];
         }
-        $res = Db::name('ActionLog')->where($map)->delete();
+        $res = (new ActionLogModel())->where($map)->delete();
         if($res !== false){
             return $this->success('删除成功');
         }else {
@@ -123,7 +128,7 @@ class Action extends Admin {
             $map[] = ['status', '=', 1];
         }
 
-        $list = Db::name('ActionLog')->where($map)->order('create_time asc')->select()->toArray();
+        $list = (new ActionLogModel())->where($map)->order('create_time asc')->select()->toArray();
         //dump($list);exit;
         
         $data = 'id,行为名称,执行者,执行者IP,日志内容,执行时间'."\n";
@@ -153,15 +158,6 @@ class Action extends Admin {
      */
     public function action()
     {
-        // $aModule = $this->parseSearchKey('module');
-
-        // is_null($aModule) && $aModule = -1;
-        // if ($aModule != -1) {
-        //     $map['module'] = $aModule;
-        // }
-        // unset($_REQUEST['module']);
-        // View::assign('current_module', $aModule);
-
         $ModuleModel = new ModuleModel();
         //获取列表数据
         $map[] = ['status','>', -1];
@@ -352,7 +348,7 @@ class Action extends Admin {
             View::assign('modules', $modules);
 
             // 获取数据
-            if ($aId != 0) {
+            if (!empty($aId)){
                 $limit = $ActionLimitModel->where(['id' => $aId])->find();
                 $limit['punish'] = explode(',', $limit['punish']);
                 $limit['action_list'] = str_replace('[','',$limit['action_list']);
@@ -364,9 +360,12 @@ class Action extends Admin {
                     'status' => 1,
                     'time_number' => 1,
                     'time_unit' => [],
+                    'punish' => [],
+                    'message_count' => '',
+                    'action_list' => []
                 ];
             }
-            //dump($limit);
+            
             // 处罚方式数组
             $opt_punish = $ActionLimitModel->punish;
             // 行为数组
@@ -389,7 +388,7 @@ class Action extends Admin {
         $ids = is_array($ids) ? implode(',', $ids) : $ids;
 
         if (empty($ids)) {
-            $this->error('请选择要操作的数据');
+            return $this->error('请选择要操作的数据');
         }
 
         $map = ['id' => ['in', $ids]];
