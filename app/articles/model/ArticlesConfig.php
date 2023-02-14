@@ -39,6 +39,10 @@ class ArticlesConfig extends Base
             'id' => 0,
             'shopid' => $shopid,
             'status' => 1,
+            'comment' => [
+                'status' => 0,
+                'audit' => 0
+            ]
         ];
 
         return $data;

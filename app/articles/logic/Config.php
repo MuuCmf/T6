@@ -31,7 +31,7 @@ class Config {
                 //$data['article_config']['status'] = 0;
                 $data['status_str'] = $this->_status[0];
             }
-            if(!empty($data['comment'])){
+            if(!empty($data['comment']) && !is_array($data['comment'])){
                 $data['comment'] = json_decode($data['comment'],true);
             }
             
@@ -55,11 +55,9 @@ class Config {
             }
     
             return $data;
-        }else{
-            $data = (new ConfigModel())->defaultData();
-
-            return $data;
         }
+
+        return $data;
 	}
 
 }
