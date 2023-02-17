@@ -32,6 +32,8 @@ class File extends Api
         $shopid = input('shopid', 0, 'intval');
         // 强制上传方法，默认自动
         $enforce = input('enforce', 'auto', 'text');
+        // 自定义文件名参数
+        $filename = input('filename', '', 'text');
         $uid = get_uid();
         $files = request()->file();
 
@@ -39,7 +41,7 @@ class File extends Api
             return $this->error('未选择文件');
         }
 
-        $result = $this->Attachment->upload($shopid, $files, 'file', $uid, $enforce);
+        $result = $this->Attachment->upload($shopid, $files, 'file', $uid, $enforce, $filename);
 
         if(is_array($result)){
             return $this->result(200, '上传成功', $result);

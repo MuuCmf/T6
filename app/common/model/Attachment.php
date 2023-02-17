@@ -29,10 +29,10 @@ class Attachment extends Base
      *
      * @return     <type>  ( description_of_the_return_value )
      */
-    public function upload($shopid, $files, $type = "file", $uid = 0, $enforce = 'auto')
+    public function upload($shopid, $files, $type = "file", $uid = 0, $enforce = 'auto', $filename = '')
     {
         if($type=='file'){
-            $result = $this->file($shopid, $files, $enforce);
+            $result = $this->file($shopid, $files, $enforce, $filename);
         }
         if($type=='avatar'){
             $result = $this->avatar($shopid, $files, $uid);
@@ -50,7 +50,7 @@ class Attachment extends Base
      * @param      <type>         $files  The files
      * @return     array|boolean  ( description_of_the_return_value )
      */
-    public function file($shopid, $files, $enforce  = 'auto')
+    public function file($shopid, $files, $enforce  = 'auto', $filename = '')
     {   
         if (empty($files)) {
             return false;
@@ -72,6 +72,9 @@ class Attachment extends Base
             }else{
                 //构建返回数据
                 $data['filename'] = $file->getOriginalName();
+                if(!empty($filename)){
+                    $data['filename'] = $filename;
+                }
                 $data['ext'] = $file->getOriginalExtension();
                 $data['md5'] = $file->hash('md5');
                 $data['sha1'] = $file->hash('sha1');
