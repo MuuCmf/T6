@@ -8,6 +8,11 @@ use app\admin\model\AuthGroup;
 
 class Auth extends Admin
 {
+    public function __construct()
+    {
+        parent::__construct();
+    }
+
     public function index()
     {   
         $map[] = ['module','=','admin'];
@@ -83,10 +88,12 @@ class Auth extends Admin
      */
     public function changeStatus($method = null)
     {
-
-        if (empty(input('id/a'))) {
+        $ids = input('id/a');
+        
+        if (empty($ids)) {
             return $this->error('请选择要操作的数据');
         }
+
         switch (strtolower($method)) {
             case 'forbidgroup':
                 return $this->forbid('AuthGroup');
@@ -95,6 +102,9 @@ class Auth extends Admin
                 return $this->resume('AuthGroup');
                 break;
             case 'deletegroup':
+                if(in_array(1, $ids) || in_array(2, $ids) || in_array(3, $ids)){
+                    return $this->error('系统默认组禁止删除');
+                }
                 return $this->delete('AuthGroup');
                 break;
             default:

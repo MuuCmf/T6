@@ -1,4 +1,5 @@
 <?php
+
 namespace app\admin\controller;
 
 use think\facade\Db;
@@ -22,7 +23,7 @@ class Admin extends Base
     protected $moduleModel;
     public $isRoot;
     protected $menu = [];
-    public $shopid = 0;//店铺Id，sass平台拓展
+    public $shopid = 0; //店铺Id，sass平台拓展
     public $app_name = ''; // 应用标识
 
     protected $middleware = [
@@ -38,7 +39,6 @@ class Admin extends Base
         $this->moduleModel = new ModuleModel();
         // 控制器初始化
         $this->initialize();
-        
     }
 
     public function initialize()
@@ -50,8 +50,8 @@ class Admin extends Base
         $controller = strtolower(request()->controller());
         $action = strtolower(request()->action());
         View::assign('this_app', $this->app_name);
-        View::assign('this_controller',$controller );
-        View::assign('this_action',$action);
+        View::assign('this_controller', $controller);
+        View::assign('this_action', $action);
         // 当前应用模块信息
         $module = $this->moduleModel->getModule($this->app_name);
         View::assign('module', $module);
@@ -59,13 +59,13 @@ class Admin extends Base
         $admin_menu = $this->getMenus();
         View::assign('admin_menu', $admin_menu);
         //获取登录用户数据
-        View::assign('auth_user',query_user(is_login()));
+        View::assign('auth_user', query_user(is_login()));
         //框架版本号
-        View::assign('version',$this->version());
+        View::assign('version', $this->version());
         //数据库版本号
         $mysql = Db::query("select version() as v;");
         $mysql_version = $mysql[0]['v'];
-        View::assign('mysql_version',$mysql_version);
+        View::assign('mysql_version', $mysql_version);
     }
 
     /**
@@ -74,7 +74,7 @@ class Admin extends Base
     public function setRoot()
     {
         $uid = get_uid();
-        if($uid == 1) $this->isRoot = 1;
+        if ($uid == 1) $this->isRoot = 1;
         return $uid;
     }
 
@@ -85,15 +85,15 @@ class Admin extends Base
     {
         $all_module_list = $this->moduleModel->getAll([
             ['is_setup', '=', 1],
-            ['name', '<>','ucenter'],
-            ['name', '<>','channel']
+            ['name', '<>', 'ucenter'],
+            ['name', '<>', 'channel']
         ]);
         // 应用权限
-        foreach($all_module_list as $key=>$item){
+        foreach ($all_module_list as $key => $item) {
             // 判断主菜单权限
             if (!$this->isRoot && !$this->checkRule(strtolower($item['entry']), get_uid(), AuthRule::RULE_MAIN, null)) {
                 unset($all_module_list[$key]);
-                continue;//继续循环
+                continue; //继续循环
             }
         }
         return $all_module_list;
@@ -108,26 +108,26 @@ class Admin extends Base
         $controller = Request()->controller();
         $action = Request()->action();
         // 获取主菜单
-        $where[] = ['pid','=','0'];
+        $where[] = ['pid', '=', '0'];
         $menuModel = new Menu();
-        $menus['main'] = Db::name('menu')->where($where)->order('sort','asc')->select()->toArray();
+        $menus['main'] = Db::name('menu')->where($where)->order('sort', 'asc')->select()->toArray();
         $menus['child'] = []; //设置子节点
 
         //当前菜单
         $current_map[] = [
-            ['url','=', $module .'/'. $controller .'/'. $action],
+            ['url', '=', $module . '/' . $controller . '/' . $action],
         ];
         $current = Db::name('menu')->where($current_map)->find();
-        
+
         //获取顶级菜单数据
         $nav_current_id = 0;
-        if (input('?param.module_name') && $module != 'admin'){
-            foreach ($menus['main'] as $m){
-                if ($m['module'] == $module){
+        if (input('?param.module_name') && $module != 'admin') {
+            foreach ($menus['main'] as $m) {
+                if ($m['module'] == $module) {
                     $nav_current_id = $m['id'];
                 }
             }
-        }elseif($current){
+        } elseif ($current) {
             $nav = $menuModel->getPath($current['id']);
             $nav_current_id = $nav[0]['id'];
         }
@@ -135,18 +135,18 @@ class Admin extends Base
             foreach ($menus['main'] as $key => $item) {
 
                 //如果是模块菜单获取模块信息
-                if(!empty($item['module']) || $item['module'] != 'admin'){
+                if (!empty($item['module']) || $item['module'] != 'admin') {
                     $app = $this->moduleModel->getModule($item['module']);
                 }
-                
+
                 if (!is_array($item) || empty($item['title']) || empty($item['url'])) {
                     return $this->error('控制器基类{$menus}属性元素配置有误');
                 }
-                
+
                 // 判断主菜单权限
                 if (!$this->isRoot && !$this->checkRule($item['url'], get_uid(), AuthRule::RULE_MAIN, null)) {
                     unset($menus['main'][$key]);
-                    continue;//继续循环
+                    continue; //继续循环
                 }
 
                 // 获取当前主菜单的子菜单项
@@ -166,14 +166,14 @@ class Admin extends Base
                         $to_check_urls = [];
                         foreach ($second_urls as $key => $to_check_url) {
                             $rule = $to_check_url['url'];
-                            if ($this->checkRule($rule, get_uid(), 1, null)){
+                            if ($this->checkRule($rule, get_uid(), 1, null)) {
                                 $to_check_urls[] = $to_check_url['url'];
                             }
                         }
                     }
                     // 按照分组生成子菜单树
-                    
-                    foreach ($groups as $k=>$g) {
+
+                    foreach ($groups as $k => $g) {
                         $map = [];
                         $map[] = ['group', '=', $g];
                         if (isset($to_check_urls)) {
@@ -186,9 +186,9 @@ class Admin extends Base
                         }
                         $map[] = ['pid', '=', $item['id']];
                         $map[] = ['hide', '=', 0];
-                        
+
                         $menuList = Db::name('Menu')->where($map)->field('id,pid,title,url,icon,tip')->order('sort asc')->select()->toArray();
-                        if ($menuList){
+                        if ($menuList) {
                             $menus['child'][$k]['group'] = $g;
                             $menus['child'][$k]['child'] = list_to_tree($menuList, 'id', 'pid', 'operater', $item['id']);
                         }
@@ -239,10 +239,12 @@ class Admin extends Base
         }
         unset($REQUEST['_order'], $REQUEST['_field']);
 
-        $options['where'] = array_filter(array_merge((array)$base, /*$REQUEST,*/
-            (array)$where), function ($val) {
-            
-            if ( $val === null) {
+        $options['where'] = array_filter(array_merge(
+            (array)$base, /*$REQUEST,*/
+            (array)$where
+        ), function ($val) {
+
+            if ($val === null) {
                 return false;
             } else {
                 return true;
@@ -254,7 +256,7 @@ class Admin extends Base
 
         //$total = $table->where($options['where'])->count();
 
-        if (input('r')!==null) {
+        if (input('r') !== null) {
             $listRows = (int)input('r');
         } else {
             $listRows = 20;
@@ -266,7 +268,7 @@ class Admin extends Base
         $page = $list->render();
         $page = htmlspecialchars($page);
 
-        return [$list,$page];
+        return [$list, $page];
     }
 
     /**
@@ -278,7 +280,7 @@ class Admin extends Base
     final protected function checkRule($rule, $uid, $type = AuthRule::RULE_URL, $mode = 'url')
     {
         if ($this->isRoot) {
-            return true;//管理员允许访问任何页面
+            return true; //管理员允许访问任何页面
         }
         static $Auth = null;
         if (!$Auth) {
@@ -296,7 +298,7 @@ class Admin extends Base
     public function setTitle(String $title = 'MuuCmf')
     {
         $this->title = $title;
-        View::assign('title',$title);
+        View::assign('title', $title);
     }
 
     /**
@@ -312,7 +314,7 @@ class Admin extends Base
         return $version;
     }
 
-        /**
+    /**
      * 对数据表中的单行或多行记录执行修改 GET参数id为数字或逗号分隔的数字
      *
      * @param string $table 模型名称,供M函数使用的参数
@@ -326,14 +328,14 @@ class Admin extends Base
         $id = array_unique((array)input('id/a', 0));
         $id = is_array($id) ? implode(',', $id) : $id;
 
-        if($where) {
+        if ($where) {
             $where = $where;
-        }else{
+        } else {
             $where = ['id' => array('in', $id)];
         }
 
         $msg = array_merge(['success' => '操作成功！', 'error' => '操作失败', 'url' => ''], (array)$msg);
-        
+
         if (Db::name($table)->where($where)->update($data) !== false) {
             return $this->success($msg['success'], '', $msg['url']);
         } else {
@@ -389,11 +391,10 @@ class Admin extends Base
      * @param array  $msg 执行正确和错误的消息 array('success'=>'','error'=>'', 'url'=>'','ajax'=>false)
      *                     url为跳转页面,ajax是否ajax方式(数字则为倒数计时秒数)
      */
-    public function delete($table, $where = [], $msg =['success' => '删除成功', 'error' => '删除失败', 'url' => 'refresh'])
+    public function delete($table, $where = [], $msg = ['success' => '删除成功', 'error' => '删除失败', 'url' => 'refresh'])
     {
         $data['status'] = -1;
         //$data['update_time'] = time();
         return $this->editRow($table, $data, $where, $msg);
     }
-
 }
