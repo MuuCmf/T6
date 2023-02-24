@@ -3,8 +3,8 @@ namespace app\common\model;
 
 use think\Model;
 
-class Base extends Model{
-
+class Base extends Model
+{
     public $status = [
         -1 => '删除', 
         0 => '禁用', 

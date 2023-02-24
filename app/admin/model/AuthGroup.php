@@ -1,4 +1,5 @@
 <?php
+
 namespace app\admin\model;
 
 use think\Model;
@@ -7,7 +8,7 @@ use think\facade\Db;
 /**
  * 用户组模型类
  */
-class AuthGroup extends Model 
+class AuthGroup extends Model
 {
     const TYPE_ADMIN                = 1;                    // 管理员用户组类型标识
     const MEMBER                    = 'member';
@@ -29,9 +30,9 @@ class AuthGroup extends Model
      */
     public function editData($data)
     {
-        if(!empty($data['id'])){
+        if (!empty($data['id'])) {
             $res = $this->update($data);
-        }else{
+        } else {
             $res = $this->insert($data);
         }
 
@@ -43,9 +44,10 @@ class AuthGroup extends Model
      * 默认返回正常状态的管理员用户组列表
      * @param array $where   查询条件,供where()方法使用
      */
-    public function getGroups($where=array()){
-        $map = ['status'=>1,'type'=>self::TYPE_ADMIN,'module'=>'admin'];
-        $map = array_merge($map,$where);
+    public function getGroups($where = array())
+    {
+        $map = ['status' => 1, 'type' => self::TYPE_ADMIN, 'module' => 'admin'];
+        $map = array_merge($map, $where);
         return $this->where($map)->select();
     }
 
@@ -53,41 +55,41 @@ class AuthGroup extends Model
      * 把用户添加到用户组,支持批量添加用户到用户组
      * 示例: 把uid=1的用户添加到group_id为1,2的组 `AuthGroupModel->addToGroup(1,'1,2');`
      */
-    public function addToGroup($uid = 0,$group_id = ''){
+    public function addToGroup($uid = 0, $group_id = '')
+    {
 
-        if($uid && $group_id){
-            $uid = is_array($uid)?implode(',',$uid):trim($uid,',');
-            $group_id = is_array($group_id)?$group_id:explode( ',',trim($group_id,',') );
+        if ($uid && $group_id) {
+            $uid = is_array($uid) ? implode(',', $uid) : trim($uid, ',');
+            $group_id = is_array($group_id) ? $group_id : explode(',', trim($group_id, ','));
 
             $Access = Db::name(self::AUTH_GROUP_ACCESS);
-            
+
             //为单个用户批量添加用户组时,先删除旧数据
-            $del = $Access->where(['uid'=>['in',$uid]])->delete();
-            
-            $uid_arr = explode(',',$uid);
-            
+            $del = $Access->where('uid', 'in', $uid)->delete();
+
+            $uid_arr = explode(',', $uid);
+
             $add = [];
 
-            foreach ($uid_arr as $u){
-                foreach ($group_id as $g){
-                    if( is_numeric($u) && is_numeric($g) ){
-                        $add[] = ['group_id'=>$g,'uid'=>$u];
+            foreach ($uid_arr as $u) {
+                foreach ($group_id as $g) {
+                    if (is_numeric($u) && is_numeric($g)) {
+                        $add[] = ['group_id' => $g, 'uid' => $u];
                     }
                 }
             }
             $res = $Access->insertAll($add);
-
-        }else{
+        } else {
             return false;
         }
-        
+
         if (!$res) {
-            if( count($uid_arr)==1 && count($group_id)==1 ){
+            if (count($uid_arr) == 1 && count($group_id) == 1) {
                 //无写入时的错误提示
                 $this->error = lang('_CANNEL_ALL_THE_GROUP_');
             }
             return false;
-        }else{
+        } else {
             return true;
         }
     }
@@ -99,22 +101,23 @@ class AuthGroup extends Model
      *                                         array('uid'=>lang('_USER_ID_'),'group_id'=>lang('_USER_GROUP_ID_'),'title'=>lang('_USER_GROUP_NAME_'),'rules'=>'用户组拥有的规则id,多个,号隔开'),
      *                                         ...)   
      */
-    static public function getUserGroup($uid){
+    static public function getUserGroup($uid)
+    {
         static $groups = array();
         if (isset($groups[$uid]))
             return $groups[$uid];
         $prefix = config('database.connections.mysql.prefix');
-        $user_groups = Db::table($prefix.self::AUTH_GROUP_ACCESS)
+        $user_groups = Db::table($prefix . self::AUTH_GROUP_ACCESS)
             ->alias('a')
             ->field('uid,group_id,title,description,rules')
-            ->join ($prefix.self::AUTH_GROUP.' g', 'a.group_id=g.id')
+            ->join($prefix . self::AUTH_GROUP . ' g', 'a.group_id=g.id')
             ->where("a.uid='$uid' and g.status='1'")
             ->select();
 
-        $groups[$uid]=$user_groups?$user_groups:array();
+        $groups[$uid] = $user_groups ? $user_groups : array();
         return $groups[$uid];
     }
-    
+
     /**
      * 返回用户拥有管理权限的扩展数据id列表
      * 
@@ -123,23 +126,24 @@ class AuthGroup extends Model
      * @param int     $session  结果缓存标识
      * @return array
      */
-    static public function getAuthExtend($uid, $type, $session){
-        if ( !$type ) {
+    static public function getAuthExtend($uid, $type, $session)
+    {
+        if (!$type) {
             return false;
         }
-        if ( $session ) {
+        if ($session) {
             $result = session($session);
         }
-        if ( $uid == get_uid() && !empty($result) ) {
+        if ($uid == get_uid() && !empty($result)) {
             return $result;
         }
         $prefix = config('database.connections.mysql.prefix');
-        $result = Db::table($prefix.self::AUTH_GROUP_ACCESS.' g')
-                        ->join($prefix.self::AUTH_EXTEND.' c on g.group_id=c.group_id')
-                        ->where("g.uid='$uid' and c.type='$type' and !isnull(extend_id)")
-                        ->getfield('extend_id',true);
-        if ( $uid == get_uid() && $session ) {
-            session($session,$result);
+        $result = Db::table($prefix . self::AUTH_GROUP_ACCESS . ' g')
+            ->join($prefix . self::AUTH_EXTEND . ' c on g.group_id=c.group_id')
+            ->where("g.uid='$uid' and c.type='$type' and !isnull(extend_id)")
+            ->getfield('extend_id', true);
+        if ($uid == get_uid() && $session) {
+            session($session, $result);
         }
         return $result;
     }
@@ -151,8 +155,9 @@ class AuthGroup extends Model
      * @return array
      *  array(2,4,8,13) 
      */
-    static public function getAuthCategories($uid){
-        return self::getAuthExtend($uid,self::AUTH_EXTEND_CATEGORY_TYPE,'AUTH_CATEGORY');
+    static public function getAuthCategories($uid)
+    {
+        return self::getAuthExtend($uid, self::AUTH_EXTEND_CATEGORY_TYPE, 'AUTH_CATEGORY');
     }
 
     /**
@@ -161,11 +166,12 @@ class AuthGroup extends Model
      * @param int     $gid  用户组id
      * @return array
      */
-    static public function getExtendOfGroup($gid,$type){
-        if ( !is_numeric($type) ) {
+    static public function getExtendOfGroup($gid, $type)
+    {
+        if (!is_numeric($type)) {
             return false;
         }
-        return Db::name(self::AUTH_EXTEND)->where( array('group_id'=>$gid,'type'=>$type) )->value('extend_id',true);
+        return Db::name(self::AUTH_EXTEND)->where(array('group_id' => $gid, 'type' => $type))->value('extend_id', true);
     }
 
     /**
@@ -175,10 +181,11 @@ class AuthGroup extends Model
      * @return array
      *  
      */
-    static public function getCategoryOfGroup($gid){
-        return self::getExtendOfGroup($gid,self::AUTH_EXTEND_CATEGORY_TYPE);
+    static public function getCategoryOfGroup($gid)
+    {
+        return self::getExtendOfGroup($gid, self::AUTH_EXTEND_CATEGORY_TYPE);
     }
-    
+
 
     /**
      * 批量设置用户组可管理的扩展权限数据
@@ -187,20 +194,21 @@ class AuthGroup extends Model
      * @param int|string|array $cid   分类id
      * 
      */
-    static public function addToExtend($gid,$cid,$type){
-        $gid = is_array($gid)?implode(',',$gid):trim($gid,',');
-        $cid = is_array($cid)?$cid:explode( ',',trim($cid,',') );
+    static public function addToExtend($gid, $cid, $type)
+    {
+        $gid = is_array($gid) ? implode(',', $gid) : trim($gid, ',');
+        $cid = is_array($cid) ? $cid : explode(',', trim($cid, ','));
 
         $Access = Db::name(self::AUTH_EXTEND);
-        $del = $Access->where( array('group_id'=>array('in',$gid),'type'=>$type) )->delete();
+        $del = $Access->where(array('group_id' => array('in', $gid), 'type' => $type))->delete();
 
-        $gid = explode(',',$gid);
+        $gid = explode(',', $gid);
         $add = array();
-        if( $del!==false ){
-            foreach ($gid as $g){
-                foreach ($cid as $c){
-                    if( is_numeric($g) && is_numeric($c) ){
-                        $add[] = array('group_id'=>$g,'extend_id'=>$c,'type'=>$type);
+        if ($del !== false) {
+            foreach ($gid as $g) {
+                foreach ($cid as $c) {
+                    if (is_numeric($g) && is_numeric($c)) {
+                        $add[] = array('group_id' => $g, 'extend_id' => $c, 'type' => $type);
                     }
                 }
             }
@@ -208,7 +216,7 @@ class AuthGroup extends Model
         }
         if ($Access->getDbError()) {
             return false;
-        }else{
+        } else {
             return true;
         }
     }
@@ -219,8 +227,9 @@ class AuthGroup extends Model
      * @param int|string|array $gid   用户组id
      * @param int|string|array $cid   分类id
      */
-    static public function addToCategory($gid,$cid){
-        return self::addToExtend($gid,$cid,self::AUTH_EXTEND_CATEGORY_TYPE);
+    static public function addToCategory($gid, $cid)
+    {
+        return self::addToExtend($gid, $cid, self::AUTH_EXTEND_CATEGORY_TYPE);
     }
 
 
@@ -229,8 +238,9 @@ class AuthGroup extends Model
      * @param int|string|array $gid   用户组id
      * @param int|string|array $cid   分类id
      */
-    public function removeFromGroup($uid,$gid){
-        return Db::name(self::AUTH_GROUP_ACCESS)->where( array( 'uid'=>$uid,'group_id'=>$gid) )->delete();
+    public function removeFromGroup($uid, $gid)
+    {
+        return Db::name(self::AUTH_GROUP_ACCESS)->where(array('uid' => $uid, 'group_id' => $gid))->delete();
     }
 
     /**
@@ -238,15 +248,16 @@ class AuthGroup extends Model
      *
      * @param int $group_id   用户组id
      */
-    static public function memberInGroup($group_id){
+    static public function memberInGroup($group_id)
+    {
         $prefix   = config('database.connections.mysql.prefix');
-        $l_table  = $prefix.self::MEMBER;
-        $r_table  = $prefix.self::AUTH_GROUP_ACCESS;
-        $list     = Db::table($l_table.' m') 
-                        ->field('m.uid,u.username,m.last_login_time,m.last_login_ip,m.status')
-                       ->join($r_table.' a', 'm.uid=a.uid')
-                       ->where(array('a.group_id'=>$group_id))
-                       ->select();
+        $l_table  = $prefix . self::MEMBER;
+        $r_table  = $prefix . self::AUTH_GROUP_ACCESS;
+        $list     = Db::table($l_table . ' m')
+            ->field('m.uid,u.username,m.last_login_time,m.last_login_ip,m.status')
+            ->join($r_table . ' a', 'm.uid=a.uid')
+            ->where(array('a.group_id' => $group_id))
+            ->select();
         return $list;
     }
 
@@ -254,23 +265,24 @@ class AuthGroup extends Model
      * 检查id是否全部存在
      * @param array|string $group_id  用户组id列表
      */
-    public function checkId($modelname,$group_id,$msg = '以下id不存在:'){
-        if(is_array($group_id)){
+    public function checkId($modelname, $group_id, $msg = '以下id不存在:')
+    {
+        if (is_array($group_id)) {
             $count = count($group_id);
-            $ids   = implode(',',$group_id);
-        }else{
-            $group_id   = explode(',',$group_id);
+            $ids   = implode(',', $group_id);
+        } else {
+            $group_id   = explode(',', $group_id);
             $count = count($group_id);
             $ids   = $group_id;
         }
 
-        $s = Db::name($modelname)->where(['id'=>['in',$ids]])->field('id')->find();
+        $s = Db::name($modelname)->where(['id' => ['in', $ids]])->field('id')->find();
 
-        if($s){
+        if ($s) {
             return true;
-        }else{
-            $diff = implode(',',array_diff($group_id,$s));
-            $this->error = $msg.$diff;
+        } else {
+            $diff = implode(',', array_diff($group_id, $s));
+            $this->error = $msg . $diff;
             return false;
         }
     }
@@ -279,8 +291,8 @@ class AuthGroup extends Model
      * 检查用户组是否全部存在
      * @param array|string $gid  用户组id列表
      */
-    public function checkGroupId($gid){
-        return $this->checkId('AuthGroup',$gid, '以下用户组id不存在:');
+    public function checkGroupId($gid)
+    {
+        return $this->checkId('AuthGroup', $gid, '以下用户组id不存在:');
     }
 }
-

@@ -33,7 +33,7 @@ class Config extends Common
      */
     public function index()
     {
-        if (Request()->isPost()) {
+        if (request()->isPost()) {
             $aNickname = input('post.nickname', '', 'text');
             $aSex = input('post.sex', 0, 'intval');
             $aSignature = input('post.signature', '', 'text');
@@ -164,7 +164,7 @@ class Config extends Common
      */
     public function edit()
     {
-        if (\request()->post()){
+        if (request()->isPost()){
             $birthday_format = date_parse_from_format('Y年m月d日',$this->params['birthday']);
             $birthday = mktime(0,0,0,$birthday_format['month'],$birthday_format['day'],$birthday_format['year']);
             $birthday = date('Y-m-d',$birthday);
@@ -188,25 +188,25 @@ class Config extends Common
      */
     public function mobile()
     {
-        $uid = request()->uid;
+        $uid = get_uid();
         $mobile = input('post.mobile');
         $code = input('post.code');
 
         if (empty($mobile)){
-            $this->error('请输入手机号');
+            return $this->error('请输入手机号');
         }
         if (empty($code)){
-            $this->error('请输入验证码');
+            return $this->error('请输入验证码');
         }
         $verifyModel = new Verify();
         if (!$verifyModel->checkVerify($mobile, 'mobile', $code)) {
-            $this->error('验证码错误');
+            return $this->error('验证码错误');
         }
 
         $memberModel = new Member;
         $has_bind = $memberModel->where('mobile',$mobile)->count();
         if ($has_bind > 0){
-            $this->error('当前手机号已被他人绑定');
+            return $this->error('当前手机号已被他人绑定');
         }
         $data = ['uid' => $uid,'mobile' => $mobile];
         $res = $memberModel->edit($data);
@@ -219,26 +219,27 @@ class Config extends Common
     /**
      * 绑定邮件
      */
-    public function email(){
-        $uid = request()->uid;
+    public function email()
+    {
+        $uid = get_uid();
         $email = input('post.email');
         $code = input('post.code');
 
         if (empty($email)){
-            $this->error('请输入邮箱');
+            return $this->error('请输入邮箱');
         }
         if (empty($code)){
-            $this->error('请输入验证码');
+            return $this->error('请输入验证码');
         }
         $verifyModel = new Verify();
         if (!$verifyModel->checkVerify($email, 'email', $code)) {
-            $this->error('验证码错误');
+            return $this->error('验证码错误');
         }
         $memberModel = new Member;
 
         $has_bind = $memberModel->where('email',$email)->count();
         if ($has_bind > 0){
-            $this->error('当前邮箱已被他人绑定');
+            return $this->error('当前邮箱已被他人绑定');
         }
         $data = ['uid' => $uid,'email' => $email];
         $res = $memberModel->edit($data);

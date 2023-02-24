@@ -4,21 +4,43 @@ namespace app\common\model;
 use app\admin\model\AuthGroup;
 use app\common\model\ActionLog;
 use think\Exception;
-use think\Model;
 use think\facade\Db;
 use think\facade\Config;
 
 /**
  * 会员模型
  */
-class Member extends Model
+class Member extends Base
 {
-    public $error;
     protected $autoWriteTimestamp = true;
 
     //自动完成
     protected $insert = ['reg_ip'];
     protected $update = ['update_time'];
+
+    /**
+     * 编辑/新增数据
+     *
+     * @param      <type>  $data   The data
+     * @return     <type>  ( description_of_the_return_value )
+     */
+    public function edit($data)
+    {
+        if(!empty($data['uid'])){
+            $res = $this->update($data, ['uid' => $data['uid']]);
+            return $data['uid'];
+        }else{
+            // 初始密码
+            $data['password'] = user_md5('123456', Config::get('auth.auth_key'));
+            $res = $this->save($data);
+        }
+
+        if(!empty($this->id)){
+            return $this->id;
+        }
+
+        return $res;
+    }
 
     /**
      * 注册一个新用户
@@ -632,16 +654,6 @@ class Member extends Model
             $result = true;
         }
         return $result;
-    }
-
-    public function edit($data){
-        if ($data['uid']){
-            $result = $this->where('uid',$data['uid'])->update($data);
-            if ($result !== false){
-                return true;
-            }
-        }
-        return false;
     }
 
     /**
