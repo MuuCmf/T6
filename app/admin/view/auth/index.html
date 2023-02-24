@@ -55,7 +55,11 @@
 				{else/}
 				<a class="btn btn-sm btn-info ajax-get" href="{:url('Auth/changeStatus?method=resumeGroup&id='.$vo['id'])}" >启用</a>
 				{/eq}
-				<a class="btn btn-sm btn-danger confirm ajax-get" href="{:url('Auth/changeStatus?method=deleteGroup&id='.$vo['id'])}" >删除</a>
+				{if $vo.id == 1 || $vo.id == 2 || $vo.id ==3}
+				<a class="btn btn-sm btn-danger disabled">删除</a>
+				{else /}
+				<a class="btn btn-sm btn-danger confirm ajax-get " href="{:url('Auth/changeStatus?method=deleteGroup&id='.$vo['id'])}" >删除</a>
+				{/if}
 	            </td>
 		</tr>
 		{/volist}
