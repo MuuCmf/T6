@@ -1,4 +1,5 @@
 <?php
+
 namespace app\admin\controller;
 
 use think\facade\Db;
@@ -14,26 +15,19 @@ class Auth extends Admin
     }
 
     public function index()
-    {   
-        $map[] = ['module','=','admin'];
-        $map[] = ['status','>',-1];
+    {
+        $map[] = ['module', '=', 'admin'];
+        $map[] = ['status', '>', -1];
         $list = Db::name('AuthGroup')->where($map)->order('id asc')->select()->toArray();
         $list = int_to_string($list);
 
         $this->setTitle('用户组管理');
         View::assign('_list', $list);
         View::assign('_use_tip', true);
-        
+        // 记录当前列表页的cookie
+        cookie('__forward__', $_SERVER['REQUEST_URI']);
+        // 输出模板
         return View::fetch();
-    }
-
-    /**
-     * 创建用户组
-     */
-    public function createGroup()
-    {
-        $this->setTitle('创建用户组');
-        return View::fetch('edit_group');
     }
 
     /**
@@ -41,45 +35,37 @@ class Auth extends Admin
      */
     public function editGroup()
     {
-        $id = input('id',0,'intval');
-        $auth_group = Db::name('AuthGroup')->where(['module' => 'admin', 'type' => AuthGroup::TYPE_ADMIN])->find((int)$id);
-
-        View::assign('auth_group', $auth_group);
-        $this->setTitle('编辑用户组');
-
-        return View::fetch();
-    }
-
-    /**
-     * 用户组数据写入/更新
-     */
-    public function writeGroup()
-    {
-        $data = input();
-        if (isset($data['rules']) && !empty($data['rules'])) {
-            sort($data['rules']);
-            $data['rules'] = implode(',', array_unique($data['rules']));
-        }else{
-            $data['rules'] = '';
-        }
-
-        $data['module'] = 'admin';
-        $data['type'] = AuthGroup::TYPE_ADMIN;
-        
-        if ($data) {
-            $AuthGroup = new AuthGroup();
-            $res = $AuthGroup->editData($data);
-            if ($res === false) {
-                return $this->error('操作失败');
+        $id = input('id', 0, 'intval');
+        if (request()->isPost()) {
+            $data = input();
+            if (isset($data['rules']) && !empty($data['rules'])) {
+                sort($data['rules']);
+                $data['rules'] = implode(',', array_unique($data['rules']));
             } else {
-                $back_url = url('admin/Auth/index');
-                if(!empty($data['back_url'])){
-                    $back_url = $data['back_url'];
+                $data['rules'] = '';
+            }
+
+            $data['module'] = 'admin';
+            $data['type'] = AuthGroup::TYPE_ADMIN;
+
+            if ($data) {
+                $AuthGroup = new AuthGroup();
+                $res = $AuthGroup->editData($data);
+                if ($res === false) {
+                    return $this->error('操作失败');
+                } else {
+                    return $this->success('操作成功!', $res, cookie('__forward__'));
                 }
-                return $this->success('操作成功!',$back_url);
+            } else {
+                return $this->error('操作失败');
             }
         } else {
-            return $this->error('操作失败');
+            $auth_group = Db::name('AuthGroup')->where(['module' => 'admin', 'type' => AuthGroup::TYPE_ADMIN])->find((int)$id);
+
+            View::assign('auth_group', $auth_group);
+            $this->setTitle('编辑用户组');
+
+            return View::fetch();
         }
     }
 
@@ -89,7 +75,7 @@ class Auth extends Admin
     public function changeStatus($method = null)
     {
         $ids = input('id/a');
-        
+
         if (empty($ids)) {
             return $this->error('请选择要操作的数据');
         }
@@ -102,7 +88,7 @@ class Auth extends Admin
                 return $this->resume('AuthGroup');
                 break;
             case 'deletegroup':
-                if(in_array(1, $ids) || in_array(2, $ids) || in_array(3, $ids)){
+                if (in_array(1, $ids) || in_array(2, $ids) || in_array(3, $ids)) {
                     return $this->error('系统默认组禁止删除');
                 }
                 return $this->delete('AuthGroup');
@@ -134,7 +120,7 @@ class Auth extends Admin
             ['a.group_id', '=', $group_id],
             ['status', '>=', 0]
         ];
-        $list = Db::table($l_table . ' m')->join($r_table . ' a ',' m.uid=a.uid')->where($where)->order('m.uid desc')
+        $list = Db::table($l_table . ' m')->join($r_table . ' a ', ' m.uid=a.uid')->where($where)->order('m.uid desc')
             ->paginate([
                 'list_rows' => 20,
                 'query' => [
@@ -188,23 +174,23 @@ class Auth extends Admin
         $group_id = input('group_id', 0, 'intval');
         $group = Db::name('AuthGroup')->find($group_id);
         View::assign('this_group', $group);
-        
+
         // 更新权限菜单
         $this->updateRules();
         // 权限节点
         $node_list = $this->returnNodes();
-        
+
         View::assign('node_list', $node_list);
         // 用户权限组
         $auth_group = Db::name('AuthGroup')->where(['status' => 1, 'module' => 'admin', 'type' => AuthGroup::TYPE_ADMIN])->field('id,title,rules')->select()->toArray();
         View::assign('auth_group', $auth_group);
-        
+
         $map = ['module' => 'admin', 'type' => AuthRule::RULE_MAIN, 'status' => 1];
-        $main_rules = Db::name('AuthRule')->where($map)->column('id','name');
+        $main_rules = Db::name('AuthRule')->where($map)->column('id', 'name');
         View::assign('main_rules', $main_rules);
 
         $map = ['module' => 'admin', 'type' => AuthRule::RULE_URL, 'status' => 1];
-        $child_rules = Db::name('AuthRule')->where($map)->column('id','name');
+        $child_rules = Db::name('AuthRule')->where($map)->column('id', 'name');
         View::assign('auth_rules', $child_rules);
 
         return View::fetch();
@@ -221,11 +207,11 @@ class Auth extends Admin
 
         $AuthRule = new AuthRule();
         //status全部取出,以进行更新
-        $map = [['module','=', 'admin'],['type','in', '1,2']];
+        $map = [['module', '=', 'admin'], ['type', 'in', '1,2']];
         //需要更新和删除的节点必然位于$rules
         $rules = $AuthRule->where($map)->order('name')->select()->toArray();
         //构建insert数据
-        $data = [];//保存需要插入和更新的新节点
+        $data = []; //保存需要插入和更新的新节点
         foreach ($nodes as $value) {
             $temp['name'] = $value['url'];
             $temp['title'] = $value['title'];
@@ -236,14 +222,14 @@ class Auth extends Admin
                 $temp['type'] = AuthRule::RULE_MAIN;
             }
             $temp['status'] = 1;
-            $data[strtolower($temp['name'] . $temp['module'] . $temp['type'])] = $temp;//去除重复项
+            $data[strtolower($temp['name'] . $temp['module'] . $temp['type'])] = $temp; //去除重复项
         }
-        $update = [];//保存需要更新的节点
-        $ids = [];//保存需要删除的节点的id
+        $update = []; //保存需要更新的节点
+        $ids = []; //保存需要删除的节点的id
         foreach ($rules as $index => $rule) {
             $key = strtolower($rule['name'] . $rule['module'] . $rule['type']);
-            if (isset($data[$key])) {//如果数据库中的规则与配置的节点匹配,说明是需要更新的节点
-                $data[$key]['id'] = $rule['id'];//为需要更新的节点补充id值
+            if (isset($data[$key])) { //如果数据库中的规则与配置的节点匹配,说明是需要更新的节点
+                $data[$key]['id'] = $rule['id']; //为需要更新的节点补充id值
                 $update[] = $data[$key];
                 unset($data[$key]);
                 unset($rules[$index]);
@@ -260,9 +246,9 @@ class Auth extends Admin
                 }
             }
         }
-        
+
         if (count($ids)) {
-            $AuthRule->where('id','in', implode(',', $ids))->update(['status' => -1]);
+            $AuthRule->where('id', 'in', implode(',', $ids))->update(['status' => -1]);
             //删除规则是否需要从每个用户组的访问授权表中移除该规则?
         }
 
@@ -294,7 +280,7 @@ class Auth extends Admin
                 unset($value['module']);
             }
             unset($value);
-            
+
             //由于menu表id更改为字符串格式，root必须设置成字符串0
             $nodes = list_to_tree($list, 'id', 'pid', 'operator', '0');
 
@@ -304,7 +290,6 @@ class Auth extends Admin
                     unset($nodes[$key]['operator']);
                 }
             }
-
         } else {
             $nodes = Db::name('Menu')->field('title,url,tip,pid,module')->order('sort asc')->select()->toArray();
             foreach ($nodes as &$value) {
@@ -319,9 +304,10 @@ class Auth extends Admin
         return $nodes;
     }
 
-    public function check_url_re( $value = []){
+    public function check_url_re($value = [])
+    {
 
-        if(empty($value['module']) || $value['module'] == ''){
+        if (empty($value['module']) || $value['module'] == '') {
             if (stripos($value['url'], app('http')->getName()) !== 0) {
                 $value['url'] = app('http')->getName() . '/' . $value['url'];
             }
@@ -329,5 +315,4 @@ class Auth extends Admin
 
         return $value;
     }
-
 }
