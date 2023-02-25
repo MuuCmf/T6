@@ -9,6 +9,9 @@
     <div class="button-box clearfix">
 
         <div class="col-md-6">
+            <a type="button" class="btn btn-info" href="{:url('edit')}">
+                新增
+            </a>
             <button class="btn btn-success ajax-post confirm" url="{:url('status',array('method'=>'resume'))}" target-form="ids">
                 启用
             </button>
@@ -22,7 +25,7 @@
                 重置密码
             </button>
             
-            <span style="font-size: 14px;color: #999898;margin-left: 11px;">（重置密码后新密码为“123456”）</span>
+            <span style="font-size: 14px;color: #999898;margin-left: 11px;">（新增和重置密码默认为“123456”）</span>
         </div>
 
         <!-- 高级搜索 -->

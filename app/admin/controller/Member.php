@@ -103,6 +103,8 @@ class Member extends Admin
         View::assign('title', '用户列表');
         View::assign('pager', $pager);
         View::assign('_list', $list_arr);
+        // 记录当前列表页的cookie
+        cookie('__forward__', $_SERVER['REQUEST_URI']);
 
         return View::fetch();
     }
@@ -202,7 +204,7 @@ class Member extends Admin
             $authGroup->addToGroup($uid, $data['auth_group']);
             /*用户组END*/
 
-            return $this->success('保存成功');
+            return $this->success('保存成功', $uid, Cookie('__forward__'));
         } else {
             // 获取用户数据
             $member = $this->MemberModel->where('uid', '=', $uid)->find();
