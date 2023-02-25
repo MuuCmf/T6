@@ -377,7 +377,6 @@ class Member extends Base
             }
 
             if (is_array($member) && $member['status'] = 1) {
-
                 if($fields == '*' || strpos($fields, 'avatar') !== false){
                     // 头像
                     if(empty($member['avatar'])){

@@ -354,12 +354,12 @@ class Attachment extends Base
         }else{
             // 远程图片处理
             if(strtolower($driver) == 'aliyun'){
-                $src = config('extend.OSS_ALIYUN_BUCKET_DOMAIN') . '/attachment/' . $attachment . '?x-oss-process=image/resize,m_fill,h_'.$height.',w_'.$width;
+                $src = config('extend.OSS_ALIYUN_BUCKET_DOMAIN') . '\/attachment\/' . $attachment . '?x-oss-process=image/resize,m_fill,h_'.$height.',w_'.$width;
                 $info['src'] = $src;
             }
 
             if(strtolower($driver) == 'tencent'){
-                $src = config('extend.COS_TENCENT_BUCKET_DOMAIN') . '/attachment/' . $attachment . '?imageView2/1/w/'.$width.'/h/'.$height;
+                $src = config('extend.COS_TENCENT_BUCKET_DOMAIN') . '\/attachment\/' . $attachment . '?imageView2/1/w/'.$width.'/h/'.$height;
                 $info['src'] = $src;
             }
 
@@ -480,11 +480,11 @@ class Attachment extends Base
         }else{
             // 远程图片处理
             if(strtolower($driver) == 'aliyun'){
-                $attachment = config('extend.OSS_ALIYUN_BUCKET_DOMAIN') . '/' . $attachment . '?x-oss-process=image/crop,x_'.$x.',y_'.$y.',w_'.$w.',h_'.$h;
+                $attachment = config('extend.OSS_ALIYUN_BUCKET_DOMAIN') . '\/attachment\/' . $attachment . '?x-oss-process=image/crop,x_'.$x.',y_'.$y.',w_'.$w.',h_'.$h;
             }
 
             if(strtolower($driver) == 'tencent'){
-                $attachment = config('extend.COS_TENCENT_BUCKET_DOMAIN') . '/' . $attachment . '?imageMogr2/cut/' . $w .'x' . $h .'x'. $x .'x' . $y;
+                $attachment = config('extend.COS_TENCENT_BUCKET_DOMAIN') . '\/attachment\/' . $attachment . '?imageMogr2/cut/' . $w .'x' . $h .'x'. $x .'x' . $y;
             }
         }
 
