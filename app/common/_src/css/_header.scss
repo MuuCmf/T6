@@ -21,7 +21,7 @@
       
       .logo {
         float: left;
-        width: 13%;
+        width: 156px;
         >h1 {
           margin: 0;
           padding: 5px 0;
@@ -34,7 +34,7 @@
       .navigation {
         float: left;
         font-size: 15px;
-        margin-left: 60px;
+        margin-left: 40px;
         padding-right: 10px;
         width: 726px;
         height: 60px;
@@ -178,9 +178,9 @@
       
       .attr-nav {
         float: right;
-        display: inline-block;
         margin-left: 13px;
         height: 60px;
+        max-width: 265px;
 
         .information{
           float: left;
@@ -228,10 +228,17 @@
               text-decoration:none;
             }
             >img{
-              display: inline-block;
+              display: block;
+              float: left;
               width: 40px;
               height: 40px;
               margin-right: 10px;
+            }
+            .nickname {
+              margin-left: 40px;
+              line-height: 40px;
+              max-width: 145px;
+              display: block;
             }
           }
           .dropdown-menu{

@@ -21,63 +21,61 @@
             </div>
             <div class="attr-nav">
                 {if condition="is_login()"}
-                <div class="clearfix">
-                    <div class="information" >
-                        <span class="information-quantity hidden">
-                            
-                        </span>
-                        <a class="information-icon"data-remote="{:url('ucenter/message/modal')}" data-show-header="false" data-class-name="message-modal" data-toggle="modal">
-                            <i class="iconfont">&#xe741;</i>
-                        </a>
-                    </div>
-                    <div class="user-info">
-                        <a class="dropdown-toggle dropdown-toggle-avatar" data-toggle="dropdown" role="button">
-                            <img class="avatar img-circle" src="{$common_header_user.avatar64}"/>
-                            <span>{$common_header_user.nickname}</span>
-                        </a>
+                <div class="information" >
+                    <span class="information-quantity hidden">
                         
-                        <ul class="dropdown-menu " role="menu">
-                            {volist name="user_nav" id="vo"}
-                            <li>
-                                <a href="{:get_nav_url($vo['url'])}"
-                                target="{eq name='vo.target' value='1'}_blank{else/}_self{/eq}">
-                                    <span>{$vo.title}</span>
-                                </a>
-                            </li>
-                            {/volist}
-                            {if condition="check_auth('admin/Index/index')"}
-                            <li>
-                                <a href="{:url('admin/Index/index')}" target="_blank">
-                                    管理后台
-                                </a>
-                            </li>
-                            {/if}
-                            <li>
-                                <a data-url="{:url('ucenter/Common/logout')}" event-node="logout">
-                                    退出
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-                    <script>
-                        $(function(){
-                            // 获取未读消息数量
-                            var url = '{:url("api/message/unread")}';
-                            $.post(url, {
-                                shopid : 0,
-                            }, function (res) {
-                                if(res.code == 200){
-                                    if(res.data.friendly_num == 0){
-                                        $('.information-quantity').addClass('hidden');
-                                    }else{
-                                        $('.information-quantity').removeClass('hidden');
-                                        $('.information-quantity').text(res.data.friendly_num);
-                                    }
-                                }
-                            })
-                        })
-                    </script>
+                    </span>
+                    <a class="information-icon"data-remote="{:url('ucenter/message/modal')}" data-show-header="false" data-class-name="message-modal" data-toggle="modal">
+                        <i class="iconfont">&#xe741;</i>
+                    </a>
                 </div>
+                <div class="user-info">
+                    <a class="dropdown-toggle dropdown-toggle-avatar" data-toggle="dropdown" role="button">
+                        <img class="avatar img-circle" src="{$common_header_user.avatar64}"/>
+                        <span class="nickname text-ellipsis">{$common_header_user.nickname}</span>
+                    </a>
+                    
+                    <ul class="dropdown-menu " role="menu">
+                        {volist name="user_nav" id="vo"}
+                        <li>
+                            <a href="{:get_nav_url($vo['url'])}"
+                            target="{eq name='vo.target' value='1'}_blank{else/}_self{/eq}">
+                                <span>{$vo.title}</span>
+                            </a>
+                        </li>
+                        {/volist}
+                        {if condition="check_auth('admin/Index/index')"}
+                        <li>
+                            <a href="{:url('admin/Index/index')}" target="_blank">
+                                管理后台
+                            </a>
+                        </li>
+                        {/if}
+                        <li>
+                            <a data-url="{:url('ucenter/Common/logout')}" event-node="logout">
+                                退出
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <script>
+                    $(function(){
+                        // 获取未读消息数量
+                        var url = '{:url("api/message/unread")}';
+                        $.post(url, {
+                            shopid : 0,
+                        }, function (res) {
+                            if(res.code == 200){
+                                if(res.data.friendly_num == 0){
+                                    $('.information-quantity').addClass('hidden');
+                                }else{
+                                    $('.information-quantity').removeClass('hidden');
+                                    $('.information-quantity').text(res.data.friendly_num);
+                                }
+                            }
+                        })
+                    })
+                </script>
                 {else/}
                 <ul>
                     <li class="login verticalbar">
