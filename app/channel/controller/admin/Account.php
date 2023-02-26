@@ -1,11 +1,11 @@
 <?php
+
 namespace app\channel\controller\admin;
 
 use app\admin\controller\Admin as MuuAdmin;
 use app\channel\logic\TemplateMessage;
 use app\channel\model\WechatAutoReply;
 use app\channel\model\WechatConfig;
-use think\Exception;
 use think\facade\View;
 
 /**
@@ -13,7 +13,8 @@ use think\facade\View;
  * Class OfficialAccount
  * @package app\admin\controller
  */
-class Account extends MuuAdmin {
+class Account extends MuuAdmin
+{
     private $wechatConfigModel;
     private $autoReplyModel;
     function __construct()
@@ -25,14 +26,14 @@ class Account extends MuuAdmin {
 
     public function menu()
     {
-        if (request()->isAjax()){
+        if (request()->isAjax()) {
             $menu = $data = $this->wechatConfigModel->where(['shopid' => $this->shopid])->value('menu_json');
-            if ($menu){
-                $menu = json_decode($menu,true);
-            }else{
+            if ($menu) {
+                $menu = json_decode($menu, true);
+            } else {
                 $menu = [];
             }
-            return $this->result(200,'success',$menu);
+            return $this->result(200, 'success', $menu);
         }
         $this->setTitle('菜单管理');
 
@@ -43,21 +44,21 @@ class Account extends MuuAdmin {
      */
     public function saveMenu()
     {
-        if (request()->isAjax()){
+        if (request()->isAjax()) {
             $json = input('post.json');
             $menu = json_decode($json, true);
             try {
                 $res = \app\channel\facade\wechat\OfficialAccount::createMenu($menu);
 
-                if ($res['errcode'] != 0){
+                if ($res['errcode'] != 0) {
                     return $this->error($res['errmsg']);
                 }
-                $updateRes = $this->wechatConfigModel->where('shopid',$this->shopid)->save(['menu_json'=>$json]);
-                if ($updateRes){
-                    return $this->success('更新成功','refresh');
+                $updateRes = $this->wechatConfigModel->where('shopid', $this->shopid)->save(['menu_json' => $json]);
+                if ($updateRes) {
+                    return $this->success('更新成功', 'refresh');
                 }
                 return $this->error('更新失败');
-            }catch (\Exception $e){
+            } catch (\Exception $e) {
                 return $this->error($e->getMessage());
             }
         }
@@ -72,18 +73,17 @@ class Account extends MuuAdmin {
             $config['shopid'] = $this->shopid;
 
             $res = $this->wechatConfigModel->edit($config);
-            if ($res){
-                return $this->success('保存成功',$config, 'refresh');
+            if ($res) {
+                return $this->success('保存成功', $config, 'refresh');
             }
             return $this->error('网络异常，请稍后再试');
-
-        }else{
+        } else {
             //实例化公众号
             $app = \app\channel\facade\wechat\OfficialAccount::getApp();
 
             //查询微信平台配置
             $data = $this->wechatConfigModel->getWechatConfigByShopId($this->shopid);
-            if (!$data){
+            if (!$data) {
                 $data['id'] = 0;
                 $data['cover'] = "";
                 $data['url'] = $this->wechatConfigModel->callbackUrl($this->shopid);
@@ -103,12 +103,12 @@ class Account extends MuuAdmin {
         $this->setTitle('自动回复');
         $params = input('get.');
         $where = [
-            ['status','>=',0],
-            ['shopid','=',$this->shopid]
+            ['status', '>=', 0],
+            ['shopid', '=', $this->shopid]
         ];
-        if (isset($params['keyword']) && !empty($params['keyword'])) $where[] = ['keyword','like','%' . $params['keyword'] . '%'];
-        $page = max(1,isset($params['page']) ?? $params['page']);
-        $list = $this->autoReplyModel->where($where)->field('*,type as type_str,status as status_str,msg_type as msg_type_str')->order('sort','DESC')->page($page,20)->paginate();
+        if (isset($params['keyword']) && !empty($params['keyword'])) $where[] = ['keyword', 'like', '%' . $params['keyword'] . '%'];
+        $page = max(1, isset($params['page']) ?? $params['page']);
+        $list = $this->autoReplyModel->where($where)->field('*,type as type_str,status as status_str,msg_type as msg_type_str')->order('sort', 'DESC')->page($page, 20)->paginate();
         // 获取分页显示
         $page = $list->render();
         unset($val);
@@ -139,24 +139,24 @@ class Account extends MuuAdmin {
             $data['status'] = input('post.status', 0, 'intval');
             $data['shopid'] = $this->shopid;
             $data['id'] = $aId;
-            if ($msg_type == 1){
+            if ($msg_type == 1) {
                 $data['msg_type'] = 'text';
-            }else{
+            } else {
                 $data['msg_type'] = input('post.material_type');
             }
             //验证文本唯一性
-            if (!empty($data['text']) && !$this->autoReplyModel->checkUnique('text',$data['text'],$aId)){
+            if (!empty($data['text']) && !$this->autoReplyModel->checkUnique('text', $data['text'], $aId)) {
                 $this->error('内容重复');
             }
             $res = $this->autoReplyModel->edit($data);
-            if($res){
+            if ($res) {
                 return $this->success(($aId == 0 ? '新增' : '编辑') . '成功', '', url('channel/admin.account/autoReply'));
-            }else{
+            } else {
                 return $this->error('提交失败');
             }
-        }else {
+        } else {
             $data = ['id' => $aId];
-            if ($aId > 0){
+            if ($aId > 0) {
                 $data = $this->autoReplyModel->find(['id' => input('id')]);
             }
             View::assign([
@@ -199,14 +199,15 @@ class Account extends MuuAdmin {
     /**
      * 素材列表
      */
-    public function material(){
-        if (request()->isAjax()){
+    public function material()
+    {
+        if (request()->isAjax()) {
             $params = input('post.');
             $page = ($params['page'] - 1) * 20;
-            $data = \app\channel\facade\wechat\OfficialAccount::getMaterialList($params['type'], $page,20);
-            if (isset($data['item'])){
-                return  $this->success('success',$data);
-            }elseif (isset($data['errmsg'])){
+            $data = \app\channel\facade\wechat\OfficialAccount::getMaterialList($params['type'], $page, 20);
+            if (isset($data['item'])) {
+                return  $this->success('success', $data);
+            } elseif (isset($data['errmsg'])) {
                 return $this->error($data['errmsg']);
             }
             return $this->error('请检查公众号配置');
@@ -217,8 +218,9 @@ class Account extends MuuAdmin {
      * @title 模板消息通知
      * @return \think\response\View
      */
-    public function templateMessage(){
-        if (request()->isAjax()){
+    public function templateMessage()
+    {
+        if (request()->isAjax()) {
             $params = request()->post();
             $data = [
                 'switch'      => $params['switch'],
@@ -227,17 +229,17 @@ class Account extends MuuAdmin {
                 'tmplmsg'     => $params['tmplmsg']
             ];
             $data = json_encode($data);
-            $result = $this->wechatConfigModel->where('shopid',$this->shopid)->save(['tmplmsg' => $data]);
-            if ($result){
+            $result = $this->wechatConfigModel->where('shopid', $this->shopid)->save(['tmplmsg' => $data]);
+            if ($result) {
                 return $this->success('保存成功');
             }
             return $this->error('保存失败，请稍后再试');
         }
 
-        $type = 'weixin_h5';//当前模板消息类型
+        $type = 'weixin_h5'; //当前模板消息类型
         $TemplateMessageLogic = new TemplateMessage();
-        $detail = $this->wechatConfigModel->where('shopid',$this->shopid)->value('tmplmsg');
-        $detail = $TemplateMessageLogic->formatData($detail);//格式化原始数据
+        $detail = $this->wechatConfigModel->where('shopid', $this->shopid)->value('tmplmsg');
+        $detail = $TemplateMessageLogic->formatData($detail); //格式化原始数据
         View::assign([
             'type' => $type,
             'element' => $TemplateMessageLogic->oauth_type[$type],

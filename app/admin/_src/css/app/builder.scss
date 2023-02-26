@@ -53,6 +53,7 @@
 					font-weight:500;
 				}
 			}
+
 	
 			.focus, &:focus {
 				border-color: #09c;
@@ -151,6 +152,12 @@
 			}
 			.controls.editor {
 				width: 100%;
+			}
+
+			.help-block {
+				display: block;
+				margin: 5px 0;
+				color: #888;
 			}
 		}
 	
