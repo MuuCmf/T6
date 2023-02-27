@@ -14,6 +14,9 @@ class Auth extends Admin
         parent::__construct();
     }
 
+    /**
+     * 权限组列表
+     */
     public function index()
     {
         $map[] = ['module', '=', 'admin'];
