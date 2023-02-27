@@ -13,5 +13,5 @@ return [
     //开发者网站
     'website' => 'http://www.muucmf.com',
     //后台入口
-    'entry' => 'articles/admin.articles/lists',
+    'entry' => 'articles/admin.Articles/lists',
 ];
