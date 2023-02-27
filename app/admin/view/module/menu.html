@@ -70,7 +70,7 @@
                         </td>
                         <td class="text-right">
                             <a title="新增" class="btn btn-sm btn-success" href="{:url('medit',['pid' => $cmenu2['id'], 'app'=> $app])}"> + 新增 </a>
-                            <a title="编辑" class="btn btn-sm btn-info" href="{:url('medit',['id' => $cmenu2['id'],'pid'=> $cmenu2['pid'], 'app'=> $app])}">编辑</a>
+                            <a title="编辑" class="btn btn-sm btn-info" href="{:url('medit',['id' => $cmenu2['id'], 'pid'=> $cmenu2['pid'], 'app'=> $app])}">编辑</a>
                             <a title="删除" class="btn btn-sm btn-danger confirm ajax-get" title="删除" href="{:url('mdel',['ids' => $cmenu2['id'], 'app'=> $app])}">删除</a>
                         </td>
                     </tr>
@@ -100,7 +100,7 @@
                             {$cmenu3.hide_str}
                         </td>
                         <td class="text-right">
-                            <a title="编辑" class="btn btn-sm btn-info" href="{:url('medit',['id' => $cmenu3['id'],'app'=> $app])}">编辑</a>
+                            <a title="编辑" class="btn btn-sm btn-info" href="{:url('medit',['id' => $cmenu3['id'], 'pid' => $cmenu3['pid'], 'app'=> $app])}">编辑</a>
                             <a title="删除" data-role="delete" class="btn btn-sm btn-danger confirm ajax-get" title="删除" href="{:url('mdel',['ids' => $cmenu3['id'],'app'=> $app])}">删除</a>
                         </td>
                     </tr>

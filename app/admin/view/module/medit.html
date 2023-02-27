@@ -50,7 +50,6 @@
                 <div class="controls">
                     <select name="pid" class="form-select-size form-control" readonly>
                         {notempty name="Menus"}
-                        <option value="0">顶级菜单</option>
                         {volist name="Menus" id="menu"}
                             {if $pid == $menu.id}
                             <option value="{$menu.id}" selected>{:htmlspecialchars_decode($menu.title_show)}</option>

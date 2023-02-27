@@ -1,4 +1,5 @@
 <?php
+
 namespace app\admin\controller;
 
 use think\Exception;
@@ -39,69 +40,68 @@ class Module extends Admin
         $aType = input('type', 'installed', 'text');
         View::assign('type', $aType);
 
-        switch($aType){
+        switch ($aType) {
             case 'all':
                 $map = [];
                 $this->ModuleModel->reload();
-            break;
-            // 已安装
+                break;
+                // 已安装
             case 'installed':
-                $map[] = ['is_setup','=',1];
-            break;
-            // 未安装
+                $map[] = ['is_setup', '=', 1];
+                break;
+                // 未安装
             case 'uninstalled':
-                $map[] = ['is_setup','=',0];
+                $map[] = ['is_setup', '=', 0];
                 $this->ModuleModel->reload();
-            break;
+                break;
         };
 
         $upgradeServer = new UpgradeServer();
-        $modules = $this->ModuleModel->getListByPage($map,'sort desc,id desc','*',15);
+        $modules = $this->ModuleModel->getListByPage($map, 'sort desc,id desc', '*', 15);
         $cloud = new CloudServer();
-        foreach($modules as &$item){
+        foreach ($modules as &$item) {
             // 云端应用数据处理
-            if($item['source'] == 'cloud'){
+            if ($item['source'] == 'cloud') {
                 $result = $upgradeServer->cloudVersion([
                     'app_name' => $item['name'],
                     'appid'    => $item['appid']
                 ]);
                 $item['new_version'] = isset($result['data']['version']) ? $result['data']['version'] : $item['version'];
-                $item['upgrade'] = get_upgrade_status($item['version'],$item['new_version']) ? 1 : 0;
-                
+                $item['upgrade'] = get_upgrade_status($item['version'], $item['new_version']) ? 1 : 0;
+
                 $item['expired'] = 0;
                 $auth = $cloud->needAuthorization($item['name']);
-                if (is_array($auth) && $auth['code'] == 0 && $auth['data'] == 'end_auth'){
+                if (is_array($auth) && $auth['code'] == 0 && $auth['data'] == 'end_auth') {
                     $item['expired'] = 1;
                 }
             }
             // 本地应用数据处理
-            if($item['source'] == 'local'){
+            if ($item['source'] == 'local') {
                 // 获取文件配置信息
                 $info = $this->ModuleModel->getModule($item['name']);
             }
-            
+
             //获取应用图标
-            if(empty($item['icon'])){
+            if (empty($item['icon'])) {
                 //图标所在位置为模块静态目录下（推荐）
-                if(file_exists(PUBLIC_PATH . '/static/' . $item['name'] . '/images/icon.png')){
-                    $item['icon_100'] = $item['icon_200'] =$item['icon_300'] =$item['icon_400'] = '/static/'. $item['name'] .'/images/icon.png';
-                }else{
-                    $item['icon_100'] = $item['icon_200'] =$item['icon_300'] =$item['icon_400'] = '/static/admin/images/module_default_icon.png';
+                if (file_exists(PUBLIC_PATH . '/static/' . $item['name'] . '/images/icon.png')) {
+                    $item['icon_100'] = $item['icon_200'] = $item['icon_300'] = $item['icon_400'] = '/static/' . $item['name'] . '/images/icon.png';
+                } else {
+                    $item['icon_100'] = $item['icon_200'] = $item['icon_300'] = $item['icon_400'] = '/static/admin/images/module_default_icon.png';
                 }
-            }else{
+            } else {
                 $width = 100;
                 $height = 100;
                 $item['icon_100'] = get_thumb_image($item['icon'], intval($width), intval($height));
-                $item['icon_200'] = get_thumb_image($item['icon'], intval($width*2), intval($height*2));
-                $item['icon_300'] = get_thumb_image($item['icon'], intval($width*3), intval($height*3));
-                $item['icon_400'] = get_thumb_image($item['icon'], intval($width*4), intval($height*4));
+                $item['icon_200'] = get_thumb_image($item['icon'], intval($width * 2), intval($height * 2));
+                $item['icon_300'] = get_thumb_image($item['icon'], intval($width * 3), intval($height * 3));
+                $item['icon_400'] = get_thumb_image($item['icon'], intval($width * 4), intval($height * 4));
 
-                if(strpos($item['icon'], 'https://') !== false && file_exists(PUBLIC_PATH . '/static/' . $item['name'] . '/images/icon.png')){
+                if (strpos($item['icon'], 'https://') !== false && file_exists(PUBLIC_PATH . '/static/' . $item['name'] . '/images/icon.png')) {
                     //图标所在位置为模块静态目录下（推荐）
-                    $item['icon_100'] = $item['icon_200'] = $item['icon_300'] = $item['icon_400'] = '/static/'. $item['name'] .'/images/icon.png';
+                    $item['icon_100'] = $item['icon_200'] = $item['icon_300'] = $item['icon_400'] = '/static/' . $item['name'] . '/images/icon.png';
                 }
             }
-            
         }
         unset($item);
 
@@ -119,23 +119,23 @@ class Module extends Admin
      */
     public function edit()
     {
-        $id = input('id',0,'intval');
+        $id = input('id', 0, 'intval');
         $title = $id ? "编辑" : "新建";
         if (request()->isPost()) {
             $data = input();
-            
+
             $res = $this->ModuleModel->edit($data);
-            if($res){
+            if ($res) {
                 return $this->success($title . '成功', $res, cookie('__forward__'));
-            }else{
+            } else {
                 return $this->error($title . '失败');
             }
         }
 
-        if(!empty($id)){
+        if (!empty($id)) {
             $data = $this->ModuleModel->getDataById($id);
         }
-        View::assign('data',$data);
+        View::assign('data', $data);
 
         return View::fetch();
     }
@@ -147,24 +147,24 @@ class Module extends Admin
     {
         $name = input('name', '', 'text');
         $module = $this->ModuleModel->getModule($name, 'name, version, is_setup, source');
-        if(!empty($module)){
+        if (!empty($module)) {
             $upgradeServer = new UpgradeServer();
             $cloud = new CloudServer();
-            if($module['source'] == 'cloud'){
+            if ($module['source'] == 'cloud') {
                 //获取云端版本
                 $result = $upgradeServer->cloudVersion(['app_name' => $module['name']]);
                 $module['cloud_version'] = isset($result['data']['version']) ? $result['data']['version'] : $module['version'];
-                $module['upgrade'] = get_upgrade_status($module['version'],$module['cloud_version']) ? 1 : 0;
+                $module['upgrade'] = get_upgrade_status($module['version'], $module['cloud_version']) ? 1 : 0;
                 $module['remark'] = isset($result['data']['remark']) ? $result['data']['remark'] : '';
                 $module['expired'] = 0;
                 $auth = $cloud->needAuthorization($module['name']);
-                if (is_array($auth) && $auth['code'] == 0 && $auth['data'] == 'end_auth'){
+                if (is_array($auth) && $auth['code'] == 0 && $auth['data'] == 'end_auth') {
                     $module['expired'] = 1;
                 }
             }
 
             return $this->success('success', $module);
-        }else{
+        } else {
             return $this->error('应用不存在');
         }
     }
@@ -182,14 +182,13 @@ class Module extends Admin
             //执行guide中的内容
             try {
                 $res = $this->ModuleModel->install($aName);
-                
+
                 if ($res === true) {
                     return $this->success('安装成功。', '', cookie('__forward__'));
-                } 
+                }
             } catch (Exception $e) {
                 return $this->error($e->getMessage());
             }
-
         } else {
             View::assign('module', $module);
             return View::fetch();
@@ -203,9 +202,9 @@ class Module extends Admin
     {
         $id = input('id', 0, 'intval');
         $module = $this->ModuleModel->where('id', $id)->find();
-        
+
         if (request()->isPost()) {
-            $aWithoutData = input('withoutData', 1, 'intval');//是否保留数据
+            $aWithoutData = input('withoutData', 1, 'intval'); //是否保留数据
             $res = $this->ModuleModel->uninstall($id, $aWithoutData);
 
             if ($res == true) {
@@ -213,11 +212,11 @@ class Module extends Admin
                 Db::name('menu')->where(['module' => $module['name']])->delete();
                 //删除module表中记录
                 $this->ModuleModel->where(['id' => $id])->delete();
-                return $this->success('卸载模块成功。','', cookie('__forward__'));
+                return $this->success('卸载模块成功。', '', cookie('__forward__'));
             } else {
                 return $this->error('卸载模块失败。');
             }
-        }else{
+        } else {
             View::assign('module', $module);
             return View::fetch();
         }
@@ -228,36 +227,37 @@ class Module extends Admin
      * 应用权限菜单首页
      * @return none
      */
-    public function menu(){
+    public function menu()
+    {
         $app = input('app', '', 'text');
-        View::assign('app',$app);
-        $title = input('title','','text');
-        $pid  = input('pid','0','text');
-        View::assign('pid',$pid);
+        View::assign('app', $app);
+        $title = input('title', '', 'text');
+        $pid  = input('pid', '0', 'text');
+        View::assign('pid', $pid);
         $map = [];
-        
+
         $list_map = [];
-        if(!empty($app)){
+        if (!empty($app)) {
             //获取上级数据
             $map['name'] = $app;
             $data = $this->ModuleModel->where($map)->find();
-            View::assign('data',$data);
+            View::assign('data', $data);
             $list_map[] = ['module', '=', $app];
         }
-        
-        if(!empty($title)){
-            $list_map['title'] = ['like','%'.$title.'%'];
+
+        if (!empty($title)) {
+            $list_map['title'] = ['like', '%' . $title . '%'];
         }
-        
+
         $list = $this->MenuModel->where($list_map)->order('sort asc')->select()->toArray();
-        foreach($list as &$val){
+        foreach ($list as &$val) {
             $val = $this->MenuModel->handle($val);
         }
         unset($val);
         // 转树结构
         $list = list_to_tree($list, 'id', 'pid', '_child', $pid);
-        View::assign('list',$list);
-        
+        View::assign('list', $list);
+
         // 记录当前列表页的cookie
         Cookie('__forward__', $_SERVER['REQUEST_URI']);
         $this->setTitle('后台菜单管理');
@@ -268,30 +268,30 @@ class Module extends Admin
     /**
      * 新增/编辑应用权限菜单
      */
-    public function medit(){
-        
-        if(request()->isPost()){
+    public function medit()
+    {
+
+        if (request()->isPost()) {
             $data = input('');
-            if($data['title'] == '') {
+            if ($data['title'] == '') {
                 return $this->error('菜单标题不能为空');
             }
-            if($data['url'] == '') {
+            if ($data['url'] == '') {
                 return $this->error('菜单链接不能为空');
             }
 
             $res = $this->MenuModel->edit($data);
-            if($res){
+            if ($res) {
                 //记录行为
                 action_log('update_menu', 'Menu', $data['id'], is_login());
                 return $this->success('保存成功', $res, cookie('__forward__'));
             } else {
                 return $this->error('保存失败');
             }
-            
         } else {
-            $id = input('id','0','text');
+            $id = input('id', '0', 'text');
             // 上级ID
-            $pid = input('pid','0','text');
+            $pid = input('pid', '0', 'text');
             View::assign('pid', $pid);
             // 应用唯一标识
             $app = input('app', '', 'text');
@@ -302,23 +302,23 @@ class Module extends Admin
                 'type' => 1,
             ];
             /* 获取数据 */
-            if(!empty($id) || $id != '0'){
-                $info = $this->MenuModel->where(['id'=>$id])->find();
+            if (!empty($id) || $id != '0') {
+                $info = $this->MenuModel->where(['id' => $id])->find();
             }
-            
-            if(empty($info)){
+
+            if (empty($info)) {
                 $map['id'] = input('pid');
                 $info = $this->MenuModel->where($map)->field('module,pid,hide,type')->find();
-                $info['pid'] = input('pid','0','text');
+                $info['pid'] = input('pid', '0', 'text');
             }
             View::assign('info', $info);
-            $menus = $this->MenuModel->where('module','=',$app)->order('sort asc,id asc')->select()->toArray();
+            $menus = $this->MenuModel->where('module', '=', $app)->order('sort asc,id asc')->select()->toArray();
             $tree = new Tree();
-            $menus = $tree->toFormatTree($menus,$title = 'title',$pk='id',$pid = 'pid',$root = '0');
+            $menus = $tree->toFormatTree($menus, $title = 'title', $pk = 'id', $pid = 'pid', $root = '0');
             View::assign('Menus', $menus);
 
             $moduleModel = new ModuleModel();
-            View::assign('Modules',$moduleModel->getAll());
+            View::assign('Modules', $moduleModel->getAll());
 
             $this->setTitle('菜单编辑');
 
@@ -332,14 +332,13 @@ class Module extends Admin
     public function mdel()
     {
         $ids = input('ids/a');
-        !is_array($ids)&&$ids=explode(',',$ids);
+        !is_array($ids) && $ids = explode(',', $ids);
 
         $res = $this->MenuModel->where('id', 'in', $ids)->delete();
-        if($res){
+        if ($res) {
             return $this->success('删除成功');
-        }else{
+        } else {
             return $this->error('删除失败');
-        }  
+        }
     }
-
-} 
+}
