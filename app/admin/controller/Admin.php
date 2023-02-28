@@ -83,7 +83,6 @@ class Admin extends Base
         $menuModel = new Menu();
         $menus['main'] = Db::name('menu')->where($where)->order('sort', 'asc')->select()->toArray();
         $menus['child'] = []; //设置子节点
-        dump($menus['main']);
         //当前菜单
         $current_map[] = [
             ['url', '=', $module . '/' . $controller . '/' . $action],

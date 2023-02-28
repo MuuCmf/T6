@@ -131,3 +131,5 @@ UPDATE `muucmf_config` SET `extra` = 'username:用户名\r\nemail:邮箱\r\nmobi
 ALTER TABLE `muucmf_author` CHANGE `auth` `auth` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL COMMENT '功能权限 json格式';
 
 ALTER TABLE `muucmf_keywords` CHANGE `uid` `uid` INT(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'UID';
+
+UPDATE `muucmf_menu` SET `url` = 'articles/admin.Articles/lists' WHERE `muucmf_menu`.`id` = '1E82B5BE-3CCF-C30D-F604-728174A3281F';

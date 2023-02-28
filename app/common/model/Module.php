@@ -3,6 +3,7 @@ namespace app\common\model;
 
 use think\facade\Db;
 use think\Exception;
+use app\admin\model\Menu;
 
 class Module extends Base
 {
@@ -14,6 +15,7 @@ class Module extends Base
     public function getAll($where = [])
     {
         $list = $this->where($where)->order('sort desc,id desc')->select()->toArray();
+        $MenuModel = new Menu();
         foreach($list as & $item){
             
             if(empty($item['icon'])){
@@ -35,6 +37,13 @@ class Module extends Base
                     //图标所在位置为模块静态目录下（推荐）
                     $item['icon_100'] = $item['icon_200'] = $item['icon_300'] = $item['icon_400'] = '/static/'. $item['name'] .'/images/icon.png';
                 }
+            }
+
+            // 调整入口路径
+            // TODO逐步废弃module表entry入口配置
+            $menu_main_entry =  $MenuModel->where([['pid', '=', '0'],['module', '=', $item['name']]])->value('url');
+            if(!empty($menu_main_entry)){
+                $item['entry'] = $menu_main_entry;
             }
         }
         unset($item);
