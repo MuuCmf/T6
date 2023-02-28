@@ -20,7 +20,6 @@ class Admin extends Base
      */
     protected $batchValidate = false;
     protected $title;
-    protected $moduleModel;
     public $isRoot;
     protected $menu = [];
     public $shopid = 0; //店铺Id，sass平台拓展
@@ -36,7 +35,6 @@ class Admin extends Base
      */
     public function __construct()
     {
-        $this->moduleModel = new ModuleModel();
         // 控制器初始化
         $this->initialize();
     }
@@ -47,13 +45,11 @@ class Admin extends Base
         $this->setTitle();
         // 当前模块、控制器及方法名
         $this->app_name = strtolower(app('http')->getName());
-        $controller = strtolower(request()->controller());
-        $action = strtolower(request()->action());
         View::assign('this_app', $this->app_name);
-        View::assign('this_controller', $controller);
-        View::assign('this_action', $action);
+        View::assign('this_controller', strtolower(request()->controller()));
+        View::assign('this_action', strtolower(request()->action()));
         // 当前应用模块信息
-        $module = $this->moduleModel->getModule($this->app_name);
+        $module = (new ModuleModel())->getModule($this->app_name);
         View::assign('module', $module);
         //当前管理菜单
         $admin_menu = $this->getMenus();
@@ -62,10 +58,6 @@ class Admin extends Base
         View::assign('auth_user', query_user(is_login()));
         //框架版本号
         View::assign('version', $this->version());
-        //数据库版本号
-        $mysql = Db::query("select version() as v;");
-        $mysql_version = $mysql[0]['v'];
-        View::assign('mysql_version', $mysql_version);
     }
 
     /**
@@ -79,41 +71,19 @@ class Admin extends Base
     }
 
     /**
-     * 已安装应用模块列表
-     */
-    protected function allModuleList()
-    {
-        $all_module_list = $this->moduleModel->getAll([
-            ['is_setup', '=', 1],
-            ['name', '<>', 'ucenter'],
-            ['name', '<>', 'channel']
-        ]);
-        // 应用权限
-        foreach ($all_module_list as $key => $item) {
-            // 判断主菜单权限
-            if (!$this->isRoot && !$this->checkRule(strtolower($item['entry']), get_uid(), AuthRule::RULE_MAIN, null)) {
-                unset($all_module_list[$key]);
-                continue; //继续循环
-            }
-        }
-
-        return $all_module_list;
-    }
-
-    /**
      * 获取控制器菜单数组,二级菜单元素位于一级菜单的'_child'元素中
      */
     final public function getMenus()
     {
         $module = input('param.module_name') ?? app('http')->getName();
-        $controller = Request()->controller();
-        $action = Request()->action();
+        $controller = request()->controller();
+        $action = request()->action();
         // 获取主菜单
         $where[] = ['pid', '=', '0'];
         $menuModel = new Menu();
         $menus['main'] = Db::name('menu')->where($where)->order('sort', 'asc')->select()->toArray();
         $menus['child'] = []; //设置子节点
-
+        dump($menus['main']);
         //当前菜单
         $current_map[] = [
             ['url', '=', $module . '/' . $controller . '/' . $action],
@@ -134,11 +104,6 @@ class Admin extends Base
         }
         if ($nav_current_id) {
             foreach ($menus['main'] as $key => $item) {
-
-                //如果是模块菜单获取模块信息
-                if (!empty($item['module']) || $item['module'] != 'admin') {
-                    $app = $this->moduleModel->getModule($item['module']);
-                }
 
                 if (!is_array($item) || empty($item['title']) || empty($item['url'])) {
                     return $this->error('控制器基类{$menus}属性元素配置有误');
@@ -303,19 +268,6 @@ class Admin extends Base
     }
 
     /**
-     * 获取版本号
-     *
-     * @return     <type>  ( description_of_the_return_value )
-     */
-    public function version()
-    {
-        $path = PUBLIC_PATH . '/../data/version.ini';
-        $version = file_get_contents($path);
-
-        return $version;
-    }
-
-    /**
      * 对数据表中的单行或多行记录执行修改 GET参数id为数字或逗号分隔的数字
      *
      * @param string $table 模型名称,供M函数使用的参数
@@ -397,5 +349,18 @@ class Admin extends Base
         $data['status'] = -1;
         //$data['update_time'] = time();
         return $this->editRow($table, $data, $where, $msg);
+    }
+
+    /**
+     * 获取版本号
+     *
+     * @return     <type>  ( description_of_the_return_value )
+     */
+    protected function version()
+    {
+        $path = PUBLIC_PATH . '/../data/version.ini';
+        $version = file_get_contents($path);
+
+        return $version;
     }
 }
