@@ -133,3 +133,5 @@ ALTER TABLE `muucmf_author` CHANGE `auth` `auth` TEXT CHARACTER SET utf8 COLLATE
 ALTER TABLE `muucmf_keywords` CHANGE `uid` `uid` INT(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'UID';
 
 UPDATE `muucmf_menu` SET `url` = 'articles/admin.Articles/lists' WHERE `muucmf_menu`.`id` = '1E82B5BE-3CCF-C30D-F604-728174A3281F';
+
+UPDATE `muucmf_menu` SET `url` = 'admin/Auth/editGroup' WHERE `muucmf_menu`.`id` = '9935C318-787D-A3D9-CCFA-2EAC75CE715B';
