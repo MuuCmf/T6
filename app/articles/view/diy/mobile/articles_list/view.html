@@ -78,6 +78,24 @@
 					    <div class="col-sm-9">
 						   	<select class="form-control" name="category_id" data-category-id="{$vars['data']['category_id']|default=0}">
 								<option value="0">所有</option>
+								{notempty name="$vars.data.category_tree"}
+								{volist name="$vars['data']['category_tree']" id="v"}
+								{if $vars['data']['category_id'] == $v['id']}
+								<option value="{$v['id']}" selected><b>{$v['title']}</b></option>
+								{else}
+								<option value="{$v['id']}"><b>{$v['title']}</b></option>
+								{/if}
+								{notempty name="$v._child"}
+									{volist name="$v['_child']" id="_v"}
+									{if $vars['data']['category_id'] == $_v['id']}
+									<option value="{$_v['id']}" selected>|----{$_v['title']}</option>
+									{else}
+									<option value="{$_v['id']}">|----{$_v['title']}</option>
+									{/if}
+									{/volist}
+								{/notempty}
+								{/volist}
+								{/notempty}
 							</select>
 					    </div>
 				  	</div>

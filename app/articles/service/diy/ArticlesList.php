@@ -6,6 +6,7 @@ use app\articles\model\ArticlesConfig as ConfigModel;
 use app\articles\logic\Config as ConfigLogic;
 use app\articles\model\ArticlesArticles as ArticlesModel;
 use app\articles\logic\Articles as ArticlesLogic;
+use app\articles\model\ArticlesCategory AS ArticlesCategoryModel;
 
 class ArticlesList
 {
@@ -79,6 +80,16 @@ class ArticlesList
     }
 
     /**
+     * 获取分类树
+     */
+    public function getCategoryTree($shopid = 0)
+    {
+        $tree = (new ArticlesCategoryModel)->tree($shopid, 1);
+
+        return $tree;
+    }
+
+    /**
      * 微页约定获取列表数据处理方法
      */
     public function handle($shopid = 0, $data = [])
@@ -101,6 +112,7 @@ class ArticlesList
             $data['list'] = $list;
         }
 
+        $data['category_tree'] = $this->getCategoryTree($shopid);
         $data['config'] = $this->getAppConfig($shopid);
 
         return $data;
