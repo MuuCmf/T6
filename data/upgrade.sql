@@ -140,3 +140,6 @@ INSERT INTO `muucmf_menu` (`id`, `title`, `pid`, `sort`, `url`, `hide`, `type`, 
 ('0710D9F4-189C-E983-32B5-866235B03B3C', '状态管理', '25D57993-C02A-4588-0517-4836CA407079', 0, 'articles/admin.Comment/status', 0, 1, '', '', 0, '', 'articles'),
 ('47827768-3E92-E083-032D-4CF9A630F1C3', '状态管理', '61DAFD9B-E944-AFC4-1B4D-0130E564D4CE', 0, 'articles/admin.Articles/status', 0, 1, '', '', 0, '', 'articles'),
 ('627F400F-B92D-741E-5E1A-13DBAA5A8A6D', '状态管理', 'F29D6718-A1CB-861E-438C-62F9635FF98B', 0, 'articles/admin.Category/status', 0, 1, '', '', 0, '', 'articles');
+
+ALTER TABLE `muucmf_articles_articles` ADD `author_id` INT(11) NULL DEFAULT '0' COMMENT '创作者ID' AFTER `reason`;
+ALTER TABLE `muucmf_articles_articles` DROP `uid`;

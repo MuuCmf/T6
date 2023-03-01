@@ -22,11 +22,11 @@ CREATE TABLE IF NOT EXISTS `muucmf_articles_articles` (
   `f_support` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '自定义点赞量',
   `source` varchar(200) DEFAULT NULL COMMENT '来源url',
   `reason` varchar(100) DEFAULT NULL COMMENT '审核失败原因',
-  `author_id` INT(11) NULL DEFAULT '0' COMMENT '创作者ID',
-  `create_time` int(11) unsigned NOT NULL,
-  `update_time` int(11) unsigned NOT NULL,
+  `author_id` int(11) unsigned DEFAULT '0' COMMENT '创作者ID',
+  `create_time` int(11) unsigned NOT NULL COMMENT '创建时间',
+  `update_time` int(11) unsigned NOT NULL COMMENT '更新时间',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=MyISAM AUTO_INCREMENT=52 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='文章';
+) ENGINE=MyISAM AUTO_INCREMENT=54 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='文章';
 
 
 -- -----------------------------
@@ -45,7 +45,7 @@ CREATE TABLE IF NOT EXISTS `muucmf_articles_category` (
   `create_time` int(11) unsigned NOT NULL COMMENT '创建时间',
   `update_time` int(11) unsigned NOT NULL COMMENT '更新时间',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=MyISAM AUTO_INCREMENT=11 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='文章分类';
+) ENGINE=MyISAM AUTO_INCREMENT=15 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='文章分类';
 
 
 -- -----------------------------
@@ -64,7 +64,7 @@ CREATE TABLE IF NOT EXISTS `muucmf_articles_comment` (
   `reason` varchar(255) DEFAULT NULL COMMENT '审核失败原因',
   `status` tinyint(2) NOT NULL DEFAULT '0' COMMENT '状态',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='文章评论表';
+) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='文章评论表';
 
 
 -- -----------------------------
@@ -80,15 +80,4 @@ CREATE TABLE IF NOT EXISTS `muucmf_articles_config` (
   `update_time` int(11) unsigned NOT NULL COMMENT '更新时间',
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='店铺表配置表';
-
-
--- -----------------------------
--- 表内记录 `muucmf_articles_category`
--- -----------------------------
-INSERT INTO `muucmf_articles_category` VALUES ('1', '0', '早期创业', '', '0', '1', '1', '3', '1', '0', '0');
-INSERT INTO `muucmf_articles_category` VALUES ('2', '0', '独角兽', '', '0', '1', '1', '3', '1', '0', '0');
-INSERT INTO `muucmf_articles_category` VALUES ('3', '0', '投融资', '', '0', '1', '1', '4', '1', '0', '0');
-INSERT INTO `muucmf_articles_category` VALUES ('4', '0', '火木动态', '', '0', '1', '1', '3', '1', '0', '0');
-INSERT INTO `muucmf_articles_category` VALUES ('5', '0', '锐观察', '', '0', '1', '1', '4', '1', '0', '0');
-
 
