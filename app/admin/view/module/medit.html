@@ -49,6 +49,7 @@
                 <label class="item-label">上级菜单<span class="check-tips">（所属的上级菜单）</span></label>
                 <div class="controls">
                     <select name="pid" class="form-select-size form-control" readonly>
+                        <option value="0">顶级菜单</option>
                         {notempty name="Menus"}
                         {volist name="Menus" id="menu"}
                             {if $pid == $menu.id}
@@ -57,8 +58,6 @@
                             <option value="{$menu.id}">{:htmlspecialchars_decode($menu.title_show)}</option>
                             {/if}
                         {/volist}
-                        {else /}
-                        <option value="0">顶级菜单</option>
                         {/notempty}
                     </select>
                 </div>
