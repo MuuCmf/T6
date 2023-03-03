@@ -143,3 +143,5 @@ INSERT INTO `muucmf_menu` (`id`, `title`, `pid`, `sort`, `url`, `hide`, `type`, 
 
 ALTER TABLE `muucmf_articles_articles` ADD `author_id` INT(11) NULL DEFAULT '0' COMMENT '创作者ID' AFTER `reason`;
 ALTER TABLE `muucmf_articles_articles` DROP `uid`;
+
+ALTER TABLE `muucmf_wechat_config` ADD `auth_login` TINYINT(2) NOT NULL DEFAULT '1' COMMENT '是否启用网页授权登录' AFTER `tmplmsg`;

@@ -79,12 +79,28 @@
                 <div class="form-item builder_item">
                     <label class="item-label">EncodingAESKey<span class="check-tips">（消息加解密密钥）</span>
                     </label>
-                    <input type="text" class="text input-large form-control" data-type="encoding_aes_key" name="encoding_aes_key" style="width: 400px"
-                           value="{$data.encoding_aes_key|default=''}" readonly="readonly">
+                    <input type="text" class="text input-large form-control" data-type="encoding_aes_key" name="encoding_aes_key" style="width: 400px" value="{$data.encoding_aes_key|default=''}" readonly="readonly">
                     <div class="tools">
                         <a href="javascript:;" class="create">生成</a>
                         <a href="javascript:;" class="edit">编辑</a>
                         <a href="javascript:;" class="copy">复制</a>
+                    </div>
+                </div>
+
+                <div class="form-item builder_item">
+                    <label class="item-label">网页授权登录<span class="check-tips">（开启后在微信端使用网页授权登录）</span></label>
+                    <div class="controls radio">
+                        {if $data.auth_login == 1}
+                        <input type="radio" name="auth_login" value="1" id="authorize_1" class="oneplus-radio" checked>
+                        <label for="authorize_1">启用</label>
+                        <input type="radio" name="auth_login" value="0" id="authorize_0" class="oneplus-radio">
+                        <label for="authorize_0">关闭</label>
+                        {else}
+                        <input type="radio" name="auth_login" value="1" id="authorize_1" class="oneplus-radio">
+                        <label for="authorize_1">启用</label>
+                        <input type="radio" name="auth_login" value="0" id="authorize_0" class="oneplus-radio" checked>
+                        <label for="authorize_0">关闭</label>
+                        {/if}
                     </div>
                 </div>
 

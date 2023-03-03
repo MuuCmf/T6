@@ -87,8 +87,10 @@ class Account extends MuuAdmin
                 $data['id'] = 0;
                 $data['cover'] = "";
                 $data['url'] = $this->wechatConfigModel->callbackUrl($this->shopid);
+                $data['auth_login'] = 1;
             }
             View::assign('data', $data);
+            //设置页面title
             $this->setTitle('公众号配置');
 
             return View::fetch();

@@ -33,13 +33,6 @@ class WechatConfig extends Base{
             }else{
                 $config['tmplmsg'] = [];
             }
-            if(!empty($config['request'])){
-                $config['request'] = json_decode($config['request'], true);
-            }else{
-                $config['request'] = [
-                    'only_wechat' => 1
-                ];
-            }
 
         }else{
             //初始化数据
@@ -51,10 +44,7 @@ class WechatConfig extends Base{
             $config['appid'] = '';
             $config['secret'] = '';
             $config['url'] = $this->callbackUrl($shopid);
-            $config['request'] = [
-                'only_wechat' => 1
-            ];
-
+            $config['auth_login'] = 1;
         }
 
         return $config;
