@@ -1,4 +1,5 @@
 <?php
+
 use app\admin\model\AuthRule;
 use think\facade\Db;
 use muucmf\Auth;
@@ -15,15 +16,15 @@ use thans\jwt\facade\JWTAuth;
  */
 if (!function_exists('is_login')) {
     function is_login()
-    {   
+    {
         $header = request()->header();
-        if(isset($header['authorization'])){
+        if (isset($header['authorization'])) {
             $token = JWTAuth::getToken();
-            if(!empty($token)){
-                try{
+            if (!empty($token)) {
+                try {
                     $payload = JWTAuth::decode($token);
                     $uid = $payload['uid']->getValue();
-                }catch (JWTException $exception) {
+                } catch (JWTException $exception) {
                     // 如果捕获到此异常，即代表 refresh 也过期了，用户无法刷新令牌，需要重新登录。
                     $uid = 0;
                 }
@@ -32,7 +33,7 @@ if (!function_exists('is_login')) {
             }
         }
 
-        if(!empty(request()->uid)){
+        if (!empty(request()->uid)) {
             return request()->uid;
         }
 
@@ -59,13 +60,13 @@ if (!function_exists('get_uid')) {
  * 获取用户openid
  */
 if (!function_exists('get_openid')) {
-    function get_openid($shopid = 0, $uid = 0 ,$channel = 'weixin_h5')
+    function get_openid($shopid = 0, $uid = 0, $channel = 'weixin_h5')
     {
         $model = new MemberSync();
         $map = [
             ['shopid', '=', $shopid],
-            ['uid' ,'=' ,$uid],
-            ['type' ,'=' , $channel]
+            ['uid', '=', $uid],
+            ['type', '=', $channel]
         ];
         $openid = $model->where($map)->value('openid');
         return $openid;
@@ -78,17 +79,17 @@ if (!function_exists('get_openid')) {
 if (!function_exists('query_user')) {
     function query_user($uid = 0, $field_arr = [])
     {
-        if(empty($field_arr)){
+        if (empty($field_arr)) {
             $field = "*";
         }
-        if(is_array($field_arr)){
-            $field = implode(',' ,$field_arr);
+        if (is_array($field_arr)) {
+            $field = implode(',', $field_arr);
         }
         // 获取用户数据
         $memberModel = new Member;
         $auth_user = $memberModel->info($uid, $field);
-        
-        if(is_array($auth_user) && $auth_user != -1){
+
+        if (is_array($auth_user) && $auth_user != -1) {
             // 获取钱包数据
             $memberWalletModel = new MemberWallet();
             $wallet = $memberWalletModel->getWallet($uid);
@@ -139,7 +140,7 @@ if (!function_exists('get_auth_user')) {
             $auth_rule = explode(',', $v['rules']);
             if (in_array($rule['id'], $auth_rule)) {
                 $gid = $v['id'];
-                $temp_uids =(array) Db::name('AuthGroupAccess')->where(['group_id' => $gid])->column('uid');
+                $temp_uids = (array) Db::name('AuthGroupAccess')->where(['group_id' => $gid])->column('uid');
                 if ($temp_uids !== null) {
                     $uids = array_merge($uids, $temp_uids);
                 }
@@ -201,7 +202,7 @@ if (!function_exists('check_username')) {
                     $email = '';
                     $type = 'mobile';
                     break;
-                default :
+                default:
                     $mobile = '';
                     $email = '';
                     $username = $username;
@@ -237,15 +238,16 @@ if (!function_exists('check_username')) {
  * @return bool
  */
 if (!function_exists('check_reg_type')) {
-    function check_reg_type($type){
-        $t[1] = $t['username'] ='username';
-        $t[2] = $t['email'] ='email';
-        $t[3] = $t['mobile'] ='mobile';
+    function check_reg_type($type)
+    {
+        $t[1] = $t['username'] = 'username';
+        $t[2] = $t['email'] = 'email';
+        $t[3] = $t['mobile'] = 'mobile';
 
         $switch = config('system.USER_REG_SWITCH');
-        if($switch){
-            $switch = explode(',',$switch);
-            if(in_array($t[$type],$switch)){
+        if ($switch) {
+            $switch = explode(',', $switch);
+            if (in_array($t[$type], $switch)) {
                 return true;
             }
         }
@@ -259,16 +261,17 @@ if (!function_exists('check_reg_type')) {
  * @return bool
  */
 if (!function_exists('check_login_type')) {
-    function check_login_type($type){
-        $t[1] = $t['username'] ='username';
-        $t[2] = $t['email'] ='email';
-        $t[3] = $t['mobile'] ='mobile';
+    function check_login_type($type)
+    {
+        $t[1] = $t['username'] = 'username';
+        $t[2] = $t['email'] = 'email';
+        $t[3] = $t['mobile'] = 'mobile';
         $t[4] = $t['qrcode'] = 'qrcode';
 
         $switch = config('system.USER_LOGIN_SWITCH');
-        if($switch){
-            $switch = explode(',',$switch);
-            if(in_array($t[$type],$switch)){
+        if ($switch) {
+            $switch = explode(',', $switch);
+            if (in_array($t[$type], $switch)) {
                 return true;
             }
         }
@@ -316,12 +319,12 @@ if (!function_exists('check_verify_open')) {
 if (!function_exists('rand_username')) {
     function rand_username($prefix)
     {
-        if(empty($prefix)){
+        if (empty($prefix)) {
             $username = create_rand(10);
-        }else{
-            $username = $prefix.'_'.create_rand(10);
+        } else {
+            $username = $prefix . '_' . create_rand(10);
         }
-        
+
         if (Db::name('member')->where(['username' => $username])->find()) {
             rand_username($prefix);
         } else {
@@ -337,13 +340,13 @@ if (!function_exists('rand_username')) {
  */
 if (!function_exists('rand_nickname')) {
     function rand_nickname($prefix)
-    {   
-        if(empty($prefix)){
+    {
+        if (empty($prefix)) {
             $nickname = create_rand(8);
-        }else{
-            $nickname = $prefix.'_'.create_rand(8);
+        } else {
+            $nickname = $prefix . '_' . create_rand(8);
         }
-        
+
         if (Db::name('member')->where(['nickname' => $nickname])->find()) {
             rand_nickname($prefix);
         } else {
@@ -359,7 +362,7 @@ if (!function_exists('rand_email')) {
     function rand_email()
     {
         $email = create_rand(10) . '@muucmf.cn';
-        if (Db::name('member')->where('email',$email)->count() > 0) {
+        if (Db::name('member')->where('email', $email)->count() > 0) {
             return rand_email();
         } else {
             return $email;
@@ -371,7 +374,7 @@ if (!function_exists('check_auth')) {
     function check_auth($rule = '', $except_uid = -1, $type = AuthRule::RULE_URL)
     {
         if (is_login() == 1) {
-            return true;//管理员允许访问任何页面
+            return true; //管理员允许访问任何页面
         }
         if ($except_uid != -1) {
             if (!is_array($except_uid)) {
@@ -386,7 +389,8 @@ if (!function_exists('check_auth')) {
         if (!Db::name('auth_rule')->where(['name' => $rule, 'status' => 1])->find()) {
             return false;
         }
-    static $Auth = null;
+
+        static $Auth = null;
         if (!$Auth) {
             $Auth = new Auth();
         }
@@ -405,9 +409,9 @@ if (!function_exists('check_auth')) {
 if (!function_exists('get_my_score')) {
     function get_my_score($score_name = 'score1')
     {
-        $user = query_user(is_login(),array($score_name));
+        $user = query_user(is_login(), array($score_name));
         $score = $user[$score_name];
-        
+
         return $score;
     }
 }

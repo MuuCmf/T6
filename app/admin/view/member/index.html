@@ -9,22 +9,21 @@
     <div class="button-box clearfix">
 
         <div class="col-md-6">
-            <a type="button" class="btn btn-info" href="{:url('edit')}">
+            <a type="button" class="btn btn-info {if !check_auth('admin/Member/edit')}disabled{/if}" href="{:url('edit')}">
                 新增
             </a>
-            <button class="btn btn-success ajax-post confirm" url="{:url('status',array('method'=>'resume'))}" target-form="ids">
+            <button class="btn btn-success ajax-post confirm {if !check_auth('admin/Member/status')}disabled{/if}" url="{:url('status',array('method'=>'resume'))}" target-form="ids">
                 启用
             </button>
-            <button class="btn btn-warning ajax-post confirm" url="{:url('status',array('method'=>'forbid'))}" target-form="ids">
+            <button class="btn btn-warning ajax-post confirm {if !check_auth('admin/Member/status')}disabled{/if}" url="{:url('status',array('method'=>'forbid'))}" target-form="ids">
                 禁用
             </button>
-            <button class="btn btn-danger ajax-post confirm" url="{:url('status',array('method'=>'delete'))}" target-form="ids">
+            <button class="btn btn-danger ajax-post confirm {if !check_auth('admin/Member/status')}disabled{/if}" url="{:url('status',array('method'=>'delete'))}" target-form="ids">
                 删除
             </button>
-            <button class="btn ajax-post btn-danger confirm" data-confirm="确认执行重置用户密码操作" url="{:url('initPass')}" target-form="ids">
+            <button class="btn ajax-post btn-danger confirm {if !check_auth('admin/Member/initPass')}disabled{/if}" data-confirm="确认执行重置用户密码操作" url="{:url('initPass')}" target-form="ids">
                 重置密码
             </button>
-            
             <span style="font-size: 14px;color: #999898;margin-left: 11px;">（新增和重置密码默认为“123456”）</span>
         </div>
 
@@ -119,9 +118,10 @@
                         {$vo.status_text}
                     </td>
                     <td>
-                        <a type="button" class="btn btn-sm btn-success" data-name="sendMessageModal" data-iframe="{:url('admin/Message/send',['to_uid' => $vo['uid']])}" data-toggle="modal" data-size="lg" data-height="600px">发送消息</a>
-                        <a class="btn btn-sm btn-primary" href="{:url('admin/Member/edit',['uid'=>$vo['uid']])}" >编辑</a>
-                        <a class="btn btn-sm btn-danger ajax-post" href="{:url('status',['method'=>'delete', 'ids'=>$vo['uid']])}" data-confirm="确认执行删除操作？">删除</a>
+                        <a type="button" class="btn btn-sm btn-success {if !check_auth('admin/Message/send')}disabled{/if}" data-name="sendMessageModal" data-iframe="{:url('admin/Message/send',['to_uid' => $vo['uid']])}" data-toggle="modal" data-size="lg" data-height="600px">发送消息</a>
+                        <a class="btn btn-sm btn-primary {if !check_auth('admin/Member/edit')}disabled{/if}" href="{:url('admin/Member/edit',['uid'=>$vo['uid']])}" >编辑</a>
+                        <a class="btn btn-sm btn-danger ajax-post {if !check_auth('admin/Member/status')}disabled{/if}" href="{:url('status',['method'=>'delete', 'ids'=>$vo['uid']])}" data-confirm="确认执行删除操作？">删除</a>
+                        
                     </td>
                 </tr>
             {/volist}
