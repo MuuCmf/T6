@@ -182,8 +182,8 @@ class Auth extends Admin
         $this->updateRules();
         // 权限节点
         $node_list = $this->returnNodes();
-
         View::assign('node_list', $node_list);
+
         // 用户权限组
         $auth_group = Db::name('AuthGroup')->where(['status' => 1, 'module' => 'admin', 'type' => AuthGroup::TYPE_ADMIN])->field('id,title,rules')->select()->toArray();
         View::assign('auth_group', $auth_group);
@@ -277,7 +277,7 @@ class Auth extends Admin
             return $tree_nodes[$tree];
         }
         if ($tree) {
-            $list = Db::name('Menu')->field('id,pid,title,url,tip,hide,module')->order('sort asc')->select()->toArray();
+            $list = Db::name('menu')->field('id,pid,title,url,tip,hide,module')->order('module asc, sort asc')->select()->toArray();
             foreach ($list as &$value) {
                 $value = $this->check_url_re($value);
                 unset($value['module']);
@@ -294,7 +294,7 @@ class Auth extends Admin
                 }
             }
         } else {
-            $nodes = Db::name('Menu')->field('title,url,tip,pid,module')->order('sort asc')->select()->toArray();
+            $nodes = Db::name('menu')->field('title,url,tip,pid,module')->order('sort asc')->select()->toArray();
             foreach ($nodes as &$value) {
                 $value = $this->check_url_re($value);
                 unset($value['module']);
