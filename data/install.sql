@@ -4611,6 +4611,7 @@ INSERT INTO `muucmf_menu` (`id`, `title`, `pid`, `sort`, `url`, `hide`, `type`, 
 ('EDE0967F-0156-2219-F43D-6412CB252638', '状态管理', 'DA4333DF-D814-819B-D657-401FE5153AB4', 0, 'admin/Member/status', 0, 0, '', '', 0, '', 'admin'),
 ('E3F348B0-8DA2-C62A-062E-5C406B09D922', '状态管理', '8553C20D-7FCB-4252-15F4-5ECFC0A56092', 0, 'admin/Author/groupStatus', 0, 0, '', '', 0, '', 'admin'),
 ('7C934436-0EFC-A814-C5FB-521A764E75BA', '清空日志', 'A53BEFBB-17F7-56CD-ADF9-3D6754061E70', 0, 'admin/Score/clear', 0, 0, '', '', 0, '', 'admin'),
+('44C36AB5-BF84-8C51-B097-FE7730A22BC3', '公告状态管理', 'DAF83BB8-F5C2-0CBB-AD8B-FEBB44D12FA3', 0, 'admin/Announce/status', 0, 0, '', '', 0, '', 'admin')
 ('06AEED1A-9E0E-97B9-6395-EA9959B2BE6E', '状态管理', 'A7DA37AC-E001-7C55-083F-E03A03FA5CEC', 0, 'admin/Author/status', 0, 0, '', '', 0, '', 'admin');
 
 -- --------------------------------------------------------
