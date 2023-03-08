@@ -8,14 +8,11 @@
     <div class="button-box clearfix">
 
         <div class="col-md-6">
-            <a class="btn btn-info" href="{:url('editField',['group_id' => $group_id])}" target-form="ids">
+            <a class="btn btn-info {if !check_auth('admin/Field/editField')}disabled{/if}" href="{:url('editField',['group_id' => $group_id])}" target-form="ids">
                 新增
             </a>
-            <button class="btn btn-danger ajax-post confirm" url="{:url('setFieldStatus',array('method'=>'deleteUser'))}" target-form="ids">
+            <button class="btn btn-danger ajax-post confirm {if !check_auth('admin/Field/setFieldStatus')}disabled{/if}" url="{:url('setFieldStatus', ['status' => -1])}" target-form="ids">
                 删除
-            </button>
-            <button class="btn btn-warning ajax-post confirm" url="{:url('setFieldStatus',array('method'=>'forbidUser'))}" target-form="ids">
-                排序
             </button>
         </div>
     </div>
@@ -41,24 +38,24 @@
             </thead>
             <tbody>
             {notempty name="list"}
-                {volist name="list" id="vo"}
-                    <tr>
-                        <td>
-                            <input class="ids" id="field-{$vo.id}" type="checkbox" name="id[]" value="{$vo.id}"/>
-                            <label for="field-{$vo.id}"></label>
-                        </td>
-                        <td>{$vo.field_name}</td>
-                        <td>{$vo.visiable}</td>
-                        <td>{$vo.required}</td>
-                        <td>{$vo.sort}</td>
-                        <td>{$vo.form_type}</td>
-                        <td>{$vo.create_time|time_format}</td>
-                        <td>{$vo.status}</td>
-                        <td>
-                            <a href="{:url('admin/field/editField',['id'=>$vo['id']])}" >编辑</a>
-                        </td>
-                    </tr>
-                {/volist}
+            {volist name="list" id="vo"}
+                <tr>
+                    <td>
+                        <input class="ids" id="field-{$vo.id}" type="checkbox" name="ids[]" value="{$vo.id}"/>
+                        <label for="field-{$vo.id}"></label>
+                    </td>
+                    <td>{$vo.field_name}</td>
+                    <td>{$vo.visiable}</td>
+                    <td>{$vo.required}</td>
+                    <td>{$vo.sort}</td>
+                    <td>{$vo.form_type}</td>
+                    <td>{$vo.create_time|time_format}</td>
+                    <td>{$vo.status}</td>
+                    <td>
+                        <a href="{:url('admin/field/editField',['id'=>$vo['id']])}" >编辑</a>
+                    </td>
+                </tr>
+            {/volist}
             {else/}
                 <td colspan="13" class="text-center">
                     空空如也~

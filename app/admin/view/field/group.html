@@ -3,19 +3,19 @@
 {block name="body"}
     <!-- 标题栏 -->
     <div class="main-title">
-        <h2>扩展资料管理</h2>
+        <h2>扩展资料</h2>
     </div>
     <div class="button-box clearfix">
 
         <div class="col-md-6">
-            <a type="button" class="btn btn-info" href="{:url('editGroup')}">新增</a>
-            <button class="btn btn-success ajax-post" url="{:url('setGroupStatus', ['status' => 1])}" target-form="ids">
+            <a type="button" class="btn btn-info {if !check_auth('admin/Field/editGroup')}disabled{/if}" href="{:url('editGroup')}">新增</a>
+            <button class="btn btn-success ajax-post {if !check_auth('admin/Field/setGroupStatus')}disabled{/if}" url="{:url('setGroupStatus', ['status' => 1])}" target-form="ids">
                 启用
             </button>
-            <button class="btn btn-warning ajax-post confirm" url="{:url('setGroupStatus',['status' => 0])}" target-form="ids">
+            <button class="btn btn-warning ajax-post confirm {if !check_auth('admin/Field/setGroupStatus')}disabled{/if}" url="{:url('setGroupStatus',['status' => 0])}" target-form="ids">
                 禁用
             </button>
-            <button class="btn btn-danger ajax-post confirm" url="{:url('setGroupStatus',['status' => -1])}" target-form="ids">
+            <button class="btn btn-danger ajax-post confirm {if !check_auth('admin/Field/setGroupStatus')}disabled{/if}" url="{:url('setGroupStatus',['status' => -1])}" target-form="ids">
                 删除
             </button>
         </div>
@@ -50,8 +50,8 @@
                         <td>{$vo.visiable}</td>
                         <td>{$vo.status_text}</td>
                         <td>
-                            <a href="{:url('admin/field/list',['group_id'=>$vo['id']])}" >管理字段</a>
-                            <a href="{:url('admin/field/editGroup',['id'=>$vo['id']])}" >编辑</a>
+                            <a class="btn btn-sm btn-primary {if !check_auth('admin/Field/list')}disabled{/if}" href="{:url('admin/Field/list',['group_id'=>$vo['id']])}" >管理字段</a>
+                            <a class="btn btn-sm btn-info {if !check_auth('admin/Field/editGroup')}disabled{/if}" href="{:url('admin/Field/editGroup',['id'=>$vo['id']])}" >编辑</a>
                         </td>
                     </tr>
                 {/volist}

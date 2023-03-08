@@ -82,7 +82,7 @@ class Field extends Admin
                 $profile = Db::name('field_group')->where(['id'=>$id])->find();
                 $builder->title('修改分组信息');
             } else {
-                $builder->title('添加扩展信息分组');
+                $builder->title('添加扩展资料分组');
                 $profile = [];
             }
             $builder
@@ -235,10 +235,10 @@ class Field extends Admin
                 $map['status'] = array('egt', 0);
                 $map['group_id'] = $data['group_id'];
                 if (Db::name('field_setting')->where($map)->count() > 0) {
-                    $this->error('该分组下已经有同名字段，请使用其他名称！');
+                    return $this->error('该分组下已经有同名字段，请使用其他名称！');
                 }
                 $data['status'] = 1;
-                $data['createTime'] = time();
+                $data['create_time'] = time();
                 $data['sort'] = 0;
                 $res = Db::name('field_setting')->strict(true)->insertGetId($data);
             }
@@ -299,31 +299,6 @@ class Field extends Admin
     }
 
     /**
-     * 分组排序
-     * @param $id
-     */
-    public function sortField($id = '', $ids = null)
-    {
-        if (request()->isPost()) {
-            $builder = new AdminSortBuilder($this->app);
-            $builder->doSort('FieldSetting', $ids);
-        } else {
-            $profile = Db::name('field_group')->where('id=' . $id)->find();
-            $map['status'] = ['egt', 0];
-            $map['group_id'] = $id;
-            $list = Db::name('field_setting')->where($map)->order("sort asc")->select();
-            foreach ($list as $key => $val) {
-                $list[$key]['title'] = $val['field_name'];
-            }
-            $builder = new AdminSortBuilder();
-            $builder->meta_title = $profile['profile_name'] . '排序失败';
-            $builder->data($list);
-            $builder->buttonSubmit(url('sortField'))->buttonBack();
-            $builder->display();
-        }
-    }
-
-    /**
      * 设置字段状态：删除=-1，禁用=0，启用=1
      * @param $ids
      * @param $status
@@ -332,6 +307,6 @@ class Field extends Admin
     public function setFieldStatus($ids, $status)
     {
         $builder = new AdminListBuilder();
-        $builder->doSetStatus('field_setting', $ids, $status);
+        return $builder->doSetStatus('field_setting', $ids, $status);
     }
 }

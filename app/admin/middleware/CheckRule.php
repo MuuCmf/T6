@@ -25,7 +25,7 @@ class CheckRule extends Base
         $Auth = new \muucmf\Auth();
         $rule = strtolower(app('http')->getName() . '/' . request()->controller() . '/' . request()->action());
         if (!$Auth->check($rule, $uid, 1, 'url')) {
-            $referer = request()->header()['referer'];
+            $referer = isset(request()->header()['referer']) ? isset(request()->header()['referer']) : '';
             $type = (request()->isJson() || request()->isAjax()) ? 'json' : 'html';
             $result = ['code' => 0, 'msg'  => '您没有操作权限，请联系管理员！', 'data' => [], 'url'  => $referer, 'wait' => 3,];
             if ($type == 'html') {

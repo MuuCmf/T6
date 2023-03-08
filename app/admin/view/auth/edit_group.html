@@ -17,14 +17,10 @@
             <div class="form-item builder_item">
                 <label for="auth-description" class="item-label">简短描述</label>
                 <div class="controls">
-                    <label class="textarea input-large">
-                        <textarea id="auth-description" class="form-control form-text-area-size" type="text" name="description">{$auth_group.description|default=''}</textarea>
-                    </label>
+                    <textarea id="auth-description" class="form-control form-text-area-size" type="text" name="description">{$auth_group.description|default=''}</textarea>
                 </div>
             </div>
             <div class="form-item builder_item">
-                
-
                 <button type="submit" class="btn submit-btn" target-form="form-horizontal">确 认</button>
                 <button class="btn btn-return" onclick="javascript:history.back(-1);return false;">返 回</button>
             </div>

@@ -134,8 +134,6 @@ ALTER TABLE `muucmf_keywords` CHANGE `uid` `uid` INT(11) UNSIGNED NOT NULL DEFAU
 
 UPDATE `muucmf_menu` SET `url` = 'articles/admin.Articles/lists' WHERE `muucmf_menu`.`id` = '1E82B5BE-3CCF-C30D-F604-728174A3281F';
 
-UPDATE `muucmf_menu` SET `url` = 'admin/Auth/editGroup' WHERE `muucmf_menu`.`id` = '9935C318-787D-A3D9-CCFA-2EAC75CE715B';
-
 INSERT INTO `muucmf_menu` (`id`, `title`, `pid`, `sort`, `url`, `hide`, `type`, `tip`, `group`, `is_dev`, `icon`, `module`) VALUES
 ('0710D9F4-189C-E983-32B5-866235B03B3C', '状态管理', '25D57993-C02A-4588-0517-4836CA407079', 0, 'articles/admin.Comment/status', 0, 1, '', '', 0, '', 'articles'),
 ('47827768-3E92-E083-032D-4CF9A630F1C3', '状态管理', '61DAFD9B-E944-AFC4-1B4D-0130E564D4CE', 0, 'articles/admin.Articles/status', 0, 1, '', '', 0, '', 'articles'),
@@ -145,3 +143,21 @@ ALTER TABLE `muucmf_articles_articles` ADD `author_id` INT(11) NULL DEFAULT '0' 
 ALTER TABLE `muucmf_articles_articles` DROP `uid`;
 
 ALTER TABLE `muucmf_wechat_config` ADD `auth_login` TINYINT(2) NOT NULL DEFAULT '1' COMMENT '是否启用网页授权登录' AFTER `tmplmsg`;
+
+INSERT INTO `muucmf_menu` (`id`, `title`, `pid`, `sort`, `url`, `hide`, `type`, `tip`, `group`, `is_dev`, `icon`, `module`) VALUES
+('EDE0967F-0156-2219-F43D-6412CB252638', '状态管理', 'DA4333DF-D814-819B-D657-401FE5153AB4', 0, 'admin/Member/status', 0, 0, '', '', 0, '', 'admin');
+DELETE FROM muucmf_menu WHERE `muucmf_menu`.`id` = '121A5A7C-982C-CCD9-63CA-4AA00F4D5349';
+DELETE FROM muucmf_menu WHERE `muucmf_menu`.`id` = 'B88ED493-4BB4-E41A-EAEA-E501E3A685A1';
+
+INSERT INTO `muucmf_menu` (`id`, `title`, `pid`, `sort`, `url`, `hide`, `type`, `tip`, `group`, `is_dev`, `icon`, `module`) VALUES
+('E3F348B0-8DA2-C62A-062E-5C406B09D922', '状态管理', '8553C20D-7FCB-4252-15F4-5ECFC0A56092', 0, 'admin/Author/groupStatus', 0, 0, '', '', 0, '', 'admin');
+INSERT INTO `muucmf_menu` (`id`, `title`, `pid`, `sort`, `url`, `hide`, `type`, `tip`, `group`, `is_dev`, `icon`, `module`) VALUES
+('06AEED1A-9E0E-97B9-6395-EA9959B2BE6E', '状态管理', 'A7DA37AC-E001-7C55-083F-E03A03FA5CEC', 0, 'admin/Author/status', 0, 0, '', '', 0, '', 'admin');
+DELETE FROM muucmf_menu WHERE `muucmf_menu`.`id` = '826245D5-A2DC-5575-D0C3-9B36D8014D66';
+DELETE FROM muucmf_menu WHERE `muucmf_menu`.`id` = '9935C318-787D-A3D9-CCFA-2EAC75CE715B';
+UPDATE `muucmf_menu` SET `title` = '新增、编辑用户组' WHERE `muucmf_menu`.`id` = '4E0C013B-C00F-449F-324E-473115528F00';
+DELETE FROM muucmf_menu WHERE `muucmf_menu`.`id` = '22AADF5F-AD46-2125-5833-46AE0F01D749';
+DELETE FROM muucmf_menu WHERE `muucmf_menu`.`id` = '24B6E16C-401D-8CCA-C8E1-DCD118AAC005';
+DELETE FROM muucmf_menu WHERE `muucmf_menu`.`id` = '76DEEC60-2249-BF97-1A6E-FA314258928F';
+UPDATE `muucmf_menu` SET `title` = '状态管理', `url` = 'admin/Auth/changeStatus', `tip` = '用户组状态管理' WHERE `muucmf_menu`.`id` = '68121540-2C69-EAC2-F2EF-B7ADBBE74C09';
+DELETE FROM muucmf_menu WHERE `muucmf_menu`.`id` = 'BB7A70BD-6DBB-45EB-F4A8-F7A671F62121';
