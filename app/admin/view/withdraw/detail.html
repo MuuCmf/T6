@@ -1,12 +1,16 @@
 
 <div class="withdraw-detail">
     <div class="user-info">
+        {if !empty($v.uid) && !empty($v.user_info) && $v.user_info != -1}
         <div class="cover">
             <img src="{$data['user_info']['avatar']}">
         </div>
         <div class="info">
             <div class="title text-ellipsis">{$data['user_info']['nickname']}</div>
         </div>
+        {else}
+        用户不存在
+        {/if}
     </div>
     
     <table class="table table-bordered muu-table">
@@ -76,7 +80,7 @@
                 失败原因
             </td>
             <td>
-                {$data['error_msg']['return_msg']}
+                {$data['error_msg']['return_msg']|default=''}
             </td>
         {/if}
         </tbody>

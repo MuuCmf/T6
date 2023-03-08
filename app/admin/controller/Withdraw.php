@@ -1,4 +1,5 @@
 <?php
+
 namespace app\admin\controller;
 
 use app\common\model\CapitalFlow;
@@ -9,7 +10,8 @@ use think\Exception;
 use think\facade\Db;
 use think\facade\View;
 
-class Withdraw extends Admin{
+class Withdraw extends Admin
+{
     protected $WithdrawModel;
     protected $WithdrawLogic;
     function __construct()
@@ -23,15 +25,16 @@ class Withdraw extends Admin{
      * @title 提现列表
      * @return \think\response\View
      */
-    public function lists(){
-        $order_no = input('get.order_no','','string');//提现单号
+    public function lists()
+    {
+        $order_no = input('get.order_no', '', 'string'); //提现单号
         $map = [
-            ['shopid' ,'=' ,$this->shopid]
+            ['shopid', '=', $this->shopid]
         ];
 
         //订单号查询
-        if (!empty($order_no)){
-            $map[] = ['order_no' ,'like' ,"%{$order_no}%"];
+        if (!empty($order_no)) {
+            $map[] = ['order_no', 'like', "%{$order_no}%"];
         }
         // 每页显示数量
         $rows = input('rows', 15, 'intval');
@@ -39,7 +42,7 @@ class Withdraw extends Admin{
         $lists = $this->WithdrawModel->getListByPage($map, 'id desc create_time desc', '*', $rows);
         $pager = $lists->render();
         $lists = $lists->toArray();
-        foreach ($lists['data'] as &$item){
+        foreach ($lists['data'] as &$item) {
             $item = $this->WithdrawLogic->formatData($item);
         }
 
@@ -68,31 +71,30 @@ class Withdraw extends Admin{
             $data = $this->WithdrawLogic->formatData($data);
         }
 
-        View::assign('data',$data);
+        View::assign('data', $data);
 
         //输出页面
         return View::fetch();
-
-
     }
 
     /**
      * @title 手动处理
      */
-    public function dealWith(){
-        if (request()->isPost()){
-            $id = input('post.id',0);
+    public function dealWith()
+    {
+        if (request()->isPost()) {
+            $id = input('post.id', 0);
             try {
                 $map = [
-                    ['id' ,'=' ,$id],
-                    ['error' ,'=' ,1],
-                    ['paid' ,'=' ,0]
+                    ['id', '=', $id],
+                    ['error', '=', 1],
+                    ['paid', '=', 0]
                 ];
                 $data = $this->WithdrawModel->where($map)->find()->toArray();
                 if (!$data) throw new Exception('数据不存在');
-                Db::startTrans();//开启事务
+                Db::startTrans(); //开启事务
                 //扣除用户余额及冻结余额
-                (new MemberWallet())->spending($data['uid'],$data['price'],$data['shopid']);
+                (new MemberWallet())->spending($data['uid'], $data['price'], $data['shopid']);
 
                 //更改提现记录状态
                 $update_data = [
@@ -116,7 +118,7 @@ class Withdraw extends Admin{
                 if (!$result_capital_flow)  throw new Exception('写入资金流失失败');
                 Db::commit();
                 return $this->success('处理成功');
-            }catch (Exception $e){
+            } catch (Exception $e) {
                 Db::rollback();
                 return $this->error($e->getMessage());
             }
