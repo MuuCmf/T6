@@ -161,3 +161,5 @@ DELETE FROM muucmf_menu WHERE `muucmf_menu`.`id` = '24B6E16C-401D-8CCA-C8E1-DCD1
 DELETE FROM muucmf_menu WHERE `muucmf_menu`.`id` = '76DEEC60-2249-BF97-1A6E-FA314258928F';
 UPDATE `muucmf_menu` SET `title` = '状态管理', `url` = 'admin/Auth/changeStatus', `tip` = '用户组状态管理' WHERE `muucmf_menu`.`id` = '68121540-2C69-EAC2-F2EF-B7ADBBE74C09';
 DELETE FROM muucmf_menu WHERE `muucmf_menu`.`id` = 'BB7A70BD-6DBB-45EB-F4A8-F7A671F62121';
+INSERT INTO `muucmf_menu` (`id`, `title`, `pid`, `sort`, `url`, `hide`, `type`, `tip`, `group`, `is_dev`, `icon`, `module`) VALUES
+('7C934436-0EFC-A814-C5FB-521A764E75BA', '清空日志', 'A53BEFBB-17F7-56CD-ADF9-3D6754061E70', 0, 'admin/Score/clear', 0, 0, '', '', 0, '', 'admin');

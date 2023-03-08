@@ -117,6 +117,7 @@ class Score extends Admin {
             ->keyText('unit', '单位')
             ->keyStatus()
             ->keyDoActionEdit('editType?id=###')
+            ->keyDoActionDelete('delType?ids=###')
             ->data($list)
             ->display();
     }
@@ -133,7 +134,7 @@ class Score extends Admin {
             $data['status'] = input('post.status', 1, 'intval');
             $data['unit'] = input('post.unit', '', 'text');
 
-            if ($aId != 0) {
+            if (!empty($aId)) {
                 $data['id'] = $aId;
                 $res = $this->scoreTypeModel->editType($data);
             } else {

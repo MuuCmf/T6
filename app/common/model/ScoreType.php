@@ -54,11 +54,12 @@ class ScoreType extends Model
     public function addType($data)
     {
         $db_prefix = config('database.connections.mysql.prefix');
-        $res = Db::name('score_type')->insert($data);
-        $query = "ALTER TABLE  `{$db_prefix}member` ADD  `score" . $res . "` DOUBLE NOT NULL COMMENT  '" . $data['title'] . "'";
-        Db::query($query);
+        $id = Db::name('score_type')->insertGetId($data);
+        $query = "ALTER TABLE  `{$db_prefix}member` ADD  `score" . $id . "` DOUBLE NOT NULL COMMENT  '" . $data['title'] . "'";
 
-        return $res;
+        Db::execute($query);
+
+        return $id;
     }
 
     /**
@@ -76,7 +77,7 @@ class ScoreType extends Model
         foreach ($ids as $v) {
             if ($v > 4) {
                 $query = "alter table `{$db_prefix}member` drop column score" . $v;
-                Db::query($query);
+                Db::execute($query);
             }
         }
         return $res;
@@ -92,7 +93,7 @@ class ScoreType extends Model
         $db_prefix = config('database.connections.mysql.prefix');
         $res = $this->update($data);
         $query = "alter table `{$db_prefix}member` modify column `score" . $data['id'] . "` FLOAT comment '" . $data['title'] . "';";
-        Db::query($query);
+        Db::execute($query);
         return $res;
     }
 
