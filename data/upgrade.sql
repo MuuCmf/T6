@@ -171,3 +171,7 @@ INSERT INTO `muucmf_menu` (`id`, `title`, `pid`, `sort`, `url`, `hide`, `type`, 
 ('1AF87B7B-BCC4-4493-39EE-F726D6A8DB0E', '状态管理', '4B6E56C7-715A-DEBB-F335-9B290240F781', 0, 'admin/Message/typeStatus', 0, 0, '', '', 0, '', 'admin');
 INSERT INTO `muucmf_menu` (`id`, `title`, `pid`, `sort`, `url`, `hide`, `type`, `tip`, `group`, `is_dev`, `icon`, `module`) VALUES
 ('83FB02F1-F7B5-E5B9-2D40-DED038ABE5EE', '消息状态管理', 'D15A9C87-9B85-DE05-ADCF-EAAD05BD94FD', 0, 'admin/Message/messageStatus', 0, 0, '', '', 0, '', 'admin');
+INSERT INTO `muucmf_menu` (`id`, `title`, `pid`, `sort`, `url`, `hide`, `type`, `tip`, `group`, `is_dev`, `icon`, `module`) VALUES
+('E8197AF4-11D1-F0B1-0153-AD74521C3283', '状态管理', 'B4CCC48C-113F-4A31-9378-F9F77EEA9F4B', 0, 'admin/Feedback/status', 0, 0, '', '', 0, '', 'admin');
+INSERT INTO `muucmf_menu` (`id`, `title`, `pid`, `sort`, `url`, `hide`, `type`, `tip`, `group`, `is_dev`, `icon`, `module`) VALUES
+('759FD998-08F4-A420-337C-55C0D5C31B0A', '状态管理', '1B23C61A-3B9E-07DC-6FC8-DA8A2F7A80D0', 0, 'admin/History/status', 0, 0, '', '', 0, '', 'admin');
