@@ -66,18 +66,9 @@ class Base
     * @param  array $header 发送的Header信息
     * @return void
     */
-    // protected function success($msg = '', $data = '', string $url = '', array $header = [])
-    // {
-    //     if (empty($url)) {
-    //         $url = 'refresh';
-    //     }
-
-    //    return $this->result(200, $msg, $data, $url);
-    // }
     protected function success($msg = '',  $data = '', $url = '', int $wait = 3, array $header = []): Response
     {
         if (empty($url) && isset($_SERVER["HTTP_REFERER"])) {
-            //$url = $_SERVER["HTTP_REFERER"];
             $url = 'refresh';
         } elseif ($url) {
             if(is_object($url)){
@@ -103,8 +94,7 @@ class Base
             $response = json($result);
         }
 
-        return $response;
-        //throw new HttpResponseException($response);
+        throw new HttpResponseException($response);
     }
 
     /**
@@ -123,8 +113,8 @@ class Base
     // }
     protected function error($msg = '', $data = '', $url = '', int $wait = 3, array $header = []): Response
     {
-        if (is_null($url)) {
-            $url = request()->isAjax() ? '' : 'javascript:history.back(-1);';
+        if (empty($url) && isset($_SERVER["HTTP_REFERER"])) {
+            $url = $_SERVER["HTTP_REFERER"];
         } elseif ($url) {
             $url = (strpos($url, '://') || 0 === strpos($url, '/')) ? $url : 'refresh';
         }
@@ -145,8 +135,7 @@ class Base
             $response = json($result);
         }
 
-        return $response;
-        //throw new HttpResponseException($response);
+        throw new HttpResponseException($response);
     }
 
 
