@@ -534,15 +534,99 @@ class Member extends Base
             if ($had_nickname > 0) {
                 throw new Exception('昵称已被人使用');
             }
+
             //保留昵称
-            $denyName = Config::get('system.USER_NAME_BAOLIU');
-            
-            if (!empty($denyName)) {
-                $denyName = explode(',', $denyName);
-                foreach ($denyName as $val) {
-                    if (!is_bool(strpos($nickname, $val))) {
-                        throw new Exception('该昵称已被禁用');
+            if($uid != 1){
+                $denyName = Config::get('system.USER_NAME_BAOLIU');
+                if (!empty($denyName)) {
+                    $denyName = explode(',', $denyName);
+                    foreach ($denyName as $val) {
+                        if (!is_bool(strpos($nickname, $val))) {
+                            throw new Exception('该昵称已被禁用');
+                        }
                     }
+                }
+            }
+
+            return true;
+        }catch (Exception $e){
+            return $e->getMessage();
+        }
+    }
+
+    /**
+     * 验证用户名
+     */
+    public function checkUsername($username, $uid)
+    {
+        try {
+            //如果用户名中有空格，不允许注册
+            if (strpos($username, ' ') !== false) {
+                throw new Exception('用户名格式错误');
+            }
+            //验证唯一性
+            $map[] = ['username', '=', $username];
+            $map[] = ['uid', '<>', $uid];
+            $has = $this->where($map)->count();
+            if ($has) {
+                throw new Exception('用户名已被占用');
+            }
+
+            if($uid != 1){
+                $denyName = Config::get('system.USER_NAME_BAOLIU');
+                if ($denyName != '') {
+                    $denyName = explode(',', $denyName);
+                    foreach ($denyName as $val) {
+                        if (!is_bool(strpos($username, $val))) {
+                            throw new Exception('该用户名已被禁用');
+                        }
+                    }
+                }
+            }
+
+            return true;
+        }catch (Exception $e){
+            return $e->getMessage();
+        }
+    }
+
+    public function checkEmail($email, $uid)
+    {
+        try {
+            if (!empty($email)) {
+                if (!preg_match("/^([0-9A-Za-z\\-_\\.]+)@([0-9a-z]+\\.[a-z]{2,3}(\\.[a-z]{2})?)$/i", $email)) {
+                    throw new Exception('请正确填写邮箱！');
+                }
+
+                //验证唯一性
+                $map[] = ['email', '=', $email];
+                $map[] = ['uid', '<>', $uid];
+                $has = $this->where($map)->count();
+                if ($has) {
+                    throw new Exception('邮箱已被占用');
+                }
+            }
+
+            return true;
+        }catch (Exception $e){
+            return $e->getMessage();
+        }
+    }
+
+    public function checkMobile($mobile, $uid)
+    {
+        try {
+            if (!empty($mobile)) {
+                if (!preg_match("/^\d{11}$/", $mobile)) {
+                    throw new Exception('请正确填写手机号！');
+                }
+
+                //验证唯一性
+                $map[] = ['mobile', '=', $mobile];
+                $map[] = ['uid', '<>', $uid];
+                $has = $this->where($map)->count();
+                if ($has) {
+                    throw new Exception('手机号已被占用');
                 }
             }
 

@@ -156,17 +156,30 @@ class Member extends Admin
             $member_data['realname'] = $data['realname'];
             $member_data['sex'] = intval($data['sex']);
             $member_data['status'] = intval($data['status']);
-            try{
-                if ($member_data['username'] == '' && $member_data['email'] == '' && $member_data['mobile'] == '') {
-                    throw new Exception('用户名、邮箱、手机号，至少填写一项！');
-                }
-                $this->checkNickname($member_data['nickname'], $uid);
-                $this->checkUsername($member_data['username'], $uid);
-                $this->checkEmail($member_data['email'], $uid);
-                $this->checkMobile($member_data['mobile'], $uid);
-            }catch(Exception $e){
-                return $this->error($e->getMessage());
+
+            if ($member_data['username'] == '' && $member_data['email'] == '' && $member_data['mobile'] == '') {
+                return $this->error('用户名、邮箱、手机号，至少填写一项！');
             }
+            $check_nickname = $this->MemberModel->checkNickname($member_data['nickname'], $uid);
+            if($check_nickname !== true){
+                return $this->error($check_nickname);
+            }
+
+            $check_username = $this->MemberModel->checkUsername($member_data['username'], $uid);
+            if($check_username !== true){
+                return $this->error($check_username);
+            }
+
+            $check_email = $this->MemberModel->checkEmail($member_data['email'], $uid);
+            if($check_email !== true){
+                return $this->error($check_email);
+            }
+
+            $check_mobile = $this->MemberModel->checkMobile($member_data['mobile'], $uid);
+            if($check_mobile !== true){
+                return $this->error($check_mobile);
+            }
+            
             // 写入数据并返回UID
             $uid= $this->MemberModel->edit($member_data);
 
@@ -206,6 +219,7 @@ class Member extends Admin
 
             return $this->success('保存成功', $uid, Cookie('__forward__'));
         } else {
+
             // 获取用户数据
             $member = $this->MemberModel->where('uid', '=', $uid)->find();
 
@@ -351,103 +365,6 @@ class Member extends Admin
         } else {
 
             return null;
-        }
-    }
-
-    /**
-     * 验证昵称
-     * @param $nickname
-     */
-    private function checkNickname($nickname, $uid)
-    {
-        $length = mb_strlen($nickname, 'utf8');
-        if ($length == 0) {
-            throw new Exception('请输入昵称');
-        } else if ($length > config('system.NICKNAME_MAX_LENGTH', 32)) {
-            throw new Exception('昵称不能超过' . config('system.NICKNAME_MAX_LENGTH', 32) . '个字');
-        } else if ($length < config('system.NICKNAME_MIN_LENGTH', 2)) {
-            throw new Exception('昵称不能少于' . config('system.NICKNAME_MIN_LENGTH', 2) . '个字');
-        }
-        $match = preg_match('/^(?!_|\s\')[A-Za-z0-9_\x80-\xff\s\']+$/', $nickname);
-        if (!$match) {
-            throw new Exception('昵称只允许中文、字母、下划线和数字');
-        }
-        //验证唯一性
-        $map_nickname[] = ['nickname', '=', $nickname];
-        $map_nickname[] = ['uid', '<>', $uid];
-        $had_nickname = Db::name('Member')->where($map_nickname)->count();
-
-        if ($had_nickname > 0) {
-            throw new Exception('昵称已被占用');
-        }
-        $denyName = Db::name("config")->where(['name' => 'USER_NAME_BAOLIU'])->value('value');
-        if ($denyName != '') {
-            $denyName = explode(',', $denyName);
-            foreach ($denyName as $val) {
-                if (!is_bool(strpos($nickname, $val))) {
-                    throw new Exception('该昵称已被禁用');
-                }
-            }
-        }
-    }
-
-    /**
-     * 验证用户名
-     */
-    private function checkUsername($username, $uid)
-    {
-        //验证唯一性
-        $map[] = ['username', '=', $username];
-        $map[] = ['uid', '<>', $uid];
-        $has = Db::name('Member')->where($map)->count();
-        if ($has) {
-            throw new Exception('用户名已被占用');
-        }
-
-        if($uid != 1){
-            $denyName = Db::name("config")->where(['name' => 'USER_NAME_BAOLIU'])->value('value');
-            if ($denyName != '') {
-                $denyName = explode(',', $denyName);
-                foreach ($denyName as $val) {
-                    if (!is_bool(strpos($username, $val))) {
-                        throw new Exception('该用户名已被禁用');
-                    }
-                }
-            }
-        }
-    }
-
-    private function checkEmail($email, $uid)
-    {
-        if (!empty($email)) {
-            if (!preg_match("/^([0-9A-Za-z\\-_\\.]+)@([0-9a-z]+\\.[a-z]{2,3}(\\.[a-z]{2})?)$/i", $email)) {
-                throw new Exception('请正确填写邮箱！');
-            }
-
-            //验证唯一性
-            $map[] = ['email', '=', $email];
-            $map[] = ['uid', '<>', $uid];
-            $has = Db::name('Member')->where($map)->count();
-            if ($has) {
-                throw new Exception('邮箱已被占用');
-            }
-        }
-    }
-
-    private function checkMobile($mobile, $uid)
-    {
-        if (!empty($mobile)) {
-            if (!preg_match("/^\d{11}$/", $mobile)) {
-                throw new Exception('请正确填写手机号！');
-            }
-
-            //验证唯一性
-            $map[] = ['mobile', '=', $mobile];
-            $map[] = ['uid', '<>', $uid];
-            $has = Db::name('Member')->where($map)->count();
-            if ($has) {
-                throw new Exception('手机号已被占用');
-            }
         }
     }
 
