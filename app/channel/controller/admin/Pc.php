@@ -1,4 +1,5 @@
 <?php
+
 namespace app\channel\controller\admin;
 
 use app\admin\controller\Admin as MuuAdmin;
@@ -8,7 +9,8 @@ use think\facade\Db;
 use think\facade\View;
 use think\Exception;
 
-class Pc extends MuuAdmin{
+class Pc extends MuuAdmin
+{
     protected $channelModel;
     /**
      * 构造方法
@@ -19,7 +21,6 @@ class Pc extends MuuAdmin{
         parent::__construct();
 
         $this->channelModel = new ChannelModel();
-        
     }
 
     /**
@@ -47,30 +48,26 @@ class Pc extends MuuAdmin{
                             'title' => html($nav['title'][$i]),
                             'url' => text($nav['url'][$i]),
                             'sort' => intval($i),
-                            'target' => empty($nav['target'][$i]) ? 0:intval($nav['target'][$i]),
+                            'target' => empty($nav['target'][$i]) ? 0 : intval($nav['target'][$i]),
                             'status' => 1,
                             'color' => empty($nav['color'][$i]) ?? '',
                             'icon' => empty($nav['icon'][$i]) ?? ''
                         ];
                     }
                     $res = $this->channelModel->insertAll($data);
-                    if($res){
+                    if ($res) {
                         // 提交事务
                         Db::commit();
-                        return $this->success('修改成功',$res);
+                        return $this->success('修改成功', $res);
                     }
-                }else{
+                } else {
                     throw new Exception('导航至少存在一个。');
                 }
-                
             } catch (\Exception $e) {
                 // 回滚事务
                 Db::rollback();
                 return $this->error($e->getMessage());
             }
-            
-            
-
         } else {
             /* 获取频道列表 */
             $map[] = ['status', '=', 1];
@@ -81,7 +78,7 @@ class Pc extends MuuAdmin{
             $moduleModel = new ModuleModel();
             $module_list = $moduleModel->getAll(['is_setup' => 1]);
             View::assign('module_list', $module_list);
-            
+
             $this->setTitle('导航管理');
 
             return View::fetch();
@@ -113,7 +110,7 @@ class Pc extends MuuAdmin{
                         'title' => html($nav['title'][$i]),
                         'url' => text($nav['url'][$i]),
                         'sort' => intval($i),
-                        'target' => empty($nav['target'][$i]) ? 0:intval($nav['target'][$i]),
+                        'target' => empty($nav['target'][$i]) ? 0 : intval($nav['target'][$i]),
                         'status' => 1,
                         'color' => empty($nav['color'][$i]) ?? '',
                         'icon' => empty($nav['icon'][$i]) ?? ''
@@ -121,18 +118,16 @@ class Pc extends MuuAdmin{
                 }
 
                 $res = $this->channelModel->insertAll($data);
-                if($res){
+                if ($res) {
                     // 提交事务
                     Db::commit();
-                    return $this->success('修改成功',$res);
+                    return $this->success('修改成功', $res);
                 }
-                
             } catch (\Exception $e) {
                 // 回滚事务
                 Db::rollback();
                 return $this->error($e->getMessage());
             }
-
         } else {
             /* 获取频道列表 */
             $map[] = ['status', '>', -1];
@@ -143,7 +138,7 @@ class Pc extends MuuAdmin{
             $moduleModel = new ModuleModel();
             $module_list = $moduleModel->getAll(['is_setup' => 1]);
             View::assign('module_list', $module_list);
-            
+
             $this->setTitle('导航管理');
 
             return View::fetch();
@@ -155,7 +150,8 @@ class Pc extends MuuAdmin{
      * 用户导航
      * @return [type] [description]
      */
-    public function user(){
+    public function user()
+    {
 
         if (request()->isPost()) {
             $one = $_POST['nav'][1];
@@ -179,7 +175,7 @@ class Pc extends MuuAdmin{
                     }
                     // 提交事务
                     Db::commit();
-                    cache(request()->domain() . '_muucmf_user_nav',null);
+                    cache(request()->domain() . '_muucmf_user_nav', null);
                     return $this->success('修改成功');
                 }
             } catch (\Exception $e) {
@@ -190,14 +186,14 @@ class Pc extends MuuAdmin{
         } else {
             $this->setTitle('导航管理');
             /* 获取频道列表 */
-            $map[] = ['status','>', -1];
+            $map[] = ['status', '>', -1];
             $list = Db::name('UserNav')->where($map)->order('sort asc,id asc')->select()->toArray();
             View::assign('list', $list);
             // 获取应用模块列表
             $moduleModel = new ModuleModel();
             $module_list = $moduleModel->getAll(['is_setup' => 1]);
             View::assign('module_list', $module_list);
-            
+
             return View::fetch();
         }
     }

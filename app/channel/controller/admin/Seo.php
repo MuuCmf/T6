@@ -1,8 +1,10 @@
 <?php
+
 namespace app\channel\controller\admin;
 
 use app\admin\controller\Admin as MuuAdmin;
 use think\facade\Db;
+use app\common\model\Module as ModuleModel;
 use app\admin\builder\AdminListBuilder;
 use app\admin\builder\AdminConfigBuilder;
 use app\admin\builder\AdminSortBuilder;
@@ -10,25 +12,31 @@ use app\common\model\SeoRule;
 
 class Seo extends MuuAdmin
 {
+    public function __construct()
+    {
+        parent::__construct();
+
+    }
+
     public function lists()
     {
         //读取规则列表
-        $app=input('get.app','','text');
+        $app = input('get.app', '', 'text');
         $map = [
-            ['status', 'in', [0,1]]
+            ['status', 'in', [0, 1]]
         ];
-        if(!empty($aApp)){
-            $map[]= ['app', '=', $app];
+        if (!empty($aApp)) {
+            $map[] = ['app', '=', $app];
         }
 
-        list($ruleList,$page) = $this->commonLists('SeoRule', $map, 'sort asc');
+        list($ruleList, $page) = $this->commonLists('SeoRule', $map, 'sort asc');
         $page = $ruleList->render();
 
-        $module = $this->moduleModel->getAll();
+        $module = (new ModuleModel())->getAll();
         $app = array();
         foreach ($module as $m) {
             if ($m['is_setup'])
-                $app[] =array('id'=>$m['name'],'value'=>$m['alias']) ;
+                $app[] = array('id' => $m['name'], 'value' => $m['alias']);
         }
         $ruleList = $ruleList->toArray()['data'];
         //显示页面
@@ -67,13 +75,13 @@ class Seo extends MuuAdmin
             $params = input();
             //写入数据库
             $data = [
-                'title' => $params['title'], 
-                'app' => strtolower($params['app']), 
-                'controller' => strtolower($params['controller']), 
-                'action' => strtolower($params['action2']), 
-                'seo_title' => $params['seo_title'], 
+                'title' => $params['title'],
+                'app' => strtolower($params['app']),
+                'controller' => strtolower($params['controller']),
+                'action' => strtolower($params['action2']),
+                'seo_title' => $params['seo_title'],
                 'seo_keywords' => $params['seo_keywords'],
-                'seo_description' => $params['seo_description'], 
+                'seo_description' => $params['seo_description'],
                 'status' => $params['status']
             ];
 
@@ -82,11 +90,11 @@ class Seo extends MuuAdmin
                 ['app', '=', $data['app']],
                 ['controller', '=', $data['controller']],
                 ['action', '=', $data['action']],
-                ['status', 'in', [0,1]]
+                ['status', 'in', [0, 1]]
             ];
 
             $has_rule = Db::name('SeoRule')->where($has_map)->find();
-            if($has_rule && !$isEdit){
+            if ($has_rule && !$isEdit) {
                 return $this->error('已存在相同规则');
             }
 
@@ -112,17 +120,17 @@ class Seo extends MuuAdmin
             $rule = [
                 'status' => 1,
                 'action' => '',
-                'summary'=> ''
+                'summary' => ''
             ];
         }
         $rule['action2'] = $rule['action'];
         $rule['summary'] = nl2br($rule['summary']);
 
-        $modules = $this->moduleModel->getAll();
+        $modules = (new ModuleModel())->getAll();
         $app = ['' => '全部应用'];
         foreach ($modules as $m) {
             if ($m['is_setup']) {
-                $app[$m['name']] = lcfirst($m['alias']);//首字母改小写，兼容V1
+                $app[$m['name']] = lcfirst($m['alias']); //首字母改小写，兼容V1
             }
         }
         //显示页面
@@ -159,5 +167,4 @@ class Seo extends MuuAdmin
         $builder = new AdminListBuilder();
         return $builder->doDeleteTrue('SeoRule', $ids);
     }
-
 }
