@@ -6,8 +6,7 @@
     <div class="main-title">
         <h2>注册用户列表</h2>
     </div>
-    <div class="button-box clearfix">
-
+    <div class="button-box row clearfix">
         <div class="col-md-6">
             <a type="button" class="btn btn-info {if !check_auth('admin/Member/edit')}disabled{/if}" href="{:url('edit')}">
                 新增
@@ -91,7 +90,7 @@
                     </td>
                     <td>{$vo.uid}</td>
                     <td>
-                        <a href="{:url('admin/Member/edit',['uid'=>$vo['uid']])}">
+                        <a href="{:url('admin/Member/detail',['uid'=>$vo['uid']])}">
                             <div class="avatar">
                                 <img src="{$vo['avatar64']}">
                             </div>

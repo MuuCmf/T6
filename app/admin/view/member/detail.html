@@ -1,0 +1,115 @@
+{extend name="common/main"/}
+
+{block name="body"}
+<div class="main-title">
+    <h2>用户资料</h2>
+</div>
+
+<section class="member-detail-section clearfix">
+    <div class="base col-sm-3">
+        <div class="card">
+            <div class="avatar">
+                <img class="avatar-img" src="{$member.avatar128}" />
+            </div>
+            <div class="nickname">
+                <span class="">
+                    {$member.username}
+                </span>
+            </div>
+        </div>
+    </div>
+    <div class="detail-files-box col-sm-9">
+        <div class="form-files-box card">
+            <!-- 基本设置 start -->
+            <div class="form-file header">基本资料</div>
+            <div class="form-files">
+                <div class="form-file">
+                    <div class="form-label">用户名</div>
+                    <div class="form-value">
+                        <span class="margin-left">
+                            {$member.username}
+                        </span>
+                    </div>
+                    <div class="form-edit">
+                        
+                    </div>
+                </div>
+                <div class="form-file">
+                    <div class="form-label">邮箱</div>
+                    <div class="form-value">
+                        <span class="margin-left">
+                            {$member.email}
+                        </span>
+                    </div>
+                    <div class="form-edit">
+                        
+                    </div>
+                </div>
+                <div class="form-file">
+                    <div class="form-label">手机</div>
+                    <div class="form-value">
+                        <span class="margin-left">
+                            {$member.mobile}
+                        </span>
+                    </div>
+                    <div class="form-edit">
+                        
+                    </div>
+                </div>
+                <div class="form-file">
+                    <div class="form-label">性别</div>
+                    <div class="form-value">
+                        <span class="margin-left">
+                            {$member.sex_str}
+                        </span>
+                    </div>
+                    <div class="form-edit">
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {notempty name="member.expend"}
+        <div class="form-files-box card">
+            <div class="form-file header">扩展资料</div>
+            {volist name="member.expend" id="vo"}
+            <div class="form-files">
+                <div class="form-file">
+                    <div class="form-label">{$vo.alias}</div>
+                    <div class="form-value">
+                        <span class="margin-left">
+                            {$vo.data}
+                        </span>
+                    </div>
+                    <div class="form-edit">
+                        
+                    </div>
+                </div>
+            </div>
+            {/volist}
+        </div>
+        {/notempty}
+
+        <div class="form-files-box card">
+            <div class="form-file header">用户积分</div>
+            {volist name="member.score" id="vo"}
+            <div class="form-files">
+                <div class="form-file">
+                    <div class="form-label">{$vo.title}</div>
+                    <div class="form-value">
+                        <span class="margin-left">
+                            {$vo.value} {$vo.unit}
+                        </span>
+                    </div>
+                    <div class="form-edit">
+                        
+                    </div>
+                </div>
+            </div>
+            {/volist}
+        </div>
+    </div>
+</section>
+
+{/block}

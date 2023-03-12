@@ -4,7 +4,6 @@ namespace app\admin\controller;
 
 use think\facade\Db;
 use think\facade\View;
-use think\Exception;
 use app\admin\builder\AdminConfigBuilder;
 use app\common\model\Member as MemberModel;
 use app\common\model\MemberSync as MemberSyncModel;
@@ -187,24 +186,25 @@ class Member extends Admin
             $data_score = [];
             foreach ($data as $key => $val) {
                 if (substr($key, 0, 5) == 'score') {
-                    $data_score[$key] = $val;
+                    $data_score[$key] = intval($val);
                 }
             }
+
+            $member = query_user($uid);
             foreach ($data_score as $key => $val) {
-                $user_score = query_user($uid, array($key));
                 // 值相同跳过
-                if (intval($val) == intval($user_score[$key])) {
+                if (intval($val) == intval($member[$key])) {
                     continue;
                 } else {
                     //写入积分
                     $this->MemberModel->where('uid', $uid)->update($data_score);
                     //写积分变化日志
-                    if (intval($val) > intval($user_score[$key])) {
+                    if (intval($val) > intval($member[$key])) {
                         $action = 'inc';
-                        $value = intval($val) - intval($user_score[$key]);
+                        $value = intval($val) - intval($member[$key]);
                     } else {
                         $action = 'dec';
-                        $value = intval($user_score[$key]) - intval($val);
+                        $value = intval($member[$key]) - intval($val);
                     }
                     $scoreLogModel = new ScoreLogModel();
                     $scoreLogModel->addScoreLog($uid, cut_str('score', $key, 'l'), $action, $value, '', 0, get_nickname(is_login()) . '后台调整');
@@ -221,56 +221,24 @@ class Member extends Admin
         } else {
 
             // 获取用户数据
-            $member = $this->MemberModel->where('uid', '=', $uid)->find();
-
-            // 扩展资料
-            $field_group = Db::name('field_group')->where('status', '=', 1)->select();
-
-            $fields_list = [];
-            if (!empty($field_group) && !empty($member)) {
-                $field_group = $field_group->toArray();
-                $field_group_ids = array_column($field_group, 'id');
-
-                $map_profile[] = ['group_id', 'in', $field_group_ids];
-                $map_profile[] = ['status', '=', 1];
-                $fields_list = Db::name('field_setting')->where($map_profile)->field('id,field_name,form_type')->select()->toArray();
-                $fields_list = array_combine(array_column($fields_list, 'field_name'), $fields_list);
-                $map_field['uid'] = $member['uid'];
-
-                foreach ($fields_list as $key => $val) {
-                    $map_field['field_id'] = $val['id'];
-                    $field_data = Db::name('field')->where($map_field)->field('field_data')->find();
-                    if ($field_data == null || $field_data == '') {
-                        $member[$key] = '';
-                    } else {
-                        $member[$key] = $field_data;
-                    }
-                    $member[$key] = $field_data;
-                }
-            }
+            $member = query_user($uid);
 
             $builder = new AdminConfigBuilder();
             $builder->title('用户资料管理');
             $builder->keyUid()
-                ->keySingleImage('avatar', '头像', '')
-                ->keyText('username', '用户名')
-                ->keyText('email', '邮箱')
-                ->keyText('mobile', '手机号')
-                ->keyText('nickname', '昵称')
-                ->keyText('realname', '真实姓名')
-                ->keyRadio('sex', '性别', '', [0 => '不详', 1 => '男', 2 => '女'])
-                ->keyRadio('status', '状态', '', [1 => '启用', 0 => '禁用']);
-
+                    ->keySingleImage('avatar', '头像', '')
+                    ->keyText('username', '用户名')
+                    ->keyText('email', '邮箱')
+                    ->keyText('mobile', '手机号')
+                    ->keyText('nickname', '昵称')
+                    ->keyText('realname', '真实姓名')
+                    ->keyRadio('sex', '性别', '', [0 => '不详', 1 => '男', 2 => '女'])
+                    ->keyRadio('status', '状态', '', [1 => '启用', 0 => '禁用']);
             $field_key = ['uid', 'avatar', 'username', 'email', 'mobile', 'nickname', 'realname', 'sex', 'status'];
-            foreach ($fields_list as $vt) {
-                $field_key[] = $vt['field_name'];
-            }
 
             /* 积分设置 */
-            $scoreTypeModel = new ScoreTypeModel();
-            $field = $scoreTypeModel->getTypeList([['status', '=', 1]]);
             $score_key = [];
-            foreach ($field as $vf) {
+            foreach ($member['score'] as $vf) {
                 $score_key[] = 'score' . $vf['id'];
                 $builder->keyText('score' . $vf['id'], $vf['title']);
             }
@@ -316,10 +284,13 @@ class Member extends Admin
     {
         $uid = input('uid', 0, 'intval');
         $map[] = ['uid', '=', $uid];
-        $member = $this->MemberModel->where($map)->find()->toArray();
-
+        $member = query_user($uid);
+        
+        
         View::assign('member', $member);
+        //dump($member);
 
+        $this->setTitle('用户详情');
         return View::fetch();
     }
 

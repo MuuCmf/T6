@@ -1,11 +1,13 @@
 <?php
+
 namespace app\common\model;
 
-use app\admin\model\AuthGroup;
-use app\common\model\ActionLog;
 use think\Exception;
 use think\facade\Db;
 use think\facade\Config;
+use app\admin\model\AuthGroup;
+use app\common\model\ActionLog;
+use app\common\model\ScoreType;
 
 /**
  * 会员模型
@@ -26,16 +28,16 @@ class Member extends Base
      */
     public function edit($data)
     {
-        if(!empty($data['uid'])){
+        if (!empty($data['uid'])) {
             $res = $this->update($data, ['uid' => $data['uid']]);
             return $data['uid'];
-        }else{
+        } else {
             // 初始密码
             $data['password'] = user_md5('123456', Config::get('auth.auth_key'));
             $res = $this->save($data);
         }
 
-        if(!empty($this->id)){
+        if (!empty($this->id)) {
             return $this->id;
         }
 
@@ -51,11 +53,11 @@ class Member extends Base
      * @param  string $mobile 用户手机号码
      * @return integer 注册成功-用户信息，注册失败-错误编号
      */
-    public function register($username='', $nickname = '', $password = '', $email='', $mobile='', $type='username')
+    public function register($username = '', $nickname = '', $password = '', $email = '', $mobile = '', $type = 'username')
     {
         $data = [
             'username' => $username,
-            'password' => user_md5($password,Config::get('auth.auth_key')),
+            'password' => user_md5($password, Config::get('auth.auth_key')),
             'email' => $email,
             'mobile' => $mobile,
             'nickname' => $nickname,
@@ -75,13 +77,12 @@ class Member extends Base
         if ($res = $this->save($data)) {
             if (!$res) {
                 return false;
-            }else{
+            } else {
                 $uid = $this->id;
                 $actionLog = new ActionLog();
-                $actionLog->add('reg','member',1,$uid);
+                $actionLog->add('reg', 'member', 1, $uid);
                 return $uid;
             }
-
         } else {
             return -1;
         }
@@ -93,7 +94,7 @@ class Member extends Base
      * @param  string  $password 用户密码
      * @return integer           登录成功-用户ID，登录失败-错误编号
      */
-    public function verifyUserPassword($account ,$password)
+    public function verifyUserPassword($account, $password)
     {
         $type = check_account_type($account);
         $map = [];
@@ -115,21 +116,21 @@ class Member extends Base
         }
         // 获取用户数据
         $user = $this->where($map)->find();
-        if($user){
+        if ($user) {
             // 行为限制
             $actionLimit = new ActionLimit();
-            $return = $actionLimit->checkActionLimit('input_password','member',$user['uid'],$user['uid']);
-            if($return && !$return['code']){
+            $return = $actionLimit->checkActionLimit('input_password', 'member', $user['uid'], $user['uid']);
+            if ($return && !$return['code']) {
                 return $return['msg'];
             }
-            
+
             if ($user['uid'] && $user['status']) {
                 /* 验证用户密码 */
                 if (user_md5($password, Config::get('auth.auth_key')) === $user['password']) {
                     return $user['uid']; //返回用户ID
                 } else {
                     $actionLog = new ActionLog();
-                    $actionLog->add('input_password','member',$user['uid'],$user['uid']);
+                    $actionLog->add('input_password', 'member', $user['uid'], $user['uid']);
                     return -2; //密码错误
                 }
             }
@@ -144,7 +145,7 @@ class Member extends Base
      * @param  string  $captcha 验证码
      * @return integer           登录成功-用户ID，登录失败-错误编号
      */
-    public function verifyUserCaptcha($account ,$captcha)
+    public function verifyUserCaptcha($account, $captcha)
     {
         $type = check_account_type($account);
         $map = [];
@@ -167,12 +168,12 @@ class Member extends Base
         // 获取用户数据
         $user = $this->where($map)->find();
         $verifyModel = new Verify();
-        if($user){
+        if ($user) {
             // 行为限制
             $actionLimit = new ActionLimit();
-            $return = $actionLimit->checkActionLimit('input_password','member',$user['uid'],$user['uid']);
+            $return = $actionLimit->checkActionLimit('input_password', 'member', $user['uid'], $user['uid']);
 
-            if($return && !$return['code']){
+            if ($return && !$return['code']) {
                 return $return['msg'];
             }
 
@@ -180,11 +181,11 @@ class Member extends Base
                 /* 验证用户验证码 */
                 if (!$verifyModel->checkVerify($account, $type, $captcha)) {
                     return -2;
-                }else{
+                } else {
                     return $user['uid']; //返回用户ID
                 }
             }
-        }else{
+        } else {
             if (!$verifyModel->checkVerify($account, $type, $captcha)) {
                 return -2;
             }
@@ -199,9 +200,9 @@ class Member extends Base
      */
     public function login(int $uid, int $remember = 0)
     {
-        if($uid )
+        if ($uid)
             /* 检测是否在当前应用注册 */
-            $user = $this->where('uid','=',$uid)->find();
+            $user = $this->where('uid', '=', $uid)->find();
 
         if ($user['status'] !== 1) {
             $this->error = '用户已禁用'; //应用级别禁用
@@ -232,14 +233,14 @@ class Member extends Base
                 $token = create_unique();
                 $data_token['token'] = $token;
                 $data_token['create_time'] = time();
-                
+
                 Db::name('user_token')->insert($data_token);
             }
         }
-        
+
         if (!$this->getCookieUid() && $remember) {
             $expire = 3600 * 24 * 7;
-            cookie('MUU_LOGGED_USER', think_encrypt("{$uid}.{$token}",'muucmf', $expire));
+            cookie('MUU_LOGGED_USER', think_encrypt("{$uid}.{$token}", 'muucmf', $expire));
         }
 
         return true;
@@ -250,17 +251,17 @@ class Member extends Base
         static $cookie_uid = null;
         if (isset($cookie_uid) && $cookie_uid !== null) {
             return $cookie_uid;
-        }else{
+        } else {
             $cookie = cookie('MUU_LOGGED_USER');
-            if(!empty($cookie)){
+            if (!empty($cookie)) {
                 $cookie = explode(".", think_decrypt($cookie, 'muucmf'));
                 $map['uid'] = $cookie[0];
                 $user = Db::name('user_token')->where($map)->find();
                 $cookie_uid = ($cookie[1] != $user['token']) ? false : $cookie[0];
-                $cookie_uid = $user['create_time'] - time() >= 3600 * 24 * 7 ? false : $cookie_uid;//过期时间7天
+                $cookie_uid = $user['create_time'] - time() >= 3600 * 24 * 7 ? false : $cookie_uid; //过期时间7天
             }
         }
-        	
+
         return $cookie_uid;
     }
 
@@ -270,7 +271,7 @@ class Member extends Base
      */
     public function rembemberLogin()
     {
-        if(!is_login()){
+        if (!is_login()) {
             //判断COOKIE
             $uid = $this->getCookieUid();
             if ($uid) {
@@ -348,40 +349,40 @@ class Member extends Base
      */
     public function info($uid, $fields = '*')
     {
-        if(!empty($uid)){
-            if(!empty($fields) && $fields != '*'){
-                if(!is_array($fields)){
+        if (!empty($uid)) {
+            if (!empty($fields) && $fields != '*') {
+                if (!is_array($fields)) {
                     $fields_arr = explode(',', $fields);
-                }else{
+                } else {
                     $fields_arr = $fields;
                 }
-                if(!in_array('uid',$fields_arr)){
+                if (!in_array('uid', $fields_arr)) {
                     array_push($fields_arr, 'uid');
                 }
 
-                if(!in_array('status',$fields_arr)){
+                if (!in_array('status', $fields_arr)) {
                     array_push($fields_arr, 'status');
                 }
 
                 // 转回字符串
                 $fields = implode(',', $fields_arr);
-            }else{
+            } else {
                 $fields = '*';
             }
 
             // 查询用户数组
             $map['uid'] = $uid;
             $member = $this->where($map)->field($fields)->find();
-            if($member){
+            if ($member) {
                 $member = $member->toArray();
             }
 
             if (is_array($member) && $member['status'] = 1) {
-                if($fields == '*' || strpos($fields, 'avatar') !== false){
+                if ($fields == '*' || strpos($fields, 'avatar') !== false) {
                     // 头像
-                    if(empty($member['avatar'])){
+                    if (empty($member['avatar'])) {
                         $member['avatar'] = $member['avatar64'] = $member['avatar128'] = $member['avatar256'] = $member['avatar512'] = request()->domain() . '/static/common/images/default_avatar.jpg';
-                    }else{
+                    } else {
                         $member['avatar'] = get_attachment_src($member['avatar']);
                         $member['avatar64'] = get_thumb_image($member['avatar'], 64, 64);
                         $member['avatar128'] = get_thumb_image($member['avatar'], 128, 128);
@@ -390,37 +391,76 @@ class Member extends Base
                     }
                 }
 
-                if($fields == '*' || strpos($fields, 'balance') !== false){
-                    // 余额
-                    if (isset($member['balance'])){
-                        $member['balance'] = sprintf("%.2f",$member['balance'] / 100);
+                if ($fields == '*' || strpos($fields, 'avatar') !== false) {
+                    // 性别
+                    if($member['sex'] == 0){
+                        $member['sex_str'] = '保密';
+                    }
+                    if($member['sex'] == 1){
+                        $member['sex_str'] = '男';
+                    }
+                    if($member['sex'] == 2){
+                        $member['sex_str'] = '女';
                     }
                 }
 
-                // 扩展字段
-                $field_group = Db::name('field_group')->where('status', '=', 1)->select()->toArray();
-                $field_group_ids = array_column($field_group, 'id');
-                $map_profile[] = ['group_id', 'in', $field_group_ids];
-                $map_profile[] = ['status', '=', 1];
-                $fields_list = Db::name('field_setting')->where($map_profile)->field('id,field_name,form_type')->select()->toArray();
-                $fields_list = array_combine(array_column($fields_list, 'field_name'), $fields_list);
-                $map_field['uid'] = $member['uid'];
-
-                foreach ($fields_list as $key => $val) {
-                    $map_field['field_id'] = $val['id'];
-                    $field_data = Db::name('field')->where($map_field)->field('field_data')->find();
-                    if ($field_data == null || $field_data == '') {
-                        $member[$key] = '';
+                if ($fields == '*' || strpos($fields, 'score') !== false) {
+                    // 用户积分
+                    $scoreTypeModel = new ScoreType();
+                    $field = $scoreTypeModel->getTypeList([['status', '=', 1]]);
+                    $score_key = [];
+                    foreach ($field as $vf) {
+                        $vf['value'] = $member['score' . $vf['id']];
+                        $score_key[] = $vf;
                     }
-                    $member[$key] = $field_data;
+                    $member['score'] = $score_key;
                 }
+
+                // 扩展资料
+                $field_group = Db::name('field_group')->where('status', '=', 1)->select();
+                $fields_list = [];
+                if (!empty($field_group) && !empty($member)) {
+                    $field_group = $field_group->toArray();
+                    $field_group_ids = array_column($field_group, 'id');
+
+                    $map_profile[] = ['group_id', 'in', $field_group_ids];
+                    $map_profile[] = ['status', '=', 1];
+                    $fields_list = Db::name('field_setting')->where($map_profile)->field('id,field_name,field_alias,sort,form_type')->select();
+                    if (!empty($fields_list)) {
+                        $fields_list = $fields_list->toArray();
+                    }
+                    $fields_list = array_combine(array_column($fields_list, 'field_name'), $fields_list);
+
+                    $map_field['uid'] = $member['uid'];
+                    // 初始化用户扩展字段
+                    $expend = [];
+                    foreach ($fields_list as $key => $val) {
+                        $map_field['field_id'] = $val['id'];
+                        $field_data = Db::name('field')->where($map_field)->value('field_data');
+                        $temp_arr['name'] = $val['field_name'];
+                        $temp_arr['alias'] = $val['field_alias'];
+                        if (empty($field_data)) {
+                            $expend[$key] = '';
+                            $temp_arr['data'] = '';
+                        } else {
+                            $expend[$key] = $field_data;
+                            $temp_arr['data'] = $field_data;
+                        }
+                        $expend[$key] = $temp_arr;
+                    }
+                    $member['expend'] = $expend;
+                }
+
+                // 获取钱包数据
+                $memberWalletModel = new MemberWallet();
+                $wallet = $memberWalletModel->getWallet($uid);
+                $member['wallet'] = $wallet;
 
                 return $member;
-
             } else {
                 return -1; //用户不存在或被禁用
             }
-        }else{
+        } else {
             return false;
         }
     }
@@ -431,7 +471,7 @@ class Member extends Base
      */
     public function updateLogin(int $uid)
     {
-        $user = $this->where('uid','=',$uid)->find()->toArray();
+        $user = $this->where('uid', '=', $uid)->find()->toArray();
 
         $data = [
             'login' => $user['login'] + 1,
@@ -439,7 +479,7 @@ class Member extends Base
             'last_login_ip' => request()->ip(),
         ];
 
-        $this->where('uid',$uid)->save($data);
+        $this->where('uid', $uid)->save($data);
     }
 
     /**修改密码
@@ -447,7 +487,7 @@ class Member extends Base
      * @param $new_password
      * @return bool
      */
-    public function changePassword($old_password, $new_password ,$confirm_password)
+    public function changePassword($old_password, $new_password, $confirm_password)
     {
         //检查旧密码是否正确
         if (!$this->verifyUser(get_uid(), $old_password)) {
@@ -458,12 +498,12 @@ class Member extends Base
 
         $data = [
             'password' => $new_password,
-            'confirm_password' =>$confirm_password,
+            'confirm_password' => $confirm_password,
         ];
         //验证密码
         $validate = new \app\ucenter\validate\Member;
         $result = $validate->scene('password')->check($data);
-        if(false === $result){
+        if (false === $result) {
             $this->error = $validate->getError();
             return false;
         }
@@ -475,10 +515,10 @@ class Member extends Base
         $data['password'] = $password;
         //更新用户信息
         $res = $this->where('uid', get_uid())->save($data);
-        if($res){
+        if ($res) {
             //返回成功信息
             return true;
-        }else{
+        } else {
             $this->error = '密码修改失败';
             return false;
         }
@@ -490,7 +530,7 @@ class Member extends Base
     public function getUsername(int $uid)
     {
         //调用接口获取用户信息
-        $username = $this->where('uid',$uid)->value('username');
+        $username = $this->where('uid', $uid)->value('username');
 
         return $username;
     }
@@ -501,7 +541,7 @@ class Member extends Base
     public function getNickname(int $uid)
     {
         //调用接口获取用户信息
-        $nickname = $this->where('uid',$uid)->value('nickname');
+        $nickname = $this->where('uid', $uid)->value('nickname');
 
         return $nickname;
     }
@@ -516,27 +556,27 @@ class Member extends Base
         try {
             if ($length == 0) {
                 throw new Exception('请输入昵称');
-            } else if ($length > Config::get('system.NICKNAME_MAX_LENGTH',32)) {
-                throw new Exception('昵称不能超过'. Config::get('system.NICKNAME_MAX_LENGTH',32).'个字');
-            } else if ($length < Config::get('system.NICKNAME_MIN_LENGTH',2)) {
-                throw new Exception('昵称不能少于' . Config::get('system.NICKNAME_MIN_LENGTH',2) . '个字');
+            } else if ($length > Config::get('system.NICKNAME_MAX_LENGTH', 32)) {
+                throw new Exception('昵称不能超过' . Config::get('system.NICKNAME_MAX_LENGTH', 32) . '个字');
+            } else if ($length < Config::get('system.NICKNAME_MIN_LENGTH', 2)) {
+                throw new Exception('昵称不能少于' . Config::get('system.NICKNAME_MIN_LENGTH', 2) . '个字');
             }
-            
+
             $match = preg_match('/^(?!_|\s\')[A-Za-z0-9_\x80-\xff\s\']+$/', $nickname);
             if (!$match) {
                 throw new Exception('昵称只允许中文、字母、下划线和数字');
             }
             //验证唯一性
             $map_nickname[] = ['nickname', '=', $nickname];
-            $map_nickname[] = ['uid','<>', $uid];
-            $map_nickname[] = ['status','in', [0,1]];
+            $map_nickname[] = ['uid', '<>', $uid];
+            $map_nickname[] = ['status', 'in', [0, 1]];
             $had_nickname = $this->where($map_nickname)->count();
             if ($had_nickname > 0) {
                 throw new Exception('昵称已被人使用');
             }
 
             //保留昵称
-            if($uid != 1){
+            if ($uid != 1) {
                 $denyName = Config::get('system.USER_NAME_BAOLIU');
                 if (!empty($denyName)) {
                     $denyName = explode(',', $denyName);
@@ -549,7 +589,7 @@ class Member extends Base
             }
 
             return true;
-        }catch (Exception $e){
+        } catch (Exception $e) {
             return $e->getMessage();
         }
     }
@@ -572,7 +612,7 @@ class Member extends Base
                 throw new Exception('用户名已被占用');
             }
 
-            if($uid != 1){
+            if ($uid != 1) {
                 $denyName = Config::get('system.USER_NAME_BAOLIU');
                 if ($denyName != '') {
                     $denyName = explode(',', $denyName);
@@ -585,7 +625,7 @@ class Member extends Base
             }
 
             return true;
-        }catch (Exception $e){
+        } catch (Exception $e) {
             return $e->getMessage();
         }
     }
@@ -608,7 +648,7 @@ class Member extends Base
             }
 
             return true;
-        }catch (Exception $e){
+        } catch (Exception $e) {
             return $e->getMessage();
         }
     }
@@ -631,7 +671,7 @@ class Member extends Base
             }
 
             return true;
-        }catch (Exception $e){
+        } catch (Exception $e) {
             return $e->getMessage();
         }
     }
@@ -659,22 +699,22 @@ class Member extends Base
     {
         $syncModel = new MemberSync();
         //是否已有授权信息
-        $sync = $syncModel->where('openid',$data['openid'])->find();
-        if ($sync){
+        $sync = $syncModel->where('openid', $data['openid'])->find();
+        if ($sync) {
             $uid = $sync['uid'];
-            return $this->where('uid',$uid)->find();
-        }else{
+            return $this->where('uid', $uid)->find();
+        } else {
             //是否已有开放平台相同的账户
-            if (!empty($data['unionid'])){
-                $has_union = $syncModel->where('unionid',$data['unionid'])->find();
+            if (!empty($data['unionid'])) {
+                $has_union = $syncModel->where('unionid', $data['unionid'])->find();
                 if ($has_union) $has_union = $has_union->toArray();
             }
             //初始UID
             $uid = 0;
-            
-            if (isset($has_union)){
+
+            if (isset($has_union)) {
                 $uid = $has_union['uid'];
-            }else{
+            } else {
                 $member_data = [
                     'uid' => $uid,
                     'shopid'    => $data['shopid'],
@@ -687,11 +727,11 @@ class Member extends Base
                     'status'    =>  1
                 ];
                 $result = $this->save($member_data);
-                if (!$result){
+                if (!$result) {
                     throw new Exception('存入用户信息失败');
                 }
                 //将用户添加到用户组
-                (new AuthGroup())->addToGroup($this->id ,1);
+                (new AuthGroup())->addToGroup($this->id, 1);
                 $uid = $this->id;
             }
             $update_data = [
@@ -699,19 +739,19 @@ class Member extends Base
                 'openid'    => $data['openid'],
                 'type'      => $data['oauth_type']
             ];
-            if(!empty($data['unionid'])){
+            if (!empty($data['unionid'])) {
                 $update_data['unionid'] = $data['unionid'];
             }
 
             $sync = $syncModel->edit($update_data);
             //存入授权记录
-            if(!$sync){
+            if (!$sync) {
                 throw new Exception('存入用户授权记录失败');
             }
             $actionLog = new ActionLog();
-            $actionLog->add('reg','member',1,$uid);
+            $actionLog->add('reg', 'member', 1, $uid);
         }
-        return $this->where('uid',$uid)->find();
+        return $this->where('uid', $uid)->find();
     }
 
     /**
@@ -722,18 +762,19 @@ class Member extends Base
      * @param int $type
      * @return Member|bool
      */
-    public static function updateAmount($uid,$field,$num,$type = 1){
-        $value = Member::where('uid',$uid)->value($field);
+    public static function updateAmount($uid, $field, $num, $type = 1)
+    {
+        $value = Member::where('uid', $uid)->value($field);
         //加法
-        if ($type == 1){
-            $value = bcadd($value,$num,2);
-        }else{
-            $value = bcsub($value,$num,2);
+        if ($type == 1) {
+            $value = bcadd($value, $num, 2);
+        } else {
+            $value = bcsub($value, $num, 2);
         }
-        $result = Member::where('uid',$uid)->update([
+        $result = Member::where('uid', $uid)->update([
             $field => $value
         ]);
-        if ($result !== false){
+        if ($result !== false) {
             $result = true;
         }
         return $result;
@@ -748,7 +789,8 @@ class Member extends Base
      * @param string $email
      * @return bool|int
      */
-    public function randMember($username = '',$nickname = '',$password = '',$email = '',$mobile = ''){
+    public function randMember($username = '', $nickname = '', $password = '', $email = '', $mobile = '')
+    {
         //昵称注册开关
         if (config('system.USER_NICKNAME_SWITCH') == 0 || empty($nickname)) {
             $nickname = rand_nickname(config('system.USER_NICKNAME_PREFIX'));
@@ -757,8 +799,6 @@ class Member extends Base
         $username = $username ?: rand_username('用户');
         $password = $password ?: 123456;
         $email = $email ?: rand_email();
-        return $this->register($username,$nickname,$password,$email,$mobile);
+        return $this->register($username, $nickname, $password, $email, $mobile);
     }
-
-
 }

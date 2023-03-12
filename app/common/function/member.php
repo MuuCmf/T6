@@ -88,14 +88,7 @@ if (!function_exists('query_user')) {
         // 获取用户数据
         $memberModel = new Member;
         $auth_user = $memberModel->info($uid, $field);
-
-        if (is_array($auth_user) && $auth_user != -1) {
-            // 获取钱包数据
-            $memberWalletModel = new MemberWallet();
-            $wallet = $memberWalletModel->getWallet($uid);
-            $auth_user['wallet'] = $wallet;
-        }
-
+        
         return $auth_user;
     }
 }

@@ -18,6 +18,68 @@
         }
     }
 }
+.member-detail-section {
+
+    .base {
+        .avatar {
+            margin: 10px auto;
+            width: 128px;
+            img {
+                width:128px;
+                border-radius: 50%;
+                overflow: hidden;
+            }
+        }
+    }
+    .detail-files-box {
+        .form-files-box {
+            line-height: 1;
+            
+            padding: 10px;
+            .header {
+                font-weight: 600;
+                font-size: 18px;
+                padding: 10px;
+            }
+            .form-file {
+                position: relative;
+                display: flex;
+                align-items: center;
+                padding: 14px;
+                border-bottom: 1px solid #e8e9eb;
+                color: #4c4c4c;
+                line-height: 40px;
+                .form-label {
+                    width: 130px;
+                    flex: 0 0 130px;
+                    text-align: left;
+                    font-size: 14px;
+                }
+                .form-value {
+                    flex: 1;
+                    text-align: left;
+                    color: #999;
+                    .logo, .avatar {
+                        margin: 10px auto;
+                        width: 64px;
+                        img {
+                            width:64px;
+                            border-radius: 50%;
+                            overflow: hidden;
+                        }
+                    }
+                }
+                .form-edit {
+                    width: 120px;
+                    height: 48px;
+                    text-align: right;
+                }
+            }
+        }
+    }
+
+}
+
 .choose-user-body{
     .user-search{
         padding: 20px;
