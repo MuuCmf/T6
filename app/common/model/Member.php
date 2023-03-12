@@ -61,8 +61,9 @@ class Member extends Base
             'email' => $email,
             'mobile' => $mobile,
             'nickname' => $nickname,
-            'type' => $type,
+            'sex' => 0,
             'status' => 1,
+            'reg_ip' => request()->ip()
         ];
 
         /*
