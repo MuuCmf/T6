@@ -404,6 +404,18 @@ class Member extends Base
                     }
                 }
 
+                if ($fields == '*' || strpos($fields, 'create_time') !== false) {
+                    // 注册时间
+                    $member['create_time_str'] = time_format($member['create_time']);
+                    $member['create_time_friendly_str'] = friendly_date($member['create_time']);
+                }
+
+                if ($fields == '*' || strpos($fields, 'last_login_time') !== false) {
+                    // 注册时间
+                    $member['last_login_time_str'] = time_format($member['last_login_time']);
+                    $member['last_login_time_friendly_str'] = friendly_date($member['last_login_time']);
+                }
+
                 if ($fields == '*' || strpos($fields, 'score') !== false) {
                     // 用户积分
                     $scoreTypeModel = new ScoreType();
