@@ -4304,6 +4304,7 @@ DROP TABLE IF EXISTS `muucmf_field_setting`;
 CREATE TABLE IF NOT EXISTS `muucmf_field_setting` (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键ID',
   `field_name` varchar(25) NOT NULL COMMENT '字段名称',
+  `field_alias` varchar(32) NOT NULL COMMENT '字段描述',
   `group_id` int(11) NOT NULL COMMENT '分组ID',
   `visiable` tinyint(4) NOT NULL DEFAULT '1' COMMENT '是否公开',
   `required` tinyint(4) NOT NULL DEFAULT '0' COMMENT '是否必填',
@@ -4318,19 +4319,6 @@ CREATE TABLE IF NOT EXISTS `muucmf_field_setting` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
 
---
--- 转存表中的数据 `muucmf_field_setting`
---
-
-INSERT INTO `muucmf_field_setting` (`id`, `field_name`, `group_id`, `visiable`, `required`, `sort`, `form_type`, `form_default_value`, `validation`, `status`, `child_form_type`, `input_tips`, `create_time`) VALUES
-(1, 'qq', 1, 1, 1, 0, 'input', '', '', 1, 'string', '', 1409045825),
-(2, '生日', 1, 1, 1, 0, 'time', '', '', 1, 'string', '', 1423537409),
-(3, '擅长语言', 2, 1, 1, 0, 'select', 'Java|C++|Python|php|object c|ruby', '', 1, 'string', '', 1423537693),
-(4, '承接项目', 2, 1, 1, 0, 'radio', '是|否', '', 1, '', '', 1423537733),
-(5, '简介', 2, 1, 1, 0, 'textarea', '', '', 1, '', '简单介绍入行以来的工作经验，项目经验', 1423537770),
-(6, '其他技能', 2, 1, 1, 0, 'checkbox', 'PhotoShop|Flash', '', 1, '', '', 1423537834);
-
--- --------------------------------------------------------
 
 --
 -- 表的结构 `muucmf_follow`

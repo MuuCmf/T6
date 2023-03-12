@@ -429,38 +429,42 @@ class Member extends Base
                 }
 
                 // 扩展资料
-                $field_group = Db::name('field_group')->where('status', '=', 1)->select();
-                $fields_list = [];
-                if (!empty($field_group) && !empty($member)) {
-                    $field_group = $field_group->toArray();
-                    $field_group_ids = array_column($field_group, 'id');
+                try {
+                    $field_group = Db::name('field_group')->where('status', '=', 1)->select();
+                    $fields_list = [];
+                    if (!empty($field_group) && !empty($member)) {
+                        $field_group = $field_group->toArray();
+                        $field_group_ids = array_column($field_group, 'id');
 
-                    $map_profile[] = ['group_id', 'in', $field_group_ids];
-                    $map_profile[] = ['status', '=', 1];
-                    $fields_list = Db::name('field_setting')->where($map_profile)->field('id,field_name,field_alias,sort,form_type')->select();
-                    if (!empty($fields_list)) {
-                        $fields_list = $fields_list->toArray();
-                    }
-                    $fields_list = array_combine(array_column($fields_list, 'field_name'), $fields_list);
-
-                    $map_field['uid'] = $member['uid'];
-                    // 初始化用户扩展字段
-                    $expend = [];
-                    foreach ($fields_list as $key => $val) {
-                        $map_field['field_id'] = $val['id'];
-                        $field_data = Db::name('field')->where($map_field)->value('field_data');
-                        $temp_arr['name'] = $val['field_name'];
-                        $temp_arr['alias'] = $val['field_alias'];
-                        if (empty($field_data)) {
-                            $expend[$key] = '';
-                            $temp_arr['data'] = '';
-                        } else {
-                            $expend[$key] = $field_data;
-                            $temp_arr['data'] = $field_data;
+                        $map_profile[] = ['group_id', 'in', $field_group_ids];
+                        $map_profile[] = ['status', '=', 1];
+                        $fields_list = Db::name('field_setting')->where($map_profile)->field('id,field_name,field_alias,sort,form_type')->select();
+                        if (!empty($fields_list)) {
+                            $fields_list = $fields_list->toArray();
                         }
-                        $expend[$key] = $temp_arr;
+                        $fields_list = array_combine(array_column($fields_list, 'field_name'), $fields_list);
+
+                        $map_field['uid'] = $member['uid'];
+                        // 初始化用户扩展字段
+                        $expend = [];
+                        foreach ($fields_list as $key => $val) {
+                            $map_field['field_id'] = $val['id'];
+                            $field_data = Db::name('field')->where($map_field)->value('field_data');
+                            $temp_arr['name'] = $val['field_name'];
+                            $temp_arr['alias'] = $val['field_alias'];
+                            if (empty($field_data)) {
+                                $expend[$key] = '';
+                                $temp_arr['data'] = '';
+                            } else {
+                                $expend[$key] = $field_data;
+                                $temp_arr['data'] = $field_data;
+                            }
+                            $expend[$key] = $temp_arr;
+                        }
+                        $member['expend'] = $expend;
                     }
-                    $member['expend'] = $expend;
+                } catch (Exception $e) {
+                    //todo:老版本由于表字段不完整，这里特殊处理下
                 }
 
                 // 获取钱包数据
