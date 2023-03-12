@@ -113,12 +113,6 @@ class Base
     // }
     protected function error($msg = '', $data = '', $url = '', int $wait = 3, array $header = []): Response
     {
-        if (empty($url) && isset($_SERVER["HTTP_REFERER"])) {
-            $url = $_SERVER["HTTP_REFERER"];
-        } elseif ($url) {
-            $url = (strpos($url, '://') || 0 === strpos($url, '/')) ? $url : 'refresh';
-        }
-
         $result = [
             'code' => 0,
             'msg'  => $msg,

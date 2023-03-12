@@ -238,12 +238,15 @@ class Member extends Admin
 
             /* 积分设置 */
             $score_key = [];
-            foreach ($member['score'] as $vf) {
+            $scoreTypeModel = new ScoreTypeModel();
+            $field = $scoreTypeModel->getTypeList([['status', '=', 1]]);
+            foreach ($field as $vf) {
                 $score_key[] = 'score' . $vf['id'];
                 $builder->keyText('score' . $vf['id'], $vf['title']);
             }
             /*积分设置end*/
-
+            
+            
             /*权限组*/
             // 用户拥有的权限组
             $auth = Db::name('auth_group_access')->where(['uid' => $uid])->select();
