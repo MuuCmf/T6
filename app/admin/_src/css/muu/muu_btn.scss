@@ -16,8 +16,9 @@
         border-color: #11a8bb!important;
     }
 }
-.btn-primary[disabled] {
+.btn-primary[disabled],.btn-primary.disabled {
     border: 1px solid transparent;
+    color: #fff;
 }
 
 .btn-primary.light {
@@ -41,8 +42,9 @@
         border-color: #47D178!important;
     }
 }
-.btn-success[disabled] {
+.btn-success[disabled],.btn-success.disabled {
     border: 1px solid transparent;
+    color: #fff;
 }
 
 .btn-success.light {
@@ -66,8 +68,9 @@
         border-color: #ee5744!important;
     }
 }
-.btn-danger[disabled] {
+.btn-danger[disabled],.btn-danger.disabled {
     border: 1px solid transparent;
+    color: #fff;
 }
 
 .btn-danger.light {
@@ -92,8 +95,9 @@
         border-color: #47d1af!important;
     }
 }
-.btn-info[disabled] {
+.btn-info[disabled],.btn-info.disabled {
     border: 1px solid transparent;
+    color: #fff;
 }
 
 .btn-info.light {
@@ -117,8 +121,9 @@
         border-color: #f1a325!important;
     }
 }
-.btn-warning[disabled] {
+.btn-warning[disabled],.btn-warning.disabled {
     border: 1px solid transparent;
+    color: #fff;
 }
 
 .btn-mini, .btn-sm, .btn-xs {
