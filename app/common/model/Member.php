@@ -391,7 +391,7 @@ class Member extends Base
                     }
                 }
 
-                if ($fields == '*' || strpos($fields, 'avatar') !== false) {
+                if ($fields == '*' || strpos($fields, 'sex') !== false) {
                     // 性别
                     if($member['sex'] == 0){
                         $member['sex_str'] = '保密';
