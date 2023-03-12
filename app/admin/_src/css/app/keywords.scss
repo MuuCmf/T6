@@ -2,6 +2,7 @@
 .keywords-list-section {
 
     .user-info {
+        display: block;
         .avatar {
             float: left;
             width: 60px;
@@ -13,15 +14,10 @@
                 height: 60px;
             }
         }
-        .info {
+        .nickname {
             margin-left: 60px;
             padding-left: 10px;
-            .uid {
-                line-height: 30px;
-            }
-            .nickname {
-                line-height: 30px;
-            }
+            line-height: 60px;
         }
         
     }

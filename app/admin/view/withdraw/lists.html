@@ -22,7 +22,7 @@
                 <input type="text" name="keyword" class="form-control" value="{$order_no}">
                 <span class="input-group-btn">
                     <button class="btn btn-default" type="submit">搜索</button>
-                    </span>
+                </span>
             </div>
         </form>
     </div>
@@ -41,7 +41,7 @@
 	        </span>
             {if !empty($v.uid) && !empty($v.user_info) && $v.user_info != -1}
             <span class="">
-	            用户：<a href="{:url('admin/member/index',['search' => $v['uid']])}">{$v['user_info']['nickname']}</a>
+	            用户：<a href="{:url('admin/member/detail',['uid' => $v['uid']])}">{$v['user_info']['nickname']}</a>
 	        </span>
             {/if}
             <span class="pull-right text-right">
@@ -64,7 +64,7 @@
             <tr>
                 <td style="width: 300px">
                     {if !empty($v.uid) && !empty($v.user_info) && $v.user_info != -1}
-                    <a class="user-info" href="{:url('admin/Member/edit',['uid'=>$v['uid']])}">
+                    <a class="user-info" href="{:url('admin/Member/detail',['uid'=>$v['uid']])}">
                         <div class="avatar">
                             <img src="{$v['user_info']['avatar']}">
                         </div>

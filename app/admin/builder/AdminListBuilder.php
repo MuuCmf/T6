@@ -609,7 +609,7 @@ class AdminListBuilder extends AdminBuilder
             $value = query_user($value, ['nickname', 'uid']);
 
             if(!empty($value['uid'])){
-                return "<a href='#' target='_blank'>[{$value['uid']}]" . $value['nickname'] . '</a>';
+                return "<a href='" .url('admin/Member/detail', ['uid' => $value['uid']]). "'>[{$value['uid']}]" . $value['nickname'] . '</a>';
             }
             return '';
         });

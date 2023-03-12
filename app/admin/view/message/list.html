@@ -65,12 +65,12 @@
                     </td>
                     <td>
                         {if !empty($vo.to_uid) && !empty($vo.to_user) && $vo.to_user != -1}
-                        <div class="user-info">
+                        <a class="user-info" href="{:url('admin/Member/detail',['uid'=>$vo.to_uid])}">
                             <div class="avatar">
                                 <img src="{$vo.to_user.avatar64}">
                             </div>
-                            <div class="nickname text-ellipsis">{$vo.to_user.nickname|text}</div>
-                        </div>
+                            <div class="nickname text-ellipsis">[{$vo.to_uid}]{$vo.to_user.nickname|text}</div>
+                        </a>
                         {else}
                         <div class="user-info">用户不存在</div>
                         {/if}
