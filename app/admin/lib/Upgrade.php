@@ -42,7 +42,10 @@ class Upgrade
             $path = $this->getAppRootPath($app) . 'data' . DIRECTORY_SEPARATOR . 'version.ini';
             $version = file_get_contents($path);
         }else{
-            $version = Module::where('name',$app)->value('version');
+            $version = Module::where([
+                ['name', '=', $app],
+                ['is_setup', '=', 1]
+            ])->value('version');
         }
         return $version;
     }

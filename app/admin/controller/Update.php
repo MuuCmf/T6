@@ -112,7 +112,7 @@ class Update extends Admin
             $local_path = root_path() . $path;
             $local_version = $this->UpgradeServer->version($app_name);//本地版本
             $upgrade = get_upgrade_status($local_version ,$version);//版本号对比
-            if (!$upgrade) $this->success('已经是最新版本！', 'same_version');
+            if (!$upgrade) return $this->success('已经是最新版本！', 'same_version');
 
             try {
                 //检查忽略文件

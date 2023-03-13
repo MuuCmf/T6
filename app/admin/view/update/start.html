@@ -145,6 +145,7 @@
                         file: item.name,
                         md5: item.md5
                     }, function (res) {
+                        console.log(res)
                         if (res.data == 'same_version'){
                             that.sameVersion();
                         }else{
