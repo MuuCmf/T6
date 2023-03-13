@@ -66,14 +66,6 @@ class Member extends Base
             'reg_ip' => request()->ip()
         ];
 
-        /*
-        //验证器验证数据
-        $validate = new \app\ucenter\validate\Member;
-        //测试数据时可暂时禁用验证
-        if(!$validate->check($data)){
-            return $validate->getError();
-        }*/
-
         /* 添加用户 */
         if ($res = $this->save($data)) {
             if (!$res) {
@@ -214,11 +206,11 @@ class Member extends Base
         $this->updateLogin($uid);
 
         /* 记录登录SESSION和COOKIES */
-        $auth = array(
+        $auth = [
             'uid' => $user['uid'],
             'username' => $user['username'],
             'last_login_time' => $user['last_login_time'],
-        );
+        ];
 
         session('user_auth', $auth);
         session('user_auth_sign', data_auth_sign($auth));
@@ -226,6 +218,7 @@ class Member extends Base
         //记录行为
         $actionLog = new ActionLog();
         $actionLog->add('user_login', 'member', $uid, $uid);
+
         //记住登录
         if ($remember == 1) {
             $token = Db::name('user_token')->where('uid', $uid)->value('token');
@@ -234,14 +227,13 @@ class Member extends Base
                 $token = create_unique();
                 $data_token['token'] = $token;
                 $data_token['create_time'] = time();
-
                 Db::name('user_token')->insert($data_token);
             }
-        }
 
-        if (!$this->getCookieUid() && $remember) {
-            $expire = 3600 * 24 * 7;
-            cookie('MUU_LOGGED_USER', think_encrypt("{$uid}.{$token}", 'muucmf', $expire));
+            if (!$this->getCookieUid() && $remember) {
+                $expire = 3600 * 24 * 7;
+                cookie('MUU_LOGGED_USER', think_encrypt("{$uid}.{$token}", 'muucmf', $expire));
+            }
         }
 
         return true;
@@ -259,7 +251,7 @@ class Member extends Base
                 $map['uid'] = $cookie[0];
                 $user = Db::name('user_token')->where($map)->find();
                 $cookie_uid = ($cookie[1] != $user['token']) ? false : $cookie[0];
-                $cookie_uid = $user['create_time'] - time() >= 3600 * 24 * 7 ? false : $cookie_uid; //过期时间7天
+                $cookie_uid = time() - $user['create_time'] >= 3600 * 24 * 7 ? false : $cookie_uid; //过期时间7天
             }
         }
 
@@ -280,6 +272,8 @@ class Member extends Base
                 return $uid;
             }
         }
+
+        return false;
     }
 
     /**

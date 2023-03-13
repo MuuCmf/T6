@@ -1,4 +1,5 @@
 <?php
+
 namespace app\common\controller;
 
 use think\facade\Config;
@@ -14,8 +15,8 @@ use app\common\logic\Config as ConfigLogic;
  */
 class Common extends Base
 {
-    public $shopid = 0;//店铺ID
-    public $module;//请求的应用
+    public $shopid = 0; //店铺ID
+    public $module; //请求的应用
     public $app_name;
     public $muu_config_data;
     public $title = '';
@@ -39,10 +40,10 @@ class Common extends Base
     /**
      * 初始化
      */
-	public function initialize()
-    {   
+    public function initialize()
+    {
         //记住登录
-        (new Member())->rembemberLogin();
+        $this->initRemberLogin();
         //获取shopid
         $this->initShopid();
         //获取应用名
@@ -53,8 +54,8 @@ class Common extends Base
         $this->initNavbar();
         //获取底部导航菜单
         $this->initFooterNav();
-		//获取用户菜单
-		$this->initUserNav();
+        //获取用户菜单
+        $this->initUserNav();
         //用户登录、注册
         $this->initRegAndLogin();
         //获取用户基本资料
@@ -99,9 +100,9 @@ class Common extends Base
         $this->module = $this->app_name = $this->params['app'] ?? App('http')->getName();
     }
 
-    private function initMuuConfig()
+    protected function initMuuConfig()
     {
-        if(empty($this->params['shopid'])){
+        if (empty($this->params['shopid'])) {
             $this->params['shopid'] = 0;
         }
         $this->muu_config_data = $muu_config_data = (new ConfigLogic())->frontend($this->params['shopid']);
@@ -116,14 +117,14 @@ class Common extends Base
     {
         $channelModel = new Channel();
         $nav = $channelModel->lists('navbar');
-        View::assign('navbar',$nav);
+        View::assign('navbar', $nav);
     }
 
     private function initFooterNav()
     {
         $channelModel = new Channel();
         $nav = $channelModel->lists('footer');
-        View::assign('footer_nav',$nav);
+        View::assign('footer_nav', $nav);
     }
 
     /**
@@ -131,8 +132,8 @@ class Common extends Base
      */
     private function initUserNav()
     {
-        $user_nav=Db::name('UserNav')->order('sort asc')->where('status','=', 1)->select();
-        View::assign('user_nav',$user_nav);
+        $user_nav = Db::name('UserNav')->order('sort asc')->where('status', '=', 1)->select();
+        View::assign('user_nav', $user_nav);
     }
 
     /**
@@ -140,15 +141,15 @@ class Common extends Base
      */
     private function initUserBaseInfo()
     {
-        $common_header_user = query_user(is_login(), ['nickname','avatar']);
-        View::assign('common_header_user',$common_header_user);
+        $common_header_user = query_user(is_login(), ['nickname', 'avatar']);
+        View::assign('common_header_user', $common_header_user);
     }
 
     /**
      * 初始化用户登陆注册
      */
     private function initRegAndLogin()
-    {   
+    {
         // 用户注册登陆
         $open_quick_login = config('system.OPEN_QUICK_LOGIN');
         View::assign('open_quick_login', $open_quick_login);
@@ -166,11 +167,17 @@ class Common extends Base
 
         // 查询是否有Seo规则
         $rule = (new SeoRule())->getRule($app, $controller, $action);
-        if($rule){
+        if ($rule) {
             $this->setTitle($rule['seo_title']);
             $this->setKeywords($rule['seo_keywords']);
             $this->setDescription($rule['seo_description']);
         }
+    }
+
+    protected function initRemberLogin()
+    {
+        //记住登录
+        (new Member())->rembemberLogin();
     }
 
     public function setTitle($title)
