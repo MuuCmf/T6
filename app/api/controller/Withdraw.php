@@ -1,4 +1,5 @@
 <?php
+
 namespace app\api\controller;
 
 use think\Exception;
@@ -14,11 +15,11 @@ use app\common\model\MemberWallet;
 use app\common\model\Withdraw as WithdrawModel;
 use app\common\logic\Withdraw as WithdrawLogic;
 
-class Withdraw extends Api 
+class Withdraw extends Api
 {
-    private $WithdrawModel;//订单模型
-    private $WithdrawLogic;//订单模型
-    private $CapitalFlowModel;
+    protected $WithdrawModel; //订单模型
+    protected $WithdrawLogic; //订单模型
+    protected $CapitalFlowModel;
     protected $middleware = [
         'app\\common\\middleware\\CheckAuth',
     ];
@@ -34,59 +35,68 @@ class Withdraw extends Api
     /**
      * @title 提现
      */
-    public function withdraw(){
+    public function withdraw()
+    {
         $uid = get_uid();
         $price = input('price', '', 'text');
+        $price = floatval($price);
         $price = intval($price * 100); // 单位转为分
         $channel = input('channel', 'weixin_h5', 'text');
         $pay_channel = input('pay_channel', 'weixin', 'text');
+        
         Db::startTrans();
         try {
-            $config = $this->WithdrawModel->getConfig();//获取提现配置
+            $config = $this->WithdrawModel->getConfig(); //获取提现配置
             //是否开启提现
             if ($config['status'] < 1) throw new Exception('提现暂时关闭，如有特殊需求请联系客服');
             //初始化提现数据
             $data['shopid'] =   $this->shopid;
             $data['uid']    =   $uid;
             $data['price']  =   $price;
-            $data['order_no']   =   build_order_no();//生成提现单号
+            $data['order_no']   =   build_order_no(); //生成提现单号
             $data['channel']    =   $channel;
             $data['pay_channel'] = $pay_channel;
             $data['error']  =   0;
             $data['paid']  =   0;
+
             //扣除平台手续费后，实际到账金额
             $rate = floatval($config['tax_rate']) / 1000;
             $deduct_money = intval($data['price'] * $rate);
-            $data['real_price'] = intval(ceil(($data['price'] - $deduct_money)));//单位分
+            $data['real_price'] = intval(ceil(($data['price'] - $deduct_money))); //单位分
             //最低金额
             if ($data['price'] < intval($config['min_price']) * 100) throw new Exception('提现金额最少为' . $config['min_price'] . '元');
             //最大金额
             if ($data['price'] > intval($config['max_price']) * 100) throw new Exception('提现金额最多为' . $config['max_price'] . '元');
+
             //查询今日提现次数
-            $today_unixtime = dayTime();//今日时间戳
+            $today_unixtime = dayTime(); //今日时间戳
             $check_map = [
-                ['shopid' ,'=' ,$this->shopid],
-                ['uid' ,'=' ,$uid],
-                ['create_time' ,'between' ,[$today_unixtime[0],$today_unixtime[1]]]
+                ['shopid', '=', $this->shopid],
+                ['uid', '=', $uid],
+                ['create_time', 'between', [$today_unixtime[0], $today_unixtime[1]]]
             ];
             $withdraw_order_total = $this->WithdrawModel->where($check_map)->count();
             if ($withdraw_order_total >= $config['day_num']) throw new Exception('每日最多可提现' . $config['day_num'] . '次');
+
             //获取用户openid
-            $openid = get_openid($this->shopid, $uid ,$channel);
+            $openid = get_openid($this->shopid, $uid, $channel);
             if (!$openid)   throw new Exception('用户不存在');
+
             //用户钱包模型
             $WalletModel = new MemberWallet();
-            $wallet = $WalletModel->where('uid',$uid)->find()->toArray();
+            $wallet = $WalletModel->where('uid', $uid)->find()->toArray();
             if (intval($wallet['balance'] - $wallet['freeze']) < $data['price']) {
                 throw new Exception('账户余额不足');
             }
             //冻结资金
             $WalletModel->freeze($this->shopid, $uid, $data['price']);
+
             //提现记录
             $withdraw_id = $this->WithdrawModel->edit($data);
             if (!$withdraw_id)  throw new Exception('网络异常，请稍后再试');
+
             // 发起提现
-            $pay_config = ChannelServer::config($channel ,$this->shopid);
+            $pay_config = ChannelServer::config($channel, $this->shopid);
             $PayService = PayServer::init($pay_config['appid'], $pay_channel, $this->shopid);
             $result = $PayService->server->toBalance([
                 'check_name' => 'NO_CHECK',
@@ -96,10 +106,10 @@ class Withdraw extends Api
                 'desc'      =>  '提现'
             ]);
             // 记录日志
-            Log::write($result,'notice');
-            if ($result['return_code'] == 'SUCCESS' && $result['result_code'] == 'SUCCESS'){
+            Log::write($result, 'notice');
+            if ($result['return_code'] == 'SUCCESS' && $result['result_code'] == 'SUCCESS') {
                 //扣除冻结余额
-                (new MemberWallet())->minusFreeze($data['shopid'], $data['uid'] ,$data['price']);
+                (new MemberWallet())->minusFreeze($data['shopid'], $data['uid'], $data['price']);
 
                 //写入资金流水表
                 $result_capital_flow = (new CapitalFlow())->createFlow([
@@ -111,7 +121,7 @@ class Withdraw extends Api
                     'channel' => $data['channel'],
                     'remark' => '用户提现',
                 ]);
-                if (!$result_capital_flow)  throw new Exception('写入资金流失失败');
+                if (!$result_capital_flow)  throw new Exception('写入资金流水失败');
 
                 //更改提现记录状态
                 $submit_data = [
@@ -120,7 +130,7 @@ class Withdraw extends Api
                     'paid_time' => time(),
                 ];
                 $cash_with = $this->WithdrawModel->edit($submit_data);
-            }else{
+            } else {
                 //解冻冻结资金(返还至用户余额)
                 $WalletModel->freeze($data['shopid'], $data['uid'], $data['price'], 0);
                 //付款到零钱失败
@@ -131,21 +141,23 @@ class Withdraw extends Api
                 ];
                 $cash_with = $this->WithdrawModel->edit($submit_data);
             }
-            if (!$cash_with){
+            if (!$cash_with) {
                 throw new Exception('网络异常,请稍后再试');
             }
             Db::commit();
-            return $this->success('提现已提交，正在处理...');
-        }catch (\Exception $e){
+        } catch (Exception $e) {
             Db::rollback();
-            return $this->error($e->getMessage());
+            return $this->error('发生错误：' . $e->getMessage());
         }
+
+        return $this->success('提现已提交，正在处理...');
     }
 
     /**
      * DEBUG
      */
-    public function v3(){
+    public function v3()
+    {
         $uid = 61;
         $price = '0.3';
         $price = intval($price * 100); // 单位转为分
@@ -153,14 +165,14 @@ class Withdraw extends Api
         $pay_channel = input('pay_channel', 'weixin', 'text');
         Db::startTrans();
         try {
-            $config = $this->WithdrawModel->getConfig();//获取提现配置
+            $config = $this->WithdrawModel->getConfig(); //获取提现配置
             //是否开启提现
             if ($config['status'] < 1) throw new Exception('提现暂时关闭，如有特殊需求请联系客服');
             //初始化提现数据
             $data['shopid'] =   $this->shopid;
             $data['uid']    =   $uid;
             $data['price']  =   $price;
-            $data['order_no']   =   build_order_no();//生成提现单号
+            $data['order_no']   =   build_order_no(); //生成提现单号
             $data['channel']    =   $channel;
             $data['pay_channel'] = $pay_channel;
             $data['error']  =   0;
@@ -168,26 +180,26 @@ class Withdraw extends Api
             //扣除平台手续费后，实际到账金额
             $rate = floatval($config['tax_rate']) / 1000;
             $deduct_money = intval($data['price'] * $rate);
-            $data['real_price'] = intval(ceil(($data['price'] - $deduct_money)));//单位分
+            $data['real_price'] = intval(ceil(($data['price'] - $deduct_money))); //单位分
             //最低金额
             if ($data['price'] < intval($config['min_price']) * 100) throw new Exception('提现金额最少为' . $config['min_price'] . '元');
             //最大金额
             if ($data['price'] > intval($config['max_price']) * 100) throw new Exception('提现金额最多为' . $config['max_price'] . '元');
             //查询今日提现次数
-            $today_unixtime = dayTime();//今日时间戳
+            $today_unixtime = dayTime(); //今日时间戳
             $check_map = [
-                ['shopid' ,'=' ,$this->shopid],
-                ['uid' ,'=' ,$uid],
-                ['create_time' ,'between' ,[$today_unixtime[0],$today_unixtime[1]]]
+                ['shopid', '=', $this->shopid],
+                ['uid', '=', $uid],
+                ['create_time', 'between', [$today_unixtime[0], $today_unixtime[1]]]
             ];
             $withdraw_order_total = $this->WithdrawModel->where($check_map)->count();
             if ($withdraw_order_total >= $config['day_num']) throw new Exception('每日最多可提现' . $config['day_num'] . '次');
             //获取用户openid
-            $openid = get_openid($this->shopid, $uid ,$channel);
+            $openid = get_openid($this->shopid, $uid, $channel);
             if (!$openid)   throw new Exception('用户不存在');
             //用户钱包模型
             $WalletModel = new MemberWallet();
-            $wallet = $WalletModel->where('uid',$uid)->find()->toArray();
+            $wallet = $WalletModel->where('uid', $uid)->find()->toArray();
             if (intval($wallet['balance'] - $wallet['freeze']) < $data['price']) {
                 throw new Exception('账户余额不足');
             }
@@ -197,7 +209,7 @@ class Withdraw extends Api
             $withdraw_id = $this->WithdrawModel->edit($data);
             if (!$withdraw_id)  throw new Exception('网络异常，请稍后再试');
             // 发起提现
-            $pay_config = ChannelServer::config($channel ,$this->shopid);
+            $pay_config = ChannelServer::config($channel, $this->shopid);
             $PayService = PayServer::init($pay_config['appid'], $pay_channel, $this->shopid);
             $result = $PayService->server->toBalanceV3([
                 'check_name' => 'NO_CHECK',
@@ -207,10 +219,10 @@ class Withdraw extends Api
                 'desc'      =>  '提现'
             ]);
             // 记录日志
-            Log::write($result,'notice');
-            if ($result['return_code'] == 'SUCCESS' && $result['result_code'] == 'SUCCESS'){
+            Log::write($result, 'notice');
+            if ($result['return_code'] == 'SUCCESS' && $result['result_code'] == 'SUCCESS') {
                 //扣除冻结余额
-                (new MemberWallet())->minusFreeze($data['shopid'], $data['uid'] ,$data['price']);
+                (new MemberWallet())->minusFreeze($data['shopid'], $data['uid'], $data['price']);
 
                 //写入资金流水表
                 $result_capital_flow = (new CapitalFlow())->createFlow([
@@ -231,7 +243,7 @@ class Withdraw extends Api
                     'paid_time' => time(),
                 ];
                 $cash_with = $this->WithdrawModel->edit($submit_data);
-            }else{
+            } else {
                 //解冻冻结资金(返还至用户余额)
                 $WalletModel->freeze($data['shopid'], $data['uid'], $data['price'], 0);
                 //付款到零钱失败
@@ -242,15 +254,14 @@ class Withdraw extends Api
                 ];
                 $cash_with = $this->WithdrawModel->edit($submit_data);
             }
-            if (!$cash_with){
+            if (!$cash_with) {
                 throw new Exception('网络异常,请稍后再试');
             }
             Db::commit();
             return $this->success('提现已提交，正在处理...');
-        }catch (\Exception $e){
+        } catch (\Exception $e) {
             Db::rollback();
             return $this->error($e->getMessage());
         }
     }
-
 }
