@@ -17,30 +17,29 @@
         </h2>
     </div>
 
-    <div class="with-padding">
-
-        <div class="clearfix button-box">
-            <div class="col-xs-10">
-                <a class="btn btn-info" href="{:url('edit')}">新增</a>
-                <a class="btn btn-danger ajax-post confirm" url="{:url('del')}" target-form="ids" >删除</a>
-                <!-- 高级搜索 -->
-            </div>
-            <div class="col-xs-2">
-                <div class="search-form">
-                    <div class="sleft">
-                        <div class="input-group">
-                            <input type="text" name="name" class="form-control" value="{:input('name')}" placeholder="请输入配置名称">
-                            <span class="input-group-btn">
-                                <a class="btn btn-default" href="javascript:;" id="search" url="{:url('config/list')}">
-                                    <i class="icon-search"></i>
-                                </a>
-                            </span>
-                        </div>
+    <div class="clearfix row button-box">
+        <div class="col-xs-10">
+            <a class="btn btn-info" href="{:url('edit')}">新增</a>
+            <a class="btn btn-danger ajax-post confirm" url="{:url('del')}" target-form="ids" >删除</a>
+            <!-- 高级搜索 -->
+        </div>
+        <div class="col-xs-2">
+            <div class="search-form">
+                <div class="sleft">
+                    <div class="input-group">
+                        <input type="text" name="name" class="form-control" value="{:input('name')}" placeholder="请输入配置名称">
+                        <span class="input-group-btn">
+                            <a class="btn btn-default" href="javascript:;" id="search" url="{:url('config/list')}">
+                                <i class="icon-search"></i>
+                            </a>
+                        </span>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
 
+    <div class="with-padding">
         <table class="table table-bordered table-striped muu-table">
             <thead>
             <tr>

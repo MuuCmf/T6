@@ -5,10 +5,11 @@
 <div class="main-title">
     <h2>跳转小程序列表</h2>
 </div>
-<div class="button-box clearfix">
-
+<div class="button-box row clearfix">
     <div class="col-md-6">
-        <a type="button" class="btn btn-info" href="{:url('edit',['type' => $type])}">新增</a>
+        <a type="button" class="btn btn-info" href="{:url('edit',['type' => $type])}">
+            新增
+        </a>
         <button class="btn btn-danger ajax-post confirm" url="{:url('del')}" target-form="ids">
             删除
         </button>

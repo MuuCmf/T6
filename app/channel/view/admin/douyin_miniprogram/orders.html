@@ -4,19 +4,11 @@
 {/block}
 
 {block name="body"}
-<ol class="breadcrumb">
-	<i class="icon icon-angle-left"></i>
-	<li>
-		<a href="{:url('settle')}">结算列表管理</a>
-	</li>
-	<li>
-		结算列表
-	</li>
-</ol>
-
+<div class="main-title">
+	<h2>结算列表</h2>
+</div>
 
 <div class="search-box clearfix margin-bottom row">
-
 	<form action="{:url('article', array('action'=> 'lists'))}" method="get" class="search-form" role="form">
 		<div class="col-sm-3">
 			<div class="input-group">
@@ -37,10 +29,10 @@
     <a class="btn btn-info" href="{:url('orders')}">未结算订单</a>
 </div>
 
-<section class="orders-list-section clearfix">
+<section class="orders-list-section with-padding clearfix">
 
     {if empty($lists.data)}
-    <div class="orders-lists card">
+    <div class="orders-lists">
         {include file="../../common/view/empty"/}
     </div>
     {else /}

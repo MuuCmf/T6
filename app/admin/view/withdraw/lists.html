@@ -1,15 +1,10 @@
 {extend name="common/main"/}
 
 {block name="body"}
-<ol class="breadcrumb">
-    <li>
-        <a href="{php :url('lists')}">提现管理</a>
-    </li>
-    <li>
-        提现列表
-    </li>
-</ol>
-<div class="button-box clearfix">
+<div class="main-title">
+    <h2>浏览记录</h2>
+</div>
+<div class="button-box row clearfix">
 
     <div class="col-md-8">
         <a type="button" class="btn btn-info" href="{:url('admin/extend/payment')}">提现设置</a>
@@ -28,8 +23,8 @@
     </div>
 </div>
 
-<div class="card">
-    {if empty($lists)}
+<div class="with-padding">
+    {if empty($lists.data)}
     {include file='common/_empty'}
     {else}
     {foreach $lists.data as $k=>$v}

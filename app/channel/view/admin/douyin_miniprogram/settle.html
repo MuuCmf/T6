@@ -4,16 +4,10 @@
 {/block}
 
 {block name="body"}
-<ol class="breadcrumb">
-	<i class="icon icon-angle-left"></i>
-	<li>
-		<a href="{:url('settle')}">结算列表管理</a>
-	</li>
-	<li>
-		结算列表
-	</li>
-</ol>
 
+<div class="main-title">
+	<h2>结算列表</h2>
+</div>
 
 <div class="search-box clearfix margin-bottom row">
 
@@ -37,9 +31,9 @@
     <a class="btn" href="{:url('orders')}">未结算订单</a>
 </div>
 
-<section class="article-list-section clearfix">
+<section class="with-padding clearfix">
 
-	<div class="item-section card">
+	<div class="item-section">
 		{if empty($lists.data)}
 		{include file="../../common/view/empty"/}
 		{else /}
