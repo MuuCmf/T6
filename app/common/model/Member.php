@@ -221,18 +221,24 @@ class Member extends Base
 
         //记住登录
         if ($remember == 1) {
-            $token = Db::name('user_token')->where('uid', $uid)->value('token');
+            $token = Db::name('user_token')->where('uid', $uid)->find();
             if (empty($token)) {
                 $data_token['uid'] = $uid;
-                $token = create_unique();
-                $data_token['token'] = $token;
+                $token_unique = create_unique();
+                $data_token['token'] = $token_unique;
                 $data_token['create_time'] = time();
                 Db::name('user_token')->insert($data_token);
+            }else{
+                $token_unique = $token['token'];
+                Db::name('user_token')->update([
+                    'id' => $token['id'],
+                    'create_time' => time()
+                ]);
             }
 
             if (!$this->getCookieUid() && $remember) {
                 $expire = 3600 * 24 * 7;
-                cookie('MUU_LOGGED_USER', think_encrypt("{$uid}.{$token}", 'muucmf', $expire));
+                cookie('MUU_LOGGED_USER', think_encrypt("{$uid}.{$token_unique}", 'muucmf', $expire));
             }
         }
 
@@ -250,8 +256,8 @@ class Member extends Base
                 $cookie = explode(".", think_decrypt($cookie, 'muucmf'));
                 $map['uid'] = $cookie[0];
                 $user = Db::name('user_token')->where($map)->find();
-                $cookie_uid = ($cookie[1] != $user['token']) ? false : $cookie[0];
-                $cookie_uid = time() - $user['create_time'] >= 3600 * 24 * 7 ? false : $cookie_uid; //过期时间7天
+                $cookie_uid = ($cookie[1] != $user['token']) ? null : $cookie[0];
+                $cookie_uid = time() - $user['create_time'] >= 3600 * 24 * 7 ? null : $cookie_uid; //过期时间7天
             }
         }
 
