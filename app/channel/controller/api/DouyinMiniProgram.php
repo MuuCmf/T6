@@ -97,7 +97,7 @@ class DouyinMiniProgram extends Api
         $map[] = ['type','=', 'douyin_mp'];
         $user = $this->MemberSyncModel->getDataByMap($map);
         if ($user){
-            $user = query_user($user['uid'],['uid','nickname','avatar','email','mobile','realname','sex','qq','score1']);
+            $user = query_user($user['uid'],['uid','nickname','avatar','email','mobile','realname','sex','qq','score']);
             $this->MemberModel->updateLogin($user['uid']);
             $token = JWTAuth::builder(['uid'=>$user['uid']]);
             $token = 'Bearer ' . $token;

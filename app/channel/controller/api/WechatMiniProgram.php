@@ -45,7 +45,7 @@ class WechatMiniProgram extends Api
         $map[] = ['type','=', 'weixin_mp'];
         $user = $this->MemberSyncModel->getDataByMap($map);
         if (!empty($user)){
-            $user = query_user($user['uid'],['uid','nickname','avatar','email','mobile','realname','sex','qq','score1']);
+            $user = query_user($user['uid'],['uid','nickname','avatar','email','mobile','realname','sex','score']);
             if(is_array($user)){
                 $this->MemberModel->updateLogin($user['uid']);
                 $token = JWTAuth::builder(['uid'=>$user['uid']]);
@@ -75,7 +75,7 @@ class WechatMiniProgram extends Api
         $user = $this->MemberSyncModel->getDataByMap($map);
         // 已登录过
         if (!empty($user)){
-            $user = query_user($user['uid'],['uid','nickname','avatar','email','mobile','realname','sex','qq','score1']);
+            $user = query_user($user['uid'],['uid','nickname','avatar','email','mobile','realname','sex','score']);
             $this->MemberModel->updateLogin($user['uid']);
         }else{
             // 未登录过，创建用户

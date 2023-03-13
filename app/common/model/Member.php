@@ -417,8 +417,10 @@ class Member extends Base
                     $field = $scoreTypeModel->getTypeList([['status', '=', 1]]);
                     $score_key = [];
                     foreach ($field as $vf) {
-                        $vf['value'] = $member['score' . $vf['id']];
-                        $score_key[] = $vf;
+                        if(isset($member['score' . $vf['id']])){
+                            $vf['value'] = $member['score' . $vf['id']];
+                            $score_key[] = $vf;
+                        }
                     }
                     $member['score'] = $score_key;
                 }

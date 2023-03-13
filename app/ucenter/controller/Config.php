@@ -84,7 +84,7 @@ class Config extends Common
     {
         $uid = get_uid();
         //查询用户信息
-        $user = query_user($uid, ['uid', 'nickname', 'avatar', 'email', 'mobile', 'realname', 'sex', 'qq', 'score1', 'birthday', 'signature']);
+        $user = query_user($uid, ['uid', 'nickname', 'avatar', 'email', 'mobile', 'realname', 'sex', 'qq', 'score', 'birthday', 'signature']);
         if ($user) {
             //格式化生日
             $birthday = strtotime($user['birthday']);
@@ -93,7 +93,7 @@ class Config extends Common
 
             return $this->success('success', $user);
         }
-        $this->error('没有查询到用户数据');
+        return $this->error('没有查询到用户数据');
     }
 
     /**
@@ -419,7 +419,7 @@ class Config extends Common
         }
 
         $uid = get_uid();
-        $self = query_user($uid, ['mobile', 'nickname', 'avatar', 'score1', 'score2', 'score3', 'score4']);
+        $self = query_user($uid, ['mobile', 'nickname', 'avatar', 'score']);
         View::assign('user', $self);
         //是否绑定微信
         $bind_map = [];

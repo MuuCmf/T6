@@ -395,7 +395,8 @@ if (!function_exists('check_auth')) {
     }
 }
 
-/**获取当前的积分
+/**
+ * 获取当前的积分
  * @param string $score_name
  * @return mixed
  */
