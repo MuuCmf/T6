@@ -342,9 +342,10 @@ class Member extends Base
      * @param  boolean $is_username 是否使用用户名查询
      * @return array                用户信息
      */
-    public function info($uid, $fields = '*')
+    public function info($uid, $fields = '')
     {
         if (!empty($uid)) {
+
             if (!empty($fields) && $fields != '*') {
                 if (!is_array($fields)) {
                     $fields_arr = explode(',', $fields);
@@ -359,20 +360,37 @@ class Member extends Base
                     array_push($fields_arr, 'status');
                 }
 
+                if (strpos($fields, 'score') !== false) {
+                    // 用户积分
+                    $field = (new ScoreType())->getTypeList([['status', '=', 1]]);
+                    foreach ($field as $vf) {
+                        array_push($fields_arr, 'score' . $vf['id']);
+                    }
+                }
+
+                // 排除不存在的字段
+                $prefix = config('database.connections.mysql.prefix');
+                $columns = Db::query('show COLUMNS FROM ' .$prefix. 'member');
+                $columns = array_column($columns, 'Field');
+                foreach($fields_arr as $k => $v){
+                    if(!in_array($v, $columns)) unset($fields_arr[$k]);
+                }
+
                 // 转回字符串
-                $fields = implode(',', $fields_arr);
+                $new_fields = implode(',', $fields_arr);
             } else {
-                $fields = '*';
+                $fields = $new_fields = '*';
             }
 
             // 查询用户数组
             $map['uid'] = $uid;
-            $member = $this->where($map)->field($fields)->find();
+            $member = $this->where($map)->field($new_fields)->find();
             if ($member) {
                 $member = $member->toArray();
             }
 
             if (is_array($member) && $member['status'] = 1) {
+                
                 if ($fields == '*' || strpos($fields, 'avatar') !== false) {
                     // 头像
                     if (empty($member['avatar'])) {
@@ -413,8 +431,7 @@ class Member extends Base
 
                 if ($fields == '*' || strpos($fields, 'score') !== false) {
                     // 用户积分
-                    $scoreTypeModel = new ScoreType();
-                    $field = $scoreTypeModel->getTypeList([['status', '=', 1]]);
+                    $field = (new ScoreType())->getTypeList([['status', '=', 1]]);
                     $score_key = [];
                     foreach ($field as $vf) {
                         if(isset($member['score' . $vf['id']])){
@@ -465,8 +482,7 @@ class Member extends Base
                 }
 
                 // 获取钱包数据
-                $memberWalletModel = new MemberWallet();
-                $wallet = $memberWalletModel->getWallet($uid);
+                $wallet = (new MemberWallet())->getWallet($uid);
                 $member['wallet'] = $wallet;
 
                 return $member;
