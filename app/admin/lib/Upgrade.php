@@ -204,7 +204,7 @@ class Upgrade
                     foreach ($sql as $s){
                         try {
                             @Db::query($s);
-                        }catch (\Exception $e){
+                        }catch (Exception $e){
                             //忽略错误 继续执行
                         }
                     }

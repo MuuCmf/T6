@@ -259,7 +259,7 @@ class Withdraw extends Api
             }
             Db::commit();
             return $this->success('提现已提交，正在处理...');
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             Db::rollback();
             return $this->error($e->getMessage());
         }
