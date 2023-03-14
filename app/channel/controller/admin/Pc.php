@@ -19,7 +19,6 @@ class Pc extends MuuAdmin
     public function __construct()
     {
         parent::__construct();
-
         $this->channelModel = new ChannelModel();
     }
 
@@ -63,7 +62,7 @@ class Pc extends MuuAdmin
                 } else {
                     throw new Exception('导航至少存在一个。');
                 }
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 // 回滚事务
                 Db::rollback();
                 return $this->error($e->getMessage());
@@ -123,7 +122,7 @@ class Pc extends MuuAdmin
                     Db::commit();
                     return $this->success('修改成功', $res);
                 }
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 // 回滚事务
                 Db::rollback();
                 return $this->error($e->getMessage());
@@ -178,7 +177,7 @@ class Pc extends MuuAdmin
                     cache(request()->domain() . '_muucmf_user_nav', null);
                     return $this->success('修改成功');
                 }
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 // 回滚事务
                 Db::rollback();
                 return $this->error($e->getMessage());

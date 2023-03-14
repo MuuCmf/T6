@@ -2,6 +2,7 @@
 
 namespace app\channel\controller\admin;
 
+use think\Exception;
 use app\admin\controller\Admin as MuuAdmin;
 use app\channel\logic\TemplateMessage;
 use app\channel\model\WechatAutoReply;
@@ -58,8 +59,8 @@ class Account extends MuuAdmin
                     return $this->success('更新成功', 'refresh');
                 }
                 return $this->error('更新失败');
-            } catch (\Exception $e) {
-                return $this->error($e->getMessage());
+            } catch (Exception $e) {
+                return $this->error('发生错误：' . $e->getMessage());
             }
         }
     }
