@@ -1,4 +1,5 @@
 <?php
+
 namespace app\admin\lib;
 
 use think\facade\Cache;
@@ -20,14 +21,14 @@ class Cloud
         $domain = request()->host();
         $ip   = request()->ip();
         $url = $this->api . 'request/record';
-        $result = curl_request($url,[
+        $result = curl_request($url, [
             'domain'  =>  $domain,
             'ip' =>  $ip,
             'channel' => 'T6'
         ]);
         try {
-            $result = json_decode($result,true);
-            if (is_array($result) && $result['code'] == 0){
+            $result = json_decode($result, true);
+            if (is_array($result) && $result['code'] == 0) {
                 return $result;
             }
         } catch (ValidateException $e) {
@@ -41,21 +42,22 @@ class Cloud
      * 查询应用授权
      * app_name 应用唯一标识
      */
-    public function needAuthorization($app_name){
+    public function needAuthorization($app_name)
+    {
         $url = $this->api . 'authorization/app';
-        $result = curl_request($url,[
+        $result = curl_request($url, [
             'app_name'  =>  $app_name,
             'auth_code' =>  self::authCode()
         ]);
         try {
-            $result = json_decode($result,true);
-            if (is_array($result) && $result['code'] == 0){
+            $result = json_decode($result, true);
+            if (is_array($result) && $result['code'] == 0) {
                 return $result;
             }
         } catch (ValidateException $e) {
             return false;
         }
-        
+
         return true;
     }
 
@@ -63,15 +65,16 @@ class Cloud
      * @title 生成授权码
      * @return string
      */
-    public static function authCode(){
+    public static function authCode()
+    {
         $web_domain = request()->host();
         $web_host   = request()->ip();
         $lock_str   = $web_domain . '|' . $web_host;
-        $code = Cache::get(request()->host() . '_cloud_auth');
-        if (!$code || $code['time'] < time()){
-            $code = self::encrypt_code($lock_str ,6000,'muu');
-            Cache::set(request()->host() . '_cloud_auth',['time' => time() + 60 * 30 ,'code' => $code]);
-        }else{
+        $code = Cache::get(request()->host() . '_MUUCMF_CLOUD_AUTH');
+        if (!$code || $code['time'] < time()) {
+            $code = self::encrypt_code($lock_str, 6000, 'muu');
+            Cache::set(request()->host() . '_MUUCMF_CLOUD_AUTH', ['time' => time() + 60 * 30, 'code' => $code]);
+        } else {
             $code = $code['code'];
         }
         return $code;
@@ -84,7 +87,8 @@ class Cloud
      * @param int    $expiry 有效时长，单位：秒
      * @return string
      */
-    protected static function encrypt_code($string, $expiry = 0, $key = '1234567890') {
+    protected static function encrypt_code($string, $expiry = 0, $key = '1234567890')
+    {
         $ckey_length = 1;
         $key = md5($key ? $key : 'MUUCMF'); //加密解密时这个是不变的
         $keya = md5(substr($key, 0, 16)); //加密解密时这个是不变的
@@ -93,7 +97,7 @@ class Cloud
         $cryptkey = $keya . md5($keya . $keyc); //64
         $key_length = strlen($cryptkey); //64
 
-        $string =sprintf('%010d', $expiry ? $expiry + time() : 0) . substr(md5($string . $keyb), 0, 16) . $string;
+        $string = sprintf('%010d', $expiry ? $expiry + time() : 0) . substr(md5($string . $keyb), 0, 16) . $string;
         $string_length = strlen($string);
 
         $result = '';
@@ -112,10 +116,9 @@ class Cloud
         }
         for ($a = $j = $i = 0; $i < $string_length; $i++) {
             $result .= chr(ord($string[$i]) ^ ($box[$i]));
-
         }
         $str =  $keyc . str_replace('=', '', base64_encode($result));
         //  $str =htmlentities($str, ENT_QUOTES, "UTF-8"); // curl 访问出错
-        return $str ;
+        return $str;
     }
 }
