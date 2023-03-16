@@ -115,13 +115,7 @@ class Attachment extends Base
 
                 $data['type'] = $mime_arr[0];
                 $data['driver'] = $driver;
-                // 判断目录是否有可写权限
-                if(!is_writable($file_dir)){
-                    return [
-                        'code' => 0,
-                        'msg' => '目录没有可写权限，请联系管理员'
-                    ];
-                }
+
                 $savename = Filesystem::disk('public')->putFile( $file_dir, $file);
                 // 成功上传后 获取上传信息
                 $data['attachment'] = $savename;
