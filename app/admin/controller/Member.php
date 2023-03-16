@@ -38,7 +38,8 @@ class Member extends Admin
         $search = input('search', '', 'text');
         if (!empty($search)) {
             $uids = $this->MemberModel
-                ->where('username', 'like', '%' . $search . '%')
+                ->where('uid', '=', $search)
+                ->whereOr('username', 'like', '%' . $search . '%')
                 ->whereOr('nickname', 'like', '%' . $search . '%')
                 ->whereOr('mobile', 'like', '%' . $search . '%')
                 ->whereOr('email', 'like', '%' . $search . '%')
@@ -68,7 +69,7 @@ class Member extends Admin
         $map[] = ['status', '>=', 0];
         // 每页显示数量
         $rows = input('rows', 15, 'intval');
-        $list = $this->MemberModel->where($map)->order($order)->paginate($rows);
+        $list = $this->MemberModel->where($map)->order($order)->paginate(['list_rows'=>$rows, 'query'=>request()->param()], false);
         $pager = $list->render();
         $list = $list->toArray();
         $list_arr = $list['data'];
