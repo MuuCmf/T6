@@ -9,7 +9,11 @@
 {block name="body"}
 <div class="update-warp " v-cloak>
     <div class="main-title">
+        {if $scene == 'setup'}
+        <h2>在线安装</h2>
+        {else /}
         <h2>在线更新</h2>
+        {/if}
     </div>
     <div class="with-padding main">
         <div class="upgrade-icon">
@@ -51,8 +55,8 @@
         </div>
 
         <div class="btn-menu">
-            <button @click="back()" class="btn btn-default" v-if="status == -1">返回</button>
-            <button @click="jump()" class="btn btn-primary" v-if="status == 1">确定</button>
+            <button @click="back()" class="btn btn-lg btn-default" v-if="status == -1">返回</button>
+            <button @click="jump()" class="btn btn-lg btn-primary" v-if="status == 1">确定</button>
         </div>
     </div>
 </div>
@@ -81,7 +85,6 @@
             skipUpgradeVersion: 0,//跳过更新版本号
         },
         created() {
-            console.log(this.authCode)
             this.getUpgradeInfo();
         },
         methods: {
@@ -102,11 +105,10 @@
                     auth_code:that.authCode,
                     app_name:that.appName,
                 }, function (res) {
-                    //console.log(res);
+                    
                     if (res.code == 200) {
                         that.package = res.data.data;
                         that.packageTotal = res.data.total;
-                        //that.versionPackage = res.data.version;
                         
                         if (that.upgradeVersion != that.localVersion){
                             if(that.scene == 'setup'){
