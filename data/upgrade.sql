@@ -182,3 +182,4 @@ INSERT INTO `muucmf_menu` (`id`, `title`, `pid`, `sort`, `url`, `hide`, `type`, 
 ALTER TABLE `muucmf_field_setting` DROP `field`;
 ALTER TABLE `muucmf_field_setting` ADD `field_alias` VARCHAR(32) NOT NULL COMMENT '字段描述' AFTER `field_name`;
 ALTER TABLE `muucmf_field_setting` DROP `child_form_type`;
+ALTER TABLE `muucmf_action_log` CHANGE `remark` `remark` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '日志备注';

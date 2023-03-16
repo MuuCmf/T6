@@ -228,7 +228,7 @@ class Member extends Base
                 $data_token['token'] = $token_unique;
                 $data_token['create_time'] = time();
                 Db::name('user_token')->insert($data_token);
-            }else{
+            } else {
                 $token_unique = $token['token'];
                 Db::name('user_token')->update([
                     'id' => $token['id'],
@@ -376,10 +376,10 @@ class Member extends Base
 
                 // 排除不存在的字段
                 $prefix = config('database.connections.mysql.prefix');
-                $columns = Db::query('show COLUMNS FROM ' .$prefix. 'member');
+                $columns = Db::query('show COLUMNS FROM ' . $prefix . 'member');
                 $columns = array_column($columns, 'Field');
-                foreach($fields_arr as $k => $v){
-                    if(!in_array($v, $columns)) unset($fields_arr[$k]);
+                foreach ($fields_arr as $k => $v) {
+                    if (!in_array($v, $columns)) unset($fields_arr[$k]);
                 }
 
                 // 转回字符串
@@ -396,7 +396,7 @@ class Member extends Base
             }
 
             if (is_array($member) && $member['status'] = 1) {
-                
+
                 if ($fields == '*' || strpos($fields, 'avatar') !== false) {
                     // 头像
                     if (empty($member['avatar'])) {
@@ -412,13 +412,13 @@ class Member extends Base
 
                 if ($fields == '*' || strpos($fields, 'sex') !== false) {
                     // 性别
-                    if($member['sex'] == 0){
+                    if ($member['sex'] == 0) {
                         $member['sex_str'] = '保密';
                     }
-                    if($member['sex'] == 1){
+                    if ($member['sex'] == 1) {
                         $member['sex_str'] = '男';
                     }
-                    if($member['sex'] == 2){
+                    if ($member['sex'] == 2) {
                         $member['sex_str'] = '女';
                     }
                 }
@@ -440,7 +440,7 @@ class Member extends Base
                     $field = (new ScoreType())->getTypeList([['status', '=', 1]]);
                     $score_key = [];
                     foreach ($field as $vf) {
-                        if(isset($member['score' . $vf['id']])){
+                        if (isset($member['score' . $vf['id']])) {
                             $vf['value'] = $member['score' . $vf['id']];
                             $score_key[] = $vf;
                         }

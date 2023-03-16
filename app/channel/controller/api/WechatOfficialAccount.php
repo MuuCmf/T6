@@ -1,4 +1,5 @@
 <?php
+
 namespace app\channel\controller\api;
 
 use app\common\controller\Api;
@@ -40,12 +41,12 @@ class WechatOfficialAccount extends Api
     {
         //获取公众号配置
         $weixin_h5 = (new WechatConfig())->where('shopid', $this->params['shopid'])->field('title,desc,cover,qrcode,appid')->find();
-        if ($weixin_h5){
+        if ($weixin_h5) {
             $weixin_h5 = $weixin_h5->toArray();
             $weixin_h5 = (new OfficialAccountLogic())->formatData($weixin_h5);
         }
-        
-        return $this->success('success',$weixin_h5);
+
+        return $this->success('success', $weixin_h5);
     }
 
     /**
@@ -57,12 +58,12 @@ class WechatOfficialAccount extends Api
         $app = OfficialAccount::getApp();
         //获取消息类型
         $message = $app->server->getMessage();
-        if (isset($message['MsgType'])){
+        if (isset($message['MsgType'])) {
             $map = [
                 ['status', '=', 1],
             ];
             switch ($message['MsgType']) {
-                case 'event'://事件
+                case 'event': //事件
                     $this->doEvent($message);
                     break;
                 default:
@@ -95,9 +96,9 @@ class WechatOfficialAccount extends Api
                 break;
         }
         //判断是否是扫码登录
-        if (isset($message['EventKey'])){
+        if (isset($message['EventKey'])) {
             $event_key = convert_url_query($message['EventKey']);
-            if (isset($event_key['islogin'])){
+            if (isset($event_key['islogin'])) {
                 //获取用户信息
                 $user_info = OfficialAccount::getApp()->user->get($message['FromUserName']);
                 //保存扫码信息
@@ -107,19 +108,18 @@ class WechatOfficialAccount extends Api
                 ];
                 $QrcodeLoginModel = (new QrcodeLogin());
                 //是否登录过
-                $has_login = $QrcodeLoginModel->where('scene_key',$event_key['scene_key'])->count();
-                if ($has_login == 0){
+                $has_login = $QrcodeLoginModel->where('scene_key', $event_key['scene_key'])->count();
+                if ($has_login == 0) {
                     $QrcodeLoginModel->edit($qrcode_login);
                     //登录消息
                     $map[] = ['type', '=', 3];
                     $map[] = ['status', '=', 1];
                     $this->doMessage($message, $map);
-                }else{
+                } else {
                     //消息通知
                     $msg = new Text('二维码失效,请刷新后重试');
                     OfficialAccount::getApp()->customer_service->message($msg)->to($message['FromUserName'])->send();
                 }
-
             }
         }
     }
@@ -179,13 +179,14 @@ class WechatOfficialAccount extends Api
      * @param $scene_key
      * @return \think\response\Json
      */
-    public static function qrcode($scene_key){
+    public static function qrcode($scene_key)
+    {
         //模板调用
         $access_token = OfficialAccount::getToken();
         $qrcode_url = 'https://api.weixin.qq.com/cgi-bin/qrcode/create?access_token=' . $access_token['access_token'];
         $qrcode_url .= "&islogin=1";
         $qrcode_url .= "&scene_key=" . $scene_key;
-        $result = OfficialAccount::createQrcode($qrcode_url , 60 * 60);
+        $result = OfficialAccount::createQrcode($qrcode_url, 60 * 60);
         $ticket = $result['ticket'];
         $qrcode = OfficialAccount::getQrcodeUrl($ticket);
         $fp = fopen($qrcode, 'rb');
@@ -197,23 +198,24 @@ class WechatOfficialAccount extends Api
      * @title 扫码登录
      * @return \think\Response|void
      */
-    public function scanLogin(){
-        if (request()->isPost()){
+    public function scanLogin()
+    {
+        if (request()->isPost()) {
             $openid = input('post.openid');
             $scene_key = input('post.scene_key');
             $map = [
-                ['openid' ,'=' ,$openid],
-                ['type' ,'=' ,'weixin_h5']
+                ['openid', '=', $openid],
+                ['type', '=', 'weixin_h5']
             ];
             $uid = MemberSync::where($map)->value('uid');
             $MemberModel = new Member();
             //初次扫码注册
             if (!$uid) {
-                $oauth_info = (new QrcodeLogin())->where('scene_key',$scene_key)->value('metadata');
-                if (!$oauth_info){
+                $oauth_info = (new QrcodeLogin())->where('scene_key', $scene_key)->value('metadata');
+                if (!$oauth_info) {
                     return $this->error('没有授权信息');
                 }
-                $oauth_info = json_decode($oauth_info,true);
+                $oauth_info = json_decode($oauth_info, true);
                 //处理用户数据
                 $data = [
                     'openid'    =>  $oauth_info['openid'],
@@ -221,8 +223,8 @@ class WechatOfficialAccount extends Api
                     'oauth_type'    =>  'weixin_h5',
                     'shopid'    =>  $this->shopid,
                     'nickname'  =>  rand_nickname(config('system.USER_NICKNAME_PREFIX')),
-                    'avatar' => !empty($oauth_info['avatar'])?$oauth_info['avatar']:'',
-                    'sex' => !empty($oauth_info['sex'])?$oauth_info['sex']:0,
+                    'avatar' => !empty($oauth_info['avatar']) ? $oauth_info['avatar'] : '',
+                    'sex' => !empty($oauth_info['sex']) ? $oauth_info['sex'] : 0,
                 ];
                 $user = $MemberModel->oauth($data);
                 $MemberModel->updateLogin($user['uid']);
@@ -234,10 +236,10 @@ class WechatOfficialAccount extends Api
                 $token = JWTAuth::builder(['uid' => $uid]); //参数为用户认证的信息，请自行添加
                 $token = 'Bearer ' . $token;
                 $last_url = session('login_http_referer');
-                if(empty($last_url)){
+                if (empty($last_url)) {
                     $last_url = request()->domain();
                 }
-                return $this->success('登录成功',$token,$last_url);
+                return $this->success('登录成功', $token, $last_url);
             }
         }
     }
@@ -245,15 +247,16 @@ class WechatOfficialAccount extends Api
     /**
      * 是否扫码
      */
-    public function hasScan(){
-        if (request()->isAjax()){
-            $scene_key = input('get.scene_key','');
+    public function hasScan()
+    {
+        if (request()->isAjax()) {
+            $scene_key = input('get.scene_key', '');
             $data = (new QrcodeLogin())->getDataByMap([
-                ['scene_key','=',$scene_key]
+                ['scene_key', '=', $scene_key]
             ]);
-            if (!empty($data)){
-                $data = json_decode($data['metadata'],true);
-                return $this->success('success',$data);
+            if (!empty($data)) {
+                $data = json_decode($data['metadata'], true);
+                return $this->success('success', $data);
             }
             return $this->error('没有查询到相关数据');
         }
@@ -264,13 +267,13 @@ class WechatOfficialAccount extends Api
      */
     public function oauth()
     {
-        $target_url = input('param.target_url',request()->domain());
-        $target_url = explode('#',$target_url);
+        $target_url = input('param.target_url', request()->domain());
+        $target_url = explode('#', $target_url);
         $oauth_data = [
             'target_url' => urlencode($target_url[0])
         ];
         //uniapp hash路由带有# ,防止跳转授权时丢失
-        if (isset($target_url[1])){
+        if (isset($target_url[1])) {
             $oauth_data['spa_param'] = urlencode($target_url[1]);
         }
         $url = OfficialAccount::oauth($oauth_data);
@@ -302,7 +305,7 @@ class WechatOfficialAccount extends Api
         $spa_param = input('param.spa_param');
 
         $script = "window.location.href='{$target_url}#{$spa_param}'";
-        echo save_local_storage('user_token',$token,$script);
+        echo save_local_storage('user_token', $token, $script);
         exit();
     }
 
@@ -310,12 +313,13 @@ class WechatOfficialAccount extends Api
      * 生成微信SDK
      * @return \think\Response|void
      */
-    public function jssdk(){
-        if (request()->isPost()){
+    public function jssdk()
+    {
+        if (request()->isPost()) {
             $app = OfficialAccount::getApp();
             $apis = input('post.apis');
             $url = input('post.url');
-            if (empty($apis)){
+            if (empty($apis)) {
                 $apis = [
                     'chooseWXPay',
                     'checkJsApi',
@@ -326,7 +330,7 @@ class WechatOfficialAccount extends Api
             }
             $app->jssdk->setUrl($url);
             $jssdk = $app->jssdk->buildConfig($apis);
-            return $this->success('success',json_decode($jssdk,true));
+            return $this->success('success', json_decode($jssdk, true));
         }
     }
 }
