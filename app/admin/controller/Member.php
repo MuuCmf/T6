@@ -217,7 +217,7 @@ class Member extends Admin
             $authGroup->addToGroup($uid, $data['auth_group']);
             /*用户组END*/
 
-            return $this->success('保存成功', $uid, Cookie('__forward__'));
+            return $this->success('保存成功', $uid, cookie('__forward__'));
         } else {
 
             // 获取用户数据

@@ -170,27 +170,17 @@ class Field extends Admin
             'time' => '日期',
             'textarea' => '文本域'
         ];
-        // 二级表单类型
-        $child_type = [
-            'string' => '字符串',
-            'phone' => '手机号',
-            'email' => '邮箱',
-            'number' => '数字',
-            'join' => '关联字段'
-        ];
+
 
         foreach ($field_list as &$val) {
             $val['form_type'] = $type_default[$val['form_type']];
-            if($val['child_form_type']) {
-                $val['child_form_type'] = $child_type[$val['child_form_type']];
-            }
-            
         }
         unset($val);
 
         View::assign('title','扩展资料');
         View::assign('list', $field_list);
-        
+        // 记录当前列表页的cookie
+        cookie('__forward__', $_SERVER['REQUEST_URI']);
         return View::fetch();
     }
 
@@ -227,7 +217,7 @@ class Field extends Admin
                 }
             }
             
-            if ($data['id'] != '') {
+            if (!empty($data['id'])) {
                 Db::name('field_setting')->strict(true)->where(['id'=>$data['id']])->update($data);
                 $res = Db::name('field_setting')->where(['id'=>$data['id']])->value('id');
             } else {
@@ -243,10 +233,8 @@ class Field extends Admin
                 $res = Db::name('field_setting')->strict(true)->insertGetId($data);
             }
             
-            return $this->success(
-                $data['id'] == '' ? '添加字段成功' : '编辑字段成功', 
-                url('field', ['id' => $data['group_id']])
-            );
+            return $this->success($data['id'] == '' ? '添加字段成功' : '编辑字段成功', $res, cookie('__forward__'));
+
         } else {
             $id = input('id');
             $group_id = input('group_id');
@@ -264,29 +252,21 @@ class Field extends Admin
             }
             $type_default = array(
                 'input' => '单行文本框',
-                'radio' => '单选按钮',
+                'textarea' => '多行文本框',
+                'radio' => '单选框',
                 'checkbox' => '多选框',
                 'select' => '下拉选择框',
                 'time' => '日期',
-                'textarea' => '多行文本框'
             );
-            $child_type = array(
-                'string' => '字符串',
-                'phone' => '手机号码',
-                'email' => '邮箱',
-                //增加可选择关联字段类型 @MingYang
-                'join' => '关联字段',
-                'number' => '数字'
-            );
+
             $builder
-            ->keyReadOnly("id", '标识')
+            ->keyReadOnly("id", 'ID')
             ->keyReadOnly('group_id', '分组ID')
             ->keyText('field_name', '字段名称','仅支持英文小写和"_"')
             ->keyText('field_alias', '字段描述')
             ->keySelect('form_type', '表单类型', '', $type_default)
-            ->keySelect('child_form_type', '二级表单类型', '', $child_type)
-            ->keyTextArea('form_default_value', "多个值用'|'分割开,格式【字符串：男|女，数组：1:男|2:女，关联数据表：字段名|表名】开")
-            ->keyText('validation', '表单验证规则', '例：min=5&max=10')
+            ->keyTextArea('form_default_value', "表单值选项", "多个值用'|'分割开，例：男|女")
+            ->keyText('validation', '表单验证规则', "多个值用'|'分割开，例：require|max:25")
             ->keyText('input_tips', '用户输入提示', '提示用户如何输入该字段信息')
             ->keyBool('visiable', '是否公开')
             ->keyBool('required', '是否必填')

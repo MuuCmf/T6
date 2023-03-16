@@ -78,6 +78,8 @@ class Author extends Admin
             return $this->success('success', $lists);
         }
         View::assign('lists',$lists);
+        // 记录当前列表页的cookie
+        cookie('__forward__', $_SERVER['REQUEST_URI']);
         // 设置页面title
         $this->setTitle('创作者列表');
         // 输出模板
@@ -105,7 +107,7 @@ class Author extends Admin
             }
             $res = $this->AuthorModel->edit($data);
             if($res){
-                return $this->success($title . '成功',$res, url('lists'));
+                return $this->success($title . '成功',$res, cookie('__forward__'));
             }else{
                 return $this->success($title . '失败');
             }

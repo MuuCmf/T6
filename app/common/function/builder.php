@@ -93,7 +93,7 @@ if (!function_exists('get_status_title')) {
      * @param int $status
      * @return string 状态文字 ，false 未获取到
      */
-    function get_status_title($status = null)
+    function get_status_title($status)
     {
         if (!isset($status)) {
             return false;

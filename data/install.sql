@@ -4313,7 +4313,6 @@ CREATE TABLE IF NOT EXISTS `muucmf_field_setting` (
   `form_default_value` varchar(200) NOT NULL COMMENT '默认值',
   `validation` varchar(25) NOT NULL COMMENT '验证规则',
   `status` tinyint(4) NOT NULL DEFAULT '1' COMMENT '状态',
-  `child_form_type` varchar(25) NOT NULL COMMENT '二级表单类型',
   `input_tips` varchar(100) NOT NULL COMMENT '输入提示',
   `create_time` int(11) NOT NULL COMMENT '创建时间',
   PRIMARY KEY (`id`)
