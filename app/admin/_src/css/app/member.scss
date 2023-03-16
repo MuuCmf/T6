@@ -32,6 +32,9 @@
                     overflow: hidden;
                 }
             }
+            .uid {
+                text-align: center;
+            }
             .nickname {
                 text-align: center;
                 font-size: 20px;
@@ -78,7 +81,7 @@
                 padding: 14px;
                 border-bottom: 1px solid #e8e9eb;
                 color: #4c4c4c;
-                line-height: 40px;
+                line-height: 32px;
                 .form-label {
                     width: 130px;
                     flex: 0 0 130px;
@@ -101,7 +104,6 @@
                 }
                 .form-edit {
                     width: 120px;
-                    height: 48px;
                     text-align: right;
                 }
             }

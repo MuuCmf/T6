@@ -11,6 +11,7 @@
             <div class="avatar">
                 <img class="avatar-img" src="{$member.avatar128}" />
             </div>
+            <div class="uid">uid: {$member.uid}</div>
             <div class="nickname">
                 <span class="">
                     {$member.nickname}
@@ -70,13 +71,21 @@
     <div class="detail-files-box col-sm-9">
         <div class="form-files-box card">
             <!-- 基本设置 start -->
-            <div class="form-file header">基本资料</div>
+            <div class="form-file header">基本信息</div>
             <div class="form-files">
                 <div class="form-file">
                     <div class="form-label">注册时间</div>
                     <div class="form-value">
                         <span class="">
                             {$member.create_time_friendly_str}
+                        </span>
+                    </div>
+                </div>
+                <div class="form-file">
+                    <div class="form-label">注册IP</div>
+                    <div class="form-value">
+                        <span class="">
+                            {$member.reg_ip}
                         </span>
                     </div>
                 </div>
