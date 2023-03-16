@@ -95,15 +95,14 @@ if (!function_exists('single_image_upload')) {
                         '<div data-id="'+data.data.attachment+'" class="text-center del_btn">{$delete_picture}</div>'+
                         '</div>'
                     );
-                    //重启webuploader,可多次上传
-                    uploader_{$name}.reset();
                 } else {
-                    updateAlert(data.msg);
+                    toast.error(data.msg);
                     setTimeout(function () {
-                        $('#top-alert').find('button').click();
-                        $(that).removeClass('disabled').prop('disabled', false);
+                        $(this).removeClass('disabled').prop('disabled', false);
                     }, 1500);
                 }
+                //重启webuploader,可多次上传
+                uploader_{$name}.reset();
             });
             //上传完成
             uploader_{$name}.on( 'uploadComplete', function( file ) {
@@ -211,7 +210,7 @@ if (!function_exists('multi_image_upload')) {
                 if( ids.indexOf(data.data.attachment) == -1){
                     var rids = admin_image.upAttachVal('add',data.data.attachment, $("[name='{$name}']"));
                     if(rids.length>limit){
-                        updateAlert({$limit_exceed});
+                        toast.error({$limit_exceed});
                         return;
                     }
                     
@@ -223,14 +222,10 @@ if (!function_exists('multi_image_upload')) {
                         '</div>'
                     );
                 }else{
-                    updateAlert({$picture_exists});
+                    toast.error({$picture_exists});
                 }
             } else {
-                updateAlert(data.msg);
-                setTimeout(function () {
-                    $('#top-alert').find('button').click();
-                    $(that).removeClass('disabled').prop('disabled', false);
-                }, 1500);
+                toast.error(data.msg);
             }
             });
             //上传完成
@@ -381,15 +376,11 @@ if (!function_exists('single_audio_upload')) {
                                     '</audio>' +
                                 '</div>'
                             );
-                            //重启webuploader,可多次上传
-                            uploader_{$name}.reset();
                         } else {
-                            updateAlert(data.msg);
-                            setTimeout(function () {
-                                $('#top-alert').find('button').click();
-                                $(that).removeClass('disabled').prop('disabled', false);
-                            }, 1500);
+                            toast.error(data.msg);
                         }
+                        //重启webuploader,可多次上传
+                        uploader_{$name}.reset();
                     });
                     //进度条
                     uploader_{$name}.on('uploadProgress', function( file,percentage ) {
@@ -550,16 +541,11 @@ if (!function_exists('single_video_upload')) {
                     uploader_{$name}.on('uploadSuccess', function (file, data) {
                         if (data.code) {
                             $("#upload_single_video_{$name} input[name='{$name}']").val(data.data.attachment);
-                            
-                            //重启webuploader,可多次上传
-                            uploader_{$name}.reset();
                         } else {
-                            updateAlert(data.msg);
-                            setTimeout(function () {
-                                $('#top-alert').find('button').click();
-                                $(that).removeClass('disabled').prop('disabled', false);
-                            }, 1500);
+                            toast.error(data.msg);
                         }
+                        //重启webuploader,可多次上传
+                        uploader_{$name}.reset();
                     });
                     //进度条
                     uploader_{$name}.on('uploadProgress', function( file,percentage ) {
@@ -706,15 +692,11 @@ if (!function_exists('single_file_upload')) {
             uploader_{$name}.on('uploadSuccess', function (file, data) {
                 if (data.code == 200) {
                     $(".input-group .attach[name='{$name}']").val(data.data.attachment);
-                    //重启webuploader,可多次上传
-                    uploader_{$name}.reset();
                 } else {
-                    updateAlert(data.msg);
-                    setTimeout(function () {
-                        $('#top-alert').find('button').click();
-                        $(that).removeClass('disabled').prop('disabled', false);
-                    }, 1500);
+                    toast.error(data.msg);
                 }
+                //重启webuploader,可多次上传
+                uploader_{$name}.reset();
             });
             //上传完成
             uploader_{$name}.on( 'uploadComplete', function( file ) {

@@ -43,10 +43,10 @@ class File extends Api
 
         $result = $this->Attachment->upload($shopid, $files, 'file', $uid, $enforce, $filename);
 
-        if(is_array($result)){
+        if(is_array($result) && $result['code'] == 200){
             return $this->result(200, '上传成功', $result);
         }else{
-            return $this->result(0, '上传失败');
+            return $this->result(0, '上传失败:' . $result['msg']);
         }
     }
 
