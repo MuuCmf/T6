@@ -751,10 +751,11 @@ class Member extends Base
             if (isset($has_union)) {
                 $uid = $has_union['uid'];
             } else {
-                $nickname = $data['nickname'];
+                // 过滤掉emoji表情符号
+                $nickname = filter_emoji($data['nickname']);
+                // 验证昵称
                 $match = preg_match('/^(?!_|\s\')[A-Za-z0-9_|\x80-\xff\s\']+$/', $nickname);
                 if (!$match) {
-                    //throw new Exception('昵称只允许中文、字母、下划线和数字');
                     $nickname = rand_nickname(Config::get('system.USER_NICKNAME_PREFIX'));
                 }
                 $member_data = [

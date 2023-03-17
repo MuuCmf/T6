@@ -605,5 +605,19 @@ if (!function_exists('emoji_decode')) {
     }
 }
 
+if (!function_exists('filter_emoji')) {
+    // 过滤掉字符串中emoji表情
+    function filter_emoji($str)
+    {
+        $str = preg_replace_callback( '/./u',
+            function (array $match) {
+                return strlen($match[0]) >= 4 ? '' : $match[0];
+            },
+        $str);
+
+    return $str;
+    }
+}
+
 
 
