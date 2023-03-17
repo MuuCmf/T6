@@ -402,7 +402,6 @@ class Member extends Base
                     if (empty($member['avatar'])) {
                         $member['avatar'] = $member['avatar64'] = $member['avatar128'] = $member['avatar256'] = $member['avatar512'] = request()->domain() . '/static/common/images/default_avatar.jpg';
                     } else {
-                        $member['avatar'] = get_attachment_src($member['avatar']);
                         $member['avatar64'] = get_thumb_image($member['avatar'], 64, 64);
                         $member['avatar128'] = get_thumb_image($member['avatar'], 128, 128);
                         $member['avatar256'] = get_thumb_image($member['avatar'], 256, 256);
@@ -514,7 +513,9 @@ class Member extends Base
             'last_login_ip' => request()->ip(),
         ];
 
-        $this->where('uid', $uid)->save($data);
+        $res = $this->where('uid', $uid)->save($data);
+
+        return $res;
     }
 
     /**修改密码
@@ -750,15 +751,20 @@ class Member extends Base
             if (isset($has_union)) {
                 $uid = $has_union['uid'];
             } else {
+                $nickname = $data['nickname'];
+                $match = preg_match('/^(?!_|\s\')[A-Za-z0-9_\x80-\xff\s\']+$/', $nickname);
+                if (!$match) {
+                    //throw new Exception('昵称只允许中文、字母、下划线和数字');
+                    $nickname = rand_nickname(Config::get('system.USER_NICKNAME_PREFIX'));
+                }
                 $member_data = [
                     'uid' => $uid,
                     'shopid'    => $data['shopid'],
-                    'nickname'  => $data['nickname'],
+                    'nickname'  => $nickname,
                     'username'  => rand_username(''),
                     'password'  => user_md5('123456', Config::get('auth.auth_key')),
                     'avatar'    => $data['avatar'],
                     'sex'       => $data['sex'],
-                    // 'email'     => rand_email(),
                     'status'    =>  1
                 ];
                 $result = $this->save($member_data);

@@ -728,7 +728,7 @@ if (!function_exists('get_thumb_image')) {
      * @return string
      * @auth 大蒙
      */
-    function get_thumb_image($attachment, $width = 100, $height = 'auto', $replace = false, $type = 'attachment')
+    function get_thumb_image($attachment, $width = 100, $height = 'auto', $replace = false)
     {
         //不存在http://
         $not_http_remote=(strpos($attachment, 'http://') === false);

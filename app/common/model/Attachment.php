@@ -350,6 +350,7 @@ class Attachment extends Base
     {
         // 获取图片存储类型
         $driver = config('extend.PICTURE_UPLOAD_DRIVER');
+        
         if (strtolower($driver) == 'local') {
             $info = $this->localThumb($attachment, $width, $height, $replace);
             return $info;

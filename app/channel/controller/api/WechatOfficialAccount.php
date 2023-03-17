@@ -19,8 +19,6 @@ use EasyWeChat\Kernel\Messages\Video;
 use EasyWeChat\Kernel\Messages\Voice;
 use thans\jwt\facade\JWTAuth;
 use think\Exception;
-use think\facade\Cache;
-use think\facade\Cookie;
 
 /**
  * 微信公众号服务
@@ -290,12 +288,16 @@ class WechatOfficialAccount extends Api
         // 获取 OAuth 授权结果用户信息
         $user = $app->oauth->userFromCode($code);
         $user = $user->getRaw();
-        //处理用户数据
-        $MemberModel = new Member();
-        $user['oauth_type'] = 'weixin_h5';
-        $user['shopid'] = $this->shopid;
-        $user['avatar'] = $user['headimgurl'];
-        $user = $MemberModel->oauth($user);
+        try {
+            //处理用户数据
+            $MemberModel = new Member();
+            $user['oauth_type'] = 'weixin_h5';
+            $user['shopid'] = $this->shopid;
+            $user['avatar'] = $user['headimgurl'];
+            $user = $MemberModel->oauth($user);
+        } catch (Exception $e) {
+            return $this->error($e->getMessage());
+        }
         $MemberModel->updateLogin($user['uid']);
         //生成token
         $token = JWTAuth::builder(['uid' => $user['uid']]);

@@ -13,7 +13,7 @@ use think\Validate;
 class Base
 {
     private $debug = [];
-    
+
     /**
      * 验证数据
      * @access protected
