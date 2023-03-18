@@ -1,10 +1,4 @@
-ALTER TABLE `muucmf_orders` ADD `refund_result` TEXT NULL COMMENT '退款成功平台返回数据' AFTER `refund_no`;
-ALTER TABLE `muucmf_author` DROP `charges`;
-ALTER TABLE `muucmf_author` DROP `freeze`;
-ALTER TABLE `muucmf_author` DROP `total`;
-ALTER TABLE `muucmf_author` ADD `group_id` INT(11) UNSIGNED NOT NULL COMMENT '分组ID' AFTER `uid`;
-ALTER TABLE `muucmf_attachment` CHANGE `filename` `filename` CHAR(128) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '' COMMENT '附件显示名';
-ALTER TABLE `muucmf_capital_flow` CHANGE `channel` `channel` VARCHAR(20) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT '' COMMENT '来源/去向balance：余额；wechat:微信';
+ALTER TABLE `muucmf_capital_flow` CHANGE `channel` `channel` VARCHAR(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '' COMMENT '来源/去向balance：余额；wechat:微信';
 ALTER TABLE `muucmf_wechat_config` ADD `request` VARCHAR(512) NOT NULL COMMENT '请求配置' AFTER `tmplmsg`;
 ALTER TABLE `muucmf_orders` ADD  `settle` tinyint(2) NOT NULL DEFAULT '0' COMMENT '是否结算分账' AFTER `metadata`;
 ALTER TABLE `muucmf_wechat_config` DROP `url`;
@@ -16,7 +10,7 @@ CREATE TABLE IF NOT EXISTS `muucmf_author_group` (
   `create_time` int(11) NOT NULL COMMENT '创建时间',
   `update_time` int(11) NOT NULL COMMENT '更新时间',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='创作者分组' ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='创作者分组' ROW_FORMAT=COMPACT;
 
 INSERT INTO `muucmf_menu` (`id`, `title`, `pid`, `sort`, `url`, `hide`, `type`, `tip`, `group`, `is_dev`, `icon`, `module`) VALUES
 ('8553C20D-7FCB-4252-15F4-5ECFC0A56092', '创作者类型', 'D18841ED-C034-2E7A-D0B2-92D0AC647179', 4, 'admin/Author/groupList', 0, 0, '', '创作者管理', 0, 'window-restore', 'admin'),
@@ -35,7 +29,7 @@ CREATE TABLE IF NOT EXISTS `muucmf_author_follow` (
   `create_time` int(11) unsigned NOT NULL COMMENT '创建时间',
   `update_time` int(11) unsigned NOT NULL COMMENT '更新时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='创造者关注表' ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='创造者关注表' ROW_FORMAT=COMPACT;
 
 CREATE TABLE  IF NOT EXISTS `muucmf_douyin_mp_config` (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键ID',
@@ -52,7 +46,7 @@ CREATE TABLE  IF NOT EXISTS `muucmf_douyin_mp_config` (
   `create_time` int(11) UNSIGNED NOT NULL COMMENT '创建日期',
   `update_time` int(11) UNSIGNED NOT NULL COMMENT '更新日期',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='抖音小程序配置表' ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='抖音小程序配置表' ROW_FORMAT=COMPACT;
 
 CREATE TABLE  IF NOT EXISTS `muucmf_douyin_mp_settle` (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键ID',
@@ -65,7 +59,7 @@ CREATE TABLE  IF NOT EXISTS `muucmf_douyin_mp_settle` (
   `create_time` int(11) UNSIGNED NOT NULL COMMENT '创建日志',
   `update_time` int(11) UNSIGNED NOT NULL COMMENT '更新日志',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='抖音结算分账表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='抖音结算分账表';
 
 UPDATE `muucmf_extend_config` SET `value` = '1:配置项\r\n2:阿里云OSS\r\n3:腾讯云COS\r\n4:阿里云短信\r\n5:腾讯云短信\r\n6:微信支付\r\n7:支付宝支付\r\n8:提现配置\r\n9:腾讯云点播' WHERE `muucmf_extend_config`.`id` = 1;
 
@@ -85,16 +79,16 @@ CREATE TABLE IF NOT EXISTS `muucmf_jobs` (
   `available_at` int(10) unsigned NOT NULL,
   `created_at` int(10) unsigned NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-ALTER TABLE `muucmf_attachment` CHANGE `mime` `mime` CHAR(128) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '' COMMENT 'mimeType';
+ALTER TABLE `muucmf_attachment` CHANGE `mime` `mime` CHAR(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT 'mimeType';
 
 DELETE FROM `muucmf_config` WHERE `muucmf_config`.`id` = 10147;
 DELETE FROM `muucmf_config` WHERE `muucmf_config`.`id` = 10148;
 
 ALTER TABLE `muucmf_vip` CHANGE `order_no` `order_no` VARCHAR(128) NOT NULL DEFAULT '' COMMENT '开通时对应订单号';
 
-ALTER TABLE `muucmf_vip_card` CHANGE `card_bg` `card_bg` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '' COMMENT '会员卡背景';
+ALTER TABLE `muucmf_vip_card` CHANGE `card_bg` `card_bg` VARCHAR( 255 ) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '会员卡背景';
 
 ALTER TABLE `muucmf_orders` ADD `form_id` VARCHAR(255) NULL COMMENT 'formId 表单ID' AFTER `settle`;
 
@@ -114,7 +108,7 @@ CREATE TABLE IF NOT EXISTS `muucmf_baidu_mp_config` (
   `create_time` int(11) UNSIGNED NOT NULL COMMENT '创建日期',
   `update_time` int(11) UNSIGNED NOT NULL COMMENT '更新日期',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='百度小程序配置表' ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='百度小程序配置表' ROW_FORMAT=COMPACT;
 
 INSERT INTO `muucmf_menu` (`id`, `title`, `pid`, `sort`, `url`, `hide`, `type`, `tip`, `group`, `is_dev`, `icon`, `module`) VALUES
 ('0762BC67-2FAC-2C3D-94F0-9292DF07DEDE', '百度小程序配置', 'A4650B98-DAD4-8194-030C-1B2AB4F35CBA', 40, 'channel/admin.BaiduMiniprogram/index', 0, 0, '', '百度小程序', 0, '', 'admin');
@@ -128,7 +122,7 @@ INSERT INTO `muucmf_extend_config` (`id`, `name`, `type`, `title`, `group`, `ext
 
 UPDATE `muucmf_config` SET `extra` = 'username:用户名\r\nemail:邮箱\r\nmobile:手机号\r\nqrcode:扫码（需正确配置公众号）' WHERE `muucmf_config`.`id` = 10135;
 
-ALTER TABLE `muucmf_author` CHANGE `auth` `auth` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL COMMENT '功能权限 json格式';
+ALTER TABLE `muucmf_author` CHANGE `auth` `auth` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '功能权限 json格式';
 
 ALTER TABLE `muucmf_keywords` CHANGE `uid` `uid` INT(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'UID';
 
@@ -182,6 +176,63 @@ INSERT INTO `muucmf_menu` (`id`, `title`, `pid`, `sort`, `url`, `hide`, `type`, 
 ALTER TABLE `muucmf_field_setting` DROP `field`;
 ALTER TABLE `muucmf_field_setting` ADD `field_alias` VARCHAR(32) NOT NULL COMMENT '字段描述' AFTER `field_name`;
 ALTER TABLE `muucmf_field_setting` DROP `child_form_type`;
-ALTER TABLE `muucmf_action_log` CHANGE `remark` `remark` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '日志备注';
+ALTER TABLE `muucmf_action_log` CHANGE `remark` `remark` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '日志备注';
 
-ALTER TABLE `muucmf_evaluate` CONVERT TO CHARACTER SET `utf8mb4` COLLATE `utf8mb4_general_ci`; 
+ALTER TABLE `muucmf_attachment` CHANGE `attachment` `attachment` VARCHAR(160);
+ALTER TABLE `muucmf_action` CONVERT TO CHARACTER SET `utf8mb4` COLLATE `utf8mb4_general_ci`; 
+ALTER TABLE `muucmf_action_limit` CONVERT TO CHARACTER SET `utf8mb4` COLLATE `utf8mb4_general_ci`; 
+ALTER TABLE `muucmf_action_log` CONVERT TO CHARACTER SET `utf8mb4` COLLATE `utf8mb4_general_ci`; 
+ALTER TABLE `muucmf_address` CONVERT TO CHARACTER SET `utf8mb4` COLLATE `utf8mb4_general_ci`;
+ALTER TABLE `muucmf_announce` CONVERT TO CHARACTER SET `utf8mb4` COLLATE `utf8mb4_general_ci`;
+ALTER TABLE `muucmf_attachment` CONVERT TO CHARACTER SET `utf8mb4` COLLATE `utf8mb4_general_ci`;
+ALTER TABLE `muucmf_author` CONVERT TO CHARACTER SET `utf8mb4` COLLATE `utf8mb4_general_ci`;
+ALTER TABLE `muucmf_author_group` CONVERT TO CHARACTER SET `utf8mb4` COLLATE `utf8mb4_general_ci`;
+ALTER TABLE `muucmf_author_follow` CONVERT TO CHARACTER SET `utf8mb4` COLLATE `utf8mb4_general_ci`;
+ALTER TABLE `muucmf_auth_group` CONVERT TO CHARACTER SET `utf8mb4` COLLATE `utf8mb4_general_ci`;
+ALTER TABLE `muucmf_auth_group_access` CONVERT TO CHARACTER SET `utf8mb4` COLLATE `utf8mb4_general_ci`;
+ALTER TABLE `muucmf_auth_rule` CONVERT TO CHARACTER SET `utf8mb4` COLLATE `utf8mb4_general_ci`;
+ALTER TABLE `muucmf_baidu_mp_config` CONVERT TO CHARACTER SET `utf8mb4` COLLATE `utf8mb4_general_ci`;
+ALTER TABLE `muucmf_capital_flow` CONVERT TO CHARACTER SET `utf8mb4` COLLATE `utf8mb4_general_ci`;
+ALTER TABLE `muucmf_channel` CONVERT TO CHARACTER SET `utf8mb4` COLLATE `utf8mb4_general_ci`;
+ALTER TABLE `muucmf_config` CONVERT TO CHARACTER SET `utf8mb4` COLLATE `utf8mb4_general_ci`;
+ALTER TABLE `muucmf_count_active` CONVERT TO CHARACTER SET `utf8mb4` COLLATE `utf8mb4_general_ci`;
+ALTER TABLE `muucmf_crontab` CONVERT TO CHARACTER SET `utf8mb4` COLLATE `utf8mb4_general_ci`;
+ALTER TABLE `muucmf_crontab_log` CONVERT TO CHARACTER SET `utf8mb4` COLLATE `utf8mb4_general_ci`;
+ALTER TABLE `muucmf_district` CONVERT TO CHARACTER SET `utf8mb4` COLLATE `utf8mb4_general_ci`;
+ALTER TABLE `muucmf_douyin_mp_config` CONVERT TO CHARACTER SET `utf8mb4` COLLATE `utf8mb4_general_ci`;
+ALTER TABLE `muucmf_douyin_mp_settle` CONVERT TO CHARACTER SET `utf8mb4` COLLATE `utf8mb4_general_ci`;
+ALTER TABLE `muucmf_evaluate` CONVERT TO CHARACTER SET `utf8mb4` COLLATE `utf8mb4_general_ci`;
+ALTER TABLE `muucmf_extend_config` CONVERT TO CHARACTER SET `utf8mb4` COLLATE `utf8mb4_general_ci`;
+ALTER TABLE `muucmf_favorites` CONVERT TO CHARACTER SET `utf8mb4` COLLATE `utf8mb4_general_ci`;
+ALTER TABLE `muucmf_feedback` CONVERT TO CHARACTER SET `utf8mb4` COLLATE `utf8mb4_general_ci`;
+ALTER TABLE `muucmf_field` CONVERT TO CHARACTER SET `utf8mb4` COLLATE `utf8mb4_general_ci`;
+ALTER TABLE `muucmf_field_group` CONVERT TO CHARACTER SET `utf8mb4` COLLATE `utf8mb4_general_ci`;
+ALTER TABLE `muucmf_field_setting` CONVERT TO CHARACTER SET `utf8mb4` COLLATE `utf8mb4_general_ci`;
+ALTER TABLE `muucmf_follow` CONVERT TO CHARACTER SET `utf8mb4` COLLATE `utf8mb4_general_ci`;
+ALTER TABLE `muucmf_history` CONVERT TO CHARACTER SET `utf8mb4` COLLATE `utf8mb4_general_ci`;
+ALTER TABLE `muucmf_jobs` CONVERT TO CHARACTER SET `utf8mb4` COLLATE `utf8mb4_general_ci`;
+ALTER TABLE `muucmf_keywords` CONVERT TO CHARACTER SET `utf8mb4` COLLATE `utf8mb4_general_ci`;
+ALTER TABLE `muucmf_member` CONVERT TO CHARACTER SET `utf8mb4` COLLATE `utf8mb4_general_ci`;
+ALTER TABLE `muucmf_member_sync` CONVERT TO CHARACTER SET `utf8mb4` COLLATE `utf8mb4_general_ci`;
+ALTER TABLE `muucmf_member_wallet` CONVERT TO CHARACTER SET `utf8mb4` COLLATE `utf8mb4_general_ci`;
+ALTER TABLE `muucmf_menu` CONVERT TO CHARACTER SET `utf8mb4` COLLATE `utf8mb4_general_ci`;
+ALTER TABLE `muucmf_message` CONVERT TO CHARACTER SET `utf8mb4` COLLATE `utf8mb4_general_ci`;
+ALTER TABLE `muucmf_message_content` CONVERT TO CHARACTER SET `utf8mb4` COLLATE `utf8mb4_general_ci`;
+ALTER TABLE `muucmf_message_type` CONVERT TO CHARACTER SET `utf8mb4` COLLATE `utf8mb4_general_ci`;
+ALTER TABLE `muucmf_module` CONVERT TO CHARACTER SET `utf8mb4` COLLATE `utf8mb4_general_ci`;
+ALTER TABLE `muucmf_orders` CONVERT TO CHARACTER SET `utf8mb4` COLLATE `utf8mb4_general_ci`;
+ALTER TABLE `muucmf_qrcode_login` CONVERT TO CHARACTER SET `utf8mb4` COLLATE `utf8mb4_general_ci`;
+ALTER TABLE `muucmf_score_log` CONVERT TO CHARACTER SET `utf8mb4` COLLATE `utf8mb4_general_ci`;
+ALTER TABLE `muucmf_score_type` CONVERT TO CHARACTER SET `utf8mb4` COLLATE `utf8mb4_general_ci`;
+ALTER TABLE `muucmf_seo_rule` CONVERT TO CHARACTER SET `utf8mb4` COLLATE `utf8mb4_general_ci`;
+ALTER TABLE `muucmf_support` CONVERT TO CHARACTER SET `utf8mb4` COLLATE `utf8mb4_general_ci`;
+ALTER TABLE `muucmf_tominiprogram` CONVERT TO CHARACTER SET `utf8mb4` COLLATE `utf8mb4_general_ci`;
+ALTER TABLE `muucmf_user_nav` CONVERT TO CHARACTER SET `utf8mb4` COLLATE `utf8mb4_general_ci`;
+ALTER TABLE `muucmf_user_token` CONVERT TO CHARACTER SET `utf8mb4` COLLATE `utf8mb4_general_ci`;
+ALTER TABLE `muucmf_verify` CONVERT TO CHARACTER SET `utf8mb4` COLLATE `utf8mb4_general_ci`;
+ALTER TABLE `muucmf_vip` CONVERT TO CHARACTER SET `utf8mb4` COLLATE `utf8mb4_general_ci`;
+ALTER TABLE `muucmf_vip_card` CONVERT TO CHARACTER SET `utf8mb4` COLLATE `utf8mb4_general_ci`;
+ALTER TABLE `muucmf_wechat_auto_reply` CONVERT TO CHARACTER SET `utf8mb4` COLLATE `utf8mb4_general_ci`;
+ALTER TABLE `muucmf_wechat_config` CONVERT TO CHARACTER SET `utf8mb4` COLLATE `utf8mb4_general_ci`;
+ALTER TABLE `muucmf_wechat_mp_config` CONVERT TO CHARACTER SET `utf8mb4` COLLATE `utf8mb4_general_ci`;
+ALTER TABLE `muucmf_withdraw` CONVERT TO CHARACTER SET `utf8mb4` COLLATE `utf8mb4_general_ci`;
