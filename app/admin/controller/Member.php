@@ -287,14 +287,19 @@ class Member extends Admin
     public function detail()
     {
         $uid = input('uid', 0, 'intval');
+        if(empty($uid)){
+            return $this->error('缺少参数');
+        }
         $map[] = ['uid', '=', $uid];
         $member = query_user($uid);
-        
-        
+        // 判断用户是否存在
+        if(!is_array($member) || empty($member)){
+            return $this->error('用户数据不存在');
+        }
         View::assign('member', $member);
-        //dump($member);
-
+        // 设置页面TITLE
         $this->setTitle('用户详情');
+        // 输出模板
         return View::fetch();
     }
 
