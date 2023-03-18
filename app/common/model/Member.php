@@ -748,7 +748,7 @@ class Member extends Base
             //初始UID
             $uid = 0;
 
-            if (isset($has_union)) {
+            if (!empty($has_union)) {
                 $uid = $has_union['uid'];
             } else {
                 // 过滤掉emoji表情符号
@@ -766,7 +766,8 @@ class Member extends Base
                     'password'  => user_md5('123456', Config::get('auth.auth_key')),
                     'avatar'    => $data['avatar'],
                     'sex'       => $data['sex'],
-                    'status'    =>  1
+                    'status'    => 1,
+                    'reg_ip' => request()->ip()
                 ];
                 $result = $this->save($member_data);
                 if (!$result) {
