@@ -183,3 +183,5 @@ ALTER TABLE `muucmf_field_setting` DROP `field`;
 ALTER TABLE `muucmf_field_setting` ADD `field_alias` VARCHAR(32) NOT NULL COMMENT '字段描述' AFTER `field_name`;
 ALTER TABLE `muucmf_field_setting` DROP `child_form_type`;
 ALTER TABLE `muucmf_action_log` CHANGE `remark` `remark` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '日志备注';
+
+ALTER TABLE `muucmf_evaluate` CONVERT TO CHARACTER SET `utf8mb4` COLLATE `utf8mb4_general_ci`; 

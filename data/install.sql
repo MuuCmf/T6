@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS `muucmf_action` (
   `update_time` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '修改时间',
   `module` varchar(20) NOT NULL DEFAULT '' COMMENT '应用模块',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='系统行为表' AUTO_INCREMENT=1000;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COMMENT='系统行为表' AUTO_INCREMENT=1000;
 
 --
 -- 转存表中的数据 `muucmf_action`
@@ -54,7 +54,7 @@ CREATE TABLE IF NOT EXISTS `muucmf_action_limit` (
   `create_time` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '创建时间',
   `module` varchar(20) NOT NULL DEFAULT '' COMMENT '应用模块',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=5 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COMMENT='行为限制表' ROW_FORMAT=COMPACT;
 
 --
 -- 转存表中的数据 `muucmf_action_limit`
@@ -85,7 +85,7 @@ CREATE TABLE IF NOT EXISTS `muucmf_action_log` (
   KEY `action_ip_ix` (`action_ip`),
   KEY `action_id_ix` (`action_id`),
   KEY `user_id_ix` (`uid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='行为日志表' AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='行为日志表' ROW_FORMAT=COMPACT;
 
 --
 -- 表的结构 `muucmf_address`
@@ -106,7 +106,7 @@ CREATE TABLE IF NOT EXISTS `muucmf_address` (
   `create_time` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '创建时间',
   `update_time` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '更新时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='用户收货地址' ROW_FORMAT=COMPACT AUTO_INCREMENT=1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户收货地址' ROW_FORMAT=COMPACT;
 
 --
 -- 表的结构 `muucmf_announce`
@@ -128,7 +128,7 @@ CREATE TABLE IF NOT EXISTS `muucmf_announce` (
   `create_time` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '创建时间',
   `update_time` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '更新时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='公告表' ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='公告表' ROW_FORMAT=COMPACT;
 
 --
 -- 表的结构 `muucmf_attachment`
@@ -153,7 +153,7 @@ CREATE TABLE IF NOT EXISTS `muucmf_attachment` (
   PRIMARY KEY (`id`) USING BTREE,
   KEY `attachment` (`attachment`),
   KEY `mime` (`mime`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='附件表' ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='附件表' ROW_FORMAT=COMPACT;
 
 --
 -- 表的结构 `muucmf_author`
@@ -181,7 +181,7 @@ CREATE TABLE IF NOT EXISTS `muucmf_author` (
   `update_time` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '更新时间',
   PRIMARY KEY (`id`) USING BTREE,
   KEY `uid` (`uid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='创作者表' ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='创作者表' ROW_FORMAT=COMPACT;
 
 --
 -- 表的结构 `muucmf_author_group`
@@ -194,7 +194,7 @@ CREATE TABLE IF NOT EXISTS `muucmf_author_group` (
   `create_time` int(11) NOT NULL COMMENT '创建时间',
   `update_time` int(11) NOT NULL COMMENT '更新时间',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='创作者分组' ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='创作者分组' ROW_FORMAT=COMPACT;
 
 --
 -- 表的结构 `muucmf_author_follow`
@@ -210,7 +210,7 @@ CREATE TABLE IF NOT EXISTS `muucmf_author_follow` (
   `create_time` int(11) unsigned NOT NULL COMMENT '创建时间',
   `update_time` int(11) unsigned NOT NULL COMMENT '更新时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='创造者关注表' ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='创造者关注表' ROW_FORMAT=COMPACT;
 
 --
 -- 表的结构 `muucmf_auth_group`
@@ -226,7 +226,7 @@ CREATE TABLE IF NOT EXISTS `muucmf_auth_group` (
   `status` tinyint(1) NOT NULL DEFAULT '1' COMMENT '用户组状态：为1正常，为0禁用,-1为删除',
   `rules` text NOT NULL COMMENT '用户组拥有的规则id，多个规则 , 隔开',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 AUTO_INCREMENT=1 ROW_FORMAT=COMPACT;
 
 --
 -- 转存表中的数据 `muucmf_auth_group`
@@ -249,7 +249,7 @@ CREATE TABLE IF NOT EXISTS `muucmf_auth_group_access` (
   UNIQUE KEY `uid_group_id` (`uid`,`group_id`),
   KEY `uid` (`uid`),
   KEY `group_id` (`group_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- 转存表中的数据 `muucmf_auth_group_access`
@@ -274,7 +274,7 @@ CREATE TABLE IF NOT EXISTS `muucmf_auth_rule` (
   `condition` varchar(300) NOT NULL DEFAULT '' COMMENT '规则附加条件',
   PRIMARY KEY (`id`),
   KEY `module` (`module`,`status`,`type`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=10000 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 AUTO_INCREMENT=10000 ;
 
 -- --------------------------------------------------------
 
@@ -295,7 +295,7 @@ CREATE TABLE IF NOT EXISTS `muucmf_baidu_mp_config` (
   `create_time` int(11) UNSIGNED NOT NULL COMMENT '创建日期',
   `update_time` int(11) UNSIGNED NOT NULL COMMENT '更新日期',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='百度小程序配置表' ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='百度小程序配置表' ROW_FORMAT=COMPACT;
 
 --
 -- 表的结构 `muucmf_capital_flow`
@@ -319,7 +319,7 @@ CREATE TABLE IF NOT EXISTS `muucmf_capital_flow` (
   `update_time` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '更新日期',
   PRIMARY KEY (`id`),
   KEY `flow_no` (`flow_no`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='流水记录表' ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='流水记录表' ROW_FORMAT=COMPACT;
 
 --
 -- 表的结构 `muucmf_channel`
@@ -340,7 +340,7 @@ CREATE TABLE `muucmf_channel` (
   `color` varchar(30) NOT NULL DEFAULT '' COMMENT '颜色',
   `icon` varchar(20) NOT NULL DEFAULT '' COMMENT '图标',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='前台导航配置' ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='前台导航配置' ROW_FORMAT=COMPACT;
 
 --
 -- 转存表中的数据 `muucmf_channel`
@@ -382,7 +382,7 @@ CREATE TABLE IF NOT EXISTS `muucmf_config` (
   UNIQUE KEY `uk_name` (`name`) USING BTREE,
   KEY `type` (`type`) USING BTREE,
   KEY `group` (`group`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT '配置' AUTO_INCREMENT=100;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT '配置' AUTO_INCREMENT=100;
 
 --
 -- 转存表中的数据 `muucmf_config`
@@ -451,7 +451,7 @@ CREATE TABLE IF NOT EXISTS `muucmf_count_active` (
   `total` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '总人数',
   PRIMARY KEY (`id`),
   UNIQUE KEY `date` (`date`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='活跃统计表' AUTO_INCREMENT=1;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COMMENT='活跃统计表' AUTO_INCREMENT=1;
 
 -- --------------------------------------------------------
 
@@ -474,7 +474,7 @@ CREATE TABLE IF NOT EXISTS `muucmf_crontab` (
   `create_time` int(11) UNSIGNED NOT NULL COMMENT '创建日期',
   `update_time` int(11) UNSIGNED NOT NULL COMMENT '更新日期',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='计划任务表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='计划任务表';
 
 
 
@@ -501,7 +501,7 @@ CREATE TABLE IF NOT EXISTS `muucmf_crontab_log` (
   `create_time` int(11) UNSIGNED NOT NULL COMMENT '创建时间',
   `update_time` int(11) UNSIGNED NOT NULL COMMENT '更新时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='计划任务执行日志表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='计划任务执行日志表';
 
 --
 -- 表的结构 `muucmf_district`
@@ -514,7 +514,7 @@ CREATE TABLE IF NOT EXISTS `muucmf_district` (
   `level` tinyint(4) UNSIGNED NOT NULL DEFAULT '0',
   `upid` mediumint(8) UNSIGNED NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='中国省市区乡镇数据表' AUTO_INCREMENT=910007;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COMMENT='中国省市区乡镇数据表' AUTO_INCREMENT=910007;
 
 --
 -- 转存表中的数据 `muucmf_district`
@@ -4093,7 +4093,7 @@ CREATE TABLE  IF NOT EXISTS `muucmf_douyin_mp_config` (
   `create_time` int(11) UNSIGNED NOT NULL COMMENT '创建日期',
   `update_time` int(11) UNSIGNED NOT NULL COMMENT '更新日期',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='抖音小程序配置表' ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='抖音小程序配置表' ROW_FORMAT=COMPACT;
 
 
 --
@@ -4111,7 +4111,7 @@ CREATE TABLE  IF NOT EXISTS `muucmf_douyin_mp_settle` (
   `create_time` int(11) UNSIGNED NOT NULL COMMENT '创建日志',
   `update_time` int(11) UNSIGNED NOT NULL COMMENT '更新日志',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='抖音结算分账表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='抖音结算分账表';
 
 --
 -- 表的结构 `muucmf_evaluate`
@@ -4136,7 +4136,7 @@ CREATE TABLE IF NOT EXISTS `muucmf_evaluate` (
   `update_time` int(11) UNSIGNED NOT NULL DEFAULT '0',
   `status` tinyint(2) NOT NULL DEFAULT '0' COMMENT '状态',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='订单评价表' ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='订单评价表' ROW_FORMAT=COMPACT;
 
 
 --
@@ -4160,7 +4160,7 @@ CREATE TABLE IF NOT EXISTS `muucmf_extend_config` (
   UNIQUE KEY `uk_name` (`name`) USING BTREE,
   KEY `type` (`type`) USING BTREE,
   KEY `group` (`group`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='扩展配置' ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='扩展配置' ROW_FORMAT=COMPACT;
 
 --
 -- 转存表中的数据 `muucmf_extend_config`
@@ -4231,7 +4231,7 @@ CREATE TABLE IF NOT EXISTS `muucmf_favorites` (
   `create_time` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '创建时间',
   `update_time` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '更新时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='用户收藏表' ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户收藏表' ROW_FORMAT=COMPACT;
 
 -- --------------------------------------------------------
 
@@ -4251,7 +4251,7 @@ CREATE TABLE IF NOT EXISTS `muucmf_feedback` (
   `create_time` int(11) UNSIGNED NOT NULL COMMENT '创建时间',
   `update_time` int(11) UNSIGNED NOT NULL COMMENT '更新时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='用户反馈表' ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户反馈表' ROW_FORMAT=COMPACT;
 
 -- --------------------------------------------------------
 
@@ -4267,7 +4267,7 @@ CREATE TABLE IF NOT EXISTS `muucmf_field` (
   `create_time` int(11) UNSIGNED NOT NULL COMMENT '创建时间',
   `update_time` int(11) UNSIGNED NOT NULL COMMENT '更新时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 AUTO_INCREMENT=1 ROW_FORMAT=COMPACT;
 
 -- --------------------------------------------------------
 
@@ -4283,7 +4283,7 @@ CREATE TABLE IF NOT EXISTS `muucmf_field_group` (
   `visiable` tinyint(4) NOT NULL DEFAULT '1',
   `create_time` int(11) UNSIGNED NOT NULL COMMENT '创建时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
 
 -- --------------------------------------------------------
 
@@ -4316,7 +4316,7 @@ CREATE TABLE IF NOT EXISTS `muucmf_field_setting` (
   `input_tips` varchar(100) NOT NULL COMMENT '输入提示',
   `create_time` int(11) NOT NULL COMMENT '创建时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 ROW_FORMAT=COMPACT;
 
 
 --
@@ -4331,7 +4331,7 @@ CREATE TABLE IF NOT EXISTS `muucmf_follow` (
   `alias` varchar(40) DEFAULT NULL COMMENT '备注',
   `group_id` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '分组ID',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='关注表' ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COMMENT='关注表' ROW_FORMAT=COMPACT;
 
 -- --------------------------------------------------------
 
@@ -4351,7 +4351,7 @@ CREATE TABLE IF NOT EXISTS `muucmf_history` (
   `create_time` int(11) UNSIGNED NOT NULL COMMENT '创建时间',
   `update_time` int(11) UNSIGNED NOT NULL COMMENT '更新时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='内容浏览记录' ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='内容浏览记录' ROW_FORMAT=COMPACT;
 
 
 --
@@ -4369,7 +4369,7 @@ CREATE TABLE IF NOT EXISTS `muucmf_jobs` (
   `available_at` int(10) unsigned NOT NULL,
   `created_at` int(10) unsigned NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- 表的结构 `muucmf_keywords`
@@ -4387,7 +4387,7 @@ CREATE TABLE IF NOT EXISTS `muucmf_keywords` (
   `create_time` int(11) UNSIGNED NOT NULL COMMENT '创建时间',
   `update_time` int(11) UNSIGNED NOT NULL COMMENT '更新时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='热门关键词统计' ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='热门关键词统计' ROW_FORMAT=COMPACT;
 
 --
 -- 表的结构 `muucmf_member`
@@ -4421,7 +4421,7 @@ CREATE TABLE IF NOT EXISTS `muucmf_member` (
   PRIMARY KEY (`uid`),
   KEY `status` (`status`),
   KEY `name` (`nickname`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='会员表' AUTO_INCREMENT=100 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COMMENT='会员表' AUTO_INCREMENT=100 ;
 
 -- --------------------------------------------------------
 
@@ -4440,7 +4440,7 @@ CREATE TABLE IF NOT EXISTS `muucmf_member_sync` (
   `create_time` int(11) UNSIGNED NOT NULL COMMENT '创建时间',
   `update_time` int(11) UNSIGNED NOT NULL COMMENT '更新时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='会员同步';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='会员同步';
 
 -- --------------------------------------------------------
 
@@ -4459,7 +4459,7 @@ CREATE TABLE IF NOT EXISTS `muucmf_member_wallet` (
   `create_time` int(11) UNSIGNED NOT NULL COMMENT '创建日期',
   `update_time` int(11) UNSIGNED NOT NULL COMMENT '更新日期',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='用户钱包表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户钱包表';
 
 -- --------------------------------------------------------
 
@@ -4481,7 +4481,7 @@ CREATE TABLE IF NOT EXISTS `muucmf_menu` (
   `icon` varchar(20) NULL COMMENT '导航图标',
   `module` varchar(50) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- 转存表中的数据 `muucmf_menu`
@@ -4626,7 +4626,7 @@ CREATE TABLE IF NOT EXISTS `muucmf_message` (
   `create_time` int(11) UNSIGNED NOT NULL COMMENT '创建时间',
   `update_time` int(11) UNSIGNED NOT NULL COMMENT '更新时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='消息表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='消息表';
 
 -- --------------------------------------------------------
 
@@ -4645,7 +4645,7 @@ CREATE TABLE IF NOT EXISTS `muucmf_message_content` (
   `create_time` int(11) UNSIGNED NOT NULL COMMENT '创建时间',
   `update_time` int(11) UNSIGNED NOT NULL COMMENT '更新时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='消息内容';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='消息内容';
 
 -- --------------------------------------------------------
 
@@ -4664,7 +4664,7 @@ CREATE TABLE IF NOT EXISTS`muucmf_message_type` (
   `create_time` int(11) UNSIGNED NOT NULL COMMENT '创建时间',
   `update_time` int(11) UNSIGNED NOT NULL COMMENT '更新时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='消息类型';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='消息类型';
 
 -- --------------------------------------------------------
 
@@ -4688,7 +4688,7 @@ CREATE TABLE IF NOT EXISTS `muucmf_module` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`),
   KEY `name_2` (`name`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='模块管理表';
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COMMENT='模块管理表';
 
 -- --------------------------------------------------------
 
@@ -4737,7 +4737,7 @@ CREATE TABLE IF NOT EXISTS `muucmf_orders` (
   `update_time` int(11) UNSIGNED NOT NULL COMMENT '更新时间',
   PRIMARY KEY (`id`),
   UNIQUE KEY `order_no` (`order_no`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='订单表' ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='订单表' ROW_FORMAT=COMPACT;
 
 -- --------------------------------------------------------
 
@@ -4749,7 +4749,7 @@ CREATE TABLE IF NOT EXISTS `muucmf_qrcode_login` (
   `create_time` int(11) UNSIGNED NOT NULL COMMENT '创建时间',
   `update_time` int(11) UNSIGNED NOT NULL COMMENT '更新时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='扫码登录' ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='扫码登录' ROW_FORMAT=COMPACT;
 
 -- --------------------------------------------------------
 
@@ -4770,7 +4770,7 @@ CREATE TABLE IF NOT EXISTS `muucmf_score_log` (
   `model` varchar(20) NOT NULL COMMENT '触发模型（即将弃用）',
   `record_id` int(11) UNSIGNED NOT NULL COMMENT '行为ID',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='积分日志' AUTO_INCREMENT=100 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COMMENT='积分日志' AUTO_INCREMENT=100 ;
 
 -- --------------------------------------------------------
 
@@ -4784,7 +4784,7 @@ CREATE TABLE IF NOT EXISTS `muucmf_score_type` (
   `status` tinyint(4) NOT NULL COMMENT '状态',
   `unit` varchar(20) NOT NULL COMMENT '单位',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=100 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 AUTO_INCREMENT=100 ;
 
 --
 -- 转存表中的数据 `muucmf_score_type`
@@ -4813,7 +4813,7 @@ CREATE TABLE IF NOT EXISTS `muucmf_seo_rule` (
   `sort` int(11) NOT NULL DEFAULT '0' COMMENT '排序',
   `summary` varchar(500) NOT NULL DEFAULT '' COMMENT 'seo变量介绍',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=10000 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 AUTO_INCREMENT=10000 ;
 
 -- --------------------------------------------------------
 
@@ -4829,7 +4829,7 @@ CREATE TABLE IF NOT EXISTS `muucmf_support` (
   `create_time` int(11) UNSIGNED NOT NULL COMMENT '创建时间',
   `update_time` int(11) UNSIGNED NOT NULL COMMENT '更新时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='点赞表' ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='点赞表' ROW_FORMAT=COMPACT;
 
 
 --
@@ -4847,7 +4847,7 @@ CREATE TABLE IF NOT EXISTS `muucmf_tominiprogram` (
   `create_time` int(11) UNSIGNED NOT NULL COMMENT '创建时间',
   `update_time` int(11) UNSIGNED NOT NULL COMMENT '更新时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='跳转小程序配置表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='跳转小程序配置表';
 
 -- --------------------------------------------------------
 
@@ -4867,7 +4867,7 @@ CREATE TABLE IF NOT EXISTS `muucmf_user_nav` (
   `status` tinyint(4) NOT NULL DEFAULT '0' COMMENT '状态',
   `target` tinyint(2) UNSIGNED NOT NULL DEFAULT '0' COMMENT '新窗口打开',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 AUTO_INCREMENT=1;
 
 --
 -- 转存表中的数据 `muucmf_user_nav`
@@ -4888,7 +4888,7 @@ CREATE TABLE IF NOT EXISTS `muucmf_user_token` (
   `token` varchar(255) NOT NULL,
   `create_time` int(11) UNSIGNED NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=100;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 AUTO_INCREMENT=100;
 
 -- --------------------------------------------------------
 
@@ -4904,7 +4904,7 @@ CREATE TABLE IF NOT EXISTS `muucmf_verify` (
   `verify` varchar(50) NOT NULL,
   `create_time` int(11) UNSIGNED NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 AUTO_INCREMENT=1;
 
 -- --------------------------------------------------------
 
@@ -4926,7 +4926,7 @@ CREATE TABLE IF NOT EXISTS `muucmf_vip` (
   `create_time` int(11) UNSIGNED NOT NULL COMMENT '创建时间',
   `update_time` int(11) UNSIGNED NOT NULL COMMENT '更新时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='vip会员表' ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='vip会员表' ROW_FORMAT=COMPACT;
 
 -- --------------------------------------------------------
 
@@ -4956,7 +4956,7 @@ CREATE TABLE IF NOT EXISTS `muucmf_vip_card` (
   `sort` int(11) NOT NULL COMMENT '排序值',
   `status` tinyint(2) NOT NULL COMMENT '状态',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='vip会员类型表' ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='vip会员类型表' ROW_FORMAT=COMPACT;
 
 -- --------------------------------------------------------
 
@@ -4980,7 +4980,7 @@ CREATE TABLE IF NOT EXISTS `muucmf_wechat_auto_reply` (
   `create_time` int(11) UNSIGNED NOT NULL COMMENT '创建日期',
   `update_time` int(11) UNSIGNED NOT NULL COMMENT '更新日期',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='微信自动回复';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='微信自动回复';
 
 -- --------------------------------------------------------
 
@@ -5006,7 +5006,7 @@ CREATE TABLE IF NOT EXISTS `muucmf_wechat_config` (
   `create_time` int(11) UNSIGNED NOT NULL COMMENT '创建日期',
   `update_time` int(11) UNSIGNED NOT NULL COMMENT '更新日期',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='公众号配置表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='公众号配置表';
 
 -- --------------------------------------------------------
 
@@ -5027,7 +5027,7 @@ CREATE TABLE IF NOT EXISTS `muucmf_wechat_mp_config` (
   `create_time` int(11) UNSIGNED NOT NULL COMMENT '创建日期',
   `update_time` int(11) UNSIGNED NOT NULL COMMENT '更新日期',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='小程序配置表' ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='小程序配置表' ROW_FORMAT=COMPACT;
 
 
 -- --------------------------------------------------------
@@ -5054,4 +5054,4 @@ CREATE TABLE IF NOT EXISTS `muucmf_withdraw` (
   `create_time` int(11) UNSIGNED NOT NULL COMMENT '创建时间',
   `update_time` int(11) UNSIGNED NOT NULL COMMENT '更新时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='提现表' ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='提现表' ROW_FORMAT=COMPACT;
