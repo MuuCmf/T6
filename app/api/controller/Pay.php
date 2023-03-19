@@ -82,18 +82,22 @@ class Pay extends Api
                 if($this->params['pay_channel'] == 'weixin' && (
                     $order_data['channel'] == 'weixin_h5' || 
                     $order_data['channel'] == 'weixin_mp' || 
+                    $order_data['channel'] == 'h5' || 
                     $order_data['channel'] == 'pc'
                 )){
                     // 获取支付参数
                     $config = ChannelServer::config($order_data['channel'] ,$this->shopid);
-                    // 获取用户openid
-                    $openid = MemberSync::where([
-                        ['shopid', '=', $this->shopid],
-                        ['uid' , '=', request()->uid],
-                        ['type', '=', $order_data['channel']]
-                    ])->value('openid');
+                    if($order_data['channel'] == 'weixin_h5' || $order_data['channel'] == 'weixin_mp'){
+                        // 获取用户openid
+                        $openid = MemberSync::where([
+                            ['shopid', '=', $this->shopid],
+                            ['uid' , '=', request()->uid],
+                            ['type', '=', $order_data['channel']]
+                        ])->value('openid');
 
-                    $pay_data['openid'] = $openid;
+                        $pay_data['openid'] = $openid;
+                    }
+                    
                     //该参数会引起部分情况返回【请求中含有未在api文档中定义的参数】的提示，暂注释
                     //$pay_data['subject'] = $title;
                     $pay_data['body'] = $title;
@@ -103,6 +107,9 @@ class Pay extends Api
                     // 发起支付
                     $PayService = PayServer::init($config['appid'], $this->params['pay_channel']);
                     $trade_type = 'JSAPI';
+                    if($order_data['channel'] == 'h5'){
+                        $trade_type = 'MWEB';
+                    }
                     if($order_data['channel'] == 'pc'){
                         $trade_type = 'NATIVE';
                     }
