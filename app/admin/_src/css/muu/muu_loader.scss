@@ -1,0 +1,73 @@
+/**
+ * 显示加载中样式
+ */
+.big-loading {
+    background: rgba(0, 0, 0, 0.2);
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    text-align: center;
+    z-index: 9999;
+
+    img {
+        vertical-align: middle;
+    }
+
+    img {
+        position: relative;
+        top: 50%;
+        transform: translateY(-50%);
+    }
+
+    .loader {
+        position: absolute;
+        top: 50%;
+        left: 40%;
+        margin-left: 10%;
+        transform: translate3d(-50%, -50%, 0);
+        z-index: 10000;
+        .dot {
+            width: 24px;
+            height: 24px;
+            background: #3ac;
+            border-radius: 100%;
+            display: inline-block;
+            animation: slide 1s infinite;
+            &:nth-child(1) {
+                animation-delay: 0.1s;
+                background: #03b8cf;
+            }
+            &:nth-child(2) {
+                animation-delay: 0.2s;
+                background: #38b03f;
+            }
+            &:nth-child(3) {
+                animation-delay: 0.3s;
+                background: #ea644a;
+            }
+            &:nth-child(4) {
+                animation-delay: 0.4s;
+                background: #f1a325;
+            }
+            &:nth-child(5) {
+                animation-delay: 0.5s;
+                background: #8666b8;
+            }
+        }
+    }
+
+    @keyframes slide {
+        0% {
+            transform: scale(1);
+        }
+        50% {
+            opacity: 0.3;
+            transform: scale(2);
+        }
+        100% {
+            transform: scale(1);
+        }
+    }
+}

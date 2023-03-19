@@ -13,6 +13,7 @@
         $(document).on('click', '.ajax-post', function (e) {
             //取消默认动作，防止跳转页面
             e.preventDefault();
+            var _this = $(this);
             //操作表单
             var target_form = $(this).attr('target-form');
             if(target_form){
@@ -51,8 +52,10 @@
             }
             
             function execute(){
+                _this.addClass('disabled');
                 //发送AJAX请求
                 $.post(url, query, function (a, b, c) {
+                    _this.removeClass('disabled');
                     handle_ajax(a);
                 });
             }
@@ -67,6 +70,8 @@
             $(document).on('click', '.ajax-get', function (e) {
             //取消默认动作，防止跳转页面
             e.preventDefault();
+            var _this = $(this);
+            
             //获取参数（属性）
             //操作表单
             var target_form = $(this).attr('target-form');
@@ -104,8 +109,10 @@
             }
 
             function execute(){
+                _this.addClass('disabled');
                 //发送AJAX请求
                 $.get(url, function (a) {
+                    _this.removeClass('disabled');
                     handle_ajax(a);
                 });
             }
