@@ -48,7 +48,7 @@
                         {if !empty($vo.uid) && !empty($vo.user_info) && $vo.user_info != -1}
                         <a class="user-info" href="{:url('admin/Member/detail',['uid'=>$vo['uid']])}">
                             <div class="avatar">
-                                <img src="{$vo['user_info']['avatar']}">
+                                <img src="{$vo['user_info']['avatar64']}">
                             </div>
                             <div class="info">
                                 <div class="nickname text-ellipsis">[{$vo.user_info.uid|default=0}]{$vo.user_info.nickname|default=""}</div>
