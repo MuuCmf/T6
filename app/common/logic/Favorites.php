@@ -17,7 +17,7 @@ class Favorites extends Base
         }
 
         if (empty($data['products'])) {
-            $data['products'] = json_decode($data['metadata'], true);
+            $data['metadata'] = $data['products'] = json_decode($data['metadata'], true);
             $data['products'] = $this->setImgAttr($data['products'], '1:1');
             if (isset($data['products']['price'])) {
                 $data['products']['price'] = sprintf("%.2f", $data['products']['price'] / 100);
