@@ -167,10 +167,11 @@
         </p>
         {/if}
     </div>
-    <div class="copyright">
-        <p>Powered by <a href="https://www.muucmf.cc/">MuuCmf T6</a></p>
-    </div>
-
+    <?php if (\think\facade\App::isDebug()) { ?>
+        <div class="copyright">
+            <p>Powered by <a href="https://www.muucmf.cc/">MuuCmf T6</a></p>
+        </div>
+    <?php } ?>
 </body>
 
 </html>
