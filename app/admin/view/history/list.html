@@ -64,9 +64,9 @@
                         <img src="{$v['products']['cover_100']}">
                     </div>
                     <div class="info">
-                        <div class="title text-ellipsis">{$v['products']['title']}</div>
-                        {if isset($v['products']['price'])}
-                        <div class="price">价格：{$v['products']['price']}</div>
+                        <div class="title text-ellipsis">{$v['products']['title']|default=''}</div>
+                        {if isset($v['products']['desc'])}
+                        <div class="description text-ellipsis-2">{$v['products']['desc']|default=''}</div>
                         {/if}
                     </div>
                 </td>
@@ -81,7 +81,7 @@
                         </div>
                     </a>
                     {else}
-                    用户不存在
+                    用户已删除
                     {/if}
                 </td>
                 <td>{$v['module_name']}</td>
