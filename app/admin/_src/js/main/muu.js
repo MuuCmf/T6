@@ -60,14 +60,15 @@
           * @param text
           */
          showLoading: function () {
-             $('body').append('<div class="big_loading"><img src="/static/common/images/big_loading.gif"/></div>');
+            var loader = '<div class="big-loading"><div class="loader"><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div></div></div>';
+            $('body').append(loader);
          },
          /**
           * 隐藏loading
           * @param text
           */
          hideLoading: function () {
-             $('div').remove('.big_loading');
+             $('div').remove('.big-loading');
          }
      }
 }(jQuery, window, undefined));
