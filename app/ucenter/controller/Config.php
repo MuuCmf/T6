@@ -85,7 +85,7 @@ class Config extends Common
         $uid = get_uid();
         //查询用户信息
         $user = query_user($uid, ['uid', 'nickname', 'avatar', 'email', 'mobile', 'realname', 'sex', 'qq', 'score', 'birthday', 'signature']);
-        if ($user) {
+        if (is_array($user) && !empty($user)) {
             //格式化生日
             $birthday = strtotime($user['birthday']);
             $birthday = $birthday > 0 ? $birthday : time();
