@@ -16,6 +16,12 @@ class Channel{
 
         switch ($channel){
             //微信公众号
+            case 'h5':
+                $data = (new WechatConfig())->getWechatConfigByShopId($shopid);
+                if (empty($data)){
+                    throw  new Exception('微信公众号配置文件不存在');
+                }
+            break;
             case 'weixin_h5':
                 $data = (new WechatConfig())->getWechatConfigByShopId($shopid);
                 if (empty($data)){
