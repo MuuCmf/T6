@@ -30,7 +30,7 @@ class Config extends Api
     public function weixin()
     {
         //获取公众号配置
-        $weixin_h5 = (new WechatConfig())->where('shopid', $this->params['shopid'])->field('title,desc,cover,qrcode,appid')->find();
+        $weixin_h5 = (new WechatConfig())->where('shopid', $this->params['shopid'])->field('title,desc,cover,qrcode,appid,auth_login')->find();
         if ($weixin_h5){
             $weixin_h5 = $weixin_h5->toArray();
             $weixin_h5 = (new OfficialAccount())->formatData($weixin_h5);

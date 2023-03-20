@@ -4,6 +4,7 @@
 use think\facade\Route;
 //微信公众号
 Route::group('official',function (){
+    Route::rule('config' ,'channel/api.WechatOfficialAccount/config');
     Route::rule('callback' ,'channel/api.WechatOfficialAccount/callback');
     Route::rule('oauth' ,'channel/api.WechatOfficialAccount/oauth');
     Route::rule('oauthCallback' ,'channel/api.WechatOfficialAccount/oauthCallback');
