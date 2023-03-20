@@ -6,7 +6,6 @@ use app\common\model\Member;
 use app\common\model\MemberSync;
 use app\channel\facade\wechat\MiniProgram as MiniProgramServer;
 use thans\jwt\facade\JWTAuth;
-use think\facade\Cache;
 
 /**
  * 微信小程序服务类
@@ -62,6 +61,9 @@ class WechatMiniProgram extends Api
         }
     }
 
+    /**
+     * 小程序授权登录
+     */
     public function login()
     {
         $params = input('param.');
@@ -148,4 +150,5 @@ class WechatMiniProgram extends Api
         }
         return $this->error('绑定手机号失败');
     }
+
 }
