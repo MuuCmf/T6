@@ -78,6 +78,12 @@
                     </td>
                     <td>
                         <a class="btn btn-sm btn-primary" href="{:url('edit',['id'=>$vo['id']])}" >编辑</a>
+                        {if $vo['status'] == 1}
+						<a href="{:url('status', ['ids'=>$vo['id'],'status'=> 0])}" class="btn btn-sm btn-warning ajax-get">禁用</a>
+                        {/if}
+						{if $vo['status'] == 0}
+						<a href="{:url('status', ['ids'=>$vo['id'],'status'=> 1])}" class="btn btn-sm btn-info ajax-get">启用</a>
+                        {/if}
                         <a class="btn btn-sm btn-danger ajax-post" href="{:url('status',['status'=>-1, 'ids'=>$vo['id']])}" data-confirm="确认执行删除操作？">删除</a>
                     </td>
                 </tr>
