@@ -173,11 +173,13 @@ class Config extends Common
             $signature = input('signature', '', 'text');
 
             $data['uid'] = $uid;
-            $data['birthday'] = $birthday;
+            
             if(!empty($avatar)){
                 $data['avatar'] = $avatar;
             }
             if(!empty($nickname)){
+                // 过滤掉emoji表情符号
+                $nickname = filter_emoji($nickname);
                 $data['nickname'] = $nickname;
             }
             if(!empty($sex) && $sex != 0){
