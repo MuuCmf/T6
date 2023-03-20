@@ -165,16 +165,34 @@ class Config extends Common
     public function edit()
     {
         if (request()->isPost()) {
-            $birthday_format = date_parse_from_format('Y年m月d日', $this->params['birthday']);
-            $birthday = mktime(0, 0, 0, $birthday_format['month'], $birthday_format['day'], $birthday_format['year']);
-            $birthday = date('Y-m-d', $birthday);
-            $data = [
-                'uid'   =>  get_uid(),
-                'nickname'  =>  $this->params['nickname'],
-                'sex'       =>  $this->params['sex'],
-                'birthday'  =>  $birthday,
-                'signature' =>  $this->params['signature']
-            ];
+            $uid = get_uid();
+            $avatar = input('avatar', '', 'text');
+            $nickname = input('nickname', '', 'text');
+            $sex = input('sex', 0, 'intval');
+            $birthday = input('birthday', '', 'text');
+            $signature = input('signature', '', 'text');
+
+            $data['uid'] = $uid;
+            $data['birthday'] = $birthday;
+            if(!empty($avatar)){
+                $data['avatar'] = $avatar;
+            }
+            if(!empty($nickname)){
+                $data['nickname'] = $nickname;
+            }
+            if(!empty($sex) && $sex != 0){
+                $data['sex'] = $sex;
+            }
+            if(!empty($birthday)){
+                $birthday_format = date_parse_from_format('Y年m月d日', $birthday);
+                $birthday = mktime(0, 0, 0, $birthday_format['month'], $birthday_format['day'], $birthday_format['year']);
+                $birthday = date('Y-m-d', $birthday);
+                $data['birthday'] = $birthday;
+            }
+            if(!empty($signature)){
+                $data['signature'] = $signature;
+            }
+            
             $result = (new Member)->edit($data);
             if ($result) {
                 return $this->success('修改成功');
