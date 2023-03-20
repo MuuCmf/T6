@@ -106,6 +106,8 @@ class Announce extends Admin
                     'param' => json_decode($data['link_param'], true)
                 ];
                 $data['link_to'] = json_encode($link_to);
+            }else{
+                $data['link_to'] = '';
             }
             
             // 写入数据表

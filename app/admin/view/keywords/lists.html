@@ -67,10 +67,7 @@
                     <td>{$vo.keyword}</td>
                     <td>
                         {if !empty($vo.uid) && !empty($vo.user_info) && $vo.user_info != -1}
-                        <a class="user-info" href="{:url('admin/Member/detail',['uid'=>$vo['uid']])}">
-                            <div class="avatar">
-                                <img src="{$vo['user_info']['avatar64']}">
-                            </div>
+                        <a href="{:url('admin/Member/detail',['uid'=>$vo['uid']])}">
                             <div class="nickname text-ellipsis">[{$vo.uid}]{$vo.user_info.nickname|text}</div>
                         </a>
                         {/if}

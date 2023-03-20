@@ -95,6 +95,9 @@
                                 <button class="btn" type="button" data-toggle="modal" data-target="#linkTypeModal">
                                     选择链接
                                 </button>
+                                <button class="btn btn-danger btn-clear-url" type="button">
+                                    清除链接
+                                </button>
                             </div>
                         
                             <div class="link-to-right">
@@ -137,16 +140,13 @@
                     {/if}
                 </div>
             </div>
-
-
-                
+   
             <div class="builder_item">
                 <label class="item-label"></label>
                 <div class="form-controls">
                     <button type="submit" class="btn btn-lg btn-primary">确认提交</button>
                 </div>
             </div>
-            
         </form>
     </div>
 
@@ -228,6 +228,7 @@
 {block name="script"}
 <script>
     $(function(){
+        // 选择类型
         $('input[name="type"]').click(function(){
             $('input[name="type"]').each(function(){
                 if($(this).prop('checked')){
@@ -241,6 +242,16 @@
                     }
                 }
             });
+        });
+
+        // 清除链接内容
+        $('button.btn-clear-url').click(function(){
+            $('.link-to-right .breadcrumb li').html('');
+            $('input[name="link_app"]').val('');
+            $('input[name="link_title"]').val('');
+            $('input[name="link_type"]').val('');
+            $('input[name="link_type_title"]').val('');
+            $('textarea[name="link_param"]').val('');
         });
     });
 </script>
