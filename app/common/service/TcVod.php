@@ -40,8 +40,9 @@ class TcVod
 
     /**
      * 获取腾讯云点播KEY防盗链完整url
+     * @ $exper 试看时间 单位（秒）
      */
-    public function getKeyMediaUrl($media_url)
+    public function getKeyMediaUrl($media_url, $exper = 0)
     {
         $key = config('extend.VOD_TENCENT_KEY_VALUE');
 
@@ -51,8 +52,15 @@ class TcVod
             $dir = '/' . $dir_arr[3] . '/' . $dir_arr[4] . '/';
             $t = time() + 7200;
             $t = dechex($t);
-            $sign = md5($key . $dir . $t);
-            $return_media_url = $media_url . '?t=' . $t . '&sign=' . $sign;
+            if($exper == 0){
+                $sign = md5($key . $dir . $t);
+                $return_media_url = $media_url . '?t=' . $t . '&sign=' . $sign;
+            }else{
+                $sign = md5($key . $dir . $t . $exper);
+                $return_media_url = $media_url . '?t=' . $t . '&exper=' . $exper . '&sign=' . $sign;
+            }
+            
+            $return_media_url = $media_url . '?t=' . $t . '&exper=' . $exper . '&sign=' . $sign;
             return $return_media_url;
         } catch (Exception $e) {
             return $media_url;

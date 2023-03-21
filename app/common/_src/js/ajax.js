@@ -224,8 +224,10 @@
      */
     let modal_confirm = function(confirmText, callback, type = 'error') {
 
-        $('#tip_Modal').remove();
-        
+        //$('#tip_Modal').remove();
+        if($('#tip_Modal').length > 0){
+            return false;
+        }
         if(confirmText == ''){
             confirmText = '确认执行该操作？';
         }
