@@ -64,6 +64,7 @@ class Attachment extends Base
             if(!empty($file_info)){
                 $file_res = [];
                 $data = $file_info->toArray();
+                $file_res['code'] = 200;
                 $file_res['filename'] = $data['filename'];
                 $file_res['ext'] = $data['ext'];
                 $file_res['size'] = $data['size'];
