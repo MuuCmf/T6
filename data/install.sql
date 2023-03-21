@@ -4210,7 +4210,9 @@ INSERT INTO `muucmf_extend_config` (`id`, `name`, `type`, `title`, `group`, `ext
 (44, 'WX_PAY_KEY', 'string', '微信支付Key证书', 6, '', '', 0, 0, 1, 'file/20220804/b75d77e45e429c81a1550cd976504c60.pem', 0),
 (45, 'VOD_TENCENT_KEY_SWITCH', 'radio', 'key防盗链开关', 9, '0:不启用\r\n1:启用', '腾讯云点播key防盗链开关', 0, 0, 1, '0', 0),
 (46, 'VOD_TENCENT_KEY_VALUE', 'string', '防盗链 Key', 9, '', '腾讯云点播 防盗链Key值', 0, 0, 1, '', 0),
-(47, 'WX_PAY_CERT_SERIAL', 'string', '微信支付商户API证书序列号', 6, '', '微信支付商户API证书序列号', 0, 0, 1, '', 0);
+(47, 'WX_PAY_CERT_SERIAL', 'string', '微信支付商户API证书序列号', 6, '', '微信支付商户API证书序列号', 0, 0, 1, '', 0),
+(48, 'VOD_TENCENT_PROCEDURE', 'radio', '自适应转码加密任务流', 9, '0:不启用\r\n1:启用', '启用后会触发系统预置自适应码流加密任务SimpleAesEncryptPreset.', 0, 1679403460, 1, '1', 0),
+(49, 'VOD_TENCENT_PLAYER_KEY', 'string', '播放秘钥', 9, '', '分发播放设置-默认分发配置信息内播放秘钥，仅启用KEY防盗链后有效.', 0, 0, 1, '', 0);
 
 -- --------------------------------------------------------
 

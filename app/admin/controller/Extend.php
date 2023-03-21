@@ -13,6 +13,7 @@ use app\admin\model\ExtendConfig as MuuExtendConfigModel;
 class Extend extends Admin
 {
     protected $moduleModel;
+    protected $extendConfigModel;
 
     /**
      * 构造方法
@@ -276,14 +277,18 @@ class Extend extends Admin
                 ->keyText('VOD_TENCENT_SECRETID', 'SecretID', 'SecretID 是您项目的安全密钥，具有该账户完全的权限，请妥善保管.')
                 ->keyText('VOD_TENCENT_SECRETKEY', 'SecretKEY', 'SecretKEY 是您项目的安全密钥，具有该账户完全的权限，请妥善保管.')
                 ->keyText('VOD_TENCENT_SUBAPPID', 'SubAppId', 'SubAppId 是您云点播平台子应用ID，请妥善保管.')
+                ->keyRadio('VOD_TENCENT_PROCEDURE', '预置转码加密任务流', '启用后会触发系统预置自适应码流加密任务SimpleAesEncryptPreset.', [0 => '不启用', 1 => '启用'])
                 ->keyRadio('VOD_TENCENT_KEY_SWITCH', 'key防盗链开关', 'key防盗链开关', [0 => '不启用', 1 => '启用'])
-                ->keyText('VOD_TENCENT_KEY_VALUE', '防盗链 Key', '必须由大小写字母（a - Z）或者数字（0 - 9）组成，长度在8 - 20个字符之间')
+                ->keyText('VOD_TENCENT_KEY_VALUE', '防盗链 Key', '必须由大小写字母（a - Z）或者数字（0 - 9）组成，长度在8 - 20个字符之间.')
+                ->keyText('VOD_TENCENT_PLAYER_KEY', '播放秘钥', '分发播放设置-默认分发配置信息内播放秘钥，仅启用KEY防盗链后有效.')
                 ->group('腾讯云点播', [
                     'VOD_TENCENT_SECRETID',
                     'VOD_TENCENT_SECRETKEY',
                     'VOD_TENCENT_SUBAPPID',
+                    'VOD_TENCENT_PROCEDURE',
                     'VOD_TENCENT_KEY_SWITCH',
-                    'VOD_TENCENT_KEY_VALUE'
+                    'VOD_TENCENT_KEY_VALUE',
+                    'VOD_TENCENT_PLAYER_KEY'
                 ]);
 
             $builder->data($list);
