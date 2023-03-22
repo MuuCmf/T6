@@ -7,7 +7,7 @@ class Api extends Base
 {
     public $shopid = 0;//店铺ID
     public $module;//请求的应用
-    public $app_name;
+    public $app_name;//应用别名
     public $params;//参数
 
     public function __construct()
@@ -32,7 +32,7 @@ class Api extends Base
                     'msg' => '站点临时关闭，请稍后访问',
                 ];
                 if ($type == 'html') {
-                    $response = view(config('app.dispatch_error_tmpl'), $result);
+                    $response = view(Config::get('app.dispatch_error_tmpl'), $result);
                 } else if ($type == 'json') {
                     $response = json($result);
                 }

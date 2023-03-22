@@ -87,6 +87,10 @@ class Base
             'wait' => $wait,
         ];
 
+        if (Env::get('APP_DEBUG') && $this->debug) {
+            $result['debug'] = $this->debug;
+        }
+
         $type = (request()->isJson() || request()->isAjax()) ? 'json' : 'html';
         if ($type == 'html') {
             $response = view(config('app.dispatch_success_tmpl'), $result);
@@ -121,6 +125,10 @@ class Base
             'time' => time(),
             'wait' => $wait,
         ];
+
+        if (Env::get('APP_DEBUG') && $this->debug) {
+            $result['debug'] = $this->debug;
+        }
 
         $type = (request()->isJson() || request()->isAjax()) ? 'json' : 'html';
         if ($type == 'html') {

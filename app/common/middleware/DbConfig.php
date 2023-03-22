@@ -2,6 +2,7 @@
 
 namespace app\common\middleware;
 
+use think\facade\App;
 use think\facade\Config;
 use think\facade\Cache;
 use think\facade\Db;
@@ -16,7 +17,6 @@ class DbConfig
             $sys_config = Cache::get(request()->host() . '_MUUCMF_SYS_CONFIG_DATA');
             if (empty($sys_config)) {
                 $map[] = ['status','=',1];
-                //$map[] = ['group','>',0];
                 $data = Db::name('Config')->where($map)->field('type,name,value')->select()->toArray();
                 foreach ($data as &$value) {
                     $sys_config[$value['name']] = self::parse($value['type'], $value['value']);
@@ -26,6 +26,10 @@ class DbConfig
             }
             //动态添加系统配置
             if (!empty($sys_config)) {
+                // 启用开发者模式
+                if($sys_config['DEVELOP_MODE'] == 1){
+                    App::debug(true);
+                }
                 Config::set($sys_config,'system');
             }
             //动态更改app项目配置
