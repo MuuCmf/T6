@@ -242,3 +242,5 @@ INSERT INTO `muucmf_extend_config` (`id`, `name`, `type`, `title`, `group`, `ext
 (48, 'VOD_TENCENT_PROCEDURE', 'radio', '自适应转码加密任务流', 9, '0:不启用\r\n1:启用', '启用后会触发系统预置自适应码流加密任务SimpleAesEncryptPreset.', 0, 1679403460, 1, '1', 0);
 INSERT INTO `muucmf_extend_config` (`id`, `name`, `type`, `title`, `group`, `extra`, `remark`, `create_time`, `update_time`, `status`, `value`, `sort`) VALUES
 (49, 'VOD_TENCENT_PLAYER_KEY', 'string', '播放秘钥', 9, '', '分发播放设置-默认分发配置信息内播放秘钥，仅启用KEY防盗链后有效.', 0, 0, 1, '', 0);
+DELETE FROM muucmf_menu WHERE `muucmf_menu`.`id` = '2B76BD2C-80AB-319C-CE6E-1B0E6930B3CC';
+DELETE FROM muucmf_menu WHERE `muucmf_menu`.`id` = '4862F745-C29C-BEF5-4F35-11328C5ADF51';
