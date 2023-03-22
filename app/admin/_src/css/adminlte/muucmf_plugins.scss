@@ -1,3 +1,24 @@
+.main-header {
+  @media (max-width: 767px){
+    .logo {
+      z-index: 1001;
+    }
+    .navbar-static-top {
+      position: absolute;
+      left: 0;
+      top: 0;
+      z-index: 1000;
+      width: 42px;
+    }
+    .nav-system-menu {
+      display: none;
+    }
+    .navbar-custom-menu {
+      display: none;
+    }
+  }
+}
+
 .main-sidebar {
   padding-top: 0;
   margin-top: 50px;
@@ -7,6 +28,8 @@
   padding-top: 0;
   margin-top: 50px;
 }
+
+
 .module-menu {
   .module-treeview-menu {
     li {
@@ -232,7 +255,6 @@
 .skin-blue-light {
 
   .main-header {
-
     .logo {
       background-color: #0BA0B3;
       &:hover {
@@ -240,7 +262,6 @@
       }
     }
     .navbar {
-      min-width: 960px;
       background-color: #03b8cf;
     }
   }
