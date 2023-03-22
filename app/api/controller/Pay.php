@@ -286,6 +286,7 @@ class Pay extends Api
         if($this->params['pay_channel'] == 'weixin' && (
             $this->params['channel'] == 'weixin_mp' || 
             $this->params['channel'] == 'weixin_h5' || 
+            $this->params['channel'] == 'h5' || 
             $this->params['channel'] == 'pc'
         )){
             $jsonxml = json_encode(simplexml_load_string($notify_data, 'SimpleXMLElement', LIBXML_NOCDATA));
