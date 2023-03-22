@@ -60,7 +60,6 @@ class TcVod
                 $return_media_url = $media_url . '?t=' . $t . '&exper=' . $exper . '&sign=' . $sign;
             }
             
-            $return_media_url = $media_url . '?t=' . $t . '&exper=' . $exper . '&sign=' . $sign;
             return $return_media_url;
         } catch (Exception $e) {
             return $media_url;
@@ -69,9 +68,13 @@ class TcVod
 
     /**
      * Psign
-     * 腾讯云
+     * 腾讯云播放器签名
+     * 试看时长，单位为秒，以十进制表示。
+     * 如果要指定试看时长，时长必须不小于30秒。
+     * 具体含义和取值参见 防盗链参数 中的 exper 参数。
+
      */
-    public function getPsign($fileId)
+    public function getPsign($fileId, $exper = 0)
     {
         $subAppId = config('extend.VOD_TENCENT_SUBAPPID');
         $key = config('extend.VOD_TENCENT_PLAYER_KEY');
@@ -93,15 +96,21 @@ class TcVod
             "audioVideoType" => $audioVideoType
         ];
 
+        $urlAccessInfo = [
+            "exper" => $exper,
+            "t" => $urlTimeExpire
+        ];
+        if($exper > 0){
+            $urlAccessInfo['exper'] = $exper;
+        }
+
         $payload = array(
             "appId" => intval($subAppId),
             "fileId" => $fileId,
             "contentInfo" => $contentInfo,
             "currentTimeStamp" => $currentTime,
             "expireTimeStamp" => $psignExpire,
-            "urlAccessInfo" => array(
-                "t" => $urlTimeExpire
-            )
+            "urlAccessInfo" => $urlAccessInfo
         );
 
         $jwt = \Firebase\JWT\JWT::encode($payload, $key, 'HS256');
