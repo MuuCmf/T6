@@ -23,10 +23,11 @@ class ExtendConfig extends Model {
             $res = $this->update($data);
         }
 
-        if($res){
-            return $res;
+        if(!empty($this->id)){
+            return $this->id;
         }else{
-            return false;
+            if (is_object($res)) return  $res->id;
+            return $res;
         }
         
     }

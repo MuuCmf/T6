@@ -354,7 +354,6 @@ class Extend extends Admin
 
             $data['status'] = 1;//默认状态为启用
             $res = $resId = $this->extendConfigModel->edit($data);
-
             if($res){
                 Cache::delete(request()->host() . '_MUUCMF_EXT_CONFIG_DATA');
                 //记录行为
