@@ -42,10 +42,10 @@ class Common extends Base
      */
     public function initialize()
     {
-        //记住登录
-        $this->initRemberLogin();
         //获取shopid
         $this->initShopid();
+        //记住登录
+        $this->initRemberLogin();
         //获取应用名
         $this->initModuleName();
         //获取系统配置
@@ -102,10 +102,7 @@ class Common extends Base
 
     protected function initMuuConfig()
     {
-        if (empty($this->params['shopid'])) {
-            $this->params['shopid'] = 0;
-        }
-        $this->muu_config_data = $muu_config_data = (new ConfigLogic())->frontend($this->params['shopid']);
+        $this->muu_config_data = $muu_config_data = (new ConfigLogic())->frontend($this->shopid);
 
         View::assign('muu_config_data', $muu_config_data);
     }
@@ -177,7 +174,7 @@ class Common extends Base
     protected function initRemberLogin()
     {
         //记住登录
-        (new Member())->rembemberLogin();
+        (new Member())->rembemberLogin($this->shopid);
     }
 
     public function setTitle($title)

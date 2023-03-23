@@ -53,7 +53,7 @@ class Member extends Base
      * @param  string $mobile 用户手机号码
      * @return integer 注册成功-用户信息，注册失败-错误编号
      */
-    public function register($username = '', $nickname = '', $password = '', $email = '', $mobile = '', $type = 'username')
+    public function register($username = '', $nickname = '', $password = '', $email = '', $mobile = '', $channel = '')
     {
         $data = [
             'username' => $username,
@@ -63,7 +63,8 @@ class Member extends Base
             'nickname' => $nickname,
             'sex' => 0,
             'status' => 1,
-            'reg_ip' => request()->ip()
+            'reg_ip' => request()->ip(),
+            'reg_channel' => $channel
         ];
 
         /* 添加用户 */
@@ -191,11 +192,15 @@ class Member extends Base
      * @param  integer $uid 用户ID
      * @return boolean      ture-登录成功，false-登录失败
      */
-    public function login(int $uid, int $remember = 0)
+    public function login(int $shopid, int $uid, int $remember = 0)
     {
-        if ($uid)
+        if ($uid){
             /* 检测是否在当前应用注册 */
-            $user = $this->where('uid', '=', $uid)->find();
+            $user = $this->where([
+                ['shopid', '=', $shopid],
+                ['uid', '=', $uid]
+            ])->find();
+        }
 
         if ($user['status'] !== 1) {
             $this->error = '用户已禁用'; //应用级别禁用
@@ -245,6 +250,9 @@ class Member extends Base
         return true;
     }
 
+    /**
+     * 获取cookie记录的用户ID
+     */
     public function getCookieUid()
     {
         static $cookie_uid = null;
@@ -268,13 +276,13 @@ class Member extends Base
      * 记住登陆状态
      * @return [type] [description]
      */
-    public function rembemberLogin()
+    public function rembemberLogin(int $shopid = 0)
     {
         if (!is_login()) {
             //判断COOKIE
             $uid = $this->getCookieUid();
             if ($uid) {
-                $this->login($uid);
+                $this->login($shopid, $uid);
                 return $uid;
             }
         }
@@ -308,14 +316,7 @@ class Member extends Base
         /* 获取用户数据 */
         $user = $this->where($map)->find();
         if (is_array($user)) {
-            /* 验证用户 */
-            //if($user['last_login_time']){
-            //return $user['last_login_time']; //成功，返回用户最后登录时间
             return $user; //成功，返回用户最后登录时间
-            //}else{
-            //return $user['reg_time']; //返回用户注册时间
-            //return -1; //成功，返回用户最后登录时间
-            //}
         } else {
             return -2; //用户和邮箱不符
         }
@@ -545,7 +546,7 @@ class Member extends Base
         }
         //移除数组中无用值
         unset($data['confirm_password']);
-        //$data = array_values($data);
+
         //密码数据加密
         $password = user_md5($new_password, Config::get('auth.auth_key'));
         $data['password'] = $password;

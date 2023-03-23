@@ -244,3 +244,5 @@ INSERT INTO `muucmf_extend_config` (`id`, `name`, `type`, `title`, `group`, `ext
 (49, 'VOD_TENCENT_PLAYER_KEY', 'string', '播放秘钥', 9, '', '分发播放设置-默认分发配置信息内播放秘钥，仅启用KEY防盗链后有效.', 0, 0, 1, '', 0);
 DELETE FROM muucmf_menu WHERE `muucmf_menu`.`id` = '2B76BD2C-80AB-319C-CE6E-1B0E6930B3CC';
 DELETE FROM muucmf_menu WHERE `muucmf_menu`.`id` = '4862F745-C29C-BEF5-4F35-11328C5ADF51';
+
+ALTER TABLE `muucmf_member` ADD `reg_channel` VARCHAR(32) NULL DEFAULT '' COMMENT '注册渠道' AFTER `reg_ip`;

@@ -4416,6 +4416,7 @@ CREATE TABLE IF NOT EXISTS `muucmf_member` (
   `score4` int(11) NOT NULL DEFAULT '0' COMMENT 'score4',
   `status` tinyint(4) NOT NULL DEFAULT '0' COMMENT '会员状态',
   `reg_ip` varchar(128) NOT NULL DEFAULT '' COMMENT '注册IP',
+  `reg_channel` VARCHAR(32) NULL DEFAULT '' COMMENT '注册渠道',
   `last_login_time` int(11) NOT NULL DEFAULT '0' COMMENT '最后登录时间',
   `last_login_ip` varchar(128) NOT NULL DEFAULT '0' COMMENT '最后登录IP',
   `create_time` int(11) UNSIGNED NOT NULL COMMENT '注册创建时间',

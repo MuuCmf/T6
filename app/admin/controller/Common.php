@@ -15,7 +15,7 @@ class Common extends Base
     public function login()
     {
         if (request()->isPost()) {
-                //获取参数
+            //获取参数
             $account = input('post.account', '', 'text');
             $password = input('post.password', '', 'text');
 
@@ -30,7 +30,7 @@ class Common extends Base
             }
 
             // 登录
-            $res = $commonMemberModel->login($uid);
+            $res = $commonMemberModel->login(0, $uid);
 
             if ($res) {
                 $token = JWTAuth::builder(['uid' => $uid]); //参数为用户认证的信息，请自行添加

@@ -229,7 +229,7 @@ class WechatOfficialAccount extends Api
                 $uid = $user->uid;
             }
             //登录+
-            $res = $MemberModel->login($uid);
+            $res = $MemberModel->login($this->shopid, $uid);
             if ($res) {
                 $token = JWTAuth::builder(['uid' => $uid]); //参数为用户认证的信息，请自行添加
                 $token = 'Bearer ' . $token;
