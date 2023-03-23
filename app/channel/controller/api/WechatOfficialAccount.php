@@ -218,7 +218,7 @@ class WechatOfficialAccount extends Api
                 $data = [
                     'openid'    =>  $oauth_info['openid'],
                     'unionid'   =>  $oauth_info['unionid'],
-                    'oauth_type'    =>  'weixin_h5',
+                    'oauth_type' =>  'weixin_h5',
                     'shopid'    =>  $this->shopid,
                     'nickname'  =>  rand_nickname(config('system.USER_NICKNAME_PREFIX')),
                     'avatar' => !empty($oauth_info['avatar']) ? $oauth_info['avatar'] : '',

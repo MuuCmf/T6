@@ -302,48 +302,6 @@ class Member extends Base
     }
 
     /**
-     * 用户密码找回认证
-     * @param  string  $username 用户名
-     * @param  string  $password 用户密码
-     * @param  integer $type 用户名类型 （1-用户名，2-邮箱，3-手机，4-UID）
-     * @return integer           登录成功-用户ID，登录失败-错误编号
-     */
-    public function lomi($username, $email)
-    {
-        $map = array();
-        $map['username'] = $username;
-        $map['email'] = $email;
-        /* 获取用户数据 */
-        $user = $this->where($map)->find();
-        if (is_array($user)) {
-            return $user; //成功，返回用户最后登录时间
-        } else {
-            return -2; //用户和邮箱不符
-        }
-    }
-
-    /**
-     * 用户密码找回认证2
-     * @param  string  $username 用户名
-     * @param  string  $password 用户密码
-     * @param  integer $type 用户名类型 （1-用户名，2-邮箱，3-手机，4-UID）
-     * @return integer           登录成功-用户ID，登录失败-错误编号
-     */
-    public function reset($uid)
-    {
-        $map = array();
-        $map['id'] = $uid;
-        /* 获取用户数据 */
-        $user = $this->where($map)->find();
-        if (is_array($user)) {
-            return $user; //成功，返回用户数据
-
-        } else {
-            return -2; //用户和邮箱不符
-        }
-    }
-
-    /**
      * 获取用户信息
      * @param  string  $uid 用户ID或用户名
      * @param  boolean $is_username 是否使用用户名查询
@@ -768,7 +726,8 @@ class Member extends Base
                     'avatar'    => $data['avatar'],
                     'sex'       => $data['sex'],
                     'status'    => 1,
-                    'reg_ip' => request()->ip()
+                    'reg_ip' => request()->ip(),
+                    'reg_channel' => $data['oauth_type']
                 ];
                 $result = $this->save($member_data);
                 if (!$result) {
@@ -833,7 +792,7 @@ class Member extends Base
      * @param string $email
      * @return bool|int
      */
-    public function randMember($username = '', $nickname = '', $password = '', $email = '', $mobile = '')
+    public function randMember($username = '', $nickname = '', $password = '', $email = '', $mobile = '', $channel = '')
     {
         //昵称注册开关
         if (config('system.USER_NICKNAME_SWITCH') == 0 || empty($nickname)) {
@@ -843,6 +802,6 @@ class Member extends Base
         $username = $username ?: rand_username('用户');
         $password = $password ?: 123456;
         $email = $email ?: rand_email();
-        return $this->register($username, $nickname, $password, $email, $mobile);
+        return $this->register($username, $nickname, $password, $email, $mobile, $channel);
     }
 }

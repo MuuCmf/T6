@@ -127,6 +127,7 @@
                                 </div>
                             </div>
                         </div>
+                        <input type="hidden" name="channel" value="pc" />
                         <button type="button" data-type="submit" class="btn btn-submit btn-block btn-lg">注册</button>
                         <div class="existing-account">
                             已有账号？ <a href="{:url('ucenter/common/login')}" title="">立即注册</a>
@@ -172,19 +173,6 @@
         });
     });
 
-    // $(function () {
-    //     // 显示密码
-    //     $('#change_show').click(function(){
-    //         var obj = $(this);
-    //         if ($(obj).html().trim() == '<i class="icon icon-eye-open"></i>') {
-    //             $(obj).html('<i class="icon icon-eye-close"></i>');
-    //             $(obj).parents('.password_block').find('input').attr('type', 'text');
-    //         } else {
-    //             $(obj).html('<i class="icon icon-eye-open"></i>');
-    //             $(obj).parents('.password_block').find('input').attr('type', 'password');
-    //         }
-    //     });
-    // })
     $(".form-group").on("click", ".see", function () {
     let type = $(this).data('type');
     if(type == 'hidden'){

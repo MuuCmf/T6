@@ -32,6 +32,7 @@ class Common extends CommonCommon
             $confirm_password = input('post.confirm_password', '', 'text'); // 确认密码
             $verify = input('post.verify', '', 'text'); // 邮件或手机验证码
             $captcha = input('post.captcha', '', 'text'); // 图形验证码
+            $channel = input('post.channel', '', 'text'); // 注册渠道
             $agreement = input('post.agreement', 0, 'intval'); // 用户服务协议勾选状态
             $forward = input('forward', '/index/index/index', 'text'); // 来源页面
 
@@ -116,7 +117,7 @@ class Common extends CommonCommon
             }
             /* 注册用户并写入数据 */
             $commonMemberModel = new CommonMember;
-            $uid = $commonMemberModel->register($username, $nickname, $password, $email, $mobile, $type);
+            $uid = $commonMemberModel->register($username, $nickname, $password, $email, $mobile, $channel);
 
             if (0 < $uid) {
                 $token = JWTAuth::builder(['uid' => $uid]); //参数为用户认证的信息，请自行添加
@@ -189,7 +190,7 @@ class Common extends CommonCommon
                         $email = '';
                         $mobile = $account;
                     }
-                    $uid = $commonMemberModel->randMember('', '', '', $email, $mobile);
+                    $uid = $commonMemberModel->randMember('', '', '', $email, $mobile, $channel);
                 }
             }
 
