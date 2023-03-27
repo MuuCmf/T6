@@ -95,7 +95,7 @@ class WechatMiniProgram extends Api
                 'shopid'    => $params['shopid'],
                 'oauth_type' => 'weixin_mp'
             ];
-            $user = $this->MemberModel->oauth($data);
+            $user = $this->MemberModel->oauth($this->shopid, $data);
         }
 
         if ($user){

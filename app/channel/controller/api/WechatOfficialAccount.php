@@ -224,7 +224,7 @@ class WechatOfficialAccount extends Api
                     'avatar' => !empty($oauth_info['avatar']) ? $oauth_info['avatar'] : '',
                     'sex' => !empty($oauth_info['sex']) ? $oauth_info['sex'] : 0,
                 ];
-                $user = $MemberModel->oauth($data);
+                $user = $MemberModel->oauth($this->shopid, $data);
                 $MemberModel->updateLogin($user['uid']);
                 $uid = $user->uid;
             }
@@ -294,7 +294,7 @@ class WechatOfficialAccount extends Api
             $user['oauth_type'] = 'weixin_h5';
             $user['shopid'] = $this->shopid;
             $user['avatar'] = $user['headimgurl'];
-            $user = $MemberModel->oauth($user);
+            $user = $MemberModel->oauth($this->shopid, $user);
         } catch (Exception $e) {
             return $this->error($e->getMessage());
         }

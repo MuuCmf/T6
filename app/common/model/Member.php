@@ -688,20 +688,26 @@ class Member extends Base
     }
 
     /**
-     * 微信授权
+     * 第三方平台授权登录
      */
-    public function oauth($data)
+    public function oauth(int $shopid, $data)
     {
         $syncModel = new MemberSync();
         //是否已有授权信息
-        $sync = $syncModel->where('openid', $data['openid'])->find();
+        $sync = $syncModel->where([
+            ['shopid', '=', $shopid],
+            ['openid', '=', $data['openid']]
+        ])->find();
         if ($sync) {
             $uid = $sync['uid'];
             return $this->where('uid', $uid)->find();
         } else {
             //是否已有开放平台相同的账户
             if (!empty($data['unionid'])) {
-                $has_union = $syncModel->where('unionid', $data['unionid'])->find();
+                $has_union = $syncModel->where([
+                    ['shopid', '=', $shopid],
+                    ['unionid', '=', $data['unionid']],
+                ])->find();
                 if ($has_union) $has_union = $has_union->toArray();
             }
             //初始UID
@@ -729,6 +735,7 @@ class Member extends Base
                     'reg_ip' => request()->ip(),
                     'reg_channel' => $data['oauth_type']
                 ];
+                //写入会员表
                 $result = $this->save($member_data);
                 if (!$result) {
                     throw new Exception('存入用户信息失败');
@@ -737,23 +744,25 @@ class Member extends Base
                 (new AuthGroup())->addToGroup($this->id, 1);
                 $uid = $this->id;
             }
-            $update_data = [
+
+            $sync_data = [
                 'uid'       => $uid,
                 'openid'    => $data['openid'],
                 'type'      => $data['oauth_type']
             ];
             if (!empty($data['unionid'])) {
-                $update_data['unionid'] = $data['unionid'];
+                $sync_data['unionid'] = $data['unionid'];
             }
 
-            $sync = $syncModel->edit($update_data);
             //存入授权记录
+            $sync = $syncModel->edit($sync_data);
             if (!$sync) {
                 throw new Exception('存入用户授权记录失败');
             }
             $actionLog = new ActionLog();
             $actionLog->add('reg', 'member', 1, $uid);
         }
+
         return $this->where('uid', $uid)->find();
     }
 

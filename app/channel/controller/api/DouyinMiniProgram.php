@@ -134,7 +134,7 @@ class DouyinMiniProgram extends Api
             'shopid'    => $params['shopid'],
             'oauth_type' => 'douyin_mp'
         ];
-        $user = $this->MemberModel->oauth($data);
+        $user = $this->MemberModel->oauth($this->shopid, $data);
         if ($user){
             $token = JWTAuth::builder(['uid'=>$user['uid']]);
             $token = 'Bearer ' . $token;
