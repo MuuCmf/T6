@@ -373,16 +373,16 @@ class Pay extends Api
             if($this->params['channel'] == 'baidu_mp'){
                 return BaiduMiniProgramServer::returnMsg(0, 'success');
             }
-            
         }
-        //实例化订单逻辑
+
+        // 各应用后续业务逻辑
         if($order_info['order_info_type'] == 'vipcard'){
             $order_namespace = "app\\common\\service\\VipOrders";
         }else{
             $order_namespace = "app\\{$order_info['app']}\\service\\Orders";
         }
-        $this->OrderService = new $order_namespace;
-        $result = $this->OrderService->paySuccess($order_info);
+        $OrderService = new $order_namespace;
+        $result = $OrderService->paySuccess($order_info);
 
         //消息通知
         $this->sendPaySuccessTmplmsg($order_info['channel'], $order_info);
