@@ -60,10 +60,10 @@ class Orders extends Api
                 //获取订单数据
                 $order = $this->OrdersModel->getDataById($order_id);
                 $order = $this->OrdersLogic->formatData($order);
-                //虚拟免费商品后续处理
-                if($order['paid_fee'] == 0){
+                //免费商品或需退费商品后续业务逻辑处理
+                if($order['paid_fee'] <= 0 && $order['paid'] == 1){
                     if(method_exists($appOrdersService,'step')){
-                        // 免费商品直接处理后续逻辑
+                        // 免费商品直接处理后续逻辑，约定step方法
                         $appOrdersService->step($order);
                     }
                 }

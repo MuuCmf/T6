@@ -4712,7 +4712,7 @@ CREATE TABLE IF NOT EXISTS `muucmf_orders` (
   `order_info_id` bigint(11) UNSIGNED NOT NULL COMMENT '商品ID',
   `channel` varchar(128) NOT NULL COMMENT '渠道',
   `pay_channel` varchar(32) NOT NULL COMMENT '支付渠道',
-  `paid_fee` int(11) UNSIGNED NOT NULL COMMENT '实际支付金额',
+  `paid_fee` int(11) NOT NULL COMMENT '实际支付金额',
   `price` int(11) UNSIGNED NOT NULL COMMENT '订单价格',
   `products` text NOT NULL COMMENT '商品详情json数据',
   `status` tinyint(4) NOT NULL DEFAULT '0' COMMENT '订单状态，1，正常，0，禁用，-1，已删除',
