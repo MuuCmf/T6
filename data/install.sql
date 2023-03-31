@@ -309,7 +309,7 @@ CREATE TABLE IF NOT EXISTS `muucmf_capital_flow` (
   `uid` int(11) NOT NULL DEFAULT '0' COMMENT '用户ID',
   `flow_no` varchar(64) NOT NULL DEFAULT '' COMMENT '流水号',
   `order_no` varchar(64) NOT NULL DEFAULT '' COMMENT '订单编号',
-  `channel` varchar(20) NULL DEFAULT '' COMMENT '来源/去向balance：余额；wechat:微信',
+  `channel` varchar(20) NULL DEFAULT '' COMMENT '渠道',
   `source` varchar(40) NOT NULL DEFAULT '' COMMENT '资金来源',
   `type` tinyint(2) NOT NULL DEFAULT '0' COMMENT '资金进出类型，1：支出 2：收入',
   `price` int(11) NOT NULL DEFAULT '0' COMMENT '金额（单位：分）',

@@ -248,3 +248,4 @@ DELETE FROM muucmf_menu WHERE `muucmf_menu`.`id` = '4862F745-C29C-BEF5-4F35-1132
 ALTER TABLE `muucmf_member` ADD `reg_channel` VARCHAR(32) NULL DEFAULT '' COMMENT '注册渠道' AFTER `reg_ip`;
 
 ALTER TABLE `muucmf_orders` CHANGE `paid_fee` `paid_fee` INT(11) NOT NULL COMMENT '实际支付金额';
+ALTER TABLE `muucmf_capital_flow` CHANGE `channel` `channel` VARCHAR(20) NULL DEFAULT '' COMMENT '渠道';
