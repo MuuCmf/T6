@@ -58,10 +58,10 @@
             <tbody>
             <tr>
                 <td style="width: 300px">
-                    {if !empty($v.uid) && !empty($v.user_info) && $v.user_info != -1}
+                    {if !empty($v.uid) && !empty($v.user_info) && is_array($v.user_info)}
                     <a class="user-info" href="{:url('admin/Member/detail',['uid'=>$v['uid']])}">
                         <div class="avatar">
-                            <img src="{$v['user_info']['avatar']}">
+                            <img src="{$v['user_info']['avatar64']}">
                         </div>
                         <div class="info text-ellipsis">
                             <div class="uid">uid：{$v.user_info.uid|default=0}</div>

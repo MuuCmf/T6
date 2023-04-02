@@ -89,9 +89,9 @@
 					</td>
 					<td>
 						<div class="comment">
-							{if is_array($v.user_info)}
+							{if !empty($v.user_info) && is_array($v.user_info)}
 							<div class="avatar">
-								<img src="{$v['user_info']['avatar']}" />
+								<img src="{$v['user_info']['avatar64']}" />
 							</div>
 							{/if}
 							<div class="info">

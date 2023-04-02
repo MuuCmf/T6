@@ -1,9 +1,9 @@
 
 <div class="withdraw-detail">
     <div class="user-info">
-        {if !empty($v.uid) && !empty($v.user_info) && $v.user_info != -1}
+        {if !empty($v.uid) && !empty($v.user_info) && is_array($v.user_info)}
         <div class="cover">
-            <img src="{$data['user_info']['avatar']}">
+            <img src="{$data['user_info']['avatar64']}">
         </div>
         <div class="info">
             <div class="title text-ellipsis">{$data['user_info']['nickname']}</div>
