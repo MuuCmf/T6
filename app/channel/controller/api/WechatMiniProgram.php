@@ -99,6 +99,7 @@ class WechatMiniProgram extends Api
         }
 
         if ($user){
+            $this->MemberModel->updateLogin($user['uid']);
             $token = JWTAuth::builder(['uid'=>$user['uid']]);
             $token = 'Bearer ' . $token;
             return $this->success('success',['token'=>$token]);
