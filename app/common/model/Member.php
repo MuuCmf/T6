@@ -73,8 +73,11 @@ class Member extends Base
                 return false;
             } else {
                 $uid = $this->id;
+                //写行为日志
                 $actionLog = new ActionLog();
                 $actionLog->add('reg', 'member', 1, $uid);
+                //将用户添加到用户组
+                (new AuthGroup())->addToGroup($uid, 1);
                 return $uid;
             }
         } else {
