@@ -52,12 +52,12 @@ class VipCard extends Base
         $product_data = $productModel->where('id', $product_id)->find();
         $product_data = $product_data->toArray();
 
-        //循环查询会员卡是否支持该课程，删除不支持的会员卡元素
+        //循环查询会员卡是否支持该产品，删除不支持的会员卡元素
         foreach($card_list as $key => &$val){
             if(!in_array($product_data['category_id'], $val['category_ids_arr'])){
                 unset($card_list[$key]);
             }else{
-                //根据折扣计算该课程会员价格
+                //根据折扣计算该会员价格
                 $val['member_price'] = intval($product_data['price'] * ($val['discount']/10));
                 $val['member_price'] = sprintf("%.2f",$val['member_price']/100);
             }
@@ -97,7 +97,7 @@ class VipCard extends Base
         $product_data = $product_data->toArray();
         
         if(!empty($product_data)){
-            //循环查询会员卡是否支持该课程，删除不支持的会员卡元素
+            //循环查询会员卡是否支持该产品，删除不支持的会员卡元素
             foreach($vip_card_list as $key => &$val){
                 if(empty($val['vip_card_info'])){
                     unset($vip_card_list[$key]);
@@ -107,7 +107,7 @@ class VipCard extends Base
                 if(!in_array($product_data['category_id'], $val['vip_card_info']['category_ids_arr'])){
                     unset($vip_card_list[$key]);
                 }else{
-                    //根据折扣计算该课程会员价格
+                    //根据折扣计算该产品会员价格
                     $member_price = intval($product_data['price'] * ($val['vip_card_info']['discount']/10));
                     $member_price = sprintf("%.2f",$member_price/100);
                     $val['member_price'] = $member_price;
