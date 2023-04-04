@@ -93,7 +93,10 @@ class TcVod
             $audioVideoType = 'Original';
         }
         $contentInfo = [
-            "audioVideoType" => $audioVideoType
+            "audioVideoType" => $audioVideoType,
+            "drmAdaptiveInfo" => [
+                "privateEncryptionDefinition" => 12
+            ]
         ];
 
         $urlAccessInfo = [
