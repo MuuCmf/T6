@@ -94,10 +94,11 @@ class TcVod
         }
         $contentInfo = [
             "audioVideoType" => $audioVideoType,
-            "drmAdaptiveInfo" => [
-                "privateEncryptionDefinition" => 12
-            ]
         ];
+        // 开启防盗链key时
+        if($procedure == 1){
+            $contentInfo["drmAdaptiveInfo"]["privateEncryptionDefinition"] = 12;
+        }
 
         $urlAccessInfo = [
             "exper" => $exper,
