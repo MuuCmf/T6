@@ -8,6 +8,8 @@ use app\channel\facade\bytedance\MiniProgram as DouyinMiniProgramServer;
 use think\Exception;
 use think\facade\Db;
 use think\Request;
+use app\common\validate\Orders as OrdersValidate;
+use think\exception\ValidateException;
 
 class Orders extends Api
 {
@@ -36,6 +38,15 @@ class Orders extends Api
             try {
                 //具体业务 分发到相应程序订单类
                 $this->params['uid'] = get_uid();
+                // 验证数据
+                try {
+                    validate(OrdersValidate::class)->check($this->params);
+                } catch (ValidateException $e) {
+                    // 验证失败 输出错误信息
+                    return $this->error($e->getError());
+                }
+
+                // 交给应用内约定类处理数据
                 $order_info_type = $this->params['order_info_type'];
                 if($order_info_type == 'vipcard'){
                     $order_namespace = "app\\common\\service\\VipOrders";
@@ -51,7 +62,7 @@ class Orders extends Api
                 if(isset($this->params['formId'])){
                     $order_data['form_id'] = $this->params['formId'];
                 }
-                
+
                 //写入订单
                 $res = $order_id = $this->OrdersModel->edit($order_data);
                 if (!$res){
