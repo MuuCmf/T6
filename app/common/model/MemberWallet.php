@@ -54,7 +54,7 @@ class MemberWallet extends Base
     public function income($shopid = 0, $uid = 0, $money = 0, $revenue = true)
     {
         // 初始化
-        $this->$this->initWallet($shopid, $uid);
+        $this->initWallet($shopid, $uid);
         $this->startTrans();
         try {
             $map = [
@@ -98,7 +98,7 @@ class MemberWallet extends Base
     public function spending($shopid = 0, $uid = 0, $money = 0)
     {
         // 初始化
-        $this->$this->initWallet($shopid, $uid);
+        $this->initWallet($shopid, $uid);
         $this->startTrans();
         try {
             $map = [
