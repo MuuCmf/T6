@@ -114,19 +114,19 @@ class Member extends Admin
      */
     public function initPass()
     {
-        $uids = input('id/a');
-        !is_array($uids) && $uids = explode(',', $uids);
+        $ids = input('ids/a');
+        !is_array($ids) && $ids = explode(',', $ids);
 
-        foreach ($uids as $key => $val) {
+        foreach ($ids as $key => $val) {
             if (!query_user($val, ['uid'])) {
-                unset($uids[$key]);
+                unset($ids[$key]);
             }
         }
-        if (!count($uids)) {
+        if (!count($ids)) {
             return $this->error('重置失败');
         }
         $data['password'] = user_md5('123456', config('auth.auth_key'));
-        $res = $this->MemberModel->where('uid', 'in', $uids)->update(['password' => $data['password']]);
+        $res = $this->MemberModel->where('uid', 'in', $ids)->update(['password' => $data['password']]);
         if ($res) {
             return $this->success('重置密码成功');
         } else {
