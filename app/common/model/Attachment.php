@@ -84,7 +84,7 @@ class Attachment extends Base
                 $data['type'] = 'file';  // 类型用字符串 image file audio video
                 // 根据不同mimeType放入不同目录
                 $mime_arr = explode('/', $data['mime']);
-
+                
                 switch($mime_arr[0])
                 {
                     case 'image':
@@ -117,7 +117,15 @@ class Attachment extends Base
                 $data['type'] = $mime_arr[0];
                 $data['driver'] = $driver;
 
-                $savename = Filesystem::disk('public')->putFile( $file_dir, $file);
+                // 处理文件名
+                $name =  $file->hashName();
+                // 处理无扩展名问题
+                if(empty($data['ext']) && !empty($mime_arr[1])){
+                    $name = $name . $mime_arr[1];
+                }
+
+                $savename = Filesystem::disk('public')->putFileAs( $file_dir, $file, $name);
+                
                 // 成功上传后 获取上传信息
                 $data['attachment'] = $savename;
                 $data['attachment'] = str_replace("\\","/",$data['attachment']);
