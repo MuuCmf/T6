@@ -8,6 +8,7 @@ use think\facade\Config;
 use app\admin\model\AuthGroup;
 use app\common\model\ActionLog;
 use app\common\model\ScoreType;
+use app\channel\logic\Channel;
 
 /**
  * 会员模型
@@ -310,7 +311,7 @@ class Member extends Base
      * @param  boolean $is_username 是否使用用户名查询
      * @return array                用户信息
      */
-    public function info($uid, $fields = '')
+    public function info($uid, $fields)
     {
         if (!empty($uid)) {
 
@@ -407,6 +408,11 @@ class Member extends Base
                         }
                     }
                     $member['score'] = $score_key;
+                }
+
+                if ($fields == '*' || strpos($fields, 'reg_channel') !== false){
+                    // 用户注册渠道
+                    $member['reg_channel_str'] = Channel::$_channel[$member['reg_channel']];
                 }
 
                 // 扩展资料

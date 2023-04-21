@@ -292,6 +292,7 @@ class Member extends Admin
         }
         $map[] = ['uid', '=', $uid];
         $member = query_user($uid);
+
         // 判断用户是否存在
         if(!is_array($member) || empty($member)){
             return $this->error('用户数据不存在');
