@@ -813,7 +813,7 @@ class Member extends Base
         //用户名称
         $username = $username ?: rand_username('用户');
         $password = $password ?: 123456;
-        $email = $email ?: rand_email();
+        $email = $email ?: '';
         return $this->register($username, $nickname, $password, $email, $mobile, $channel);
     }
 }

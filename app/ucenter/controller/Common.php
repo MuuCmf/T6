@@ -210,12 +210,11 @@ class Common extends CommonCommon
             }
         } else {
             // 允许的登录类型
-            $ph = $ph_account = [];
-            check_login_type('username') && $ph[] = '用户名';
-            check_login_type('email') && $ph_account[] = $ph[] = '邮箱';
-            check_login_type('mobile') && $ph_account[] = $ph[] = '手机';
+            $ph_account = [];
+            check_login_type('username') && $ph_account[] = '用户名';
+            check_login_type('email') && $ph_account[] = '邮箱';
+            check_login_type('mobile') && $ph_account[] = '手机';
             View::assign([
-                'ph' => implode('/', $ph),
                 'ph_account' => implode('/', $ph_account)
             ]);
 
@@ -229,12 +228,11 @@ class Common extends CommonCommon
     public function quickLogin()
     {
         // 允许的登录类型
-        $ph = $ph_account = [];
-        check_login_type('username') && $ph[] = '用户名';
-        check_login_type('email') && $ph_account[] = $ph[] = '邮箱';
-        check_login_type('mobile') && $ph_account[] = $ph[] = '手机';
+        $ph_account = [];
+        check_login_type('username') && $ph_account[] = '用户名';
+        check_login_type('email') && $ph_account[] = '邮箱';
+        check_login_type('mobile') && $ph_account[] = '手机';
         View::assign([
-            'ph' => implode('/', $ph),
             'ph_account' => implode('/', $ph_account)
         ]);
 
