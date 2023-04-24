@@ -910,6 +910,9 @@ PORT = 6379
 password = 
 select = 0
 
+[QUEUE]
+NAME = default
+
 [LANG]
 default_lang = zh-cn
 

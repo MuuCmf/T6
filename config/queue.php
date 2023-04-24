@@ -17,13 +17,13 @@ return [
         ],
         'database' => [
             'type'       => 'database',
-            'queue'      => 'default',
+            'queue'      => env('queue.name', 'default'),
             'table'      => 'jobs',
             'connection' => null,
         ],
         'redis'    => [
             'type'       => 'redis',
-            'queue'      => 'default',
+            'queue'      => env('queue.name', 'default'),
             // 服务器地址
             'host'       => env('redis.host', '127.0.0.1'),
             // 端口
