@@ -115,6 +115,7 @@ class Config extends Admin
             $data['status'] = 1;//默认状态为启用
 
             $res = $resId = $this->ConfigModel->edit($data);
+
             if($res){
                 Cache::delete(request()->host() . '_MUUCMF_SYS_CONFIG_DATA', null);
                 //记录行为

@@ -249,3 +249,5 @@ ALTER TABLE `muucmf_member` ADD `reg_channel` VARCHAR(32) NULL DEFAULT '' COMMEN
 
 ALTER TABLE `muucmf_orders` CHANGE `paid_fee` `paid_fee` INT(11) NOT NULL COMMENT '实际支付金额';
 ALTER TABLE `muucmf_capital_flow` CHANGE `channel` `channel` VARCHAR(20) NULL DEFAULT '' COMMENT '渠道';
+
+UPDATE `muucmf_config` SET `remark` = '输入应用标识，留空默认index' WHERE `muucmf_config`.`id` = 135;
