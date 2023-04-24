@@ -217,6 +217,7 @@ class Attachment extends Base
                 // 成功上传后 获取上传信息
                 $data['attachment'] = $savename;
                 $data['attachment'] = str_replace("\\","/",$data['attachment']);
+
                 //获取上传驱动
                 $driver = config('extend.PICTURE_UPLOAD_DRIVER');
                 if($driver == 'local'){
@@ -224,7 +225,7 @@ class Attachment extends Base
                 }
                 // 阿里云OSS
                 if($driver == 'aliyun') {
-                    $oss_res = $this->ossUpload($data['attachment'], $file->getPathname());
+                    $oss_res = $this->ossUpload('attachment/' . $data['attachment'], $file->getPathname());
                     // 上传成功
                     if($oss_res === true){
                         // 删除本地文件
@@ -237,7 +238,7 @@ class Attachment extends Base
                 }
                 // 腾讯云COS
                 if($driver == 'tencent') {
-                    $cos_res = $this->cosUpload($data['attachment'], $file->getPathname());
+                    $cos_res = $this->cosUpload('attachment/' . $data['attachment'], $file->getPathname());
                     // 上传成功
                     if($cos_res === true){
                         // 删除本地文件
