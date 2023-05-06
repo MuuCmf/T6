@@ -4741,6 +4741,17 @@ CREATE TABLE IF NOT EXISTS `muucmf_orders` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='订单表' ROW_FORMAT=COMPACT;
 
 -- --------------------------------------------------------
+DROP TABLE IF EXISTS `muucmf_pc_config`;
+CREATE TABLE IF NOT EXISTS `muucmf_pc_config` (
+  `id` int(11) UNSIGNED NOT NULL COMMENT '主键ID',
+  `shopid` int(11) NOT NULL COMMENT '店铺ID',
+  `title` varchar(64) NOT NULL DEFAULT '' COMMENT '站点标题',
+  `description` varchar(255) NOT NULL DEFAULT '' COMMENT '站点描述',
+  `logo` varchar(255) NOT NULL DEFAULT '' COMMENT 'LOGO',
+  `create_time` int(11) NOT NULL COMMENT '创建时间',
+  `update_time` int(11) NOT NULL COMMENT '更新时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='PC端配置' ROW_FORMAT=COMPACT;
 
 DROP TABLE IF EXISTS `muucmf_qrcode_login`;
 CREATE TABLE IF NOT EXISTS `muucmf_qrcode_login` (
