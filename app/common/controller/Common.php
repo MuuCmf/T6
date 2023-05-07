@@ -8,6 +8,7 @@ use think\facade\View;
 use app\common\model\Channel;
 use app\common\model\SeoRule;
 use app\common\model\Member;
+use app\common\model\Module;
 use app\common\logic\Config as ConfigLogic;
 
 /**
@@ -50,6 +51,10 @@ class Common extends Base
         $this->initModuleName();
         //获取系统配置
         $this->initMuuConfig();
+        //获取micro模块配置
+        $this->initMicroConfig();
+        //获取公众号配置
+        $this->initWechatConfig();
         //获取前端导航菜单
         $this->initNavbar();
         //获取底部导航菜单
@@ -103,8 +108,31 @@ class Common extends Base
     protected function initMuuConfig()
     {
         $this->muu_config_data = $muu_config_data = (new ConfigLogic())->frontend($this->shopid);
-
         View::assign('muu_config_data', $muu_config_data);
+    }
+
+    protected function initMicroConfig()
+    {
+        $micro_config_data = [];
+        $is_install = (new Module())->checkInstalled('micro');
+        if($is_install){
+            $MicroConfigModel = new \app\micro\model\MicroConfig();
+            $micro_config_data = $MicroConfigModel->getConfig($this->shopid);
+        }
+        View::assign('micro_config_data', $micro_config_data);
+    }
+
+    /**
+     * 获取公众号配置
+     */
+    public function initWechatConfig()
+    {
+        $weixin_config_data = (new \app\channel\model\WechatConfig())->where('shopid', $this->shopid)->field('title,desc,cover,qrcode,appid,auth_login')->find();
+        if ($weixin_config_data) {
+            $weixin_config_data = $weixin_config_data->toArray();
+            $weixin_config_data = (new \app\channel\logic\OfficialAccount())->formatData($weixin_config_data);
+        }
+        View::assign('weixin_config_data', $weixin_config_data);
     }
 
     /**

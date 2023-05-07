@@ -4,7 +4,11 @@
         <div class="navbar-header">
             <div class="logo">
                 <h1>
+                    {notempty name="micro_config_data.long_logo"}
+                    <img alt="{$micro_config_data.title}" src="{$micro_config_data.long_logo_original}">
+                    {else/}
                     <img alt="{$muu_config_data.WEB_SITE_NAME}" src="{$muu_config_data.WEB_SITE_LOGO_ORIGIN}">
+                    {/notempty}
                 </h1>
             </div>
             <div class="navigation">

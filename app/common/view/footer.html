@@ -4,11 +4,21 @@
     <div class="">
       <div class="support">
         <div class="web-site clearfix">
-          <h3>{$muu_config_data.WEB_SITE_NAME}</h3>
+          <h3>
+            {notempty name="micro_config_data.title"}
+              {$micro_config_data.title}
+            {else/}
+              {$muu_config_data.WEB_SITE_NAME}
+            {/notempty}
+          </h3>
         </div>
         
         <div class="description">
-          {$muu_config_data.WEB_SITE_DESCRIPTION|raw|htmlspecialchars_decode}
+          {notempty name="micro_config_data.description"}
+            {$micro_config_data.description|raw|htmlspecialchars_decode}
+          {else/}
+            {$muu_config_data.WEB_SITE_DESCRIPTION|raw|htmlspecialchars_decode}
+          {/notempty}
         </div>
       </div>
 
@@ -32,7 +42,13 @@
               <div class="img">
                   <i class="fa fa-phone" aria-hidden="true"></i>
               </div>
-              <span class="value">{$muu_config_data.SERVICE_TEL}</span>
+              <span class="value">
+                {notempty name="micro_config_data.service.mobile"}
+                {$micro_config_data.service.mobile}
+                {else/}
+                {$muu_config_data.SERVICE_TEL}
+                {/notempty}
+              </span>
               <span class="title">7*24小时服务热线</span>
           </div>
 
@@ -41,15 +57,27 @@
               <div class="img">
                   <i class="fa fa-commenting" aria-hidden="true"></i>
               </div>
-              <span class="value">{$muu_config_data.SERVICE_CONSULT}</span>
-              <span class="title">课程咨询和服务</span>
+              <span class="value">
+                {notempty name="micro_config_data.service.consult"}
+                {$micro_config_data.service.consult}
+                {else/}
+                {$muu_config_data.SERVICE_CONSULT}
+                {/notempty}
+              </span>
+              <span class="title">业务咨询和服务</span>
           </div>
 
           <div class="info-box">
               <div class="img">
                 <i class="fa fa-handshake-o" aria-hidden="true"></i>
               </div>
-              <span class="value">{$muu_config_data.SERVICE_BUSINESS}</span>
+              <span class="value">
+                {notempty name="micro_config_data.service.business"}
+                {$micro_config_data.service.business}
+                {else/}
+                {$muu_config_data.SERVICE_BUSINESS}
+                {/notempty}
+              </span>
               <span class="title">商务合作</span>
           </div>
         </div>
@@ -58,11 +86,19 @@
       <div class="qrcode">
         <div>
           <div>
+            {notempty name="wechat_config_data.qrcode_200"}
+            <img src="{$wechat_config_data.qrcode_200}" alt="">
+            {else/}
             <img src="{$muu_config_data.SERVICE_WEIXIN_QRCODE_ORIGIN}" alt="">
+            {/notempty}
             <p>扫一扫，关注公众号</p>
           </div>
           <div>
+            {notempty name="micro_config_data.service.qrcode"}
+            <img src="{$micro_config_data.service.qrcode_200}" alt="">
+            {else/}
             <img src="{$muu_config_data.SERVICE_KF_QRCODE_ORIGIN}" alt="">
+            {/notempty}
             <p>扫码添加客服经理微信</p>
           </div>
         </div>
