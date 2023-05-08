@@ -1,8 +1,9 @@
 <?php
+
 namespace app\channel\validate;
- 
+
 use think\Validate;
- 
+
 /**
  * 验证器
  */
@@ -16,7 +17,7 @@ class Account extends Validate
         'appid'  =>  'require',
         'secret'  =>  'require',
     ];
-    
+
     protected $message  =   [
         'title.require' =>  '公众号名称不能为空',
         'title.egt' =>  '公众号名称不能为空',
@@ -27,8 +28,8 @@ class Account extends Validate
         'appid.require' => 'APPID不能为空',
         'secret.require' => 'Appsecret不能为空',
     ];
-    
+
     protected $scene = [
-        'edit'   =>  ['title','desc','cover','qrcode','appid','secret'],
+        'edit'   =>  ['title', 'desc', 'cover', 'qrcode', 'appid', 'secret'],
     ];
 }
