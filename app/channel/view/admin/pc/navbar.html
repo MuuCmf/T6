@@ -28,13 +28,13 @@
                         <option value="_custom">自定义链接</option>
                         {/if}
                     </select>
-            
+
                     <select name="nav[app][]" class="form-control module margin-right" style="width: 100px;{if $nav['type']=='_custom'}display:none{/if}">
                         {volist name="module_list" id="v"}
                         {if strtolower($nav['app']) == strtolower($v['name'])}
                         <option value="{$v.name}" selected>{$v.alias}</option>
                         {else}
-                        <option value="{$v.name}" selected>{$v.alias}</option>
+                        <option value="{$v.name}">{$v.alias}</option>
                         {/if}
                         {/volist}
                     </select>

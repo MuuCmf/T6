@@ -73,6 +73,7 @@ class Pc extends MuuAdmin
             $map[] = ['block', '=', 'navbar'];
             $list = $this->channelModel->where($map)->order('sort asc')->select()->toArray();
             View::assign('list', $list);
+
             // 获取应用模块列表
             $moduleModel = new ModuleModel();
             $module_list = $moduleModel->getAll(['is_setup' => 1]);
