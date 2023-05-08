@@ -13,7 +13,8 @@
             </div>
             <div class="navigation">
                 <ul class="index-menu clearfix">
-                    {volist name="navbar" id="nav"}
+                    {if $navbar_count > 7}
+                    {volist name="navbar" id="nav" key="key" offset="0" length="6"}
                     <li class="{eq name='nav.url|get_nav_active' value='1'}active{else/}{/eq}">
                         <a class="active-item" title="{$nav.title}" href="{$nav.url|get_nav_url}"
                             target="{eq name='nav.target' value='1'}_blank{else/}_self{/eq}">
@@ -21,6 +22,31 @@
                         </a>
                     </li>
                     {/volist}
+                    <li class="">
+                        <a class="dropdown-toggle active-item" data-toggle="dropdown">
+                            更多 <span class="caret"></span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            {volist name="navbar" id="nav" key="key" offset="6" length="999"}
+                            <li>
+                                <a class="active-item" title="{$nav.title}" href="{$nav.url|get_nav_url}"
+                                    target="{eq name='nav.target' value='1'}_blank{else/}_self{/eq}">
+                                    <span>{$nav.title}</span>
+                                </a>
+                            </li>
+                            {/volist}
+                        </ul>
+                    </li>
+                    {else/}
+                    {volist name="navbar" id="nav" key="key"}
+                    <li class="{eq name='nav.url|get_nav_active' value='1'}active{else/}{/eq}">
+                        <a class="active-item" title="{$nav.title}" href="{$nav.url|get_nav_url}"
+                            target="{eq name='nav.target' value='1'}_blank{else/}_self{/eq}">
+                            <span>{$nav.title}</span>
+                        </a>
+                    </li>
+                    {/volist}
+                    {/if}
                 </ul>
             </div>
             <div class="attr-nav">

@@ -142,6 +142,8 @@ class Common extends Base
     {
         $channelModel = new Channel();
         $nav = $channelModel->lists('navbar');
+        $nav_count = count($nav);
+        View::assign('navbar_count', $nav_count);
         View::assign('navbar', $nav);
     }
 
