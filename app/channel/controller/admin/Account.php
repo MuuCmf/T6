@@ -2,12 +2,14 @@
 
 namespace app\channel\controller\admin;
 
+use think\facade\View;
 use think\Exception;
+use think\exception\ValidateException;
 use app\admin\controller\Admin as MuuAdmin;
 use app\channel\logic\TemplateMessage;
 use app\channel\model\WechatAutoReply;
 use app\channel\model\WechatConfig;
-use think\facade\View;
+use app\channel\validate\Account as AccountValidate;
 
 /**
  * 公众号管理
@@ -70,18 +72,22 @@ class Account extends MuuAdmin
     public function index()
     {
         if (request()->isPost()) {
-            $config = input('post.');
-            $config['shopid'] = $this->shopid;
+            $data = input('post.');
+            $data['shopid'] = $this->shopid;
+            // 数据验证
+            try {
+                validate(AccountValidate::class)->scene('edit')->check($data);
+            } catch (ValidateException $e) {
+                // 验证失败 输出错误信息
+                return $this->error($e->getError());
+            }
 
-            $res = $this->wechatConfigModel->edit($config);
+            $res = $this->wechatConfigModel->edit($data);
             if ($res) {
-                return $this->success('保存成功', $config, 'refresh');
+                return $this->success('保存成功', $data, 'refresh');
             }
             return $this->error('网络异常，请稍后再试');
         } else {
-            //实例化公众号
-            $app = \app\channel\facade\wechat\OfficialAccount::getApp();
-
             //查询微信平台配置
             $data = $this->wechatConfigModel->getWechatConfigByShopId($this->shopid);
             if (!$data) {
