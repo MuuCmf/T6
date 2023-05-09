@@ -157,11 +157,11 @@ class WechatMiniProgram extends Api
     /**
      * 跳转小程序列表
      */
-    public function jump()
+    public function toMiniProgramLists()
     {
         $TominiprogramModel = new TominiprogramModel();
         $TominiprogramLogic = new TominiprogramLogic();
-        $rows = 10;
+        $rows = input('rows', 10, 'intval');
         $map = [
             ['shopid', '=', $this->shopid],
             ['type', '=', 'weixin_app']
@@ -175,6 +175,24 @@ class WechatMiniProgram extends Api
         unset($val);
 
         return $this->success('SUCCESS', $lists);
+    }
+
+    /**
+     * 跳转小程序数据详情
+     */
+    public function toMiniProgramDetail()
+    {
+        $id = input('id', 0, 'intval');
+        if(!empty($id)){
+            $TominiprogramModel = new TominiprogramModel();
+            $TominiprogramLogic = new TominiprogramLogic();
+            $data = $TominiprogramModel->getDataById($id);
+            $data = $TominiprogramLogic->formatData($data);
+
+            return $this->success('SUCCESS', $data);
+        }
+
+        return $this->error('参数错误');
     }
 
 }
