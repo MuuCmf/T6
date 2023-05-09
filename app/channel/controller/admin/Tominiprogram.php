@@ -1,4 +1,5 @@
 <?php
+
 namespace app\channel\controller\admin;
 
 use think\facade\View;
@@ -11,7 +12,8 @@ use app\channel\model\Tominiprogram as TominiprogramModel;
  * Class Tominiprogram
  * @package app\admin\controller
  */
-class Tominiprogram extends MuuAdmin{
+class Tominiprogram extends MuuAdmin
+{
     protected $TominiprogramModel;
     protected $TominiprogramLogic;
     protected $type;
@@ -24,17 +26,18 @@ class Tominiprogram extends MuuAdmin{
         $this->type = request()->param('type') ?? 'weixin_app';
     }
 
-    public function index(){
+    public function index()
+    {
         $rows = 10;
         $map = [
-            ['shopid' ,'=' ,$this->shopid],
-            ['type' ,'=',$this->type]
+            ['shopid', '=', $this->shopid],
+            ['type', '=', $this->type]
         ];
         // 获取列表
         $lists = $this->TominiprogramModel->getListByPage($map, 'id DESC', '*', $rows);
         $pager = $lists->render();
         $lists = $lists->toArray();
-        foreach($lists['data'] as &$val){
+        foreach ($lists['data'] as &$val) {
             $val = $this->TominiprogramLogic->formatData($val);
         }
         unset($val);
@@ -48,9 +51,10 @@ class Tominiprogram extends MuuAdmin{
         return view();
     }
 
-    public function edit(){
-        $id = input('id',0);
-        if (request()->isAjax()){
+    public function edit()
+    {
+        $id = input('id', 0);
+        if (request()->isAjax()) {
             $data = [
                 'id'    => $id,
                 'title' => request()->param('title'),
@@ -60,22 +64,22 @@ class Tominiprogram extends MuuAdmin{
                 'type'  => request()->param('type')
             ];
             $result = $this->TominiprogramModel->edit($data);
-            if ($result){
-                return $this->success('保存成功',null, url('index')->build());
+            if ($result) {
+                return $this->success('保存成功', null, url('index')->build());
             }
             return $this->error('保存失败');
         }
-        $id = input('id',0);
-        $data = $this->TominiprogramModel->where('id',$id)->where('shopid',$this->shopid)->find();
-        if ($data){
+        $id = input('id', 0);
+        $data = $this->TominiprogramModel->where('id', $id)->where('shopid', $this->shopid)->find();
+        if ($data) {
             $data = $data->toArray();
             $data = $this->TominiprogramLogic->formatData($data);
-        }else{
+        } else {
             $data = [];
         }
         View::assign([
-           'data' => $data,
-           'type' => input('type','weixin_app')
+            'data' => $data,
+            'type' => input('type', 'weixin_app')
         ]);
         return \view();
     }
@@ -86,14 +90,14 @@ class Tominiprogram extends MuuAdmin{
      */
     public function del()
     {
-        $status = input('status',0 , 'intval');
+        $status = input('status', 0, 'intval');
         $id = array_unique((array)input('id', 0));
         if ($id[0] == 0) {
             return $this->error('请选择要操作的数据');
         }
         $id = is_array($id) ? $id : explode(',', $id);
-        $result = $this->TominiprogramModel->where('id' ,'in', $id)->delete();
-        if ($result){
+        $result = $this->TominiprogramModel->where('id', 'in', $id)->delete();
+        if ($result) {
             return $this->success('删除成功');
         }
         return $this->error('删除失败,请稍后再试');

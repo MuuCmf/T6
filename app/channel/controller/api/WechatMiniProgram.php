@@ -4,8 +4,10 @@ namespace app\channel\controller\api;
 use app\common\controller\Api;
 use app\common\model\Member;
 use app\common\model\MemberSync;
-use app\channel\facade\wechat\MiniProgram as MiniProgramServer;
 use thans\jwt\facade\JWTAuth;
+use app\channel\facade\wechat\MiniProgram as MiniProgramServer;
+use app\channel\model\Tominiprogram as TominiprogramModel;
+use app\channel\logic\Tominiprogram as TominiprogramLogic;
 
 /**
  * 微信小程序服务类
@@ -150,6 +152,29 @@ class WechatMiniProgram extends Api
             return $this->success('绑定手机号成功');
         }
         return $this->error('绑定手机号失败');
+    }
+
+    /**
+     * 跳转小程序列表
+     */
+    public function jump()
+    {
+        $TominiprogramModel = new TominiprogramModel();
+        $TominiprogramLogic = new TominiprogramLogic();
+        $rows = 10;
+        $map = [
+            ['shopid', '=', $this->shopid],
+            ['type', '=', 'weixin_app']
+        ];
+        // 获取列表
+        $lists = $TominiprogramModel->getListByPage($map, 'id DESC', '*', $rows);
+        $lists = $lists->toArray();
+        foreach ($lists['data'] as &$val) {
+            $val = $TominiprogramLogic->formatData($val);
+        }
+        unset($val);
+
+        return $this->success('SUCCESS', $lists);
     }
 
 }
