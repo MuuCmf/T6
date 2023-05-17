@@ -3,14 +3,13 @@ namespace app\ucenter\controller;
 
 use think\Exception;
 use think\facade\View;
-use app\common\controller\Common;
 use app\common\logic\Orders as OrdersLogic;
 use app\common\model\Orders as OrdersModel;
 
 /**
  * 订单页
  */
-class Orders extends Common
+class Orders extends Base
 {
     protected $middleware = [
         'app\\common\\middleware\\CheckAuth',

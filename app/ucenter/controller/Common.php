@@ -7,11 +7,9 @@ use think\facade\View;
 use app\common\model\Member as CommonMember;
 use app\ucenter\validate\Member;
 use think\exception\ValidateException;
-use app\common\model\ActionLimit;
 use thans\jwt\facade\JWTAuth;
 use app\common\model\Verify;
 use app\common\controller\Common as CommonCommon;
-use EasyWeChat\Factory;
 
 /**
  * 用户登录及注册

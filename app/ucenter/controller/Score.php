@@ -4,11 +4,10 @@ declare (strict_types = 1);
 namespace app\ucenter\controller;
 
 use think\facade\View;
-use app\common\controller\Common;
 use app\common\model\ScoreType;
 use app\common\model\ScoreLog;
 
-class Score extends Common
+class Score extends Base
 {
     protected $middleware = [
         'app\\common\\middleware\\CheckAuth',

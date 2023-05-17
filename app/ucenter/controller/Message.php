@@ -4,11 +4,10 @@ declare (strict_types = 1);
 namespace app\ucenter\controller;
 
 use think\facade\View;
-use app\common\controller\Common;
 use app\common\model\Message as MessageModel;
 use app\common\model\MessageType as MessageTypeModel;
 
-class Message extends Common
+class Message extends Base
 {
     protected $middleware = [
         'app\\common\\middleware\\CheckAuth',

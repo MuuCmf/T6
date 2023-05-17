@@ -2,13 +2,12 @@
 namespace app\ucenter\controller;
 
 use think\facade\View;
-use app\common\controller\Common;
 use app\common\model\Author as AuthorModel;
 use app\common\logic\Author as AuthorLogic;
 use app\common\model\AuthorFollow as AuthorFollowModel;
 use app\common\logic\AuthorFollow as AuthorFollowLogic;
 
-class Author extends Common
+class Author extends Base
 {   
     protected $AuthorModel;
     protected $AuthorLogic;

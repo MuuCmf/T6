@@ -7,7 +7,6 @@ namespace app\ucenter\controller;
 use app\common\model\MemberSync;
 use think\facade\Db;
 use think\facade\View;
-use app\common\controller\Common;
 use app\common\model\Attachment;
 use app\common\model\Verify;
 use app\common\model\Member;
@@ -15,7 +14,7 @@ use app\common\model\ScoreType;
 use app\common\model\ScoreLog;
 use app\common\model\Action;
 
-class Config extends Common
+class Config extends Base
 {
     protected $middleware = [
         'app\\common\\middleware\\CheckAuth',
