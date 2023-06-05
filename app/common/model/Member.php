@@ -266,10 +266,14 @@ class Member extends Base
             $cookie = cookie('MUU_LOGGED_USER');
             if (!empty($cookie)) {
                 $cookie = explode(".", think_decrypt($cookie, 'muucmf'));
-                $map['uid'] = $cookie[0];
-                $user = Db::name('user_token')->where($map)->find();
-                $cookie_uid = ($cookie[1] != $user['token']) ? null : $cookie[0];
-                $cookie_uid = time() - $user['create_time'] >= 3600 * 24 * 7 ? null : $cookie_uid; //过期时间7天
+                if(!empty($cookie[0]) && !empty($cookie[1])){
+                    $map = [
+                        ['uid', '=', $cookie[0]]
+                    ];
+                    $user = Db::name('user_token')->where($map)->find();
+                    $cookie_uid = ($cookie[1] != $user['token']) ? null : $cookie[0];
+                    $cookie_uid = time() - $user['create_time'] >= 3600 * 24 * 7 ? null : $cookie_uid; //过期时间7天
+                }
             }
         }
 
