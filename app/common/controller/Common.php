@@ -16,24 +16,22 @@ use app\common\logic\Config as ConfigLogic;
  */
 class Common extends Base
 {
-    public $shopid = 0; //店铺ID
     public $module; //请求的应用
     public $app_name;
     public $muu_config_data;
     public $title = '';
     public $keywords = '';
     public $description = '';
-    protected $params;
+    
     /**
      * 构造方法
      * @access public
      */
     public function __construct()
     {
+        parent::__construct();
         $this->initSiteStatus();
-        $this->params = request()->param();
-        $this->shopid = $this->params['shopid'] ?? 0;
-
+        
         // 控制器初始化
         $this->initialize();
     }
@@ -45,8 +43,6 @@ class Common extends Base
     {
         //获取shopid
         $this->initShopid();
-        //记住登录
-        $this->initRemberLogin();
         //获取应用名
         $this->initModuleName();
         //获取系统配置
@@ -102,7 +98,7 @@ class Common extends Base
      */
     protected function initModuleName()
     {
-        $this->module = $this->app_name = $this->params['app'] ?? App('http')->getName();
+        $this->module = $this->app_name = input('app') ?? App('http')->getName();
     }
 
     protected function initMuuConfig()
@@ -199,12 +195,6 @@ class Common extends Base
             $this->setKeywords($rule['seo_keywords']);
             $this->setDescription($rule['seo_description']);
         }
-    }
-
-    protected function initRemberLogin()
-    {
-        //记住登录
-        (new Member())->rembemberLogin($this->shopid);
     }
 
     public function setTitle($title)

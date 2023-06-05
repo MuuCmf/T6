@@ -1,4 +1,5 @@
 <?php
+
 namespace app\api\controller;
 
 use app\common\controller\Api;
@@ -19,9 +20,10 @@ class Config extends Api
     /**
      * @title 获取前台系统配置
      */
-    public function system(){
-        $config = $this->ConfigLogic->frontend($this->params['shopid']);
-        return $this->success('success',$config);
+    public function system()
+    {
+        $config = $this->ConfigLogic->frontend($this->shopid);
+        return $this->success('success', $config);
     }
 
     /**
@@ -30,12 +32,12 @@ class Config extends Api
     public function weixin()
     {
         //获取公众号配置
-        $weixin_h5 = (new WechatConfig())->where('shopid', $this->params['shopid'])->field('title,desc,cover,qrcode,appid,auth_login')->find();
-        if ($weixin_h5){
+        $weixin_h5 = (new WechatConfig())->where('shopid', $this->shopid)->field('title,desc,cover,qrcode,appid,auth_login')->find();
+        if ($weixin_h5) {
             $weixin_h5 = $weixin_h5->toArray();
             $weixin_h5 = (new OfficialAccount())->formatData($weixin_h5);
         }
-        
-        return $this->success('success',$weixin_h5);
+
+        return $this->success('success', $weixin_h5);
     }
 }

@@ -22,7 +22,6 @@ class Admin extends Base
     protected $title;
     public $isRoot;
     protected $menu = [];
-    public $shopid = 0; //店铺Id，sass平台拓展
     public $app_name = ''; // 应用标识
 
     protected $middleware = [
@@ -35,6 +34,7 @@ class Admin extends Base
      */
     public function __construct()
     {
+        parent::__construct();
         // 控制器初始化
         $this->initialize();
     }

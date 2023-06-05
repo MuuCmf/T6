@@ -5,15 +5,12 @@ use think\facade\Config;
 
 class Api extends Base
 {
-    public $shopid = 0;//店铺ID
     public $module;//请求的应用
     public $app_name;//应用别名
-    public $params;//参数
 
     public function __construct()
     {
-        $this->params = request()->param();
-        $this->shopid = $params['shopid'] ?? 0;
+        parent::__construct();
         $this->initSiteStatus();
         $this->initModuleName();
     }
