@@ -146,9 +146,9 @@ class WechatPayment extends PayService
             // 「商户API证书」的「证书序列号」
             $merchantCertificateSerial = $this->config['serial'];
             // 从本地文件中加载「微信支付平台证书」，用来验证微信支付应答的签名
-            $platformCertificateFilePath = 'file://' . app()->getRootPath() . 'public/attachment/cert/wechatpay.pem';
+            $platformCertificateFilePath = 'file://' . app()->getRootPath() . 'public/attachment/cert/wechatpay_61D6F8108FA628A04A082D09E87415A0E149BB7C.pem';
             $platformPublicKeyInstance = Rsa::from($platformCertificateFilePath, Rsa::KEY_TYPE_PUBLIC);
-    
+            //dump($platformPublicKeyInstance);
             // 从「微信支付平台证书」中获取「证书序列号」
             $platformCertificateSerial = PemUtil::parseCertificateSerialNo($platformCertificateFilePath);
             // 构造一个 APIv3 客户端实例
@@ -163,15 +163,17 @@ class WechatPayment extends PayService
 
             $resp = $instance
             ->chain('v3/transfer/batches')
-            ->post(['json' => [
-                
-            ]]);
+            ->post(['json' => $data]);
         
             echo $resp->getStatusCode(), PHP_EOL;
             echo $resp->getBody(), PHP_EOL;
         } catch (\Exception $e) {
             // 进行错误处理
-            echo $e->getMessage(), PHP_EOL;
+            //echo $e->getMessage(), PHP_EOL;
+            return [
+                'errCode' => 0,
+                'errMsg' => $e->getMessage()
+            ];
             if ($e instanceof \GuzzleHttp\Exception\RequestException && $e->hasResponse()) {
                 $r = $e->getResponse();
                 //echo $r->getStatusCode() . ' ' . $r->getReasonPhrase(), PHP_EOL;
@@ -184,8 +186,10 @@ class WechatPayment extends PayService
 
     /**
      * 获取APIv3微信支付平台证书
-     * 首次手动下载命令
+     * 首次手动下载命令（在vendor/wechatpay/wechatpay目录下执行）
      * composer exec CertificateDownloader.php -- -m 商户号 -s 商户证书序列号 -f 商户的私钥文件 -k ApiV3Key -o 保存的路径
+     * 完整示范
+     * composer exec CertificateDownloader.php -- -m 1602403282 -s 1C5A97B726EB7EA5EC1212E0CEC14C758C1B427A -f /www/wwwroot/demo.t6.muucmf.cc/public/attachment/file/20230610/30b866b787758af61351edef055206e8.pem -k E0DBCB26C939DEA508A33988CEAFAE79 -o /www/wwwroot/demo.t6.muucmf.cc/public/attachment/cert
      */
     public function getFormCert()
     {

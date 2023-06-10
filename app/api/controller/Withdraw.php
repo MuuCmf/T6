@@ -158,8 +158,8 @@ class Withdraw extends Api
      */
     public function v3()
     {
-        $uid = 61;
-        $price = '0.3';
+        $uid = 256;
+        $price = '1';
         $price = intval($price * 100); // 单位转为分
         $channel = input('channel', 'weixin_h5', 'text');
         $pay_channel = input('pay_channel', 'weixin', 'text');
@@ -211,13 +211,43 @@ class Withdraw extends Api
             // 发起提现
             $pay_config = ChannelServer::config($channel, $this->shopid);
             $PayService = PayServer::init($pay_config['appid'], $pay_channel, $this->shopid);
+            // V3 需要传递的数据结构
+            // $ex = [
+            //         'appid'                 => 'wx7ac5a73893c2c6b8',
+            //         'out_batch_no'          => 'lddj' . $params['orderid'], //商户系统内部的商家批次单号，要求此参数只能由数字、大小写字母组成，在商户系统内部唯一,
+            //         'batch_name'            => date('Y-m', time()) . ' - 提现',       //该笔批量转账的名称
+            //         'batch_remark'          => $params['name'] . "-" . $params['memo'], //转账说明，UTF8编码，最多允许32个字符
+            //         'total_amount'          => intval(strval($params['money'] * 100)), //转账总金额 单位为“分”
+            //         'total_num'             => 1,
+            //         'transfer_detail_list'  => [
+            //             [
+            //                 'out_detail_no'     => $params['orderid'],
+            //                 'transfer_amount'   => intval(strval($params['money'] * 100)),
+            //                 'transfer_remark'   => $params['name'] . "-" . $params['memo'],
+            //                 'openid'            => $openid,
+            //                 //'user_name'         => $encryptor($params['name']) // 金额超过`2000`才填写
+            //             ]
+            //         ]
+            //     ];
             $result = $PayService->server->toBalanceV3([
-                'check_name' => 'NO_CHECK',
-                'partner_trade_no'  =>  $data['order_no'],
-                'openid'    =>  $openid,
-                'amount'    =>  $data['real_price'],
-                'desc'      =>  '提现'
+                'appid'                 => $pay_config['appid'],
+                'out_batch_no'          => $data['order_no'], //商户系统内部的商家批次单号，要求此参数只能由数字、大小写字母组成，在商户系统内部唯一,
+                'batch_name'            => '用户提现',       //该笔批量转账的名称
+                'batch_remark'          => 'uid:' . $data['uid'] . "-" . '提现', //转账说明，UTF8编码，最多允许32个字符
+                'total_amount'          => $data['price'], //转账总金额 单位为“分”
+                'total_num'             => 1,
+                'transfer_detail_list'  => [
+                    [
+                        'out_detail_no'     => $data['order_no'],
+                        'transfer_amount'   => $data['price'],
+                        'transfer_remark'   => 'uid:' . $data['uid'] . "-" . '提现',
+                        'openid'            => $openid,
+                        //'user_name'         => $encryptor($params['name']) // 金额超过`2000`才填写
+                    ]
+                ]
             ]);
+            if(is_array($result) && $result['errCode'] == 0) throw new Exception($result['errMsg']);
+
             // 记录日志
             Log::write($result, 'notice');
             if ($result['return_code'] == 'SUCCESS' && $result['result_code'] == 'SUCCESS') {
