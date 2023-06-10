@@ -4,6 +4,7 @@ namespace app\common\controller;
 use think\exception\HttpResponseException;
 use think\facade\Env;
 use think\Response;
+use think\Validate;
 use app\common\model\Member;
 
 /**
@@ -12,6 +13,11 @@ use app\common\model\Member;
 class Base
 {
     private $debug = [];
+    /**
+     * 是否批量验证
+     * @var bool
+     */
+    protected $batchValidate = false;
     public $params;
     public $shopid = 0;
     /**
@@ -26,6 +32,49 @@ class Base
         //记住登录
         $this->initRemberLogin();
     }
+
+    /**
+     * 验证数据
+     * @access protected
+     * @param  array        $data     数据
+     * @param  string|array $validate 验证器名或者验证规则数组
+     * @param  array        $message  提示信息
+     * @param  bool         $batch    是否批量验证
+     * @return array|string|true
+     * @throws ValidateException
+     */
+    protected function validate(array $data, $validate, array $message = [], bool $batch = false)
+    {
+        if (is_array($validate)) {
+            $v = new Validate();
+            $v->rule($validate);
+        } else {
+            if (strpos($validate, '.')) {
+                // 支持场景
+                list($validate, $scene) = explode('.', $validate);
+            }
+            $class = false !== strpos($validate, '\\') ? $validate : $this->app->parseClass('validate', $validate);
+            $v     = new $class();
+            if (!empty($scene)) {
+                $v->scene($scene);
+            }
+        }
+
+        $v->message($message);
+
+        //是否批量验证
+        if ($batch || $this->batchValidate) {
+            $v->batch(true);
+        }
+
+        $result =  $v->failException(false)->check($data);
+        if (true !== $result) {
+            return $v->getError();
+        } else {
+            return $result;
+        }
+    }
+
     /** 
     * 操作成功跳转的快捷方法
     * @access protected

@@ -251,3 +251,7 @@ ALTER TABLE `muucmf_orders` CHANGE `paid_fee` `paid_fee` INT(11) NOT NULL COMMEN
 ALTER TABLE `muucmf_capital_flow` CHANGE `channel` `channel` VARCHAR(20) NULL DEFAULT '' COMMENT '渠道';
 
 UPDATE `muucmf_config` SET `remark` = '输入应用标识，留空默认index' WHERE `muucmf_config`.`id` = 135;
+
+INSERT INTO `muucmf_extend_config` (`id`, `name`, `type`, `title`, `group`, `extra`, `remark`, `create_time`, `update_time`, `status`, `value`, `sort`) VALUES
+(50, 'WX_PAY_WITHDRAW_API', 'num', '提现接口选择', 6, 'v2:企业付款到零钱\r\nv3:商家转账到零钱', '', 0, 0, 1, 'v2', 0),
+(51, 'WX_PAY_WITHDRAW_PLATFORM_SERIAL', 'string', '平台证书序列号', 6, '', '', 0, 0, 1, '', 0);

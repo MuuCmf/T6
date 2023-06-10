@@ -27,6 +27,7 @@ class WechatPayment extends PayService
         $mchid = config('extend.WX_PAY_MCH_ID');
         $key = config('extend.WX_PAY_KEY_SECRET');
         $serial = config('extend.WX_PAY_CERT_SERIAL');
+        $platform_serial = config('extend.WX_PAY_WITHDRAW_PLATFORM_SERIAL');
         if (empty($mchid)){
             throw new Exception('请填写商户ID');
         }
@@ -43,6 +44,7 @@ class WechatPayment extends PayService
             'serial' => $serial,  // 商户API证书序列号
             'cert_path' => app()->getRootPath() . 'public/attachment/' . config('extend.WX_PAY_CERT'),
             'key_path' => app()->getRootPath() . 'public/attachment/' . config('extend.WX_PAY_KEY'),
+            'platform_serial' => $platform_serial,  // 微信支付平台证书序列号
             'notify_url' => request()->domain() . "/api/pay/callback",
             'sandbox' => $this->sandbox,//沙盒模式开关
         ];
@@ -132,9 +134,11 @@ class WechatPayment extends PayService
 //            'desc' => '理赔', // 企业付款操作说明信息。必填
 //        ];
         return $this->app->transfer->toBalance($data);
-
     }
 
+    /**
+     * 商家转账到零钱
+     */
     public function toBalanceV3($data)
     {
         try {
@@ -146,9 +150,8 @@ class WechatPayment extends PayService
             // 「商户API证书」的「证书序列号」
             $merchantCertificateSerial = $this->config['serial'];
             // 从本地文件中加载「微信支付平台证书」，用来验证微信支付应答的签名
-            $platformCertificateFilePath = 'file://' . app()->getRootPath() . 'public/attachment/cert/wechatpay_61D6F8108FA628A04A082D09E87415A0E149BB7C.pem';
+            $platformCertificateFilePath = 'file://' . app()->getRootPath() . 'public/attachment/cert/wechatpay_' .$this->config['platform_serial']. '.pem';
             $platformPublicKeyInstance = Rsa::from($platformCertificateFilePath, Rsa::KEY_TYPE_PUBLIC);
-            //dump($platformPublicKeyInstance);
             // 从「微信支付平台证书」中获取「证书序列号」
             $platformCertificateSerial = PemUtil::parseCertificateSerialNo($platformCertificateFilePath);
             // 构造一个 APIv3 客户端实例
@@ -164,9 +167,16 @@ class WechatPayment extends PayService
             $resp = $instance
             ->chain('v3/transfer/batches')
             ->post(['json' => $data]);
-        
-            echo $resp->getStatusCode(), PHP_EOL;
-            echo $resp->getBody(), PHP_EOL;
+            
+            // echo $resp->getStatusCode(), PHP_EOL;
+            // echo $resp->getBody(), PHP_EOL;
+            return [
+                'return_code' => 'SUCCESS',
+                'result_code' => 'SUCCESS',
+                'status_code' => $resp->getStatusCode(),
+                'body' => json_decode($resp->getBody(), true)
+            ];
+
         } catch (\Exception $e) {
             // 进行错误处理
             //echo $e->getMessage(), PHP_EOL;
@@ -176,7 +186,7 @@ class WechatPayment extends PayService
             ];
             if ($e instanceof \GuzzleHttp\Exception\RequestException && $e->hasResponse()) {
                 $r = $e->getResponse();
-                //echo $r->getStatusCode() . ' ' . $r->getReasonPhrase(), PHP_EOL;
+                echo $r->getStatusCode() . ' ' . $r->getReasonPhrase(), PHP_EOL;
                 echo $r->getBody(), PHP_EOL;
                 exit;
             }
@@ -203,7 +213,7 @@ class WechatPayment extends PayService
         $merchantCertificateSerial = $this->config['serial'];
 
         // 从本地文件中加载「微信支付平台证书」，用来验证微信支付应答的签名
-        $platformCertificateFilePath = 'file://' . app()->getRootPath() . 'public/attachment/cert/wechatpay.pem';
+        $platformCertificateFilePath = 'file://' . app()->getRootPath() . 'public/attachment/cert/wechatpay_'.$this->config['platform_serial'] . '.pem';
         $platformPublicKeyInstance = Rsa::from($platformCertificateFilePath, Rsa::KEY_TYPE_PUBLIC);
 
         // 从「微信支付平台证书」中获取「证书序列号」
@@ -231,8 +241,7 @@ class WechatPayment extends PayService
             foreach($res['data'] as $v){
                 $cert_content = $this->decryptToString($v['encrypt_certificate']['associated_data'], $v['encrypt_certificate']['nonce'], $v['encrypt_certificate']['ciphertext']);
 
-                //$path = app()->getRootPath() . 'public/attachment/cert/wechatpay_' . $v['serial_no'] . '.pem';
-                $path = app()->getRootPath() . 'public/attachment/cert/wechatpay.pem';
+                $path = app()->getRootPath() . 'public/attachment/cert/wechatpay_' . $v['serial_no'] . '.pem';
                 @file_put_contents($path, $cert_content);
                 chmod($path, 0777);
             }

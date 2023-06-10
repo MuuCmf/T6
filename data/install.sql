@@ -4212,7 +4212,9 @@ INSERT INTO `muucmf_extend_config` (`id`, `name`, `type`, `title`, `group`, `ext
 (46, 'VOD_TENCENT_KEY_VALUE', 'string', '防盗链 Key', 9, '', '腾讯云点播 防盗链Key值', 0, 0, 1, '', 0),
 (47, 'WX_PAY_CERT_SERIAL', 'string', '微信支付商户API证书序列号', 6, '', '微信支付商户API证书序列号', 0, 0, 1, '', 0),
 (48, 'VOD_TENCENT_PROCEDURE', 'radio', '自适应转码加密任务流', 9, '0:不启用\r\n1:启用', '启用后会触发系统预置自适应码流加密任务SimpleAesEncryptPreset.', 0, 1679403460, 1, '1', 0),
-(49, 'VOD_TENCENT_PLAYER_KEY', 'string', '播放秘钥', 9, '', '分发播放设置-默认分发配置信息内播放秘钥，仅启用KEY防盗链后有效.', 0, 0, 1, '', 0);
+(49, 'VOD_TENCENT_PLAYER_KEY', 'string', '播放秘钥', 9, '', '分发播放设置-默认分发配置信息内播放秘钥，仅启用KEY防盗链后有效.', 0, 0, 1, '', 0),
+(50, 'WX_PAY_WITHDRAW_API', 'num', '提现接口选择', 6, 'v2:企业付款到零钱\r\nv3:商家转账到零钱', '', 0, 0, 1, 'v2', 0),
+(51, 'WX_PAY_WITHDRAW_PLATFORM_SERIAL', 'string', '平台证书序列号', 6, '', '', 0, 0, 1, '', 0);
 
 -- --------------------------------------------------------
 

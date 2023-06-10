@@ -130,12 +130,16 @@ class Extend extends Admin
                 ->keyText('WX_PAY_CERT_SERIAL', 'API证书序列号', '商户API证书序列号.')
                 ->keySingleFile('WX_PAY_CERT', 'Cert证书','Cert证书上传', ['enforce' => 'local'])
                 ->keySingleFile('WX_PAY_KEY', 'Key证书','Key证书上传', ['enforce' => 'local'])
+                ->keyRadio('WX_PAY_WITHDRAW_API', '提现方式接口','请选择您申请的提现方式接口', ['v2' => '企业付款到零钱', 'v3' => '商家转账到零钱'])
+                ->keyText('WX_PAY_WITHDRAW_PLATFORM_SERIAL', '支付平台证书序列号', '当使用商家转账到零钱接口时需填写.')
                 ->group('微信', [
                     'WX_PAY_MCH_ID',
                     'WX_PAY_KEY_SECRET',
                     'WX_PAY_CERT_SERIAL',
                     'WX_PAY_CERT',
-                    'WX_PAY_KEY'
+                    'WX_PAY_KEY',
+                    'WX_PAY_WITHDRAW_API',
+                    'WX_PAY_WITHDRAW_PLATFORM_SERIAL'
                 ]);
 
             // 支付宝支付参数配置
