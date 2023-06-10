@@ -148,6 +148,11 @@ class Common extends CommonCommon
      */
     public function login()
     {
+        // 获取返回页面路径
+        $last_url = session('login_http_referer');
+        if (empty($last_url)) {
+            $last_url = request()->domain();
+        }
         if (request()->isPost()) {
             //获取参数
             $account = input('post.account', '', 'text'); // 账号
@@ -195,10 +200,6 @@ class Common extends CommonCommon
             //登录
             $res = $commonMemberModel->login($this->shopid, $uid, $remember);
             if ($res) {
-                $last_url = session('login_http_referer');
-                if (empty($last_url)) {
-                    $last_url = request()->domain();
-                }
                 $token = JWTAuth::builder(['uid' => $uid]);
                 $token = 'Bearer ' . $token;
 
@@ -207,6 +208,9 @@ class Common extends CommonCommon
                 return $this->error($commonMemberModel->getError());
             }
         } else {
+            if(is_login()){
+                return redirect($last_url);
+            }
             // 允许的登录类型
             $ph_account = [];
             check_login_type('username') && $ph_account[] = '用户名';
