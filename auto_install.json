@@ -1,0 +1,37 @@
+{
+    "php_ext": "fileinfo,redis,exif",
+    "chmod": [
+        {
+            "mode": 777,
+            "path": "/data"
+        },
+        {
+            "mode": 777,
+            "path": "/runtime"
+        },
+        {
+            "mode": 777,
+            "path": "/.env"
+        },
+        {
+            "mode": 777,
+            "path": "/public/attachment"
+        },
+        {
+            "mode": 777,
+            "path": "/public/h5"
+        },
+        {
+            "mode": 777,
+            "path": "/public/static"
+        }
+    ],
+    "success_url": "/public/index.php",
+    "php_versions": "74,80",
+    "db_config": "",
+    "admin_username": "",
+    "admin_password": "",
+    "run_path": "/public",
+    "remove_file": [],
+    "enable_functions": []
+}
