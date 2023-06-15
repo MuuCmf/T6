@@ -3,6 +3,7 @@ namespace app\channel\service\channel;
 
 use app\channel\model\WechatConfig;
 use app\channel\model\WechatMpConfig;
+use app\channel\model\WechatWorkConfig;
 use app\channel\model\DouyinMpConfig;
 use think\Exception;
 
@@ -44,7 +45,18 @@ class Channel{
                 if (empty($data)){
                     throw  new Exception('微信小程序配置信息不存在');
                 }
-                break;
+            break;
+            //企业微信
+            case 'weixin_work':
+                //获取配置信息
+                $map = [
+                    ['shopid' ,'=' , $shopid],
+                ];
+                $data = (new WechatWorkConfig())->where($map)->find();
+                if (empty($data)){
+                    throw  new Exception('企业微信配置信息不存在');
+                }
+            break;
             case 'douyin_mp':
                 //获取配置信息
                 $map = [
@@ -59,6 +71,7 @@ class Channel{
             default:
                 $data = [];
         }
+        
         return $data;
     }
 }

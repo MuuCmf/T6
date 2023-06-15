@@ -18,6 +18,14 @@ Route::group('weixin',function (){
     
 });
 
+//企业微信
+Route::group('work',function (){
+    Route::rule('config' ,'channel/api.WechatWork/config');
+    Route::rule('callback' ,'channel/api.WechatWork/callback');
+    Route::rule('oauth' ,'channel/api.WechatWork/oauth');
+    Route::rule('oauthCallback' ,'channel/api.WechatWork/oauthCallback');
+});
+
 //抖音小程序
 Route::group('douyin',function (){
     Route::rule('callback' ,'channel/api.DouyinMiniProgram/callback');

@@ -1,4 +1,5 @@
 <?php
+
 namespace app\channel\service\wechat;
 
 use app\channel\model\WechatMpConfig;
@@ -21,14 +22,15 @@ class MiniProgram extends Wechat
         parent::__construct($app);
     }
 
-    public function initConfig(){
+    public function initConfig()
+    {
         $this->shopid = request()->param('shopid') ?? 0;
         //获取配置信息
         $map = [
-            ['shopid' ,'=' ,$this->shopid],
+            ['shopid', '=', $this->shopid],
         ];
         $data = (new WechatMpConfig())->where($map)->find();
-        if (empty($data)){
+        if (empty($data)) {
             throw  new Exception('小程序配置信息不存在');
         }
         $data = $data->toArray();
@@ -46,7 +48,8 @@ class MiniProgram extends Wechat
      * @param $code
      * @return mixed
      */
-    public function user($code){
+    public function user($code)
+    {
         return $this->app->auth->session($code);
     }
 
@@ -57,7 +60,8 @@ class MiniProgram extends Wechat
      * @param $encryptedData
      * @return mixed
      */
-    public function decryptData($session, $iv, $encryptedData){
+    public function decryptData($session, $iv, $encryptedData)
+    {
         return $this->app->encryptor->decryptData($session, $iv, $encryptedData);
     }
 
@@ -67,8 +71,9 @@ class MiniProgram extends Wechat
      * @param array $optional
      * @return mixed
      */
-    public function unlimitQrcode($scene ,$optional = []){
-        return $this->app->app_code->getUnlimit($scene,$optional);
+    public function unlimitQrcode($scene, $optional = [])
+    {
+        return $this->app->app_code->getUnlimit($scene, $optional);
     }
 
     /**
@@ -76,7 +81,8 @@ class MiniProgram extends Wechat
      * @param $data
      * @return mixed
      */
-    public function sendTemplateMsg($data){
+    public function sendTemplateMsg($data)
+    {
         return $this->app->template_message->send($data);
     }
 
@@ -84,7 +90,8 @@ class MiniProgram extends Wechat
      * @title 获取小程序直播间列表
      * @return mixed
      */
-    public function getLiveRooms(){
+    public function getLiveRooms()
+    {
         return $this->app->live->getRooms();
     }
 
@@ -93,7 +100,8 @@ class MiniProgram extends Wechat
      * @param int $roomid
      * @return mixed
      */
-    public function getLivePlaybacks(int $roomid){
+    public function getLivePlaybacks(int $roomid)
+    {
         return $this->app->live->getPlaybacks($roomid);
     }
 }
