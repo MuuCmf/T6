@@ -270,3 +270,6 @@ CREATE TABLE `muucmf_wechat_work_config` (
   `update_time` int(11) NOT NULL COMMENT '更新日期',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='企业微信配置表' ROW_FORMAT=COMPACT;
+
+INSERT INTO `muucmf_menu` (`id`, `title`, `pid`, `sort`, `url`, `hide`, `type`, `tip`, `group`, `is_dev`, `icon`, `module`) VALUES
+('C3F2915A-B874-B3DB-3FD2-8743E5ABF242', '企业微信配置', 'A4650B98-DAD4-8194-030C-1B2AB4F35CBA', 26, 'channel/admin.WechatWork/config', 0, 0, '', '企业微信', 0, 'wechat', 'admin');

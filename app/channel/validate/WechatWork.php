@@ -7,7 +7,7 @@ use think\Validate;
 /**
  * 验证器
  */
-class WechatMiniProgram extends Validate
+class WechatWork extends Validate
 {
     protected $rule = [
         'title'  =>  'require|egt:1',

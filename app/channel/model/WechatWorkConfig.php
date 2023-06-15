@@ -12,13 +12,24 @@ class WechatWorkConfig extends Base
     /**
      * 获取配置
      */
-    public function getWechatMpConfigByShopId($shopid = 0)
+    public function getConfigByShopId($shopid = 0)
     {
         // 获取配置
         $config = $this->where([
             ['shopid', '=', $shopid],
         ])->find();
 
+        $config['url'] = $this->callbackUrl($shopid);
+
         return $config;
+    }
+
+    /**
+     * @title 获取回调地址
+     * @return string
+     */
+    public function callbackUrl($shopid = 0)
+    {
+        return url('channel/wechatwork/callback', ['shopid' => $shopid], false, true);
     }
 }

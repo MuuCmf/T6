@@ -6,10 +6,11 @@ use think\facade\View;
 use think\Exception;
 use think\exception\ValidateException;
 use app\admin\controller\Admin as MuuAdmin;
+use app\admin\builder\AdminConfigBuilder;
 use app\channel\model\WechatWorkConfig;
 use app\channel\validate\WechatWork as WechatWorkValidate;
 
-class Account extends MuuAdmin
+class WechatWork extends MuuAdmin
 {
     function __construct()
     {
@@ -32,19 +33,14 @@ class Account extends MuuAdmin
                 return $this->error($e->getError());
             }
 
-            $res = (new WechatWorkConfig)->edit($data);
+            $res = (new WechatWorkConfig())->edit($data);
             if ($res) {
                 return $this->success('保存成功', $data, 'refresh');
             }
             return $this->error('网络异常，请稍后再试');
         } else {
             //查询微信平台配置
-            $data = (new WechatWorkConfig)->getWechatConfigByShopId($this->shopid);
-            if (!$data) {
-                $data['id'] = 0;
-                $data['url'] =  (new WechatWorkConfig)->callbackUrl($this->shopid);
-                $data['auth_login'] = 1;
-            }
+            $data = (new WechatWorkConfig())->getConfigByShopId($this->shopid);
             View::assign('data', $data);
             //设置页面title
             $this->setTitle('企业微信配置');
