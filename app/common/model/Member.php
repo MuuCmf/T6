@@ -414,7 +414,7 @@ class Member extends Base
                     $member['score'] = $score_key;
                 }
 
-                if ($fields == '*' || strpos($fields, 'reg_channel') !== false){
+                if (($fields == '*' || strpos($fields, 'reg_channel') !== false) && isset($member['reg_channel'])){
                     // 用户注册渠道
                     $member['reg_channel_str'] = Channel::$_channel[$member['reg_channel']];
                 }

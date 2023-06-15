@@ -255,3 +255,18 @@ UPDATE `muucmf_config` SET `remark` = '输入应用标识，留空默认index' W
 INSERT INTO `muucmf_extend_config` (`id`, `name`, `type`, `title`, `group`, `extra`, `remark`, `create_time`, `update_time`, `status`, `value`, `sort`) VALUES
 (50, 'WX_PAY_WITHDRAW_API', 'num', '提现接口选择', 6, 'v2:企业付款到零钱\r\nv3:商家转账到零钱', '', 0, 0, 1, 'v2', 0),
 (51, 'WX_PAY_WITHDRAW_PLATFORM_SERIAL', 'string', '平台证书序列号', 6, '', '', 0, 0, 1, '', 0);
+
+CREATE TABLE `muucmf_wechat_work_config` (
+  `id` int(11) NOT NULL COMMENT '主键ID',
+  `shopid` int(11) NOT NULL COMMENT '商户ID',
+  `title` varchar(64) NOT NULL COMMENT '企业名称',
+  `description` varchar(500) NOT NULL COMMENT '描述',
+  `corp_id` varchar(128) NOT NULL COMMENT '企业ID',
+  `agent_id` varchar(40) NOT NULL COMMENT '应用ID',
+  `secret` varchar(60) NOT NULL COMMENT '应用密匙',
+  `encoding_aes_key` varchar(64) NOT NULL DEFAULT '' COMMENT '消息加密',
+  `token` varchar(64) NOT NULL DEFAULT '' COMMENT '验证token',
+  `create_time` int(11) NOT NULL COMMENT '创建日期',
+  `update_time` int(11) NOT NULL COMMENT '更新日期',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='企业微信配置表' ROW_FORMAT=COMPACT;
