@@ -27,7 +27,7 @@ class Work extends Wechat
     public function initConfig()
     {
         //获取配置信息
-        $data = (new WechatWorkConfig())->getWechatConfigByShopId($this->shopid);
+        $data = (new WechatWorkConfig())->getConfigByShopId($this->shopid);
         if (empty($data)) {
             throw  new Exception('企业微信配置数据不存在');
         }
@@ -113,8 +113,7 @@ class Work extends Wechat
         // 获取企业微信跳转目标地址
         $targetUrl = $redirect->getTargetUrl();
 
-        // 直接跳转到企业微信授权
-        $redirect->send();
+        return $targetUrl;
     }
 
     /**
@@ -124,6 +123,14 @@ class Work extends Wechat
     public function getToken()
     {
         return $this->app->access_token->getToken();
+    }
+
+    /**
+     * 读取成员
+     */
+    public function getContacts($userId)
+    {
+        return $this->app->user->get($userId);
     }
 
     /**

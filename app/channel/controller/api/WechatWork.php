@@ -7,7 +7,7 @@ use app\common\controller\Api;
 use app\channel\model\WechatWorkConfig;
 use app\common\model\Member;
 use app\common\model\MemberSync;
-use app\channel\facade\wechat\OfficialAccount;
+use app\channel\facade\wechat\Work;
 use thans\jwt\facade\JWTAuth;
 
 /**
@@ -37,7 +37,7 @@ class WechatWork extends Api
     public function callback()
     {
         //实例化公众号
-        $app = OfficialAccount::getApp();
+        $app = Work::getApp();
         //获取消息类型
         $message = $app->server->getMessage();
         if (isset($message['MsgType'])) {
@@ -59,7 +59,7 @@ class WechatWork extends Api
             $app->server->serve();
         }
         //token 回调
-        OfficialAccount::serverOAath();
+        Work::serverOAath();
     }
 
     /**
@@ -76,7 +76,8 @@ class WechatWork extends Api
         if (isset($target_url[1])) {
             $oauth_data['spa_param'] = urlencode($target_url[1]);
         }
-        $url = OfficialAccount::oauth($oauth_data);
+        $url = Work::oauth($oauth_data);
+
         return redirect($url);
     }
 
@@ -86,16 +87,30 @@ class WechatWork extends Api
     public function oauthCallback()
     {
         $code = request()->param('code');
-        $app = OfficialAccount::getApp();
+        $app = Work::getApp();
         // 获取 OAuth 授权结果用户信息
         $user = $app->oauth->userFromCode($code);
-        $user = $user->getRaw();
+
+        $user_id = $user->getId();
+        $user_raw = $user->getRaw();
+
+        $user = $app->user->get($user_id);
+        $openid = $app->user->userIdToOpenid($user_id);
+        $user['openid'] = $openid['openid'];
+        $user['nickname'] = $user['realname'] = $user['name'];
+        if(empty($user['avatar'])){
+            $user['avatar'] = '';
+        }
+        if(empty($user['sex'])){
+            $user['sex'] = '';
+        }
+
         try {
             //处理用户数据
             $MemberModel = new Member();
-            $user['oauth_type'] = 'weixin_h5';
+            $user['oauth_type'] = 'weixin_work';
             $user['shopid'] = $this->shopid;
-            $user['avatar'] = $user['headimgurl'];
+
             $user = $MemberModel->oauth($this->shopid, $user);
         } catch (Exception $e) {
             return $this->error($e->getMessage());
@@ -120,7 +135,7 @@ class WechatWork extends Api
     public function jssdk()
     {
         if (request()->isPost()) {
-            $app = OfficialAccount::getApp();
+            $app = Work::getApp();
             $apis = input('post.apis');
             $url = input('post.url');
             if (empty($apis)) {
@@ -134,6 +149,7 @@ class WechatWork extends Api
             }
             $app->jssdk->setUrl($url);
             $jssdk = $app->jssdk->buildConfig($apis);
+
             return $this->success('success', json_decode($jssdk, true));
         }
     }
