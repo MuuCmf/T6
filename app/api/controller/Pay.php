@@ -81,17 +81,18 @@ class Pay extends Api
                 // 微信支付
                 if($this->params['pay_channel'] == 'weixin' && (
                     $order_data['channel'] == 'weixin_h5' || 
+                    $order_data['channel'] == 'weixin_work' || 
                     $order_data['channel'] == 'weixin_mp' || 
                     $order_data['channel'] == 'h5' || 
                     $order_data['channel'] == 'pc'
                 )){
                     // 获取支付参数
                     $config = ChannelServer::config($order_data['channel'] ,$this->shopid);
-                    if($order_data['channel'] == 'weixin_h5' || $order_data['channel'] == 'weixin_mp'){
+                    if($order_data['channel'] == 'weixin_h5' || $order_data['channel'] == 'weixin_mp' || $order_data['channel'] == 'weixin_work'){
                         // 获取用户openid
                         $openid = MemberSync::where([
                             ['shopid', '=', $this->shopid],
-                            ['uid' , '=', request()->uid],
+                            ['uid' , '=', get_uid()],
                             ['type', '=', $order_data['channel']]
                         ])->value('openid');
 
@@ -148,7 +149,7 @@ class Pay extends Api
                 ];
                 $this->OrderModel->edit($channel_map);
 
-                return $this->success('success',$result_pay, $return_url);
+                return $this->success('success', $result_pay, $return_url);
             }catch (Exception $e){
                 return $this->error($e->getMessage());
             }
@@ -286,6 +287,7 @@ class Pay extends Api
         if($this->params['pay_channel'] == 'weixin' && (
             $this->params['channel'] == 'weixin_mp' || 
             $this->params['channel'] == 'weixin_h5' || 
+            $this->params['channel'] == 'weixin_work' || 
             $this->params['channel'] == 'h5' || 
             $this->params['channel'] == 'pc'
         )){

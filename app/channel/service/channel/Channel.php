@@ -49,10 +49,7 @@ class Channel{
             //企业微信
             case 'weixin_work':
                 //获取配置信息
-                $map = [
-                    ['shopid' ,'=' , $shopid],
-                ];
-                $data = (new WechatWorkConfig())->where($map)->find();
+                $data = (new WechatWorkConfig())->getConfigByShopId($shopid);
                 if (empty($data)){
                     throw  new Exception('企业微信配置信息不存在');
                 }

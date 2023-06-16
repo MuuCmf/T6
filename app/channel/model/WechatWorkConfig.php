@@ -18,7 +18,10 @@ class WechatWorkConfig extends Base
         $config = $this->where([
             ['shopid', '=', $shopid],
         ])->find();
-
+        
+        if(!empty($config)){
+            $config['appid'] = $config['corp_id'] ?? '';
+        }
         $config['url'] = $this->callbackUrl($shopid);
 
         return $config;
