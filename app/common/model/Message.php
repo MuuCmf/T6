@@ -120,10 +120,14 @@ class Message extends Base
         
         // 获取消息内容
         $content = (new MessageContent())->find($data['content_id']);
-        if(!$content->isEmpty()){
+        if(!empty($content)){
             $data['content']['title'] = $content->title;
             $data['content']['description'] = $content->description;
             $data['content']['content'] = $content->content;
+        }else{
+            $data['content']['title'] = '内容已删除';
+            $data['content']['description'] = '';
+            $data['content']['content'] = '';
         }
         // 状态
         $data['is_read_str'] = $this->_is_read[$data['is_read']];

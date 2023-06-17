@@ -1,4 +1,5 @@
 <?php
+
 namespace app\api\controller;
 
 use app\common\controller\Api;
@@ -35,7 +36,7 @@ class Message extends Api
         $t_map[] = ['shopid', '=', $this->shopid];
         $t_map[] = ['status', '=', 1];
         $list = $this->MessageTypeModel->getList($t_map);
-        foreach($list as &$val){
+        foreach ($list as &$val) {
             $val = $this->MessageTypeModel->formatData($val);
             // 未读消息数量
             $map[] = ['to_uid', '=', $uid];
@@ -43,35 +44,36 @@ class Message extends Api
             $map[] = ['is_read', '=', 0];
             $map[] = ['status', '=', 1];
             $num = (new MessageModel())->where($map)->count();
-            if($num > 99){
+            if ($num > 99) {
                 $val['unread'] = '99+';
-            }else{
+            } else {
                 $val['unread'] = $num;
             }
         }
         unset($val);
 
-        return $this->success('success',$list);
+        return $this->success('success', $list);
     }
 
 
     /**
      * 消息列表
      */
-    public function lists(){
+    public function lists()
+    {
         $uid = request()->uid;
         $type_id = input('type_id', 0, 'intval');
         // 查询条件
         $map[] = ['shopid', '=', $this->shopid];
         $map[] = ['status', '=', 1];
         $map[] = ['to_uid', '=', $uid];
-        if(!empty($type_id)){
+        if (!empty($type_id)) {
             $map[] = ['type_id', '=', $type_id];
         }
-        
+
         // 搜索关键字
         $keyword = input('keyword', '', 'text');
-        if(!empty($keyword)){
+        if (!empty($keyword)) {
             $map[] = ['title', 'like', '%' . $keyword . '%'];
         }
 
@@ -80,12 +82,12 @@ class Message extends Api
         $lists = $this->MessageModel->getListByPage($map, 'id desc,create_time desc', $fields, $rows);
         $lists = $lists->toArray();
 
-        foreach($lists['data'] as &$val){
+        foreach ($lists['data'] as &$val) {
             $val = $this->MessageModel->formatData($val);
         }
         unset($val);
 
-        return $this->success('success',$lists);
+        return $this->success('success', $lists);
     }
 
     /**
@@ -95,7 +97,7 @@ class Message extends Api
     {
         $uid = get_uid();
         $id = input('id', '0', 'intval');
-        if(!empty($id)){
+        if (!empty($id)) {
             $map = [
                 'id' => $id,
                 'to_uid' => $uid,
@@ -110,11 +112,9 @@ class Message extends Api
             ]);
 
             return $this->success('success', $data);
-
         }
 
         return $this->error('参数错误');
-        
     }
 
     /**
@@ -125,36 +125,35 @@ class Message extends Api
     {
         $uid = request()->uid;
         $map[] = ['to_uid', '=', $uid];
-        $map[] = ['shopid' ,'=' ,$this->shopid];
+        $map[] = ['shopid', '=', $this->shopid];
         $type_id = input('type_id', 0, 'intval');
-        if(!empty($type_id)){
+        if (!empty($type_id)) {
             $map[] = ['type_id', '=', $type_id];
-        }else{
+        } else {
             $t_map[] = ['shopid', '=', $this->shopid];
             $t_map[] = ['status', '=', 1];
             $list = $this->MessageTypeModel->getList($t_map);
             $type_ids = [];
-            foreach($list as $v){
+            foreach ($list as $v) {
                 $type_ids[] = $v['id'];
             }
             $map[] = ['type_id', 'in', $type_ids];
         }
         $map[] = ['is_read', '=', 0];
         $map[] = ['status', '=', 1];
-        
+
         $num = $this->MessageModel->where($map)->count();
 
-        if($num > 99){
+        if ($num > 99) {
             $friendly_num = '99+';
-        }else{
+        } else {
             $friendly_num = $num;
         }
 
-        return $this->success('success',[
+        return $this->success('success', [
             'num' => $num,
             'friendly_num' => $friendly_num
         ]);
-
     }
 
     /**
@@ -164,17 +163,15 @@ class Message extends Api
     {
         $uid = request()->uid;
         $map[] = ['to_uid', '=', $uid];
-        $map[] = ['shopid' ,'=' ,$this->shopid];
+        $map[] = ['shopid', '=', $this->shopid];
         $map[] = ['is_read', '=', 0];
 
-        $res = $this->MessageModel->where($map)->update(['is_read'=> 1]);
+        $res = $this->MessageModel->where($map)->update(['is_read' => 1]);
 
-        if($res){
+        if ($res) {
             return $this->success('success', '更新成功');
         }
 
         return $this->error('error', '更新失败');
     }
-    
-
 }
