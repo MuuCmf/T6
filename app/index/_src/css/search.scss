@@ -56,6 +56,12 @@
             padding: 10px 0;
 
             .items {
+                .result {
+                    font-size: 16px;
+                    strong {
+                        color:#ea644a;
+                    }
+                }
                 .no-result {
                     background: #f4f7fa;
                     margin: 50px;

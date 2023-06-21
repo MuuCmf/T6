@@ -32,6 +32,7 @@
             <div class="col-xs-9">
                 <div class="items">
                     {notempty name="$lists.data"}
+                    <div class="result">共搜索到{$lists.total}条 <strong>{$keyword}</strong> 相关数据</div>
                     {foreach $lists.data as $key => $val}
                     <div class="item">
                         <h2 class="title">
