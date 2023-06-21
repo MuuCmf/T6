@@ -7,7 +7,6 @@ use think\facade\Db;
 use think\facade\View;
 use app\common\model\Channel;
 use app\common\model\SeoRule;
-use app\common\model\Member;
 use app\common\model\Module;
 use app\common\logic\Config as ConfigLogic;
 

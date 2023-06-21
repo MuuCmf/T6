@@ -1,14 +1,16 @@
 <?php
+
 namespace app\common\model;
 
 use think\Model;
+use think\facade\Event;
 
 class Base extends Model
 {
     public $status = [
-        -1 => '删除', 
-        0 => '禁用', 
-        1 => '正常', 
+        -1 => '删除',
+        0 => '禁用',
+        1 => '正常',
         2 => '待审核'
     ];
 
@@ -20,17 +22,17 @@ class Base extends Model
      */
     public function edit($data)
     {
-        if(!empty($data['id'])){
+        if (!empty($data['id'])) {
             $res = $this->update($data);
-        }else{
-            if(isset($data['id'])){
+        } else {
+            if (isset($data['id'])) {
                 unset($data['id']);
             }
             $res = $this->save($data);
         }
-        if(!empty($this->id)){
+        if (!empty($this->id)) {
             return $this->id;
-        }else{
+        } else {
             if (is_object($res)) return  $res->id;
             return $res;
         }
@@ -46,14 +48,14 @@ class Base extends Model
      *
      * @return     <type>   The list by page.
      */
-    public function getListByPage($map,$order='create_time desc',$field='*',$r=20)
+    public function getListByPage($map, $order = 'create_time desc', $field = '*', $r = 20)
     {
-        if(is_array($map)){
-            $list  = $this->where($map)->order($order)->field($field)->paginate(['list_rows'=>$r, 'query'=>request()->param()], false);
-        }else{
-            $list  = $this->whereRaw($map)->order($order)->field($field)->paginate(['list_rows'=>$r, 'query'=>request()->param()], false);
+        if (is_array($map)) {
+            $list  = $this->where($map)->order($order)->field($field)->paginate(['list_rows' => $r, 'query' => request()->param()], false);
+        } else {
+            $list  = $this->whereRaw($map)->order($order)->field($field)->paginate(['list_rows' => $r, 'query' => request()->param()], false);
         }
-        
+
 
         return $list;
     }
@@ -64,10 +66,27 @@ class Base extends Model
      *
      * @return     <type>   The data by identifier.
      */
-    public function getDataById($id,$field='*')
+    public function getDataById($id, $field = '*')
     {
-        if($id>0){
+        if ($id > 0) {
             $data = $this->field($field)->find($id);
+            
+            $model = $this->name;
+            $app = strtolower(App('http')->getName());
+            if(strpos(strtolower($model), $app) !== false && !empty($data['title'] && !empty($data['description']) && isset($data['cover']))){
+                // 事件监听
+                Event::listen('searchIndex', 'app\common\listener\SearchIndex');
+                $search_index_data['shopid'] = $data['shopid'];
+                $search_index_data['app'] = $app;
+                $search_index_data['info_id'] = $data['id'];
+                $type = str_replace($app, '', strtolower($model));
+                $search_index_data['info_type'] = $type;
+                $search_index_data['title'] = $data['title'];
+                $search_index_data['description'] = $data['description'];
+                $search_index_data['cover'] = $data['cover'];
+                
+                Event::trigger('searchIndex', $search_index_data);
+            }
 
             return $data;
         }
@@ -82,16 +101,15 @@ class Base extends Model
      *
      * @return     <type>  The data by map.
      */
-    public function getDataByMap($map,$field='*')
+    public function getDataByMap($map, $field = '*')
     {
-        if(is_array($map)){
+        if (is_array($map)) {
             $data = $this->where($map)->field($field)->find();
-        }else{
+        } else {
             $data = $this->whereRaw($map)->field($field)->find();
         }
 
         return $data;
-       
     }
     /**
      * Gets the list.
@@ -103,37 +121,40 @@ class Base extends Model
      *
      * @return     <type>   The list.
      */
-    public function getList($map, $limit=10, $order = 'create_time desc' ,$field = '*')
+    public function getList($map, $limit = 10, $order = 'create_time desc', $field = '*')
     {
-        if(is_array($map)){
+        if (is_array($map)) {
             $list  = $this->where($map)->limit($limit)->order($order)->field($field)->select();
-        }else{
+        } else {
             $list  = $this->whereRaw($map)->limit($limit)->order($order)->field($field)->select();
         }
 
         return $list;
     }
-    
-    public function getCount($map){
+
+    public function getCount($map)
+    {
         return $this->where($map)->count();
     }
-    public function getAvg($map,$field = 'score'){
+    public function getAvg($map, $field = 'score')
+    {
         return $this->where($map)->avg($field);
     }
 
-    public function setStatus($ids ,$status){
+    public function setStatus($ids, $status)
+    {
         $map = [];
-        if (is_array($ids)){
-            $map[] = ['id' ,'in' ,$ids];
-        }else{
-            $map[] = ['id' ,'=' ,$ids];
+        if (is_array($ids)) {
+            $map[] = ['id', 'in', $ids];
+        } else {
+            $map[] = ['id', '=', $ids];
         }
         $data = [
             'status' => $status,
             'update_time' => time()
         ];
         $result = $this->where($map)->update($data);
-        if ($result !== false){
+        if ($result !== false) {
             return true;
         }
         return false;
@@ -146,8 +167,9 @@ class Base extends Model
      * @param int $value
      * @return mixed
      */
-    public function setInc($map ,$field ,$value = 1){
-        return $this->where($map)->inc($field ,$value);
+    public function setInc($map, $field, $value = 1)
+    {
+        return $this->where($map)->inc($field, $value);
     }
 
     /**
@@ -157,9 +179,8 @@ class Base extends Model
      * @param int $value
      * @return mixed
      */
-    public function setDec($map ,$field ,$value = 1){
-        return $this->where($map)->dec($field ,$value);
+    public function setDec($map, $field, $value = 1)
+    {
+        return $this->where($map)->dec($field, $value);
     }
-
-    
 }
