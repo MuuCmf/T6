@@ -1,0 +1,80 @@
+{extend name="../../common/view/main"/}
+
+{block name="style"}
+<link href="__STATIC__/index/css/search.min.css" rel="stylesheet" type="text/css"/>
+{/block}
+
+{block name="body"}
+
+<div class="search-page-section search-section {$micro_config_data.style}">
+
+
+
+    <div class="search-input-section clearfix">
+
+        <div class="margin">
+            <div class=" col-xs-9">
+                <form action="" method="get" class="" role="form">
+                    <div class="input-group input-control search-box has-icon-left">
+                        <input type="text" class="form-control search-input" placeholder="请输入搜索关键字" name="keyword" value="{$keyword|default=''}">
+                        <label for="inputSearchExample1" class="input-control-icon-left search-icon"><i class="icon icon-search"></i></label>
+                        <span class="input-group-btn">
+                        <button class="btn btn-default" type="submit">搜索</button>
+                        </span>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="search-lists-section">
+        <div class="section clearfix">
+            <div class="col-xs-9">
+                <div class="items">
+                    {notempty name="$lists.data"}
+                    {foreach $lists.data as $key => $val}
+                    <div class="item">
+                        <h2 class="title">
+                            <a href="{$val.url}" target="_blank">
+                                {:htmlspecialchars_decode($val.content.title)}
+                            </a>
+                        </h2>
+                        <div class="content clearfix">
+                            <div class="cover">
+                                <img class="lazy" data-original="{$val.content.cover_200}" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsQAAA7EAZUrDhsAAAANSURBVBhXYzh8+PB/AAffA0nNPuCLAAAAAElFTkSuQmCC" alt="{$val.content.title|default=''}" />
+                            </div>
+                            <div class="description">
+                                <p>{:htmlspecialchars_decode($val.content.description)}</p>
+                                <p class="update-time">更新时间：{$val.update_time_str|default=''}</p>
+                            </div>
+                        </div>
+                    </div>
+                    {/foreach}
+                    {else /}
+                    <div class="no-result">
+                        没有搜索到 <strong>{$keyword}</strong> 相关的结果，请更换关键字重试~
+                    </div>
+                    {/notempty}
+                    
+                </div>
+                <div class="page-section">
+                    {:htmlspecialchars_decode($pager)}
+                </div>
+            </div>
+            <div class="col-xs-3">
+    
+            </div>
+        </div>
+        
+    </div>
+
+
+</div>
+
+{/block}
+
+{block name="script"}
+<script>
+
+</script>
+{/block}

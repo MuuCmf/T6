@@ -1,0 +1,170 @@
+.search-page-section.search-section {
+
+
+    .search-input-section {
+        background: #f4f7fa;
+        border-bottom: 1px solid #e7e9ed;
+        padding-top: 32px;
+        padding: 80px 0;
+
+        .margin {
+            max-width: 1200px;
+            margin: 0 auto;
+
+            .search-input {
+                border: 0;
+                background-color: #fff;
+                box-shadow: none;
+                height:46px;
+                line-height: 36px;
+                border-radius: 20px;
+                border-top-right-radius: 0;
+                border-bottom-right-radius: 0;
+                padding-left: 38px;
+            }
+            .search-icon {
+                left: 5px;
+                top: 8px;
+                .icon {
+                    font-size: 16px;
+                }
+
+            }
+            .input-group-btn {
+                button {
+                    border: 0px;
+                    padding: 13px 25px;
+                    border-radius: 20px;
+                    border-top-left-radius: 0;
+                    border-bottom-left-radius: 0;
+                    &:focus {
+                        outline: 0;
+                    }
+                }
+            }
+        }
+        
+    }
+
+    .search-lists-section {
+        min-height: 300px;
+        background-color: #fff;
+        
+        .section {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 10px 0;
+
+            .items {
+                .no-result {
+                    background: #f4f7fa;
+                    margin: 50px;
+                    border-radius: 20px;
+                    padding: 20px;
+                    font-size: 16px;
+                    strong {
+                        color:#ea644a;
+                    }
+                }
+                .item {
+                    border: 0;
+                    margin: 20px 0;
+
+                    .title {
+                        strong {
+                            color:#ea644a;
+                        }
+                        a {
+
+                            &:hover {
+                                color: #000;
+                            }
+                        }
+                    }
+                    .content {
+
+                        .cover {
+                            img {
+                                float: left;
+                                width: 100px;
+                                height: 100px;
+                                border-radius: 5px;
+                                overflow: hidden;
+                            }
+                        }
+
+                        .description {
+                            margin-left: 110px;
+
+                            p {
+                                font-size: 16px;
+                                strong {
+                                    color:#ea644a;
+                                }
+                            }
+                            .update-time {
+                                color: #ddd;
+                                font-size: 14px;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+}
+
+.search-page-section.search-section.Blue {
+    .search-input-section {
+        button {
+            color: #fff;
+            background-color: #03b8cf;
+        }
+    }
+}
+
+.search-page-section.search-section.Green {
+    .search-input-section {
+        button {
+            color: #fff;
+            background-color: #00ce74;
+        }
+    }
+}
+
+.search-page-section.search-section.LightRed {
+    .search-input-section {
+        button {
+            color: #fff;
+            background-color: #ea644a;
+        }
+    }
+}
+
+.search-page-section.search-section.Orange {
+    .search-input-section {
+        button {
+            color: #fff;
+            background-color: #ff9900;
+        }
+    }
+}
+
+.search-page-section.search-section.LightPink {
+    .search-input-section {
+        button {
+            color: #fff;
+            background-color: #FFB6C1;
+        }
+    }
+}
+
+.search-page-section.search-section.Magenta {
+    .search-input-section {
+        button {
+            color: #fff;
+            background-color: #8666b8;
+        }
+    }
+}

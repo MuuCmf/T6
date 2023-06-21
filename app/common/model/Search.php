@@ -48,4 +48,34 @@ class Search extends Base
             return $res;
         }
     }
+
+    /**
+     * 单条数据处理
+     */
+    public function handle($data)
+    {
+        if(!empty($data['content'])){
+            $data['content'] = json_decode($data['content'], true);
+            $cover = $data['content']['cover'];
+            if(!empty($cover)){
+                //处理缩微图
+                $cover_arr['cover_200'] = get_thumb_image($cover, 200, 200);
+                $cover_arr['cover_300'] = get_thumb_image($cover, 300, 300);
+                $cover_arr['cover_400'] = get_thumb_image($cover, 400, 400);
+                $cover_arr['cover_original'] = get_attachment_src($cover);
+
+                $data['content'] = array_merge($data['content'], $cover_arr);
+            }
+        }
+        if(!empty($data['create_time'])){
+            $data['create_time_str'] = time_format($data['create_time']);
+            $data['create_time_friendly_str'] = friendly_date($data['create_time']);
+        }
+        if(!empty($data['update_time'])){
+            $data['update_time_str'] = time_format($data['update_time']);
+            $data['update_time_friendly_str'] = friendly_date($data['update_time']);
+        }
+
+        return $data;
+    }
 }
