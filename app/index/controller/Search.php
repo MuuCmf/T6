@@ -58,4 +58,12 @@ class Search extends Common
 
         return View::fetch();
     }
+
+    /**
+     * 搜索弹出框
+     */
+    public function popup()
+    {
+        return View::fetch();
+    }
 }

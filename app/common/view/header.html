@@ -50,12 +50,31 @@
                 </ul>
             </div>
             <div class="attr-nav">
+                <div class="search-header">
+                    <i class="search-header-btn fa fa-search"></i>
+                    <form action="{:url('index/Search/index')}" method="get" class="header-search-popup" role="form">
+                        <div class="input-group input-control search-box has-icon-left">
+                            <input type="text" class="form-control search-input" placeholder="请输入搜索关键字" name="keyword" value="{$keyword|default=''}">
+                            <label for="inputSearchExample1" class="input-control-icon-left search-icon"><i class="icon icon-search"></i></label>
+                            <span class="input-group-btn">
+                            <button class="btn btn-default" type="submit">搜索</button>
+                            </span>
+                        </div>
+                    </form>
+                    <script>
+                        $(function(){
+                            $('.search-header-btn').click(function(e){
+                                $('.header-search-popup').fadeToggle();
+                            });
+                        })
+                    </script>
+                </div>
                 {if condition="is_login()"}
                 <div class="information" >
                     <span class="information-quantity hidden">
                         
                     </span>
-                    <a class="information-icon"data-remote="{:url('ucenter/message/modal')}" data-show-header="false" data-class-name="message-modal" data-toggle="modal">
+                    <a class="information-icon" data-remote="{:url('ucenter/message/modal')}" data-show-header="false" data-class-name="message-modal" data-toggle="modal">
                         <i class="iconfont">&#xe741;</i>
                     </a>
                 </div>
@@ -107,7 +126,7 @@
                     })
                 </script>
                 {else/}
-                <ul>
+                <ul class="no-login clearfix">
                     <li class="login verticalbar">
                         <!-- 弹框 -->
                         {if condition="$open_quick_login"}

@@ -78,7 +78,7 @@
               top: 78px;
               left: -35px;
               box-shadow: 0 0 3px #eee;
-  
+
               &::before {
                 content: '';
                 display: block;
@@ -92,25 +92,25 @@
                 border-style: solid;
                 border-color: transparent transparent #fff;
               }
-  
+
               >li {
                 height: 46px;
                 text-align: center;
-  
+
                 >a {
                   line-height: 46px;
                   font-size: 16px;
                   color: #555555;
                 }
               }
-  
+
               >li:hover {
                 background: #f5f8fa;
-  
+
                 >a {
                   color: #222222;
                   background: #f5f8fa;
-  
+
                 }
               }
             }
@@ -141,10 +141,71 @@
         height: 60px;
         max-width: 265px;
 
+        .search-header {
+          float: left;
+          line-height: 42px;
+          padding: 10px 20px 10px 0;
+          cursor: pointer;
+          position: relative;
+          i {
+            color: #aaa;
+            font-size: 18px;
+          }
+
+          .header-search-popup {
+            display: none;
+            position: absolute;
+            width: 460px;
+            height: 58px;
+            top: 0;
+            left: -480px;
+
+            .input-group {
+              width: 460px;
+              margin: 0 auto;
+              padding: 7px 0;
+              .search-input {
+                border: 0;
+                background-color: #f8f8f8;
+                box-shadow: none;
+                height: 46px;
+                line-height: 36px;
+                border-radius: 20px;
+                border-top-right-radius: 0;
+                border-bottom-right-radius: 0;
+                padding-left: 38px;
+              }
+
+              .search-icon {
+                left: 5px;
+                top: 15px;
+
+                .icon {
+                  font-size: 16px;
+                }
+              }
+
+              .input-group-btn {
+                button {
+                  border: 0px;
+                  padding: 13px 25px;
+                  border-radius: 20px;
+                  border-top-left-radius: 0;
+                  border-bottom-left-radius: 0;
+
+                  &:focus {
+                    outline: 0;
+                  }
+                }
+              }
+            }
+          }
+        }
+
         .information {
           float: left;
           position: relative;
-          padding: 10px 30px 10px 0;
+          padding: 10px 20px 10px 0;
 
           .information-quantity {
             display: inline-block;
@@ -171,7 +232,7 @@
 
             .iconfont {
               color: #aaa;
-              font-size: 24px;
+              font-size: 20px;
             }
           }
         }
@@ -254,8 +315,9 @@
           }
         }
 
-        ul {
+        ul.no-login {
           list-style: none;
+          width: 125px;
 
           .login {
             float: left;
