@@ -1,7 +1,7 @@
 <?php
 namespace app\articles\model;
 
-use app\articles\model\ArticlesBase as Base;
+use app\common\model\Base;
 use think\facade\Cache;
 use app\articles\logic\Config as ConfigLogic;
 

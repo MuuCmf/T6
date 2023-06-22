@@ -7,6 +7,7 @@ namespace app\index\controller;
 use think\facade\View;
 use app\common\controller\Common;
 use app\common\model\Search as SearchModel;
+use app\common\model\Keywords as KeywordsModel;
 
 class Search extends Common
 {
@@ -17,13 +18,30 @@ class Search extends Common
 
     public function index()
     {
-        $keyword = input('keyword','','text');
+        $uid = get_uid();
+        $keyword = trim(input('keyword','','text'));
         View::assign('keyword',$keyword);
 
         // 初始化数据
         $lists = [];
         $pager = '';
         if(!empty($keyword)){
+            // 记录搜索关键字
+            $keyword_data = [
+                'uid' => $uid,
+                'shopid' => $this->shopid,
+                'keyword' => $keyword,
+                'status' => 1
+            ];
+            // 查询该用户是否查询过
+            $has_keyword = (new KeywordsModel)->getDataByMap($keyword_data);
+            if($has_keyword){
+                $keyword_data['id'] = $has_keyword['id'];
+            }
+            // 写入数据
+            (new KeywordsModel)->edit($keyword_data);
+            
+            // 查询数据
             // 排序方式
             $order_field = input('order_field', 'update_time', 'text');
             View::assign('order_field', $order_field);
@@ -56,14 +74,6 @@ class Search extends Common
         //dump($lists);
         $this->setTitle('搜索');
 
-        return View::fetch();
-    }
-
-    /**
-     * 搜索弹出框
-     */
-    public function popup()
-    {
         return View::fetch();
     }
 }

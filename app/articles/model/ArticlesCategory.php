@@ -1,7 +1,7 @@
 <?php
 namespace app\articles\model;
 
-use app\articles\model\ArticlesBase as Base;
+use app\common\model\Base;
 use app\articles\logic\Category as CategoryLogic;
 
 class ArticlesCategory extends Base
