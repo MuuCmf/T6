@@ -273,3 +273,15 @@ CREATE TABLE `muucmf_wechat_work_config` (
 
 INSERT INTO `muucmf_menu` (`id`, `title`, `pid`, `sort`, `url`, `hide`, `type`, `tip`, `group`, `is_dev`, `icon`, `module`) VALUES
 ('C3F2915A-B874-B3DB-3FD2-8743E5ABF242', '企业微信配置', 'A4650B98-DAD4-8194-030C-1B2AB4F35CBA', 26, 'channel/admin.WechatWork/config', 0, 0, '', '企业微信', 0, 'wechat', 'admin');
+
+CREATE TABLE IF NOT EXISTS  `muucmf_search` (
+  `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+  `shopid` int(11) UNSIGNED NOT NULL COMMENT '店铺ID',
+  `app` varchar(64) NOT NULL COMMENT '应用标识',
+  `info_id` int(11) UNSIGNED NOT NULL COMMENT '数据ID',
+  `info_type` varchar(64) NOT NULL COMMENT '数据类型',
+  `content` text NOT NULL COMMENT '内容json',
+  `create_time` int(11) UNSIGNED NOT NULL COMMENT '创建时间',
+  `update_time` int(11) UNSIGNED NOT NULL COMMENT '更新时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='搜索索引数据';

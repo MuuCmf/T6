@@ -4798,7 +4798,22 @@ INSERT INTO `muucmf_score_type` (`id`, `title`, `status`, `unit`) VALUES
 (1, '积分', 1, '分'),
 (2, '威望', 1, '点');
 
--- --------------------------------------------------------
+
+--
+-- 表的结构 `muucmf_search`
+--
+DROP TABLE IF EXISTS `muucmf_search`;
+CREATE TABLE IF NOT EXISTS  `muucmf_search` (
+  `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+  `shopid` int(11) UNSIGNED NOT NULL COMMENT '店铺ID',
+  `app` varchar(64) NOT NULL COMMENT '应用标识',
+  `info_id` int(11) UNSIGNED NOT NULL COMMENT '数据ID',
+  `info_type` varchar(64) NOT NULL COMMENT '数据类型',
+  `content` text NOT NULL COMMENT '内容json',
+  `create_time` int(11) UNSIGNED NOT NULL COMMENT '创建时间',
+  `update_time` int(11) UNSIGNED NOT NULL COMMENT '更新时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='搜索索引数据';
 
 --
 -- 表的结构 `muucmf_seo_rule`
