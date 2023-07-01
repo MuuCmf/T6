@@ -214,10 +214,15 @@ class WechatOfficialAccount extends Api
                     return $this->error('没有授权信息');
                 }
                 $oauth_info = json_decode($oauth_info, true);
+                //开放平台ID
+                $unionid = '';
+                if(isset($oauth_info['unionid'])){
+                    $unionid = $oauth_info['unionid'];
+                }
                 //处理用户数据
                 $data = [
                     'openid'    =>  $oauth_info['openid'],
-                    'unionid'   =>  $oauth_info['unionid'],
+                    'unionid'   =>  $unionid,
                     'oauth_type' =>  'weixin_h5',
                     'shopid'    =>  $this->shopid,
                     'nickname'  =>  rand_nickname(config('system.USER_NICKNAME_PREFIX')),
