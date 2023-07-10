@@ -257,7 +257,7 @@ INSERT INTO `muucmf_extend_config` (`id`, `name`, `type`, `title`, `group`, `ext
 (51, 'WX_PAY_WITHDRAW_PLATFORM_SERIAL', 'string', '平台证书序列号', 6, '', '', 0, 0, 1, '', 0);
 
 CREATE TABLE `muucmf_wechat_work_config` (
-  `id` int(11) NOT NULL COMMENT '主键ID',
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键ID',
   `shopid` int(11) NOT NULL COMMENT '商户ID',
   `title` varchar(64) NOT NULL COMMENT '企业名称',
   `description` varchar(500) NOT NULL COMMENT '描述',
@@ -285,3 +285,5 @@ CREATE TABLE IF NOT EXISTS  `muucmf_search` (
   `update_time` int(11) UNSIGNED NOT NULL COMMENT '更新时间',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='搜索索引数据';
+
+ALTER TABLE `muucmf_wechat_work_config` CHANGE `id` `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键ID';

@@ -5055,7 +5055,7 @@ CREATE TABLE IF NOT EXISTS `muucmf_wechat_mp_config` (
 --
 DROP TABLE IF EXISTS `muucmf_wechat_work_config`;
 CREATE TABLE `muucmf_wechat_work_config` (
-  `id` int(11) NOT NULL COMMENT '主键ID',
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键ID',
   `shopid` int(11) NOT NULL COMMENT '商户ID',
   `title` varchar(64) NOT NULL COMMENT '企业名称',
   `description` varchar(500) NOT NULL COMMENT '描述',
