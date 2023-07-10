@@ -33,6 +33,6 @@ class WechatWorkConfig extends Base
      */
     public function callbackUrl($shopid = 0)
     {
-        return url('channel/wechatwork/callback', ['shopid' => $shopid], false, true);
+        return url('channel/work/callback', ['shopid' => $shopid], false, true);
     }
 }
