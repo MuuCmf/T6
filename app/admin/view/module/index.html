@@ -76,7 +76,7 @@
                                 </div>
                                 <div class="app-manage">
                                     <a class="btn btn-primary " href="{:url('edit', ['id' => $vo['id']])}">编辑</a>
-                                    <a class="btn btn-warning" href="{:url('menu', ['app' => $vo['name']])}">权限菜单</a>
+                                    <a class="btn btn-warning" href="{:url('menu', ['app' => $vo['name']])}">权限菜单/接口</a>
                                     <button type="button" class="btn btn-danger" data-remote="{:url('uninstall', ['id' => $vo['id']])}" data-toggle="modal" data-size="sm">卸载</a>
                                 </div>
                             {else/}
@@ -84,7 +84,7 @@
                                 <a class="btn btn-block btn-default disabled" href="{:url($vo.entry)}">进入应用</a>
                                 <div class="app-manage">
                                     <a class="btn btn-primary " href="{:url('edit', ['id' => $vo['id']])}">编辑</a>
-                                    <a class="btn btn-warning" href="{:url('menu', ['app' => $vo['name']])}">权限菜单</a>
+                                    <a class="btn btn-warning" href="{:url('menu', ['app' => $vo['name']])}">权限菜单/接口</a>
                                     {if $vo.source=='local'}
                                     <button type="button" class="btn btn-success" data-remote="{:url('install', ['name' => $vo['name']])}" data-toggle="modal" data-size="sm">安装</a>
                                     {else}
