@@ -147,6 +147,7 @@
           padding: 10px 20px 10px 0;
           cursor: pointer;
           position: relative;
+
           i {
             color: #aaa;
             font-size: 18px;
@@ -164,6 +165,7 @@
               width: 460px;
               margin: 0 auto;
               padding: 7px 0;
+
               .search-input {
                 border: 0;
                 background-color: #f8f8f8;
@@ -448,7 +450,7 @@
 
       .registration {
         >a {
-          color: #fff;
+          color: #fff !important;
         }
       }
     }
