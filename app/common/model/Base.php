@@ -73,8 +73,8 @@ class Base extends Model
             
             $model = $this->name;
             $app = strtolower(App('http')->getName());
-
-            if(strpos(strtolower($model), $app) !== false && !empty($data['title'] && !empty($data['description']) && isset($data['cover']))){
+            
+            if(strpos($data && strtolower($model), $app) !== false && !empty($data['title'] && !empty($data['description']) && isset($data['cover']))){
                 // 事件监听
                 Event::listen('searchIndex', 'app\common\listener\SearchIndex');
                 $search_index_data['shopid'] = $data['shopid'];

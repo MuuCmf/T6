@@ -1,4 +1,5 @@
 <?php
+
 namespace app\api\controller;
 
 use app\common\controller\Api;
@@ -7,14 +8,14 @@ use app\common\logic\Evaluate as EvaluateLogic;
 use app\common\model\Orders as OrdersModel;
 use \app\common\logic\Orders as OrdersLogic;
 
-class Evaluate extends Api 
+class Evaluate extends Api
 {
     protected $EvaluateModel;
     protected $EvaluateLogic;
     protected $OrdersModel;
     protected $OrdersLogic;
     protected $middleware = [
-        'app\\common\\middleware\\CheckAuth' => ['except' => 'lists']
+        'app\\common\\middleware\\CheckAuth' => ['except' => ['lists', 'statistical']]
     ];
     function __construct()
     {
@@ -25,17 +26,28 @@ class Evaluate extends Api
         $this->OrdersLogic = new OrdersLogic();
     }
 
+    public function statistical()
+    {
+        $shopid = $this->shopid;
+        $app = input('app', '', 'text');
+        $type = input('type', '', 'text');
+        $type_id = intval(input('type_id', 0, 'intval'));
+        $res = $this->EvaluateModel->getStatistical($shopid, $type, $type_id);
+
+        return $this->success('SUCCESS', $res);
+    }
+
     public function lists()
     {
         $app = input('get.app');
         $type = input('get.type');
         $type_id = intval(input('get.type_id'));
         $map = [
-            ['shopid','=',$this->shopid],
-            ['status','=',1],
-            ['app','=',$app],
-            ['type','=',$type],
-            ['type_id','=',$type_id]
+            ['shopid', '=', $this->shopid],
+            ['status', '=', 1],
+            ['app', '=', $app],
+            ['type', '=', $type],
+            ['type_id', '=', $type_id]
         ];
         $rows = input('rows', 10, 'intval');
         $order_field = input('order_field', 'id', 'text');
@@ -43,7 +55,7 @@ class Evaluate extends Api
         $order =  $order_field . ' ' . $order_type;
         $fields = '*';
         $lists = $this->EvaluateModel->getListByPage($map, $order, $fields, $rows);
-        foreach ($lists as &$item){
+        foreach ($lists as &$item) {
             $item = $this->EvaluateLogic->formatData($item);
         }
         unset($item);
@@ -64,29 +76,29 @@ class Evaluate extends Api
         $value = input('value');
         $uid = get_uid();
         $id = 0;
-        if(empty($content)){
+        if (empty($content)) {
             return $this->error('评价内容不能为空');
         }
         //获取订单数据
         $order_data = $this->OrdersModel->getDataByOrderNo($order_no);
         //检测是否已评论
         $evaluate_map = [];
-        $evaluate_map[] = ['uid','=',$uid];
-        $evaluate_map[] = ['order_no','=',$order_no];
-        $evaluate_map[] = ['shopid','=',$this->shopid];
+        $evaluate_map[] = ['uid', '=', $uid];
+        $evaluate_map[] = ['order_no', '=', $order_no];
+        $evaluate_map[] = ['shopid', '=', $this->shopid];
         $is_have = $this->EvaluateModel->getDataByMap($evaluate_map);
-        if($is_have && $is_have['status'] == 1){
-            if($is_have['create_time'] != $is_have['update_time']){
+        if ($is_have && $is_have['status'] == 1) {
+            if ($is_have['create_time'] != $is_have['update_time']) {
                 $this->error('您已经评价过了');
             }
             $id = $is_have['id'];
         }
         //处理评价图片
-        if(!empty($images)){
+        if (!empty($images)) {
             $images = $images;
             $images = explode(',', $images);
         }
-        
+
         //提交
         $data = [
             'id' => $id,
@@ -102,7 +114,7 @@ class Evaluate extends Api
             'status' => 1
         ];
         $res = $this->EvaluateModel->edit($data);
-        if ($res){
+        if ($res) {
             //更改订单评价状态
             $order_edit_data = [
                 'id' => $order_data['id'],
@@ -120,12 +132,12 @@ class Evaluate extends Api
         $order_no = input('get.order_no');
         //获取评价数据
         $map = [
-            ['shopid','=',$this->shopid],
-            ['order_no','=',$order_no],
-            ['uid','=',$uid]
+            ['shopid', '=', $this->shopid],
+            ['order_no', '=', $order_no],
+            ['uid', '=', $uid]
         ];
         $result = $this->EvaluateModel->getDataByMap($map);
         $result = $this->EvaluateLogic->formatData($result);
-        return $this->success('SUCCESS',$result);
+        return $this->success('SUCCESS', $result);
     }
 }
