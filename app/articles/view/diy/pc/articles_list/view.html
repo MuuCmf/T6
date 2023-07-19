@@ -9,7 +9,7 @@
 					{if $vars['dev'] == true}
 					查看更多
 					{else/}
-					<a href="{:url('/articles/lists')}" title="更多文章">
+					<a href="{:url('/articles/lists', ['category_id'=>$vars['data']['category_id'], 'order_field'=>$vars['data']['order_field'], 'order_type'=>$vars['data']['order_type']])}" title="更多文章">
 						查看更多
 					</a>
 					{/if}
