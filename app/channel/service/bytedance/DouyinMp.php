@@ -8,7 +8,8 @@ use think\Exception;
 
 class DouyinMp
 {
-    private $title;
+    public $title;
+    private $shopid;
     private $appid;
     private $secret;
     private $token;
@@ -16,13 +17,17 @@ class DouyinMp
     private $alipayMerchantUid;
     private $weixinMerchantUid;
     private $api;
+    public $config;
 
     /**
      * 构造配置项
      **/
     public function __construct()
     {
-        $this->api = 'https://developer.toutiao.com';
+        // 沙箱环境
+        $this->api = 'https://open-sandbox.douyin.com';
+        // 生产环境
+        //$this->api = 'https://developer.toutiao.com';
         //服务配置文件
         $config = $this->config = $this->initConfig();
 
