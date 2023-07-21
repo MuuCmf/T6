@@ -383,7 +383,7 @@ class DouyinMp
     /**
      * post请求
      **/
-    private function sendPost($url,$data)
+    protected function sendPost($url,$data)
     {
         $post_data = json_encode($data);
         $options = array(
@@ -402,7 +402,7 @@ class DouyinMp
     /**
      * 13位时间戳
      */
-    private function getMillisecond() { 
+    protected function getMillisecond() { 
         list($t1, $t2) = explode(' ', microtime()); 
         return (int)sprintf('%.0f',(floatval($t1)+floatval($t2))*1000); 
     } 
