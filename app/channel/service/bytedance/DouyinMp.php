@@ -26,9 +26,9 @@ class DouyinMp
     public function __construct()
     {
         // 沙箱环境
-        $this->api = 'https://open-sandbox.douyin.com';
+        //$this->api = 'https://open-sandbox.douyin.com';
         // 生产环境
-        //$this->api = 'https://developer.toutiao.com';
+        $this->api = 'https://developer.toutiao.com';
         //服务配置文件
         $config = $this->config = $this->initConfig();
 
@@ -79,7 +79,7 @@ class DouyinMp
     
             $result = $this->sendPost('/api/apps/v2/token',$params);
             $result = json_decode($result, true);
-            if($result['err_no'] == 0){
+            if(isset($result['err_no']) && $result['err_no'] == 0){
                 Cache::set(request()->host() . '_bytedance_access_token_' . $this->shopid, $result['data']['access_token'], 3600);
                 return $result['data']['access_token'];
             }
