@@ -8,16 +8,17 @@ use think\Exception;
 
 class DouyinMp
 {
-    public $title;
-    private $shopid;
-    private $appid;
-    private $secret;
-    private $token;
-    private $salt;
-    private $alipayMerchantUid;
-    private $weixinMerchantUid;
-    private $api;
-    public $config;
+    protected $title;
+    protected $shopid;
+    protected $appid;
+    protected $secret;
+    protected $token;
+    protected $salt;
+    protected $alipayMerchantUid;
+    protected $weixinMerchantUid;
+    protected $api;
+    protected $config;
+    protected $accessToken;
 
     /**
      * 构造配置项
