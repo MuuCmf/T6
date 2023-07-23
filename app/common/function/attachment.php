@@ -9,12 +9,12 @@ if (!function_exists('single_image_upload')) {
      * @param  [type] $image     [description]
      * @return [type]            [description]
      */
-    function single_image_upload($name, $image, $input = false){
+    function single_image_upload($name, $image, $input = false, $enforce = 'auto'){
 
         $image_path = get_attachment_src($image);
         $upload_picture = '上传图片';
         $delete_picture = '删除';
-        $api = url('api/file/upload');
+        $api = url('api/file/upload', ['enforce' => $enforce]);
         //兼容name数组形式
         $input_name = $name;
 
