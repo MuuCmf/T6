@@ -66,8 +66,10 @@ class Attachment extends Base
                 $data = $file_info->toArray();
                 $file_res['code'] = 200;
                 $file_res['filename'] = $data['filename'];
+                $file_res['type'] = $data['type'];
                 $file_res['ext'] = $data['ext'];
                 $file_res['size'] = $data['size'];
+                $file_res['duration'] = $data['duration'];
                 $file_res['attachment'] = $data['attachment'];
                 $file_res['url'] = get_attachment_src($data['attachment']);
             }else{
@@ -129,7 +131,17 @@ class Attachment extends Base
                 // 成功上传后 获取上传信息
                 $data['attachment'] = $savename;
                 $data['attachment'] = str_replace("\\","/",$data['attachment']);
-                
+
+                // 获取音视频时长
+                $data['duration'] = null;
+                if($data['type'] == 'video' || $data['type'] == 'audio'){
+                    $local_path = app()->getRootPath() . 'public/attachment/' . $data['attachment'];
+                    $duration = $this->getMediaDuration($local_path);
+                    if($duration){
+                        $data['duration'] = $duration['second'];
+                    }
+                }
+
                 // 阿里云OSS
                 if($driver == 'aliyun') {
                     $oss_res = $this->ossUpload('attachment/' . $data['attachment'], $file->getPathname());
@@ -167,11 +179,32 @@ class Attachment extends Base
                 $file_res['filename'] = $data['filename'];
                 $file_res['ext'] = $data['ext'];
                 $file_res['size'] = $data['size'];
+                $file_res['duration'] = $data['duration'];
                 $file_res['attachment'] = $data['attachment'];
                 $file_res['url'] = get_attachment_src($data['attachment']);
             }
         }
         return $file_res;
+    }
+
+    /**
+     * @return array|false
+     */
+    public function getMediaDuration($loacl_path)
+    {
+        include_once(root_path() . 'extend/getid3/getid3.php');
+        $getid3 = new \getID3();
+
+        $mediaInfo = $getid3->analyze($loacl_path);
+        if (!empty($mediaInfo) && isset($mediaInfo['playtime_seconds'])){
+            // 时长 分/秒
+            $time['minute_second'] = $mediaInfo['playtime_string'] ?? '0';
+            // 时长 秒
+            $time['second'] = $mediaInfo['playtime_seconds'] ?? '0:0';
+            return $time;
+        }else{
+            return false;
+        }
     }
 
     /**

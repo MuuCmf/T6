@@ -144,6 +144,7 @@ CREATE TABLE IF NOT EXISTS `muucmf_attachment` (
   `mime` char(128) NOT NULL DEFAULT '' COMMENT 'mimeType',
   `ext` char(20) NOT NULL DEFAULT '' COMMENT '扩展名',
   `size` bigint(20) UNSIGNED NOT NULL DEFAULT '0' COMMENT '附件大小',
+  `duration` DOUBLE NULL COMMENT '音视频时长，单位：秒',
   `md5` varchar(255) NOT NULL DEFAULT '' COMMENT 'MD5',
   `sha1` varchar(255) NOT NULL DEFAULT '' COMMENT 'SHA1',
   `driver` varchar(32) NOT NULL DEFAULT '' COMMENT '上传驱动 local\\oss\\cos\\tcvod',

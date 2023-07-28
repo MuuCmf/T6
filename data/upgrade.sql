@@ -287,3 +287,5 @@ CREATE TABLE IF NOT EXISTS  `muucmf_search` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='搜索索引数据';
 
 ALTER TABLE `muucmf_wechat_work_config` CHANGE `id` `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键ID';
+
+ALTER TABLE `muucmf_attachment` ADD `duration` DOUBLE NULL COMMENT '音视频时长，单位：秒' AFTER `size`;
