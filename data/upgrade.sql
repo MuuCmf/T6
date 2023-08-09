@@ -289,3 +289,7 @@ CREATE TABLE IF NOT EXISTS  `muucmf_search` (
 ALTER TABLE `muucmf_wechat_work_config` CHANGE `id` `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键ID';
 
 ALTER TABLE `muucmf_attachment` ADD `duration` DOUBLE NULL COMMENT '音视频时长，单位：秒' AFTER `size`;
+
+ALTER TABLE `muucmf_evaluate` CHANGE `content` `content` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '评价内容';
+
+ALTER TABLE `muucmf_evaluate` CHANGE `add_content` `add_content` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '追加评论 json格式{images:content:}';
