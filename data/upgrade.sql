@@ -293,3 +293,5 @@ ALTER TABLE `muucmf_attachment` ADD `duration` DOUBLE NULL COMMENT '音视频时
 ALTER TABLE `muucmf_evaluate` CHANGE `content` `content` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '评价内容';
 
 ALTER TABLE `muucmf_evaluate` CHANGE `add_content` `add_content` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '追加评论 json格式{images:content:}';
+
+ALTER TABLE `muucmf_vip` CHANGE `shopid` `shopid` INT(11) NOT NULL DEFAULT '0' COMMENT '平台ID';
