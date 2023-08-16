@@ -119,6 +119,7 @@ class Evaluate extends Api
             $order_edit_data = [
                 'id' => $order_data['id'],
                 'status' => 5, //已评价
+                'evaluate' => 1
             ];
             $this->OrdersModel->edit($order_edit_data);
             return $this->success('提交成功', $res);
