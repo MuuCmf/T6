@@ -1,16 +1,18 @@
 <?php
+
 namespace app\channel\service\wechat;
+
 use app\channel\model\WechatConfig;
 use EasyWeChat\Factory;
 use think\Exception;
-use think\facade\Cache;
 
 /**
  * 微信公众号类
  * Class OfficialAccount
  * @package app\common\service\wechat
  */
-class OfficialAccount extends Wechat {
+class OfficialAccount extends Wechat
+{
     function __construct()
     {
         $shopid = request()->param('shopid') ?? 0;
@@ -25,7 +27,7 @@ class OfficialAccount extends Wechat {
     {
         //获取配置信息
         $data = (new WechatConfig())->getWechatConfigByShopId($this->shopid);
-        if (empty($data)){
+        if (empty($data)) {
             throw  new Exception('公众号配置文件不存在');
         }
         return [
@@ -44,7 +46,8 @@ class OfficialAccount extends Wechat {
     /**
      * @title 公众号授权验证
      */
-    public function serverOAath(){
+    public function serverOAath()
+    {
         $response = $this->app->server->serve();
         $response->send();
         exit();
@@ -54,7 +57,8 @@ class OfficialAccount extends Wechat {
      * @title 获取微信服务器IP
      * @return mixed
      */
-    public function getWechatServerIps(){
+    public function getWechatServerIps()
+    {
         return $this->app->base->getValidIps();
     }
 
@@ -62,7 +66,8 @@ class OfficialAccount extends Wechat {
      * @title 读取（查询）已设置菜单
      * @return mixed
      */
-    public function getMenu(){
+    public function getMenu()
+    {
         return $this->app->menu->list();
     }
 
@@ -70,7 +75,8 @@ class OfficialAccount extends Wechat {
      * @title 获取当前菜单
      * @return mixed
      */
-    public function currentMenu(){
+    public function currentMenu()
+    {
         return $this->app->menu->current();
     }
 
@@ -79,7 +85,8 @@ class OfficialAccount extends Wechat {
      * @param $menu
      * @return mixed
      */
-    public function createMenu($menu){
+    public function createMenu($menu)
+    {
 
         $menu = $this->handleMenu($menu);
         return $this->app->menu->create($menu);
@@ -88,15 +95,16 @@ class OfficialAccount extends Wechat {
     /**
      * @title 处理菜单数据
      */
-    protected function handleMenu($menu){
+    protected function handleMenu($menu)
+    {
         $new_menu = [];
-        foreach ($menu as $m){
+        foreach ($menu as $m) {
             $item = [];
             $item['name'] = $m['name'];
-            if (isset($m['sub_button']) && count($m['sub_button']) > 0){
+            if (isset($m['sub_button']) && count($m['sub_button']) > 0) {
                 $item['sub_button'] = $this->handleMenu($m['sub_button']);
-            }else{
-                switch ($m['type']){
+            } else {
+                switch ($m['type']) {
                     case 'view':
                         $item['url'] = $m['url'];
                         break;
@@ -111,7 +119,7 @@ class OfficialAccount extends Wechat {
                 }
                 $item['type'] = $m['type'];
             }
-            array_push($new_menu,$item);
+            array_push($new_menu, $item);
         }
         return $new_menu;
     }
@@ -120,7 +128,8 @@ class OfficialAccount extends Wechat {
      * @title 获取当前设置的回复规则
      * @return mixed
      */
-    public function currentMessage(){
+    public function currentMessage()
+    {
         return $this->app->auto_reply->current();
     }
 
@@ -131,7 +140,8 @@ class OfficialAccount extends Wechat {
      * @param int $count 返回素材的数量，可选，默认 20, 取值在 1 到 20 之间
      * @return mixed
      */
-    public function getMaterialList($type, $offset = 0 ,$count = 20){
+    public function getMaterialList($type, $offset = 0, $count = 20)
+    {
         return $this->app->material->list($type, $offset, $count);
     }
 
@@ -140,7 +150,8 @@ class OfficialAccount extends Wechat {
      * @param $media_id
      * @return mixed
      */
-    public function getMaterial($media_id){
+    public function getMaterial($media_id)
+    {
         return $this->app->material->get($media_id);
     }
 
@@ -149,13 +160,14 @@ class OfficialAccount extends Wechat {
      * @param string $target_url
      * @throws Exception
      */
-    public function oauth(array $params = []){
+    public function oauth(array $params = [])
+    {
         //授权回调参数处理
-        if ($params){
+        if ($params) {
             //重新初始化
             $config = $this->initConfig();
             $config['oauth']['callback'] .= "?muu=muucmf";
-            foreach ($params as $key => $item){
+            foreach ($params as $key => $item) {
                 $config['oauth']['callback'] .= "&{$key}={$item}";
             }
         }
@@ -167,7 +179,8 @@ class OfficialAccount extends Wechat {
      * @title 获取access token
      * @return mixed
      */
-    public function getToken(){
+    public function getToken()
+    {
         return $this->app->access_token->getToken();
     }
 
@@ -178,10 +191,11 @@ class OfficialAccount extends Wechat {
      * @param $expiration_time 过期时间
      * @return mixed
      */
-    public function createQrcode($content ,$expiration_time = 0){
-        if ($expiration_time > 0){
-            $qrcode = $this->app->qrcode->temporary($content ,$expiration_time);
-        }else{
+    public function createQrcode($content, $expiration_time = 0)
+    {
+        if ($expiration_time > 0) {
+            $qrcode = $this->app->qrcode->temporary($content, $expiration_time);
+        } else {
             $qrcode = $this->app->qrcode->forever($content);
         }
         return $qrcode;
@@ -192,7 +206,8 @@ class OfficialAccount extends Wechat {
      * @param $ticket
      * @return mixed
      */
-    public function getQrcodeUrl($ticket){
+    public function getQrcodeUrl($ticket)
+    {
         return $this->app->qrcode->url($ticket);
     }
 
@@ -201,14 +216,16 @@ class OfficialAccount extends Wechat {
      * @param $data
      * @return mixed
      */
-    public function sendTemplateMsg($data){
+    public function sendTemplateMsg($data)
+    {
         return $this->app->template_message->send($data);
     }
 
     /**
      * 获取单个用户信息
      */
-    public function getUserByOpenid($openid){
+    public function getUserByOpenid($openid)
+    {
         return $this->app->user->get($openid);
     }
 }

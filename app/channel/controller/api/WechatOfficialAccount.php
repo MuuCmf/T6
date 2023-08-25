@@ -335,9 +335,13 @@ class WechatOfficialAccount extends Api
                     'onMenuShareAppMessage'
                 ];
             }
-            $app->jssdk->setUrl($url);
-            $jssdk = $app->jssdk->buildConfig($apis);
-            return $this->success('success', json_decode($jssdk, true));
+            try {
+                $app->jssdk->setUrl($url);
+                $jssdk = $app->jssdk->buildConfig($apis);
+                return $this->success('success', json_decode($jssdk, true));
+            } catch (Exception $e) {
+                return $this->error($e->getMessage());
+            }
         }
     }
 }
