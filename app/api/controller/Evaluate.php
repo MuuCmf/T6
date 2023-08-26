@@ -32,7 +32,7 @@ class Evaluate extends Api
         $app = input('app', '', 'text');
         $type = input('type', '', 'text');
         $type_id = intval(input('type_id', 0, 'intval'));
-        $res = $this->EvaluateModel->getStatistical($shopid, $type, $type_id);
+        $res = $this->EvaluateModel->getStatistical($shopid, $app, $type, $type_id);
 
         return $this->success('SUCCESS', $res);
     }
