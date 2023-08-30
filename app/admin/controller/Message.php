@@ -70,6 +70,7 @@ class Message extends Admin
 
         if (request()->isPost()) {
             $data = input();
+            $data['shopid'] = $this->shopid;
             // 数据验证
             try {
                 validate(Common::class)->scene('message_type')->check([
