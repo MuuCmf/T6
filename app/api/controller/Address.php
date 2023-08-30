@@ -79,7 +79,8 @@ class Address extends Api
     {
         if (request()->isPost()) {
             $param = request()->post();
-            $uid = request()->uid;
+            $uid = get_uid();
+            $first = !empty($param['first']) ? $param['first'] : 1;
             $data = [
                 'id' => $param['id'],
                 'uid' => $uid,
@@ -90,7 +91,7 @@ class Address extends Api
                 'pos_city' => $param['pos_city'],
                 'pos_district' => $param['pos_district'],
                 'address' => $param['address'],
-                'first' => $param['first'], //默认地址
+                'first' => $first, //默认地址
                 'status' => 1
             ];
 

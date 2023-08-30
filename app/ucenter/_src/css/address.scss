@@ -11,5 +11,13 @@
 
 
 .address-edit-form {
-    
+    .position {
+
+        .choose-area {
+            select {
+                display: inline;
+                width: auto;
+            }
+        }
+    }
 }

@@ -2,6 +2,7 @@
 <div class="address-edit-form">
     <form class="form-horizontal" data-type="address-edit" action="{:url('api/address/edit')}">
         <input type="hidden" name="id" value="{$data.id|default=0}">
+        <input type="hidden" name="first" value="{$data.first|default=1}">
         <div class="form-group">
             <label for="" class="col-sm-2">收货人</label>
             <div class="col-sm-10">
@@ -19,15 +20,15 @@
             <div class="col-sm-10">
                 <div class="choose-area">
                     <!-- 省份选择 -->
-                    <select id="province" class="form-control" name="province" data-value="{$data['province']|default=''}">
+                    <select id="province" class="form-control" name="pos_province" data-value="{$data['pos_province']|default=''}">
                         <option>请选择省份</option>
                     </select>
                     <!-- 城市选择 -->
-                    <select id="city" class="form-control" name="city" data-value="{$data['city']|default=''}">
+                    <select id="city" class="form-control" name="pos_city" data-value="{$data['pos_city']|default=''}">
                         <option>请选择城市</option>
                     </select>
                     <!-- 区县选择 -->
-                    <select id="district" class="form-control" name="district" data-value="{$data['district']|default=''}">
+                    <select id="district" class="form-control" name="pos_district" data-value="{$data['pos_district']|default=''}">
                         <option>请选择县区</option>
                     </select>
                 </div>
