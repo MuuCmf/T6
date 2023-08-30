@@ -14,12 +14,12 @@
             <div id="center" class="address-lists">
                 <h4 class="lists-title">我的地址</h4>
                 <div class="add-btn-section clearfix">
-                    <button type="button" class="btn btn-warning" data-remote="{:url('ucenter/address/edit')}" data-toggle="modal">新增地址</button>
+                    <button type="button" class="btn btn-primary" data-remote="{:url('ucenter/address/edit')}" data-toggle="modal">新增地址</button>
                 </div>
                 <!--列表容器-->
                 <div class="items">
                     {foreach $lists as $k=>$v}
-                    <div class="item margin-top-10 address-list-box" data-id="{$v.id|default=0}">
+                    <div class="item margin-top-10" data-id="{$v.id|default=0}">
                         <div class="title">
                             <h4>
                                 {$v.name|default=''}
@@ -42,20 +42,20 @@
                         </div>
                         <div class="operate" data-id="{$v.id}">
                             <span>
-                                <a data-toggle="modal" data-remote="{:url('ucenter/Address/edit',['id'=>$v['id']])}">编辑</a>
+                                <a class="btn btn-info" data-toggle="modal" data-remote="{:url('ucenter/Address/edit',['id'=>$v['id']])}">编辑</a>
                             </span>
                             {empty name="v.first"}
                                 <span>
-                                    <a class="first-address" data-id="{$v.id}" data-url="{:url('api/address/default',['id'=>$v['id']])}">设为默认地址</a>
+                                    <a class="btn btn-warning first-address" data-id="{$v.id}" data-url="{:url('api/address/setDefault',['id'=>$v['id']])}">设为默认地址</a>
                                 </span>
                             {/empty}
                             <span>
-                                <a data-toggle="modal" data-remote="{:url('api/address/del',['id'=>$v['id']])}">删除</a>
+                                <a class="btn btn-danger ajax-post" href="{:url('api/address/del',['id'=>$v['id']])}" data-confirm="确认执行删除操作？">删除</a>
                             </span>
                         </div>
                     </div>
                     {/foreach}
-                    {if empty($lists.data)}
+                    {if empty($lists)}
                     {include file='../../common/view/empty'}
                     {/if}
                 </div>
@@ -81,19 +81,11 @@
             var self = $(this);
             var id = {'id':self.attr('data-id')};
             var url = self.attr('data-url');
-            $.post(url, id, success, 'json');
-            function success(data) {
-            if (data.code) {
-                toast.success(data.msg, '温馨提示');
-                setTimeout(function () {
-                    window.location.href = data.url
-                }, 1000);
-            } else {
-                toast.error(data.msg, '温馨提示');
-            }
-        }
+            $.post(url, id, function(res){
+                //handle_ajax(res);
+            }, 'json');
+        });
     });
-});
 </script>
 
 {/block}

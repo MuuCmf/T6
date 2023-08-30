@@ -131,7 +131,7 @@ class Address extends Api
      */
     public function setDefault()
     {
-        $uid = request()->uid;
+        $uid = get_uid();
         $id  = input('get.id');
         $this->model->where([
             ['uid', '=', $uid],
@@ -154,10 +154,15 @@ class Address extends Api
         }
     }
 
+    /**
+     * 删除
+     */
     public function del($id)
     {
+        $uid = get_uid();
         $res = $this->model->edit([
             'id' => $id,
+            'uid' => $uid,
             'status' => -1
         ]);
         if ($res) {
