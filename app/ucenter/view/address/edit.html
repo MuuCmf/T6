@@ -1,0 +1,144 @@
+<script src="__STATIC__/common/lib/area/city.js"></script>
+<div class="address-edit-form">
+    <form class="form-horizontal" data-type="address-edit" action="{:url('api/address/edit')}">
+        <input type="hidden" name="id" value="{$data.id|default=0}">
+        <div class="form-group">
+            <label for="" class="col-sm-2">收货人</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" name="name" placeholder="输入收货人姓名" value="{$data.name|default=''}">
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="" class="col-sm-2">手机</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" name="phone" placeholder="收货人手机号码" value="{$data.phone|default=''}">
+            </div>
+        </div>
+        <div class="form-group position">
+            <label for="" class="col-sm-2">所在地区</label>
+            <div class="col-sm-10">
+                <div class="choose-area">
+                    <!-- 省份选择 -->
+                    <select id="province" class="form-control" name="province" data-value="{$data['province']|default=''}">
+                        <option>请选择省份</option>
+                    </select>
+                    <!-- 城市选择 -->
+                    <select id="city" class="form-control" name="city" data-value="{$data['city']|default=''}">
+                        <option>请选择城市</option>
+                    </select>
+                    <!-- 区县选择 -->
+                    <select id="district" class="form-control" name="district" data-value="{$data['district']|default=''}">
+                        <option>请选择县区</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="" class="col-sm-2">详细地址</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" name="address" placeholder="详细的收货地址" value="{$data.address|default=''}">
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10">
+                <button type="submit" class="btn btn-default">确 认 提 交</button>
+            </div>
+        </div>
+    </form>
+</div>
+<script>
+    (function ($) {
+        $('form[data-type="address-edit"]').submit(function (e) {
+            e.preventDefault();
+            toast.showLoading();
+            var self = $(this);
+            $.post(self.attr("action"), self.serialize(), function (res) {
+                toast.hideLoading();
+                if (res.code) {
+                    toast.success(res.msg, '温馨提示');
+                    setTimeout(function () {
+                        window.location.reload();
+                    }, 1000);
+                } else {
+                    toast.error(res.msg, '温馨提示');
+                }
+
+            }, "json");
+            return false;
+        });
+
+    })(jQuery);
+
+    //三级联动
+    $(function(){
+        var provObj;
+        var cityObj;
+
+        var provinceValue = $('#province').data('value');
+        var cityValue = $('#city').data('value');
+        var districtValue = $('#district').data('value');
+
+        //首次默认加载省份
+        $.each(city, function(key, value){
+            if(provinceValue == value.text){
+                provObj = value;
+                var option = '<option value="'+value.text+'" selected>'+value.text+'</option>';
+                $.each(value.children, function(key2, value2){
+                    if(cityValue == value2.text){
+                        cityObj = value2;
+                        var city_option = '<option value="'+value2.text+'" selected>'+value2.text+'</option>';
+
+                        $.each(value2.children, function(key3, value3){
+                            if(districtValue == value3.text){
+                                var district_option = '<option value="'+value3.text+'" selected>'+value3.text+'</option>';
+                            }else{
+                                var district_option = '<option value="'+value3.text+'">'+value3.text+'</option>';
+                            }
+                            $('#district').append(district_option);
+                        });
+
+                    }else{
+                        var city_option = '<option value="'+value2.text+'">'+value2.text+'</option>';
+                    }
+
+                    $('#city').append(city_option);
+                });
+            }else{
+                var option = '<option value="'+value.text+'">'+value.text+'</option>';
+            }
+            $('#province').append(option);
+        });
+
+        //选择省份
+        $('#province').change(function () {
+            var val = $(this).val();
+            $('#city').html('<option>请选择城市</option>');
+            $('#district').html('<option>请选择县区</option>');
+            $.each(city, function(key, value){
+                if(value.text == val){
+                    provObj = value;
+                    //console.log(provObj);
+                    $.each(value.children, function(key2, value2){
+                        var option = '<option value="'+value2.text+'">'+value2.text+'</option>';
+                        $('#city').append(option);
+                    });
+                }
+            });
+        });
+
+        //选择城市
+        $('#city').change(function () {
+            var val = $(this).val();
+            $('#district').html('<option>请选择县区</option>');
+            $.each(provObj.children, function(key, value){
+                //console.log(key, value);
+                if(value.text == val){
+                    $.each(value.children, function(key2, value2){
+                        var option = '<option value="'+value2.text+'">'+value2.text+'</option>';
+                        $('#district').append(option);
+                    });
+                }
+            });
+        });
+    });
+</script>
