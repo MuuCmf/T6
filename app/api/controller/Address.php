@@ -1,4 +1,5 @@
 <?php
+
 namespace app\api\controller;
 
 use app\common\validate\Address as AddressValidate;
@@ -24,33 +25,34 @@ class Address extends Api
     /**
      * 获取默认地址
      */
-    public function default(){
+    public function default()
+    {
         $uid = request()->uid;
         $map = [
-            ['uid','=',$uid],
-            ['shopid' ,'=' , $this->shopid],
-            ['first','=',1],
-            ['status','=',1],
+            ['uid', '=', $uid],
+            ['shopid', '=', $this->shopid],
+            ['first', '=', 1],
+            ['status', '=', 1],
         ];
         $data = $this->model->getDataByMap($map);
-        if (!$data){
+        if (!$data) {
             $map = [
-                ['uid','=',$uid],
-                ['status','=',1],
-                ['shopid' ,'=' , $this->shopid],
+                ['uid', '=', $uid],
+                ['status', '=', 1],
+                ['shopid', '=', $this->shopid],
             ];
             $data = $this->model->getDataByMap($map);
         }
         $data = $this->logic->formatData($data);
-        return $this->success('获取成功！',$data);
+        return $this->success('获取成功！', $data);
     }
 
     public function detail()
     {
-        $id = input('get.id',0);
+        $id = input('get.id', 0);
         $data = $this->model->getDataById($id);
         $data = $this->logic->formatData($data);
-        return $this->success('获取成功！',$data);
+        return $this->success('获取成功！', $data);
     }
 
     public function lists()
@@ -58,16 +60,16 @@ class Address extends Api
         $uid = request()->uid;
         //初始化查询条件
         $map = [
-            ['shopid' ,'=' , $this->shopid],
+            ['shopid', '=', $this->shopid],
             ['uid', '=', $uid],
-            ['status', '=' , 1]
+            ['status', '=', 1]
         ];
-        $lists = $this->model->getList($map,99);
-        foreach ($lists as &$item){
+        $lists = $this->model->getList($map, 99);
+        foreach ($lists as &$item) {
             $item = $this->logic->formatData($item);
         }
         unset($item);
-        return $this->success('获取成功！',$lists);
+        return $this->success('获取成功！', $lists);
     }
 
     /**
@@ -75,7 +77,7 @@ class Address extends Api
      */
     public function edit()
     {
-        if (request()->isPost()){
+        if (request()->isPost()) {
             $param = request()->post();
             $uid = request()->uid;
             $data = [
@@ -102,14 +104,14 @@ class Address extends Api
 
             //写入数据
             $res = $this->model->edit($data);
-            if($res){
+            if ($res) {
                 //关闭其他默认地址
-                if ($param['first'] == 1){
+                if ($param['first'] == 1) {
                     $id = is_object($res) ? $res->id : $res;
                     $this->model->where([
-                        ['id','<>',$id],
-                        ['shopid','=',$this->shopid],
-                        ['uid','=',$uid]
+                        ['id', '<>', $id],
+                        ['shopid', '=', $this->shopid],
+                        ['uid', '=', $uid]
                     ])->update([
                         'update_time' => time(),
                         'first' => 0
@@ -117,7 +119,7 @@ class Address extends Api
                 }
                 //返回提示
                 return $this->success('编辑成功！', $res);
-            }else{
+            } else {
                 return $this->error('编辑失败！');
             }
         }
@@ -126,38 +128,40 @@ class Address extends Api
     /**
      * 设为默认地址
      */
-    public function setDefault(){
+    public function setDefault()
+    {
         $uid = request()->uid;
         $id  = input('get.id');
         $this->model->where([
-            ['uid','=',$uid],
-            ['shopid','=',$this->shopid]
+            ['uid', '=', $uid],
+            ['shopid', '=', $this->shopid]
         ])->update([
             'update_time' => time(),
             'first' => 0
         ]);
         $res = $this->model->where([
-            ['id','=',$id],
-            ['shopid','=',$this->shopid]
+            ['id', '=', $id],
+            ['shopid', '=', $this->shopid]
         ])->update([
             'update_time' => time(),
             'first' => 1
         ]);
-        if($res){
-            return $this->success('设置成功！',$res,'refresh');
-        }else{
+        if ($res) {
+            return $this->success('设置成功！', $res, 'refresh');
+        } else {
             return $this->error('设置失败！');
         }
     }
 
-    public function del($id){
+    public function del($id)
+    {
         $res = $this->model->edit([
             'id' => $id,
             'status' => -1
         ]);
-        if($res){
+        if ($res) {
             return $this->success('删除成功！');
-        }else{
+        } else {
             return $this->error('删除失败！');
         }
     }
