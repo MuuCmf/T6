@@ -1,4 +1,7 @@
 .address-lists {
+    background: #ffffff;
+    border-radius: 10px;
+    padding: 54px 20px;
     .lists-title {
 		font-size: 24px;
 		color: #222222;
@@ -10,10 +13,9 @@
 
     .items {
         .item {
-            border-radius: 5px;
-            padding: 10px;
+            padding: 10px 15px;
             background-color: #fff;
-            .title h4 {
+            .title h3 {
                 font-size: 16px;
                 font-weight: 600;
                 .first {
@@ -34,7 +36,6 @@
         }
     }
 }
-
 
 .address-edit-form {
     .position {
