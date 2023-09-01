@@ -57,14 +57,15 @@ class Address extends Api
 
     public function lists()
     {
-        $uid = request()->uid;
+        $uid = get_uid();
         //初始化查询条件
         $map = [
             ['shopid', '=', $this->shopid],
             ['uid', '=', $uid],
             ['status', '=', 1]
         ];
-        $lists = $this->model->getList($map, 99);
+        $order = 'first desc,create_time desc';
+        $lists = $this->model->getList($map, 99, $order);
         foreach ($lists as &$item) {
             $item = $this->logic->formatData($item);
         }
