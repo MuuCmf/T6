@@ -64,7 +64,7 @@ class Address extends Api
             ['uid', '=', $uid],
             ['status', '=', 1]
         ];
-        $order = 'first desc,create_time desc';
+        $order = 'first desc,update_time desc';
         $lists = $this->model->getList($map, 99, $order);
         foreach ($lists as &$item) {
             $item = $this->logic->formatData($item);
