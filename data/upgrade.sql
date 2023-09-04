@@ -295,3 +295,6 @@ ALTER TABLE `muucmf_evaluate` CHANGE `content` `content` TEXT CHARACTER SET utf8
 ALTER TABLE `muucmf_evaluate` CHANGE `add_content` `add_content` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '追加评论 json格式{images:content:}';
 
 ALTER TABLE `muucmf_vip` CHANGE `shopid` `shopid` INT(11) NOT NULL DEFAULT '0' COMMENT '平台ID';
+
+INSERT INTO `muucmf_menu` (`id`, `title`, `pid`, `sort`, `url`, `hide`, `type`, `tip`, `group`, `is_dev`, `icon`, `module`) VALUES
+('FF8D1924-A5EC-7830-B6BA-C0DA6C8B9CBF', '用户选择', 'DA4333DF-D814-819B-D657-401FE5153AB4', 0, 'admin/Member/chooseUser', 0, 0, '', '', 0, '', 'admin');
