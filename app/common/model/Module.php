@@ -410,7 +410,7 @@ class Module extends Base
                 
                 if(strpos($info['icon'], 'https://') !== false && file_exists(PUBLIC_PATH . '/static/' . $info['name'] . '/images/icon.png')){
                     //图标所在位置为模块静态目录下（推荐）
-                    $info['icon_100'] = $info['icon_200'] = $info['icon_300'] = $info['icon_400'] = '/static/'. $info['name'] .'/images/icon.png';
+                    $info['icon_100'] = $info['icon_200'] = $info['icon_300'] = $info['icon_400'] = request()->domain() . '/static/'. $info['name'] .'/images/icon.png';
                 }
             }
         }
@@ -431,32 +431,6 @@ class Module extends Base
         }
         
         return false;
-    }
-
-    /**
-     * 添加模块权限
-     * @param [type] $default_rule [description]
-     * @param [type] $module_name  [description]
-     */
-    private function addDefaultRule($default_rule, $module_name)
-    {
-        foreach ($default_rule as $v) {
-            $rule = Db::name('AuthRule')->where(['module' => $module_name, 'name' => $v])->find();
-            if ($rule) {
-                $default[] = $rule;
-            }
-        }
-        $auth_id = getSubByKey($default, 'id');
-        if ($auth_id) {
-            $groups = Db::name('AuthGroup')->select();
-            foreach ($groups as $g) {
-                $old = explode(',', $g['rules']);
-                $new = array_merge($old, $auth_id);
-                $g['rules'] = implode(',', $new);
-                Db::name('AuthGroup')->update($g);
-            }
-        }
-        return true;
     }
 
     private function addAction($action)
