@@ -619,5 +619,3 @@ if (!function_exists('filter_emoji')) {
     }
 }
 
-
-

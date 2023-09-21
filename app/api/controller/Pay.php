@@ -406,6 +406,19 @@ class Pay extends Api
         echo array_to_xml($data);exit();
     }
 
+    protected function array_to_xml($arr) {
+        $xml = "<xml>";
+        foreach ($arr as $key => $val){
+            if (is_numeric($val)){
+                $xml.="<$key>$val</$key>";
+            }
+            else
+                $xml.="<$key><![CDATA[$val]]></$key>";
+        }
+        $xml.="</xml>";
+        return $xml;
+    }
+
     /**
      * 发送支付成功模板消息
      * @param $tmplmsg_config
@@ -489,43 +502,47 @@ class Pay extends Api
                 return false;
             }
             
-            $form_id = $order_info['form_id'];
-            $msg_list = [];
-            if (in_array('manager', $weixin_mp_config['tmplmsg']['to']) && !empty($weixin_config['tmplmsg']['manager_uid'])){
-                $msg_item['openid'] = get_openid($this->shopid, $weixin_mp_config['tmplmsg']['manager_uid'], $channel);
-                $msg_item['user_info'] = query_user($order_info['uid']);
-                $msg_list[] = $msg_item;
-            }
-            if (in_array('user', $weixin_mp_config['tmplmsg']['to'])){
-                $msg_item['openid'] = get_openid($this->shopid, $order_info['uid'], $channel);
-                $msg_item['user_info'] = query_user($order_info['uid']);
-                $msg_list[] = $msg_item;
-            }
-            
-            foreach ($msg_list as $item){
-                $msg = [
-                    'touser' => $item['openid'],
-                    'template_id' => $weixin_mp_config['tmplmsg']['tmplmsg']['pay_success'],
-                    'page' => 'micro/pages/index',
-                    'form_id' => $form_id,
-                    'data' => [
-                        'thing1' => [
-                            'value' => $order_info['products']['title'],
+            if(!empty($order_info['form_id'])){
+                $form_id = $order_info['form_id'];
+                $msg_list = [];
+                if (in_array('manager', $weixin_mp_config['tmplmsg']['to']) && !empty($weixin_config['tmplmsg']['manager_uid'])){
+                    $msg_item['openid'] = get_openid($this->shopid, $weixin_mp_config['tmplmsg']['manager_uid'], $channel);
+                    $msg_item['user_info'] = query_user($order_info['uid']);
+                    $msg_list[] = $msg_item;
+                }
+                if (in_array('user', $weixin_mp_config['tmplmsg']['to'])){
+                    $msg_item['openid'] = get_openid($this->shopid, $order_info['uid'], $channel);
+                    $msg_item['user_info'] = query_user($order_info['uid']);
+                    $msg_list[] = $msg_item;
+                }
+                
+                foreach ($msg_list as $item){
+                    $msg = [
+                        'touser' => $item['openid'],
+                        'template_id' => $weixin_mp_config['tmplmsg']['tmplmsg']['pay_success'],
+                        'page' => 'micro/pages/index',
+                        'form_id' => $form_id,
+                        'data' => [
+                            'thing1' => [
+                                'value' => $order_info['products']['title'],
+                            ],
+                            'character_string3' => [
+                                'value' => $order_info['order_no'],
+                            ],
+                            'amount4' => [
+                                'value' => sprintf("%.2f",$order_info['paid_fee']/100). '元',
+                            ],
+                            'time7' => [
+                                'value' => $order_info['create_time'],
+                            ],
                         ],
-                        'character_string3' => [
-                            'value' => $order_info['order_no'],
-                        ],
-                        'amount4' => [
-                            'value' => sprintf("%.2f",$order_info['paid_fee']/100). '元',
-                        ],
-                        'time7' => [
-                            'value' => $order_info['create_time'],
-                        ],
-                    ],
-                ];
-                $res = @WeixinMiniProgramServer::sendTemplateMsg($msg);
+                    ];
+                    $res = @WeixinMiniProgramServer::sendTemplateMsg($msg);
 
-                return $res;
+                    return $res;
+                }
+            }else{
+                return false;
             }
         }
     }
