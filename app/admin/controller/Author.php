@@ -58,7 +58,7 @@ class Author extends Admin
         $rows = input('rows',20, 'intval');
         $order_field = input('order_field', 'id', 'text');
         $order_type = input('order_type', 'desc', 'text');
-        $order = $order_field . ' ' . $order_type;
+        $order = 'sort DESC,' . $order_field . ' ' . $order_type;
 
         // 获取分页列表
         $lists = $this->AuthorModel->getListByPage($map, $order, '*', $rows);

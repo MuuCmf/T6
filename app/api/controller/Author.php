@@ -38,7 +38,7 @@ class Author extends Api
         $keyword = input('keyword','','text');
         $order_field = input('order_field', 'id', 'text');
         $order_type = input('order_type', 'desc', 'text');
-        $order = $order_field . ' ' . $order_type;
+        $order = 'sort DESC,' . $order_field . ' ' . $order_type;
 
         // 查询条件
         $map = $this->AuthorLogic->getMap($this->shopid, $keyword, 1);
