@@ -126,6 +126,10 @@ class WechatMiniProgram extends Api
             'width' => $width
         ];
         $result = MiniProgramServer::unlimitQrcode($scene, $option);
+        // 发生错误时返回数组
+        if(is_array($result)){
+            return $this->error('error', $result);
+        }
         Header("Content-type: image/jpeg");//直接输出显示jpg格式图片
         echo $result;
     }
