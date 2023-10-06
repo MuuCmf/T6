@@ -421,6 +421,10 @@ EOF;
         $db_prefix = $_POST['db_prefix'] ?? 'muucmf_';
         $db_port = $_POST['db_port'] ?? '3306';
 
+        $redis_host = $_POST['redis_host'] ?? '127.0.0.1';
+        $redis_pwd = $_POST['redis_pwd'] ?? '';
+        $redis_port = $_POST['redis_port'] ?? '6379';
+
         $install_error_html = '';
         if ($install_error != '') {
             $install_error_html = "<div>
@@ -497,8 +501,31 @@ EOF;
           <label>数据库端口</label>
           <span>
           <input type="text" name="db_port" maxlength="20" value="$db_port">
-          </span> <em>数据库默认端口一般为3306</em></div>
+          </span> <em>数据库默认端口一般为3306</em>
+        </div>
         $install_error_html
+      </fieldset>
+      <fieldset>
+      <legend>Redis</legend>
+      <div>
+        <label>redis服务器</label>
+        <span>
+        <input type="text" name="redis_host" maxlength="20" value="$redis_host">
+        </span> 
+        <em>redis服务器地址，本地默认127.0.0.1</em>
+      </div>
+      <div>
+          <label>redis端口</label>
+          <span>
+          <input type="text" name="redis_port" maxlength="20" value="$redis_port">
+          </span> <em>默认端口一般为6379</em>
+        </div>
+      <div>
+        <label>redis密码</label>
+        <span>
+        <input type="password" name="redis_pwd" maxlength="20" value="$redis_pwd">
+        </span> <em>redis密码不少于6个字符，未设置请留空</em>
+      </div>
       </fieldset>
       <fieldset>
         <legend>系统管理员</legend>
@@ -688,6 +715,11 @@ function step2(&$install_error, &$install_recover)
     $db_pwd = $_POST['db_pwd'];
     $db_name = $_POST['db_name'];
     $db_prefix = $_POST['db_prefix'];
+
+    $redis_host = $_POST['redis_host'];
+    $redis_port = $_POST['redis_port'];
+    $redis_pwd = $_POST['redis_pwd'];
+
     $admin = $_POST['admin'];
     $password = $_POST['password'];
     $rpassword = $_POST['rpassword'];
@@ -817,10 +849,16 @@ EOF;
         'db_name' => $db_name,
         'db_prefix' => $db_prefix
     ];
+
+    $redis = [
+        'redis_host' => $redis_host,
+        'redis_port' => $redis_port,
+        'redis_pwd'  => $redis_pwd
+    ];
     $secret = substr(md5(uniqid(true)), 0, 32);
     
     // 写入配置数据
-    write_config($db, $auth_key, $secret);
+    write_config($db, $redis, $auth_key, $secret);
 
     //生成安装标识文件
     $fp = @fopen('../data/install.lock', 'wb+');
@@ -874,7 +912,7 @@ function show_js_msg($message)
 }
 
 //写入config文件
-function write_config($db, $auth_key, $secret)
+function write_config($db, $redis, $auth_key, $secret)
 {
     $charset = 'utf8';
     $db_host = $db['db_host'];
@@ -883,6 +921,10 @@ function write_config($db, $auth_key, $secret)
     $db_pwd = $db['db_pwd'];
     $db_name = $db['db_name'];
     $db_prefix = $db['db_prefix'];
+
+    $redis_host = $redis['redis_host'];
+    $redis_port = $redis['redis_port'];
+    $redis_pwd  = $redis['redis_pwd'];
 
     $_env =
 "APP_DEBUG = false
@@ -905,9 +947,9 @@ DEBUG = true
 DRIVER = redis
 
 [REDIS]
-HOST = 127.0.0.1
-PORT = 6379
-password = 
+HOST = {$redis_host}
+PORT = {$redis_port}
+password = {$redis_pwd}
 select = 0
 
 [QUEUE]
