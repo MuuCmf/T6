@@ -1070,9 +1070,24 @@ function env_check(&$env_items)
     $env_items[] = array(
         'name' => '磁盘空间',
         'min' => '200M',
-        'good' => '>=1024M',
+        'good' => '1024M',
         'cur' => empty($disk_place) ? '未知' : $disk_place . 'M',
         'status' => $disk_place < 100 ? 0 : 1
+    );
+
+    if (extension_loaded('redis')) {
+        $redis_status = 1;
+        $redis_ext_refc = new ReflectionExtension('redis');
+        $redis_version = $redis_ext_refc->getVersion();
+    }else{
+        $redis_status = 0;
+    }
+    $env_items[] = array(
+        'name' => 'Redis',
+        'min' => '5.0',
+        'good' => '6.0',
+        'cur' => empty($redis_version) ? '未安装' : $redis_version ,
+        'status' => $redis_status
     );
 }
 
