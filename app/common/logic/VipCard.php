@@ -39,6 +39,9 @@ class VipCard extends Base
         $month_price = empty($data['month_price']) ? 0 : intval($data['month_price'] * 100);
         $quarter_price = empty($data['quarter_price']) ? 0 : intval($data['quarter_price'] * 100);
         $year_price = empty($data['year_price']) ? 0 : intval($data['year_price'] * 100);
+        $year_two_price = empty($data['year_two_price']) ? 0 : intval($data['year_two_price'] * 100);
+        $year_three_price = empty($data['year_three_price']) ? 0 : intval($data['year_three_price'] * 100);
+        $year_five_price = empty($data['year_five_price']) ? 0 : intval($data['year_five_price'] * 100);
         $forever_price = empty($data['forever_price']) ? 0 : intval($data['forever_price'] * 100);
         //权益描述
         $content = '';
@@ -54,6 +57,9 @@ class VipCard extends Base
             'month_price' => $month_price,
             'quarter_price' => $quarter_price,
             'year_price' => $year_price,
+            'year_two_price' => $year_two_price,
+            'year_three_price' => $year_three_price,
+            'year_five_price' => $year_five_price,
             'forever_price' => $forever_price,
             'category_ids' => $category_ids,
             'content' => $content,
@@ -84,16 +90,25 @@ class VipCard extends Base
         $data['category_ids_arr'] = $category_ids_arr;
 
         if(!empty($data['month_price'])){
-            $data['month_price'] = sprintf("%.2f",$data['month_price']/100);
+            $data['month_price'] = sprintf("%.2f",floatval($data['month_price'] / 100));
         }
         if(!empty($data['quarter_price'])){
-            $data['quarter_price'] = sprintf("%.2f",$data['quarter_price']/100);
+            $data['quarter_price'] = sprintf("%.2f",floatval($data['quarter_price']/100));
         }
         if(!empty($data['year_price'])){
-            $data['year_price'] = sprintf("%.2f",$data['year_price']/100);
+            $data['year_price'] = sprintf("%.2f",floatval($data['year_price']/100));
+        }
+        if(!empty($data['year_two_price'])){
+            $data['year_two_price'] = sprintf("%.2f",floatval($data['year_two_price']/100));
+        }
+        if(!empty($data['year_three_price'])){
+            $data['year_three_price'] = sprintf("%.2f",floatval($data['year_three_price']/100));
+        }
+        if(!empty($data['year_five_price'])){
+            $data['year_five_price'] = sprintf("%.2f",floatval($data['year_five_price']/100));
         }
         if(!empty($data['forever_price'])){
-            $data['forever_price'] = sprintf("%.2f",$data['forever_price']/100);
+            $data['forever_price'] = sprintf("%.2f",floatval($data['forever_price']/100));
         }
         
         if($data['discount'] == 0){
