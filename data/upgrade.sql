@@ -298,3 +298,7 @@ ALTER TABLE `muucmf_vip` CHANGE `shopid` `shopid` INT(11) NOT NULL DEFAULT '0' C
 
 INSERT INTO `muucmf_menu` (`id`, `title`, `pid`, `sort`, `url`, `hide`, `type`, `tip`, `group`, `is_dev`, `icon`, `module`) VALUES
 ('FF8D1924-A5EC-7830-B6BA-C0DA6C8B9CBF', '用户选择', 'DA4333DF-D814-819B-D657-401FE5153AB4', 0, 'admin/Member/chooseUser', 0, 0, '', '', 0, '', 'admin');
+
+ALTER TABLE `muucmf_vip_card` ADD `year_two_price` INT(11) UNSIGNED NOT NULL COMMENT '两年价格 单位：分' AFTER `year_price`;
+ALTER TABLE `muucmf_vip_card` ADD `year_three_price` INT(11) UNSIGNED NOT NULL COMMENT '三年价格 单位：分' AFTER `year_two_price`;
+ALTER TABLE `muucmf_vip_card` ADD `year_five_price` INT(11) UNSIGNED NOT NULL COMMENT '五年价格 单位：分' AFTER `year_three_price`;
