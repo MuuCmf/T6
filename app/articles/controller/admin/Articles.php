@@ -2,6 +2,7 @@
 namespace app\articles\controller\admin;
 
 use think\facade\View;
+use app\common\model\Search as SearchModel;
 use app\articles\model\ArticlesCategory as CategoryModel;
 use app\articles\logic\Category as CategoryLogic;
 use app\articles\model\ArticlesArticles as ArticlesModel;
@@ -102,6 +103,8 @@ class Articles extends Admin
             $res = $this->ArticlesModel->edit($data);
 
             if($res){
+                // 写入搜索索引
+                (new SearchModel)->add($this->shopid, 'article', $res, 'article', $data['title'], $data['description'], $data['cover']);
                 return $this->success($title . '成功', $res, Cookie('__forward__'));
             }else{
                 return $this->error($title . '失败');
