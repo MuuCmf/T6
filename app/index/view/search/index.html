@@ -41,9 +41,11 @@
                             </a>
                         </h2>
                         <div class="content clearfix">
+                            {notempty name="$val.content.cover_200"}
                             <div class="cover">
                                 <img class="lazy" data-original="{$val.content.cover_200}" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsQAAA7EAZUrDhsAAAANSURBVBhXYzh8+PB/AAffA0nNPuCLAAAAAElFTkSuQmCC" alt="{$val.content.title|default=''}" />
                             </div>
+                            {/notempty}
                             <div class="description">
                                 <p>{:htmlspecialchars_decode($val.content.description)}</p>
                                 <p class="update-time">更新时间：{$val.update_time_str|default=''}</p>
