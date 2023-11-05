@@ -17,11 +17,10 @@
   table .cover {
     float:left;
     width:60px;
-  }
-
-  table .cover img {
-    border-radius: 50%;
-    width: 60px;
+    img {
+      border-radius: 50%;
+      width: 60px;
+    }
   }
 
   table .info {
@@ -63,6 +62,32 @@
     }
     .title {
       text-align: center;
+    }
+  }
+}
+
+.withdraw-action {
+  .cover {
+    float:left;
+    width:60px;
+    img {
+      border-radius: 50%;
+      width: 60px;
+    }
+  }
+
+  .info {
+    margin-left: 60px;
+    padding-left: 10px;
+    font-size:14px;
+    width:200px;
+    overflow:hidden;
+
+    .title {
+      font-size:14px;
+      font-weight:600;
+      line-height: 60px;
+      color:#666;
     }
   }
 }

@@ -91,7 +91,12 @@
                 <td>
                     {$v['paid_time_str']}
                 </td>
-                <td style="width: 150px">
+                <td style="width: 200px">
+                    {if $v['paid'] == 0}
+                    <a class="btn btn-sm btn-danger" data-remote="{:url('action', ['id'=>$v['id']])}" data-toggle="modal">
+					    手动处理
+				    </a>
+                    {/if}
                     <a class="btn btn-sm btn-info" data-remote="{:url('detail', ['id'=>$v['id']])}" data-toggle="modal">
 					    查看详情
 				    </a>

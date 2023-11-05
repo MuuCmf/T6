@@ -80,10 +80,11 @@ class Withdraw extends Admin
     /**
      * @title 手动处理
      */
-    public function dealWith()
+    public function action()
     {
+        $id = input('id', 0, 'intval');
         if (request()->isPost()) {
-            $id = input('post.id', 0);
+            
             try {
                 $map = [
                     ['id', '=', $id],
@@ -93,9 +94,8 @@ class Withdraw extends Admin
                 $data = $this->WithdrawModel->where($map)->find()->toArray();
                 if (!$data) throw new Exception('数据不存在');
                 Db::startTrans(); //开启事务
-                //扣除用户余额及冻结余额
-                (new MemberWallet())->spending($data['uid'], $data['price'], $data['shopid']);
-
+                //扣除冻结余额
+                (new MemberWallet())->minusFreeze($data['shopid'], $data['uid'], $data['price']);
                 //更改提现记录状态
                 $update_data = [
                     'id'        => $data['id'],
@@ -104,7 +104,7 @@ class Withdraw extends Admin
                     'error'     =>  0,
                 ];
                 $result = $this->WithdrawModel->edit($update_data);
-                if (!$result)   throw new Exception('网络异常,请稍后再试');
+                if (!$result)   throw new Exception('操作失败,请稍后再试');
 
                 //写入资金流水表
                 $result_capital_flow = (new CapitalFlow())->createFlow([
@@ -114,6 +114,7 @@ class Withdraw extends Admin
                     'shopid' => $data['shopid'],
                     'app' => 'system',
                     'channel' => $data['channel'],
+                    'remark' => '用户提现',
                 ]);
                 if (!$result_capital_flow)  throw new Exception('写入资金流失失败');
                 Db::commit();
@@ -123,5 +124,12 @@ class Withdraw extends Admin
                 return $this->error($e->getMessage());
             }
         }
+
+        $data = $this->WithdrawModel->getDataById($id);
+        $data = $this->WithdrawLogic->formatData($data);
+        View::assign('data', $data);
+        
+        //输出页面
+        return View::fetch();
     }
 }
