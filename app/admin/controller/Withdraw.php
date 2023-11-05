@@ -94,8 +94,8 @@ class Withdraw extends Admin
                 $data = $this->WithdrawModel->where($map)->find()->toArray();
                 if (!$data) throw new Exception('数据不存在');
                 Db::startTrans(); //开启事务
-                //扣除冻结余额
-                (new MemberWallet())->minusFreeze($data['shopid'], $data['uid'], $data['price']);
+                //扣除用户余额
+                (new MemberWallet())->spending($data['shopid'], $data['uid'], $data['price']);
                 //更改提现记录状态
                 $update_data = [
                     'id'        => $data['id'],
