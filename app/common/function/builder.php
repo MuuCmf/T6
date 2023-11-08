@@ -241,7 +241,6 @@ if (!function_exists('lists_plus')) {
             }else{
                 $data[$key]['vary'] = '';
             }
-
         }
         return $data;
     }

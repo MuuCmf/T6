@@ -419,6 +419,20 @@ class Member extends Base
                     $member['reg_channel_str'] = Channel::$_channel[$member['reg_channel']];
                 }
 
+                //获取权限组
+                $auth_g_id = Db::name('auth_group_access')->where(['uid' => $uid])->select()->toArray();
+                foreach ($auth_g_id as $k => $val) {
+                    $auth_group = Db::name('auth_group')->where(['id' => $val['group_id']])->value('title');
+                    $member['auth_group'][$k]['title'] = $auth_group;
+                }
+                unset($val);
+
+                //实名认证状态
+                $member['authentication_text'] = '未认证';
+                if($member['authentication'] == 1){
+                    $member['authentication_text'] = '已认证';
+                }
+
                 // 扩展资料
                 try {
                     $field_group = Db::name('field_group')->where('status', '=', 1)->select();

@@ -74,27 +74,13 @@ class Member extends Admin
         $list = $list->toArray();
         $list_arr = $list['data'];
 
-        foreach ($list_arr as $key => $v) {
-            //处理用户头像
-            if (empty($list_arr[$key]['avatar'])) {
-                $list_arr[$key]['avatar'] = $list_arr[$key]['avatar64'] = $list_arr[$key]['avatar128'] = $list_arr[$key]['avatar256'] = $list_arr[$key]['avatar512'] = request()->domain() . '/static/common/images/default_avatar.jpg';
-            } else {
-                $list_arr[$key]['avatar64'] = get_thumb_image($list_arr[$key]['avatar'], 64, 64);
-                $list_arr[$key]['avatar128'] = get_thumb_image($list_arr[$key]['avatar'], 128, 128);
-                $list_arr[$key]['avatar256'] = get_thumb_image($list_arr[$key]['avatar'], 256, 256);
-                $list_arr[$key]['avatar512'] = get_thumb_image($list_arr[$key]['avatar'], 512, 512);
-            }
-            //获取权限组
-            $auth_g_id = Db::name('auth_group_access')->where(['uid' => $v['uid']])->select()->toArray();
-            foreach ($auth_g_id as $k => $val) {
-                $auth_group = Db::name('auth_group')->where(['id' => $val['group_id']])->value('title');
-                $list_arr[$key]['auth_group'][$k]['title'] = $auth_group;
-            }
-            unset($k);
-            unset($val);
+        foreach ($list_arr as &$v) {
+            $v = $this->MemberModel->info($v['uid'], '*');
         }
+        unset($v);
 
         int_to_string($list_arr);
+
         if (request()->isAjax()) {
             $list['data'] = $list_arr;
             return $this->success('success', $list);

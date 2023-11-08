@@ -76,6 +76,7 @@
                 <th class="">登录次数</th>
                 <th class="">最后登录时间</th>
                 <th class="">最后登录IP</th>
+                <th>实名认证</th>
                 <th class="">状态</th>
                 <th class="">操作</th>
             </tr>
@@ -114,13 +115,15 @@
                     <td>{$vo['last_login_ip']}
                     </td>
                     <td>
+                        {$vo.authentication_text}
+                    </td>
+                    <td>
                         {$vo.status_text}
                     </td>
                     <td>
                         <a type="button" class="btn btn-sm btn-success {if !check_auth('admin/Message/send')}disabled{/if}" data-name="sendMessageModal" data-iframe="{:url('admin/Message/send',['to_uid' => $vo['uid']])}" data-toggle="modal" data-size="lg" data-height="600px">发送消息</a>
                         <a class="btn btn-sm btn-primary {if !check_auth('admin/Member/edit')}disabled{/if}" href="{:url('admin/Member/edit',['uid'=>$vo['uid']])}" >编辑</a>
                         <a class="btn btn-sm btn-danger ajax-post {if !check_auth('admin/Member/status')}disabled{/if}" href="{:url('status',['method'=>'delete', 'ids'=>$vo['uid']])}" data-confirm="确认执行删除操作？">删除</a>
-                        
                     </td>
                 </tr>
             {/volist}
