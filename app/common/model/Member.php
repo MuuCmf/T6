@@ -432,9 +432,12 @@ class Member extends Base
                 unset($val);
 
                 //实名认证状态
-                $member['authentication_text'] = '未认证';
-                if($member['authentication'] == 1){
+                $member['authentication_text'] = '未知';
+                if(isset($member['authentication']) && $member['authentication'] == 1){
                     $member['authentication_text'] = '已认证';
+                }
+                if(isset($member['authentication']) && $member['authentication'] == 0){
+                    $member['authentication_text'] = '未认证';
                 }
 
                 if(isset($member['status'])){
