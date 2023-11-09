@@ -20,7 +20,11 @@ class Member extends Base
     //自动完成
     protected $insert = ['reg_ip'];
     protected $update = ['update_time'];
-
+    public $_status  = [
+        '1'  => '启用',
+        '0'  => '禁用',
+        '-1' => '删除',
+    ];
     /**
      * 编辑/新增数据
      *
@@ -431,6 +435,10 @@ class Member extends Base
                 $member['authentication_text'] = '未认证';
                 if($member['authentication'] == 1){
                     $member['authentication_text'] = '已认证';
+                }
+
+                if(isset($member['status'])){
+                    $member['status_text'] = $this->_status[$member['status']];
                 }
 
                 // 扩展资料

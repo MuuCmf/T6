@@ -79,8 +79,6 @@ class Member extends Admin
         }
         unset($v);
 
-        int_to_string($list_arr);
-
         if (request()->isAjax()) {
             $list['data'] = $list_arr;
             return $this->success('success', $list);
