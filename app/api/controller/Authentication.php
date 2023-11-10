@@ -34,7 +34,7 @@ class Authentication extends Api
                 'card_no' => $param['card_no'],
                 'front' => $param['front'],
                 'back' => $param['back'],
-                'status' => 0, //默认待审核状态
+                'status' => 1, //默认待审核状态
             ];
 
             // 数据验证

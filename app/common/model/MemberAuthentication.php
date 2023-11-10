@@ -8,10 +8,11 @@ class MemberAuthentication extends Base
         0 => '身份证',
     ];
     protected $_status  = [
-        0  => '待审核',
-        1  => '已审核',
-        2  => '审核未通过',
-        -1 => '删除',
+        0  => '未认证',
+        1  => '待审核',
+        2  => '已认证',
+        3  => '审核未通过',
+        -1 => '已删除',
     ];
 
     public function handle($data)

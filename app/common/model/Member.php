@@ -25,6 +25,13 @@ class Member extends Base
         '0'  => '禁用',
         '-1' => '删除',
     ];
+    public $_authentication = [
+        0  => '未认证',
+        1  => '待审核',
+        2  => '已认证',
+        3  => '审核未通过',
+        -1 => '已删除',
+    ];
     /**
      * 编辑/新增数据
      *
@@ -433,13 +440,11 @@ class Member extends Base
 
                 //实名认证状态
                 $member['authentication_text'] = '未知';
-                if(isset($member['authentication']) && $member['authentication'] == 1){
-                    $member['authentication_text'] = '已认证';
+                if(isset($member['authentication'])){
+                    $member['authentication_text'] = $this->_authentication[$member['authentication']];
                 }
-                if(isset($member['authentication']) && $member['authentication'] == 0){
-                    $member['authentication_text'] = '未认证';
-                }
-
+                
+                //用户状态
                 if(isset($member['status'])){
                     $member['status_text'] = $this->_status[$member['status']];
                 }
