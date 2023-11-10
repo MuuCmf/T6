@@ -1,18 +1,23 @@
 <?php
 namespace app\api\controller;
 
+use think\Exception;
+use think\facade\Db;
 use think\exception\ValidateException;
 use app\common\controller\Api;
 use app\common\validate\Authentication as AuthenticationValidate;
 use app\common\model\MemberAuthentication as AuthenticationModel;
+use app\common\model\Member as MemberModel;
 
 class Authentication extends Api
 {
+    protected $MemberModel;
     protected $AuthenticationModel;
 
     public function __construct()
     {
         parent::__construct();
+        $this->MemberModel = new MemberModel();
         $this->AuthenticationModel = new AuthenticationModel();
     }
 
@@ -45,14 +50,30 @@ class Authentication extends Api
                 return $this->error($e->getError());
             }
 
-            //写入数据
-            $res = $this->AuthenticationModel->edit($data);
-            if ($res) {
-                //返回提示
-                return $this->success('提交成功！', $res);
-            } else {
-                return $this->error('提交失败！');
+            Db::startTrans();
+            try{
+                //写入数据
+                $res = $this->AuthenticationModel->edit($data);
+                if(!$res){
+                    throw new Exception('数据写入失败');
+                }
+                // 更改用户表认证状态值
+                $res = $this->MemberModel->edit([
+                    'uid' => get_uid(),
+                    'authentication' => 1
+                ]);
+                if(!$res){
+                    throw new Exception('数据写入失败');
+                }
+
+                Db::commit();
+            } catch (Exception $e) {
+                Db::rollback();
+                return $this->error('发生错误：' . $e->getMessage());
             }
+            
+            //返回提示
+            return $this->success('提交成功！', $res);
         }
     }
 
