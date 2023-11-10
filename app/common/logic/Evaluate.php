@@ -5,7 +5,8 @@ namespace app\common\logic;
  * Class Evaluate
  * @package app\common\logic
  */
-class Evaluate extends Base{
+class Evaluate extends Base
+{
     public function formatData($data)
     {
         if(!empty($data)){
