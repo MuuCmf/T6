@@ -115,7 +115,20 @@
                     <td>{$vo['last_login_ip']}
                     </td>
                     <td>
+                        {if $vo.authentication == 0}
                         {$vo.authentication_text}
+                        {/if}
+                        {if $vo.authentication == 1}
+                        <a type="button" class="btn btn-sm btn-warning" data-remote="{:url('authentication',['tuid' => $vo['uid']])}" data-toggle="modal" data-height="600px">
+                            {$vo.authentication_text}
+                        </a>
+                        {/if}
+                        {if $vo.authentication == 2}
+                        {$vo.authentication_text}
+                        {/if}
+                        {if $vo.authentication == 3}
+                        {$vo.authentication_text}
+                        {/if}
                     </td>
                     <td>
                         {$vo.status_text}
@@ -140,6 +153,7 @@
         <!-- /分页-->
     </div>
 </div>
+
 {/block}
 {block name="script"}
 <script>

@@ -7,6 +7,7 @@ use think\facade\View;
 use app\admin\builder\AdminConfigBuilder;
 use app\common\model\Member as MemberModel;
 use app\common\model\MemberSync as MemberSyncModel;
+use app\common\model\MemberAuthentication as AuthenticationModel;
 use app\admin\model\AuthGroup;
 use app\common\model\ScoreLog as ScoreLogModel;
 use app\common\model\ScoreType as ScoreTypeModel;
@@ -320,16 +321,29 @@ class Member extends Admin
         }
     }
 
-    public function getNickname()
+    /**
+     * 用户认证
+     */
+    public function authentication()
     {
-        $uid = input('get.uid', 0, 'intval');
-        if ($uid) {
-            $user = query_user($uid);
+        $uid = input('uid', 0, 'intval');
+        if (request()->isPost()) {
+            $status = input('status', 0, 'intval');
+            
 
-            return json($user);
-        } else {
+        }else{
+            // 查询用户认证数据
+            $map = [
+                ['shopid', '=', $this->shopid],
+                ['uid', '=', $uid]
+            ];
 
-            return null;
+            $authenticationModel = new AuthenticationModel();
+            $data = $authenticationModel->where($map)->find();
+            $data = $authenticationModel->handle($data);
+            View::assign('data', $data);
+
+            return View::fetch();
         }
     }
 

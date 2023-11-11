@@ -26,11 +26,10 @@ class Member extends Base
         '-1' => '删除',
     ];
     public $_authentication = [
+        -1 => '审核未通过',
         0  => '未认证',
         1  => '待审核',
         2  => '已认证',
-        3  => '审核未通过',
-        -1 => '已删除',
     ];
     /**
      * 编辑/新增数据
@@ -443,7 +442,7 @@ class Member extends Base
                 if(isset($member['authentication'])){
                     $member['authentication_text'] = $this->_authentication[$member['authentication']];
                 }
-                
+
                 //用户状态
                 if(isset($member['status'])){
                     $member['status_text'] = $this->_status[$member['status']];
