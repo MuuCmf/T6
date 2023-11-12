@@ -119,7 +119,7 @@
                         {$vo.authentication_text}
                         {/if}
                         {if $vo.authentication == 1}
-                        <a type="button" class="btn btn-sm btn-warning" data-remote="{:url('authentication',['tuid' => $vo['uid']])}" data-toggle="modal" data-height="600px">
+                        <a type="button" class="btn btn-sm btn-warning" data-remote="{:url('authentication',['uid' => $vo['uid']])}" data-toggle="modal" data-height="600px">
                             {$vo.authentication_text}
                         </a>
                         {/if}

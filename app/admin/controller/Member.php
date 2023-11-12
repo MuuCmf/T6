@@ -2,6 +2,7 @@
 
 namespace app\admin\controller;
 
+use think\Exception;
 use think\facade\Db;
 use think\facade\View;
 use app\admin\builder\AdminConfigBuilder;
@@ -328,8 +329,45 @@ class Member extends Admin
     {
         $uid = input('uid', 0, 'intval');
         if (request()->isPost()) {
+            $id = input('id', '=', 'intval');
             $status = input('status', 0, 'intval');
+            $uid = input('uid', '=', 'intval');
+            $reason = input('reason', '', 'text');
+            Db::startTrans();
+            try{
+                //写入数据
+                $data = [
+                    'id' => $id,
+                    'shopid' => $this->shopid,
+                    'uid' => $uid,
+                    'status' => $status
+                ];
+                if($status == -1){
+                    $data['reason'] = $reason;
+                }
+                $authenticationModel = new AuthenticationModel();
+                $res = $authenticationModel->edit($data);
+                if(!$res){
+                    throw new Exception('数据写入失败');
+                }
+                // 更改用户表认证状态值
+                $res = $this->MemberModel->edit([
+                    'shopid' => $this->shopid,
+                    'uid' => $uid,
+                    'authentication' => $status
+                ]);
+                if(!$res){
+                    throw new Exception('数据写入失败');
+                }
+
+                Db::commit();
+            } catch (Exception $e) {
+                Db::rollback();
+                return $this->error('发生错误：' . $e->getMessage());
+            }
             
+            //返回提示
+            return $this->success('提交成功！', $res);
 
         }else{
             // 查询用户认证数据
@@ -340,8 +378,10 @@ class Member extends Admin
 
             $authenticationModel = new AuthenticationModel();
             $data = $authenticationModel->where($map)->find();
-            $data = $authenticationModel->handle($data);
-            View::assign('data', $data);
+            if(!empty($data)){
+                $data = $authenticationModel->handle($data);
+                View::assign('data', $data);
+            }
 
             return View::fetch();
         }

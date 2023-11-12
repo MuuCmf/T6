@@ -77,4 +77,26 @@ class Authentication extends Api
         }
     }
 
+    /**
+     * 获取已填写的认证数据
+     */
+    public function detail()
+    {
+        $uid = get_uid();
+        $map = [
+            ['shopid', '=', $this->shopid],
+            ['uid', '=', $uid]
+        ];
+
+        $data = $this->AuthenticationModel->getDataByMap($map);
+        if($data){
+            $data = $this->AuthenticationModel->handle($data);
+
+            return $this->success('提交成功！', $data);
+        }
+
+        return $this->error('未能获取到数据');
+        
+    }
+
 }
