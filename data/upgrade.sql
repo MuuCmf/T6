@@ -304,3 +304,19 @@ ALTER TABLE `muucmf_vip_card` ADD `year_three_price` INT(11) UNSIGNED NOT NULL C
 ALTER TABLE `muucmf_vip_card` ADD `year_five_price` INT(11) UNSIGNED NOT NULL COMMENT '五年价格 单位：分' AFTER `year_three_price`;
 
 ALTER TABLE `muucmf_member` ADD `authentication` TINYINT(2) NOT NULL DEFAULT '0' COMMENT '是否认证' AFTER `last_login_ip`;
+
+CREATE TABLE IF NOT EXISTS `muucmf_member_authentication` (
+  `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+  `shopid` int(11) UNSIGNED NOT NULL COMMENT '店铺ID',
+  `uid` int(11) UNSIGNED NOT NULL COMMENT '用户ID',
+  `name` varchar(64) NOT NULL COMMENT '真实姓名',
+  `card_no` varchar(128) NOT NULL COMMENT '证件号码',
+  `card_type` tinyint(2) NOT NULL COMMENT '证件类型',
+  `front` varchar(255) NOT NULL COMMENT '证件正面',
+  `back` varchar(255) NOT NULL COMMENT '证件背面',
+  `status` tinyint(2) NOT NULL COMMENT '-1审核未通过 0未认证 1待审核 2已认证',
+  `reason` varchar(255) DEFAULT NULL COMMENT '审核未通过原因',
+  `create_time` int(11) UNSIGNED NOT NULL COMMENT '创建时间',
+  `update_time` int(11) UNSIGNED NOT NULL COMMENT '更新时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户实名认证表';
