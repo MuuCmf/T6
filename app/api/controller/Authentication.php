@@ -27,7 +27,6 @@ class Authentication extends Api
     public function edit()
     {
         if (request()->isPost()) {
-            $param = request()->post();
             $id = input('id', 0, 'intval');
             $name = input('name', '', 'text');
             $card_no = input('card_no', '', 'text');
@@ -45,7 +44,7 @@ class Authentication extends Api
                 'card_no' => $card_no,
                 'front' => $front,
                 'back' => $back,
-                'status' => 1, //默认待审核状态
+                'status' => 1
             ];
 
             // 数据验证

@@ -333,6 +333,8 @@ class Member extends Admin
             $status = input('status', 0, 'intval');
             $uid = input('uid', '=', 'intval');
             $reason = input('reason', '', 'text');
+
+            $authenticationModel = new AuthenticationModel();
             Db::startTrans();
             try{
                 //写入数据
@@ -345,11 +347,12 @@ class Member extends Admin
                 if($status == -1){
                     $data['reason'] = $reason;
                 }
-                $authenticationModel = new AuthenticationModel();
+
                 $res = $authenticationModel->edit($data);
                 if(!$res){
                     throw new Exception('数据写入失败');
                 }
+
                 // 更改用户表认证状态值
                 $res = $this->MemberModel->edit([
                     'shopid' => $this->shopid,
@@ -359,13 +362,11 @@ class Member extends Admin
                 if(!$res){
                     throw new Exception('数据写入失败');
                 }
-
-                Db::commit();
             } catch (Exception $e) {
                 Db::rollback();
                 return $this->error('发生错误：' . $e->getMessage());
             }
-            
+            Db::commit();
             //返回提示
             return $this->success('提交成功！', $res);
 

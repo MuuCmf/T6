@@ -11,7 +11,7 @@ class MemberAuthentication extends Base
         -1 => '审核未通过',
         0  => '未认证',
         1  => '待审核',
-        2  => '已认证',
+        2  => '已实名认证',
     ];
 
     public function handle($data)
