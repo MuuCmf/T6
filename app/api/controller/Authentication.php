@@ -28,17 +28,23 @@ class Authentication extends Api
     {
         if (request()->isPost()) {
             $param = request()->post();
+            $id = input('id', 0, 'intval');
+            $name = input('name', '', 'text');
+            $card_no = input('card_no', '', 'text');
+            $card_type = input('card_type', 0, 'intval');
+            $front = input('front', '', 'text');
+            $back = input('back', '', 'text');
             $uid = get_uid();
 
             $data = [
-                'id' => $param['id'],
+                'id' => $id,
                 'uid' => $uid,
                 'shopid' => $this->shopid,
-                'name' => $param['name'],
-                'card_type' => $param['card_type'],
-                'card_no' => $param['card_no'],
-                'front' => $param['front'],
-                'back' => $param['back'],
+                'name' => $name,
+                'card_type' => $card_type,
+                'card_no' => $card_no,
+                'front' => $front,
+                'back' => $back,
                 'status' => 1, //默认待审核状态
             ];
 
