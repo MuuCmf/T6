@@ -1,4 +1,5 @@
 <?php
+
 namespace app\common\service;
 
 use think\Exception;
@@ -11,6 +12,7 @@ use app\common\model\Vip as VipModel;
 /*
  * VIP会员订单数据
  */
+
 class VipOrders extends OrdersLogic
 {
     protected $OrdersModel;
@@ -28,9 +30,9 @@ class VipOrders extends OrdersLogic
     {
         $shopid = intval($params['shopid']);
         $uid = intval($params['uid']);
-        $order_info_id = intval($params['order_info_id']);//ID
+        $order_info_id = intval($params['order_info_id']); //ID
         $order_info_type = $params['order_info_type'];
-        
+
         //获取商品信息
         //VIP卡项
         $product_data = (new VipCardModel)->getDataById($order_info_id);
@@ -41,13 +43,13 @@ class VipOrders extends OrdersLogic
         $price = intval($product_data[$cycle . '_price']);
         //计算应付金额
         $paid_fee = intval($product_data[$cycle . '_price']); //实际支付金额
-        
-        if (!$product_data){
+
+        if (!$product_data) {
             throw new Exception('数据不存在');
         }
 
         //判断内容是否上架
-        if($product_data['status'] != 1){
+        if ($product_data['status'] != 1) {
             throw new Exception('内容已下架或删除');
         }
 
@@ -72,7 +74,7 @@ class VipOrders extends OrdersLogic
         $paid = 0;
         $status = 1;
         $paid_time = 0;
-        
+
         //有效期
         // 查询会员状态
         $vip_data = (new VipModel)->where([
@@ -80,58 +82,78 @@ class VipOrders extends OrdersLogic
             ['shopid', '=', $shopid],
             ['uid', '=', $uid],
             ['card_id', '=', $product_data['id']],
-            ['status', 'in', [0,1]]
+            ['status', 'in', [0, 1]]
         ])->find();
-        
+
         //未过期会员处理
-        if(!empty($vip_data)){
+        if (!empty($vip_data)) {
             // 未过期会员续费
-            if($vip_data['end_time'] > time()){
-                switch ($cycle){
+            if ($vip_data['end_time'] > time()) {
+                switch ($cycle) {
                     case 'month':
-                    $time = strtotime('+1 month',$vip_data['end_time']);
-                    break;
+                        $time = strtotime('+1 month', $vip_data['end_time']);
+                        break;
                     case 'quarter':
-                    $time = strtotime('+3 month',$vip_data['end_time']);
-                    break;
+                        $time = strtotime('+3 month', $vip_data['end_time']);
+                        break;
                     case 'year':
-                    $time = strtotime('+1 year',$vip_data['end_time']);
-                    break;
+                        $time = strtotime('+1 year', $vip_data['end_time']);
+                        break;
+                    case 'year_two':
+                        $time = strtotime('+2 year', $vip_data['end_time']);
+                        break;
+                    case 'year_three':
+                        $time = strtotime('+3 year', $vip_data['end_time']);
+                        break;
+                    case 'year_five':
+                        $time = strtotime('+5 year', $vip_data['end_time']);
+                        break;
                     case 'forever':
-                    $time = 0;
-                    break;
+                        $time = 0;
+                        break;
                 }
-            }else{
+            } else {
                 //已过期用户
-                switch ($cycle){
+                switch ($cycle) {
                     case 'month':
-                    $time = strtotime('+1 month');
-                    break;
+                        $time = strtotime('+1 month');
+                        break;
                     case 'quarter':
-                    $time = strtotime('+3 month');
-                    break;
+                        $time = strtotime('+3 month');
+                        break;
                     case 'year':
-                    $time = strtotime('+1 year');
-                    break;
+                        $time = strtotime('+1 year');
+                        break;
+                    case 'year':
+                        $time = strtotime('+1 year');
+                        break;
+                    case 'year_two':
+                        $time = strtotime('+2 year');
+                        break;
+                    case 'year_three':
+                        $time = strtotime('+3 year');
+                        break;
+                    case 'year_five':
+                        $time = strtotime('+5 year');
+                        break;
                     case 'forever':
-                    $time = 0;
-                    break;
+                        $time = 0;
+                        break;
                 }
             }
-            
-        }else{
-            switch ($cycle){
+        } else {
+            switch ($cycle) {
                 case 'month':
-                $time = strtotime('+1 month');
-                break;
+                    $time = strtotime('+1 month');
+                    break;
                 case 'quarter':
-                $time = strtotime('+3 month');
-                break;
+                    $time = strtotime('+3 month');
+                    break;
                 case 'year':
-                $time = strtotime('+1 year');
+                    $time = strtotime('+1 year');
                 case 'forever':
-                $time = 0;
-                break;
+                    $time = 0;
+                    break;
             }
         }
         //订单内有效期
@@ -209,61 +231,60 @@ class VipOrders extends OrdersLogic
             ['shopid', '=', $shopid],
             ['uid', '=', $uid],
             ['card_id', '=', $vip_card_data['id']],
-            ['status', 'in', [0,1]]
+            ['status', 'in', [0, 1]]
         ])->find();
-        
+
         //未过期会员处理
-        if(!empty($vip_data)){
+        if (!empty($vip_data)) {
             // 未过期会员续费
             $vip_data_id = $vip_data['id'];
-            if($vip_data['end_time'] > time()){
-                switch ($cycle){
+            if ($vip_data['end_time'] > time()) {
+                switch ($cycle) {
                     case 'month':
-                    $time = strtotime('+1 month',$vip_data['end_time']);
-                    break;
+                        $time = strtotime('+1 month', $vip_data['end_time']);
+                        break;
                     case 'quarter':
-                    $time = strtotime('+3 month',$vip_data['end_time']);
-                    break;
+                        $time = strtotime('+3 month', $vip_data['end_time']);
+                        break;
                     case 'year':
-                    $time = strtotime('+1 year',$vip_data['end_time']);
-                    break;
+                        $time = strtotime('+1 year', $vip_data['end_time']);
+                        break;
                     case 'forever':
-                    $time = 0;
-                    break;
+                        $time = 0;
+                        break;
                 }
-            }else{
+            } else {
                 //已过期用户
-                switch ($cycle){
+                switch ($cycle) {
                     case 'month':
-                    $time = strtotime('+1 month');
-                    break;
+                        $time = strtotime('+1 month');
+                        break;
                     case 'quarter':
-                    $time = strtotime('+3 month');
-                    break;
+                        $time = strtotime('+3 month');
+                        break;
                     case 'year':
-                    $time = strtotime('+1 year');
-                    break;
+                        $time = strtotime('+1 year');
+                        break;
                     case 'forever':
-                    $time = 0;
-                    break;
+                        $time = 0;
+                        break;
                 }
             }
-            
-        }else{
+        } else {
             $vip_data_id = 0;
-            switch ($cycle){
+            switch ($cycle) {
                 case 'month':
-                $time = strtotime('+1 month');
-                break;
+                    $time = strtotime('+1 month');
+                    break;
                 case 'quarter':
-                $time = strtotime('+3 month');
-                break;
+                    $time = strtotime('+3 month');
+                    break;
                 case 'year':
-                $time = strtotime('+1 year');
-                break;
+                    $time = strtotime('+1 year');
+                    break;
                 case 'forever':
-                $time = 0;
-                break;
+                    $time = 0;
+                    break;
             }
         }
         //订单内有效期
@@ -280,7 +301,7 @@ class VipOrders extends OrdersLogic
             'status' => 1
         ];
         //新开通生成card_no
-        if($vip_data_id == 0){
+        if ($vip_data_id == 0) {
             $vip_edit_data['card_no'] = build_order_no();
         }
         // 更新VIP会员数据
@@ -288,5 +309,4 @@ class VipOrders extends OrdersLogic
 
         return $order_info;
     }
-
 }
