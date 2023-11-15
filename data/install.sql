@@ -4634,7 +4634,8 @@ INSERT INTO `muucmf_menu` (`id`, `title`, `pid`, `sort`, `url`, `hide`, `type`, 
 ('D3E5BCC8-BAED-D970-9E40-6EB17CAFF94A', '用户详情', 'DA4333DF-D814-819B-D657-401FE5153AB4', 0, 'admin/Member/detail', 0, 0, '', '', 0, '', 'admin'),
 ('06AEED1A-9E0E-97B9-6395-EA9959B2BE6E', '状态管理', 'A7DA37AC-E001-7C55-083F-E03A03FA5CEC', 0, 'admin/Author/status', 0, 0, '', '', 0, '', 'admin'),
 ('C3F2915A-B874-B3DB-3FD2-8743E5ABF242', '企业微信配置', 'A4650B98-DAD4-8194-030C-1B2AB4F35CBA', 26, 'channel/admin.WechatWork/config', 0, 0, '', '企业微信', 0, 'wechat', 'admin'),
-('FF8D1924-A5EC-7830-B6BA-C0DA6C8B9CBF', '用户选择', 'DA4333DF-D814-819B-D657-401FE5153AB4', 0, 'admin/Member/chooseUser', 0, 0, '', '', 0, '', 'admin');
+('FF8D1924-A5EC-7830-B6BA-C0DA6C8B9CBF', '用户选择', 'DA4333DF-D814-819B-D657-401FE5153AB4', 0, 'admin/Member/chooseUser', 0, 0, '', '', 0, '', 'admin'),
+('89CBF0B3-DBEF-6AFC-88BF-B888148AA87A', '实名认证', 'DA4333DF-D814-819B-D657-401FE5153AB4', 0, 'admin/Member/authentication', 0, 0, '', '', 0, '', 'admin');
 
 -- --------------------------------------------------------
 

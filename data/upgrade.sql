@@ -320,3 +320,6 @@ CREATE TABLE IF NOT EXISTS `muucmf_member_authentication` (
   `update_time` int(11) UNSIGNED NOT NULL COMMENT '更新时间',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户实名认证表';
+
+INSERT INTO `muucmf_menu` (`id`, `title`, `pid`, `sort`, `url`, `hide`, `type`, `tip`, `group`, `is_dev`, `icon`, `module`) VALUES
+('89CBF0B3-DBEF-6AFC-88BF-B888148AA87A', '实名认证', 'DA4333DF-D814-819B-D657-401FE5153AB4', 0, 'admin/Member/authentication', 0, 0, '', '', 0, '', 'admin');
