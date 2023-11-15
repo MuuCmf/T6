@@ -151,6 +151,16 @@ class VipOrders extends OrdersLogic
                     break;
                 case 'year':
                     $time = strtotime('+1 year');
+                    break;
+                case 'year_two':
+                    $time = strtotime('+2 year');
+                    break;
+                case 'year_three':
+                    $time = strtotime('+3 year');
+                    break;
+                case 'year_five':
+                    $time = strtotime('+5 year');
+                    break;
                 case 'forever':
                     $time = 0;
                     break;
