@@ -1,0 +1,130 @@
+.user-config {
+
+    .vipcard-lists {
+
+        .info {
+            margin-left: 90px;
+            font-size: 14px;
+            width: 200px;
+            overflow: hidden;
+        }
+
+
+        .empty {
+            padding: 10px 0;
+
+            .text {
+                text-align: center;
+                font-size: 18px;
+                padding: 60px 0 60px 0;
+            }
+
+            .config {
+                text-align: center;
+            }
+        }
+
+        .member-config-item {
+
+            width: 428px;
+            float: left;
+            margin: 10px;
+
+            .member-title {
+                font-size: 18px;
+                padding: 15px;
+            }
+
+            .member-card-box {
+                position: relative;
+                background-color: #fff;
+                margin: 5px 15px;
+                height: 250px;
+
+                .member-card-bg {
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    right: 0;
+                    bottom: 0;
+                    z-index: 1;
+                    border-radius: 15px;
+                    overflow: hidden;
+
+                    img {
+                        width: 100%;
+                        display: block;
+                    }
+                }
+
+                .member-card-info {
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    right: 0;
+                    bottom: 0;
+                    height: auto;
+                    padding: 15px;
+                    padding-bottom: 10%;
+                    display: block;
+                    border-radius: 20px;
+                    z-index: 2;
+
+                    .title {
+                        color: #D9B68B;
+
+                        .member-card-logo {
+                            float: left;
+                            width: 36px;
+                            height: 36px;
+                            border-radius: 5px;
+                            overflow: hidden;
+                        }
+
+                        .member-card-title {
+                            margin-left: 46px;
+                            line-height: 36px;
+
+                            .b-title {
+                                font-weight: 600;
+                            }
+                        }
+                    }
+
+                    .member-type {
+                        text-align: left;
+                        font-size: 36px;
+                        margin-top: 20px;
+                    }
+
+                    .member-description {
+                        margin-top: 10px;
+                        font-size: 12px;
+                        display: block;
+                        line-height: 18px;
+                        height: 36px;
+                        color: #D9B68B;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                        display: -webkit-box;
+                        -webkit-box-orient: vertical;
+                        -webkit-line-clamp: 2;
+                    }
+
+                    .status {
+                        position: absolute;
+                        width: 80px;
+                        height: 26px;
+                        line-height: 26px;
+                        text-align: center;
+                        top: 20px;
+                        right: 20px;
+                        color: #fff;
+                        border: 1px solid #fff;
+                        border-radius: 5px;
+                    }
+                }
+            }
+        }
+    }
+}

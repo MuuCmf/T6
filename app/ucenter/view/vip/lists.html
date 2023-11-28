@@ -1,0 +1,67 @@
+{extend name="../../common/view/main"/}
+{block name="style"}
+<link href="__STATIC__/common/lib/webuploader/css/webuploader.css" type="text/css" rel="stylesheet">
+<link href="__STATIC__/common/lib/cropper/cropper.min.css" rel="stylesheet">
+<link href="__STATIC__/ucenter/css/main.min.css" rel="stylesheet">
+{/block}
+{block name="body"}
+<div id="main-container" class="user-config">
+    <div class="container-fixed clearfix">
+        <div class="left-slide">
+            {include file="common/_slide"/}
+        </div>
+        <div class="right-content">
+            <div class="vipcard-lists">
+                <h4 class="basic-title">VIP卡项</h4>
+                <div class="card-content">
+                    {if !empty($lists.data)}
+                    {volist name="lists.data" id="v"}
+                    <div class="member-config-item card" data-title-color="{$v['config']['title']['color']|default=''}" data-description-color="{$v['config']['description']['color']|default=''}" data-card-bg-color="{$v['config']['bg']['color']|default=''}">
+                        <div class="member-title">{$v['title']} 会员卡</div>
+                        <div class="member-card-box">
+                            <div class="member-card-bg">
+                                {if !empty($v['config']['bg']['image'])}
+                                <img src="{$v['config']['bg']['image_url']|default=''}" />
+                                {else}
+                                <div class="virtual-img"></div>
+                                {/if}
+                            </div>
+                            <div class="member-card-info">
+                                <div class="title clearfix">
+                                    <div class="member-card-logo">
+                                        <img src="{$v['cover_100']|default=''}" />
+                                    </div>
+                                    <div class="member-card-title">
+                                        {if !empty($micro_config_data["title"])}
+                                        
+                                        {else}
+
+                                        {/if}
+                                    </div>
+                                </div>
+                                <div class="member-type">{$v['title']|default=''}</div>
+                                <div class="member-description">{$v['description']|default=''}</div>
+                                
+                            </div>
+                        </div>
+                    </div>
+                    {/volist}
+                    {else}
+                    {include file='../../common/view/empty'}
+                    {/if}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{/block}
+
+{block name="script"}
+<script src="__STATIC__/ucenter/js/main.min.js"></script>
+<script>
+    $(function () {
+        // 设置当前高亮菜单
+        $("#{$tab}").addClass('active');
+    });
+</script>
+{/block}

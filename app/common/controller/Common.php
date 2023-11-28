@@ -18,6 +18,7 @@ class Common extends Base
     public $module; //请求的应用
     public $app_name;
     public $muu_config_data;
+    public $micro_config_data;
     public $title = '';
     public $keywords = '';
     public $description = '';
@@ -112,7 +113,7 @@ class Common extends Base
         $is_install = (new Module())->checkInstalled('micro');
         if($is_install){
             $MicroConfigModel = new \app\micro\model\MicroConfig();
-            $micro_config_data = $MicroConfigModel->getConfig($this->shopid);
+            $this->micro_config_data = $micro_config_data = $MicroConfigModel->getConfig($this->shopid);
         }
         View::assign('micro_config_data', $micro_config_data);
     }
