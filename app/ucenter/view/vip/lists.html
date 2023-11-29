@@ -1,7 +1,5 @@
 {extend name="../../common/view/main"/}
 {block name="style"}
-<link href="__STATIC__/common/lib/webuploader/css/webuploader.css" type="text/css" rel="stylesheet">
-<link href="__STATIC__/common/lib/cropper/cropper.min.css" rel="stylesheet">
 <link href="__STATIC__/ucenter/css/main.min.css" rel="stylesheet">
 {/block}
 {block name="body"}
@@ -65,6 +63,10 @@
                     {else}
                     {include file='../../common/view/empty'}
                     {/if}
+                </div>
+
+                <div class="page-section">
+                    {:htmlspecialchars_decode($pager)}
                 </div>
             </div>
         </div>

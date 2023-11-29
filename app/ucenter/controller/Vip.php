@@ -27,9 +27,6 @@ class Vip extends Base
         $this->VipLogic = new VipLogic();
         $this->VipCardModel = new VipCardModel();
         $this->VipCardLogic = new VipCardLogic();
-        $user = query_user(get_uid());
-        View::assign('user', $user);
-        
     }
 
     /**
@@ -76,8 +73,6 @@ class Vip extends Base
         $this->setTitle('VIP卡项');
         View::assign('tab', 'vip');
 
-        // dump($this->muu_config_data);
-        // dump($this->micro_config_data);
         // 输出模板
         return View::fetch();
     }
@@ -87,7 +82,27 @@ class Vip extends Base
      */
     public function detail()
     {
+        $uid = get_uid();
+        $id = input('id', 0, 'intval');
+        if(empty($id)) return $this->error('参数错误');
 
+        $data = $this->VipCardModel->getDataById($id);
+        if(empty($data)) return $this->error('参数错误');
+
+        $data = $this->VipCardLogic->formatData($data);
+        //查询用户是否已拥有会员类型数据
+        $have_card = $this->VipModel->getVipByCardId($this->shopid, $uid, $id);
+        if(!empty($have_card)){
+            $have_card = $this->VipLogic->formatData($have_card);
+            $data['have_card'] = $have_card;
+        }
+        
+
+        //dump($data);
+        View::assign('data', $data);
+
+        // 输出模板
+        return View::fetch();
     }
 
 

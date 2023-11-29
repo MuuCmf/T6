@@ -1,0 +1,138 @@
+{extend name="../../common/view/main"/}
+{block name="style"}
+<link href="__STATIC__/ucenter/css/main.min.css" rel="stylesheet">
+{/block}
+{block name="body"}
+<div class="card-detail-container {$micro_config_data.style}">
+    <div class="container-fixed clearfix">
+        <h2>{$data['title']|default=''}</h2>
+        <div class="card-detail-section">
+            <div class="card-header clearfix">
+                <div class="card-config-item">
+                    <div class="card-config-item" data-title-color="{$data['config']['title']['color']|default=''}"
+                        data-description-color="{$data['config']['description']['color']|default=''}"
+                        data-card-bg-color="{$data['config']['bg']['color']|default=''}">
+
+                        <div class="card-box">
+                            <div class="card-bg">
+                                {if !empty($data['config']['bg']['image'])}
+                                <img src="{$data['config']['bg']['image_url']|default=''}" />
+                                {else}
+                                <div class="virtual-img"></div>
+                                {/if}
+                            </div>
+                            <div class="card-info">
+                                <div class="title clearfix">
+                                    <div class="card-logo">
+                                        <img src="{$data['cover_100']|default=''}" />
+                                    </div>
+                                    <div class="card-title">
+                                        {if !empty($micro_config_data["title"])}
+                                        {$micro_config_data.title|default=''}
+                                        {else}
+                                        {$muu_config_data.WEB_SITE_NAME|default=''}
+                                        {/if}
+                                    </div>
+                                </div>
+                                <div class="card-type">{$data['title']|default=''}</div>
+                                <div class="card-description">{$data['description']|default=''}</div>
+                                <div class="card-status">
+                                    {if !empty($data.have_card)}
+                                    <div class="status">已开通</div>
+                                    {else}
+                                    <div class="status">立即开通</div>
+                                    {/if}
+                                </div>
+                                {if !empty($data.have_card)}
+                                <div class="expiry-date">
+                                    <div>有效期至：</div>
+                                    <div>{$data.have_card.end_time_str|default=''}</div>
+                                </div>
+                                {/if}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-sale-item">
+                    <!--会员价格-->
+                    <div class="card-price-box clearfix">
+                        {if $data['month_price'] > 0}
+                        <div class="price active" data-type="month" data-title="{$data['title']} 月度会员">
+                            ￥ {$data['month_price']} 元/月
+                            <i class="fa fa-check" aria-hidden="true"></i>
+                        </div>
+                        {/if}
+                        {if $data['quarter_price'] > 0}
+                        <div class="price" data-type="quarter" data-title="{$data['title']} 季度会员">
+                            ￥ {$data['quarter_price']} 元/季
+                            <i class="fa fa-check" aria-hidden="true"></i>
+                        </div>
+                        {/if}
+                        {if $data['year_price'] > 0}
+                        <div class="price" data-type="year" data-title="{$data['title']} 年度会员">
+                            ￥ {$data['year_price']} 元/年
+                            <i class="fa fa-check" aria-hidden="true"></i>
+                        </div>
+                        {/if}
+                        {if $data['year_two_price'] > 0}
+                        <div class="price" data-type="year_two" data-title="{$data['title']} 两年会员">
+                            ￥ {$data['year_two_price']} 元/两年
+                            <i class="fa fa-check" aria-hidden="true"></i>
+                        </div>
+                        {/if}
+                        {if $data['year_three_price'] > 0}
+                        <div class="price" data-type="year_three" data-title="{$data['title']} 三年会员">
+                            ￥ {$data['year_three_price']} 元/三年
+                            <i class="fa fa-check" aria-hidden="true"></i>
+                        </div>
+                        {/if}
+                        {if $data['year_five_price'] > 0}
+                        <div class="price" data-type="year_five" data-title="{$data['title']} 五年会员">
+                            ￥ {$data['year_five_price']} 元/五年
+                            <i class="fa fa-check" aria-hidden="true"></i>
+                        </div>
+                        {/if}
+                        {if $data['forever_price'] > 0}
+                        <div class="price" data-type="forever" data-title="{$data['title']} 永久会员">
+                            ￥ {$data['forever_price']} 元/永久
+                            <i class="fa fa-check" aria-hidden="true"></i>
+                        </div>
+                        {/if}
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-content">
+                <h3 class="title">权益描述</h3>
+                <div class="detail">
+                    {:htmlspecialchars_decode($data['content'])}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{/block}
+
+{block name="script"}
+<script src="__STATIC__/ucenter/js/main.min.js"></script>
+<script>
+    $(function () {
+        $('.card-config-item').each(function () {
+            var _this = $(this);
+            var title_color = _this.data('title-color');
+            var description_color = _this.data('description-color');
+            var bg_color = _this.data('card-bg-color');
+
+            _this.find('.card-bg').css('backgroundColor', bg_color);
+            _this.find('.card-title').css('color', description_color);
+            _this.find('.card-type').css('color', title_color);
+            _this.find('.card-description').css('color', description_color);
+            _this.find('.expiry-date').css('color', description_color);
+
+            //虚拟图高度设置
+            var virtual_w = _this.find('.virtual-img').width();
+            _this.find('.virtual-img').height(virtual_w * 0.6315104167);
+        });
+    });
+</script>
+{/block}
