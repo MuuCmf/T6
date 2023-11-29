@@ -75,6 +75,9 @@ class Vip extends Base
         // 设置页面TITLE
         $this->setTitle('VIP卡项');
         View::assign('tab', 'vip');
+
+        // dump($this->muu_config_data);
+        // dump($this->micro_config_data);
         // 输出模板
         return View::fetch();
     }

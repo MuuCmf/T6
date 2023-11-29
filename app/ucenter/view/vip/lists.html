@@ -12,39 +12,55 @@
         </div>
         <div class="right-content">
             <div class="vipcard-lists">
-                <h4 class="basic-title">VIP卡项</h4>
-                <div class="card-content">
+                <h4 class="list-title">VIP卡项</h4>
+                <div class="card-content clearfix">
                     {if !empty($lists.data)}
                     {volist name="lists.data" id="v"}
-                    <div class="member-config-item card" data-title-color="{$v['config']['title']['color']|default=''}" data-description-color="{$v['config']['description']['color']|default=''}" data-card-bg-color="{$v['config']['bg']['color']|default=''}">
-                        <div class="member-title">{$v['title']} 会员卡</div>
-                        <div class="member-card-box">
-                            <div class="member-card-bg">
-                                {if !empty($v['config']['bg']['image'])}
-                                <img src="{$v['config']['bg']['image_url']|default=''}" />
-                                {else}
-                                <div class="virtual-img"></div>
-                                {/if}
-                            </div>
-                            <div class="member-card-info">
-                                <div class="title clearfix">
-                                    <div class="member-card-logo">
-                                        <img src="{$v['cover_100']|default=''}" />
-                                    </div>
-                                    <div class="member-card-title">
-                                        {if !empty($micro_config_data["title"])}
-                                        
-                                        {else}
+                    <a href="{:url('ucenter/Vip/detail', ['id' => $v.id])}">
+                        <div class="card-config-item" data-title-color="{$v['config']['title']['color']|default=''}"
+                            data-description-color="{$v['config']['description']['color']|default=''}"
+                            data-card-bg-color="{$v['config']['bg']['color']|default=''}">
 
+                            <div class="card-box">
+                                <div class="card-bg">
+                                    {if !empty($v['config']['bg']['image'])}
+                                    <img src="{$v['config']['bg']['image_url']|default=''}" />
+                                    {else}
+                                    <div class="virtual-img"></div>
+                                    {/if}
+                                </div>
+                                <div class="card-info">
+                                    <div class="title clearfix">
+                                        <div class="card-logo">
+                                            <img src="{$v['cover_100']|default=''}" />
+                                        </div>
+                                        <div class="card-title">
+                                            {if !empty($micro_config_data["title"])}
+                                            {$micro_config_data.title|default=''}
+                                            {else}
+                                            {$muu_config_data.WEB_SITE_NAME|default=''}
+                                            {/if}
+                                        </div>
+                                    </div>
+                                    <div class="card-type">{$v['title']|default=''}</div>
+                                    <div class="card-description">{$v['description']|default=''}</div>
+                                    <div class="card-status">
+                                        {if !empty($v.have_card)}
+                                        <div class="status">已开通</div>
+                                        {else}
+                                        <div class="status">立即开通</div>
                                         {/if}
                                     </div>
+                                    {if !empty($v.have_card)}
+                                    <div class="expiry-date">
+                                        <div>有效期至：</div>
+                                        <div>{$v.have_card.end_time_str|default=''}</div>
+                                    </div>
+                                    {/if}
                                 </div>
-                                <div class="member-type">{$v['title']|default=''}</div>
-                                <div class="member-description">{$v['description']|default=''}</div>
-                                
                             </div>
                         </div>
-                    </div>
+                    </a>
                     {/volist}
                     {else}
                     {include file='../../common/view/empty'}
@@ -62,6 +78,25 @@
     $(function () {
         // 设置当前高亮菜单
         $("#{$tab}").addClass('active');
+    });
+
+    $(function () {
+        $('.card-config-item').each(function () {
+            var _this = $(this);
+            var title_color = _this.data('title-color');
+            var description_color = _this.data('description-color');
+            var bg_color = _this.data('card-bg-color');
+
+            _this.find('.card-bg').css('backgroundColor', bg_color);
+            _this.find('.card-title').css('color', description_color);
+            _this.find('.card-type').css('color', title_color);
+            _this.find('.card-description').css('color', description_color);
+            _this.find('.expiry-date').css('color', description_color);
+
+            //虚拟图高度设置
+            var virtual_w = _this.find('.virtual-img').width();
+            _this.find('.virtual-img').height(virtual_w * 0.6315104167);
+        });
     });
 </script>
 {/block}
