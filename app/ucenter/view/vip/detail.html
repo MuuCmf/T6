@@ -102,6 +102,28 @@
                 </div>
             </div>
 
+            <div class="card-sale-btns">
+                <!--卡密兑换激活 start-->
+                {if !empty($convert_data)}
+                <div class="cdkey-activate" data-type="cdkey-activate" data-toggle="modal" data-target="#memberCDkey">
+                    <div class="item">
+                        <span class="title">激活码兑换</span>
+                    </div>
+                </div>
+                {/if}
+                <!--卡密兑换激活 end-->
+                <!--开通或 已开通用户续费-->
+                <div class="member-sale" data-role="member_sale" data-id="{$data['id']}" data-title="{$data['title']}" data-type="Member">
+                    <div class="item">
+                        {if !empty($data['have_card']) && $data['have_card']['mt_id'] == $data['id']}
+                        <span>立即续费</span> <span class="title">{$data['title']}</span>
+                        {else}
+                        <span>立即开通</span> <span class="title">{$data['title']}</span>
+                        {/if}
+                    </div>
+                </div>
+            </div>
+
             <div class="card-content">
                 <h3 class="title">权益描述</h3>
                 <div class="detail">
@@ -111,6 +133,35 @@
         </div>
     </div>
 </div>
+
+<div id="memberCDkey" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">关闭</span></button>
+                <h4 class="modal-title">激活码兑换</h4>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group">
+                      <div class="input-group">
+                        <span class="input-group-addon"><i class="icon icon-key"></i></span>
+                        <input type="text" class="form-control" name="cdkey_value" placeholder="请输入激活码">
+                      </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary" data-role="cdkey-submit" data-url="{:url()}">确认提交</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!--配置数据-->
+<input type="hidden" id="bgColor" value="{$data['config']['bg']['color']}"/>
+<input type="hidden" id="titleColor" value="{$data['config']['title']['color']}"/>
+<input type="hidden" id="descriptionColor" value="{$data['config']['description']['color']}"/>
 {/block}
 
 {block name="script"}
@@ -134,5 +185,46 @@
             _this.find('.virtual-img').height(virtual_w * 0.6315104167);
         });
     });
+
+    
+    $(function(){
+        var title_color = $('#titleColor').val();
+        var description_color = $('#descriptionColor').val();
+        var bg_color = $('#bgColor').val();
+        /*选择价格*/
+        $('.card-price-box .price').click(function(){
+            $this = $(this);
+            $('.card-price-box .price').css('backgroundColor','#eee');
+            $('.card-price-box .price').css('borderColor','#eee');
+            $('.card-price-box .price').css('color','#333');
+            $this.css('backgroundColor',bg_color);
+            $this.css('borderColor',bg_color);
+            $this.css('color',title_color);
+            $('.card-price-box .price').removeClass('active');
+            $this.addClass('active');
+        });
+        // 
+        $('.card-price-box .price:first').css('backgroundColor',bg_color);
+        $('.card-price-box .price:first').css('borderColor',bg_color);
+        $('.card-price-box .price:first').css('color',title_color);
+        $('.card-price-box .price:first').addClass('active');
+        //底部按钮
+        $('.card-sale .item').css('color',title_color);
+        $('.card-sale .item').css('backgroundColor',bg_color);
+        //虚拟图高度设置
+        var virtual_w = $('.virtual-img').width();
+        $('.virtual-img').height(virtual_w * 0.6315104167);
+        //console.log(bg_color);
+        $('.card-bg').css('backgroundColor',bg_color);
+        $('.card-title').css('color',description_color);
+        $('.card-type').css('color',title_color);
+        $('.card-description').css('color',description_color);
+        $('.expiry-date').css('color',description_color);
+        //激活码
+        $('.cdkey-activate .item').css('color',bg_color);
+        $('.cdkey-activate .item').css('backgroundColor',title_color);
+    });
+
+
 </script>
 {/block}

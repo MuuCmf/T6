@@ -237,7 +237,7 @@
             .card-sale-item {
                 margin-left: 448px;
                 .card-price-box {
-                    margin-top: 10px;
+                    margin-top: 20px;
                     padding: 10px;
                     background-color: #fff;
                     .price {
@@ -260,6 +260,8 @@
                         background-color: #eee;
                         border: 0;
                         color: #666;
+                        font-size: 16px;
+                        font-weight: 600;
                         .fa {
                             position: absolute;
                             top: 25px;

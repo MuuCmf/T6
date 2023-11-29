@@ -4,6 +4,7 @@ declare (strict_types = 1);
 namespace app\ucenter\controller;
 
 use think\facade\View;
+use app\common\model\Module;
 use app\common\model\Vip as VipModel;
 use app\common\logic\Vip as VipLogic;
 use app\common\model\VipCard as VipCardModel;
@@ -96,11 +97,23 @@ class Vip extends Base
             $have_card = $this->VipLogic->formatData($have_card);
             $data['have_card'] = $have_card;
         }
-        
-
-        //dump($data);
         View::assign('data', $data);
 
+        // 查询是否有兑换码
+        $convert_is_setup = (new Module())->checkInstalled('convert');
+        $convert_data = [];
+        if($convert_is_setup == true){
+            $class_path = 'app\\convert\\model\\ConvertKcard';
+            $KcardModel = new $class_path;
+            $convert_data = $KcardModel->where([
+                ['shopid', '=', $this->shopid],
+                ['info_id' , '=' , $data['id']],
+                ['info_type' , '=' , 'vipcard'],
+                ['status' , '=' , 1]
+            ])->find();
+        }
+        View::assign('convert_data', $convert_data);
+         
         // 输出模板
         return View::fetch();
     }
