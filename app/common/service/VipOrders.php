@@ -234,7 +234,7 @@ class VipOrders extends OrdersLogic
         $vip_card_data = $vip_card_data->toArray();
         $app = $vip_card_data['app'];
         $uid = $order_info['uid'];
-        $cycle = $order_info['products']['cycle'];
+
         // 获取会员数据
         $vip_data = (new VipModel)->where([
             ['app', '=', $app],
@@ -248,57 +248,11 @@ class VipOrders extends OrdersLogic
         if (!empty($vip_data)) {
             // 未过期会员续费
             $vip_data_id = $vip_data['id'];
-            if ($vip_data['end_time'] > time()) {
-                switch ($cycle) {
-                    case 'month':
-                        $time = strtotime('+1 month', $vip_data['end_time']);
-                        break;
-                    case 'quarter':
-                        $time = strtotime('+3 month', $vip_data['end_time']);
-                        break;
-                    case 'year':
-                        $time = strtotime('+1 year', $vip_data['end_time']);
-                        break;
-                    case 'forever':
-                        $time = 0;
-                        break;
-                }
-            } else {
-                //已过期用户
-                switch ($cycle) {
-                    case 'month':
-                        $time = strtotime('+1 month');
-                        break;
-                    case 'quarter':
-                        $time = strtotime('+3 month');
-                        break;
-                    case 'year':
-                        $time = strtotime('+1 year');
-                        break;
-                    case 'forever':
-                        $time = 0;
-                        break;
-                }
-            }
-        } else {
+        }else{
             $vip_data_id = 0;
-            switch ($cycle) {
-                case 'month':
-                    $time = strtotime('+1 month');
-                    break;
-                case 'quarter':
-                    $time = strtotime('+3 month');
-                    break;
-                case 'year':
-                    $time = strtotime('+1 year');
-                    break;
-                case 'forever':
-                    $time = 0;
-                    break;
-            }
         }
         //订单内有效期
-        $end_time = $time;
+        $end_time = $order_info['end_time'];
         //初始化更新数据
         $vip_edit_data = [
             'id' => $vip_data_id,

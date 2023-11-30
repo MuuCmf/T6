@@ -103,11 +103,11 @@ class Vip extends Base
         $convert_is_setup = (new Module())->checkInstalled('convert');
         $convert_data = [];
         if($convert_is_setup == true){
-            $class_path = 'app\\convert\\model\\ConvertKcard';
+            $class_path = 'app\\convert\\model\\ConvertMcard';
             $KcardModel = new $class_path;
             $convert_data = $KcardModel->where([
                 ['shopid', '=', $this->shopid],
-                ['info_id' , '=' , $data['id']],
+                ['info_id' , '=' , $id],
                 ['info_type' , '=' , 'vipcard'],
                 ['status' , '=' , 1]
             ])->find();
@@ -115,6 +115,37 @@ class Vip extends Base
         View::assign('convert_data', $convert_data);
          
         // 输出模板
+        $this->setTitle($data['title']);
+        return View::fetch();
+    }
+
+    /**
+     * 下单
+     */
+    public function create()
+    {
+        $app = input('app', '', 'text');
+        $info_id = input('info_id', 0, 'intval');
+        View::assign('info_id', $info_id);
+        $info_type = input('info_type', '', 'text');
+        View::assign('info_type', $info_type);
+        $cycle = input('cycle', 'month', 'text');
+        View::assign('cycle', $cycle);
+
+        $data = $this->VipCardModel->getDataById($info_id);
+        if(empty($data)) return $this->error('参数错误');
+
+        $data = $this->VipCardLogic->formatData($data);
+        View::assign('data', $data);
+
+        // 支付价格
+        $price = $data[$cycle . '_price'];
+        View::assign('price', $price);
+
+        // 获取支付是否启用
+        $weixin_pay = config('extend.WX_PAY_MCH_ID');
+        View::assign('weixin_pay', $weixin_pay);
+
         return View::fetch();
     }
 

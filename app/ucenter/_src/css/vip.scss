@@ -128,6 +128,7 @@
         text-align: center;
         font-size: 28px;
         margin: 24px 0;
+        margin-top: 40px;
     }
     .card-detail-section {
         background-color: #fff;
@@ -283,6 +284,49 @@
                 }
             }
         }
+
+        .card-sale-btns {
+            padding: 20px 40px;
+            width: 500px;
+            margin: 0 auto;
+
+            .cdkey-activate {
+                background-color: #fff;
+                padding: 10px 15px;
+                position: relative;
+                color: #333;
+                cursor: pointer;
+                .item {
+                    border: 1px solid #f0f0f0;
+                    border-radius: 15px;
+                    padding: 10px 0;
+                    text-align: center;
+                    font-size: 16px;
+        
+                    .title {
+                        font-weight: 700;
+                    }
+                }
+            }
+        
+            .vip-sale {
+                background-color: #fff;
+                padding: 10px 15px;
+                color: #8d8d8d;
+                cursor: pointer;
+                .item {
+                    background-color: #333;
+                    border-radius: 15px;
+                    padding: 10px 0;
+                    text-align: center;
+                    font-size: 16px;
+        
+                    .title {
+                        font-weight: 700;
+                    }
+                }
+            }
+        }
     
         .card-content {
             padding: 35px;
@@ -294,6 +338,233 @@
             }
         }
     }
+}
+
+
+/* 订单创建页面 */
+.vip-orders-create-section {
+	background-color: #fff;
+	.product-info-item {
+		margin-bottom: 20px;
+		background: #fff;
+		
+		.item {
+			.image {
+				float: left;
+				width: 120px;
+				img {
+					border-radius: 5px;
+				}
+			}
+			.info {
+				margin-left: 120px;
+				padding-left: 10px;
+				.title {
+					
+				}
+			}
+		}
+	}
+
+	.payment-info-item {
+		margin-bottom: 10px;
+		background: #fff;
+		.chose_pay {
+			margin: 0;
+			padding: 8px 5px;
+			background: #fff;
+		}
+		.item {
+			.pay-type  {
+				position: relative;
+				position: relative;
+				border-bottom: 1px solid #eee;
+				padding: 5px;
+				.radio-primary {
+					padding: 10px 0;
+				}
+				.radio-inline {
+					width: 500px;
+				}
+
+				.pay-logo {
+					position: absolute;
+					top: 10px;
+					right: 0;
+					width: 32px;
+					height: 32px;
+					img {
+						width: 100%;
+					}
+				}
+			}
+			.wechat {
+
+			}
+			.alipay {
+
+			}
+		}
+	}
+
+	.create-orders-item {
+		margin-bottom: 10px;
+		background: #fff;
+		.price-box {
+			margin-bottom: 10px;
+			h3 {
+				display: block;
+				float: left;
+				width: 100px;
+				margin: 10px 0;
+			}
+			.value {
+				margin-left: 100px;
+				line-height: 37px;
+				.price-item {
+					text-align: right;
+					.member-price-item {
+						display: inline-block;
+						padding: 0 10px;
+						color: #666;
+						font-size: 14px;
+						line-height: 32px;
+						border-radius: 8px;
+						.price {
+							color: #ff6600;
+						}
+					}
+					.price {
+						display: inline-block;
+						font-size: 16px;
+						line-height: 32px;
+						font-weight: 700;
+					}
+					.marking-price {
+						display: inline-block;
+						font-size: 12px;
+						color: #999;
+						text-decoration: line-through;
+					}
+				}
+			}
+		}
+		.btns {
+			.sale-btn {
+				border: 0;
+			}
+		}
+	}
+}
+
+/*风格价格色系样式*/
+.Green {
+	
+	.vip-orders-create-section {
+		
+		.member-price-item {
+			background-color: #00ce74;
+			color: #fff;
+		}
+		.sale-btn {
+			background-color: #00ce74;
+			color: #fff;
+		}
+		.price {
+			color: #00ce74;
+		}
+
+	}
+}
+
+.Blue {
+	
+	.vip-orders-create-section {
+		
+		.member-price-item {
+			background-color: #03b8cf;
+			color: #fff;
+		}
+		.sale-btn {
+			background-color: #03b8cf;
+			color: #fff;
+		}
+		.price {
+			color: #03b8cf;
+		}
+	}
+}
+
+.LightRed {
+	
+	.vip-orders-create-section {
+		
+		.member-price-item {
+			background-color: #ea644a;
+			color: #fff;
+		}
+		.sale-btn {
+			background-color: #ea644a;
+			color: #fff;
+		}
+		.price {
+			color: #ea644a;
+		}
+	}
+}
+
+.Orange {
+	
+	.vip-orders-create-section {
+		
+		.member-price-item {
+			background-color: #ff9900;
+			color: #fff;
+		}
+		.sale-btn {
+			background-color: #ff9900;
+			color: #fff;
+		}
+		.price {
+			color: #ff9900;
+		}
+	}
+}
+
+.LightPink {
+	
+	.vip-orders-create-section {
+		
+		.member-price-item {
+			background-color: #FFB6C1;
+			color: #fff;
+		}
+		.sale-btn {
+			background-color: #FFB6C1;
+			color: #fff;
+		}
+		.price {
+			color: #FFB6C1;
+		}
+	}
+}
+
+.Magenta {
+	
+	.vip-orders-create-section {
+		
+		.member-price-item {
+			background-color: #8666b8;
+			color: #fff;
+		}
+		.sale-btn {
+			background-color: #8666b8;
+			color: #fff;
+		}
+		.price {
+			color: #8666b8;
+		}
+	}
 }
 
 

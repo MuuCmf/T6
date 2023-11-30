@@ -1,0 +1,136 @@
+<!--下单-->
+<div class="{$micro_config_data.style}">
+    <section class="vip-orders-create-section" data-shopid="{$shopid}">
+        <div class="clearfix">
+            <!--商品信息-->
+            <div class="product-info-item">
+                <div class="item clearfix">
+                    <div class="image">
+                        <img src="{$data['cover_400']}" />
+                    </div>
+                    <div class="info">
+                        <h3 class="title text-ellipsis">{$data['title']}</h3>
+                        <div class="description text-ellipsis">{$data['description']}</div>
+                    </div>
+                </div>
+            </div>
+            <!--支付方式-->
+            <div class="payment-info-item">
+                <h3 class="chose_pay">支付方式</h3>
+                <div class="item">
+                    {if !empty($weixin_pay)}
+                    <div class="pay-type wechat">
+                        <div class="radio-primary">
+                            <input type="radio" name="pay_channel" id="is_pay-w" value="weixin" checked>
+                            <label class="radio-inline" for="is_pay-w">微信支付</label>
+                        </div>
+                        <div class="pay-logo">
+                            <img src="__STATIC__/common/images/wepay.png" />
+                        </div>
+                    </div>
+                    {/if}
+                    {if !empty($ali_pay)}
+                    <div class="pay-type aliapy">
+                        <div class="radio-primary">
+                            <input type="radio" name="pay_channel" id="is_pay-a" value="alipay">
+                            <label class="radio-inline" for="is_pay-a">支付宝</label>
+                        </div>
+                        <div class="pay-logo">
+                            <img src="__STATIC__/common/images/alipay.png" />
+                        </div>
+                    </div>
+                    {/if}
+                </div>
+            </div>
+
+            <!--确认提交订单-->
+            <div class="create-orders-item">
+                <div class="price-box clearfix">
+                    <h3>支付价格</h3>
+                    <div class="value">
+                        
+                    </div>
+                    <div class="value">
+                        <div class="price-item">
+                            <span class="price">￥ {$price}</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="btns">
+                    <input type="hidden" name="app" value="{$data['app']}" />
+                    <input type="hidden" name="order_info_type" value="{$info_type}" />
+                    <input type="hidden" name="order_info_id" value="{$info_id}" />
+                    <input type="hidden" name="cycle" value="{$cycle}" />
+                    <button type="button" class="btn btn-default btn-lg btn-block sale-btn" data-role="sale"
+                        data-id="{$data['id']}" data-free="{$price}" data-api="{:url('api/orders/create')}">
+                        <!--立即购买-->
+                        确认支付
+                    </button>
+                </div>
+
+                <script>
+                    $(function () {
+                        $('[data-role="sale"]').click(function () {
+                            var shopid = $('.vip-orders-create-section').data('shopid');
+                            var app =  $('[name="app"]').val();
+                            var order_info_type = $('[name="order_info_type"]').val();
+                            var order_info_id = $('[name="order_info_id"]').val();
+                            var cycle =  $('[name="cycle"]').val();
+                            var channel = 'pc';
+                            var url = $(this).data('api');
+                            var data = {
+                                app: app,
+                                shopid: shopid,
+                                order_info_id: order_info_id,
+                                order_info_type: order_info_type,
+                                cycle: cycle,
+                                channel: channel,
+                            };
+
+                            //ajax创建订单
+                            $.post(url, data, function (ret) {
+                                //console.log(ret);
+                                if (ret.code == 0) {
+                                    toast.show(ret.msg, {
+                                        type: 'default',
+                                        placement: 'center'
+                                    });
+                                    return false;
+                                }
+                                if (ret.code == 200) {
+                                    //调整至支付页面
+                                    pay(ret.data.order_no);
+                                }
+                            });
+
+                            // 请求支付
+                            function pay(order_no) {
+                                var url = "{:url('api/pay/pay')}";
+                                var data = {
+                                    order_no: order_no,
+                                    pay_channel: 'weixin'
+                                };
+                                $.post(url, data, function (ret) {
+                                    if (ret.code == 0) {
+                                        modal_confirm(ret.msg);
+                                        return false;
+                                    }
+                                    if (ret.code == 200) {
+                                        //至支付页面
+                                        toast.show('订单创建成功,即将进入支付页面', {
+                                            type: 'default',
+                                            placement: 'center'
+                                        });
+                                        setTimeout(function () {
+                                            window.location.href = ret.url;
+                                        }, 1500);
+                                    }
+                                });
+                            }
+                        });
+                    });
+                </script>
+            </div>
+        </div>
+    </section>
+</div>

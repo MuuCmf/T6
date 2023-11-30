@@ -145,7 +145,11 @@ class Orders extends Api
         $order_data = $this->OrdersLogic->formatData($order_data);
 
         // pc端商品路径
-        $return_url = url($order_data['app'] . '/' . $order_data['products']['link']['url'], $order_data['products']['link']['param']);
+        if($order_data['order_info_type'] == 'vipcard'){
+            $return_url = url('ucenter/Vip/detail', $order_data['products']['link']['param']);
+        }else{
+            $return_url = url($order_data['app'] . '/' . $order_data['products']['link']['url'], $order_data['products']['link']['param']);
+        }
 
         return $this->success('success',$order_data, $return_url);
     }
