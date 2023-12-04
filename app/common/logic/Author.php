@@ -60,10 +60,10 @@ class Author extends Base
                 $data['user_info'] = query_user($data['uid']);
             }
 
-            if(!empty($data['groud_id'])){
-                $data['groud'] = (new AuthorGroup())->where('id', $data['groud_id'])->value('title');
+            if(!empty($data['group_id'])){
+                $data['group'] = (new AuthorGroup())->where('id', $data['group_id'])->value('title');
             }else{
-                $data['groud'] = '';
+                $data['group'] = '';
             }
 
             // 状态描述
