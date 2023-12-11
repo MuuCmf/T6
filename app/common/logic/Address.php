@@ -1,10 +1,16 @@
 <?php
+
 namespace app\common\logic;
 
-class Address extends Base{
-    public function formatData($data){
+class Address extends Base
+{
+    public function formatData($data)
+    {
         $data = $this->setTimeAttr($data);
-        $data = $this->setStatusAttr($data);
+        if(isset($data['status'])){
+            $data = $this->setStatusAttr($data);
+        }
+        
         return $data;
     }
 }
