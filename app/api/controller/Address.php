@@ -43,7 +43,11 @@ class Address extends Api
             ];
             $data = $this->model->getDataByMap($map);
         }
-        $data = $this->logic->formatData($data);
+
+        if(!empty($data)){
+            $data = $this->logic->formatData($data);
+        }
+
         return $this->success('获取成功！', $data);
     }
 
@@ -83,7 +87,7 @@ class Address extends Api
             $uid = get_uid();
             $first = !empty($param['first']) ? $param['first'] : 1;
             $data = [
-                'id' => $param['id'],
+                'id' => intval($param['id']),
                 'uid' => $uid,
                 'shopid' => $this->shopid,
                 'name' => $param['name'],
