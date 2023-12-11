@@ -112,7 +112,7 @@ class Address extends Api
             $res = $this->model->edit($data);
             if ($res) {
                 //关闭其他默认地址
-                if ($param['first'] == 1) {
+                if ($data['first'] == 1) {
                     $id = is_object($res) ? $res->id : $res;
                     $this->model->where([
                         ['id', '<>', $id],
