@@ -91,6 +91,8 @@ class Verify extends Common
                     if(is_array($res) && $res['Message'] == 'OK'){
                         session('verify_time', $time);
                         return $this->success('验证码发送成功');
+                    }else{
+                        return $this->error($res['Message']);
                     }
                 }
                 // 通过腾讯云发送短信
@@ -112,6 +114,8 @@ class Verify extends Common
                     if(is_array($res) && $res['SendStatusSet'][0]['Code'] == 'Ok'){
                         session('verify_time', $time);
                         return $this->success('验证码发送成功');
+                    }else{
+                        return $this->error($res['SendStatusSet'][0]['Code']);
                     }
                 }
             break;

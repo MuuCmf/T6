@@ -93,6 +93,7 @@ class WechatOfficialAccount extends Api
             case 'scan':
                 break;
         }
+
         //判断是否是扫码登录
         if (isset($message['EventKey'])) {
             $event_key = convert_url_query($message['EventKey']);
@@ -104,6 +105,7 @@ class WechatOfficialAccount extends Api
                     'scene_key' => $event_key['scene_key'],
                     'metadata' => json_encode($user_info)
                 ];
+
                 $QrcodeLoginModel = (new QrcodeLogin());
                 //是否登录过
                 $has_login = $QrcodeLoginModel->where('scene_key', $event_key['scene_key'])->count();
@@ -115,7 +117,7 @@ class WechatOfficialAccount extends Api
                     $this->doMessage($message, $map);
                 } else {
                     //消息通知
-                    $msg = new Text('二维码失效,请刷新后重试');
+                    $msg = new Text('二维码已失效,请刷新后重试');
                     OfficialAccount::getApp()->customer_service->message($msg)->to($message['FromUserName'])->send();
                 }
             }
