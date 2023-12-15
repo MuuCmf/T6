@@ -226,7 +226,8 @@
 
         //$('#tip_Modal').remove();
         if($('#tip_Modal').length > 0){
-            return false;
+            //return false;
+            $('#tio_Modal').remove();
         }
         if(confirmText == ''){
             confirmText = '确认执行该操作？';
