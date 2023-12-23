@@ -3,6 +3,7 @@
   padding: 0;
   list-style: none;
 }
+
 html {
   font-family: sans-serif;
   -ms-text-size-adjust: 100%;
@@ -18,10 +19,11 @@ body {
 }
 
 @font-face {
-  font-family: 'iconfont';  /* Project id 1635447 */
+  font-family: 'iconfont';
+  /* Project id 1635447 */
   src: url('//at.alicdn.com/t/font_1635447_nr45gpr0cse.woff2?t=1648616824411') format('woff2'),
-       url('//at.alicdn.com/t/font_1635447_nr45gpr0cse.woff?t=1648616824411') format('woff'),
-       url('//at.alicdn.com/t/font_1635447_nr45gpr0cse.ttf?t=1648616824411') format('truetype');
+    url('//at.alicdn.com/t/font_1635447_nr45gpr0cse.woff?t=1648616824411') format('woff'),
+    url('//at.alicdn.com/t/font_1635447_nr45gpr0cse.ttf?t=1648616824411') format('truetype');
 }
 
 .iconfont {
@@ -38,29 +40,33 @@ body {
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-.text-ellipsis-2
-{
-    display: -webkit-box;
-    overflow: hidden;
 
-    white-space: normal !important;
-    text-overflow: ellipsis;
-    word-wrap: break-word;
+.text-ellipsis-2 {
+  display: -webkit-box;
+  overflow: hidden;
 
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
+  white-space: normal !important;
+  text-overflow: ellipsis;
+  word-wrap: break-word;
+
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
 }
 
 a {
   color: #333;
   text-decoration: none;
   outline: none;
+
   &:hover {
-    outline:none;
+    outline: none;
     text-decoration: none;
     cursor: pointer !important;
   }
-  ::-moz-focus-inner{outline:none;}
+
+  ::-moz-focus-inner {
+    outline: none;
+  }
 }
 
 .nav-secondary>li>.a-active {
@@ -84,10 +90,6 @@ a {
   font-size: 18px;
   color: #00ce74;
   border-bottom-color: #00ce74;
-}
-
-.control-label {
-  text-align: left !important;
 }
 
 /*布局通用样式*/
@@ -282,31 +284,35 @@ a {
 .confirm-modal {
   .confirm-info {
     padding-top: 20px;
-    
+
     .title {
-      font-size:20px;
+      font-size: 20px;
       font-weight: 400;
       padding: 10px;
     }
+
     .desc {
       height: auto;
     }
   }
+
   .confirm-info.error {
     .fa {
-      font-size:36px;
+      font-size: 36px;
       color: #dd4b39;
     }
   }
+
   .confirm-info.success {
     .fa {
-      font-size:36px;
+      font-size: 36px;
       color: #00ce74;
     }
   }
-  
+
   .btns {
     padding: 20px 0;
+
     .btn {
       margin: 0 10px;
     }
@@ -357,3 +363,16 @@ a {
   }
 }
 
+/*表单通用*/
+.webuploader-container {
+  padding: 0;
+  margin-bottom: 0;
+  .webuploader-pick {
+      border: 0;
+      padding: 5px 12px;
+  }
+  label {
+      border: 0;
+      margin-bottom: 0;
+  }
+}
