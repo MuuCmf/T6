@@ -20,12 +20,12 @@ function ueditor($id = 'myeditor', $name = 'content', $default='', $config='', $
                         'fontfamily',
                         'blockquote',
                         'backcolor','|',
+                        'simpleupload',
                         'insertimage',
                         'insertcode',
                         'link',
                         'emotion',
-                        'scrawl',
-                        'wordimage'
+                        'fullscreen'
                     ]
             ],
             autoHeightEnabled: false,
