@@ -11,6 +11,7 @@ class Author extends Validate
     protected $rule = [
         'name'  =>  'require',
         'description'  =>  'require',
+        'cover' => 'require',
         'professional'  =>  'require',
         'group_id' => 'require|gt:0',
         'content'  =>  'require',
@@ -19,6 +20,7 @@ class Author extends Validate
     protected $message  =   [
         'name.require' =>  '真实姓名不能为空',
         'description.require' => '简短描述不能为空',
+        'cover.require' => '封面图还未上传',
         'professional.require' => '职称不能为空',
         'group_id.require' => '创作者类型未选择',
         'group_id.gt' => '创作者类型未选择',
@@ -27,6 +29,6 @@ class Author extends Validate
     ];
     
     protected $scene = [
-        'edit'   =>  ['name','description','professional','group_id','content'],
+        'edit'   =>  ['name','description','cover','professional','group_id','content'],
     ];
 }
