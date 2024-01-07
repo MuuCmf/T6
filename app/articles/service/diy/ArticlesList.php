@@ -57,9 +57,9 @@ class ArticlesList
     {
         return [
             // 列表接口
-            'list' => url('articles/admin.articles/lists'), 
+            'list' => url('articles/api.Articles/lists'), 
             // 分类接口
-            'category' => url('articles/admin.category/tree')
+            'category' => url('articles/api.Category/tree')
         ];
     }
 

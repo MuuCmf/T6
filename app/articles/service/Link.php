@@ -15,8 +15,8 @@ class Link
                 'icon' => 'bars',
                 'link_type' => 'articles_list',
                 'link_type_title' => '文章列表',
-                'api' => url('articles/admin.articles/lists'),
-                'category_api' => url('articles/admin.category/tree'),
+                'api' => url('articles/api.Articles/lists'),
+                'category_api' => url('articles/api.Category/tree'),
                 'static' => [
                     'css' => PUBLIC_PATH . '/static/articles/diy/link/articles_list.min.css',
                     'js' => PUBLIC_PATH . '/static/articles/diy/link/articles_list.min.js',
@@ -26,8 +26,8 @@ class Link
                 'icon' => 'file-text-o',
                 'link_type' => 'articles_detail',
                 'link_type_title' => '文章详情',
-                'api' => url('articles/admin.articles/lists'),
-                'category_api' => url('articles/admin.category/tree'),
+                'api' => url('articles/api.Articles/lists'),
+                'category_api' => url('articles/api.Category/tree'),
                 'static' => [
                     'css' => PUBLIC_PATH . '/static/articles/diy/link/articles_detail.min.css',
                     'js' => PUBLIC_PATH . '/static/articles/diy/link/articles_detail.min.js',
