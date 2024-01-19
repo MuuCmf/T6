@@ -105,7 +105,7 @@
             <div class="card-sale-btns">
                 <!--卡密兑换激活 start-->
                 {if !empty($convert_data)}
-                <div class="cdkey-activate" data-type="cdkey-activate" data-remote="{:url('convert/pc.Form/content', ['app'=>$convert_data['app'], 'info_id'=>$data['id'], 'info_type'=>'vipcard'])}" data-show-header="false" data-toggle="modal">
+                <div class="cdkey-activate" data-type="cdkey-activate" data-remote="{:url('convert/pc.Form/vip', ['app'=>$convert_data['app'], 'info_id'=>$data['id'], 'info_type'=>'vipcard'])}" data-show-header="false" data-toggle="modal">
                     <div class="item">
                         <span class="title">激活码兑换</span>
                     </div>
