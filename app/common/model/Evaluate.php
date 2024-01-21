@@ -79,4 +79,25 @@ class Evaluate extends Base
             return 0;
         }
     }
+
+    public function getListByPageCustom($params)
+    {
+        $shopid = $params['shopid'] ?? 0;
+        $map = [
+            ['e.shopid', '=', $shopid],
+            ['e.status', '=', 1],
+            ['e.app', '=', $params['app']],
+            ['e.type', '=', $params['type']],
+            ['e.type_id', '=', $params['type_id']]
+        ];
+        $rows = 10;
+        $order_type = $params['order_type'] ?? 'desc';
+        $order_field = $params['order_field'] ?? 'id';
+        $order = 'e.' . $order_field . ' ' . $order_type;
+
+        // 获取分页列表
+        $lists = $this->alias('e')->join('member m','e.uid = m.uid')->where($map)->order($order)->field('e.*')->paginate(['list_rows'=>$rows, 'query'=>$params], false);
+
+        return $lists;
+    }
 }

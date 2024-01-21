@@ -39,22 +39,11 @@ class Evaluate extends Api
 
     public function lists()
     {
-        $app = input('get.app');
-        $type = input('get.type');
-        $type_id = intval(input('get.type_id'));
-        $map = [
-            ['shopid', '=', $this->shopid],
-            ['status', '=', 1],
-            ['app', '=', $app],
-            ['type', '=', $type],
-            ['type_id', '=', $type_id]
-        ];
-        $rows = input('rows', 10, 'intval');
-        $order_field = input('order_field', 'id', 'text');
-        $order_type = input('order_type', 'desc', 'text');
-        $order =  $order_field . ' ' . $order_type;
-        $fields = '*';
-        $lists = $this->EvaluateModel->getListByPage($map, $order, $fields, $rows);
+        $params = request()->param();
+        if(empty('app') || empty('type') || empty('type_id')){
+            return $this->error('缺少参数');
+        }
+        $lists = $this->EvaluateModel->getListByPageCustom($params);
         foreach ($lists as &$item) {
             $item = $this->EvaluateLogic->formatData($item);
         }
