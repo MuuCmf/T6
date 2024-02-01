@@ -19,10 +19,11 @@
             .image {
 
                 position: relative;
-
+                overflow: hidden;
                 img {
                     width:100%;
                     border-radius:5px;
+                    transition:transform 0.5s;
                 }
 
                 .type-container {
@@ -34,19 +35,121 @@
                     padding:2px 5px;
                     border-radius:5px;
                 }
+
+                a {
+                    &:hover {
+                        text-decoration: none;
+                        transform: translateY(-2px);
+                        box-shadow: 0 12px 20px 0 rgba(95,101,105,.1);
+                        background-color: #fff;
+                        img {
+                            transform: scale(1.1);
+                            -ms-transform: scale(1.1);
+                        }
+                    }
+                }
             }
             .content {
                 
                 padding:0;
                 min-height: 60px!important;
-
                 .title {
-                    font-weight: 600;
-                    font-size:15px;
                     padding:10px 0;
+                    a {
+                        font-size:15px;
+                        font-weight: 600;
+                        display: block;
+                    }
                 }
                 .description {
                     color:#999;
+                    height: 42px;
+                }
+
+            }
+        }
+    }
+}
+
+/*风格价格色系样式*/
+.author-lists-section.Green {
+	.item {
+        .content {
+            .title {
+                a {
+                    &:hover {
+                        color: #00ce74;
+                    }
+                }
+            }
+        }
+    }
+}
+
+.author-lists-section.Blue {
+    .item {
+        .content {
+            .title {
+                a {
+                    &:hover {
+                        color: #03b8cf;
+                    }
+                }
+            }
+        }
+    }
+}
+
+.author-lists-section.LightRed {
+    .item {
+        .content {
+            .title {
+                a {
+                    &:hover {
+                        color: #ea644a;
+                    }
+                }
+            }
+        }
+    }
+}
+
+.author-lists-section.Orange {
+    .item {
+        .content {
+            .title {
+                a {
+                    &:hover {
+                        color: #ff9900;
+                    }
+                }
+            }
+        }
+    }
+}
+
+.author-lists-section.LightPink {
+    .item {
+        .content {
+            .title {
+                a {
+                    &:hover {
+                        color: #FFB6C1;
+                    }
+                }
+            }
+        }
+    }
+}
+
+.author-lists-section.Magenta {
+    .item {
+        .content {
+            .title {
+                a {
+                    &:hover {
+                        color: #8666b8;
+                    }
                 }
             }
         }
