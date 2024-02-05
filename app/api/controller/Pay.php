@@ -460,16 +460,16 @@ class Pay extends Api
                     'touser' => $item['openid'],
                     'template_id' => $weixin_config['tmplmsg']['tmplmsg']['pay_success'],
                     'data' => [
-                        'keyword1' => [ // 订单编号
+                        'character_string3' => [ // 订单编号
                             'value' => $order_info['order_no'],
                         ],
-                        'keyword2' => [ // 订单金额
+                        'amount4' => [ // 订单金额
                             'value' => sprintf("%.2f",$order_info['paid_fee']/100). '元',
                         ],
-                        'keyword3' => [ // 产品名称
+                        'thing11' => [ // 产品名称
                             'value' => $order_info['products']['title'] ?? '商品',
                         ],
-                        'keyword4' => [ // 支付时间
+                        'time7' => [ // 支付时间
                             'value' => time_format($order_info['paid_time'])
                         ]
                     ],

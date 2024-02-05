@@ -10,7 +10,6 @@ class Channel extends Base
      * @var [type]
      */
     public static $_channel = [
-        ''             => '未知',
         'h5'           => 'H5',
         'weixin_h5'    => '微信公众号',
         'weixin_mp'    => '微信小程序',
@@ -20,6 +19,7 @@ class Channel extends Base
         'baidu_mp'     => '百度小程序',
         'kuaishou_mp'  => '快手小程序',
         'pc'           => 'pc端',
-        'admin'        => '管理端'
+        'admin'        => '管理端',
+        ''             => '未知',
     ];
 }
