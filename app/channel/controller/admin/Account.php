@@ -27,45 +27,6 @@ class Account extends MuuAdmin
         $this->autoReplyModel = new WechatAutoReply;
     }
 
-    public function menu()
-    {
-        if (request()->isAjax()) {
-            $menu = $data = $this->wechatConfigModel->where(['shopid' => $this->shopid])->value('menu_json');
-            if ($menu) {
-                $menu = json_decode($menu, true);
-            } else {
-                $menu = [];
-            }
-            return $this->result(200, 'success', $menu);
-        }
-        $this->setTitle('菜单管理');
-
-        return View::fetch();
-    }
-    /**
-     * 保存菜单
-     */
-    public function saveMenu()
-    {
-        if (request()->isAjax()) {
-            $json = input('post.json');
-            $menu = json_decode($json, true);
-            try {
-                $res = \app\channel\facade\wechat\OfficialAccount::createMenu($menu);
-
-                if ($res['errcode'] != 0) {
-                    return $this->error($res['errmsg']);
-                }
-                $updateRes = $this->wechatConfigModel->where('shopid', $this->shopid)->save(['menu_json' => $json]);
-                if ($updateRes) {
-                    return $this->success('更新成功', 'refresh');
-                }
-                return $this->error('更新失败');
-            } catch (Exception $e) {
-                return $this->error('发生错误：' . $e->getMessage());
-            }
-        }
-    }
     /**
      * 公众号配置
      */
@@ -101,6 +62,47 @@ class Account extends MuuAdmin
             $this->setTitle('公众号配置');
 
             return View::fetch();
+        }
+    }
+
+    public function menu()
+    {
+        if (request()->isAjax()) {
+            $menu = $data = $this->wechatConfigModel->where(['shopid' => $this->shopid])->value('menu_json');
+            if ($menu) {
+                $menu = json_decode($menu, true);
+            } else {
+                $menu = [];
+            }
+            return $this->result(200, 'success', $menu);
+        }
+        $this->setTitle('菜单管理');
+
+        return View::fetch();
+    }
+    
+    /**
+     * 保存菜单
+     */
+    public function saveMenu()
+    {
+        if (request()->isPost()) {
+            $json = input('post.json');
+            $menu = json_decode($json, true);
+            try {
+                $res = \app\channel\facade\wechat\OfficialAccount::createMenu($menu);
+
+                if ($res['errcode'] != 0) {
+                    return $this->error($res['errmsg']);
+                }
+                $updateRes = $this->wechatConfigModel->where('shopid', $this->shopid)->save(['menu_json' => $json]);
+                if ($updateRes) {
+                    return $this->success('更新成功', 'refresh');
+                }
+                return $this->error('更新失败');
+            } catch (Exception $e) {
+                return $this->error('发生错误：' . $e->getMessage());
+            }
         }
     }
 

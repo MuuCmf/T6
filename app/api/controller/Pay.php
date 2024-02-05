@@ -426,7 +426,7 @@ class Pay extends Api
      */
     protected function sendPaySuccessTmplmsg($channel, $order_info){
         // 格式化商品数据
-        if(!empty($order_info['products'])){
+        if(!empty($order_info['products']) && !is_array($order_info['products'])){
             $order_info['products'] = json_decode($order_info['products'], true);
         }else{
             return false;
@@ -445,14 +445,12 @@ class Pay extends Api
             if (in_array('manager', $weixin_config['tmplmsg']['to']) && !empty($weixin_config['tmplmsg']['manager_uid'])){
                 $msg_item['openid'] = get_openid($this->shopid, $weixin_config['tmplmsg']['manager_uid']);
                 $msg_item['user_info'] = query_user($order_info['uid']);
-                $msg_item['first'] = '客户的订单已支付成功';
                 $msg_item['remark'] = '客户的订单已支付成功，如有任何问题请联系平台客服！';
                 $msg_list[] = $msg_item;
             }
             if (in_array('user', $weixin_config['tmplmsg']['to'])){
                 $msg_item['openid'] = get_openid($this->shopid, $order_info['uid']);
                 $msg_item['user_info'] = query_user($order_info['uid']);
-                $msg_item['first'] = '尊敬的客户，您的订单已支付成功';
                 $msg_item['remark'] = '感谢您的支持，如有任何问题请联系平台客服！';
                 $msg_list[] = $msg_item;
             }
@@ -462,24 +460,18 @@ class Pay extends Api
                     'touser' => $item['openid'],
                     'template_id' => $weixin_config['tmplmsg']['tmplmsg']['pay_success'],
                     'data' => [
-                        'first' => $item['first'],
-                        'keyword1' => [
-                            'value' => $item['user_info']['nickname'],
-                            'color' => '#ff510'
-                        ],
-                        'keyword2' => [
+                        'keyword1' => [ // 订单编号
                             'value' => $order_info['order_no'],
-                            'color' => '#ff510'
                         ],
-                        'keyword3' => [
+                        'keyword2' => [ // 订单金额
                             'value' => sprintf("%.2f",$order_info['paid_fee']/100). '元',
-                            'color' => '#ff510'
                         ],
-                        'keyword4' => [
+                        'keyword3' => [ // 产品名称
                             'value' => $order_info['products']['title'] ?? '商品',
-                            'color' => '#ff510'
                         ],
-                        'remark' => $item['remark'],
+                        'keyword4' => [ // 支付时间
+                            'value' => time_format($order_info['paid_time'])
+                        ]
                     ],
                 ];
                 $res = @OfficialAccount::sendTemplateMsg($msg);
