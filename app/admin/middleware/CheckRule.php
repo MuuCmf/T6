@@ -8,12 +8,14 @@ class CheckRule extends Base
 {
     public function handle($request, \Closure $next)
     {
+        $type = ($request->isJson() || $request->isAjax()) ? 'json' : 'html';
         $isRoot = 0;
         $uid = get_uid();
         if($uid == 1){
             $isRoot = 1;
         }
-        if (!$uid) {
+
+        if (!$uid && $type == 'html') {
             // 跳转至前台登陆页
             $this->redirect(url('ucenter/common/login'));
         }

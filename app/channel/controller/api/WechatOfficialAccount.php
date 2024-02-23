@@ -254,17 +254,15 @@ class WechatOfficialAccount extends Api
      */
     public function hasScan()
     {
-        if (request()->isAjax()) {
-            $scene_key = input('get.scene_key', '');
-            $data = (new QrcodeLogin())->getDataByMap([
-                ['scene_key', '=', $scene_key]
-            ]);
-            if (!empty($data)) {
-                $data = json_decode($data['metadata'], true);
-                return $this->success('success', $data);
-            }
-            return $this->error('没有查询到相关数据');
+        $scene_key = input('scene_key', '', 'text');
+        $data = (new QrcodeLogin())->getDataByMap([
+            ['scene_key', '=', $scene_key]
+        ]);
+        if (!empty($data)) {
+            $data = json_decode($data['metadata'], true);
+            return $this->success('success', $data);
         }
+        return $this->error('没有查询到相关数据');
     }
 
     /**
