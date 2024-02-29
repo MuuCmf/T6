@@ -11,6 +11,7 @@ use Workerman\Worker;
 use app\common\model\Crontab as CrontabModel;
 
 class Crontab extends Command{
+    protected $interval;
     protected $CrontabModel;//计划任务模型
 
     public function __construct()
@@ -43,7 +44,6 @@ class Crontab extends Command{
 
     protected function execute(Input $input, Output $output)
     {
-
         $this->init($input, $output);
         //创建定时器任务
         $task = new Worker();
