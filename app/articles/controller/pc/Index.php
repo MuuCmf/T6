@@ -97,6 +97,12 @@ class Index extends Common
                 ];
                 (new History())->addLog($this->shopid, get_module_name(), $uid, $id, 'articles', $products);
             }
+
+            //获取上一篇下一篇数据
+            $prev_detail = $this->ArticlesModel->getPrevDetail($this->shopid, $id);
+            View::assign('prev_detail', $prev_detail);
+            $next_detail = $this->ArticlesModel->getNextDetail($this->shopid, $id);
+            View::assign('next_detail', $next_detail);
         }
 
         /*用户所要文章访问量*/

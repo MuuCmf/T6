@@ -45,4 +45,48 @@ class ArticlesArticles extends Base
         
         return  false;
     }
+
+    /**
+     * 获取上一篇数据
+     */
+    public function getNextDetail($shopid, $id)
+    {
+        $lists = $this->where([
+            ['shopid', '=', $shopid],
+            ['status', '=', 1],
+            ['id', '>', $id]
+        ])
+        ->order('id', 'asc')
+        ->field('id,title,description')
+        ->limit(1)
+        ->select();
+        
+        if(!empty($lists[0])){
+            return $lists[0];
+        }
+        
+        return false;
+    }
+
+    /**
+     * 获取下一篇数据
+     */
+    public function getPrevDetail($shopid, $id)
+    {
+        $lists = $this->where([
+            ['shopid', '=', $shopid],
+            ['status', '=', 1],
+            ['id', '<', $id]
+        ])
+        ->order('id', 'desc')
+        ->field('id,title,description')
+        ->limit(1)
+        ->select();
+
+        if(!empty($lists[0])){
+            return $lists[0];
+        }
+        
+        return false;
+    }
 }

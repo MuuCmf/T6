@@ -162,6 +162,10 @@
                 }
             }
         }
+
+        .btn-articles {
+            border: 0;
+        }
     }
 }
 
@@ -288,6 +292,28 @@
     .article-copyright {
         font-size: 16px;
         padding: 10px 0;
+    }
+
+    .nav-link {
+        display: flex;
+        flex-direction: row;
+        padding: 10px 0;
+        margin-top: 20px;
+        .item {
+            flex: 1;
+            padding-right: 10px;
+            .meta-nav {
+                font-size: 16px;
+                font-weight: 600;
+            }
+            a {
+                color: #03b8cf;
+                font-size: 16px;
+                &:hover {
+                    color: #000;
+                }
+            }
+        }
     }
 
     .action-section {

@@ -19,7 +19,7 @@
                     </div>
                     <div class="info">
                         <span class="category">
-                            <a href="{:url('/articles/lists',['id'=>$data.category.id])}">{$data.category.title}</a>
+                            <a href="{:url('/articles/lists',['category_id'=> $data.category.id])}">{$data.category.title}</a>
                         </span>
                         <span class="create-time">发表于 {$data.create_time_str}</span>
                     </div>
@@ -55,6 +55,24 @@
                     </div>
                 </section>
                 
+                <div class="nav-link">
+                    <div class="item">
+                        {if $prev_detail}
+                        <span class="meta-nav">上一篇：</span>
+                        <a href="{:url('articles/pc.Index/detail', ['id'=>$prev_detail.id])}" title="{$prev_detail.title}">
+                            {$prev_detail.title}
+                        </a>
+                        {/if}
+                    </div>
+                    <div class="item">
+                        {if $next_detail}
+                        <span class="meta-nav">下一篇：</span>
+                        <a href="{:url('articles/pc.Index/detail', ['id'=>$next_detail.id])}" title="{$next_detail.title}">
+                            {$next_detail.title}
+                        </a>
+                        {/if}
+                    </div>
+                </div>
             </div>
 
             <div class="action-section">
@@ -133,7 +151,7 @@
                 </div>
             </div>
 
-            <div class="right_block">
+            <div class="right-block">
                 <section class="">
                     <a rel="nofollow" class="btn btn-lg btn-info btn-block btn-articles" href="{:url('articles/pc.Index/lists')}" target="_blank">
                         阅读更多内容，狠戳这里
