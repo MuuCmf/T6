@@ -1,8 +1,9 @@
 .main-header {
-  @media (max-width: 767px){
+  @media (max-width: 767px) {
     .logo {
       z-index: 1001;
     }
+
     .navbar-static-top {
       position: absolute;
       left: 0;
@@ -10,9 +11,11 @@
       z-index: 1000;
       width: 42px;
     }
+
     .nav-system-menu {
       display: none;
     }
+
     .navbar-custom-menu {
       display: none;
     }
@@ -24,9 +27,12 @@
   margin-top: 50px;
   min-height: auto;
 }
+
 .fixed .content-wrapper {
   padding-top: 0;
+  padding-bottom: 15px;
   margin-top: 50px;
+  height: 100%;
 }
 
 
@@ -34,41 +40,47 @@
   .module-treeview-menu {
     li {
       .icon {
-          width: 32px;
-          height: 32px;
-          border-radius: 10px;
-          overflow: hidden;
+        width: 32px;
+        height: 32px;
+        border-radius: 10px;
+        overflow: hidden;
       }
     }
   }
 }
 
-.skin-blue-light, 
-.skin-black-light, 
-.skin-green-light, 
-.skin-red-light, 
-.skin-yellow-light, 
+.skin-blue-light,
+.skin-black-light,
+.skin-green-light,
+.skin-red-light,
+.skin-yellow-light,
 .skin-purple-light {
 
-  .main-sidebar::-webkit-scrollbar {/*滚动条整体样式*/
-    width: 8px;     /*高宽分别对应横竖滚动条的尺寸*/
+  .main-sidebar::-webkit-scrollbar {
+    /*滚动条整体样式*/
+    width: 8px;
+    /*高宽分别对应横竖滚动条的尺寸*/
     height: 1px;
   }
-  .main-sidebar::-webkit-scrollbar-thumb {/*滚动条里面小方块*/
-    
-    background: rgba(0,0,0,0.1);
+
+  .main-sidebar::-webkit-scrollbar-thumb {
+    /*滚动条里面小方块*/
+
+    background: rgba(0, 0, 0, 0.1);
   }
-  .main-sidebar::-webkit-scrollbar-track {/*滚动条里面轨道*/
-    
+
+  .main-sidebar::-webkit-scrollbar-track {
+    /*滚动条里面轨道*/
+
     background: #fff;
   }
 
   .main-sidebar {
     background-color: #fff;
-    z-index:860;
+    z-index: 860;
     height: calc(100% - 50px);
-    overflow-x:hidden;
-    overflow-y:auto; 
+    overflow-x: hidden;
+    overflow-y: auto;
 
     .expand-info {
       padding-top: 20px;
@@ -76,10 +88,11 @@
       padding-left: 5px;
       text-align: center;
       border-bottom: 1px solid #f2f2f2;
+
       .expand-icon {
         margin: 0 auto;
-        width:80px;
-        height:80px;
+        width: 80px;
+        height: 80px;
         border-radius: 21px;
         overflow: hidden;
 
@@ -87,46 +100,49 @@
           width: 100%;
         }
       }
+
       .title {
-        font-size:16px;
+        font-size: 16px;
         color: #666;
       }
     }
 
     .sidebar-menu {
 
-      li > a,
-      li.active > a,
-      li.menu-open > a {
-        
-        
-      }
+      li>a,
+      li.active>a,
+      li.menu-open>a {}
+
       .menu-open {
         display: block;
       }
 
       .treeview-menu {
-        background:#fff;
+        background: #fff;
 
         li.active {
           a {
-            font-weight:600;
-            color:#000;
+            font-weight: 600;
+            color: #000;
             background-color: #fff;
+
             i {
-              color:#f90;
+              color: #f90;
             }
           }
         }
-        
+
         li {
-          
+
           a {
             padding: 8px 5px 8px 20px;
-            &:hover,&:active {
-              color:#000;
+
+            &:hover,
+            &:active {
+              color: #000;
+
               i {
-                color:#f90;
+                color: #f90;
               }
             }
           }
@@ -137,29 +153,36 @@
 
 }
 
-.skin-blue, 
-.skin-black, 
-.skin-green, 
-.skin-red, 
-.skin-yellow, 
+.skin-blue,
+.skin-black,
+.skin-green,
+.skin-red,
+.skin-yellow,
 .skin-purple {
 
-  .main-sidebar::-webkit-scrollbar {/*滚动条整体样式*/
-    width: 8px;     /*高宽分别对应横竖滚动条的尺寸*/
+  .main-sidebar::-webkit-scrollbar {
+    /*滚动条整体样式*/
+    width: 8px;
+    /*高宽分别对应横竖滚动条的尺寸*/
     height: 1px;
   }
-  .main-sidebar::-webkit-scrollbar-thumb {/*滚动条里面小方块*/
-    background: rgba(0,0,0,0.5);
+
+  .main-sidebar::-webkit-scrollbar-thumb {
+    /*滚动条里面小方块*/
+    background: rgba(0, 0, 0, 0.5);
   }
-  .main-sidebar::-webkit-scrollbar-track {/*滚动条里面轨道*/
+
+  .main-sidebar::-webkit-scrollbar-track {
+    /*滚动条里面轨道*/
     background: #383e4b;
   }
+
   .main-sidebar {
     background-color: #383e4b;
-    z-index:860;
+    z-index: 860;
     height: calc(100% - 50px);
-    overflow-x:hidden;
-    overflow-y:auto; 
+    overflow-x: hidden;
+    overflow-y: auto;
 
     .expand-info {
       padding-top: 20px;
@@ -167,10 +190,11 @@
       padding-left: 5px;
       text-align: center;
       border-bottom: 1px solid #2d323d;
+
       .expand-icon {
         margin: 0 auto;
-        width:80px;
-        height:80px;
+        width: 80px;
+        height: 80px;
         border-radius: 21px;
         overflow: hidden;
 
@@ -178,16 +202,19 @@
           width: 100%;
         }
       }
+
       .title {
-        font-size:16px;
+        font-size: 16px;
         color: #fff;
       }
+
       p {
         color: #fff;
       }
+
       .btn-module {
-        
-        background-color: rgba(0,0,0,0.1);
+
+        background-color: rgba(0, 0, 0, 0.1);
         color: #fff;
       }
     }
@@ -198,13 +225,14 @@
         background-color: #2d323d;
       }
 
-      li > a,
-      li.active > a,
-      li.menu-open > a {
+      li>a,
+      li.active>a,
+      li.menu-open>a {
         color: rgb(168, 167, 167);
         padding: 12px 5px 12px 20px;
         background-color: #383e4b;
       }
+
       .menu-open {
         display: block;
       }
@@ -214,10 +242,11 @@
 
         li.active {
           a {
-            font-weight:600;
-            color:#fff;
+            font-weight: 600;
+            color: #fff;
+
             i {
-              color:#f90;
+              color: #f90;
             }
           }
         }
@@ -226,16 +255,19 @@
           a {
             padding: 8px 5px 8px 20px;
             background: #383e4b;
-            color:#fff;
+            color: #fff;
 
-            &:hover,&:active {
-              color:#fff;
+            &:hover,
+            &:active {
+              color: #fff;
+
               i {
-                color:#f90;
+                color: #f90;
               }
             }
           }
         }
+
         li:last-child {
           border-bottom: 1px solid #2d323d;
         }
@@ -251,89 +283,106 @@
 .skin-yellow-light, 
 .skin-purple-light
  */
-.skin-blue, 
+.skin-blue,
 .skin-blue-light {
 
   .main-header {
     .logo {
       background-color: #0BA0B3;
+
       &:hover {
         background-color: #0BA0B3;
       }
     }
+
     .navbar {
       background-color: #03b8cf;
     }
   }
+
   .sidebar-menu {
-    li:hover > a,
-    li.active > a {
+
+    li:hover>a,
+    li.active>a {
       border-left-color: #03b8cf;
+
       i {
-        color:#09c;
+        color: #09c;
       }
     }
   }
 }
-.skin-black, 
+
+.skin-black,
 .skin-black-light {
   .sidebar-menu {
-    li:hover > a,
-    li.active > a {
+
+    li:hover>a,
+    li.active>a {
       border-left-color: #ddd;
+
       i {
-        color:#ddd;
+        color: #ddd;
       }
     }
   }
 }
-.skin-green, 
+
+.skin-green,
 .skin-green-light {
   .sidebar-menu {
-    li:hover > a,
-    li.active > a {
+
+    li:hover>a,
+    li.active>a {
       border-left-color: #00a65a;
+
       i {
-        color:#00a65a;
+        color: #00a65a;
       }
     }
   }
 }
 
-.skin-red, 
+.skin-red,
 .skin-red-light {
   .sidebar-menu {
-    li:hover > a,
-    li.active > a {
+
+    li:hover>a,
+    li.active>a {
       border-left-color: #dd4b39;
+
       i {
-        color:#dd4b39;
+        color: #dd4b39;
       }
     }
   }
 }
 
-.skin-yellow, 
+.skin-yellow,
 .skin-yellow-light {
   .sidebar-menu {
-    li:hover > a,
-    li.active > a {
+
+    li:hover>a,
+    li.active>a {
       border-left-color: #f39c12;
+
       i {
-        color:#f39c12;
+        color: #f39c12;
       }
     }
   }
 }
 
-.skin-purple, 
+.skin-purple,
 .skin-purple-light {
   .sidebar-menu {
-    li:hover > a,
-    li.active > a {
+
+    li:hover>a,
+    li.active>a {
       border-left-color: #605ca8;
+
       i {
-        color:#605ca8;
+        color: #605ca8;
       }
     }
 
@@ -341,25 +390,37 @@
 }
 
 
-.control-sidebar-dark::-webkit-scrollbar {/*滚动条整体样式*/
-  width: 5px;     /*高宽分别对应横竖滚动条的尺寸*/
+.control-sidebar-dark::-webkit-scrollbar {
+  /*滚动条整体样式*/
+  width: 5px;
+  /*高宽分别对应横竖滚动条的尺寸*/
   height: 1px;
 }
-.control-sidebar-dark::-webkit-scrollbar-thumb {/*滚动条里面小方块*/
-  background: rgba(0,0,0,0.5);
+
+.control-sidebar-dark::-webkit-scrollbar-thumb {
+  /*滚动条里面小方块*/
+  background: rgba(0, 0, 0, 0.5);
 }
-.control-sidebar-dark::-webkit-scrollbar-track {/*滚动条里面轨道*/
+
+.control-sidebar-dark::-webkit-scrollbar-track {
+  /*滚动条里面轨道*/
   background: #222d32;
 }
 
-.control-sidebar-light::-webkit-scrollbar {/*滚动条整体样式*/
-  width: 5px;     /*高宽分别对应横竖滚动条的尺寸*/
+.control-sidebar-light::-webkit-scrollbar {
+  /*滚动条整体样式*/
+  width: 5px;
+  /*高宽分别对应横竖滚动条的尺寸*/
   height: 1px;
 }
-.control-sidebar-light::-webkit-scrollbar-thumb {/*滚动条里面小方块*/
-  background: rgba(0,0,0,0.2);
+
+.control-sidebar-light::-webkit-scrollbar-thumb {
+  /*滚动条里面小方块*/
+  background: rgba(0, 0, 0, 0.2);
 }
-.control-sidebar-light::-webkit-scrollbar-track {/*滚动条里面轨道*/
+
+.control-sidebar-light::-webkit-scrollbar-track {
+  /*滚动条里面轨道*/
   background: #fff;
 }
 
@@ -372,9 +433,11 @@
           height: 36px;
           border-radius: 10px;
         }
+
         h3 {
           display: none;
         }
+
         p {
           display: none;
         }
@@ -386,11 +449,14 @@
             display: none;
           }
         }
+
         .treeview-menu {
-          display: block!important;
+          display: block !important;
+
           >li {
             >a {
               padding: 8px 5px 8px 12px;
+
               span {
                 display: none;
               }
