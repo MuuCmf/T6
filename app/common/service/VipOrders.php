@@ -3,9 +3,9 @@
 namespace app\common\service;
 
 use think\Exception;
+use app\common\model\Module as ModuleModel;
 use app\common\model\Orders as OrdersModel;
 use app\common\logic\Orders as OrdersLogic;
-use app\common\model\Member;
 use app\common\model\VipCard as VipCardModel;
 use app\common\model\Vip as VipModel;
 
@@ -270,6 +270,15 @@ class VipOrders extends OrdersLogic
         }
         // 更新VIP会员数据
         (new VipModel)->edit($vip_edit_data);
+
+        //分销处理
+        $is_install = (new ModuleModel())->checkInstalled('distribution');
+        $class = 'app\\distribution\\service\\Orders';
+        if($is_install && class_exists($class)){
+            $distributionOrders = new $class($order_info);
+            // 执行
+            $distributionOrders->handle();
+        }
 
         return $order_info;
     }
