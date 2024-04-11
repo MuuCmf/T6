@@ -86,7 +86,10 @@ class Attachment extends Base
                 // 根据不同mimeType放入不同目录
                 $mime_arr = explode('/', $data['mime']);
                 $mime_type = $mime_arr[0];
-
+                if ($data['ext'] == 'php') {
+                    return false;
+                }
+                
                 switch ($mime_arr[0]) {
                     case 'image':
                         if ($data['ext'] != 'jpg' && $data['ext'] != 'jpeg' && $data['ext'] != 'png' && $data['ext'] != 'gif') {
