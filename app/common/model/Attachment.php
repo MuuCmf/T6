@@ -31,18 +31,17 @@ class Attachment extends Base
      */
     public function upload($shopid, $files, $type = "file", $uid = 0, $enforce = 'auto', $filename = '')
     {
-        if($type=='file'){
+        if ($type == 'file') {
             $result = $this->file($shopid, $files, $enforce, $filename);
         }
-        if($type=='avatar'){
+        if ($type == 'avatar') {
             $result = $this->avatar($shopid, $files, $uid);
         }
-        if($type=='base64'){
+        if ($type == 'base64') {
             $result = $this->base64($shopid, $files);
         }
 
         return $result;
-
     }
 
     /**
@@ -51,17 +50,17 @@ class Attachment extends Base
      * @return     array|boolean  ( description_of_the_return_value )
      */
     public function file($shopid, $files, $enforce  = 'auto', $filename = '')
-    {   
+    {
         if (empty($files)) {
             return false;
         }
         
-        foreach($files as $file){
+        foreach ($files as $file) {
             //判断是否已经存在
             $sha1 = $file->hash('sha1');
             //处理已存在
-            $file_info = $this->where(['sha1'=>$sha1])->find();
-            if(!empty($file_info)){
+            $file_info = $this->where(['sha1' => $sha1])->find();
+            if (!empty($file_info)) {
                 $file_res = [];
                 $data = $file_info->toArray();
                 $file_res['code'] = 200;
@@ -72,10 +71,10 @@ class Attachment extends Base
                 $file_res['duration'] = $data['duration'];
                 $file_res['attachment'] = $data['attachment'];
                 $file_res['url'] = get_attachment_src($data['attachment']);
-            }else{
+            } else {
                 //构建返回数据
                 $data['filename'] = $file->getOriginalName();
-                if(!empty($filename)){
+                if (!empty($filename)) {
                     $data['filename'] = $filename;
                 }
                 $data['ext'] = $file->getOriginalExtension();
@@ -86,33 +85,36 @@ class Attachment extends Base
                 $data['type'] = 'file';  // 类型用字符串 image file audio video
                 // 根据不同mimeType放入不同目录
                 $mime_arr = explode('/', $data['mime']);
-                
-                switch($mime_arr[0])
-                {
+                $mime_type = $mime_arr[0];
+
+                switch ($mime_arr[0]) {
                     case 'image':
+                        if ($data['ext'] != 'jpg' && $data['ext'] != 'jpeg' && $data['ext'] != 'png' && $data['ext'] != 'gif') {
+                            return false;
+                        }
                         $file_dir = 'images';
                         $driver = config('extend.PICTURE_UPLOAD_DRIVER');
-                    break;
+                        break;
                     case 'audio':
                         $file_dir = 'audio';
                         $driver = config('extend.FILE_UPLOAD_DRIVER');
-                    break;
+                        break;
                     case 'video':
                         $file_dir = 'video';
                         $driver = config('extend.FILE_UPLOAD_DRIVER');
-                    break;
+                        break;
                     default:
                         $file_dir = 'file';
                         $driver = config('extend.FILE_UPLOAD_DRIVER');
                 }
 
                 // 传shopid写入对应SHOPID目录
-                if(!empty($shopid)){
+                if (!empty($shopid)) {
                     $file_dir = $shopid . DIRECTORY_SEPARATOR . $file_dir;
                 }
-                
+
                 // 强制本地驱动
-                if($enforce == 'local'){
+                if ($enforce == 'local') {
                     $driver = 'local';
                 }
 
@@ -122,49 +124,62 @@ class Attachment extends Base
                 // 处理文件名
                 $name =  $file->hashName();
                 // 处理无扩展名问题
-                if(empty($data['ext']) && !empty($mime_arr[1])){
+                if (empty($data['ext']) && !empty($mime_arr[1])) {
                     $name = $name . $mime_arr[1];
                 }
 
-                $savename = Filesystem::disk('public')->putFileAs( $file_dir, $file, $name);
-                
+                $savename = Filesystem::disk('public')->putFileAs($file_dir, $file, $name);
+
                 // 成功上传后 获取上传信息
                 $data['attachment'] = $savename;
-                $data['attachment'] = str_replace("\\","/",$data['attachment']);
+                $data['attachment'] = str_replace("\\", "/", $data['attachment']);
 
                 // 获取音视频时长
                 $data['duration'] = null;
-                if($data['type'] == 'video' || $data['type'] == 'audio'){
+                if ($data['type'] == 'video' || $data['type'] == 'audio') {
                     $local_path = app()->getRootPath() . 'public/attachment/' . $data['attachment'];
                     $duration = $this->getMediaDuration($local_path);
-                    if($duration){
+                    if ($duration) {
                         $data['duration'] = $duration['second'];
                     }
                 }
 
+                // 本地
+                if ($driver == 'local') {
+                    // 本地无需处理
+                    if ($mime_type == 'image') {
+                        try {
+                            $this->checkHex($data['attachment']);
+                        } catch (\Exception $e) {
+                            $this->removFile($data['attachment']);
+                            return false;
+                        }
+                    }
+                }
+
                 // 阿里云OSS
-                if($driver == 'aliyun') {
+                if ($driver == 'aliyun') {
                     $oss_res = $this->ossUpload('attachment/' . $data['attachment'], $file->getPathname());
                     // 上传成功
-                    if($oss_res === true){
+                    if ($oss_res === true) {
                         // 删除本地文件
                         $attachment_path = app()->getRootPath() . 'public/attachment';
                         $file_path = $attachment_path . '/' . $data['attachment'];
-                        if(file_exists($file_path)){
+                        if (file_exists($file_path)) {
                             unlink($file_path);
                         }
                         $data['driver'] = 'oss';
                     }
                 }
                 // 腾讯云COS
-                if($driver == 'tencent') {
+                if ($driver == 'tencent') {
                     $cos_res = $this->cosUpload('attachment/' . $data['attachment'], $file->getPathname());
                     // 上传成功
-                    if($cos_res === true){
+                    if ($cos_res === true) {
                         // 删除本地文件
                         $attachment_path = app()->getRootPath() . 'public/attachment';
                         $file_path = $attachment_path . '/' . $data['attachment'];
-                        if(file_exists($file_path)){
+                        if (file_exists($file_path)) {
                             unlink($file_path);
                         }
                         $data['driver'] = 'cos';
@@ -196,13 +211,13 @@ class Attachment extends Base
         $getid3 = new \getID3();
 
         $mediaInfo = $getid3->analyze($loacl_path);
-        if (!empty($mediaInfo) && isset($mediaInfo['playtime_seconds'])){
+        if (!empty($mediaInfo) && isset($mediaInfo['playtime_seconds'])) {
             // 时长 分/秒
             $time['minute_second'] = $mediaInfo['playtime_string'] ?? '0';
             // 时长 秒
             $time['second'] = $mediaInfo['playtime_seconds'] ?? '0:0';
             return $time;
-        }else{
+        } else {
             return false;
         }
     }
@@ -218,12 +233,13 @@ class Attachment extends Base
         if (empty($files)) {
             return false;
         }
-        foreach($files as $file){
+
+        foreach ($files as $file) {
             //判断是否已经存在
             $sha1 = $file->hash('sha1');
             //处理已存在图片
-            $pic_info = $this->where(['sha1'=>$sha1])->find();
-            if(!empty($pic_info)){
+            $pic_info = $this->where(['sha1' => $sha1])->find();
+            if (!empty($pic_info)) {
                 $avatar = [];
                 $data = $pic_info->toArray();
                 $avatar['filename'] = $data['filename'];
@@ -231,7 +247,7 @@ class Attachment extends Base
                 $avatar['size'] = $data['size'];
                 $avatar['attachment'] = $data['attachment'];
                 $avatar['url'] = get_attachment_src($data['attachment']);
-            }else{
+            } else {
                 //构建返回数据
                 $data['filename'] = $file->getOriginalName();
                 $data['ext'] = $file->getOriginalExtension();
@@ -241,43 +257,60 @@ class Attachment extends Base
                 $data['mime'] = $file->getMime();
                 $data['type'] = 'image';  // 类型用字符串 pic file audio video
 
+                // 根据不同mimeType
+                $mime_arr = explode('/', $data['mime']);
+                $mime_type = $mime_arr[0];
+                if ($mime_type != 'image') {
+                    return false;
+                }
+
+                if ($data['ext'] != 'jpg' && $data['ext'] != 'jpeg' && $data['ext'] != 'png' && $data['ext'] != 'gif') {
+                    return false;
+                }
+
                 // 传shopid写入对应SHOPID目录
                 $file_dir = 'avatar';
-                if(!empty($shopid)){
+                if (!empty($shopid)) {
                     $file_dir = $shopid . DIRECTORY_SEPARATOR . 'avatar';
                 }
-                $savename = Filesystem::disk('public')->putFile( $file_dir . DIRECTORY_SEPARATOR . $uid, $file);
+                $savename = Filesystem::disk('public')->putFile($file_dir . DIRECTORY_SEPARATOR . $uid, $file);
                 // 成功上传后 获取上传信息
                 $data['attachment'] = $savename;
-                $data['attachment'] = str_replace("\\","/",$data['attachment']);
+                $data['attachment'] = str_replace("\\", "/", $data['attachment']);
 
                 //获取上传驱动
                 $driver = config('extend.PICTURE_UPLOAD_DRIVER');
-                if($driver == 'local'){
+                if ($driver == 'local') {
                     // 本地无需处理
+                    try {
+                        $this->checkHex($data['attachment']);
+                    } catch (\Exception $e) {
+                        $this->removFile($data['attachment']);
+                        return false;
+                    }
                 }
                 // 阿里云OSS
-                if($driver == 'aliyun') {
+                if ($driver == 'aliyun') {
                     $oss_res = $this->ossUpload('attachment/' . $data['attachment'], $file->getPathname());
                     // 上传成功
-                    if($oss_res === true){
+                    if ($oss_res === true) {
                         // 删除本地文件
                         $attachment_path = app()->getRootPath() . 'public/attachment';
                         $file_path = $attachment_path . '/' . $data['attachment'];
-                        if(file_exists($file_path)){
+                        if (file_exists($file_path)) {
                             unlink($file_path);
                         }
                     }
                 }
                 // 腾讯云COS
-                if($driver == 'tencent') {
+                if ($driver == 'tencent') {
                     $cos_res = $this->cosUpload('attachment/' . $data['attachment'], $file->getPathname());
                     // 上传成功
-                    if($cos_res === true){
+                    if ($cos_res === true) {
                         // 删除本地文件
                         $attachment_path = app()->getRootPath() . 'public/attachment';
                         $file_path = $attachment_path . '/' . $data['attachment'];
-                        if(file_exists($file_path)){
+                        if (file_exists($file_path)) {
                             unlink($file_path);
                         }
                     }
@@ -292,7 +325,6 @@ class Attachment extends Base
                 $avatar['size'] = $data['size'];
                 $avatar['attachment'] = $data['attachment'];
                 $avatar['url'] = get_attachment_src($data['attachment']);
-                
             }
         }
         return $avatar;
@@ -305,7 +337,6 @@ class Attachment extends Base
      */
     public function base64($files)
     {
-
     }
 
 
@@ -322,19 +353,17 @@ class Attachment extends Base
         // Endpoint以杭州为例，其它Region请按实际情况填写。
         $endpoint = config('extend.OSS_ALIYUN_ENDPOINT');
         // 设置存储空间名称。
-        $bucket= config('extend.OSS_ALIYUN_BUCKET');
+        $bucket = config('extend.OSS_ALIYUN_BUCKET');
         // 设置文件名称。
         //$object = $file->getOriginalName();
         // <yourLocalFile>由本地文件路径加文件名包括后缀组成，例如/users/local/myfile.txt。
         //$filePath = $file->getPathname();
 
-        try{
+        try {
             $ossClient = new OssClient($accessKeyId, $accessKeySecret, $endpoint);
 
             $ossClient->uploadFile($bucket, $object, $filePath);
-
-
-        } catch(OssException $e) {
+        } catch (OssException $e) {
             //printf(__FUNCTION__ . ": FAILED\n");
             //printf($e->getMessage() . "\n");
             return $e->getMessage();
@@ -354,25 +383,26 @@ class Attachment extends Base
         $secretKey = config('extend.COS_TENCENT_SECRETKEY'); //"云 API 密钥 SecretKey";
         $region = config('extend.COS_TENCENT_REGION'); //设置一个默认的存储桶地域
         $cosClient = new CosClient([
-                'region' => $region,
-                'schema' => 'http', //协议头部，默认为http
-                'credentials'=> [
-                    'secretId'  => $secretId ,
-                    'secretKey' => $secretKey
-                ]
+            'region' => $region,
+            'schema' => 'http', //协议头部，默认为http
+            'credentials' => [
+                'secretId'  => $secretId,
+                'secretKey' => $secretKey
+            ]
         ]);
-        
+
         try {
             $bucket = config('extend.COS_TENCENT_BUCKET'); //存储桶名称 格式：BucketName-APPID
             $key = $object; //此处的 key 为对象键，对象键是对象在存储桶中的唯一标识
-            $srcPath = $filePath;//本地文件绝对路径
+            $srcPath = $filePath; //本地文件绝对路径
             $file = fopen($srcPath, "rb");
             if ($file) {
                 $result = $cosClient->putObject(array(
                     'Bucket' => $bucket,
                     'Key' => $key,
-                    'Body' => $file));
-                //print_r($result);exit;
+                    'Body' => $file
+                ));
+
                 return true;
             }
         } catch (\Exception $e) {
@@ -393,19 +423,19 @@ class Attachment extends Base
     {
         // 获取图片存储类型
         $driver = config('extend.PICTURE_UPLOAD_DRIVER');
-        
+
         if (strtolower($driver) == 'local') {
             $info = $this->localThumb($attachment, $width, $height, $replace);
             return $info;
-        }else{
+        } else {
             // 远程图片处理
-            if(strtolower($driver) == 'aliyun'){
-                $src = config('extend.OSS_ALIYUN_BUCKET_DOMAIN') . '/attachment/' . $attachment . '?x-oss-process=image/resize,m_fill,h_'.$height.',w_'.$width;
+            if (strtolower($driver) == 'aliyun') {
+                $src = config('extend.OSS_ALIYUN_BUCKET_DOMAIN') . '/attachment/' . $attachment . '?x-oss-process=image/resize,m_fill,h_' . $height . ',w_' . $width;
                 $info['src'] = $src;
             }
 
-            if(strtolower($driver) == 'tencent'){
-                $src = config('extend.COS_TENCENT_BUCKET_DOMAIN') . '/attachment/' . $attachment . '?imageView2/1/w/'.$width.'/h/'.$height;
+            if (strtolower($driver) == 'tencent') {
+                $src = config('extend.COS_TENCENT_BUCKET_DOMAIN') . '/attachment/' . $attachment . '?imageView2/1/w/' . $width . '/h/' . $height;
                 $info['src'] = $src;
             }
 
@@ -422,7 +452,7 @@ class Attachment extends Base
         $UPLOAD_PATH = PUBLIC_PATH . '/attachment/';
         $attachment = str_ireplace($UPLOAD_URL, '', $attachment); //将URL转化为本地地址
         $info = pathinfo($attachment);
-        
+
         $oldFile = $info['dirname'] . DIRECTORY_SEPARATOR . $info['filename'] . '.' . $info['extension'];
         $thumbFile = $info['dirname'] . DIRECTORY_SEPARATOR . $info['filename'] . '_' . $width . '_' . $height . '.' . $info['extension'];
 
@@ -432,7 +462,7 @@ class Attachment extends Base
         $filename = ltrim($attachment, '/');
         $oldFile = ltrim($oldFile, '/');
         $thumbFile = ltrim($thumbFile, '/');
-        
+
         if (!file_exists($UPLOAD_PATH . $oldFile)) {
             //原图不存在直接返回
             @unlink($UPLOAD_PATH . $thumbFile);
@@ -488,7 +518,7 @@ class Attachment extends Base
         $UPLOAD_PATH = PUBLIC_PATH . '/attachment/';
         $info = pathinfo($attachment);
         $file_path = $info['dirname'] . DIRECTORY_SEPARATOR . $info['filename'] . '.' . $info['extension'];
-        $file_path = str_replace("\\","/", $file_path);
+        $file_path = str_replace("\\", "/", $file_path);
         $file_path = ltrim($file_path, '/');
         $file_path = $UPLOAD_PATH . $file_path;
 
@@ -522,22 +552,19 @@ class Attachment extends Base
             //调用组件裁剪
             $image->crop($w, $h, $x, $y);
             $image->save($file_path);
-            
-        }else{
+        } else {
             // 远程图片处理
-            if(strtolower($driver) == 'aliyun'){
-                $attachment = config('extend.OSS_ALIYUN_BUCKET_DOMAIN') . '/attachment/' . $attachment . '?x-oss-process=image/crop,x_'.$x.',y_'.$y.',w_'.$w.',h_'.$h;
+            if (strtolower($driver) == 'aliyun') {
+                $attachment = config('extend.OSS_ALIYUN_BUCKET_DOMAIN') . '/attachment/' . $attachment . '?x-oss-process=image/crop,x_' . $x . ',y_' . $y . ',w_' . $w . ',h_' . $h;
             }
 
-            if(strtolower($driver) == 'tencent'){
-                $attachment = config('extend.COS_TENCENT_BUCKET_DOMAIN') . '/attachment/' . $attachment . '?imageMogr2/cut/' . $w .'x' . $h .'x'. $x .'x' . $y;
+            if (strtolower($driver) == 'tencent') {
+                $attachment = config('extend.COS_TENCENT_BUCKET_DOMAIN') . '/attachment/' . $attachment . '?imageMogr2/cut/' . $w . 'x' . $h . 'x' . $x . 'x' . $y;
             }
         }
 
         //返回新文件的路径
         return  $attachment;
-        
-        
     }
 
     /**
@@ -560,19 +587,45 @@ class Attachment extends Base
         return $file_id;
     }
 
-    /**
-     * 写入、更新数据表
-     */
-    public function edit($data)
+    //删除本地文件
+    private function removFile($attachment)
     {
-        if(!empty($data['id'])){
-            $res = $this->update($data);
-        }else{
-            $res = $this->save($data);
-        }
-        
-        if($res) $res = $this->id;
+        $attachment_save_path = app()->getRootPath() . 'public/attachment';
+        $attachment_all_path = $attachment_save_path . '/' . $attachment;
 
-        return $res;
+        if (file_exists($attachment_all_path)) {
+            unlink($attachment_all_path);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private function checkHex($image)
+    {
+        $attachment_path = app()->getRootPath() . 'public/attachment';
+        $image = $attachment_path . '/' . $image;
+
+        if (file_exists($image)) {
+            $resource = fopen($image, 'rb');
+            $fileSize = filesize($image);
+            fseek($resource, 0); //把文件指针移到文件的开头
+            if ($fileSize > 512) { // 取头和尾
+                $hexCode = bin2hex(fread($resource, 512));
+                fseek($resource, $fileSize - 512);
+                $hexCode .= bin2hex(fread($resource, 512));
+            } else { // 取全部
+                $hexCode = bin2hex(fread($resource, $fileSize));
+            }
+            fclose($resource);
+
+            /* 匹配16进制中的 <% ( ) %> */
+            /* 匹配16进制中的 <? ( ) ?> */
+            /* 匹配16进制中的 <script | /script> 大小写亦可*/
+            /* 通过匹配十六进制代码检测是否存在木马脚本*/
+            if (preg_match("/(3c25.*?28.*?29.*?253e)|(3c3f.*?28.*?29.*?3f3e)|(3C534352495054)|(2F5343524950543E)|(3C736372697074)|(2F7363726970743E)/is", $hexCode)) {
+                throw new Exception('非法文件');
+            }
+        }
     }
 }
