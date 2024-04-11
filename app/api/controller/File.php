@@ -88,7 +88,6 @@ class File extends Api
      */
     public function ueditor()
     {
-
         $shopid = input('shopid', 0, 'intval');
         $action = input('action', '', 'text');
         switch ($action) {
@@ -139,13 +138,13 @@ class File extends Api
 
                 $arr = $this->Attachment->upload($shopid, $files, 'file');
 
-                if (is_array($arr)) {
+                if (is_array($arr) && $arr['code'] == 200) {
                     $result['state'] = 'SUCCESS';
                     $result['url'] = $arr['url'];
                     $result['original'] = $arr['filename'];
                 } else {
                     $result['state'] = 'error';
-                    $result['msg'] = $this->Attachment->getError();
+                    $result['msg'] = 'Upload failed';
                 }
                 return json($result);
 
@@ -162,13 +161,13 @@ class File extends Api
 
                 $arr = $this->Attachment->upload($shopid, $files, 'file');
 
-                if (is_array($arr)) {
+                if (is_array($arr) && $arr['code'] == 200) {
                     $result['state'] = 'SUCCESS';
                     $result['url'] = $arr['url'];
                     $result['original'] = $arr['filename'];
                 } else {
                     $result['state'] = 'error';
-                    $result['msg'] = $this->Attachment->getError();
+                    $result['msg'] = 'Upload fail';
                 }
                 return json($result);
 

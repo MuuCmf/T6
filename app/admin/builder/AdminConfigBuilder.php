@@ -24,7 +24,7 @@ class AdminConfigBuilder extends AdminBuilder
 
     public function title($title)
     {
-        $title = empty($title)? '': $title;
+        $title = empty($title) ? '' : $title;
         $this->_title = $title;
 
         return $this;
@@ -85,8 +85,8 @@ class AdminConfigBuilder extends AdminBuilder
     }
 
     /**只读文本框
-    *
-    */
+     *
+     */
     public function keyReadOnlyText($name, $title, $subtitle = null)
     {
         return $this->key($name, $title, $subtitle, 'readonlytext');
@@ -125,7 +125,7 @@ class AdminConfigBuilder extends AdminBuilder
      * @param $opt 字符串，如：#fff,#000,#ff6600,#999999
      * @return $this
      */
-    public function keyColor($name, $title, $subtitle = null ,$opt = null)
+    public function keyColor($name, $title, $subtitle = null, $opt = null)
     {
         return $this->key($name, $title, $subtitle, 'colorPicker', $opt);
     }
@@ -186,7 +186,7 @@ class AdminConfigBuilder extends AdminBuilder
     {
         return $this->key($name, $title, $subtitle, 'checkbox', $options);
     }
-    
+
     /**
      * 调用不同的富文本编辑器
      * @param  [type] $name     字段
@@ -199,16 +199,16 @@ class AdminConfigBuilder extends AdminBuilder
      * @param  string $width    [description]
      * @return [type]           [description]
      */
-    public function keyEditor($name, $title, $subtitle = null, $type = 'ueditor', $config = '', $style = '',$param='', $width='100%')
+    public function keyEditor($name, $title, $subtitle = null, $type = 'ueditor', $config = '', $style = '', $param = '', $width = '100%')
     {
-        if(empty($type) || $type==''){
-            $type='ueditor';
+        if (empty($type) || $type == '') {
+            $type = 'ueditor';
         }
         //兼容老版
-        if(is_array($config)){
+        if (is_array($config)) {
             $config = '';
         }
-        $key = ['name' => $name, 'title' => $title, 'subtitle' => $subtitle, 'config' => $config, 'style' => $style, 'param'=>$param , 'width'=>$width, 'type' => $type];
+        $key = ['name' => $name, 'title' => $title, 'subtitle' => $subtitle, 'config' => $config, 'style' => $style, 'param' => $param, 'width' => $width, 'type' => $type];
         $this->_keyList[] = $key;
         return $this;
     }
@@ -221,7 +221,7 @@ class AdminConfigBuilder extends AdminBuilder
      * @param string $type 类型：支持（time）（datetime，默认）(date)
      * @return $this
      */
-    public function keyTime($name, $title, $subtitle = null,$type='datetime')
+    public function keyTime($name, $title, $subtitle = null, $type = 'datetime')
     {
         return $this->key($name, $title, $subtitle, $type);
     }
@@ -263,8 +263,9 @@ class AdminConfigBuilder extends AdminBuilder
      * @param $title
      * @param null $subtitle
      */
-    public function keySingleFile($name, $title, $subtitle = null, $opt = ['enforce'=>'auto']){
-        return  $this->key($name,$title,$subtitle,'singleFile', $opt);
+    public function keySingleFile($name, $title, $subtitle = null, $opt = ['enforce' => 'auto'])
+    {
+        return  $this->key($name, $title, $subtitle, 'singleFile', $opt);
     }
 
     /**多文件上传
@@ -272,8 +273,9 @@ class AdminConfigBuilder extends AdminBuilder
      * @param $title
      * @param null $subtitle
      */
-    public function keyMultiFile($name, $title, $subtitle = null){
-        return   $this->key($name,$title,$subtitle,'multiFile');
+    public function keyMultiFile($name, $title, $subtitle = null)
+    {
+        return   $this->key($name, $title, $subtitle, 'multiFile');
     }
 
     public function keySingleImage($name, $title, $subtitle = null)
@@ -296,7 +298,7 @@ class AdminConfigBuilder extends AdminBuilder
      * @return     <type>  ( description_of_the_return_value )
      */
     public function keySingleAudio($name, $title, $subtitle = null)
-    {   
+    {
         return $this->key($name, $title, $subtitle, 'singleAudio');
     }
 
@@ -310,7 +312,7 @@ class AdminConfigBuilder extends AdminBuilder
      * @return     <type>  ( description_of_the_return_value )
      */
     public function keySingleVideo($name, $title, $subtitle = null)
-    {   
+    {
         return $this->key($name, $title, $subtitle, 'singleVideo');
     }
 
@@ -333,7 +335,7 @@ class AdminConfigBuilder extends AdminBuilder
      * @param $subtitle
      * @return AdminConfigBuilder
      */
-    public function keyCity($name = ['province', 'city', 'district'],$title = '', $subtitle = '')
+    public function keyCity($name = ['province', 'city', 'district'], $title = '', $subtitle = '')
     {
         //修正在编辑信息时无法正常显示已经保存的地区信息
         return $this->key($name, $title, $subtitle, 'city');
@@ -368,7 +370,7 @@ class AdminConfigBuilder extends AdminBuilder
     public function buttonSubmit($url = '', $title = '确定')
     {
         if ($url == '') {
-            $url = url(request()->action(),$_GET);
+            $url = url(request()->action(), $_GET);
         }
         $this->savePostUrl($url);
 
@@ -391,8 +393,9 @@ class AdminConfigBuilder extends AdminBuilder
         return $this->button($title, $attr);
     }
 
-    public function buttonLink($title='按钮',$attr = []){
-        $attr['onclick'] = 'javascript:location.href=\''.$attr['href'].'\';return false;';
+    public function buttonLink($title = '按钮', $attr = [])
+    {
+        $attr['onclick'] = 'javascript:location.href=\'' . $attr['href'] . '\';return false;';
         return $this->button($title, $attr);
     }
 
@@ -413,7 +416,7 @@ class AdminConfigBuilder extends AdminBuilder
     {
         //将数据融入到key中
         foreach ($this->_keyList as &$e) {
-            
+
             //修正在编辑信息时无法正常显示已经保存的地区信息/***修改的代码****/
             if (is_array($e['name'])) {
                 $i = 0;
@@ -496,10 +499,10 @@ class AdminConfigBuilder extends AdminBuilder
     {
         empty($style) && $style = 'width:400px;';
 
-        if(strpos($name,'|')){
+        if (strpos($name, '|')) {
             $name = explode('|', $name);
         }
-        
+
         $key = array('name' => $name, 'title' => $title, 'subtitle' => $subtitle, 'type' => 'multiInput', 'config' => $config, 'style' => $style);
         $this->_keyList[] = $key;
         return $this;
@@ -511,7 +514,7 @@ class AdminConfigBuilder extends AdminBuilder
      * @return $this
      */
     public function group($name, $list = array())
-    {   
+    {
         !is_array($list) && $list = explode(',', $list);
         $this->_group[$name] = $list;
         return $this;
@@ -608,31 +611,31 @@ class AdminConfigBuilder extends AdminBuilder
             $result = $data_d;
         }
         return $result;
-
     }
 
     public function setDefault($data, $key, $value)
     {
-        $data[$key] = $data[$key]!=null ? $data[$key] : $value;
+        $data[$key] = $data[$key] != null ? $data[$key] : $value;
         return $data;
     }
 
     public function keyDefault($key, $value)
     {
         $data = $this->_data;
-        empty($data[$key]) && $data[$key]=null;
-        $data[$key] = $data[$key]!==null ? $data[$key] : $value;
+        empty($data[$key]) && $data[$key] = null;
+        $data[$key] = $data[$key] !== null ? $data[$key] : $value;
         $this->_data = $data;
         return $this;
     }
 
-    public function keyUserDefined($name,$title,$subtitle,$html='',$param=''){
-        View::assign('param',$param);
-        View::assign('name',$name);
+    public function keyUserDefined($name, $title, $subtitle, $html = '', $param = '')
+    {
+        View::assign('param', $param);
+        View::assign('name', $name);
 
         $html = $this->parseTemplate($html);
-        
-        $key = array('name'=>$name, 'title' => $title, 'subtitle' => $subtitle, 'type' => 'userDefined', 'definedHtml' => $html);
+
+        $key = array('name' => $name, 'title' => $title, 'subtitle' => $subtitle, 'type' => 'userDefined', 'definedHtml' => $html);
         $this->_keyList[] = $key;
         return $this;
     }
@@ -642,8 +645,9 @@ class AdminConfigBuilder extends AdminBuilder
      * 自定义JS
      * @param [type] $script [description]
      */
-    public function customJs($script){
-        View::assign('myJs',$script);
+    public function customJs($script)
+    {
+        View::assign('myJs', $script);
     }
 
     /**
@@ -659,12 +663,12 @@ class AdminConfigBuilder extends AdminBuilder
             // 跨模块调用
             list($module, $template) = explode('@', $html);
         }
-        if(isset($module)){
+        if (isset($module)) {
             $path = APP_PATH . $module . DIRECTORY_SEPARATOR . 'view' . DIRECTORY_SEPARATOR;
             $file =  $path . ltrim($template, '/') . '.' . ltrim('html', '.');
         }
-        
-        if(is_file($file)){
+
+        if (is_file($file)) {
             $html = View::fetch($html);
         }
 

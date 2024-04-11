@@ -76,7 +76,7 @@ if (!function_exists('single_image_upload')) {
                 // 只允许选择图片文件
                 accept: {
                     title: 'Images',
-                    extensions: 'gif,jpg,jpeg,bmp,png',
+                    extensions: 'gif,jpg,jpeg,png',
                     mimeTypes: 'image/*'
                 }
             });
@@ -191,8 +191,8 @@ if (!function_exists('multi_image_upload')) {
                 // 只允许文件。
                 accept: {
                     title: 'Images',
-                    extensions: 'gif,jpg,jpeg,bmp,png',
-                    mimeTypes: 'image/image/jpg,image/jpeg,image/png'
+                    extensions: 'gif,jpg,jpeg,png',
+                    mimeTypes: 'image/*'
                 }
             });
             uploader_{$name}.on('fileQueued', function (file) {
@@ -661,7 +661,7 @@ if (!function_exists('single_file_upload')) {
                 // 只允许选择文件
                 accept: {
                     title: 'file',
-                    extensions: 'md,txt,xls,xlsx,docx,doc,ppt,pptx,pdf,zip',
+                    extensions: 'md,txt,xls,xlsx,docx,doc,ppt,pptx,pdf,zip,rar',
                 }
             });
             uploader_{$name}.on('fileQueued', function (file) {

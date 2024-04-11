@@ -297,8 +297,8 @@
                     // 只允许选择图片文件
                     accept: {
                         title: 'Images',
-                        extensions: 'gif,jpg,jpeg,bmp,png',
-                        mimeTypes: 'image/jpg,image/jpeg,image/png'
+                        extensions: 'gif,jpg,jpeg,png',
+                        mimeTypes: 'image/*'
                     }
                 });
                 uploader_{$field.name}.on('fileQueued', function (file) {
@@ -327,6 +327,12 @@
                 //上传完成
                 uploader_{$field.name}.on( 'uploadComplete', function( file ) {
                     toast.hideLoading();
+                });
+                // 发生错误
+                uploader_{$field.name}.on( 'error', function( err ) {
+                    if(err = 'Q_TYPE_DENIED'){
+                        toast.error('不支持的文件格式');
+                    }
                 });
             })
         </script>
@@ -373,8 +379,8 @@
                 // 只允许{:lang("_SELECT_PICTURES_")}文件。
                 accept: {
                     title: 'Images',
-                    extensions: 'gif,jpg,jpeg,bmp,png',
-                    mimeTypes: 'image/image/jpg,image/jpeg,image/png'
+                    extensions: 'gif,jpg,jpeg,png',
+                    mimeTypes: 'image/*'
                 }
             });
             uploader_{$field.name}.on('fileQueued', function (file) {
@@ -420,6 +426,12 @@
             //上传完成
             uploader_{$field.name}.on( 'uploadComplete', function( file ) {
                 toast.hideLoading();
+            });
+            // 发生错误
+            uploader_{$field.name}.on( 'error', function( err ) {
+                if(err = 'Q_TYPE_DENIED'){
+                    toast.error('不支持的文件格式');
+                }
             });
         })
         </script>

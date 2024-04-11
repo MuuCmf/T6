@@ -14,6 +14,10 @@ class Attachment extends Base
 {
     // 开启自动写入时间戳字段
     protected $autoWriteTimestamp = true;
+    protected $allowImageExt = ['png', 'jpg', 'jpeg', 'gif'];
+    protected $allowAudioExt = ['mp3', 'wav'];
+    protected $allowVideoExt = ['mp4'];
+    protected $allowFileExt = ['zip', 'rar', 'txt', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'pdf'];
 
     public function setUploadtimeAttr($value)
     {
@@ -86,27 +90,33 @@ class Attachment extends Base
                 // 根据不同mimeType放入不同目录
                 $mime_arr = explode('/', $data['mime']);
                 $mime_type = $mime_arr[0];
-                if ($data['ext'] == 'php') {
-                    return false;
-                }
-                
-                switch ($mime_arr[0]) {
+
+                switch ($mime_type) {
                     case 'image':
-                        if ($data['ext'] != 'jpg' && $data['ext'] != 'jpeg' && $data['ext'] != 'png' && $data['ext'] != 'gif') {
+                        if(!in_array($data['ext'], $this->allowImageExt)){
                             return false;
                         }
                         $file_dir = 'images';
                         $driver = config('extend.PICTURE_UPLOAD_DRIVER');
                         break;
                     case 'audio':
+                        if(!in_array($data['ext'], $this->allowAudioExt)){
+                            return false;
+                        }
                         $file_dir = 'audio';
                         $driver = config('extend.FILE_UPLOAD_DRIVER');
                         break;
                     case 'video':
+                        if(!in_array($data['ext'], $this->allowVideoExt)){
+                            return false;
+                        }
                         $file_dir = 'video';
                         $driver = config('extend.FILE_UPLOAD_DRIVER');
                         break;
                     default:
+                        if(!in_array($data['ext'], $this->allowFileExt)){
+                            return false;
+                        }
                         $file_dir = 'file';
                         $driver = config('extend.FILE_UPLOAD_DRIVER');
                 }
@@ -267,7 +277,7 @@ class Attachment extends Base
                     return false;
                 }
 
-                if ($data['ext'] != 'jpg' && $data['ext'] != 'jpeg' && $data['ext'] != 'png' && $data['ext'] != 'gif') {
+                if(!in_array($data['ext'], $this->allowImageExt)){
                     return false;
                 }
 
