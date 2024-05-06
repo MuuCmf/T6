@@ -41,8 +41,10 @@
           <script>
             $(function(){
               $('[data-id="clear_cache"]').click(function(){
+                toast.showLoading();
                 var url = $('[data-id="clear_cache"]').data('url');
                 $.get(url,function(res){
+                  toast.hideLoading();
                   //弹出提示消息
                   if (res.code == 200) {
                       toast.success(res.msg, 'success');

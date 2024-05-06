@@ -862,3 +862,23 @@ if (!function_exists('get_attachment_url')) {
         return request()->domain() . '/attachment/';
     }
 }
+
+if (!function_exists('clear_directory')) {
+    /**
+     * 清空目录
+     */
+    function clear_directory($dir) {
+        $files = scandir($dir);
+        foreach ($files as $file) {
+            if ($file != "." && $file != "..") {
+                $filePath = $dir . "/" . $file;
+                if (is_file($filePath)) {
+                    unlink($filePath);
+                } elseif (is_dir($filePath)) {
+                    clear_directory($filePath);
+                    rmdir($filePath);
+                }
+            }
+        }
+    }
+}

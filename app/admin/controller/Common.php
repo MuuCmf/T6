@@ -66,10 +66,9 @@ class Common extends Base
         $res = Cache::clear();
 
         // 清理运行目录
-        $dirname = runtime_path();
-        $res2 = rmdirs($dirname, false);
+        $runtime_path = root_path() . 'runtime/';
+        clear_directory($runtime_path);
 
         if($res) return $this->success('缓存清理成功');
     }
-
 }
