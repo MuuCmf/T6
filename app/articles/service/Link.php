@@ -36,5 +36,33 @@ class Link
         ];
     }
 
+    /**
+     * 链接至参数转路径
+     */
+    public function linkToUrl($linkParam = [], $teminal = 'pc')
+    {
+        $url = '';
+        if($teminal == 'pc'){
+            switch($linkParam['type']){
+                // 列表
+                case 'articles_list':
+                    $url_params = http_build_query($linkParam['param']);
+                    $url = '/articles/lists.html?' . $url_params;
+                break;
+
+                // 详情
+                case 'articles_detail':
+                    $url_params = http_build_query($linkParam['param']);
+                    $url = '/articles/detail.html?' . $url_params;
+                break;
+                
+                default:
+            }
+            
+        }
+        
+        return $url;
+    }
+
 
 }
