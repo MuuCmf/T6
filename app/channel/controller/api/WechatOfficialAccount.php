@@ -88,6 +88,7 @@ class WechatOfficialAccount extends Api
             case 'subscribe':
                 //关注消息
                 $map[] = ['type', '=', 1];
+                $map[] = ['status', '=', 1];
                 $this->doMessage($message, $map);
                 break;
             case 'scan':
@@ -136,41 +137,43 @@ class WechatOfficialAccount extends Api
     {
         //获取平台配置消息
         $list = (new WechatAutoReply())->where($map)->order('sort', 'DESC')->order('id', 'DESC')->select()->toArray();
-        foreach ($list as $item) {
-            $msg = null;
-            switch ($item['msg_type']) {
-                case 'text':
-                    $msg = new Text($item['text']);
-                    break;
-                case 'news':
-                    if (isset($message['Event']) && $message['Event'] == 'subscribe') {
-                        $msg = new Media($item['media_id'], 'mpnews');
-                    } else {
-                        $news = json_decode($item['material_json'], true);
-                        $news = $news['content']['news_item'][0];
-                        $items = [
-                            new NewsItem([
-                                'title' => $news['title'],
-                                'description' => $news['digest'],
-                                'url' => $news['url'],
-                                'image' => $news['thumb_url']
-                            ]),
-                        ];
-                        $msg = new News($items);
-                    }
-                    break;
-                case 'image':
-                    $msg = new Image($item['media_id']);
-                    break;
-                case 'voice':
-                    $msg = new Voice($item['media_id']);
-                    break;
-                case 'video':
-                    $msg = new Video($item['media_id']);
-                    break;
+        if (!empty($list)) {
+            foreach ($list as $item) {
+                $msg = null;
+                switch ($item['msg_type']) {
+                    case 'text':
+                        $msg = new Text($item['text']);
+                        break;
+                    case 'news':
+                        if (isset($message['Event']) && $message['Event'] == 'subscribe') {
+                            $msg = new Media($item['media_id'], 'mpnews');
+                        } else {
+                            $news = json_decode($item['material_json'], true);
+                            $news = $news['content']['news_item'][0];
+                            $items = [
+                                new NewsItem([
+                                    'title' => $news['title'],
+                                    'description' => $news['digest'],
+                                    'url' => $news['url'],
+                                    'image' => $news['thumb_url']
+                                ]),
+                            ];
+                            $msg = new News($items);
+                        }
+                        break;
+                    case 'image':
+                        $msg = new Image($item['media_id']);
+                        break;
+                    case 'voice':
+                        $msg = new Voice($item['media_id']);
+                        break;
+                    case 'video':
+                        $msg = new Video($item['media_id']);
+                        break;
+                }
+                //消息通知
+                OfficialAccount::getApp()->customer_service->message($msg)->to($message['FromUserName'])->send();
             }
-            //消息通知
-            OfficialAccount::getApp()->customer_service->message($msg)->to($message['FromUserName'])->send();
         }
     }
 
@@ -218,7 +221,7 @@ class WechatOfficialAccount extends Api
                 $oauth_info = json_decode($oauth_info, true);
                 //开放平台ID
                 $unionid = '';
-                if(isset($oauth_info['unionid'])){
+                if (isset($oauth_info['unionid'])) {
                     $unionid = $oauth_info['unionid'];
                 }
                 //处理用户数据
@@ -335,7 +338,7 @@ class WechatOfficialAccount extends Api
                     'onMenuShareAppMessage'
                 ];
             }
-            if (empty($url)){
+            if (empty($url)) {
                 $url = request()->domain();
             }
             try {
