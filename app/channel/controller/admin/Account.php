@@ -157,7 +157,7 @@ class Account extends MuuAdmin
             }
             //验证文本唯一性
             if (!empty($data['text']) && !$this->autoReplyModel->checkUnique('text', $data['text'], $aId)) {
-                $this->error('内容重复');
+                return $this->error('内容重复');
             }
             $res = $this->autoReplyModel->edit($data);
             if ($res) {
@@ -187,7 +187,7 @@ class Account extends MuuAdmin
         $ids = is_array($ids) ? implode(',', $ids) : $ids;
 
         if (empty($ids)) {
-            $this->error('请选择要操作的数据');
+            return $this->error('请选择要操作的数据');
         }
 
         $map = ['id' => ['in', $ids]];
