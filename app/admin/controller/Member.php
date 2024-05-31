@@ -71,7 +71,7 @@ class Member extends Admin
         $map[] = ['status', '>=', 0];
         // 每页显示数量
         $rows = input('rows', 15, 'intval');
-        $list = $this->MemberModel->where($map)->order($order)->paginate(['list_rows'=>$rows, 'query'=>request()->param()], false);
+        $list = $this->MemberModel->where($map)->order($order)->paginate(['list_rows' => $rows, 'query' => request()->param()], false);
         $pager = $list->render();
         $list = $list->toArray();
         $list_arr = $list['data'];
@@ -131,7 +131,7 @@ class Member extends Admin
         if (request()->isPost()) {
             $data = input();
             // 初始化写入数据
-            if(!empty($uid)){
+            if (!empty($uid)) {
                 $member_data['uid'] = $uid;
             }
             $member_data['nickname'] = $data['nickname'];
@@ -147,27 +147,27 @@ class Member extends Admin
                 return $this->error('用户名、邮箱、手机号，至少填写一项！');
             }
             $check_nickname = $this->MemberModel->checkNickname($member_data['nickname'], $uid);
-            if($check_nickname !== true){
+            if ($check_nickname !== true) {
                 return $this->error($check_nickname);
             }
 
             $check_username = $this->MemberModel->checkUsername($member_data['username'], $uid);
-            if($check_username !== true){
+            if ($check_username !== true) {
                 return $this->error($check_username);
             }
 
             $check_email = $this->MemberModel->checkEmail($member_data['email'], $uid);
-            if($check_email !== true){
+            if ($check_email !== true) {
                 return $this->error($check_email);
             }
 
             $check_mobile = $this->MemberModel->checkMobile($member_data['mobile'], $uid);
-            if($check_mobile !== true){
+            if ($check_mobile !== true) {
                 return $this->error($check_mobile);
             }
-            
+
             // 写入数据并返回UID
-            $uid= $this->MemberModel->edit($member_data);
+            $uid = $this->MemberModel->edit($member_data);
 
             /* 积分 start*/
             $data_score = [];
@@ -213,14 +213,14 @@ class Member extends Admin
             $builder = new AdminConfigBuilder();
             $builder->title('用户资料管理');
             $builder->keyUid()
-                    ->keySingleImage('avatar', '头像', '')
-                    ->keyText('username', '用户名')
-                    ->keyText('email', '邮箱')
-                    ->keyText('mobile', '手机号')
-                    ->keyText('nickname', '昵称')
-                    ->keyText('realname', '真实姓名')
-                    ->keyRadio('sex', '性别', '', [0 => '不详', 1 => '男', 2 => '女'])
-                    ->keyRadio('status', '状态', '', [1 => '启用', 0 => '禁用']);
+                ->keySingleImage('avatar', '头像', '')
+                ->keyText('username', '用户名')
+                ->keyText('email', '邮箱')
+                ->keyText('mobile', '手机号')
+                ->keyText('nickname', '昵称')
+                ->keyText('realname', '真实姓名')
+                ->keyRadio('sex', '性别', '', [0 => '不详', 1 => '男', 2 => '女'])
+                ->keyRadio('status', '状态', '', [1 => '启用', 0 => '禁用']);
             $field_key = ['uid', 'avatar', 'username', 'email', 'mobile', 'nickname', 'realname', 'sex', 'status'];
 
             /* 积分设置 */
@@ -232,8 +232,8 @@ class Member extends Admin
                 $builder->keyText('score' . $vf['id'], $vf['title']);
             }
             /*积分设置end*/
-            
-            
+
+
             /*权限组*/
             // 用户拥有的权限组
             $auth = Db::name('auth_group_access')->where(['uid' => $uid])->select();
@@ -241,12 +241,12 @@ class Member extends Admin
             foreach ($auth as $key => $val) {
                 $temp_auth_group_arr[] = $val['group_id'];
             }
-            if(empty($member)){
+            if (empty($member)) {
                 $member['auth_group'] = 1;
-            }else{
+            } else {
                 $member['auth_group'] = implode(',', $temp_auth_group_arr);
             }
-            
+
             // 系统设置启用的权限组
             $auth_group = Db::name('auth_group')->where('status', '=', 1)->select();
             $auth_group_options = [];
@@ -273,14 +273,14 @@ class Member extends Admin
     public function detail()
     {
         $uid = input('uid', 0, 'intval');
-        if(empty($uid)){
+        if (empty($uid)) {
             return $this->error('缺少参数');
         }
         $map[] = ['uid', '=', $uid];
         $member = query_user($uid);
 
         // 判断用户是否存在
-        if(!is_array($member) || empty($member)){
+        if (!is_array($member) || empty($member)) {
             return $this->error('用户数据不存在');
         }
         View::assign('member', $member);
@@ -295,7 +295,7 @@ class Member extends Admin
      */
     public function status($method = null)
     {
-        $ids = input('ids');
+        $ids = input('ids/a');
         !is_array($ids) && $ids = explode(',', $ids);
         if (count(array_intersect(explode(',', config('auth.auth_administrator')), $ids)) > 0) {
             return $this->error('不允许对超管进行该操作');
@@ -303,22 +303,33 @@ class Member extends Admin
         if (empty($ids)) {
             return $this->error('请选择要操作的数据');
         }
-        $map[] = ['uid', 'in', $ids];
 
+        $title = '更新用户';
         switch (strtolower($method)) {
             case 'forbid':
-                return $this->forbid('Member', $map);
+                $title = '禁用用户';
+                $status = 0;
                 break;
             case 'resume':
-                return $this->resume('Member', $map);
+                $title = '启用用户';
+                $status = 1;
                 break;
             case 'delete':
-                (new MemberSyncModel())->where($map)->delete();
-                (new MemberModel())->where($map)->delete();
-                return $this->success('删除用户成功', '', 'refresh');
+                $title = '删除用户';
+                $status = -1;
                 break;
             default:
-                return $this->error('参数错误');
+        }
+
+        $data['status'] = $status;
+
+        $res = $this->MemberModel->where('uid', 'in', $ids)->update($data);
+        if ($res) {
+            (new MemberSyncModel())->where('uid', 'in', $ids)->delete();
+            (new MemberModel())->where('uid', 'in', $ids)->delete();
+            return $this->success($title . '成功');
+        } else {
+            return $this->error($title . '失败');
         }
     }
 
@@ -336,7 +347,7 @@ class Member extends Admin
 
             $authenticationModel = new AuthenticationModel();
             Db::startTrans();
-            try{
+            try {
                 //写入数据
                 $data = [
                     'id' => $id,
@@ -344,12 +355,12 @@ class Member extends Admin
                     'uid' => $uid,
                     'status' => $status
                 ];
-                if($status == -1){
+                if ($status == -1) {
                     $data['reason'] = $reason;
                 }
 
                 $res = $authenticationModel->edit($data);
-                if(!$res){
+                if (!$res) {
                     throw new Exception('数据写入失败');
                 }
 
@@ -359,7 +370,7 @@ class Member extends Admin
                     'uid' => $uid,
                     'authentication' => $status
                 ]);
-                if(!$res){
+                if (!$res) {
                     throw new Exception('数据写入失败');
                 }
             } catch (Exception $e) {
@@ -369,8 +380,7 @@ class Member extends Admin
             Db::commit();
             //返回提示
             return $this->success('提交成功！', $res);
-
-        }else{
+        } else {
             // 查询用户认证数据
             $map = [
                 ['shopid', '=', $this->shopid],
@@ -379,7 +389,7 @@ class Member extends Admin
 
             $authenticationModel = new AuthenticationModel();
             $data = $authenticationModel->where($map)->find();
-            if(!empty($data)){
+            if (!empty($data)) {
                 $data = $authenticationModel->handle($data);
                 View::assign('data', $data);
             }
