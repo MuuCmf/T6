@@ -283,7 +283,7 @@ class Admin extends Base
         if ($where) {
             $where = $where;
         } else {
-            $where = ['id' => array('in', $id)];
+            $where = ['id', 'in', $id];
         }
 
         $msg = array_merge(['success' => '操作成功！', 'error' => '操作失败', 'url' => ''], (array)$msg);
@@ -346,7 +346,6 @@ class Admin extends Base
     public function delete($table, $where = [], $msg = ['success' => '删除成功', 'error' => '删除失败', 'url' => 'refresh'])
     {
         $data['status'] = -1;
-        //$data['update_time'] = time();
         return $this->editRow($table, $data, $where, $msg);
     }
 

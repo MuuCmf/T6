@@ -190,21 +190,23 @@ class Account extends MuuAdmin
             return $this->error('请选择要操作的数据');
         }
 
-        $map = ['id' => ['in', $ids]];
-
-        switch (strtolower($status)) {
-            case 0:
-                return $this->forbid('wechat_auto_reply', $map);
-                break;
-            case 1:
-                return $this->resume('wechat_auto_reply', $map);
-                break;
-            case -1:
-                return $this->delete('wechat_auto_reply', $map);
-                break;
-            default:
-                return $this->error('参数错误');
+        if($status == 0){
+            $title = '禁用';
         }
+        if($status == 1){
+            $title = '启用';
+        }
+        if($status == -1){
+            $title = '删除';
+        }
+        $data['status'] = $status;
+
+        $res = $this->autoReplyModel->where('id', 'in', $ids)->update($data);
+        if($res){
+            return $this->success($title . '成功');
+        }else{
+            return $this->error($title . '失败');
+        }  
     }
 
     /**
