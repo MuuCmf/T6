@@ -1,6 +1,8 @@
 <?php
 namespace app\common\model;
 
+use app\channel\logic\Channel;
+
 class CapitalFlow extends Base
 {
     protected $autoWriteTimestamp = true;
@@ -62,6 +64,21 @@ class CapitalFlow extends Base
      */
     public function handle($data)
     {
+        if(!empty($data['uid'])){
+            $data['user_info'] = query_user($data['uid']);
+        }
+        
+        if($data['type'] == 1){
+            $data['type_str'] = '支出';
+        }
+        if($data['type'] == 2){
+            $data['type_str'] = '收入';
+        }
+
+        if(!empty($data['channel'])){
+            $data['channel_str'] = Channel::$_channel[$data['channel']];
+        }
+
         if(!empty($data['create_time'])){
             $data['create_time_str'] = time_format($data['create_time']);
             $data['create_time_friendly_str'] = friendly_date($data['create_time']);
