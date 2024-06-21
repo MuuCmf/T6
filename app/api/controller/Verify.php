@@ -13,7 +13,8 @@ class Verify extends Common
 {
     protected $MemberModel;
     protected $VerifyModel;
-    
+    protected $MailService;
+
     /**
      * 构造方法
      * @access public
@@ -23,7 +24,7 @@ class Verify extends Common
         parent::__construct();
         $this->MemberModel = new MemberModel();
         $this->VerifyModel = new VerifyModel();
-        $this->mailService = new Mail();
+        $this->MailService = new Mail();
     }
 
     /**
@@ -111,11 +112,12 @@ class Verify extends Common
                 //     "RequestId" => "750b9dcf-0a96-4251-84f8-c554a1cd4760"
                 //   ]
                 if($smsDriver == 'tencent'){
+                    // AuthFailure.SecretIdNotFound
                     if(is_array($res) && $res['SendStatusSet'][0]['Code'] == 'Ok'){
                         session('verify_time', $time);
                         return $this->success('验证码发送成功');
                     }else{
-                        return $this->error($res['SendStatusSet'][0]['Code']);
+                        return $this->error($res);
                     }
                 }
             break;
@@ -124,7 +126,7 @@ class Verify extends Common
                 $subject = config('system.WEB_SITE_NAME');
                 $body = "您的验证码为{$verify}验证码，账号为{$account}。";
                 
-                $res = $this->mailService->sendMailLocal($account, $subject, $body);
+                $res = $this->MailService->sendMailLocal($account, $subject, $body);
                 if($res == true){
                     session('verify_time', $time);
                     return $this->success('验证码发送成功');
