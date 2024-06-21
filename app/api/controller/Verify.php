@@ -112,11 +112,13 @@ class Verify extends Common
                 //     "RequestId" => "750b9dcf-0a96-4251-84f8-c554a1cd4760"
                 //   ]
                 if($smsDriver == 'tencent'){
-                    // AuthFailure.SecretIdNotFound
                     if(is_array($res) && $res['SendStatusSet'][0]['Code'] == 'Ok'){
                         session('verify_time', $time);
                         return $this->success('验证码发送成功');
                     }else{
+                        if(is_array($res)){
+                            return $this->error($res['SendStatusSet'][0]['Code']);
+                        }
                         return $this->error($res);
                     }
                 }
