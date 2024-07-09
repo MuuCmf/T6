@@ -48,7 +48,11 @@ class File extends Api
         if (is_array($result) && $result['code'] == 200) {
             return $this->result(200, '上传成功', $result);
         } else {
-            return $this->result(0, '上传失败');
+            $err_msg = '上传失败';
+            if(!empty($result['msg'])){
+                $err_msg = $result['msg'];
+            }
+            return $this->result(0, $err_msg);
         }
     }
 

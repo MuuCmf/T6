@@ -17,7 +17,7 @@ class Attachment extends Base
     protected $allowImageExt = ['png', 'jpg', 'jpeg', 'gif'];
     protected $allowAudioExt = ['mp3', 'wav'];
     protected $allowVideoExt = ['mp4'];
-    protected $allowFileExt = ['zip', 'rar', 'txt', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'pdf'];
+    protected $allowFileExt = ['zip', 'rar', 'txt', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'pdf', 'pem'];
 
     public function setUploadtimeAttr($value)
     {
@@ -64,6 +64,7 @@ class Attachment extends Base
             $sha1 = $file->hash('sha1');
             //处理已存在
             $file_info = $this->where(['sha1' => $sha1])->find();
+            
             if (!empty($file_info)) {
                 $file_res = [];
                 $data = $file_info->toArray();
@@ -76,6 +77,7 @@ class Attachment extends Base
                 $file_res['attachment'] = $data['attachment'];
                 $file_res['url'] = get_attachment_src($data['attachment']);
             } else {
+                
                 //构建返回数据
                 $data['filename'] = $file->getOriginalName();
                 if (!empty($filename)) {
@@ -90,7 +92,7 @@ class Attachment extends Base
                 // 根据不同mimeType放入不同目录
                 $mime_arr = explode('/', $data['mime']);
                 $mime_type = $mime_arr[0];
-
+                
                 switch ($mime_type) {
                     case 'image':
                         if(!in_array($data['ext'], $this->allowImageExt)){
@@ -115,17 +117,19 @@ class Attachment extends Base
                         break;
                     default:
                         if(!in_array($data['ext'], $this->allowFileExt)){
-                            return false;
+                            $false_result['code'] = 0;
+                            $false_result['msg'] = '不允许的文件类型';
+                            return $false_result;
                         }
                         $file_dir = 'file';
                         $driver = config('extend.FILE_UPLOAD_DRIVER');
                 }
-
+                
                 // 传shopid写入对应SHOPID目录
                 if (!empty($shopid)) {
                     $file_dir = $shopid . DIRECTORY_SEPARATOR . $file_dir;
                 }
-
+                
                 // 强制本地驱动
                 if ($enforce == 'local') {
                     $driver = 'local';
@@ -146,7 +150,7 @@ class Attachment extends Base
                 // 成功上传后 获取上传信息
                 $data['attachment'] = $savename;
                 $data['attachment'] = str_replace("\\", "/", $data['attachment']);
-
+                
                 // 获取音视频时长
                 $data['duration'] = null;
                 if ($data['type'] == 'video' || $data['type'] == 'audio') {
@@ -169,7 +173,7 @@ class Attachment extends Base
                         }
                     }
                 }
-
+                
                 // 阿里云OSS
                 if ($driver == 'aliyun') {
                     $oss_res = $this->ossUpload('attachment/' . $data['attachment'], $file->getPathname());
