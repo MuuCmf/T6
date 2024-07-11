@@ -188,7 +188,8 @@ class File extends Api
     public function attachment()
     {
         $data = input('post.');
-
+        $data['uid'] = get_uid();
+        
         $res = $this->Attachment->edit($data);
         if ($res) {
             return $this->success('success');
