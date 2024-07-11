@@ -21,9 +21,9 @@ class Member extends Base
     protected $insert = ['reg_ip'];
     protected $update = ['update_time'];
     public $_status  = [
-        '1'  => '启用',
-        '0'  => '禁用',
-        '-1' => '删除',
+        1  => '启用',
+        0  => '禁用',
+        -1 => '删除',
     ];
     public $_authentication = [
         -1 => '审核未通过',
@@ -125,22 +125,32 @@ class Member extends Base
         // 获取用户数据
         $user = $this->where($map)->find();
         if ($user) {
-            // 行为限制
-            $actionLimit = new ActionLimit();
-            $return = $actionLimit->checkActionLimit('input_password', 'member', $user['uid'], $user['uid']);
-            if ($return && !$return['code']) {
-                return $return['msg'];
-            }
-
-            if ($user['uid'] && $user['status']) {
-                /* 验证用户密码 */
-                if (user_md5($password, Config::get('auth.auth_key')) === $user['password']) {
-                    return $user['uid']; //返回用户ID
-                } else {
-                    $actionLog = new ActionLog();
-                    $actionLog->add('input_password', 'member', $user['uid'], $user['uid']);
-                    return -2; //密码错误
+            if($user['status'] == 1){
+                // 行为限制
+                $actionLimit = new ActionLimit();
+                $return = $actionLimit->checkActionLimit('input_password', 'member', $user['uid'], $user['uid']);
+                if ($return && !$return['code']) {
+                    return $return['msg'];
                 }
+
+                if ($user['uid'] && $user['status'] == 1) {
+                    /* 验证用户密码 */
+                    if (user_md5($password, Config::get('auth.auth_key')) === $user['password']) {
+                        return $user['uid']; //返回用户ID
+                    } else {
+                        $actionLog = new ActionLog();
+                        $actionLog->add('input_password', 'member', $user['uid'], $user['uid']);
+                        return -2; //密码错误
+                    }
+                }
+            }
+            // 用户被禁用
+            if($user['status'] == 0){
+                return 0;
+            }
+            // 用户被删除
+            if($user['status'] == -1){
+                return -1;
             }
         }
 
@@ -208,7 +218,7 @@ class Member extends Base
      */
     public function login(int $shopid, int $uid, int $remember = 0)
     {
-        if ($uid){
+        if ($uid) {
             /* 检测是否在当前应用注册 */
             $user = $this->where([
                 ['shopid', '=', $shopid],
@@ -276,7 +286,7 @@ class Member extends Base
             $cookie = cookie('MUU_LOGGED_USER');
             if (!empty($cookie)) {
                 $cookie = explode(".", think_decrypt($cookie, 'muucmf'));
-                if(!empty($cookie[0]) && !empty($cookie[1])){
+                if (!empty($cookie[0]) && !empty($cookie[1])) {
                     $map = [
                         ['uid', '=', $cookie[0]]
                     ];
@@ -372,7 +382,7 @@ class Member extends Base
                 $member = $member->toArray();
             }
 
-            if (is_array($member) && $member['status'] = 1) {
+            if (is_array($member)) {
 
                 if ($fields == '*' || strpos($fields, 'avatar') !== false) {
                     // 头像
@@ -424,7 +434,7 @@ class Member extends Base
                     $member['score'] = $score_key;
                 }
 
-                if (($fields == '*' || strpos($fields, 'reg_channel') !== false) && isset($member['reg_channel'])){
+                if (($fields == '*' || strpos($fields, 'reg_channel') !== false) && isset($member['reg_channel'])) {
                     // 用户注册渠道
                     $member['reg_channel_str'] = Channel::$_channel[$member['reg_channel']];
                 }
@@ -439,12 +449,12 @@ class Member extends Base
 
                 //实名认证状态
                 $member['authentication_text'] = '未知';
-                if(isset($member['authentication'])){
+                if (isset($member['authentication'])) {
                     $member['authentication_text'] = $this->_authentication[$member['authentication']];
                 }
 
                 //用户状态
-                if(isset($member['status'])){
+                if (isset($member['status'])) {
                     $member['status_text'] = $this->_status[$member['status']];
                 }
 
@@ -493,7 +503,7 @@ class Member extends Base
 
                 return $member;
             } else {
-                return -1; //用户不存在或被禁用
+                return -1; //用户不存在或已删除
             }
         } else {
             return false;

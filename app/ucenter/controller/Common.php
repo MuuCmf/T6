@@ -177,7 +177,8 @@ class Common extends CommonCommon
                 }
                 // 验证账号和密码
                 $uid = $commonMemberModel->verifyUserPassword($account, $password);
-                if ($uid == -1) return $this->error('用户不存在或被禁用');
+                if ($uid == 0) return $this->error('用户被禁用，请联系管理员');
+                if ($uid == -1) return $this->error('用户不存在，请联系管理员');
                 if ($uid == -2) return $this->error('密码错误');
             } else {
                 //验证码登录
