@@ -177,6 +177,7 @@ class Attachment extends Base
                 // 阿里云OSS
                 if ($driver == 'aliyun') {
                     $oss_res = $this->ossUpload('attachment/' . $data['attachment'], $file->getPathname());
+                    
                     // 上传成功
                     if ($oss_res === true) {
                         // 删除本地文件
@@ -378,15 +379,16 @@ class Attachment extends Base
 
         try {
             $ossClient = new OssClient($accessKeyId, $accessKeySecret, $endpoint);
+            $result = $ossClient->uploadFile($bucket, $object, $filePath);
 
-            $ossClient->uploadFile($bucket, $object, $filePath);
+            return true;
+
         } catch (OssException $e) {
             //printf(__FUNCTION__ . ": FAILED\n");
             //printf($e->getMessage() . "\n");
             return $e->getMessage();
         }
 
-        return true;
     }
 
     /**
@@ -395,7 +397,6 @@ class Attachment extends Base
     protected function cosUpload($object, $filePath)
     {
         // SECRETID和SECRETKEY请登录访问管理控制台进行查看和管理
-        $appid = '';
         $secretId = config('extend.COS_TENCENT_SECRETID'); //"云 API 密钥 SecretId";
         $secretKey = config('extend.COS_TENCENT_SECRETKEY'); //"云 API 密钥 SecretKey";
         $region = config('extend.COS_TENCENT_REGION'); //设置一个默认的存储桶地域
