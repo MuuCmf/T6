@@ -1,4 +1,5 @@
 <?php
+
 namespace app\api\controller;
 
 use app\common\controller\Api;
@@ -29,32 +30,32 @@ class VipCard extends Api
     {
         $uid = get_uid();
         $app = input('app', '', 'text');
-        $rows = input('rows',20, 'intval');
+        $rows = input('rows', 20, 'intval');
         $order_field = input('order_field', 'id', 'text');
         $order_type = input('order_type', 'desc', 'text');
         $order = 'sort DESC,' . $order_field . ' ' . $order_type;
         $fields = '*';
         // 初始化查询条件
         $map = [];
-        if(!empty($app)){
+        if (!empty($app)) {
             $map[] = ['app', '=', $app];
         }
-        
+
         $map[] = ['status', '=', 1];
 
-        $lists = $this->VipCardModel->getListByPage($map,$order,$fields, $rows);
+        $lists = $this->VipCardModel->getListByPage($map, $order, $fields, $rows);
         $lists = $lists->toArray();
-        foreach($lists['data'] as &$val){
+        foreach ($lists['data'] as &$val) {
             $val = $this->VipCardLogic->formatData($val);
             //查询用户是否已拥有会员类型数据
-			$have_card = $this->VipModel->getVipByCardId($this->shopid, $uid, $val['id']);
-			if(!empty($have_card)){
+            $have_card = $this->VipModel->getVipByCardId($this->shopid, $uid, $val['id']);
+            if (!empty($have_card)) {
                 $have_card = $this->VipLogic->formatData($have_card);
-				$val['have_card'] = $have_card;
-			}
+                $val['have_card'] = $have_card;
+            }
         }
         unset($val);
-        
+
         return $this->success('SUCCESS', $lists);
     }
 
@@ -63,25 +64,25 @@ class VipCard extends Api
      */
     public function detail()
     {
-        $id = input('id',0,'intval');
+        $id = input('id', 0, 'intval');
         $uid = get_uid();
-        if(!empty($id)){
+        if (!empty($id)) {
             $data = $this->VipCardModel->getDataById($id);
             $data = $this->VipCardLogic->formatData($data);
 
-            if(!empty($data)){
+            if (!empty($data)) {
                 //查询用户是否已拥有会员类型数据
                 $have_card = $this->VipModel->getVipByCardId($this->shopid, $uid, $id);
-                if(!empty($have_card)){
+                if (!empty($have_card)) {
                     $have_card = $this->VipLogic->formatData($have_card);
                     $data['have_card'] = $have_card;
                 }
                 // ajax请求返回数据
                 return $this->success('success', $data);
-            }else{
+            } else {
                 return $this->error('error');
             }
-        }else{
+        } else {
             return $this->error('缺少参数');
         }
     }
@@ -98,7 +99,7 @@ class VipCard extends Api
         $app = input('app', '', 'text');
         $product_id = input('product_id', 0, 'intval');
         $product_type = input('product_type', '', 'text');
-        
+
         $lists = $this->VipCardModel->getProductAbleCardsList($this->shopid, $app, $product_id, $product_type);
 
         return $this->success('success', $lists);
@@ -113,13 +114,12 @@ class VipCard extends Api
         $product_id = input('product_id', 0, 'intval');
         $product_type = input('product_type', '', 'text');
         $uid = get_uid();
-        
+
         $result = $this->VipCardModel->getUserAbleCard($this->shopid, $app, $uid, $product_id, $product_type);
-        if($result){
+        if ($result) {
             return $this->success('success', $result);
-        }else{
+        } else {
             return $this->error('无可以VIP卡数据');
         }
-        
     }
 }

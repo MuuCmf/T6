@@ -1,4 +1,5 @@
 <?php
+
 namespace app\api\controller;
 
 use app\common\controller\Api;
@@ -22,14 +23,14 @@ class Feedback extends Api
     public function add()
     {
         $uid = request()->uid;
-        $content = input('post.content','');
-        if (empty($content)){
+        $content = input('post.content', '');
+        if (empty($content)) {
             $this->error('内容不能为空');
         }
-        if (input('?post.images')){
+        if (input('?post.images')) {
             $images = input('post.images');
             $images = explode(',', $images);
-        }else{
+        } else {
             $images = '';
         }
         $data = [
@@ -39,10 +40,9 @@ class Feedback extends Api
             'uid' => $uid,
         ];
         $res = (new FeedbackModel())->edit($data);
-        if ($res){
+        if ($res) {
             return $this->success('提交成功，我们会尽快处理您的反馈');
         }
         return $this->error('网络异常，请稍后再试');
     }
-
 }

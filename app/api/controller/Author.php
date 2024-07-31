@@ -1,4 +1,5 @@
 <?php
+
 namespace app\api\controller;
 
 use app\common\controller\Api;
@@ -8,14 +9,14 @@ use app\common\model\AuthorFollow as AuthorFollowModel;
 use app\common\logic\AuthorFollow as AuthorFollowLogic;
 
 class Author extends Api
-{   
+{
     protected $AuthorModel;
     protected $AuthorLogic;
 
     protected $middleware = [
-        'app\\common\\middleware\\CheckAuth' => ['only'=>['follow','isfollow']],
+        'app\\common\\middleware\\CheckAuth' => ['only' => ['follow', 'isfollow']],
     ];
-    
+
     public function __construct()
     {
         parent::__construct();
@@ -34,8 +35,8 @@ class Author extends Api
      */
     public function lists()
     {
-        $rows = input('rows',20, 'intval');
-        $keyword = input('keyword','','text');
+        $rows = input('rows', 20, 'intval');
+        $keyword = input('keyword', '', 'text');
         $order_field = input('order_field', 'id', 'text');
         $order_type = input('order_type', 'desc', 'text');
         $order = 'sort DESC,' . $order_field . ' ' . $order_type;
@@ -43,9 +44,9 @@ class Author extends Api
         // 查询条件
         $map = $this->AuthorLogic->getMap($this->shopid, $keyword, 1);
         $fields = '*';
-        $lists = $this->AuthorModel->getListByPage($map,$order,$fields, $rows);
+        $lists = $this->AuthorModel->getListByPage($map, $order, $fields, $rows);
         $lists = $lists->toArray();
-        foreach($lists['data'] as &$val){
+        foreach ($lists['data'] as &$val) {
             $val = $this->AuthorLogic->formatData($val);
         }
         unset($val);
@@ -61,9 +62,9 @@ class Author extends Api
      */
     public function detail()
     {
-        $id = input('id',0,'intval');
+        $id = input('id', 0, 'intval');
 
-        if(!empty($id)){
+        if (!empty($id)) {
             $data = $this->AuthorModel->getDataById($id);
             $data = $this->AuthorLogic->formatData($data);
 
@@ -73,14 +74,14 @@ class Author extends Api
                 ['author_id', '=', $id],
                 ['status', '=', 1]
             ];
-            
-            if(!empty($data)){
+
+            if (!empty($data)) {
                 // ajax请求返回数据
                 return $this->success('success', $data);
-            }else{
+            } else {
                 return $this->error('error');
             }
-        }else{
+        } else {
             return $this->error('缺少参数');
         }
     }
@@ -103,11 +104,11 @@ class Author extends Api
 
         // 写入数据初始化
         $data = [];
-        if($follow){
+        if ($follow) {
             $data['id'] = $follow['id'];
-            if($follow['status'] == 1) $data['status'] = 0;
-            if($follow['status'] == 0) $data['status'] = 1;
-        }else{
+            if ($follow['status'] == 1) $data['status'] = 0;
+            if ($follow['status'] == 0) $data['status'] = 1;
+        } else {
             $data['shopid'] = $this->shopid;
             $data['uid'] = $uid;
             $data['author_id'] = $author_id;
@@ -115,8 +116,8 @@ class Author extends Api
         }
 
         $res = (new AuthorFollowModel())->edit($data);
-        if($res){
-            return $this->success($data['status'] ? '已关注':'已取消');
+        if ($res) {
+            return $this->success($data['status'] ? '已关注' : '已取消');
         }
 
         return $this->error('发生错误');
@@ -137,7 +138,7 @@ class Author extends Api
             ['status', '=', 1]
         ];
         $res = (new AuthorFollowModel())->where($map)->find();
-        if($res){
+        if ($res) {
             return $this->success('已关注');
         }
 
@@ -150,7 +151,7 @@ class Author extends Api
     public function followList()
     {
         $uid = get_uid();
-        $rows = input('rows',20, 'intval');
+        $rows = input('rows', 20, 'intval');
         $order_field = input('order_field', 'id', 'text');
         $order_type = input('order_type', 'desc', 'text');
         $order = $order_field . ' ' . $order_type;
@@ -162,14 +163,13 @@ class Author extends Api
             ['status', '=', 1]
         ];
         $fields = '*';
-        $lists = (new AuthorFollowModel())->getListByPage($map,$order,$fields, $rows);
+        $lists = (new AuthorFollowModel())->getListByPage($map, $order, $fields, $rows);
         $lists = $lists->toArray();
-        foreach($lists['data'] as &$val){
+        foreach ($lists['data'] as &$val) {
             $val = (new AuthorFollowLogic())->formatData($val);
         }
         unset($val);
         // ajax请求返回数据
         return $this->success('success', $lists);
     }
-
 }

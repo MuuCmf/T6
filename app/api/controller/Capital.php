@@ -1,4 +1,5 @@
 <?php
+
 namespace app\api\controller;
 
 use app\common\controller\Api;
@@ -20,9 +21,9 @@ class Capital extends Api
     {
         $uid = get_uid();
         $map = [
-            ['shopid' ,'=' ,$this->shopid],
-            ['uid' ,'=' ,$uid],
-            ['status' ,'=' ,1]
+            ['shopid', '=', $this->shopid],
+            ['uid', '=', $uid],
+            ['status', '=', 1]
         ];
 
         $rows = 10;
@@ -32,13 +33,11 @@ class Capital extends Api
         $fields = '*';
         $lists = $this->CapitalFlowModel->getListByPage($map, $order, $fields, $rows);
         $lists = $lists->toArray();
-        foreach($lists['data'] as &$val){
+        foreach ($lists['data'] as &$val) {
             $val = $this->CapitalFlowModel->handle($val);
         }
         unset($val);
 
-        return $this->success('success',$lists);
+        return $this->success('success', $lists);
     }
-
-
 }

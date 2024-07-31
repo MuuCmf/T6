@@ -1,9 +1,9 @@
 <?php
+
 namespace app\api\controller;
 
 use app\common\controller\Api;
 use app\common\model\ScoreLog;
-use app\common\model\Member as MemberModel;
 
 /**
  * 积分相关接口
@@ -17,7 +17,7 @@ class Score extends Api
     {
         $uid = get_uid();
         $map = [
-            ['uid' ,'=' ,$uid],
+            ['uid', '=', $uid],
         ];
 
         $rows = input('rows', 10, 'intval');
@@ -27,12 +27,12 @@ class Score extends Api
         $fields = '*';
         $lists = (new ScoreLog())->getListByPage($map, $order, $fields, $rows);
         $lists = $lists->toArray();
-        foreach($lists['data'] as &$val){
+        foreach ($lists['data'] as &$val) {
             $val['create_time_str'] = time_format($val['create_time']);
             $val['create_time_friendly_str'] = friendly_date($val['create_time']);
         }
         unset($val);
 
-        return $this->success('success',$lists);
+        return $this->success('success', $lists);
     }
 }

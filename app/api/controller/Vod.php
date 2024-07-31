@@ -1,4 +1,5 @@
 <?php
+
 namespace app\api\controller;
 
 use app\common\controller\Api;
@@ -17,5 +18,4 @@ class Vod extends Api
         echo $signature;
         echo "\n";
     }
-
 }

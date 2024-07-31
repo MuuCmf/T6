@@ -7,8 +7,8 @@ use app\common\logic\History as HistoryLogic;
 
 class History extends Api
 {
-    protected $model;
-    protected $logic;
+    protected $HistoryLogic;
+    protected $HistoryModel;
     protected $middleware = [
         'app\\common\\middleware\\CheckAuth',
     ];

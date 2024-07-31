@@ -1,4 +1,5 @@
 <?php
+
 namespace app\api\controller;
 
 use app\common\controller\Api;
@@ -33,9 +34,9 @@ class Favorites extends Api
     {
         $uid = get_uid();
         $map = [
-            ['shopid' ,'=' ,$this->shopid],
-            ['uid' ,'=' ,$uid],
-            ['status' ,'=' ,1]
+            ['shopid', '=', $this->shopid],
+            ['uid', '=', $uid],
+            ['status', '=', 1]
         ];
 
         $rows = 15;
@@ -45,12 +46,12 @@ class Favorites extends Api
         $fields = '*';
         $lists = $this->FavoritesModel->getListByPage($map, $order, $fields, $rows);
         $lists = $lists->toArray();
-        foreach($lists['data'] as &$val){
+        foreach ($lists['data'] as &$val) {
             $val = $this->FavoritesLogic->formatData($val);
         }
         unset($val);
 
-        return $this->success('success',$lists);
+        return $this->success('success', $lists);
     }
 
     /**
@@ -60,9 +61,9 @@ class Favorites extends Api
     {
         $uid = get_uid();
         $map = [
-            ['shopid' ,'=' ,$this->shopid],
-            ['uid' ,'=' ,$uid],
-            ['status' ,'=' ,1]
+            ['shopid', '=', $this->shopid],
+            ['uid', '=', $uid],
+            ['status', '=', 1]
         ];
 
         $count = $this->FavoritesModel->where($map)->count();

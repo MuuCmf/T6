@@ -1,4 +1,5 @@
 <?php
+
 namespace app\api\controller;
 
 use think\Exception;
@@ -56,10 +57,10 @@ class Authentication extends Api
             }
 
             Db::startTrans();
-            try{
+            try {
                 //写入数据
                 $res = $this->AuthenticationModel->edit($data);
-                if(!$res){
+                if (!$res) {
                     throw new Exception('数据写入失败');
                 }
                 // 更改用户表认证状态值
@@ -67,7 +68,7 @@ class Authentication extends Api
                     'uid' => get_uid(),
                     'authentication' => 1
                 ]);
-                if(!$res){
+                if (!$res) {
                     throw new Exception('数据写入失败');
                 }
 
@@ -76,7 +77,7 @@ class Authentication extends Api
                 Db::rollback();
                 return $this->error('发生错误：' . $e->getMessage());
             }
-            
+
             //返回提示
             return $this->success('提交成功！', $res);
         }
@@ -94,14 +95,12 @@ class Authentication extends Api
         ];
 
         $data = $this->AuthenticationModel->getDataByMap($map);
-        if($data){
+        if ($data) {
             $data = $this->AuthenticationModel->handle($data);
 
             return $this->success('提交成功！', $data);
         }
 
         return $this->error('未能获取到数据');
-        
     }
-
 }

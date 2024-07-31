@@ -1,4 +1,5 @@
 <?php
+
 namespace app\api\controller;
 
 use app\common\controller\Api;
@@ -18,8 +19,8 @@ class Orders extends Api
         'app\\common\\middleware\\CheckAuth',
     ];
 
-    private $OrdersModel;//订单模型
-    private $OrdersLogic;//订单逻辑
+    private $OrdersModel; //订单模型
+    private $OrdersLogic; //订单逻辑
     function __construct(Request $request)
     {
         parent::__construct();
@@ -33,7 +34,7 @@ class Orders extends Api
      */
     public function create()
     {
-        if (request()->isPost()){
+        if (request()->isPost()) {
             Db::startTrans();
             try {
                 //具体业务 分发到相应程序订单类
@@ -48,49 +49,49 @@ class Orders extends Api
 
                 // 交给应用内约定类处理数据
                 $order_info_type = $this->params['order_info_type'];
-                if($order_info_type == 'vipcard'){
+                if ($order_info_type == 'vipcard') {
                     $order_namespace = "app\\common\\service\\VipOrders";
                     $appOrdersService = new $order_namespace;
                     $order_data = $appOrdersService->create($this->params);
-                }else{
+                } else {
                     $order_namespace = "app\\{$this->params['app']}\\service\\Orders";
                     $appOrdersService = new $order_namespace;
                     $order_data = $appOrdersService->create($this->params);
                 }
-                
+
                 // 设置表单ID数据
-                if(isset($this->params['formId'])){
+                if (isset($this->params['formId'])) {
                     $order_data['form_id'] = $this->params['formId'];
                 }
 
                 //写入订单
                 $res = $order_id = $this->OrdersModel->edit($order_data);
-                if (!$res){
+                if (!$res) {
                     throw new Exception('创建订单失败，请稍后再试');
                 }
                 //获取订单数据
                 $order = $this->OrdersModel->getDataById($order_id);
                 $order = $this->OrdersLogic->formatData($order);
                 //免费商品或需退费商品后续业务逻辑处理
-                if($order['paid_fee'] <= 0 && $order['paid'] == 1){
-                    if(method_exists($appOrdersService,'step')){
+                if ($order['paid_fee'] <= 0 && $order['paid'] == 1) {
+                    if (method_exists($appOrdersService, 'step')) {
                         // 免费商品直接处理后续逻辑，约定step方法
                         $appOrdersService->step($order);
                     }
                 }
                 // 抖音小程序订单同步
-                if($order['channel'] == 'douyin_mp'){
+                if ($order['channel'] == 'douyin_mp') {
                     DouyinMiniProgramServer::ordersPush($order['order_no']);
                 }
 
                 Db::commit();
 
-                return $this->success('创建订单成功',$order);
-            }catch (Exception $e){
+                return $this->success('创建订单成功', $order);
+            } catch (Exception $e) {
                 Db::rollback();
-                if (\think\facade\App::isDebug()){
-                    return $this->error($e->getMessage().$e->getFile().$e->getLine());
-                }else{
+                if (\think\facade\App::isDebug()) {
+                    return $this->error($e->getMessage() . $e->getFile() . $e->getLine());
+                } else {
                     return $this->error($e->getMessage());
                 }
             }
@@ -105,19 +106,19 @@ class Orders extends Api
      */
     public function list()
     {
-        
+
         $uid = request()->uid;
         $status = input('status');
         $rows = input('rows', 15, 'intval');
         $map = [
-            ['shopid','=',$this->shopid],
-            ['uid','=',$uid],
+            ['shopid', '=', $this->shopid],
+            ['uid', '=', $uid],
         ];
 
-        if ($this->params['status']  == 'all'){
-            $map[] = ['status' ,'between' ,[0,9999]];
-        }else{
-            $map[] = ['status' ,'=' ,$status];
+        if ($this->params['status']  == 'all') {
+            $map[] = ['status', 'between', [0, 9999]];
+        } else {
+            $map[] = ['status', '=', $status];
         }
 
         $order_field = input('order_field', 'id', 'text');
@@ -126,13 +127,12 @@ class Orders extends Api
         $fields = '*';
         $lists = $this->OrdersModel->getListByPage($map, $order, $fields, $rows);
         $lists = $lists->toArray();
-        foreach($lists['data'] as &$val){
+        foreach ($lists['data'] as &$val) {
             $val = $this->OrdersLogic->formatData($val);
         }
         unset($val);
 
-        return $this->success('获取订单成功',$lists);
-        
+        return $this->success('获取订单成功', $lists);
     }
 
     /**
@@ -145,13 +145,12 @@ class Orders extends Api
         $order_data = $this->OrdersLogic->formatData($order_data);
 
         // pc端商品路径
-        if($order_data['order_info_type'] == 'vipcard'){
+        if ($order_data['order_info_type'] == 'vipcard') {
             $return_url = url('ucenter/Vip/detail', $order_data['products']['link']['param']);
-        }else{
+        } else {
             $return_url = url($order_data['app'] . '/' . $order_data['products']['link']['url'], $order_data['products']['link']['param']);
         }
 
-        return $this->success('success',$order_data, $return_url);
+        return $this->success('success', $order_data, $return_url);
     }
-
 }

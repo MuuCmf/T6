@@ -1,4 +1,5 @@
 <?php
+
 namespace app\api\controller;
 
 use app\common\model\Member as MemberModel;
@@ -42,10 +43,10 @@ class Verify extends Common
         // 判断格式类型
         $check_email = preg_match("/[a-z0-9_\-\.]+@([a-z0-9_\-]+?\.)+[a-z]{2,3}/i", $account);
         $check_mobile = preg_match("/^(1[0-9])[0-9]{9}$/", $account);
-        if($type == 'email' && !$check_email){
+        if ($type == 'email' && !$check_email) {
             return $this->error('邮箱格式错误');
         }
-        if($type == 'mobile' && !$check_mobile){
+        if ($type == 'mobile' && !$check_mobile) {
             return $this->error('手机格式错误');
         }
 
@@ -68,11 +69,11 @@ class Verify extends Common
         // 自动判断发送类型
         check_username($username, $email, $mobile, $type);
         $time = time();
-        if($type == 'mobile'){
+        if ($type == 'mobile') {
             //短信验证码的有效期，默认60秒
             $resend_time =  config('extend.SMS_RESEND');
-            if($time <= session('verify_time') + $resend_time ){
-                return $this->error('请' . ($resend_time-($time-session('verify_time'))). '秒后再发');
+            if ($time <= session('verify_time') + $resend_time) {
+                return $this->error('请' . ($resend_time - ($time - session('verify_time'))) . '秒后再发');
             }
         }
 
@@ -81,18 +82,18 @@ class Verify extends Common
         if (!$verify) {
             return $this->error('验证码写入失败');
         }
-        
+
         // 发送验证码
         switch ($type) {
             case 'mobile':
                 $res = $this->VerifyModel->sendSMS($account, $verify);
                 $smsDriver = config('extend.SMS_SEND_DRIVER');
                 // 通过阿里云发送短信
-                if($smsDriver == 'aliyun'){
-                    if(is_array($res) && $res['Message'] == 'OK'){
+                if ($smsDriver == 'aliyun') {
+                    if (is_array($res) && $res['Message'] == 'OK') {
                         session('verify_time', $time);
                         return $this->success('验证码发送成功');
-                    }else{
+                    } else {
                         return $this->error($res['Message']);
                     }
                 }
@@ -111,31 +112,31 @@ class Verify extends Common
                 //     ]
                 //     "RequestId" => "750b9dcf-0a96-4251-84f8-c554a1cd4760"
                 //   ]
-                if($smsDriver == 'tencent'){
-                    if(is_array($res) && $res['SendStatusSet'][0]['Code'] == 'Ok'){
+                if ($smsDriver == 'tencent') {
+                    if (is_array($res) && $res['SendStatusSet'][0]['Code'] == 'Ok') {
                         session('verify_time', $time);
                         return $this->success('验证码发送成功');
-                    }else{
-                        if(is_array($res)){
+                    } else {
+                        if (is_array($res)) {
                             return $this->error($res['SendStatusSet'][0]['Code']);
                         }
                         return $this->error($res);
                     }
                 }
-            break;
+                break;
             case 'email':
                 //发送验证邮箱
                 $subject = config('system.WEB_SITE_NAME');
                 $body = "您的验证码为{$verify}验证码，账号为{$account}。";
-                
+
                 $res = $this->MailService->sendMailLocal($account, $subject, $body);
-                if($res == true){
+                if ($res == true) {
                     session('verify_time', $time);
                     return $this->success('验证码发送成功');
                 }
-            break;
+                break;
         }
-        
+
         return $this->error($res);
     }
 }
