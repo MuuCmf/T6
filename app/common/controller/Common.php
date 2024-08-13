@@ -63,6 +63,8 @@ class Common extends Base
         $this->initUserBaseInfo();
         //seo规则
         $this->initSeo();
+        //版本号
+        $this->initVersion();
     }
 
     /**
@@ -143,6 +145,9 @@ class Common extends Base
         View::assign('navbar', $nav);
     }
 
+    /**
+     * 初始化底部导航
+     */
     private function initFooterNav()
     {
         $channelModel = new Channel();
@@ -180,6 +185,12 @@ class Common extends Base
         View::assign('register_switch', $register_switch);
         $login_url = url('ucenter/Common/login');
         View::assign('login_url', $login_url);
+    }
+
+    private function initVersion()
+    {
+        //框架版本号
+        View::assign('version', $this->version());
     }
 
     private function initSeo()

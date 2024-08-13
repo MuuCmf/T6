@@ -184,4 +184,5 @@ class Base extends Model
     {
         return $this->where($map)->dec($field, $value);
     }
+
 }
