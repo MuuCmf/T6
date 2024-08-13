@@ -609,7 +609,8 @@ class Member extends Base
                 throw new Exception('昵称不能少于' . Config::get('system.NICKNAME_MIN_LENGTH', 2) . '个字');
             }
 
-            $match = preg_match('/^(?!_|\s\')[A-Za-z0-9_-\x80-\xff\s\']+$/', $nickname);
+            $pattern = '/^(?!_)(?!.*?_$)[\x{4e00}-\x{9fa5}a-zA-Z0-9_-]+$/u';
+            $match = preg_match($pattern, $nickname);
             if (!$match) {
                 throw new Exception('昵称只允许中文、字母、数字、下划线和中横线');
             }
