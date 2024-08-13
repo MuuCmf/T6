@@ -1,4 +1,5 @@
 <?php
+
 namespace app\admin\controller;
 
 use think\App;
@@ -12,7 +13,8 @@ use app\common\model\ScoreType as ScoreTypeModel;
 /**
  * 积分相关功能控制器
  */
-class Score extends Admin {
+class Score extends Admin
+{
 
     protected $scoreLogModel;
     protected $scoreTypeModel;
@@ -35,16 +37,16 @@ class Score extends Admin {
      * @param  integer $p [description]
      * @return [type]     [description]
      */
-    public function log($r=20){
-
-        $aUid=input('uid',0,'');
-        $map=[];
-        if($aUid){
-            $map['uid']=$aUid;
+    public function log()
+    {
+        $rows = input('rows', 20, 'intval');
+        $uid = input('uid', 0, '');
+        $map = [];
+        if (!empty($uid)) {
+            $map[] = ['uid', '=', $uid];
         }
-        
-        $scoreLog = $this->scoreLogModel->where($map)->order('create_time desc')->paginate($r);
-        $totalCount = $this->scoreLogModel->count();
+
+        $scoreLog = $this->scoreLogModel->where($map)->order('create_time desc')->paginate($rows);
         //分页HTML
         $page = $scoreLog->render();
         //转数组处理
@@ -53,12 +55,12 @@ class Score extends Admin {
         $scoreTypes = $this->scoreTypeModel->getTypeListByIndex();
 
         foreach ($scoreLog as &$v) {
-            if(empty($v['uid'])) $v['uid'] = 0;
-            $v['adjustType'] = $v['action']== 'inc'?'增加':'减少';
+            if (empty($v['uid'])) $v['uid'] = 0;
+            $v['adjustType'] = $v['action'] == 'inc' ? '增加' : '减少';
             $v['scoreType'] = $scoreTypes[$v['type']]['title'];
-            $class = $v['action'] == 'inc' ? 'text-success':'text-danger';
-            $v['value']='<span class="'.$class.'">' .  ($v['action'] == 'inc'?'+':'-'). $v['value']. $scoreTypes[$v['type']]['unit'].'</span>';
-            $v['finally_value'] = $v['finally_value']. $scoreTypes[$v['type']]['unit'];
+            $class = $v['action'] == 'inc' ? 'text-success' : 'text-danger';
+            $v['value'] = '<span class="' . $class . '">' .  ($v['action'] == 'inc' ? '+' : '-') . $v['value'] . $scoreTypes[$v['type']]['unit'] . '</span>';
+            $v['finally_value'] = $v['finally_value'] . $scoreTypes[$v['type']]['unit'];
         }
         unset($v);
 
@@ -70,16 +72,16 @@ class Score extends Admin {
         $builder
             ->keyId()
             ->keyUid()
-            ->keyText('scoreType','积分类型')
-            ->keyText('adjustType','调整类型')
-            ->keyHtml('value','积分变动')
-            ->keyText('finally_value','积分最终值')
-            ->keyText('remark','变动描述')
+            ->keyText('scoreType', '积分类型')
+            ->keyText('adjustType', '调整类型')
+            ->keyHtml('value', '积分变动')
+            ->keyText('finally_value', '积分最终值')
+            ->keyText('remark', '变动描述')
             ->keyCreateTime();
 
-        $builder->search('搜索','uid','text','输入UID');
-        $builder->button('清空日志',['url'=>url('clear'),'class'=>'btn btn-danger ajax-get confirm']);
-    
+        $builder->search('搜索', 'uid', 'text', '输入UID');
+        $builder->button('清空日志', ['url' => url('clear'), 'class' => 'btn btn-danger ajax-get confirm']);
+
         $builder->display();
     }
 
@@ -89,7 +91,7 @@ class Score extends Admin {
     public function clear()
     {
         Db::name('ScoreLog')->where('id', '>', 0)->delete();
-        return $this->success('清空成功。',url('scoreLog'));
+        return $this->success('清空成功。', url('scoreLog'));
     }
 
     /**
@@ -99,9 +101,10 @@ class Score extends Admin {
     public function type()
     {
         //读取数据
-        $map[] = ['status' ,'>', -1];
+        $map[] = ['status', '>', -1];
         $list = $this->scoreTypeModel->getTypeList($map);
-        //dump($list);
+        // 记录当前列表页的cookie
+        cookie('__forward__', $_SERVER['REQUEST_URI']);
         //显示页面
         $builder = new AdminListBuilder();
         $builder
@@ -111,7 +114,7 @@ class Score extends Admin {
             ->setStatusUrl(url('setTypeStatus'))
             ->buttonEnable()
             ->buttonDisable()
-            ->buttonDelete(url('delType'),'删除')
+            ->buttonDelete(url('delType'), '删除')
             ->keyId()
             ->keyText('title', '名称')
             ->keyText('unit', '单位')
@@ -128,7 +131,7 @@ class Score extends Admin {
     public function editType()
     {
         $aId = input('id', 0, 'intval');
-        
+
         if (request()->isPost()) {
             $data['title'] = input('post.title', '', 'text');
             $data['status'] = input('post.status', 1, 'intval');
@@ -141,12 +144,12 @@ class Score extends Admin {
                 $res = $this->scoreTypeModel->addType($data);
             }
             if ($res) {
-                return $this->success(($aId == 0 ? lang('Add') : lang('Edit')) . lang('Success'));
+                return $this->success(($aId == 0 ? lang('Add') : lang('Edit')) . lang('Success'), $res, cookie('__forward__'));
             } else {
                 return $this->error(($aId == 0 ? lang('Add') : lang('Edit')) . lang('Failed'));
             }
         } else {
-            
+
             if ($aId != 0) {
                 $type = $this->scoreTypeModel->getType(['id' => $aId]);
             } else {
@@ -173,11 +176,11 @@ class Score extends Admin {
     public function setTypeStatus($ids, $status)
     {
         $ids = array_unique((array)$ids);
-        $ids = implode(',',$ids);
-        $rs = $this->scoreTypeModel->where('id','in', $ids)->update(['status' => $status]);
+        $ids = implode(',', $ids);
+        $rs = $this->scoreTypeModel->where('id', 'in', $ids)->update(['status' => $status]);
         if ($rs) {
-            return $this->success('设置成功', $_SERVER['HTTP_REFERER']); 
-        }else{
+            return $this->success('设置成功', $_SERVER['HTTP_REFERER']);
+        } else {
             return $this->error('设置失败');
         }
     }
@@ -195,5 +198,4 @@ class Score extends Admin {
             return $this->error('删除失败');
         }
     }
-
 }

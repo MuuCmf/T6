@@ -4,6 +4,7 @@ namespace app\common\Model;
 
 use think\Model;
 use think\facade\Db;
+use think\Exception;
 
 /**
  * 用户积分类型模型
@@ -54,8 +55,8 @@ class ScoreType extends Model
     public function addType($data)
     {
         $db_prefix = config('database.connections.mysql.prefix');
-        $id = Db::name('score_type')->insertGetId($data);
-        $query = "ALTER TABLE  `{$db_prefix}member` ADD  `score" . $id . "` DOUBLE NOT NULL COMMENT  '" . $data['title'] . "'";
+        $id = $this->insertGetId($data);
+        $query = "alter table `{$db_prefix}member` ADD  `score" . $id . "` INT(11) NOT NULL COMMENT  '" . $data['title'] . "'";
 
         Db::execute($query);
 
@@ -77,7 +78,11 @@ class ScoreType extends Model
         foreach ($ids as $v) {
             if ($v > 4) {
                 $query = "alter table `{$db_prefix}member` drop column score" . $v;
-                Db::execute($query);
+                try {
+                    Db::execute($query);
+                } catch (Exception $e) {
+                    // 不做处理
+                }
             }
         }
         return $res;
@@ -92,7 +97,7 @@ class ScoreType extends Model
     {
         $db_prefix = config('database.connections.mysql.prefix');
         $res = $this->update($data);
-        $query = "alter table `{$db_prefix}member` modify column `score" . $data['id'] . "` FLOAT comment '" . $data['title'] . "';";
+        $query = "alter table `{$db_prefix}member` CHANGE `score" . $data['id'] . "` `score" . $data['id'] . "` INT(11) NOT NULL COMMENT '" . $data['title'] . "'";
         Db::execute($query);
         return $res;
     }
