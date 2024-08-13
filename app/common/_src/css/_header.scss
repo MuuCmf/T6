@@ -50,11 +50,20 @@
             line-height: 60px;
             position: relative;
 
-            .active-item {
+            .active-item-low {
               color: #222;
               text-decoration: none;
               display: block;
               padding: 1px 21px 0;
+            }
+
+            .active-item {
+              color: #222;
+              text-decoration: none;
+              display: block;
+              padding: 1px 17px 0;
+              max-width: 110px;
+              overflow: hidden;
             }
 
             >span {

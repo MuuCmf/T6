@@ -16,7 +16,7 @@
                     {if $navbar_count > 7}
                     {volist name="navbar" id="nav" key="key" offset="0" length="6"}
                     <li class="{eq name='nav.url|get_nav_active' value='1'}active{else/}{/eq}">
-                        <a class="active-item" title="{$nav.title}" href="{$nav.url|get_nav_url}"
+                        <a class="active-item text-ellipsis" title="{$nav.title}" href="{$nav.url|get_nav_url}"
                             target="{eq name='nav.target' value='1'}_blank{else/}_self{/eq}">
                             <span>{$nav.title}</span>
                         </a>
@@ -40,7 +40,7 @@
                     {else/}
                     {volist name="navbar" id="nav" key="key"}
                     <li class="{eq name='nav.url|get_nav_active' value='1'}active{else/}{/eq}">
-                        <a class="active-item" title="{$nav.title}" href="{$nav.url|get_nav_url}"
+                        <a class="active-item-low text-ellipsis" title="{$nav.title}" href="{$nav.url|get_nav_url}"
                             target="{eq name='nav.target' value='1'}_blank{else/}_self{/eq}">
                             <span>{$nav.title}</span>
                         </a>
