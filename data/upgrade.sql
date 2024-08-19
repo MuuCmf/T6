@@ -323,3 +323,8 @@ CREATE TABLE IF NOT EXISTS `muucmf_member_authentication` (
 
 INSERT INTO `muucmf_menu` (`id`, `title`, `pid`, `sort`, `url`, `hide`, `type`, `tip`, `group`, `is_dev`, `icon`, `module`) VALUES
 ('89CBF0B3-DBEF-6AFC-88BF-B888148AA87A', '实名认证', 'DA4333DF-D814-819B-D657-401FE5153AB4', 0, 'admin/Member/authentication', 0, 0, '', '', 0, '', 'admin');
+
+DELETE FROM `muucmf_config` WHERE id=108;
+DELETE FROM `muucmf_config` WHERE id=109;
+DELETE FROM `muucmf_config` WHERE id=110;
+DELETE FROM `muucmf_config` WHERE id=111;
