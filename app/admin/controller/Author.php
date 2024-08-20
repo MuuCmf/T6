@@ -239,7 +239,7 @@ class Author extends Admin
         $builder = new AdminListBuilder();
         $builder
             ->title('创造者类型')
-            ->suggest('id<=4的不能删除')
+            ->suggest('')
             ->buttonNew(url('groupEdit'))
             ->setStatusUrl(url('groupStatus'))
             ->buttonEnable()
