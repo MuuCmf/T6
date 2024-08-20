@@ -25,20 +25,20 @@
             </li>
 
         </ul>
-        <form action="{:url('ucenter/Common/login')}" class="ajax_form" method="post" autocomplete="off">
+        <form action="{:url('ucenter/Common/login')}" class="ajax_form" method="post">
             <input type="hidden" name="login_type" value="password">
             <div class="tab-content">
                 <div class="tab-pane active" id="password">
                     <div class="login-group">
-                        <input class="login-input login-account" name="account" placeholder="{$ph_account}" type="text">
+                        <input class="login-input login-account" name="account" placeholder="{$ph_account}" type="text" autocomplete="on">
                     </div>
                     <div class="login-group password-group">
-                        <input class="login-input"  name="password" placeholder="请输入密码" type="password">
+                        <input class="login-input"  name="password" placeholder="请输入密码" type="password" autocomplete="off">
                         <i class="iconfont" data-type="hidden">&#xe67a;</i>
                     </div>
                     {if check_verify_open('login')}
                     <div class="login-group captcha-img">
-                        <input type="text"  class="login-input" placeholder="验证码" datatype="*5-5" name="captcha">
+                        <input type="text"  class="login-input" placeholder="验证码" datatype="*5-5" name="captcha" autocomplete="off">
                         <img class="verifyimg reloadverify" alt="刷新验证码" src="{:captcha_src()}"
                              style="cursor:pointer;height:43px;max-width: 100%">
                     </div>

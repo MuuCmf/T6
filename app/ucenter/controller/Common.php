@@ -4,18 +4,30 @@ namespace app\ucenter\controller;
 
 use think\facade\Db;
 use think\facade\View;
+use think\facade\Request;
 use app\common\model\Member as CommonMember;
 use app\ucenter\validate\Member;
 use think\exception\ValidateException;
 use thans\jwt\facade\JWTAuth;
 use app\common\model\Verify;
-use app\common\controller\Common as CommonCommon;
+use app\common\controller\Base as CommonBase;
 
 /**
  * 用户登录及注册
  */
-class Common extends CommonCommon
+class Common extends CommonBase
 {
+    /**
+     * 构造方法
+     * @access public
+     */
+    public function __construct()
+    {
+        parent::__construct();
+        //框架版本号
+        View::assign('version', $this->version());
+    }
+
     /**
      * register  注册页面
      */
@@ -150,9 +162,10 @@ class Common extends CommonCommon
     {
         // 获取返回页面路径
         $last_url = session('login_http_referer');
-        if (empty($last_url)) {
-            $last_url = request()->domain();
+        if (empty($last_url) || $last_url == Request::url(true)) {
+            $last_url = Request::domain(true);
         }
+
         if (request()->isPost()) {
             //获取参数
             $account = input('post.account', '', 'text'); // 账号
@@ -413,5 +426,16 @@ class Common extends CommonCommon
         $agreement = config('system.USER_REG_AGREEMENT');
         View::assign('agreement', $agreement);
         return View::fetch();
+    }
+
+    protected function setTitle($title)
+    {
+        View::assign('title', $title);
+    }
+
+    private function initVersion()
+    {
+        //框架版本号
+        View::assign('version', $this->version());
     }
 }

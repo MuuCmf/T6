@@ -30,7 +30,6 @@ class Common extends Base
     public function __construct()
     {
         parent::__construct();
-        $this->initSiteStatus();
         
         // 控制器初始化
         $this->initialize();
@@ -41,6 +40,10 @@ class Common extends Base
      */
     public function initialize()
     {
+        //站点状态
+        $this->initSiteStatus();
+        //访问类型
+        $this->initSiteAccessType();
         //获取shopid
         $this->initShopid();
         //获取应用名
@@ -61,7 +64,7 @@ class Common extends Base
         $this->initRegAndLogin();
         //获取用户基本资料
         $this->initUserBaseInfo();
-        //seo规则
+        //SEO规则
         $this->initSeo();
         //版本号
         $this->initVersion();
@@ -89,7 +92,29 @@ class Common extends Base
             }
         }
     }
+    
+    /**
+     * 初始化站点访问权限
+     */
+    protected function initSiteAccessType()
+    {
+        
+        if (Config::get('system.SITE_ACCESS_TYPE') == 1) {
+            $type = (request()->isJson() || request()->isAjax()) ? 'json' : 'html';
+            if(!is_login()){
+                if($type == 'json'){
+                    return json(['code' => 0, 'data' => 'login', 'msg' => '请先登录']);
+                }
+                if($type == 'html'){
+                    $this->redirect(url('ucenter/common/login'));
+                }
+            }
+        }
+    }
 
+    /**
+     * 初始化shopid
+     */
     protected function initShopid()
     {
         View::assign('shopid', $this->shopid);

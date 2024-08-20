@@ -12,6 +12,7 @@ class Config extends Base
         //站点基础配置
         'SITE_CLOSE',
         'SITE_CLOSE_HINT',
+        'SITE_ACCESS_TYPE',
         'WEB_SITE_NAME',
         'WEB_SITE_DESCRIPTION',
         'WEB_SITE_LOGO',
