@@ -328,3 +328,6 @@ DELETE FROM `muucmf_config` WHERE id=108;
 DELETE FROM `muucmf_config` WHERE id=109;
 DELETE FROM `muucmf_config` WHERE id=110;
 DELETE FROM `muucmf_config` WHERE id=111;
+
+INSERT INTO `muucmf_config` (`id`, `name`, `type`, `title`, `group`, `extra`, `remark`, `create_time`, `update_time`, `status`, `value`, `sort`) VALUES
+(10154, 'SITE_ACCESS_TYPE', 'select', '站点访问类型', 4, '0:开放访问,1:登录访问', '是否强制用户访问站点任何页面都需要登录', 1724115948, 1724115948, 1, '0', 5);
