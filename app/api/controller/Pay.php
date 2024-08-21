@@ -438,7 +438,8 @@ class Pay extends Api
         if ($channel  == 'weixin_h5') {
             // 获取配置
             $weixin_config = (new \app\channel\model\WechatConfig())->getWechatConfigByShopId($this->shopid);
-
+            // 获取支付时间戳
+            $paid_time = $this->OrderModel->where('order_no', $order_info['order_no'])->value('paid_time');
             //消息模板是否设置
             if (empty($weixin_config['tmplmsg']['tmplmsg']['pay_success'])) {
                 return false;
@@ -472,7 +473,7 @@ class Pay extends Api
                             'value' => $order_info['products']['title'] ?? '商品',
                         ],
                         'time7' => [ // 支付时间
-                            'value' => time_format($order_info['paid_time'])
+                            'value' => time_format($paid_time, 'Y-m-d H:i:s')
                         ]
                     ],
                 ];
