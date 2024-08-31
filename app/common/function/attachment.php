@@ -1,4 +1,5 @@
 <?php
+
 use think\facade\Db;
 use app\common\model\Attachment;
 
@@ -9,7 +10,8 @@ if (!function_exists('single_image_upload')) {
      * @param  [type] $image     [description]
      * @return [type]            [description]
      */
-    function single_image_upload($name, $image, $input = false, $enforce = 'auto'){
+    function single_image_upload($name, $image, $input = false, $enforce = 'auto')
+    {
 
         $image_path = get_attachment_src($image);
         $upload_picture = '上传图片';
@@ -24,8 +26,8 @@ if (!function_exists('single_image_upload')) {
             <div class="upload-img-box">
                 <div class="upload-pre-item popup-gallery">
     EOF;
-        if(!empty($image)){
-        $html .= <<<EOF
+        if (!empty($image)) {
+            $html .= <<<EOF
                     <div class="each">
                         <img src="{$image_path}">
                         <div class="text-center opacity del_btn"></div>
@@ -38,14 +40,14 @@ if (!function_exists('single_image_upload')) {
             </div>
     EOF;
 
-        if($input == false){
+        if ($input == false) {
             $html .= <<<EOF
             <div class="input-group">
                 <input type="hidden" class="form-control attach" data-name="{$name}" name="{$input_name}" value="{$image}">
                 <button id="upload_single_image_{$name}" class="btn btn-default" type="button">{$upload_picture}</button>
             </div>
     EOF;
-        }else{
+        } else {
             $html .= <<<EOF
             <div class="input-group">
                 <input type="text" class="form-control attach" data-name="{$name}" name="{$input_name}" value="{$image}">
@@ -60,7 +62,7 @@ if (!function_exists('single_image_upload')) {
         </div>
     EOF;
 
-    $html .= <<<EOF
+        $html .= <<<EOF
     <script>
         $(function () {
             var uploader_{$name}= WebUploader.create({
@@ -148,23 +150,23 @@ if (!function_exists('multi_image_upload')) {
         $html = '';
         $html .= '
         <div class="multi-image-upload image-upload controls">
-            <input class="attach" type="hidden" name="'.$name.'" value="'.$images.'"/>
+            <input class="attach" type="hidden" name="' . $name . '" value="' . $images . '"/>
             <div class="upload-img-box">
                 <div class="upload-pre-item popup-gallery">';
-                if(!empty($images)){
-                    $aIds = explode(',',$images);
-                    foreach($aIds as $aId){
-                        $path = get_attachment_src($aId);
-                        $html .= '
+        if (!empty($images)) {
+            $aIds = explode(',', $images);
+            foreach ($aIds as $aId) {
+                $path = get_attachment_src($aId);
+                $html .= '
                             <div class="each">
-                                <img src="'.$path.'">
+                                <img src="' . $path . '">
                                 <div class="text-center opacity del_btn"></div>
-                                <div data-id="'.$aId.'" class="text-center del_btn">'.$delete_picture.'</div>
+                                <div data-id="' . $aId . '" class="text-center del_btn">' . $delete_picture . '</div>
                             </div>
                         ';
-                    }
-                }
-        
+            }
+        }
+
         $html .= <<<EOF
                 </div>
             </div>
@@ -173,7 +175,7 @@ if (!function_exists('multi_image_upload')) {
             </div>
             
         </div>
-        EOF;       
+        EOF;
         $html .= <<<EOF
         <script>
         $(function () {
@@ -254,7 +256,8 @@ if (!function_exists('single_audio_upload')) {
      * @param  bool $input       是否显示输入框
      * @return [type]            [description]
      */
-    function single_audio_upload($name, $audio, $input = false){
+    function single_audio_upload($name, $audio, $input = false)
+    {
         $audio_path = get_attachment_src($audio);
         $upload = '上传音频';
         $delete = '删除';
@@ -271,8 +274,8 @@ if (!function_exists('single_audio_upload')) {
         $sign_api = url('api/vod/sign');
         // 写入附件表接口
         $attachment_api = url('api/file/attachment');
-        if($input == false){
-            if($vod_driver == 'tencent'){
+        if ($input == false) {
+            if ($vod_driver == 'tencent') {
                 $html .= <<<EOF
                 <div class="input-group">
                     <input type="hidden" name="{$name}" value="{$audio}" class="form-control attach" autocomplete="off">
@@ -283,7 +286,7 @@ if (!function_exists('single_audio_upload')) {
                     </span>
                 </div>
                 EOF;
-            }else{
+            } else {
                 $html .= <<<EOF
                 <div class="input-group">
                     <input type="hidden" class="form-control attach" name="{$name}" value="{$audio}">
@@ -293,9 +296,8 @@ if (!function_exists('single_audio_upload')) {
                 </div>
                 EOF;
             }
-            
-        }else{
-            if($vod_driver == 'tencent'){
+        } else {
+            if ($vod_driver == 'tencent') {
                 $html .= <<<EOF
                 <div class="input-group">
                     <input type="text" name="{$name}" value="{$audio}" class="form-control attach" autocomplete="off">
@@ -306,7 +308,7 @@ if (!function_exists('single_audio_upload')) {
                     </span>
                 </div>
                 EOF;
-            }else{
+            } else {
                 $html .= <<<EOF
                 <div class="input-group">
                     <input type="text" class="form-control attach" name="{$name}" value="{$audio}">
@@ -324,7 +326,7 @@ if (!function_exists('single_audio_upload')) {
             </div>
         EOF;
 
-        if($vod_driver == 'tencent'){
+        if ($vod_driver == 'tencent') {
             // 腾讯云点播方式上传
             // 依赖 <script src="https://cdn-go.cn/cdn/vod-js-sdk-v6/latest/vod-js-sdk-v6.js"></script>
             // 只触发一次
@@ -338,8 +340,7 @@ if (!function_exists('single_audio_upload')) {
                 </script>';
                 define('MUU_VOD_AUDIO_MODAL', true);
             }
-
-        }else{
+        } else {
             // 本地或云存储的方式上传
             $api = url('api/file/upload');
             $html .= <<<EOF
@@ -417,7 +418,7 @@ if (!function_exists('single_audio_upload')) {
             </script>
             EOF;
         }
-        
+
         return $html;
     }
 }
@@ -426,7 +427,8 @@ if (!function_exists('single_video_upload')) {
     /**
      * 视频上传(仅支持本地和云点播方式)
      */
-    function single_video_upload($name, $video ,$input = false){
+    function single_video_upload($name, $video, $input = false)
+    {
 
         $upload = "上传视频";
         // 获取视频地址
@@ -446,8 +448,8 @@ if (!function_exists('single_video_upload')) {
         // 写入附件表接口
         $attachment_api = url('api/file/attachment');
         // 显示输入框
-        if ($input == true){
-            if($vod_driver == 'tencent'){
+        if ($input == true) {
+            if ($vod_driver == 'tencent') {
                 $html .= <<<EOF
                 <div class="input-group">
                     <input type="text" name="{$name}" value="{$video}" class="form-control attach" autocomplete="off">
@@ -458,7 +460,7 @@ if (!function_exists('single_video_upload')) {
                     </span>
                 </div>
                 EOF;
-            }else{
+            } else {
                 $html .= <<<EOF
                 <div class="input-group">
                     <input type="text" class="form-control attach" name="{$name}" value="{$video}">
@@ -468,9 +470,9 @@ if (!function_exists('single_video_upload')) {
                 </div>
                 EOF;
             }
-        }else{
+        } else {
             // 不显示输入框
-            if($vod_driver == 'tencent'){
+            if ($vod_driver == 'tencent') {
                 $html .= <<<EOF
                 <div class="input-group">
                     <input type="hidden" name="{$name}" value="{$video}" class="form-control attach">
@@ -481,7 +483,7 @@ if (!function_exists('single_video_upload')) {
                     </span>
                 </div>
                 EOF;
-            }else{
+            } else {
                 $html .= <<<EOF
                 <div class="input-group">
                     <input type="hidden" class="form-control attach" name="{$name}" value="{$video}">
@@ -495,10 +497,10 @@ if (!function_exists('single_video_upload')) {
         EOF;
 
         // 脚本部分
-        if($vod_driver == 'tencent'){
+        if ($vod_driver == 'tencent') {
             // 腾讯云点播方式上传
             // 依赖 <script src="https://cdn-go.cn/cdn/vod-js-sdk-v6/latest/vod-js-sdk-v6.js"></script>
-            
+
             // 只触发一次
             if (!defined('MUU_VOD_VIDEO_MODAL')) {
                 $html .= '
@@ -510,9 +512,7 @@ if (!function_exists('single_video_upload')) {
                 </script>';
                 define('MUU_VOD_VIDEO_MODAL', true);
             }
-
-
-        }else{
+        } else {
             // 本地上传
             $html .= <<<EOF
             <script>
@@ -588,7 +588,7 @@ if (!function_exists('single_video_upload')) {
             </script>
             EOF;
         }
-        
+
         return $html;
     }
 }
@@ -601,7 +601,8 @@ if (!function_exists('single_file_upload')) {
      * @param  bool $input       是否显示输入框
      * @return [type]            [description]
      */
-    function single_file_upload($name, $file, $input = false){
+    function single_file_upload($name, $file, $input = false)
+    {
 
         $file_path = get_attachment_src($file);
         $upload = '上传文件';
@@ -614,23 +615,23 @@ if (!function_exists('single_file_upload')) {
         EOF;
 
         $html .= '<div class="upload-file-box">';
-        if(!empty($file)){
-        $html .= <<<EOF
+        if (!empty($file)) {
+            $html .= <<<EOF
             <div class="upload-pre-item">
                 
             </div>
         EOF;
-    }
+        }
         $html .= '</div>';
         $html .= '<div class="progress-box"></div>';
-        if($input == false){
+        if ($input == false) {
             $html .= <<<EOF
             <div class="input-group">
                 <input type="hidden" class="form-control attach" name="{$name}" value="{$file}">
                 <button class="btn btn-default btn-upload" type="button">{$upload}</button>
             </div>
             EOF;
-        }else{
+        } else {
             $html .= <<<EOF
             <div class="input-group">
                 <input type="text" class="form-control attach" data-name="{$name}" name="{$name}" value="{$file}">
@@ -645,7 +646,7 @@ if (!function_exists('single_file_upload')) {
         </div>
     EOF;
 
-    $html .= <<<EOF
+        $html .= <<<EOF
     <script>
         $(function () {
             var uploader_{$name} = WebUploader.create({
@@ -731,24 +732,25 @@ if (!function_exists('get_thumb_image')) {
     function get_thumb_image($attachment, $width = 100, $height = 'auto', $replace = false)
     {
         //不存在http://
-        $not_http_remote=(strpos($attachment, 'http://') === false);
+        $not_http_remote = (strpos($attachment, 'http://') === false);
         //不存在https://
-        $not_https_remote=(strpos($attachment, 'https://') === false);
+        $not_https_remote = (strpos($attachment, 'https://') === false);
 
         if ($not_http_remote && $not_https_remote) {
             $Attachment = new Attachment();
             $picture = Db::name('attachment')->where(['attachment' => $attachment])->find();
-            
+
             if (empty($picture)) {
                 return request()->domain() . '/static/common/images/nopic.png';
             }
             $attach = $Attachment->getThumbImage($picture['attachment'], $width, $height, $replace);
-
-            return get_attachment_src($attach['src']);
-        }else{
+            if ($attach) {
+                return get_attachment_src($attach['src']);
+            }
             return $attachment;
         }
-        
+
+        return $attachment;
     }
 }
 
@@ -793,25 +795,25 @@ if (!function_exists('get_attachment_src')) {
     function get_attachment_src($attachment)
     {
         //不存在http://
-        $not_http_remote=(strpos($attachment, 'http://') === false);
+        $not_http_remote = (strpos($attachment, 'http://') === false);
         //不存在https://
-        $not_https_remote=(strpos($attachment, 'https://') === false);
+        $not_https_remote = (strpos($attachment, 'https://') === false);
 
         if ($not_http_remote && $not_https_remote) {
             // 判断文件类型
             $type = 'pic';
-            if(strpos($attachment, 'jpg') !== false || strpos($attachment, 'png') !== false || strpos($attachment, 'gif') !== false || strpos($attachment, 'jpeg') !== false){ 
+            if (strpos($attachment, 'jpg') !== false || strpos($attachment, 'png') !== false || strpos($attachment, 'gif') !== false || strpos($attachment, 'jpeg') !== false) {
                 $type = 'pic';
-            }else{
+            } else {
                 $type = 'file';
             }
             // 初始化上传驱动
             $driver = 'local';
             // 获取上传驱动
-            if($type == 'pic'){
+            if ($type == 'pic') {
                 $driver = config('extend.PICTURE_UPLOAD_DRIVER');
             }
-            if($type == 'file'){
+            if ($type == 'file') {
                 $driver = config('extend.FILE_UPLOAD_DRIVER');
             }
             // 获取附件路径
@@ -827,15 +829,15 @@ if (!function_exists('get_attachment_src')) {
             if ($driver == 'tencent') {
                 return config('extend.COS_TENCENT_BUCKET_DOMAIN') . '/attachment/' . $attachment;
             }
-        }else{
+        } else {
             return $attachment;
         }
-        
     }
 }
 
 if (!function_exists('get_attachment_filename')) {
-    function get_attachment_filename($attachment){
+    function get_attachment_filename($attachment)
+    {
         $Attachment = new Attachment();
         $filename = $Attachment->getFileName($attachment);
 
@@ -844,7 +846,8 @@ if (!function_exists('get_attachment_filename')) {
 }
 
 if (!function_exists('get_attachment_file_id')) {
-    function get_attachment_file_id($attachment){
+    function get_attachment_file_id($attachment)
+    {
         $Attachment = new Attachment();
         $file_id = $Attachment->getFileID($attachment);
 
@@ -867,7 +870,8 @@ if (!function_exists('clear_directory')) {
     /**
      * 清空目录
      */
-    function clear_directory($dir) {
+    function clear_directory($dir)
+    {
         $files = scandir($dir);
         foreach ($files as $file) {
             if ($file != "." && $file != "..") {

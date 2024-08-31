@@ -58,13 +58,13 @@ class Attachment extends Base
         if (empty($files)) {
             return false;
         }
-        
+
         foreach ($files as $file) {
             //判断是否已经存在
             $sha1 = $file->hash('sha1');
             //处理已存在
             $file_info = $this->where(['sha1' => $sha1])->find();
-            
+
             if (!empty($file_info)) {
                 $file_res = [];
                 $data = $file_info->toArray();
@@ -77,7 +77,7 @@ class Attachment extends Base
                 $file_res['attachment'] = $data['attachment'];
                 $file_res['url'] = get_attachment_src($data['attachment']);
             } else {
-                
+
                 //构建返回数据
                 $data['filename'] = $file->getOriginalName();
                 if (!empty($filename)) {
@@ -92,31 +92,31 @@ class Attachment extends Base
                 // 根据不同mimeType放入不同目录
                 $mime_arr = explode('/', $data['mime']);
                 $mime_type = $mime_arr[0];
-                
+
                 switch ($mime_type) {
                     case 'image':
-                        if(!in_array($data['ext'], $this->allowImageExt)){
+                        if (!in_array($data['ext'], $this->allowImageExt)) {
                             return false;
                         }
                         $file_dir = 'images';
                         $driver = config('extend.PICTURE_UPLOAD_DRIVER');
                         break;
                     case 'audio':
-                        if(!in_array($data['ext'], $this->allowAudioExt)){
+                        if (!in_array($data['ext'], $this->allowAudioExt)) {
                             return false;
                         }
                         $file_dir = 'audio';
                         $driver = config('extend.FILE_UPLOAD_DRIVER');
                         break;
                     case 'video':
-                        if(!in_array($data['ext'], $this->allowVideoExt)){
+                        if (!in_array($data['ext'], $this->allowVideoExt)) {
                             return false;
                         }
                         $file_dir = 'video';
                         $driver = config('extend.FILE_UPLOAD_DRIVER');
                         break;
                     default:
-                        if(!in_array($data['ext'], $this->allowFileExt)){
+                        if (!in_array($data['ext'], $this->allowFileExt)) {
                             $false_result['code'] = 0;
                             $false_result['msg'] = '不允许的文件类型';
                             return $false_result;
@@ -124,12 +124,12 @@ class Attachment extends Base
                         $file_dir = 'file';
                         $driver = config('extend.FILE_UPLOAD_DRIVER');
                 }
-                
+
                 // 传shopid写入对应SHOPID目录
                 if (!empty($shopid)) {
                     $file_dir = $shopid . DIRECTORY_SEPARATOR . $file_dir;
                 }
-                
+
                 // 强制本地驱动
                 if ($enforce == 'local') {
                     $driver = 'local';
@@ -150,7 +150,7 @@ class Attachment extends Base
                 // 成功上传后 获取上传信息
                 $data['attachment'] = $savename;
                 $data['attachment'] = str_replace("\\", "/", $data['attachment']);
-                
+
                 // 获取音视频时长
                 $data['duration'] = null;
                 if ($data['type'] == 'video' || $data['type'] == 'audio') {
@@ -173,11 +173,11 @@ class Attachment extends Base
                         }
                     }
                 }
-                
+
                 // 阿里云OSS
                 if ($driver == 'aliyun') {
                     $oss_res = $this->ossUpload('attachment/' . $data['attachment'], $file->getPathname());
-                    
+
                     // 上传成功
                     if ($oss_res === true) {
                         // 删除本地文件
@@ -282,7 +282,7 @@ class Attachment extends Base
                     return false;
                 }
 
-                if(!in_array($data['ext'], $this->allowImageExt)){
+                if (!in_array($data['ext'], $this->allowImageExt)) {
                     return false;
                 }
 
@@ -353,9 +353,7 @@ class Attachment extends Base
      * @param  [type] $files [description]
      * @return [type]        [description]
      */
-    public function base64($files)
-    {
-    }
+    public function base64($files) {}
 
 
     /**
@@ -382,13 +380,11 @@ class Attachment extends Base
             $result = $ossClient->uploadFile($bucket, $object, $filePath);
 
             return true;
-
         } catch (OssException $e) {
             //printf(__FUNCTION__ . ": FAILED\n");
             //printf($e->getMessage() . "\n");
             return $e->getMessage();
         }
-
     }
 
     /**
@@ -499,30 +495,32 @@ class Attachment extends Base
             //执行缩图操作
             // 获取原图尺寸
             $oldimageinfo = getimagesize($UPLOAD_PATH . $oldFile);
-            $old_image_width = intval($oldimageinfo[0]);
-            $old_image_height = intval($oldimageinfo[1]);
-            if ($old_image_width <= $width && $old_image_height <= $height) {
-                @unlink($UPLOAD_PATH . $thumbFile);
-                @copy($UPLOAD_PATH . $oldFile, $UPLOAD_PATH . $thumbFile);
-                $info['src'] = $thumbFile;
-                $info['width'] = $old_image_width;
-                $info['height'] = $old_image_height;
-                return $info;
-            } else {
-                if ($height == "auto") $height = $old_image_height * $width / $old_image_width;
-                if ($width == "auto") $width = $old_image_width * $width / $old_image_height;
-                if (intval($height) == 0 || intval($width) == 0) {
-                    return 0;
+            if ($oldimageinfo) {
+                $old_image_width = intval($oldimageinfo[0]);
+                $old_image_height = intval($oldimageinfo[1]);
+                if ($old_image_width <= $width && $old_image_height <= $height) {
+                    @unlink($UPLOAD_PATH . $thumbFile);
+                    @copy($UPLOAD_PATH . $oldFile, $UPLOAD_PATH . $thumbFile);
+                    $info['src'] = $thumbFile;
+                    $info['width'] = $old_image_width;
+                    $info['height'] = $old_image_height;
+                    return $info;
+                } else {
+                    if ($height == "auto") $height = $old_image_height * $width / $old_image_width;
+                    if ($width == "auto") $width = $old_image_width * $width / $old_image_height;
+                    if (intval($height) == 0 || intval($width) == 0) {
+                        return 0;
+                    }
+                    // 打开图片并处理
+                    $thumb = Image::open($UPLOAD_PATH . $filename);
+                    //默认裁切类型标识缩略图居中裁剪类型，先写死，后续版本增加后台设置
+                    $thumb->thumb($width, $height, Image::THUMB_CENTER);
+                    $thumb->save($UPLOAD_PATH . $thumbFile);
+                    $info['src'] = $thumbFile;
+                    $info['width'] = $old_image_width;
+                    $info['height'] = $old_image_height;
+                    return $info;
                 }
-                // 打开图片并处理
-                $thumb = Image::open($UPLOAD_PATH . $filename);
-                //默认裁切类型标识缩略图居中裁剪类型，先写死，后续版本增加后台设置
-                $thumb->thumb($width, $height, Image::THUMB_CENTER);
-                $thumb->save($UPLOAD_PATH . $thumbFile);
-                $info['src'] = $thumbFile;
-                $info['width'] = $old_image_width;
-                $info['height'] = $old_image_height;
-                return $info;
             }
         }
     }
