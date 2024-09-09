@@ -2,8 +2,6 @@
 namespace app\admin\controller;
 
 use think\facade\View;
-use app\admin\builder\AdminConfigBuilder;
-use app\admin\builder\AdminListBuilder;
 use app\common\model\Feedback as FeedbackModel;
 use app\common\logic\Feedback as FeedbackLogic;
 
@@ -13,6 +11,7 @@ use app\common\logic\Feedback as FeedbackLogic;
 class Feedback extends Admin
 {
     protected $FeedbackModel;
+    protected $FeedbackLogic;
 
     /**
      * 构造方法
@@ -44,6 +43,11 @@ class Feedback extends Admin
             $val = $this->FeedbackLogic->formatData($val);
         }
         unset($val);
+
+        // ajax请求返回数据
+        if (request()->isAjax()) {
+            return $this->success('success', $lists);
+        }
 
         View::assign('pager',$pager);
         View::assign('lists', $lists);

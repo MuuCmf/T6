@@ -42,6 +42,11 @@ class History extends Admin
         }
         unset($val);
 
+        // ajax请求返回数据
+        if (request()->isAjax()) {
+            return $this->success('success', $lists);
+        }
+
         //全部应用
         $module_map = [];
         $all_module = (new \app\common\model\Module())->getAll($module_map);

@@ -49,6 +49,11 @@ class Action extends Admin
         }
         unset($value);
 
+        // ajax请求返回数据
+        if (request()->isAjax()) {
+            return $this->success('success', $list);
+        }
+
         $actionList = Db::name('Action')->select();
         View::assign('action_list', $actionList);
 

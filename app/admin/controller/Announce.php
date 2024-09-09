@@ -60,10 +60,11 @@ class Announce extends Admin
         }
         unset($val);
         
-        if(request()->isAjax()){
-            // ajax请求返回数据
+        // ajax请求返回数据
+        if (request()->isAjax()) {
             return $this->success('success', $lists);
         }
+        
         View::assign('pager',$pager);
         View::assign('lists',$lists);
         // 记录当前列表页的cookie

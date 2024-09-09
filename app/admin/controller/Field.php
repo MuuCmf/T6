@@ -37,6 +37,11 @@ class Field extends Admin
         $profileList = $profileList->toArray()['data'];
         int_to_string($profileList);
 
+        // ajax请求返回数据
+        if (request()->isAjax()) {
+            return $this->success('success', $profileList);
+        }
+
         View::assign('title','扩展资料');
         View::assign('page',$page);
         View::assign('list', $profileList);

@@ -51,8 +51,13 @@ class Menu extends Admin
         unset($val);
         // 转树结构
         $list = list_to_tree($list, 'id', 'pid', '_child', '0');
-        View::assign('list', $list);
 
+        // ajax请求返回数据
+        if (request()->isAjax()) {
+            return $this->success('success', $list);
+        }
+
+        View::assign('list', $list);
         // 记录当前列表页的cookie
         Cookie('__forward__', $_SERVER['REQUEST_URI']);
         $this->setTitle('后台菜单管理');
