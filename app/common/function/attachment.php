@@ -874,14 +874,17 @@ if (!function_exists('clear_directory')) {
     {
         $files = scandir($dir);
         foreach ($files as $file) {
-            if ($file != "." && $file != "..") {
-                $filePath = $dir . "/" . $file;
-                if (is_file($filePath)) {
-                    unlink($filePath);
-                } elseif (is_dir($filePath)) {
-                    clear_directory($filePath);
-                    rmdir($filePath);
+            try {
+                if ($file != "." && $file != "..") {
+                    $filePath = $dir . "/" . $file;
+                    if (is_file($filePath)) {
+                        unlink($filePath);
+                    } elseif (is_dir($filePath)) {
+                        clear_directory($filePath);
+                        rmdir($filePath);
+                    }
                 }
+            } catch (Exception $e) {
             }
         }
     }
