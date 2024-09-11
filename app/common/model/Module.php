@@ -15,7 +15,6 @@ class Module extends Base
     public function getAll($where = [])
     {
         $list = $this->where($where)->order('sort desc,id desc')->select()->toArray();
-        $MenuModel = new Menu();
         foreach($list as & $item){
             
             if(empty($item['icon'])){
@@ -41,9 +40,16 @@ class Module extends Base
 
             // 调整入口路径
             // TODO逐步废弃module表entry入口配置
-            $menu_main_entry =  $MenuModel->where([['pid', '=', '0'],['module', '=', $item['name']]])->value('url');
-            if(!empty($menu_main_entry)){
-                $item['entry'] = $menu_main_entry;
+
+            if (file_exists(APP_PATH . '/' . $item['name'] . '/info/info.php') && $item['name'] != '.' && $item['name'] != '..')
+            {
+                // 获取配置数据
+                $info = $this->getInfo($item['name']);
+                if(empty($info['entry'])){
+                    $item['entry'] = $item['name'] . 'admin.Index/index';
+                }else{
+                    $item['entry'] = $info['entry'];
+                }
             }
         }
         unset($item);
