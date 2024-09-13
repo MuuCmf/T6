@@ -331,3 +331,6 @@ DELETE FROM `muucmf_config` WHERE id=111;
 
 INSERT INTO `muucmf_config` (`id`, `name`, `type`, `title`, `group`, `extra`, `remark`, `create_time`, `update_time`, `status`, `value`, `sort`) VALUES
 (10154, 'SITE_ACCESS_TYPE', 'select', '站点访问类型', 4, '0:开放访问,1:登录访问', '是否强制用户访问站点任何页面都需要登录', 1724115948, 1724115948, 1, '0', 5);
+
+INSERT INTO `muucmf_menu` (`id`, `title`, `pid`, `sort`, `url`, `hide`, `type`, `tip`, `group`, `is_dev`, `icon`, `module`) VALUES
+('D225B61F-B50D-97F4-B331-7259015713FC', '导出日志', '113D646E-6D67-CF09-8C2C-4B10D57A6902', 0, 'admin/Action/csv', 0, 0, '', '', 0, '', 'admin');
