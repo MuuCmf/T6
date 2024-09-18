@@ -1,10 +1,12 @@
 <?php
+
 /**
  * 后台公共文件
  * 主要定义后台公共函数库
  */
 
-function rmdirr($dirname) {
+function rmdirr($dirname)
+{
     if (!file_exists($dirname)) {
         return false;
     }
@@ -12,7 +14,7 @@ function rmdirr($dirname) {
         return unlink($dirname);
     }
     $dir = dir($dirname);
-    if($dir){
+    if ($dir) {
         while (false !== $entry = $dir->read()) {
             if ($entry == '.' || $entry == '..') {
                 continue;
@@ -22,4 +24,17 @@ function rmdirr($dirname) {
     }
     $dir->close();
     return rmdir($dirname);
+}
+
+
+function check_url_re($value = [])
+{
+
+    if (empty($value['module']) || $value['module'] == '') {
+        if (stripos($value['url'], app('http')->getName()) !== 0) {
+            $value['url'] = app('http')->getName() . '/' . $value['url'];
+        }
+    }
+
+    return $value;
 }

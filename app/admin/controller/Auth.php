@@ -185,14 +185,14 @@ class Auth extends Admin
         View::assign('node_list', $node_list);
 
         // 用户权限组
-        $auth_group = Db::name('AuthGroup')->where(['status' => 1, 'module' => 'admin', 'type' => AuthGroup::TYPE_ADMIN])->field('id,title,rules')->select()->toArray();
+        $auth_group = Db::name('AuthGroup')->where(['status' => 1, 'type' => AuthGroup::TYPE_ADMIN])->field('id,title,rules')->select()->toArray();
         View::assign('auth_group', $auth_group);
 
-        $map = ['module' => 'admin', 'type' => AuthRule::RULE_MAIN, 'status' => 1];
+        $map = ['type' => AuthRule::RULE_MAIN, 'status' => 1];
         $main_rules = Db::name('AuthRule')->where($map)->column('id', 'name');
         View::assign('main_rules', $main_rules);
 
-        $map = ['module' => 'admin', 'type' => AuthRule::RULE_URL, 'status' => 1];
+        $map = ['type' => AuthRule::RULE_URL, 'status' => 1];
         $child_rules = Db::name('AuthRule')->where($map)->column('id', 'name');
         View::assign('auth_rules', $child_rules);
 
@@ -207,10 +207,10 @@ class Auth extends Admin
     {
         //需要新增的节点必然位于$nodes
         $nodes = $this->returnNodes(false);
-
+        //dump($nodes);
         $AuthRule = new AuthRule();
         //status全部取出,以进行更新
-        $map = [['module', '=', 'admin'], ['type', 'in', '1,2']];
+        $map = [['type', 'in', '1,2']];
         //需要更新和删除的节点必然位于$rules
         $rules = $AuthRule->where($map)->order('name')->select()->toArray();
         //构建insert数据
@@ -218,7 +218,7 @@ class Auth extends Admin
         foreach ($nodes as $value) {
             $temp['name'] = $value['url'];
             $temp['title'] = $value['title'];
-            $temp['module'] = 'admin';
+            $temp['module'] = $value['module'];
             if ($value['pid'] > 0 || $value['pid'] !== '0') {
                 $temp['type'] = AuthRule::RULE_URL;
             } else {
@@ -279,7 +279,7 @@ class Auth extends Admin
         if ($tree) {
             $list = Db::name('menu')->field('id,pid,title,url,tip,hide,module')->order('module asc, sort asc')->select()->toArray();
             foreach ($list as &$value) {
-                $value = $this->check_url_re($value);
+                $value = check_url_re($value);
                 unset($value['module']);
             }
             unset($value);
@@ -296,8 +296,8 @@ class Auth extends Admin
         } else {
             $nodes = Db::name('menu')->field('title,url,tip,pid,module')->order('sort asc')->select()->toArray();
             foreach ($nodes as &$value) {
-                $value = $this->check_url_re($value);
-                unset($value['module']);
+                $value = check_url_re($value);
+                //unset($value['module']);
             }
             unset($value);
         }
@@ -307,15 +307,4 @@ class Auth extends Admin
         return $nodes;
     }
 
-    public function check_url_re($value = [])
-    {
-
-        if (empty($value['module']) || $value['module'] == '') {
-            if (stripos($value['url'], app('http')->getName()) !== 0) {
-                $value['url'] = app('http')->getName() . '/' . $value['url'];
-            }
-        }
-
-        return $value;
-    }
 }
