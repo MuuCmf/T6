@@ -4,6 +4,7 @@ namespace app\admin\controller;
 
 use think\facade\Db;
 use think\facade\View;
+use app\admin\model\AuthRule;
 use app\admin\model\Menu as MenuModel;
 use app\common\model\Module as ModuleModel;
 use app\common\service\Tree;
@@ -63,6 +64,77 @@ class Menu extends Admin
         $this->setTitle('后台菜单管理');
 
         return View::fetch();
+    }
+
+    /**
+     * 获取分组后的管理菜单树
+     */
+    public function tree()
+    {
+        $app = input('app', '', 'text');
+        // 获取主菜单
+        if(!empty($app)){
+            $where[] = ['module', '=', $app];
+        }
+        $where[] = ['pid', '=', '0'];
+        $main_menu = $this->MenuModel->where($where)->field('id,pid,title,url,icon,tip,type,module')->order('sort', 'asc')->select()->toArray();
+
+        foreach ($main_menu as $key => $item) {
+
+            if (!is_array($item) || empty($item['title']) || empty($item['url'])) {
+                return $this->error('控制器基类{$menus}属性元素配置有误');
+            }
+
+            // 判断主菜单权限
+            if (!$this->isRoot && !$this->checkRule($item['url'], get_uid(), AuthRule::RULE_MAIN, null)) {
+                unset($main_menu[$key]);
+                continue; //继续循环
+            }
+
+            // 获取当前主菜单的子菜单项
+            $groups = $this->MenuModel->where('pid', $item['id'])->order('sort asc')->column('group');
+            $groups = array_unique($groups);
+            //获取二级分类的合法url
+            $where = [];
+            $where['pid'] = $item['id'];
+            $where['hide'] = 0;
+            $second_urls = $this->MenuModel->where($where)->order('sort asc')->select()->toArray();
+
+            if (!$this->isRoot) {
+                // 检测菜单权限
+                $to_check_urls = [];
+                foreach ($second_urls as $key => $to_check_url) {
+                    $rule = $to_check_url['url'];
+                    if ($this->checkRule($rule, get_uid(), 1, null)) {
+                        $to_check_urls[] = $to_check_url['url'];
+                    }
+                }
+            }
+            // 按照分组生成子菜单树
+            foreach ($groups as $k => $g) {
+                $map = [];
+                $map[] = ['group', '=', $g];
+                if (isset($to_check_urls)) {
+                    if (empty($to_check_urls)) {
+                        // 没有任何权限
+                        continue;
+                    } else {
+                        $map[] = ['url', 'in', $to_check_urls];
+                    }
+                }
+                $map[] = ['pid', '=', $item['id']];
+                $map[] = ['hide', '=', 0];
+                $menu_list = $this->MenuModel->where($map)->field('id,pid,title,url,icon,tip,type,module')->order('sort asc')->select()->toArray();
+
+                if ($menu_list) {
+                    $menus['group'] = $g;
+                    $menus['lists'] = list_to_tree($menu_list, 'id', 'pid', 'operater', $item['id']);
+                }
+                $main_menu[$key]['child'][] = $menus;
+            }
+        }
+
+        return $this->success('success', $main_menu);
     }
 
     /**
