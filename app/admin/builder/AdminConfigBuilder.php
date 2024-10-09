@@ -562,10 +562,10 @@ class AdminConfigBuilder extends AdminBuilder
         } else {
             $data = json_decode($data, true);
 
-            $item_d = getSubByKey($item, 'id');
+            $item_d = getsub_bykey($item, 'id');
             $all = array();
             foreach ($data as $key => $v) {
-                $data_id = getSubByKey($v['items'], 'id');
+                $data_id = getsub_bykey($v['items'], 'id');
                 $data_d[$key] = $v;
                 unset($data_d[$key]['items']);
                 $data_d[$key]['items'] = $data_id ? $data_id : [];

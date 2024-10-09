@@ -8,34 +8,36 @@
  * @param string $ext
  * @return string
  */
-function getShort($str, $length = 40, $ext = '')
-{
-    $str = htmlspecialchars($str);
-    $str = strip_tags($str);
-    $str = htmlspecialchars_decode($str);
-    $strlenth = 0;
-    $out = '';
-    preg_match_all("/[\x01-\x7f]|[\xc2-\xdf][\x80-\xbf]|[\xe0-\xef][\x80-\xbf]{2}|[\xf0-\xff][\x80-\xbf]{3}/", $str, $match);
-    foreach ($match[0] as $v) {
-        preg_match("/[\xe0-\xef][\x80-\xbf]{2}/", $v, $matchs);
-        if (!empty($matchs[0])) {
-            $strlenth += 1;
-        } elseif (is_numeric($v)) {
-            //$strlenth +=  0.545;  // 字符像素宽度比例 汉字为1
-            $strlenth += 0.5; // 字符字节长度比例 汉字为1
-        } else {
-            //$strlenth +=  0.475;  // 字符像素宽度比例 汉字为1
-            $strlenth += 0.5; // 字符字节长度比例 汉字为1
-        }
+if (!function_exists('getShort')) {
+    function getShort($str, $length = 40, $ext = '')
+    {
+        $str = htmlspecialchars($str);
+        $str = strip_tags($str);
+        $str = htmlspecialchars_decode($str);
+        $strlenth = 0;
+        $output = '';
+        preg_match_all("/[\x01-\x7f]|[\xc2-\xdf][\x80-\xbf]|[\xe0-\xef][\x80-\xbf]{2}|[\xf0-\xff][\x80-\xbf]{3}/", $str, $match);
+        foreach ($match[0] as $v) {
+            preg_match("/[\xe0-\xef][\x80-\xbf]{2}/", $v, $matchs);
+            if (!empty($matchs[0])) {
+                $strlenth += 1;
+            } elseif (is_numeric($v)) {
+                //$strlenth +=  0.545;  // 字符像素宽度比例 汉字为1
+                $strlenth += 0.5; // 字符字节长度比例 汉字为1
+            } else {
+                //$strlenth +=  0.475;  // 字符像素宽度比例 汉字为1
+                $strlenth += 0.5; // 字符字节长度比例 汉字为1
+            }
 
-        if ($strlenth > $length) {
-            $output .= $ext;
-            break;
-        }
+            if ($strlenth > $length) {
+                $output .= $ext;
+                break;
+            }
 
-        $output .= $v;
+            $output .= $v;
+        }
+        return $output;
     }
-    return $output;
 }
 
 
@@ -44,68 +46,75 @@ function getShort($str, $length = 40, $ext = '')
  * @param $num
  * @return string
  */
-function getShortSp($str, $num)
-{
-    if (utf8_strlen($str) > $num) {
-        $tag = '...';
+if (!function_exists('getShortSp')) {
+    function getShortSp($str, $num)
+    {
+        if (utf8_strlen($str) > $num) {
+            $tag = '...';
+        }
+        $str = getShort($str, $num) . $tag;
+        return $str;
     }
-    $str = getShort($str, $num) . $tag;
-    return $str;
 }
 
-function utf8_strlen($string = null)
-{
-// 将字符串分解为单元
-    preg_match_all("/./us", $string, $match);
-// 返回单元个数
-    return count($match[0]);
-}
-
-
-function replace_attr($content)
-{
-    // 阻止代码部分被过滤 过滤前
-    preg_match_all('/\<pre .*?\<\/pre\>/si',$content,$matches);
-    $pattens=array();
-    foreach($matches[0] as $key=>$val){
-        $pattens[$key]='{$pre}_'.$key;
-        $content=str_replace($val,$pattens[$key],$content);
+if (!function_exists('utf8_strlen')) {
+    function utf8_strlen($string = null)
+    {
+    // 将字符串分解为单元
+        preg_match_all("/./us", $string, $match);
+    // 返回单元个数
+        return count($match[0]);
     }
-    //阻止代码部分被过滤 过滤前end
-
-    $content = preg_replace("/class=\".*?\"/si", "", $content);
-    $content = preg_replace("/id=\".*?\"/si", "", $content);
-    $content = closetags($content);
-
-    //阻止代码部分被过滤 过滤后
-    $content=str_replace($pattens,$matches[0],$content);
-    //阻止代码部分被过滤 过滤后end
-    return $content;
-
 }
 
-function closetags($html)
-{
-    preg_match_all('#<([a-z]+)(?: .*)?(?<![/|/ ])>#iU', $html, $result);
-    $openedtags = $result[1];
+if (!function_exists('replace_attr')) {
+    function replace_attr($content)
+    {
+        // 阻止代码部分被过滤 过滤前
+        preg_match_all('/\<pre .*?\<\/pre\>/si',$content,$matches);
+        $pattens=array();
+        foreach($matches[0] as $key=>$val){
+            $pattens[$key]='{$pre}_'.$key;
+            $content=str_replace($val,$pattens[$key],$content);
+        }
+        //阻止代码部分被过滤 过滤前end
 
-    preg_match_all('#</([a-z]+)>#iU', $html, $result);
-    $closedtags = $result[1];
-    $len_opened = count($openedtags);
+        $content = preg_replace("/class=\".*?\"/si", "", $content);
+        $content = preg_replace("/id=\".*?\"/si", "", $content);
+        $content = closetags($content);
 
-    if (count($closedtags) == $len_opened) {
+        //阻止代码部分被过滤 过滤后
+        $content=str_replace($pattens,$matches[0],$content);
+        //阻止代码部分被过滤 过滤后end
+        return $content;
+
+    }
+}
+
+if (!function_exists('closetags')) {
+    function closetags($html)
+    {
+        preg_match_all('#<([a-z]+)(?: .*)?(?<![/|/ ])>#iU', $html, $result);
+        $openedtags = $result[1];
+
+        preg_match_all('#</([a-z]+)>#iU', $html, $result);
+        $closedtags = $result[1];
+        $len_opened = count($openedtags);
+
+        if (count($closedtags) == $len_opened) {
+            return $html;
+        }
+        $openedtags = array_reverse($openedtags);
+        $openedtags=array_diff($openedtags,array('br'));
+        for ($i = 0; $i < $len_opened; $i++) {
+            if (!in_array($openedtags[$i], $closedtags)) {
+                $html .= '</' . $openedtags[$i] . '>';
+            } else {
+                unset($closedtags[array_search($openedtags[$i], $closedtags)]);
+            }
+        }
         return $html;
     }
-    $openedtags = array_reverse($openedtags);
-    $openedtags=array_diff($openedtags,array('br'));
-    for ($i = 0; $i < $len_opened; $i++) {
-        if (!in_array($openedtags[$i], $closedtags)) {
-            $html .= '</' . $openedtags[$i] . '>';
-        } else {
-            unset($closedtags[array_search($openedtags[$i], $closedtags)]);
-        }
-    }
-    return $html;
 }
 
 if (!function_exists('check_image_src')) {
@@ -148,24 +157,41 @@ if (!function_exists('filter_image')) {
 }
 
 /**
+ * php检测非法字符的一种方法
+ */
+if (!function_exists('filter_string')) {
+    function filter_string($content)
+    {
+        $illegal_character="#['!`~\/\\\%^&*()+=\$\#:;<>\]\[{}]#";
+        if(preg_match($illegal_character, $content)){
+            return false;
+        }
+
+        return $content;
+    }
+}
+
+/**
  * check_html_tags  判断是否存在指定html标签
  * @param $content
  * @param $tags
  * @return bool
  */
-function check_html_tags($content, $tags = array())
-{
-    $tags = is_array($tags) ? $tags : array($tags);
-    if (empty($tags)) {
-        $tags = array('script', '!DOCTYPE', 'meta', 'html', 'head', 'title', 'body', 'base', 'basefont', 'noscript', 'applet', 'object', 'param', 'style', 'frame', 'frameset', 'noframes', 'iframe');
-    }
-    foreach ($tags as $v) {
-        $res = strpos($content, '<' . $v);
-        if (!is_bool($res)) {
-            return true;
+if (!function_exists('check_html_tags')) {
+    function check_html_tags($content, $tags = array())
+    {
+        $tags = is_array($tags) ? $tags : array($tags);
+        if (empty($tags)) {
+            $tags = array('script', '!DOCTYPE', 'meta', 'html', 'head', 'title', 'body', 'base', 'basefont', 'noscript', 'applet', 'object', 'param', 'style', 'frame', 'frameset', 'noframes', 'iframe');
         }
+        foreach ($tags as $v) {
+            $res = strpos($content, '<' . $v);
+            if (!is_bool($res)) {
+                return true;
+            }
+        }
+        return false;
     }
-    return false;
 }
 
 if (!function_exists('filter_base64')) {
@@ -292,6 +318,7 @@ if (!function_exists('text')) {
         return $text;
     }
 }
+
 /**
  * 用于过滤不安全的html标签，输出安全的html
  * @param string $text 待过滤的字符串
@@ -344,14 +371,16 @@ if (!function_exists('real_strip_tags')) {
     }
 }
 
+
+
 /**
  * 取一个二维数组中的每个数组的固定的键知道的值来形成一个新的一维数组
  * @param $pArray 一个二维数组
  * @param $pKey 数组的键的名称
  * @return 返回新的一维数组
  */
-if (!function_exists('getSubByKey')) {
-    function getSubByKey($pArray, $pKey = "", $pCondition = "")
+if (!function_exists('getsub_bykey')) {
+    function getsub_bykey($pArray, $pKey = "", $pCondition = "")
     {
         $result = array();
         if (is_array($pArray)) {
