@@ -430,8 +430,14 @@
 
       >ul {
         li {
-          .active-item {
+          .active-item,.active-item-low {
             color: #fff;
+          }
+
+          .dropdown-menu {
+            .active-item,.active-item-low {
+              color: #000;
+            }
           }
         }
       }
