@@ -5,32 +5,50 @@
     <h2>浏览记录</h2>
 </div>
 
-<div class="search-box clearfix margin-bottom row">
-    <form action="" method="get" class="search-form" role="form">
-        <div class="col-sm-2">
-            <select name="app" class="form-control">
-                <option value="all">全部应用</option>
-                {volist name="all_module" id="row"}
-                {if $app == $row['name']}
-                <option selected value="{$row['name']}">{$row['alias']}</option>
-                {else}
-                <option value="{$row['name']}">{$row['alias']}</option>
-                {/if}
-                {/volist}
-            </select>
-        </div>
-        <div class="col-sm-3">
-            <div class="input-group">
-                <div class="input-control search-box has-icon-left has-icon-right search-example" id="searchbox">
-                    <input class="form-control" name="uid" placeholder="用户ID" id="" type="text" value="{$uid}">
-                    <label for="searchbox" class="input-control-icon-left search-icon"><i class="icon icon-search"></i></label>
-                </div>
-                <span class="input-group-btn">
-				<button class="btn btn-primary" type="submit">搜索</button>
-				</span>
+
+
+<div class="button-box row clearfix">
+
+    <div class="col-md-8">
+        <button class="btn btn-success ajax-post" url="{:url('status', ['status'=> 1])}" target-form="ids">
+            启用
+        </button>
+        <button class="btn btn-warning ajax-post" url="{:url('status', ['status'=> 0])}" target-form="ids">
+            禁用
+        </button>
+        <button class="btn btn-danger ajax-post confirm" url="{:url('status', ['status'=> -1])}" target-form="ids">
+            删除
+        </button>
+    </div>
+
+    <!-- 高级搜索 -->
+    <div class="search-form col-md-4">
+        <form action="" method="get" class="search-form" role="form">
+            <div class="col-sm-4">
+                <select name="app" class="form-control">
+                    <option value="all">全部应用</option>
+                    {volist name="all_module" id="row"}
+                    {if $app == $row['name']}
+                    <option selected value="{$row['name']}">{$row['alias']}</option>
+                    {else}
+                    <option value="{$row['name']}">{$row['alias']}</option>
+                    {/if}
+                    {/volist}
+                </select>
             </div>
-        </div>
-    </form>
+            <div class="col-sm-8">
+                <div class="input-group">
+                    <div class="input-control search-box has-icon-left has-icon-right search-example" id="searchbox">
+                        <input class="form-control" name="uid" placeholder="用户ID" id="" type="text" value="{$uid}">
+                        <label for="searchbox" class="input-control-icon-left search-icon"><i class="icon icon-search"></i></label>
+                    </div>
+                    <span class="input-group-btn">
+                    <button class="btn btn-primary" type="submit">搜索</button>
+                    </span>
+                </div>
+            </div>
+        </form>
+    </div>
 </div>
 
 <div class="data-table with-padding">
