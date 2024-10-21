@@ -407,19 +407,6 @@ class Pay extends Api
         exit();
     }
 
-    protected function array_to_xml($arr)
-    {
-        $xml = "<xml>";
-        foreach ($arr as $key => $val) {
-            if (is_numeric($val)) {
-                $xml .= "<$key>$val</$key>";
-            } else
-                $xml .= "<$key><![CDATA[$val]]></$key>";
-        }
-        $xml .= "</xml>";
-        return $xml;
-    }
-
     /**
      * 发送支付成功模板消息
      * @param $tmplmsg_config

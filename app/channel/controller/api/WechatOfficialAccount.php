@@ -326,7 +326,7 @@ class WechatOfficialAccount extends Api
     public function jssdk()
     {
         if (request()->isPost()) {
-            $app = OfficialAccount::getApp();
+
             $apis = input('post.apis');
             $url = input('post.url');
             if (empty($apis)) {
@@ -341,7 +341,9 @@ class WechatOfficialAccount extends Api
             if (empty($url)) {
                 $url = request()->domain();
             }
+
             try {
+                $app = OfficialAccount::getApp();
                 $app->jssdk->setUrl($url);
                 $jssdk = $app->jssdk->buildConfig($apis);
                 return $this->success('success', json_decode($jssdk, true));
