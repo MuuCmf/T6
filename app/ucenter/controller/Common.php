@@ -10,12 +10,11 @@ use app\ucenter\validate\Member;
 use think\exception\ValidateException;
 use thans\jwt\facade\JWTAuth;
 use app\common\model\Verify;
-use app\common\controller\Base as CommonBase;
 
 /**
  * 用户登录及注册
  */
-class Common extends CommonBase
+class Common extends Base
 {
     /**
      * 构造方法
@@ -37,10 +36,10 @@ class Common extends CommonBase
         if (request()->isPost()) {
 
             //获取参数
-            $account = input('post.account', '', 'text'); // 账号
-            $password = input('post.password', '', 'text'); // 密码
-            $confirm_password = input('post.confirm_password', '', 'text'); // 确认密码
-            $verify = input('post.verify', '', 'text'); // 邮件或手机验证码
+            $account = (string)input('post.account', '', 'text'); // 账号
+            $password = (string)input('post.password', '', 'text'); // 密码
+            $confirm_password = (string)input('post.confirm_password', '', 'text'); // 确认密码
+            $verify = (string)input('post.verify', '', 'text'); // 邮件或手机验证码
             $captcha = input('post.captcha', '', 'text'); // 图形验证码
             $channel = input('post.channel', '', 'text'); // 注册渠道
             $agreement = input('post.agreement', 0, 'intval'); // 用户服务协议勾选状态
@@ -174,7 +173,7 @@ class Common extends CommonBase
             $captcha = input('post.captcha', '', 'text'); // 图形验证码
             $login_type = input('post.login_type', 'password'); //登录类型
             $channel = input('post.channel', '', 'text'); //来源渠道
-            $remember = input('post.remember', 0, 'intval');
+            $remember = (int)input('post.remember', 0, 'intval');
 
             if (empty($account)) return $this->error('账号不能为空');
             $commonMemberModel = new CommonMember;
@@ -265,9 +264,9 @@ class Common extends CommonBase
             $commonMemberModel = new CommonMember;
             $commonMemberModel->logout(is_login());
             return $this->success('退出成功', '', request()->domain());
-        } else {
-            return $this->error('error');
         }
+
+        return $this->error('发生错误');
     }
 
     /**
@@ -428,14 +427,8 @@ class Common extends CommonBase
         return View::fetch();
     }
 
-    protected function setTitle($title)
-    {
-        View::assign('title', $title);
-    }
-
-    private function initVersion()
-    {
-        //框架版本号
-        View::assign('version', $this->version());
-    }
+    // protected function setTitle($title)
+    // {
+    //     View::assign('title', $title);
+    // }
 }

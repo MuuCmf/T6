@@ -128,18 +128,25 @@ class Common extends Base
         $this->module = $this->app_name = input('app') ?? App('http')->getName();
     }
 
+    /**
+     * 初始化系统配置项
+     */
     protected function initMuuConfig()
     {
         $this->muu_config_data = $muu_config_data = (new ConfigLogic())->frontend($this->shopid);
         View::assign('muu_config_data', $muu_config_data);
     }
 
+    /**
+     * 初始化micro应用配置项
+     */
     protected function initMicroConfig()
     {
         $micro_config_data = [];
         $is_install = (new Module())->checkInstalled('micro');
         if($is_install){
-            $MicroConfigModel = new \app\micro\model\MicroConfig();
+            $namespace = "\\app\\micro\\model\\MicroConfig";
+            $MicroConfigModel = new $namespace;
             $this->micro_config_data = $micro_config_data = $MicroConfigModel->getConfig($this->shopid);
         }
         View::assign('micro_config_data', $micro_config_data);
