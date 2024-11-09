@@ -130,10 +130,11 @@ class Verify extends Common
                 $body = "您的验证码为{$verify}验证码，账号为{$account}。";
 
                 $res = $this->MailService->sendMailLocal($account, $subject, $body);
-                if ($res == true) {
+                if ($res === true) {
                     session('verify_time', $time);
                     return $this->success('验证码发送成功');
                 }
+                return $this->error($res);
                 break;
         }
 
