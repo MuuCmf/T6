@@ -26,7 +26,7 @@ class WechatWork extends Api
     public function config()
     {
         //获取公众号配置
-        $config = (new WechatWorkConfig())->where('shopid', $this->params['shopid'])->find();
+        $config = (new WechatWorkConfig())->where('shopid', $this->params['shopid'])->field('shopid,title,description,agent_id,corp_id')->find();
 
         return $this->success('success', $config);
     }
