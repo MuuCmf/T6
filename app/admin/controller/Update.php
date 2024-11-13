@@ -41,7 +41,9 @@ class Update extends Admin
         // 读取本地版本号
         $local_version = $this->UpgradeServer->version($this->app_name);
         // 读取云端最新版本号
-        $cloud_version = $this->UpgradeServer->cloudVersion(request()->param());
+        $cloud_version = $this->UpgradeServer->cloudVersion([
+            'app_name' => $this->app_name
+        ]);
         if(is_array($cloud_version) && !empty($cloud_version)){
             $cloud_version = $cloud_version['data'];
         }
