@@ -1,14 +1,12 @@
 <!--选择通用部分-->
 <button type="button" data-toggle="modal" data-target="#author-Modal" class="btn btn-primary" data-url="{:url('api/author/lists')}">选择创作者</button>
+<button type="button" class="btn btn-danger del-btn">清除创作者</button>
 <input type="hidden" name="author_id" value="{$data['author_id']}" />
 <div class="choose author-list">
 	{if !empty($data['author_id']) && !empty($data['author'])}
 	<div class="item clearfix" data-id="{$data['author_id']}">
 		<div class="image">
 			<img src="{$data['author']['cover_200']}">
-		</div>
-		<div class="del-btn">
-			<button type="button" class="btn btn-danger">移除</button>
 		</div>
 		<div class="content">
 			<div class="title">{$data['author']['name']}</div>
@@ -83,9 +81,9 @@
 	    });
 
 	    //移除DOM
-	    $('.choose.author-list').on('click','.del-btn',function(){
-	        $('.choose.author-list').html('');
-	        $('input[name="author_id"]').val(0);
+	    $('.form-group').on('click','.del-btn',function(){
+	        $(this).parent().find('.choose.author-list').html('');
+	        $(this).parent().find('input[name="author_id"]').val(0);
 	    });
 
 	    //异步加载数据
@@ -102,9 +100,6 @@
 	                    $.each(res.data.data,function(i,n){
 	                        html_text += '<div class="item clearfix" data-id='+ n.id +'>';
 	                        html_text += '<div class="image"><img src="'+ n.cover_100+'" /></div>';
-	                        html_text += '<div class="del-btn">';
-	                        html_text += '<button type="button" class="btn btn-danger">移除</button>';
-	                        html_text += '</div>';
 	                        html_text += '<div class="content">';
 	                        html_text += '<div class="title">'+ n.name +'</div>';
 	                        html_text += '<div class="description text-ellipsis">'+ n.description +'</div>';
