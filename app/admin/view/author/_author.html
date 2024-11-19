@@ -39,7 +39,7 @@
 					</div>
                 </div>
 				<div class="author-list">
-					
+					<p class="text-center">加载中...</p>
 				</div>
 				<div class="author-page">
                     <ul id="authorChoosePager" data-ride="pager" class="pager" data-elements="prev,nav,next,page_of_total_text"></ul>
@@ -93,6 +93,7 @@
 			keyword = '' || keyword;
 	        var url = $('[data-target="#author-Modal"]').data('url');
 	        var url = url + '?rows=5'+'&page='+page+'&keyword='+keyword;
+			$('#author-Modal .author-list').html('<div data-loading="正在加载..." class="load-indicator loading" style="width: 100px; height: 100px; margin: 60px auto;"></div>');
 	        $.get(url,function(res){
 	            if(res.code){
 	                //初始化html
