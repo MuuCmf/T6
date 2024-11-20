@@ -9,6 +9,7 @@ use app\admin\model\AuthGroup;
 use app\common\model\ActionLog;
 use app\common\model\ScoreType;
 use app\channel\logic\Channel;
+use \app\common\service\SnowFlake;
 
 /**
  * 会员模型
@@ -37,12 +38,15 @@ class Member extends Base
      * @param      <type>  $data   The data
      * @return     <type>  ( description_of_the_return_value )
      */
-    public function edit($data)
+    public function edit($data, $id_type = 'AUTO_INCREMENT', $datacenterId = '0', $machineId = '0')
     {
         if (!empty($data['uid'])) {
             $res = $this->update($data, ['uid' => $data['uid']]);
             return $data['uid'];
         } else {
+            if($id_type == 'SNOWFLAKE'){
+                $data['id'] = (new SnowFlake($datacenterId, $machineId))->nextId();
+            }
             // 初始密码
             $data['password'] = user_md5('123456', Config::get('auth.auth_key'));
             $res = $this->save($data);
