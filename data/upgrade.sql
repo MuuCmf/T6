@@ -334,3 +334,5 @@ INSERT INTO `muucmf_config` (`id`, `name`, `type`, `title`, `group`, `extra`, `r
 
 INSERT INTO `muucmf_menu` (`id`, `title`, `pid`, `sort`, `url`, `hide`, `type`, `tip`, `group`, `is_dev`, `icon`, `module`) VALUES
 ('D225B61F-B50D-97F4-B331-7259015713FC', '导出日志', '113D646E-6D67-CF09-8C2C-4B10D57A6902', 0, 'admin/Action/csv', 0, 0, '', '', 0, '', 'admin');
+
+ALTER TABLE `muucmf_search` CHANGE `info_id` `info_id` BIGINT(16) UNSIGNED NOT NULL COMMENT '数据ID';

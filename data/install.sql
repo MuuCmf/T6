@@ -4830,7 +4830,7 @@ CREATE TABLE IF NOT EXISTS  `muucmf_search` (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键ID',
   `shopid` int(11) UNSIGNED NOT NULL COMMENT '店铺ID',
   `app` varchar(64) NOT NULL COMMENT '应用标识',
-  `info_id` int(11) UNSIGNED NOT NULL COMMENT '数据ID',
+  `info_id` BIGINT(16) UNSIGNED NOT NULL COMMENT '数据ID',
   `info_type` varchar(64) NOT NULL COMMENT '数据类型',
   `content` text NOT NULL COMMENT '内容json',
   `create_time` int(11) UNSIGNED NOT NULL COMMENT '创建时间',
