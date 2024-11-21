@@ -33,6 +33,10 @@ class Base
             $width = 100;
             $height = 56;
         }
+        if ($proportion == '9:16') {
+            $width = 100;
+            $height = 178;
+        }
         if ($proportion == '3:5') {
             $width = 100;
             $height = 167;
