@@ -41,6 +41,10 @@ class Base
             $width = 100;
             $height = 167;
         }
+        if ($proportion == '3:4') {
+            $width = 100;
+            $height = 133;
+        }
         if (empty($data[$prefix])) {
             $data[$prefix . '_100'] = $data[$prefix . '_200'] = $data[$prefix . '_300'] = $data[$prefix . '_400'] = $data[$prefix . '_800'] = request()->domain() . '/static/common/images/nopic.png';
         } else {
