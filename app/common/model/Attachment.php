@@ -8,6 +8,7 @@ use think\Image;
 use OSS\OssClient;
 use OSS\Core\OssException;
 use Qcloud\Cos\Client as CosClient;
+use app\common\service\TcVod;
 use Qcloud\Cos\Exception\ServiceResponseException;
 
 class Attachment extends Base
@@ -581,6 +582,23 @@ class Attachment extends Base
 
         //返回新文件的路径
         return  $attachment;
+    }
+
+    /**
+     * 云点播媒体文件处理
+     */
+    public function vodMediaHandle($ile_id, $attachment)
+    {
+        $TcVodService = new TcVod();
+        // 云点播key防盗链开关
+        $vod_key_switch = config('extend.VOD_TENCENT_KEY_SWITCH');
+
+        if ($vod_key_switch == 1) {
+            $data['psign'] = $TcVodService->getPsign($ile_id);
+            $data['all_media_url'] = $TcVodService->getKeyMediaUrl($attachment);
+        }
+
+        return $data;
     }
 
     /**

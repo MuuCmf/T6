@@ -58,7 +58,16 @@ class Attachment extends Admin
         $lists = $this->AttachmentModel->getListByPage($map, $order, $fields, $rows);
         $pager = $lists->render();
         $lists = $lists->toArray();
-        
+
+        foreach($lists['data'] as &$val){
+            if($val['driver'] == 'tcvod'){
+                $data = $this->AttachmentModel->vodMediaHandle($val['file_id'], $val['attachment']);
+                $val['psign'] = $data['psign'];
+                $val['all_media_url'] = $data['all_media_url'];
+            }
+        }
+        unset($val);
+
         if(request()->isAjax()){
             // ajax请求返回数据
             return $this->success('success', $lists);
