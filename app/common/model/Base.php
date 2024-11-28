@@ -4,6 +4,7 @@ namespace app\common\model;
 
 use think\Model;
 use think\facade\Event;
+use \app\common\service\Snowflake;
 
 class Base extends Model
 {
@@ -28,6 +29,36 @@ class Base extends Model
             if (isset($data['id'])) {
                 unset($data['id']);
             }
+            $res = $this->save($data);
+        }
+        if (!empty($this->id)) {
+            return $this->id;
+        } else {
+            if (is_object($res)) return  $res->id;
+            return $res;
+        }
+    }
+
+    /**
+     * 编辑数据方法，支持通过ID更新或插入新数据。
+     * 如果$data中包含'id'字段，则执行更新操作；否则根据$id_type生成新ID并执行插入操作。
+     * 支持使用SNOWFLAKE算法生成全局唯一ID。
+     *
+     * @param array $data 要更新或插入的数据
+     * @param string $datacenterId SNOWFLAKE算法数据中心ID
+     * @param string $machineId SNOWFLAKE算法机器ID
+     * @return int|string 返回更新或插入后的ID
+     */
+    public function editSnowFlake($data, $datacenterId = '0', $machineId = '0')
+    {
+        if (!empty($data['id'])) {
+            $res = $this->update($data);
+        } else {
+            if (isset($data['id'])) {
+                unset($data['id']);
+            }
+            
+            $data['id'] = (new SnowFlake($datacenterId, $machineId))->nextId();
             $res = $this->save($data);
         }
         if (!empty($this->id)) {
