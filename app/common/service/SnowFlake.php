@@ -9,10 +9,10 @@ use think\Exception;
  * 创建雪花算法实例
  * $datacenterId = 1; // 数据中心ID
  * $machineId = 1;    // 机器ID
- * $snowflake = new Snowflake($datacenterId, $machineId);
+ * $snowflake = new SnowFlake($datacenterId, $machineId);
  * $userId = $snowflake->nextId();
  */
-class Snowflake
+class SnowFlake
 {
     private int $datacenterId; // 数据中心ID
     private int $machineId;    // 机器ID

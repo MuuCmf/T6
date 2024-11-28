@@ -4,7 +4,7 @@ namespace app\common\model;
 
 use think\Model;
 use think\facade\Event;
-use \app\common\service\Snowflake;
+use \app\common\service\SnowFlake;
 
 class Base extends Model
 {
