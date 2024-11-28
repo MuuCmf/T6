@@ -56,7 +56,7 @@ class ScoreType extends Model
     {
         $db_prefix = config('database.connections.mysql.prefix');
         $id = $this->insertGetId($data);
-        $query = "alter table `{$db_prefix}member` ADD  `score" . $id . "` INT(11) NOT NULL COMMENT  '" . $data['title'] . "'";
+        $query = "alter table `{$db_prefix}member` ADD  `score" . $id . "` INT(11) NOT NULL DEFAULT '0' COMMENT  '" . $data['title'] . "'";
 
         Db::execute($query);
 
@@ -97,7 +97,7 @@ class ScoreType extends Model
     {
         $db_prefix = config('database.connections.mysql.prefix');
         $res = $this->update($data);
-        $query = "alter table `{$db_prefix}member` CHANGE `score" . $data['id'] . "` `score" . $data['id'] . "` INT(11) NOT NULL COMMENT '" . $data['title'] . "'";
+        $query = "alter table `{$db_prefix}member` CHANGE `score" . $data['id'] . "` `score" . $data['id'] . "` INT(11) NOT NULL DEFAULT '0' COMMENT '" . $data['title'] . "'";
         Db::execute($query);
         return $res;
     }

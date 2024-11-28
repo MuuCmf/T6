@@ -130,6 +130,7 @@ class Member extends Admin
         $uid = input('uid', 0, 'intval');
         if (request()->isPost()) {
             $data = input();
+
             // 初始化写入数据
             if (!empty($uid)) {
                 $member_data['uid'] = $uid;
@@ -141,6 +142,7 @@ class Member extends Admin
             $member_data['mobile'] = $data['mobile'];
             $member_data['realname'] = $data['realname'];
             $member_data['sex'] = intval($data['sex']);
+            $member_data['status'] = intval($data['status']);
             $member_data['status'] = intval($data['status']);
 
             if ($member_data['username'] == '' && $member_data['email'] == '' && $member_data['mobile'] == '') {

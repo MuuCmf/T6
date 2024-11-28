@@ -48,8 +48,8 @@ class Member extends Base
             $res = $this->save($data);
         }
 
-        if (!empty($this->id)) {
-            return $this->id;
+        if (!empty($this->uid)) {
+            return $this->uid;
         }
 
         return $res;
