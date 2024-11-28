@@ -4,7 +4,6 @@ namespace app\common\model;
 
 use think\Model;
 use think\facade\Event;
-use \app\common\service\SnowFlake;
 
 class Base extends Model
 {
@@ -16,26 +15,18 @@ class Base extends Model
     ];
 
     /**
-     * 编辑数据方法，支持通过ID更新或插入新数据。
-     * 如果$data中包含'id'字段，则执行更新操作；否则根据$id_type生成新ID并执行插入操作。
-     * 支持使用SNOWFLAKE算法生成全局唯一ID。
+     * 编辑/新增数据
      *
-     * @param array $data 要更新或插入的数据
-     * @param string $id_type ID类型，默认为'AUTO_INCREMENT'，可选'SNOWFLAKE'
-     * @param string $datacenterId SNOWFLAKE算法数据中心ID
-     * @param string $machineId SNOWFLAKE算法机器ID
-     * @return int|string 返回更新或插入后的ID
+     * @param      <type>  $data   The data
+     * @return     <type>  ( description_of_the_return_value )
      */
-    public function edit($data, $id_type = 'AUTO_INCREMENT', $datacenterId = '0', $machineId = '0')
+    public function edit($data)
     {
         if (!empty($data['id'])) {
             $res = $this->update($data);
         } else {
             if (isset($data['id'])) {
                 unset($data['id']);
-            }
-            if($id_type == 'SNOWFLAKE'){
-                $data['id'] = (new SnowFlake($datacenterId, $machineId))->nextId();
             }
             $res = $this->save($data);
         }
