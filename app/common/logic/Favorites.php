@@ -15,7 +15,7 @@ class Favorites extends Base
             $appLogic = new $class_namespace;
             $data = $appLogic->formatData($data);
         }
-
+        
         if (empty($data['products'])) {
             $data['metadata'] = $data['products'] = json_decode($data['metadata'], true);
             $data['products'] = $this->setImgAttr($data['products'], '1:1');
@@ -24,6 +24,7 @@ class Favorites extends Base
             }
         }
 
+        $data['info_id'] = (string)$data['info_id'];
         //获取应用名
         $data['module_name'] =  $data['app'] == 'system' ? '系统' : Module::where('name', $data['app'])->value('alias');
         $data['user_info'] = query_user($data['uid'], ['nickname', 'avatar']); //用户信息

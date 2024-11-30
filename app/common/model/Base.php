@@ -41,7 +41,7 @@ class Base extends Model
 
     /**
      * 编辑数据方法，支持通过ID更新或插入新数据。
-     * 如果$data中包含'id'字段，则执行更新操作；否则根据$id_type生成新ID并执行插入操作。
+     * 如果$data中包含'id'字段，则执行更新操作。
      * 支持使用SNOWFLAKE算法生成全局唯一ID。
      *
      * @param array $data 要更新或插入的数据

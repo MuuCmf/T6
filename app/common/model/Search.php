@@ -54,6 +54,8 @@ class Search extends Base
      */
     public function handle($data)
     {
+        $data['info_id'] = (string)$data['info_id'];
+        
         if(!empty($data['content'])){
             $data['content'] = json_decode($data['content'], true);
             $cover = $data['content']['cover'];
