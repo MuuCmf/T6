@@ -4222,12 +4222,12 @@ INSERT INTO `muucmf_extend_config` (`id`, `name`, `type`, `title`, `group`, `ext
 
 DROP TABLE IF EXISTS `muucmf_favorites`;
 CREATE TABLE IF NOT EXISTS `muucmf_favorites` (
-  `id` bigint(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+  `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键ID',
   `shopid` bigint(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '订单所属店铺ID',
   `app` varchar(60) NOT NULL DEFAULT '' COMMENT '关联应用的唯一标识',
   `uid` int(11) UNSIGNED NOT NULL COMMENT '用户ID',
   `info_type` varchar(32) NOT NULL COMMENT '关联模型，如：classroom:知识内容，column：专栏',
-  `info_id` bigint(11) UNSIGNED NOT NULL COMMENT '关联主键ID',
+  `info_id` bigint(20) UNSIGNED NOT NULL COMMENT '数据ID',
   `status` tinyint(4) NOT NULL DEFAULT '0' COMMENT '订单状态，1，正常，0，禁用，-1，已删除',
   `metadata` text NOT NULL COMMENT '元数据',
   `create_time` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '创建时间',
@@ -4342,11 +4342,11 @@ CREATE TABLE IF NOT EXISTS `muucmf_follow` (
 --
 DROP TABLE IF EXISTS `muucmf_history`;
 CREATE TABLE IF NOT EXISTS `muucmf_history` (
-  `id` bigint(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+  `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键ID',
   `shopid` int(11) NOT NULL DEFAULT '0' COMMENT '店铺ID',
   `app` varchar(60) NOT NULL COMMENT '关联的应用唯一标识',
   `uid` int(11) UNSIGNED NOT NULL COMMENT '用户ID',
-  `info_id` int(11) NOT NULL COMMENT '关联主键ID',
+  `info_id` bigint(20) UNSIGNED NOT NULL COMMENT '数据ID',
   `info_type` varchar(255) NOT NULL COMMENT '关联模型',
   `status` tinyint(4) NOT NULL DEFAULT '0' COMMENT '状态',
   `metadata` text NOT NULL COMMENT '元数据',
@@ -4830,7 +4830,7 @@ CREATE TABLE IF NOT EXISTS  `muucmf_search` (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键ID',
   `shopid` int(11) UNSIGNED NOT NULL COMMENT '店铺ID',
   `app` varchar(64) NOT NULL COMMENT '应用标识',
-  `info_id` BIGINT(18) UNSIGNED NOT NULL COMMENT '数据ID',
+  `info_id` BIGINT(20) UNSIGNED NOT NULL COMMENT '数据ID',
   `info_type` varchar(64) NOT NULL COMMENT '数据类型',
   `content` text NOT NULL COMMENT '内容json',
   `create_time` int(11) UNSIGNED NOT NULL COMMENT '创建时间',
@@ -4861,12 +4861,12 @@ CREATE TABLE IF NOT EXISTS `muucmf_seo_rule` (
 
 DROP TABLE IF EXISTS `muucmf_support`;
 CREATE TABLE IF NOT EXISTS `muucmf_support` (
-  `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+  `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键ID',
   `shopid` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '店铺ID',
   `app` varchar(20) NOT NULL COMMENT '应用标识',
   `uid` int(11) UNSIGNED NOT NULL COMMENT '用户ID',
   `info_type` varchar(32) NOT NULL COMMENT '内容类型，关联不同模型',
-  `info_id` bigint(11) UNSIGNED NOT NULL COMMENT '内容ID',
+  `info_id` bigint(20) UNSIGNED NOT NULL COMMENT '数据ID',
   `status` tinyint(4) NOT NULL COMMENT '订单状态，1，正常，0，禁用，-1，已删除',
   `create_time` int(11) UNSIGNED NOT NULL COMMENT '创建时间',
   `update_time` int(11) UNSIGNED NOT NULL COMMENT '更新时间',
