@@ -363,6 +363,26 @@ INSERT INTO `muucmf_channel` (`id`, `block`, `type`, `app`, `title`, `url`, `sor
 -- --------------------------------------------------------
 
 --
+-- 表的结构 `muucmf_comment`
+--
+DROP TABLE IF EXISTS `muucmf_comment`;
+CREATE TABLE IF NOT EXISTS `muucmf_comment` (
+  `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+  `shopid` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '平台ID',
+  `uid` int(11) UNSIGNED NOT NULL COMMENT '用户ID',
+  `pid` bigint(20) UNSIGNED NOT NULL DEFAULT '0' COMMENT '上级评论ID',
+  `info_id` bigint(20) UNSIGNED NOT NULL COMMENT '数据ID',
+  `info_type` varchar(64) NOT NULL COMMENT '数据类型',
+  `content` text NOT NULL COMMENT '评论内容',
+  `support` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '点赞数量',
+  `create_time` int(11) UNSIGNED NOT NULL COMMENT '创建时间',
+  `update_time` int(11) UNSIGNED NOT NULL COMMENT '更新时间',
+  `reason` varchar(255) DEFAULT NULL COMMENT '审核失败原因',
+  `status` tinyint(2) NOT NULL DEFAULT '0' COMMENT '状态',
+  PRIMARY KEY (`id`),
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='公共评论表';
+
+--
 -- 表的结构 `muucmf_config`
 --
 DROP TABLE IF EXISTS `muucmf_config`;
