@@ -72,6 +72,4 @@ class Articles extends Base
 
         return $this->error('参数错误');
     }
-
-
 }

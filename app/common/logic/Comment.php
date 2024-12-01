@@ -31,16 +31,7 @@ class Comment extends Base
         -3 => '已删除',
     ];
 
-    /**
-     * 条件查询
-     * @param  string $keyword       [description]
-     * @param  string $category_id   [description]
-     * @param  string $attribute_ids [description]
-     * @param  string $type          [description]
-     * @param  string $status        状态：all:所有 （不包括已删除）1：已上架 0：已下架 -1：未审核 -2：审核未通过 -3：已删除
-     * @return [type]                [description]
-     */
-    public function getMap($shopid, $keyword = '', $article_id = '', $status = 1)
+    public function getMap($shopid, $keyword = '', $app = '', $info_type = '', $info_id = 0, $status = 1)
     {
         //初始化查询条件
         $map = [];
@@ -60,9 +51,15 @@ class Comment extends Base
             $map[] = ['content', 'like', '%' . $keyword . '%'];
         }
 
-        //文章id
-        if (!empty($article_id)) {
-            $map[] = ['article_id', '=', $article_id];
+        if (!empty($app)) {
+            $map[] = ['app', '=', $app];
+        }
+        //内容id
+        if (!empty($info_id)) {
+            $map[] = ['info_id', '=', $info_id];
+        }
+        if (!empty($info_type)) {
+            $map[] = ['info_type', '=', $info_type];
         }
 
         return $map;

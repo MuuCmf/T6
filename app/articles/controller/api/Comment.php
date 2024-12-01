@@ -3,8 +3,8 @@ namespace app\articles\controller\api;
 
 use app\articles\model\ArticlesArticles as ArticlesModel;
 use app\articles\logic\Articles as ArticlesLogic;
-use app\articles\model\ArticlesComment as CommentModel;
-use app\articles\logic\Comment as CommentLogic;
+use app\common\model\Comment as CommentModel;
+use app\common\logic\Comment as CommentLogic;
 use app\common\model\Support as SupportModel;
 
 class Comment extends Base 
@@ -24,17 +24,18 @@ class Comment extends Base
         $this->SupportModel = new SupportModel();
     }
 
-
+    /**
+     * 获取评论列表
+     */
     public function lists()
     {
         $keyword = input('keyword', '', 'text');
         $article_id = input('article_id', 0, 'intval');
 
         // 获取查询条件
-        $map = $this->CommentLogic->getMap(0, $keyword, $article_id, 1);
+        $map = $this->CommentLogic->getMap(0, $keyword, 'articles', 'articles', $article_id, 1);
         // 获取列表
         $lists = $this->CommentModel->getListByPage($map, 'id DESC', '*', 20);
-        $pager = $lists->render();
         $lists = $lists->toArray();
         
         foreach($lists['data'] as &$val){
@@ -54,12 +55,16 @@ class Comment extends Base
             if($this->config_data['comment']['status'] == 0){
                 return $this->error('评论功能暂时关闭！');
             }
-            $article_id = input('article_id', 0, 'intval');
+            $info_id = input('article_id', 0, 'intval');
             $content = input('content', '', 'text');
             $uid = get_uid();
 
-            if(empty($article_id)) return $this->error('参数错误');
+            if(empty($info_id)) return $this->error('参数错误');
             if(empty($content)) return $this->error('内容不能为空');
+
+            if($this->config_data['comment']['status'] == 0){
+                return $this->error('评论功能已禁用');
+            }
 
             $status = 1;
             $tip = '';
@@ -70,7 +75,9 @@ class Comment extends Base
             $res = $this->CommentModel->edit([
                 'shopid' => $this->shopid,
                 'uid' => $uid,
-                'article_id' => $article_id,
+                'app' => get_module_name(),
+                'info_type' => 'articles',
+                'info_id' => $info_id,
                 'content' => $content,
                 'status' => $status
             ]);
@@ -128,7 +135,7 @@ class Comment extends Base
 
             $result = $this->SupportModel->edit($f_data);
             if ($result){
-                $rs = $this->CommentModel->setStep($info_id, 'support', $inc_value);
+                $this->CommentModel->where('info_id',$info_id)->inc('support', $inc_value)->update();
                 return $this->success($msg_tip . '成功', $f_data['status']);
             }else{
                 return $this->error($msg_tip . '失败');

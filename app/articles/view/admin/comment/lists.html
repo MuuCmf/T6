@@ -148,10 +148,10 @@
 							{/if}
 			
 							{if $v['status'] == -1}
-								<button class="btn btn-sm btn-default ajax-get" data-remote="{:url('verify',['id'=>$v['id']])}" data-toggle="modal" data-title="状态审核">未审核</button>
+								<button type="button" class="btn btn-sm btn-default" data-remote="{:url('verify',['id'=>$v['id']])}" data-toggle="modal" data-title="状态审核">未审核</button>
 							{/if}
 							{if $v['status'] == -2}
-								<button disabled class="btn btn-sm disabled">审核未通过</button>
+								<button type="button" disabled class="btn btn-sm disabled">审核未通过</button>
 							{/if}
 							<a href="{:url('status',['ids'=>$v['id'], 'status'=>-3])}" data-holder-section=".item-section" data-confirm="确认执行删除操作？" class="btn btn-sm btn-danger ajax-get-part ajax-get"><i class="fa fa-times"></i> 删除</a>
 						</div>

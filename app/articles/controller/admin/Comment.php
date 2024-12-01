@@ -2,8 +2,8 @@
 namespace app\articles\controller\admin;
 
 use think\facade\View;
-use app\articles\model\ArticlesComment as CommentModel;
-use app\articles\logic\Comment as CommentLogic;
+use app\common\model\Comment as CommentModel;
+use app\common\logic\Comment as CommentLogic;
 use app\articles\model\ArticlesArticles as ArticlesModel;
 use app\articles\logic\Articles as ArticlesLogic;
 use app\articles\validate\Articles;
@@ -37,7 +37,7 @@ class Comment extends Admin
         $status = input('status', [0,1,-1,-2]);
         View::assign('status', $status);
         // 获取查询条件
-        $map = $this->CommentLogic->getMap($this->shopid, $keyword, $article_id, $status);
+        $map = $this->CommentLogic->getMap($this->shopid, $keyword, 'articles', 'articles', $article_id, $status);
         // 获取列表
         $lists = $this->CommentModel->getListByPage($map, 'id DESC', '*', 20);
         $pager = $lists->render();
@@ -45,6 +45,7 @@ class Comment extends Admin
         
         foreach($lists['data'] as &$val){
             $val = $this->CommentLogic->formatData($val);
+            $val['article'] = $this->ArticlesModel->getDataById($val['info_id']);
         }
         unset($val);
 

@@ -342,10 +342,16 @@ ALTER TABLE `muucmf_history` CHANGE `info_id` `info_id` BIGINT(20) UNSIGNED NOT 
 ALTER TABLE `muucmf_support` CHANGE `id` `id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键ID';
 ALTER TABLE `muucmf_support` CHANGE `info_id` `info_id` BIGINT(20) UNSIGNED NOT NULL COMMENT '数据ID';
 
+ALTER TABLE `muucmf_articles_comment` CHANGE `id` `id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键ID';
+ALTER TABLE `muucmf_articles_comment` CHANGE `pid` `pid` BIGINT(20) UNSIGNED NOT NULL DEFAULT '0' COMMENT '上级评论ID';
+ALTER TABLE `muucmf_articles_comment` CHANGE `article_id` `info_id` BIGINT(20) UNSIGNED NOT NULL COMMENT '数据ID';
+ALTER TABLE `muucmf_articles_comment` ADD `app` VARCHAR(60) NOT NULL DEFAULT '' COMMENT '关联应用的唯一标识' AFTER `uid`;
+ALTER TABLE `muucmf_articles_comment` ADD `info_type` VARCHAR(64) NOT NULL COMMENT '数据类型' AFTER `info_id`;
+ALTER TABLE `muucmf_articles_comment` CHANGE `content` `content` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '评论内容';
+ALTER TABLE `muucmf_articles_comment` CHANGE `reason` `reason` VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '审核失败原因';
+UPDATE `muucmf_articles_comment` SET `app` = 'articles';
+UPDATE `muucmf_articles_comment` SET `info_type` = 'articles';
+
 CREATE TABLE IF NOT EXISTS `muucmf_comment` AS SELECT * FROM `muucmf_articles_comment`;
-ALTER TABLE `muucmf_comment` CHANGE `id` `id` BIGINT(20) UNSIGNED NOT NULL DEFAULT '0' COMMENT '主键ID';
-ALTER TABLE `muucmf_comment` CHANGE `pid` `pid` BIGINT(20) UNSIGNED NOT NULL DEFAULT '0' COMMENT '上级评论ID';
-ALTER TABLE `muucmf_comment` CHANGE `article_id` `info_id` BIGINT(20) UNSIGNED NOT NULL COMMENT '数据ID';
-ALTER TABLE `muucmf_comment` ADD `info_type` VARCHAR(64) NOT NULL COMMENT '数据类型' AFTER `info_id`;
-ALTER TABLE `muucmf_comment` CHANGE `content` `content` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '评论内容';
-ALTER TABLE `muucmf_comment` CHANGE `reason` `reason` VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '审核失败原因';
+ALTER TABLE `muucmf_comment` CHANGE `id` `id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键ID', add PRIMARY KEY (`id`);
+

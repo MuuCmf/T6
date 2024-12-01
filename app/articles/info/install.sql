@@ -49,25 +49,6 @@ CREATE TABLE IF NOT EXISTS `muucmf_articles_category` (
 
 
 -- -----------------------------
--- 表结构 `muucmf_articles_comment`
--- -----------------------------
-CREATE TABLE IF NOT EXISTS `muucmf_articles_comment` (
-  `id` int(11) unsigned NOT NULL AUTO_INCREMENT COMMENT '主键ID',
-  `shopid` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '平台ID',
-  `uid` int(11) unsigned NOT NULL COMMENT '用户ID',
-  `pid` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '上级评论ID',
-  `article_id` int(11) unsigned NOT NULL COMMENT '文章ID',
-  `content` text NOT NULL COMMENT '评论内容',
-  `support` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '点赞数量',
-  `create_time` int(11) unsigned NOT NULL COMMENT '创建时间',
-  `update_time` int(11) unsigned NOT NULL COMMENT '更新时间',
-  `reason` varchar(255) DEFAULT NULL COMMENT '审核失败原因',
-  `status` tinyint(2) NOT NULL DEFAULT '0' COMMENT '状态',
-  PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=utf8 ROW_FORMAT=COMPACT COMMENT='文章评论表';
-
-
--- -----------------------------
 -- 表结构 `muucmf_articles_config`
 -- -----------------------------
 CREATE TABLE IF NOT EXISTS `muucmf_articles_config` (
