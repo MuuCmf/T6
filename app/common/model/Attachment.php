@@ -593,6 +593,7 @@ class Attachment extends Base
         // 云点播key防盗链开关
         $vod_key_switch = config('extend.VOD_TENCENT_KEY_SWITCH');
 
+        $data = [];
         if ($vod_key_switch == 1) {
             $data['psign'] = $TcVodService->getPsign($ile_id);
             $data['all_media_url'] = $TcVodService->getKeyMediaUrl($attachment);

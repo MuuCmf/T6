@@ -62,8 +62,10 @@ class Attachment extends Admin
         foreach($lists['data'] as &$val){
             if($val['driver'] == 'tcvod'){
                 $data = $this->AttachmentModel->vodMediaHandle($val['file_id'], $val['attachment']);
-                $val['psign'] = $data['psign'];
-                $val['all_media_url'] = $data['all_media_url'];
+                if(!empty($data)) {
+                    $val['psign'] = $data['psign'];
+                    $val['all_media_url'] = $data['all_media_url'];
+                }
             }
         }
         unset($val);
