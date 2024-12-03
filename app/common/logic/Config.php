@@ -1,8 +1,7 @@
 <?php
+
 namespace app\common\logic;
 
-use app\channel\logic\OfficialAccount;
-use app\channel\model\WechatConfig;
 use app\common\model\Module;
 
 class Config extends Base
@@ -64,20 +63,21 @@ class Config extends Base
      * @param $shopid
      * @return array
      */
-    public function frontend($shopid = 0){
+    public function frontend($shopid = 0)
+    {
         $config = [];
         //获取基础配置
         $base_config = $this->handle()['system'];
-        foreach ($this->_frontend_params as $key){
-            if (array_key_exists($key,$base_config)){
+        foreach ($this->_frontend_params as $key) {
+            if (array_key_exists($key, $base_config)) {
                 $config[$key] = $base_config[$key];
             }
         }
 
         //获取提现配置
         $withdraw_config = config('extend');
-        foreach ($this->_frontend_params as $key){
-            if (array_key_exists($key,$withdraw_config)){
+        foreach ($this->_frontend_params as $key) {
+            if (array_key_exists($key, $withdraw_config)) {
                 $config[$key] = $withdraw_config[$key];
             }
         }
@@ -95,7 +95,7 @@ class Config extends Base
             ['is_setup', '=', 1]
         ];
         $list = (new Module())->where($map)->field('name')->select()->toArray();
-        $arr = array_column($list,'name');
+        $arr = array_column($list, 'name');
 
         return $arr;
     }
@@ -103,15 +103,15 @@ class Config extends Base
     public function handle()
     {
         $config = config();
-        if(!empty($config['system']['WEB_SITE_LOGO'])){
+        if (!empty($config['system']['WEB_SITE_LOGO'])) {
             $width = 100;
             $config['system']['WEB_SITE_LOGO_ORIGIN'] = get_attachment_src($config['system']['WEB_SITE_LOGO']);
             $config['system']['WEB_SITE_LOGO_100'] = get_thumb_image($config['system']['WEB_SITE_LOGO'], intval($width));
-            $config['system']['WEB_SITE_LOGO_200'] = get_thumb_image($config['system']['WEB_SITE_LOGO'], intval($width*2));
-            $config['system']['WEB_SITE_LOGO_300'] = get_thumb_image($config['system']['WEB_SITE_LOGO'], intval($width*3));
-            $config['system']['WEB_SITE_LOGO_400'] = get_thumb_image($config['system']['WEB_SITE_LOGO'], intval($width*4));
-            $config['system']['WEB_SITE_LOGO_800'] = get_thumb_image($config['system']['WEB_SITE_LOGO'], intval($width*8));
-        }else{
+            $config['system']['WEB_SITE_LOGO_200'] = get_thumb_image($config['system']['WEB_SITE_LOGO'], intval($width * 2));
+            $config['system']['WEB_SITE_LOGO_300'] = get_thumb_image($config['system']['WEB_SITE_LOGO'], intval($width * 3));
+            $config['system']['WEB_SITE_LOGO_400'] = get_thumb_image($config['system']['WEB_SITE_LOGO'], intval($width * 4));
+            $config['system']['WEB_SITE_LOGO_800'] = get_thumb_image($config['system']['WEB_SITE_LOGO'], intval($width * 8));
+        } else {
             $width = 100;
             $logo = '/static/common/images/logo.png';
             $config['system']['WEB_SITE_LOGO_ORIGIN'] = $logo;
@@ -122,16 +122,16 @@ class Config extends Base
             $config['system']['WEB_SITE_LOGO_800'] = $logo;
         }
 
-        if(!empty($config['system']['SERVICE_KF_QRCODE'])){
+        if (!empty($config['system']['SERVICE_KF_QRCODE'])) {
             $width = 100;
             $height = 100;
             $config['system']['SERVICE_KF_QRCODE_ORIGIN'] = get_attachment_src($config['system']['SERVICE_KF_QRCODE']);
             $config['system']['SERVICE_KF_QRCODE_100'] = get_thumb_image($config['system']['SERVICE_KF_QRCODE'], intval($width), intval($height));
-            $config['system']['SERVICE_KF_QRCODE_200'] = get_thumb_image($config['system']['SERVICE_KF_QRCODE'], intval($width*2), intval($height*2));
-            $config['system']['SERVICE_KF_QRCODE_300'] = get_thumb_image($config['system']['SERVICE_KF_QRCODE'], intval($width*3), intval($height*3));
-            $config['system']['SERVICE_KF_QRCODE_400'] = get_thumb_image($config['system']['SERVICE_KF_QRCODE'], intval($width*4), intval($height*4));
-            $config['system']['SERVICE_KF_QRCODE_800'] = get_thumb_image($config['system']['SERVICE_KF_QRCODE'], intval($width*8), intval($height*8));
-        }else{
+            $config['system']['SERVICE_KF_QRCODE_200'] = get_thumb_image($config['system']['SERVICE_KF_QRCODE'], intval($width * 2), intval($height * 2));
+            $config['system']['SERVICE_KF_QRCODE_300'] = get_thumb_image($config['system']['SERVICE_KF_QRCODE'], intval($width * 3), intval($height * 3));
+            $config['system']['SERVICE_KF_QRCODE_400'] = get_thumb_image($config['system']['SERVICE_KF_QRCODE'], intval($width * 4), intval($height * 4));
+            $config['system']['SERVICE_KF_QRCODE_800'] = get_thumb_image($config['system']['SERVICE_KF_QRCODE'], intval($width * 8), intval($height * 8));
+        } else {
             $width = 100;
             $height = 100;
             $kefu = '/static/common/images/kefu.png';
@@ -143,16 +143,16 @@ class Config extends Base
             $config['system']['SERVICE_KF_QRCODE_800'] = $kefu;
         }
 
-        if(!empty($config['system']['SERVICE_WEIXIN_QRCODE'])){
+        if (!empty($config['system']['SERVICE_WEIXIN_QRCODE'])) {
             $width = 100;
             $height = 100;
             $config['system']['SERVICE_WEIXIN_QRCODE_ORIGIN'] = get_attachment_src($config['system']['SERVICE_WEIXIN_QRCODE']);
             $config['system']['SERVICE_WEIXIN_QRCODE_100'] = get_thumb_image($config['system']['SERVICE_WEIXIN_QRCODE'], intval($width), intval($height));
-            $config['system']['SERVICE_WEIXIN_QRCODE_200'] = get_thumb_image($config['system']['SERVICE_WEIXIN_QRCODE'], intval($width*2), intval($height*2));
-            $config['system']['SERVICE_WEIXIN_QRCODE_300'] = get_thumb_image($config['system']['SERVICE_WEIXIN_QRCODE'], intval($width*3), intval($height*3));
-            $config['system']['SERVICE_WEIXIN_QRCODE_400'] = get_thumb_image($config['system']['SERVICE_WEIXIN_QRCODE'], intval($width*4), intval($height*4));
-            $config['system']['SERVICE_WEIXIN_QRCODE_800'] = get_thumb_image($config['system']['SERVICE_WEIXIN_QRCODE'], intval($width*8), intval($height*8));
-        }else{
+            $config['system']['SERVICE_WEIXIN_QRCODE_200'] = get_thumb_image($config['system']['SERVICE_WEIXIN_QRCODE'], intval($width * 2), intval($height * 2));
+            $config['system']['SERVICE_WEIXIN_QRCODE_300'] = get_thumb_image($config['system']['SERVICE_WEIXIN_QRCODE'], intval($width * 3), intval($height * 3));
+            $config['system']['SERVICE_WEIXIN_QRCODE_400'] = get_thumb_image($config['system']['SERVICE_WEIXIN_QRCODE'], intval($width * 4), intval($height * 4));
+            $config['system']['SERVICE_WEIXIN_QRCODE_800'] = get_thumb_image($config['system']['SERVICE_WEIXIN_QRCODE'], intval($width * 8), intval($height * 8));
+        } else {
             $width = 100;
             $height = 100;
             $qrcode = '/static/common/images/qrcode.png';

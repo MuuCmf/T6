@@ -1,21 +1,27 @@
 <?php
+
 namespace app\common\model;
 
 use app\channel\logic\Channel;
 
+/**
+ * 资金流水
+ */
 class CapitalFlow extends Base
 {
     protected $autoWriteTimestamp = true;
-    
-    public function getPriceAttr($value,$data){
-        return sprintf("%.2f",$value/100);
+
+    public function getPriceAttr($value, $data)
+    {
+        return sprintf("%.2f", $value / 100);
     }
     /**
      * 生成流水号
      * @return [type] [description]
      */
-    public function build_flow_no(){
-        return date('Ymd').substr(implode(NULL, array_map('ord', str_split(substr(uniqid(), 7, 13), 1))), 0, 14);
+    public function build_flow_no()
+    {
+        return date('Ymd') . substr(implode(NULL, array_map('ord', str_split(substr(uniqid(), 7, 13), 1))), 0, 14);
     }
 
     public function createFlow($data)
@@ -35,10 +41,10 @@ class CapitalFlow extends Base
             'status'    => $data['status'] ?? 1
         ];
         $res = $this->edit($flow_data);
-        if ($res){
+        if ($res) {
             return $flow_no;
         }
-        
+
         return false;
     }
 
@@ -51,7 +57,7 @@ class CapitalFlow extends Base
             ['shopid', '=', $shopid],
             ['uid', '=', $uid]
         ];
-        if(!empty($app)){
+        if (!empty($app)) {
             $map[] = ['app', '=', $app];
         }
         $total = $this->where($map)->count();
@@ -64,26 +70,26 @@ class CapitalFlow extends Base
      */
     public function handle($data)
     {
-        if(!empty($data['uid'])){
+        if (!empty($data['uid'])) {
             $data['user_info'] = query_user($data['uid']);
         }
-        
-        if($data['type'] == 1){
+
+        if ($data['type'] == 1) {
             $data['type_str'] = '支出';
         }
-        if($data['type'] == 2){
+        if ($data['type'] == 2) {
             $data['type_str'] = '收入';
         }
 
-        if(!empty($data['channel'])){
+        if (!empty($data['channel'])) {
             $data['channel_str'] = Channel::$_channel[$data['channel']];
         }
 
-        if(!empty($data['create_time'])){
+        if (!empty($data['create_time'])) {
             $data['create_time_str'] = time_format($data['create_time']);
             $data['create_time_friendly_str'] = friendly_date($data['create_time']);
         }
-        if(!empty($data['update_time'])){
+        if (!empty($data['update_time'])) {
             $data['update_time_str'] = time_format($data['update_time']);
             $data['update_time_friendly_str'] = friendly_date($data['update_time']);
         }

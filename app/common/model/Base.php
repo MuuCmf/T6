@@ -57,7 +57,7 @@ class Base extends Model
             if (isset($data['id'])) {
                 unset($data['id']);
             }
-            
+
             $data['id'] = (new SnowFlake($datacenterId, $machineId))->nextId();
             $res = $this->save($data);
         }
@@ -101,11 +101,11 @@ class Base extends Model
     {
         if ($id > 0) {
             $data = $this->field($field)->find($id);
-            
+
             $model = $this->name;
             $app = strtolower(App('http')->getName());
-            
-            if(strpos($data && strtolower($model), $app) !== false && !empty($data['title'] && !empty($data['description']) && isset($data['cover']))){
+
+            if (strpos($data && strtolower($model), $app) !== false && !empty($data['title'] && !empty($data['description']) && isset($data['cover']))) {
                 // 事件监听
                 Event::listen('searchIndex', 'app\common\listener\SearchIndex');
                 $search_index_data['shopid'] = $data['shopid'];
@@ -116,7 +116,7 @@ class Base extends Model
                 $search_index_data['title'] = $data['title'];
                 $search_index_data['description'] = $data['description'];
                 $search_index_data['cover'] = $data['cover'];
-                
+
                 Event::trigger('searchIndex', $search_index_data);
             }
 
@@ -215,5 +215,4 @@ class Base extends Model
     {
         return $this->where($map)->dec($field, $value);
     }
-
 }

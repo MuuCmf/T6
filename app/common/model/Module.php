@@ -1,9 +1,9 @@
 <?php
+
 namespace app\common\model;
 
 use think\facade\Db;
 use think\Exception;
-use app\admin\model\Menu;
 
 class Module extends Base
 {
@@ -15,39 +15,38 @@ class Module extends Base
     public function getAll($where = [])
     {
         $list = $this->where($where)->order('sort desc,id desc')->select()->toArray();
-        foreach($list as & $item){
-            
-            if(empty($item['icon'])){
+        foreach ($list as &$item) {
+
+            if (empty($item['icon'])) {
                 //图标所在位置为模块静态目录下（推荐）
-                if(file_exists(PUBLIC_PATH . '/static/' . $item['name'] . '/images/icon.png')){
-                    $item['icon_100'] = $item['icon_200'] =$item['icon_300'] =$item['icon_400'] = '/static/'. $item['name'] .'/images/icon.png';
-                }else{
-                    $item['icon_100'] = $item['icon_200'] =$item['icon_300'] =$item['icon_400'] = '/static/admin/images/module_default_icon.png';
+                if (file_exists(PUBLIC_PATH . '/static/' . $item['name'] . '/images/icon.png')) {
+                    $item['icon_100'] = $item['icon_200'] = $item['icon_300'] = $item['icon_400'] = '/static/' . $item['name'] . '/images/icon.png';
+                } else {
+                    $item['icon_100'] = $item['icon_200'] = $item['icon_300'] = $item['icon_400'] = '/static/admin/images/module_default_icon.png';
                 }
-            }else{
+            } else {
                 $width = 100;
                 $height = 100;
                 $item['icon_100'] = get_thumb_image($item['icon'], intval($width), intval($height));
-                $item['icon_200'] = get_thumb_image($item['icon'], intval($width*2), intval($height*2));
-                $item['icon_300'] = get_thumb_image($item['icon'], intval($width*3), intval($height*3));
-                $item['icon_400'] = get_thumb_image($item['icon'], intval($width*4), intval($height*4));
+                $item['icon_200'] = get_thumb_image($item['icon'], intval($width * 2), intval($height * 2));
+                $item['icon_300'] = get_thumb_image($item['icon'], intval($width * 3), intval($height * 3));
+                $item['icon_400'] = get_thumb_image($item['icon'], intval($width * 4), intval($height * 4));
 
-                if(strpos($item['icon'], 'https://') !== false && file_exists(PUBLIC_PATH . '/static/' . $item['name'] . '/images/icon.png')){
+                if (strpos($item['icon'], 'https://') !== false && file_exists(PUBLIC_PATH . '/static/' . $item['name'] . '/images/icon.png')) {
                     //图标所在位置为模块静态目录下（推荐）
-                    $item['icon_100'] = $item['icon_200'] = $item['icon_300'] = $item['icon_400'] = '/static/'. $item['name'] .'/images/icon.png';
+                    $item['icon_100'] = $item['icon_200'] = $item['icon_300'] = $item['icon_400'] = '/static/' . $item['name'] . '/images/icon.png';
                 }
             }
 
             // 调整入口路径
             // TODO逐步废弃module表entry入口配置
 
-            if (file_exists(APP_PATH . '/' . $item['name'] . '/info/info.php') && $item['name'] != '.' && $item['name'] != '..')
-            {
+            if (file_exists(APP_PATH . '/' . $item['name'] . '/info/info.php') && $item['name'] != '.' && $item['name'] != '..') {
                 // 获取配置数据
                 $info = $this->getInfo($item['name']);
-                if(empty($info['entry'])){
+                if (empty($info['entry'])) {
                     $item['entry'] = $item['name'] . 'admin.Index/index';
-                }else{
+                } else {
                     $item['entry'] = $info['entry'];
                 }
             }
@@ -73,21 +72,21 @@ class Module extends Base
     {
         $url = config('cloud.api') . 'authorization/allapp';
         $domain = request()->host();
-        $result = curl_request($url,[
+        $result = curl_request($url, [
             'domain'  =>  $domain,
         ]);
-        
-        $result = json_decode($result,true);
-        if (is_array($result) && $result['code'] == 200){
+
+        $result = json_decode($result, true);
+        if (is_array($result) && $result['code'] == 200) {
             // 写入应用模块表
             // 查询存在应用
             $has = $this->column('name');
             $list = $result['data'];
             $data = [];
-            foreach($list as $v){
+            foreach ($list as $v) {
                 // 排除版本未发布的
-                if(!empty($v['app']['version'])){
-                    if(!in_array($v['app']['name'], $has)){
+                if (!empty($v['app']['version'])) {
+                    if (!in_array($v['app']['name'], $has)) {
                         $data[] = [
                             'name' => $v['app']['name'],
                             'alias' => $v['app']['title'],
@@ -101,10 +100,10 @@ class Module extends Base
                             'sort' => 0,
                             'source' => 'cloud'
                         ];
-                    }else{
+                    } else {
                         $has_data = $this->where('name', $v['app']['name'])->find();
                         $icon = $has_data['icon'];
-                        if(empty($has_data['icon'])){
+                        if (empty($has_data['icon'])) {
                             $icon = $v['app']['cover_400'];
                         }
                         $data[] = [
@@ -127,38 +126,37 @@ class Module extends Base
     {
         //获取所有本地模块
         $dir[] = NULL;
-        if (false != ($handle = opendir (APP_PATH))) {
-            $i=0;
-            while ( false !== ($file = readdir ( $handle )) ) {
+        if (false != ($handle = opendir(APP_PATH))) {
+            $i = 0;
+            while (false !== ($file = readdir($handle))) {
                 //去掉"“.”、“..”以及带“.xxx”后缀的文件
-                if ($file != "." && $file != ".."&&!strpos($file,".")) {
+                if ($file != "." && $file != ".." && !strpos($file, ".")) {
                     $dir[$i] = $file;
                     $i++;
                 }
             }
             //关闭句柄
-            closedir ( $handle );
+            closedir($handle);
         }
 
         // 排除无效目录
-        $exclude = ['.htaccess','extra','lang','admin','common','api','channel','index','ucenter'];
-        foreach($dir as $k=>$v){
-            if(in_array($v, $exclude)){
-              unset($dir[$k]);
+        $exclude = ['.htaccess', 'extra', 'lang', 'admin', 'common', 'api', 'channel', 'index', 'ucenter'];
+        foreach ($dir as $k => $v) {
+            if (in_array($v, $exclude)) {
+                unset($dir[$k]);
             }
         }
 
         $module = [];
         foreach ($dir as $subdir) {
-            if (file_exists(APP_PATH . '/' . $subdir . '/info/info.php') && $subdir != '.' && $subdir != '..')
-            {
+            if (file_exists(APP_PATH . '/' . $subdir . '/info/info.php') && $subdir != '.' && $subdir != '..') {
                 // 获取配置数据
                 $info = $this->getInfo($subdir);
                 $info['sort'] = 0;
                 $info['source'] = 'local';
                 // 合并数据表内模块
                 $module_info = $this->getModule($info['name']);
-                if($module_info){
+                if ($module_info) {
                     $info = array_merge($info, $module_info);
                     $info['id'] = $module_info['id'];
                     $info['source'] = 'local';
@@ -166,22 +164,21 @@ class Module extends Base
                 $module[] = $info;
             }
         }
-        
-        if(!empty($module)){
+
+        if (!empty($module)) {
             //写入数据库
             $this->saveAll($module);
         }
-        
+
         // 获取所有本地未安装应用
         $list = $this->where([
             ['source', '=', 'local'],
             ['is_setup', '=', 0]
         ])->select();
 
-        if(!empty($list)){
+        if (!empty($list)) {
             foreach ($list as $v) {
-                if (!is_dir(APP_PATH . '/' . $v['name']))
-                {
+                if (!is_dir(APP_PATH . '/' . $v['name'])) {
                     // 清除无文件应用
                     $this->where('id', $v['id'])->delete();
                 }
@@ -211,7 +208,7 @@ class Module extends Base
     public function install($name)
     {
         $log = '';
-        
+
         $module = $this->getModule($name);
 
         if ($module['is_setup'] == 1) {
@@ -219,19 +216,19 @@ class Module extends Base
         }
 
         // 更新info内配置数据
-        if (file_exists(APP_PATH . '/' . $name . '/info/info.php')){
+        if (file_exists(APP_PATH . '/' . $name . '/info/info.php')) {
             // 获取配置数据
             $info = $this->getInfo($name);
             // 合并数据表内模块
             $module = array_merge($module, $info);
         }
-        
-        if (file_exists(APP_PATH . $module['name'] . DIRECTORY_SEPARATOR . 'info' .DIRECTORY_SEPARATOR. 'guide.json')) {
+
+        if (file_exists(APP_PATH . $module['name'] . DIRECTORY_SEPARATOR . 'info' . DIRECTORY_SEPARATOR . 'guide.json')) {
             //如果存在guide.json
             $guide = file_get_contents(APP_PATH . $module['name'] . DIRECTORY_SEPARATOR . 'info' . DIRECTORY_SEPARATOR . 'guide.json');
             $data = json_decode($guide, true);
 
-            if(!empty($data['menu'])){
+            if (!empty($data['menu'])) {
                 //导入菜单项,menu
                 $menu = json_decode($data['menu'], true);
                 if (!empty($menu)) {
@@ -242,7 +239,7 @@ class Module extends Base
                 }
             }
 
-            if(!empty($data['action'])){
+            if (!empty($data['action'])) {
                 //导入
                 $action = json_decode($data['action'], true);
                 if (!empty($action)) {
@@ -252,8 +249,8 @@ class Module extends Base
                     }
                 }
             }
-            
-            if(!empty($data['action_limit'])){
+
+            if (!empty($data['action_limit'])) {
                 $action_limit = json_decode($data['action_limit'], true);
                 if (!empty($action_limit)) {
                     $this->cleanActionLimit($module['name']);
@@ -262,7 +259,7 @@ class Module extends Base
                     }
                 }
             }
-            
+
             if (file_exists(APP_PATH . '/' . $module['name'] . '/info/install.sql')) {
                 $install_sql = APP_PATH . '/' . $module['name'] . '/info/install.sql';
 
@@ -271,12 +268,12 @@ class Module extends Base
                 $install_sql = explode(";\n", $install_sql);
                 //系统配置表前缀
                 $prefix = config('database.connections.mysql.prefix');
-                
+
                 foreach ($install_sql as $value) {
-                    
+
                     $value = trim($value);
                     if (empty($value)) continue;
-                    if (strpos($value,'CREATE TABLE') !== false) {//创建表
+                    if (strpos($value, 'CREATE TABLE') !== false) { //创建表
                         //获取表名
                         $name = preg_replace("/[\s\S]*CREATE TABLE IF NOT EXISTS `(\w+)`[\s\S]*/", "\\1", $value);
                         //获取表前缀
@@ -287,9 +284,9 @@ class Module extends Base
                         if (false === Db::execute($value)) {
                             throw new Exception($msg . '...失败;');
                         }
-                    } 
+                    }
                     //写入前清空
-                    if (strpos($value,'INSERT INTO') !== false) {//写入数据
+                    if (strpos($value, 'INSERT INTO') !== false) { //写入数据
                         //获取表名
                         $name = preg_replace("/[\s\S]*INSERT INTO `(\w+)`[\s\S]*/", "\\1", $value);
                         //获取表前缀
@@ -341,19 +338,19 @@ class Module extends Base
             //读取sql语句
             $uninstallSql = file_get_contents($uninstall_file);
 
-            if(empty($uninstallSql)){
+            if (empty($uninstallSql)) {
                 return true;
             }
 
             $uninstallSql = str_replace("\r", "", $uninstallSql);
             $uninstallSql = explode(";\n", $uninstallSql);
-            
+
             //系统配置表前缀
             $prefix = config('database.connections.mysql.prefix');
 
-            foreach($uninstallSql as $value){
+            foreach ($uninstallSql as $value) {
                 $value = trim($value);
-                if (empty($value)) continue; 
+                if (empty($value)) continue;
 
                 //获取表名
                 $name = preg_replace("/[\s\S]*DROP TABLE IF EXISTS `(\w+)`[\s\S]*/", "\\1", $value);
@@ -364,13 +361,13 @@ class Module extends Base
 
                 $res = Db::execute($value);
             }
-            
+
             if ($res === false) {
                 $this->error = '清理模块数据失败，错误信息：' . $res['error_code'];
                 return false;
             }
         }
-        
+
         $module['is_setup'] = 0;
         $this->where('id', $id)->save($module);
 
@@ -380,10 +377,7 @@ class Module extends Base
     /**
      * 更新本地应用
      */
-    public function localUpgrade($name)
-    {
-
-    }
+    public function localUpgrade($name) {}
 
     /**
      * 通过name来获取应用
@@ -392,35 +386,35 @@ class Module extends Base
      */
     public function getModule($name, $field = '*')
     {
-        if($name == 'admin' || $name == 'common' || $name == 'channel' || $name == 'ucenter'){
+        if ($name == 'admin' || $name == 'common' || $name == 'channel' || $name == 'ucenter') {
             return false;
         }
 
         $info = $this->where('name', $name)->field($field)->find();
-        if($info){
+        if ($info) {
             $info = $info->toArray();
-            if(empty($info['icon'])){
+            if (empty($info['icon'])) {
                 //图标所在位置为模块静态目录下（推荐）
-                if(file_exists(PUBLIC_PATH . '/static/' . $name . '/images/icon.png')){
-                    $info['icon_100'] = $info['icon_200'] =$info['icon_300'] =$info['icon_400'] = '/static/'. $name .'/images/icon.png';
-                }else{
-                    $info['icon_100'] = $info['icon_200'] =$info['icon_300'] =$info['icon_400'] = '/static/admin/images/module_default_icon.png';
+                if (file_exists(PUBLIC_PATH . '/static/' . $name . '/images/icon.png')) {
+                    $info['icon_100'] = $info['icon_200'] = $info['icon_300'] = $info['icon_400'] = '/static/' . $name . '/images/icon.png';
+                } else {
+                    $info['icon_100'] = $info['icon_200'] = $info['icon_300'] = $info['icon_400'] = '/static/admin/images/module_default_icon.png';
                 }
-            }else{
+            } else {
                 $width = 100;
                 $height = 100;
                 $info['icon_100'] = get_thumb_image($info['icon'], intval($width), intval($height));
-                $info['icon_200'] = get_thumb_image($info['icon'], intval($width*2), intval($height*2));
-                $info['icon_300'] = get_thumb_image($info['icon'], intval($width*3), intval($height*3));
-                $info['icon_400'] = get_thumb_image($info['icon'], intval($width*4), intval($height*4));
-                
-                if(strpos($info['icon'], 'https://') !== false && file_exists(PUBLIC_PATH . '/static/' . $info['name'] . '/images/icon.png')){
+                $info['icon_200'] = get_thumb_image($info['icon'], intval($width * 2), intval($height * 2));
+                $info['icon_300'] = get_thumb_image($info['icon'], intval($width * 3), intval($height * 3));
+                $info['icon_400'] = get_thumb_image($info['icon'], intval($width * 4), intval($height * 4));
+
+                if (strpos($info['icon'], 'https://') !== false && file_exists(PUBLIC_PATH . '/static/' . $info['name'] . '/images/icon.png')) {
                     //图标所在位置为模块静态目录下（推荐）
-                    $info['icon_100'] = $info['icon_200'] = $info['icon_300'] = $info['icon_400'] = request()->domain() . '/static/'. $info['name'] .'/images/icon.png';
+                    $info['icon_100'] = $info['icon_200'] = $info['icon_300'] = $info['icon_400'] = request()->domain() . '/static/' . $info['name'] . '/images/icon.png';
                 }
             }
         }
-        
+
         return $info;
     }
 
@@ -435,7 +429,7 @@ class Module extends Base
         if (!empty($m) && $m['name'] == $name && $m['is_setup'] == 1) {
             return true;
         }
-        
+
         return false;
     }
 
@@ -522,7 +516,5 @@ class Module extends Base
         } else {
             return [];
         }
-
     }
-
-} 
+}

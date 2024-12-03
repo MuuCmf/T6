@@ -1,13 +1,15 @@
 <?php
+
 namespace app\common\model;
 
 use think\facade\Db;
+
 /**
  * 用户积分日志模型
  */
 class ScoreLog extends Base
 {
-    
+
     /**
      * 添加积分日志
      * @param [type]  $uid       [description]
@@ -18,12 +20,12 @@ class ScoreLog extends Base
      * @param integer $record_id [description]
      * @param string  $remark    [description]
      */
-    public function addScoreLog($uid, $type, $action = 'inc',$value = 0, $model='', $record_id = 0,$remark = '')
+    public function addScoreLog($uid, $type, $action = 'inc', $value = 0, $model = '', $record_id = 0, $remark = '')
     {
-        $uid = is_array($uid) ? $uid : explode(',',$uid);
-        foreach($uid as $v){
-            $score =  Db::name('Member')->where(['uid'=>$v])->value('score'.$type);
-            
+        $uid = is_array($uid) ? $uid : explode(',', $uid);
+        foreach ($uid as $v) {
+            $score =  Db::name('Member')->where(['uid' => $v])->value('score' . $type);
+
             $data['uid'] = $v;
             $data['ip'] = request()->ip(1);
             $data['type'] = $type;

@@ -1,11 +1,12 @@
 <?php
+
 namespace app\common\logic;
 
 class Announce
-{   
+{
     protected $_type = [
-        0=> '文字',
-        1=> '图片'
+        0 => '文字',
+        1 => '图片'
     ];
 
     public $_status  = [
@@ -18,17 +19,17 @@ class Announce
      * 格式化数据
      */
     public function formatData($data)
-    {   
-        if(isset($data['status'])){
+    {
+        if (isset($data['status'])) {
             $data['status_str'] = $this->_status[$data['status']];
         }
 
-        if(isset($data['type'])){
+        if (isset($data['type'])) {
             $data['type_str'] = $this->_type[$data['type']];
         }
-        
+
         // 图片处理
-        if(isset($data['cover'])){
+        if (isset($data['cover'])) {
             $data['cover_original'] = get_attachment_src($data['cover']);
             $data['cover_80'] = get_thumb_image($data['cover'], 80, 80);
             $data['cover_120'] = get_thumb_image($data['cover'], 120, 120);
@@ -37,14 +38,14 @@ class Announce
         }
 
         // 连接至数据处理
-        if(!empty($data['link_to'])){
+        if (!empty($data['link_to'])) {
             $data['link'] = json_decode($data['link_to'], true);
         }
 
         //时间戳格式化
         $data['create_time_str'] = time_format($data['create_time']);
         $data['update_time_str'] = time_format($data['update_time']);
-        
+
         return $data;
     }
 }

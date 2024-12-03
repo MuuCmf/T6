@@ -1,4 +1,5 @@
 <?php
+
 namespace app\common\logic;
 
 class Keywords extends Base
@@ -19,12 +20,11 @@ class Keywords extends Base
      */
     public function formatData($data)
     {
-
         $data['recommend_str'] = $this->_recommend[$data['recommend']];
         $data['status_str'] = $this->_status[$data['status']];
-        
+
         $data = $this->setTimeAttr($data);
-        if(!empty($data['uid'])){
+        if (!empty($data['uid'])) {
             $data['user_info'] = query_user($data['uid']);
         }
 

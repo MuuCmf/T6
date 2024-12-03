@@ -1,4 +1,5 @@
 <?php
+
 namespace app\common\logic;
 
 class Crontab extends Base

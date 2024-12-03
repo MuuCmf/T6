@@ -1,10 +1,16 @@
 <?php
+
 namespace app\common\model;
 
-class CrontabLog extends Base{
+/**
+ * 计划任务日志
+ */
+class CrontabLog extends Base
+{
     protected $autoWriteTimestamp = true;
 
-    public static function addLog($params){
+    public static function addLog($params)
+    {
         $data = [
             'shopid'    =>  $params['shopid'],
             'cid'       =>  $params['cid'],

@@ -1,4 +1,5 @@
 <?php
+
 namespace app\common\model;
 
 use think\Model;
@@ -28,27 +29,27 @@ class Verify extends Model
      */
     public function addVerify($account, $type, $uid = 0)
     {
-        $uid = $uid ? $uid:is_login();
+        $uid = $uid ? $uid : is_login();
         if ($type == 'mobile' || $type == 'email') {
             $verify = create_rand(6, 'num');
         } else {
             $verify = create_rand(32);
         }
 
-        $this->where(['account'=>$account,'type'=>$type])->delete();
+        $this->where(['account' => $account, 'type' => $type])->delete();
         $data['verify'] = $verify;
         $data['account'] = $account;
         $data['type'] = $type;
         $data['uid'] = $uid;
-        
+
         $res = $this->save($data);
-        if(!$res){
+        if (!$res) {
             return false;
         }
         return $verify;
     }
 
-    
+
     /**
      * 检测验证码
      *
@@ -59,14 +60,15 @@ class Verify extends Model
      *
      * @return     boolean  ( description_of_the_return_value )
      */
-    public function checkVerify($account, $type = 'mobile', $verify){
+    public function checkVerify($account, $type = 'mobile', $verify)
+    {
 
-        $data = $this->where(['account'=>$account,'type'=>$type,'verify'=>$verify])->find();
+        $data = $this->where(['account' => $account, 'type' => $type, 'verify' => $verify])->find();
 
-        if(!$data){
+        if (!$data) {
             return false;
         }
-        $this->where(['account'=>$account, 'type'=>$type])->delete();
+        $this->where(['account' => $account, 'type' => $type])->delete();
         $this->where('create_time', '<=', get_some_day(1))->delete();
 
         return true;
@@ -80,13 +82,13 @@ class Verify extends Model
         $smsDriver = config('extend.SMS_SEND_DRIVER');
 
         // 通过阿里云发送短信
-        if($smsDriver == 'aliyun'){
+        if ($smsDriver == 'aliyun') {
             $result = $this->aliyun($PhoneNumbers, $code);
             return $result;
         }
 
         // 通过腾讯云发送短信
-        if($smsDriver == 'tencent'){
+        if ($smsDriver == 'tencent') {
             $result = $this->tencent($PhoneNumbers, $code);
             return $result;
         }
@@ -103,7 +105,7 @@ class Verify extends Model
         $access_key_secret = config('extend.SMS_ALIYUN_ACCESSKEYSECRET');
         $region = config('extend.SMS_ALIYUN_REGION');
         AlibabaCloud::accessKeyClient($access_key_id, $access_key_secret)->regionId($region)->asDefaultClient();
-        
+
         $params = [
             'code' => $code
         ];
@@ -158,19 +160,19 @@ class Verify extends Model
             $cred = new Credential($SecretId, $SecretKey);
             $httpProfile = new HttpProfile();
             $httpProfile->setEndpoint("sms.tencentcloudapi.com");
-            
+
             $clientProfile = new ClientProfile();
             $clientProfile->setHttpProfile($httpProfile);
             $client = new SmsClient($cred, $region, $clientProfile);
 
             $req = new SendSmsRequest();
-            
+
             $params = array(
-                "PhoneNumberSet" => array( $PhoneNumbers ),
+                "PhoneNumberSet" => array($PhoneNumbers),
                 "SmsSdkAppId" => $SdkAppId,
                 "SignName" => $Sign,
                 "TemplateId" => $TemplateId,
-                "TemplateParamSet" => array( $code )
+                "TemplateParamSet" => array($code)
             );
             $req->fromJsonString(json_encode($params));
 
@@ -181,13 +183,9 @@ class Verify extends Model
             $resp = $resp->toJsonString();
             $resp = json_decode($resp, true);
             return $resp;
-        }
-        catch(TencentCloudSDKException $e) {
+        } catch (TencentCloudSDKException $e) {
             // echo $e;
             return $e->getErrorCode();
         }
     }
-
-
-
 }

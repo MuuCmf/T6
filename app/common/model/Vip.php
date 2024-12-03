@@ -1,4 +1,5 @@
 <?php
+
 namespace app\common\model;
 
 /**
@@ -20,11 +21,10 @@ class Vip extends Base
         ];
 
         $res = $this->whereRaw($raw, $raw_arr)->find();
-        if($res){
+        if ($res) {
             return $res;
         }
 
         return false;
     }
-
 }

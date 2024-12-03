@@ -1,4 +1,5 @@
 <?php
+
 namespace app\common\model;
 
 class SeoRule extends Base
@@ -8,15 +9,14 @@ class SeoRule extends Base
      */
     public function getRule($app, $controller, $action)
     {
-        $where = "(`app`='".$app."' or `app`='') and (`controller`='".$controller."' or `controller`='') and (`action`='".$action."' or `action`='') and `status`=1";
+        $where = "(`app`='" . $app . "' or `app`='') and (`controller`='" . $controller . "' or `controller`='') and (`action`='" . $action . "' or `action`='') and `status`=1";
         $rule = (new SeoRule())->whereRaw($where)->find();
-        if($rule){
+        if ($rule) {
             $rule = $rule->toArray();
-        }else{
+        } else {
             $rule = NULL;
         }
 
         return $rule;
     }
-
 }

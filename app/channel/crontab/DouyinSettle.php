@@ -1,5 +1,7 @@
 <?php
-declare(strict_types = 1);
+
+declare(strict_types=1);
+
 namespace app\minishop\crontab;
 
 use app\common\model\CrontabLog;
@@ -15,6 +17,9 @@ use think\facade\Db;
 class DouyinSettle
 {
     protected $OrderModel;
+    protected $DouyinMpService;
+    protected $DouyinMpSettleModel;
+    
     public function __construct()
     {
         $this->OrderModel = new OrderModel();
@@ -28,7 +33,8 @@ class DouyinSettle
      * @param int $task_id
      * @return bool
      */
-    public function handle(int $shopid ,int $task_id){
+    public function handle(int $shopid, int $task_id)
+    {
 
         try {
             //查询需要结算的订单
@@ -38,14 +44,14 @@ class DouyinSettle
                 ['paid_time', '<', time() - (7 * 24 * 60 * 60)],
             ];
             $lists = $this->OrderModel->where($map)->field('id')->select()->toArray();
-            if (!empty($lists)){
+            if (!empty($lists)) {
                 // 循环执行结算逻辑
-                foreach($lists as $v){
+                foreach ($lists as $v) {
                     $settle_no = build_order_no();
                     $order_no = $v['order_no'];
                     $result = $this->DouyinMpService->settle($settle_no, $order_no);
                     $result = json_decode($result, true);
-                    if($result['err_no'] == 0){
+                    if ($result['err_no'] == 0) {
                         $this->DouyinMpSettleModel->edit([
                             'settle_no' => $settle_no,
                             'order_no' => $order_no,
@@ -63,9 +69,9 @@ class DouyinSettle
                 'description'   =>  'success'
             ]);
 
-            
+
             return true;
-        }catch (Exception $e){
+        } catch (Exception $e) {
             Db::rollback();
             CrontabLog::addLog([
                 'shopid' => $shopid,
@@ -75,6 +81,5 @@ class DouyinSettle
             ]);
             return false;
         }
-
     }
 }

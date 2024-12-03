@@ -1,4 +1,5 @@
 <?php
+
 namespace app\common\logic;
 
 /*
@@ -20,7 +21,7 @@ class Feedback
      * 格式化数据
      */
     public function formatData($data)
-    {   
+    {
 
         $data['user_info'] = query_user($data['uid']);
         if (!is_array($data['user_info'])) {
@@ -28,13 +29,13 @@ class Feedback
             $data['user_info']['nickname'] = '用户已注销';
             $data['user_info']['avatar'] = request()->domain() . '/static/common/images/default_avatar.jpg';
         }
-        $module = (new Module())->where('name',$data['app'])->find();
+        $module = (new Module())->where('name', $data['app'])->find();
         $data['app_alias'] = $module['alias'] ?? '';
 
         $data['images_format'] = [];
-        if (!empty($data['images'])){
-            $images = explode(',',$data['images']);
-            foreach($images as $k=>$v){
+        if (!empty($data['images'])) {
+            $images = explode(',', $data['images']);
+            foreach ($images as $k => $v) {
                 $data['images_format'][$k]['original'] = $v;
                 $data['images_format'][$k]['format'] = get_attachment_src($v);
             }
@@ -45,6 +46,4 @@ class Feedback
         $data['update_time_str'] = time_format($data['update_time']);
         return $data;
     }
-
-
 }

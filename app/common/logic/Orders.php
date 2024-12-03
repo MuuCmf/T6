@@ -1,26 +1,24 @@
 <?php
+
 namespace app\common\logic;
 
 /*
  * MuuCmf
  * 订单数据逻辑层
  */
-
-use app\channel\logic\Channel;
-
 class Orders extends Base
 {
     public $shipper = [
-        'SF'=>'顺丰快递',
-        'HTKY'=>'百世快递',
-        'ZTO'=>'中通快递',
-        'STO'=>'申通快递',
-        'YTO'=>'圆通速递',
-        'YD'=>'韵达速递',
-        'YZPY'=>'邮政快递包裹',
-        'EMS'=>'EMS',
-        'HHTT'=>'天天快递',
-        'JD'=>'京东快递'
+        'SF' => '顺丰快递',
+        'HTKY' => '百世快递',
+        'ZTO' => '中通快递',
+        'STO' => '申通快递',
+        'YTO' => '圆通速递',
+        'YD' => '韵达速递',
+        'YZPY' => '邮政快递包裹',
+        'EMS' => 'EMS',
+        'HHTT' => '天天快递',
+        'JD' => '京东快递'
     ];
 
     /**
@@ -29,8 +27,8 @@ class Orders extends Base
      */
     public $_status = [
         1 => '待付款',
-        2 => '待发货', 
-        3 => '待收货', 
+        2 => '待发货',
+        3 => '待收货',
         4 => '待评价', //确认收货
         5 => '已完成', //已完成评价
         0 => '已取消',
@@ -82,20 +80,21 @@ class Orders extends Base
     {
         $order_namespace = "app\\{$data['app']}\\logic\\Orders";
         $appOrdersLogic = new $order_namespace;
-        
+
         $data = $appOrdersLogic->formatData($data);
-        
+
         return $data;
     }
 
     /**
      * 导出数据格式化
      */
-    public function exportParse($list, $header = array()){
+    public function exportParse($list, $header = array())
+    {
         if (empty($list)) {
             return '';
         }
-        
+
         $keys = array_keys($header);
         $html = "\xEF\xBB\xBF";
         foreach ($header as $li) {
@@ -103,25 +102,25 @@ class Orders extends Base
         }
         $html .= "\n";
         $count = count($list);
-        $pagesize = ceil($count/5000);
+        $pagesize = ceil($count / 5000);
         for ($j = 1; $j <= $pagesize; $j++) {
-            $list = array_slice($list, ($j-1) * 5000, 5000);
-            
+            $list = array_slice($list, ($j - 1) * 5000, 5000);
+
             if (!empty($list)) {
                 $size = ceil(count($list) / 500);
                 for ($i = 0; $i < $size; $i++) {
                     $buffer = array_slice($list, $i * 500, 500);
-                    
+
                     $column_data = array();
                     foreach ($buffer as &$row) {
-                        if($row)
-                        if($row['paid'] == 1){
-                            $row['paid_time'] = date('Y-m-d H:i:s', $row['paid_time']);
-                        }
+                        if ($row)
+                            if ($row['paid'] == 1) {
+                                $row['paid_time'] = date('Y-m-d H:i:s', $row['paid_time']);
+                            }
                         $row['paid'] = $this->_paid[$row['paid']];
-                        $row['paid_fee'] = '￥' . sprintf("%.2f",$row['paid_fee']/100);
+                        $row['paid_fee'] = '￥' . sprintf("%.2f", $row['paid_fee'] / 100);
                         $row['create_time'] = date('Y-m-d H:i:s', $row['create_time']);
-                        $row['products'] = json_decode($row['products'],true);
+                        $row['products'] = json_decode($row['products'], true);
                         $row['products_title'] = $row['products']['title'];
                         foreach ($keys as $key) {
                             $data[] = $row[$key];

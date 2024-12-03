@@ -1,10 +1,11 @@
 <?php
+
 namespace app\common\model;
 
 class Favorites extends Base
 {
     //自动写入创建和更新的时间戳字段
-    protected $autoWriteTimestamp = true; 
+    protected $autoWriteTimestamp = true;
 
     /**
      * 获取收藏量
@@ -15,8 +16,8 @@ class Favorites extends Base
      * @return     <type>  The favorites.
      */
     public function getFavorites($shopid, $app, $info_id, $info_type)
-    {   
-        if(!empty($shopid) && $shopid != 0){
+    {
+        if (!empty($shopid) && $shopid != 0) {
             $map[] = ['shopid', '=', $shopid];
         }
         $map[] = ['app', '=', $app];
@@ -32,7 +33,7 @@ class Favorites extends Base
      */
     public function yesFavorites($shopid, $app, $uid, $info_id, $info_type)
     {
-        if(!empty($shopid) && $shopid != 0){
+        if (!empty($shopid) && $shopid != 0) {
             $map[] = ['shopid', '=', $shopid];
         }
         $map[] = ['app', '=', $app];
@@ -45,6 +46,4 @@ class Favorites extends Base
 
         return $data;
     }
-
-
 }

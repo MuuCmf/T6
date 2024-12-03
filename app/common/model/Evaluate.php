@@ -96,7 +96,7 @@ class Evaluate extends Base
         $order = 'e.' . $order_field . ' ' . $order_type;
 
         // 获取分页列表
-        $lists = $this->alias('e')->join('member m','e.uid = m.uid')->where($map)->order($order)->field('e.*')->paginate(['list_rows'=>$rows, 'query'=>$params], false);
+        $lists = $this->alias('e')->join('member m', 'e.uid = m.uid')->where($map)->order($order)->field('e.*')->paginate(['list_rows' => $rows, 'query' => $params], false);
 
         return $lists;
     }

@@ -1,10 +1,11 @@
 <?php
+
 namespace app\common\model;
 
 class Support extends Base
 {
     //自动写入创建和更新的时间戳字段
-    protected $autoWriteTimestamp = true; 
+    protected $autoWriteTimestamp = true;
 
     /**
      * 获取点赞
@@ -15,8 +16,8 @@ class Support extends Base
      * @return     <type>  The favorites.
      */
     public function getSupport($shopid, $app, $info_id, $info_type)
-    {   
-        if(!empty($shopid) && $shopid != 0){
+    {
+        if (!empty($shopid) && $shopid != 0) {
             $map[] = ['shopid', '=', $shopid];
         }
         $map[] = ['app', '=', $app];
@@ -32,7 +33,7 @@ class Support extends Base
      */
     public function yesSupport($shopid, $app, $uid, $info_id, $info_type)
     {
-        if(!empty($shopid) && $shopid != 0){
+        if (!empty($shopid) && $shopid != 0) {
             $map[] = ['shopid', '=', $shopid];
         }
         $map[] = ['app', '=', $app];
@@ -45,6 +46,4 @@ class Support extends Base
 
         return $data;
     }
-
-
 }

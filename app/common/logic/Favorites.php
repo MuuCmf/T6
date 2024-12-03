@@ -15,7 +15,7 @@ class Favorites extends Base
             $appLogic = new $class_namespace;
             $data = $appLogic->formatData($data);
         }
-        
+
         if (empty($data['products'])) {
             $data['metadata'] = $data['products'] = json_decode($data['metadata'], true);
             $data['products'] = $this->setImgAttr($data['products'], '1:1');

@@ -2,8 +2,6 @@
 
 namespace app\common\model;
 
-use think\Model;
-
 class Orders extends Base
 {
     //自动写入创建和更新的时间戳字段

@@ -1,7 +1,11 @@
 <?php
+
 namespace app\common\model;
 
-class Crontab extends Base{
+/**
+ * 计划任务
+ */
+class Crontab extends Base
+{
     protected $autoWriteTimestamp = true;
-
 }
