@@ -40,7 +40,7 @@ class Evaluate extends Api
     public function lists()
     {
         $params = request()->param();
-        if(empty('app') || empty('type') || empty('type_id')){
+        if (empty($params['app']) || empty($params['type']) || empty($params['type_id'])) {
             return $this->error('缺少参数');
         }
         $lists = $this->EvaluateModel->getListByPageCustom($params);
