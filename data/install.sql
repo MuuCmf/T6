@@ -380,7 +380,7 @@ CREATE TABLE IF NOT EXISTS `muucmf_comment` (
   `update_time` int(11) UNSIGNED NOT NULL COMMENT '更新时间',
   `reason` varchar(255) DEFAULT NULL COMMENT '审核失败原因',
   `status` tinyint(2) NOT NULL DEFAULT '0' COMMENT '状态',
-  PRIMARY KEY (`id`),
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='公共评论表';
 
 --
