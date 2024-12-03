@@ -355,3 +355,6 @@ UPDATE `muucmf_articles_comment` SET `info_type` = 'articles';
 CREATE TABLE IF NOT EXISTS `muucmf_comment` AS SELECT * FROM `muucmf_articles_comment`;
 ALTER TABLE `muucmf_comment` CHANGE `id` `id` BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键ID', add PRIMARY KEY (`id`);
 
+INSERT INTO `muucmf_extend_config` (`id`, `name`, `type`, `title`, `group`, `extra`, `remark`, `create_time`, `update_time`, `status`, `value`, `sort`) VALUES
+(55, 'VOD_TENCENT_PROCEDURE_NAME', 'string', '自适应转码任务流名称', 1, '', '', 0, 1733203026, 1, 'SimpleAesEncryptPreset', 0);
+

@@ -11,7 +11,12 @@ class TcVod
     /**
      * 获取签名
      */
-    public function getSignature($secretId='', $secretKey='', $subAppId=''){
+    public function getSignature(){
+
+        $secretId = config('extend.VOD_TENCENT_SECRETID');
+        $secretKey = config('extend.VOD_TENCENT_SECRETKEY');
+        $subAppId = config('extend.VOD_TENCENT_SUBAPPID');
+
         // 确定签名的当前时间和失效时间
         $current = time();
         $expired = intval($current + 86400);  // 签名有效期：1天
@@ -27,8 +32,9 @@ class TcVod
         ];
         // 判断是否开启上传后转码加密任务流
         $procedure = config('extend.VOD_TENCENT_PROCEDURE');
+        $procedureName = config('extend.VOD_TENCENT_PROCEDURE_NAME');
         if($procedure == 1){
-            $arg_list['procedure'] = "SimpleAesEncryptPreset"; // 系统预置任务流
+            $arg_list['procedure'] = $procedureName; // 系统预置任务流
         }
 
         // 计算签名

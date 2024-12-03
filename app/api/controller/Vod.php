@@ -9,11 +9,8 @@ class Vod extends Api
 {
     public function sign()
     {
-        $secretId = config('extend.VOD_TENCENT_SECRETID');
-        $secretKey = config('extend.VOD_TENCENT_SECRETKEY');
-        $subAppId = config('extend.VOD_TENCENT_SUBAPPID');
         $TcVod = new TcVod();
-        $signature = $TcVod->getSignature($secretId, $secretKey, $subAppId);
+        $signature = $TcVod->getSignature();
 
         echo $signature;
         echo "\n";
