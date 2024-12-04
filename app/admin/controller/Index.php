@@ -32,7 +32,7 @@ class Index extends Admin
         $this->getRegUser();
         $this->getActionLog();
         $this->getOtherCount();
-
+        
         $this->setTitle('控制台');
         // 模板输出
         return View::fetch('index');
@@ -206,5 +206,4 @@ class Index extends Admin
 
         return $all_module_list;
     }
-
 }

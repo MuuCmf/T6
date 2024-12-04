@@ -37,6 +37,8 @@ class Message extends Base
         // 写入消息内容
         $content_id = (new MessageContent())->addMessageContent($shopid, $title, $description, $content);
 
+        // 消息队列名称
+        $queue_name = config('queue')['connections']['redis']['queue'] ?? 'default';
         // 发送至消息队列
         $isPushed = Queue::push('\app\common\queue\Message@sendToUids', [
             'shopid' => $shopid,
@@ -45,7 +47,7 @@ class Message extends Base
             'type_id' => $type_id,
             'content_id' => $content_id,
             'send_type' => $send_type,
-        ]);
+        ], 0, $queue_name);
 
         if ($isPushed !== false) {
             return true;
@@ -67,7 +69,8 @@ class Message extends Base
 
         // 写入消息内容
         $content_id = (new MessageContent())->addMessageContent($shopid, $title, $description, $content);
-
+        // 消息队列名称
+        $queue_name = config('queue')['connections']['redis']['queue'] ?? 'default';
         // 发送至消息队列
         $isPushed = Queue::push('\app\common\queue\Message@sendToGroups', [
             'shopid' => $shopid,
@@ -76,7 +79,7 @@ class Message extends Base
             'type_id' => $type_id,
             'content_id' => $content_id,
             'send_type' => $send_type,
-        ]);
+        ], 0, $queue_name);
 
         if ($isPushed !== false) {
             return true;

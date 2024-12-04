@@ -1,4 +1,5 @@
 <?php
+
 namespace app\admin\lib;
 
 use app\common\model\Module;
@@ -7,14 +8,12 @@ use think\facade\Db;
 use think\exception\ValidateException;
 
 class Upgrade
-{   
+{
     public $api;
-    private $app;
 
-    function __construct($app = 'system')
+    function __construct()
     {
         $this->api = config('cloud.api');
-        $this->app = $app;
     }
 
     /**
@@ -22,10 +21,11 @@ class Upgrade
      * @param string $app
      * @return string
      */
-    public function getAppRootPath($app = 'system'){
-        if ($app == 'system'){
+    public function getAppRootPath($app = 'system')
+    {
+        if ($app == 'system') {
             $path = root_path();
-        }else{
+        } else {
             $path = root_path("app" . DIRECTORY_SEPARATOR . $app);
         }
         return $path;
@@ -38,10 +38,10 @@ class Upgrade
      */
     public function version($app = 'system')
     {
-        if ($app == 'system'){
+        if ($app == 'system') {
             $path = $this->getAppRootPath($app) . 'data' . DIRECTORY_SEPARATOR . 'version.ini';
             $version = file_get_contents($path);
-        }else{
+        } else {
             $version = Module::where([
                 ['name', '=', $app],
                 ['is_setup', '=', 1]
@@ -55,16 +55,19 @@ class Upgrade
      * @param $path
      * @return bool
      */
-    public function checkIgnoreFile($path){
+    public function checkIgnoreFile($path, $app = 'system')
+    {
 
         // 仅框架升级检测
-        if($this->app == 'system'){
+        if ($app == 'system') {
             $ignore_paths = [
                 '.env',
                 'config/auth.php',
                 'config/cache.php',
+                'config/cloud.php', // 调试临时添加
                 'config/database.php',
                 'config/jwt.php',
+                'config/queue.php',
                 'runtime/',
                 '.idea',
                 '.gitignore',
@@ -72,15 +75,14 @@ class Upgrade
                 '_src/',
                 'data/version.ini'
             ];
-            foreach ($ignore_paths as $item){
-                if (strpos($path,$item) !== false){
+            foreach ($ignore_paths as $item) {
+                if (strpos($path, $item) !== false) {
                     return true;
                 }
             }
         }
-        
+
         return false;
-        
     }
 
     /**
@@ -89,39 +91,40 @@ class Upgrade
      * @param string $save_path 保存路径
      * @return string
      */
-    public function downFile($params = [], $save_path = '')
+    public function downFile(array $params, $save_path = '')
     {
+        $app = $params['app_name'];
         $source = $this->api . "upgrade/download?" . http_build_query($params);
         //地址追加授权域名
         $source .= "&auth_code=" . urlencode(Cloud::authCode());
-        $ch = curl_init();//初始化一个cURL会话
-        curl_setopt($ch, CURLOPT_URL, $source);//抓取url
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);//是否显示头信息
+        $ch = curl_init(); //初始化一个cURL会话
+        curl_setopt($ch, CURLOPT_URL, $source); //抓取url
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1); //是否显示头信息
         //curl_setopt($ch, CURLOPT_SSLVERSION, 3);//传递一个包含SSL版本的长参数
         curl_setopt($ch, CURLINFO_HEADER_OUT, true); //TRUE 时追踪句柄的请求字符串，从 PHP 5.1.3 开始可用。这个很关键，就是允许你查看请求header
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, FALSE);
-        $data = curl_exec($ch);// 执行一个cURL会话
+        $data = curl_exec($ch); // 执行一个cURL会话
         $response = curl_getinfo($ch);
-        $error = curl_error($ch);//返回一条最近一次cURL操作明确的文本的错误信息。
-        curl_close($ch);//关闭一个cURL会话并且释放所有资源
+        $error = curl_error($ch); //返回一条最近一次cURL操作明确的文本的错误信息。
+        curl_close($ch); //关闭一个cURL会话并且释放所有资源
         //处理返回的错误信息
         if ($response['content_type'] != 'application/octet-stream') {
             $error = json_decode($data, true);
-            throw new Exception($error['msg'],$error['code']);
+            throw new Exception($error['msg'], $error['code']);
         }
-        
+
         if ($error) {
             throw new Exception($error);
         }
-        
+
         //备份文件
-        if (is_file($save_path)){
-            $this->backup($save_path);
+        if (is_file($save_path)) {
+            $this->backup($save_path, $app);
         }
         //创建目录
         $filename = basename($save_path);
-        $dirname = str_replace($filename ,'' ,$save_path);
+        $dirname = str_replace($filename, '', $save_path);
 
         if (!file_exists($dirname)) {
             mkdir($dirname, 0777, true);
@@ -137,23 +140,24 @@ class Upgrade
      * @title 备份
      * @param $file
      */
-    public function backup($file){
-        $root_path = $this->getAppRootPath($this->app);
-        if ($this->app == 'system'){
+    public function backup($file, $app = 'system')
+    {
+        $root_path = $this->getAppRootPath($app);
+        if ($app == 'system') {
             $backup_path = $root_path . 'data' . DIRECTORY_SEPARATOR . 'upgrade' . DIRECTORY_SEPARATOR;
-        }else{
+        } else {
             $backup_path = $root_path . 'info' . DIRECTORY_SEPARATOR . 'backup' . DIRECTORY_SEPARATOR;
         }
-        $backup_path .= date('Y') . '-' . date('m') . DIRECTORY_SEPARATOR . date('d') . DIRECTORY_SEPARATOR . $this->version($this->app) . DIRECTORY_SEPARATOR;
-        $backup_path .= str_replace(root_path(),'',$file);
+        $backup_path .= date('Y') . '-' . date('m') . DIRECTORY_SEPARATOR . date('d') . DIRECTORY_SEPARATOR . $this->version($app) . DIRECTORY_SEPARATOR;
+        $backup_path .= str_replace(root_path(), '', $file);
         //创建目录
         $filename = basename($backup_path);
-        $dirname = str_replace($filename ,'' ,$backup_path);
+        $dirname = str_replace($filename, '', $backup_path);
         if (!file_exists($dirname)) {
             mkdir($dirname, 0777, true);
             chmod($dirname, 0777);
         }
-        copy($file,$backup_path);
+        copy($file, $backup_path);
     }
 
     /**
@@ -162,6 +166,15 @@ class Upgrade
      */
     public function cloudVersion($params = [])
     {
+        if (empty($params['app_name'])) {
+            return [
+                'code' => 0,
+                'data' => [
+                    'remark' => '缺少参数'
+                ]
+            ];
+        }
+
         $api = $this->api . 'app/version';
         $domain = request()->host();
         $ip   = request()->ip();
@@ -177,8 +190,8 @@ class Upgrade
                 'remark' => '服务器错误'
             ]
         ];
-        if(is_json($output)){
-            $result = json_decode($output, true);//转换为数组格式
+        if (is_json($output)) {
+            $result = json_decode($output, true); //转换为数组格式
         }
         return $result;
     }
@@ -190,28 +203,28 @@ class Upgrade
      */
     public function executeUpgradeSql($app = 'system')
     {
-        if ($app == 'system'){
+        if ($app == 'system') {
             $sql_path = $this->getAppRootPath($app) . 'data' . DIRECTORY_SEPARATOR . 'upgrade.sql';
-        }else{
+        } else {
             $sql_path = $this->getAppRootPath($app) . 'info' . DIRECTORY_SEPARATOR . 'upgrade.sql';
         }
 
-        if(file_exists($sql_path)){
+        if (file_exists($sql_path)) {
             $content = file_get_contents($sql_path);
-            if(!empty($content)){
-                $sql = (new SqlFile())->getSqlFromFile($sql_path,false,['muucmf_' => config('database.connections.mysql.prefix')]);
-                if ($sql){
-                    foreach ($sql as $s){
+            if (!empty($content)) {
+                $sql = (new SqlFile())->getSqlFromFile($sql_path, false, ['muucmf_' => config('database.connections.mysql.prefix')]);
+                if ($sql) {
+                    foreach ($sql as $s) {
                         try {
                             @Db::query($s);
-                        }catch (Exception $e){
+                        } catch (Exception $e) {
                             //忽略错误 继续执行
                         }
                     }
                 }
             }
         }
-        
+
         return true;
     }
 
@@ -226,15 +239,15 @@ class Upgrade
         } else {
             $url = $url . "upgrade/app/version";
         }
-        $result = curl_request($url,[
+        $result = curl_request($url, [
             'app_name'  =>  $app_name,
             'version' =>  $version,
             'auth_code' => $auth_code
         ]);
 
         try {
-            $result = json_decode($result,true);
-            if (is_array($result) && $result['code'] == 200){
+            $result = json_decode($result, true);
+            if (is_array($result) && $result['code'] == 200) {
                 $files = $result['data']['data'];
                 $files_allowed = [];
                 if (!empty($files)) {
@@ -246,13 +259,13 @@ class Upgrade
                     }
                     $result['data']['data'] = $files_allowed;
                     $result['data']['total'] = count($files_allowed);
-                }else{
+                } else {
                     $result['data']['data'] = $files;
                     $result['data']['total'] = count($files);
                 }
-                
+
                 return $result;
-            }else{
+            } else {
                 return $result;
             }
         } catch (ValidateException $e) {
@@ -261,6 +274,4 @@ class Upgrade
 
         return false;
     }
-
-
 }

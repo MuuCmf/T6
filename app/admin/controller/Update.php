@@ -1,9 +1,9 @@
 <?php
+
 namespace app\admin\controller;
 
 use app\admin\lib\Cloud;
 use app\admin\lib\Upgrade as UpgradeServer;
-use app\common\model\Module as ModuleModel;
 use think\Exception;
 use think\facade\Db;
 use think\facade\View;
@@ -16,7 +16,7 @@ use think\Response;
 class Update extends Admin
 {
     private $UpgradeServer;
-    public $app_name;//应用标识
+    public $app_name; //应用标识
 
     /**
      * 构造方法
@@ -27,7 +27,7 @@ class Update extends Admin
         parent::__construct();
 
         $this->app_name = input('app_name', 'system') ?: 'system';
-        $this->UpgradeServer = new UpgradeServer($this->app_name);
+        $this->UpgradeServer = new UpgradeServer();
     }
 
     /**
@@ -44,15 +44,15 @@ class Update extends Admin
         $cloud_version = $this->UpgradeServer->cloudVersion([
             'app_name' => $this->app_name
         ]);
-        if(is_array($cloud_version) && !empty($cloud_version)){
+        if (is_array($cloud_version) && !empty($cloud_version)) {
             $cloud_version = $cloud_version['data'];
         }
         // 是否可升级
         $upgrade = false;
-        if(!empty($cloud_version['version'])){
+        if (!empty($cloud_version['version'])) {
             $upgrade = get_upgrade_status($local_version, $cloud_version['version']);
         }
-        
+
         //备份地址
         $backup_path = $this->app_name == 'system' ? '网站根目录->data->upgrade' : '网站根目录->app->' . $this->app_name . '->info->backup';
 
@@ -95,7 +95,7 @@ class Update extends Admin
         $auth_code = Cloud::authCode();
         // 生成请求json
         $result = $this->UpgradeServer->buildJson($app_name, $version, $auth_code);
-        
+
         return json($result);
     }
 
@@ -107,13 +107,13 @@ class Update extends Admin
     {
         if (request()->isAjax()) {
             $params = request()->param();
-            $path = $params['file'];//文件路径
-            $md5 = $params['md5'];//文件md5
-            $app_name = $this->app_name;//应用标识
-            $version = $params['version'];//应用类型
+            $path = $params['file']; //文件路径
+            $md5 = $params['md5']; //文件md5
+            $app_name = $this->app_name; //应用标识
+            $version = $params['version']; //应用类型
             $local_path = root_path() . $path;
-            $local_version = $this->UpgradeServer->version($app_name);//本地版本
-            $upgrade = get_upgrade_status($local_version ,$version);//版本号对比
+            $local_version = $this->UpgradeServer->version($app_name); //本地版本
+            $upgrade = get_upgrade_status($local_version, $version); //版本号对比
             if (!$upgrade) return $this->success('已经是最新版本！', 'same_version');
 
             try {
@@ -121,7 +121,7 @@ class Update extends Admin
                 $ignore = $this->UpgradeServer->checkIgnoreFile($path);
                 // 忽略文件直接跳过
                 if ($ignore === true) {
-                    return $this->success('success','忽略的文件');
+                    return $this->success('success', '忽略的文件');
                 }
 
                 //对比文件
@@ -142,7 +142,7 @@ class Update extends Admin
                 }
                 return $this->success('success', $upgrade);
             } catch (Exception $e) {
-                return $this->result($e->getCode(),$e->getMessage());
+                return $this->result($e->getCode(), $e->getMessage());
             }
         }
     }
@@ -160,7 +160,7 @@ class Update extends Admin
                 $this->UpgradeServer->executeUpgradeSql($this->app_name);
 
                 if ($params['skip'] == 0) {
-                    
+
                     // 系统更新
                     if ($this->app_name == 'system') {
                         //替换版本文件
@@ -171,9 +171,9 @@ class Update extends Admin
                         ];
                         //更新系统版本号
                         $this->UpgradeServer->downFile($params, root_path() . 'data/version.ini');
-                    }else{
+                    } else {
                         //更新应用版本号
-                        Db::name('module')->where('name','=', $this->app_name)->update(['version' => $params['version']]);
+                        Db::name('module')->where('name', '=', $this->app_name)->update(['version' => $params['version']]);
                     }
                 }
 
@@ -186,12 +186,28 @@ class Update extends Admin
     }
 
     /**
-     * 获取云端最新版本
+     * 检查是否可升级
      */
-    public function last()
+    public function check()
     {
-        $cloud_version = $this->UpgradeServer->cloudVersion();
+        // 读取本地版本号
+        $local_version = $this->UpgradeServer->version($this->app_name);
+        // 读取云端最新版本号
+        $cloud_version = $this->UpgradeServer->cloudVersion([
+            'app_name' => $this->app_name
+        ]);
+        if (is_array($cloud_version) && !empty($cloud_version)) {
+            $cloud_version = $cloud_version['data'];
+        }
+        // 是否可升级
+        $upgrade = false;
+        if (!empty($cloud_version['version'])) {
+            $upgrade = get_upgrade_status($local_version, $cloud_version['version']);
+        }
 
-        return json($cloud_version);
+        if ($upgrade) {
+            return $this->success('云端有新版版可更新', $cloud_version['version']);
+        }
+        return $this->error('已经是最新版本', $local_version);
     }
 }
