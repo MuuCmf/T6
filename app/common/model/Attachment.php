@@ -216,6 +216,9 @@ class Attachment extends Base
                 $file_res['duration'] = $data['duration'];
                 $file_res['attachment'] = $data['attachment'];
                 $file_res['url'] = get_attachment_src($data['attachment']);
+                if ($enforce == 'local') {
+                    $file_res['url'] = get_attachment_src($data['attachment'], 'local');
+                }
             }
         }
         return $file_res;

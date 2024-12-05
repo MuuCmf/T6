@@ -5,14 +5,15 @@ use app\common\model\Attachment;
 
 if (!function_exists('single_image_upload')) {
     /**
-     * 单图上传组件
-     * @param  [type] $name      [description]
-     * @param  [type] $image     [description]
+     * 单图上传
+     * @param  string $name      唯一标示
+     * @param  string $video     图片路径
+     * @param  bool $input       是否显示输入框
+     * @param  string $enforce   是否强制本地上传 auto|local
      * @return [type]            [description]
      */
     function single_image_upload($name, $image, $input = false, $enforce = 'auto')
     {
-
         $image_path = get_attachment_src($image);
         $upload_picture = '上传图片';
         $delete_picture = '删除';
@@ -43,14 +44,14 @@ if (!function_exists('single_image_upload')) {
         if ($input == false) {
             $html .= <<<EOF
             <div class="input-group">
-                <input type="hidden" class="form-control attach" data-name="{$name}" name="{$input_name}" value="{$image}">
+                <input type="hidden" class="form-control attach" data-name="{$name}" name="{$name}" value="{$image}">
                 <button id="upload_single_image_{$name}" class="btn btn-default" type="button">{$upload_picture}</button>
             </div>
     EOF;
         } else {
             $html .= <<<EOF
             <div class="input-group">
-                <input type="text" class="form-control attach" data-name="{$name}" name="{$input_name}" value="{$image}">
+                <input type="text" class="form-control attach" data-name="{$name}" name="{$name}" value="{$image}">
                 <span class="input-group-btn">
                     <button id="upload_single_image_{$name}" class="btn btn-default" type="button">{$upload_picture}</button>
                 </span>
@@ -89,8 +90,8 @@ if (!function_exists('single_image_upload')) {
             /*上传成功**/
             uploader_{$name}.on('uploadSuccess', function (file, data) {
                 if (data.code) {
-                    $("input[name='{$input_name}']").val(data.data.attachment);
-                    $("input[name='{$input_name}']").parent().parent().find('.upload-pre-item').html(
+                    $("input[name='{$name}']").val(data.data.attachment);
+                    $("input[name='{$name}']").parent().parent().find('.upload-pre-item').html(
                         '<div class="each">' +
                         '<img src="'+ data.data.url+'">' +
                         '<div class="text-center opacity del_btn"></div>' +
@@ -135,17 +136,18 @@ if (!function_exists('single_image_upload')) {
 if (!function_exists('multi_image_upload')) {
     /**
      * 多图上传
-     * @param  [type] $name [description]
-     * @param  [type] $ids  [description]
-     * @return [type]       [description]
+     * @param  string $name      唯一标示
+     * @param  string $video     图片路径集合
+     * @param  string $enforce   是否强制本地上传 auto|local
+     * @return [type]            [description]
      */
-    function multi_image_upload($name, $images = '')
+    function multi_image_upload($name, $images = '', $enforce = 'auto')
     {
         $upload_picture = '上传图片';
         $delete_picture = '删除';
         $picture_exists = '该图片已存在';
         $limit_exceed = '超过图片限制';
-        $api = url('api/file/upload');
+        $api = url('api/file/upload', ['enforce' => $enforce]);
 
         $html = '';
         $html .= '
@@ -250,17 +252,16 @@ if (!function_exists('multi_image_upload')) {
 
 if (!function_exists('single_audio_upload')) {
     /**
-     * 音频上传组件
+     * 音频上传
      * @param  string $name      唯一标示
-     * @param  string $audio     音频路径
+     * @param  string $video     音频路径
      * @param  bool $input       是否显示输入框
+     * @param  string $enforce   是否强制本地上传 auto|local
      * @return [type]            [description]
      */
-    function single_audio_upload($name, $audio, $input = false)
+    function single_audio_upload($name, $audio, $input = false, $enforce = 'auto')
     {
-        $audio_path = get_attachment_src($audio);
         $upload = '上传音频';
-        $delete = '删除';
         // 获取是否启用云点播
         $vod_driver = config('extend.VOD_UPLOAD_DRIVER');
         //html 结构
@@ -274,8 +275,10 @@ if (!function_exists('single_audio_upload')) {
         $sign_api = url('api/vod/sign');
         // 写入附件表接口
         $attachment_api = url('api/file/attachment');
+
+
         if ($input == false) {
-            if ($vod_driver == 'tencent') {
+            if ($vod_driver == 'tencent' && $enforce == 'auto') {
                 $html .= <<<EOF
                 <div class="input-group">
                     <input type="hidden" name="{$name}" value="{$audio}" class="form-control attach" autocomplete="off">
@@ -297,7 +300,7 @@ if (!function_exists('single_audio_upload')) {
                 EOF;
             }
         } else {
-            if ($vod_driver == 'tencent') {
+            if ($vod_driver == 'tencent' && $enforce == 'auto') {
                 $html .= <<<EOF
                 <div class="input-group">
                     <input type="text" name="{$name}" value="{$audio}" class="form-control attach" autocomplete="off">
@@ -326,7 +329,7 @@ if (!function_exists('single_audio_upload')) {
             </div>
         EOF;
 
-        if ($vod_driver == 'tencent') {
+        if ($vod_driver == 'tencent' && $enforce == 'auto') {
             // 腾讯云点播方式上传
             // 依赖 <script src="https://cdn-go.cn/cdn/vod-js-sdk-v6/latest/vod-js-sdk-v6.js"></script>
             // 只触发一次
@@ -342,7 +345,7 @@ if (!function_exists('single_audio_upload')) {
             }
         } else {
             // 本地或云存储的方式上传
-            $api = url('api/file/upload');
+            $api = url('api/file/upload', ['enforce' => $enforce]);
             $html .= <<<EOF
             <script>
                 $(function () {
@@ -425,16 +428,19 @@ if (!function_exists('single_audio_upload')) {
 
 if (!function_exists('single_video_upload')) {
     /**
-     * 视频上传(仅支持本地和云点播方式)
+     * 视频上传
+     * @param  string $name      唯一标示
+     * @param  string $video     视频路径
+     * @param  bool $input       是否显示输入框
+     * @param  string $enforce   是否强制本地上传 auto|local
      */
-    function single_video_upload($name, $video, $input = false)
+    function single_video_upload($name, $video, $input = false, $enforce = 'auto')
     {
-
         $upload = "上传视频";
         // 获取视频地址
         $video_path = get_attachment_src($video);
 
-        $api = url('api/file/upload');
+        $api = url('api/file/upload', ['enforce' => $enforce]);
         // 获取是否启用云点播
         $vod_driver = config('extend.VOD_UPLOAD_DRIVER');
         // html 结构体
@@ -449,7 +455,7 @@ if (!function_exists('single_video_upload')) {
         $attachment_api = url('api/file/attachment');
         // 显示输入框
         if ($input == true) {
-            if ($vod_driver == 'tencent') {
+            if ($vod_driver == 'tencent' && $enforce == 'auto') {
                 $html .= <<<EOF
                 <div class="input-group">
                     <input type="text" name="{$name}" value="{$video}" class="form-control attach" autocomplete="off">
@@ -472,7 +478,7 @@ if (!function_exists('single_video_upload')) {
             }
         } else {
             // 不显示输入框
-            if ($vod_driver == 'tencent') {
+            if ($vod_driver == 'tencent' && $enforce == 'auto') {
                 $html .= <<<EOF
                 <div class="input-group">
                     <input type="hidden" name="{$name}" value="{$video}" class="form-control attach">
@@ -497,7 +503,7 @@ if (!function_exists('single_video_upload')) {
         EOF;
 
         // 脚本部分
-        if ($vod_driver == 'tencent') {
+        if ($vod_driver == 'tencent' && $enforce == 'auto') {
             // 腾讯云点播方式上传
             // 依赖 <script src="https://cdn-go.cn/cdn/vod-js-sdk-v6/latest/vod-js-sdk-v6.js"></script>
 
@@ -599,15 +605,14 @@ if (!function_exists('single_file_upload')) {
      * @param  string $name      唯一标示
      * @param  string $audio     音频路径
      * @param  bool $input       是否显示输入框
+     * @param  string $enforce   是否强制本地上传 auto|local
      * @return [type]            [description]
      */
-    function single_file_upload($name, $file, $input = false)
+    function single_file_upload($name, $file, $input = false, $enforce = 'auto')
     {
-
-        $file_path = get_attachment_src($file);
         $upload = '上传文件';
         $delete = '删除';
-        $api = url('api/file/upload');
+        $api = url('api/file/upload', ['enforce' => $enforce]);
         //兼容name数组形式
         $name = preg_replace('/\[.*?\]/', '', $name);
         $html = <<<EOF
@@ -792,7 +797,7 @@ if (!function_exists('get_attachment_src')) {
      * @param $path
      * @return mixed
      */
-    function get_attachment_src($attachment)
+    function get_attachment_src($attachment, $enforce = 'auto')
     {
         //不存在http://
         $not_http_remote = (strpos($attachment, 'http://') === false);
@@ -809,11 +814,12 @@ if (!function_exists('get_attachment_src')) {
             }
             // 初始化上传驱动
             $driver = 'local';
+
             // 获取上传驱动
-            if ($type == 'pic') {
+            if ($type == 'pic' && $enforce == 'auto') {
                 $driver = config('extend.PICTURE_UPLOAD_DRIVER');
             }
-            if ($type == 'file') {
+            if ($type == 'file' && $enforce == 'auto') {
                 $driver = config('extend.FILE_UPLOAD_DRIVER');
             }
             // 获取附件路径
@@ -852,17 +858,6 @@ if (!function_exists('get_attachment_file_id')) {
         $file_id = $Attachment->getFileID($attachment);
 
         return $file_id;
-    }
-}
-
-if (!function_exists('get_attachment_url')) {
-    /**
-     * 获取本地附件目录的根Url
-     * @return string
-     */
-    function get_attachment_url()
-    {
-        return request()->domain() . '/attachment/';
     }
 }
 
