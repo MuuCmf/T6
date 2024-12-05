@@ -98,15 +98,18 @@ class Common extends Base
      */
     protected function initSiteAccessType()
     {
-        
         if (Config::get('system.SITE_ACCESS_TYPE') == 1) {
-            $type = (request()->isJson() || request()->isAjax()) ? 'json' : 'html';
-            if(!is_login()){
-                if($type == 'json'){
-                    return json(['code' => 0, 'data' => 'login', 'msg' => '请先登录']);
-                }
-                if($type == 'html'){
-                    $this->redirect(url('ucenter/common/login'));
+            $app = strtolower(app('http')->getName());
+            $controller = strtolower(request()->controller());
+            if ($app != 'ucenter' && $controller != 'common') {
+                $type = (request()->isJson() || request()->isAjax()) ? 'json' : 'html';
+                if(!is_login()){
+                    if($type == 'json'){
+                        return json(['code' => 0, 'data' => 'login', 'msg' => '请先登录']);
+                    }
+                    if($type == 'html'){
+                        $this->redirect(url('ucenter/common/login'));
+                    }
                 }
             }
         }
