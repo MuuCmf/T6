@@ -250,11 +250,16 @@ class Orders extends Base
     public function weekTotalJson($shopid = 0, $app = '')
     {
         //本周
-        list($start, $end) = weekTime();
+        $start = strtotime("this week monday");
         $week_total = [];
         for ($i = 0; $i < 7; $i++) {
-            $date_start = $start + 86400 * $i;
-            $date_end = $start + 86400 * ($i + 1);
+            if($i == 0){
+                $date_start = $start;
+                $date_end = $start + 86400;
+            }else{
+                $date_start = $start + 86400 * $i;
+                $date_end = $start + 86400 * ($i + 1);
+            }
             $week_total['time'][$i] = '周' . ($i + 1);
             $map = [];
             $map[] = ['create_time', 'between', [$date_start, $date_end]];
