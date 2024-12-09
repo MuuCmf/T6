@@ -187,20 +187,6 @@ class Module extends Base
     }
 
     /**
-     * 检查是否可以访问模块，被用于控制器初始化
-     * @param $name
-     */
-    public function checkCanVisit($name)
-    {
-        $m = $this->getModule($name);
-
-        if (isset($m['is_setup']) && $m['is_setup'] == 0 && $m['name'] == ucfirst($name)) {
-            header("Content-Type: text/html; charset=utf-8");
-            exit('您所访问的应用未安装，禁止访问！');
-        }
-    }
-
-    /**
      * 安装某个模块
      * @param $id
      * @return bool
@@ -425,6 +411,15 @@ class Module extends Base
      */
     public function checkInstalled($name)
     {
+        if ($name == 'admin' 
+            || $name == 'common' 
+            || $name == 'channel' 
+            || $name == 'ucenter'
+            || $name == 'index'
+        ) {
+            return true;
+        }
+
         $m = $this->getModule($name);
         if (!empty($m) && $m['name'] == $name && $m['is_setup'] == 1) {
             return true;

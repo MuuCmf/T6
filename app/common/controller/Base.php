@@ -5,6 +5,7 @@ namespace app\common\controller;
 use think\exception\HttpResponseException;
 use think\facade\Env;
 use think\Response;
+use app\common\model\Module;
 use app\common\model\Member;
 
 /**
@@ -27,6 +28,8 @@ class Base
         $this->app_name = $this->params['app'] ?? App('http')->getName();
         $this->params = request()->param();
         $this->shopid = $this->params['shopid'] ?? 0;
+        //验证应用安装状态
+        $this->appInstalled();
         //记住登录
         $this->initRemberLogin();
     }
@@ -174,6 +177,18 @@ class Base
     {
         if (empty(get_uid())) {
             (new Member())->rembemberLogin($this->shopid);
+        }
+    }
+
+    /**
+     * 检查应用是否已安装
+     * 如果应用未安装，则返回错误信息提示用户先安装应用
+     */
+    protected function appInstalled()
+    {
+        $is_install = (new Module())->checkInstalled($this->app_name);
+        if(!$is_install){
+            return $this->error('您访问的应用未安装');
         }
     }
 
