@@ -15,8 +15,6 @@ use app\common\logic\Config as ConfigLogic;
  */
 class Common extends Base
 {
-    public $module; //请求的应用
-    public $app_name;
     public $muu_config_data;
     public $micro_config_data;
     public $title = '';
@@ -46,8 +44,6 @@ class Common extends Base
         $this->initSiteAccessType();
         //获取shopid
         $this->initShopid();
-        //获取应用名
-        $this->initModuleName();
         //获取系统配置
         $this->initMuuConfig();
         //获取micro模块配置
@@ -121,14 +117,6 @@ class Common extends Base
     protected function initShopid()
     {
         View::assign('shopid', $this->shopid);
-    }
-
-    /**
-     * 实例化应用名称
-     */
-    protected function initModuleName()
-    {
-        $this->module = $this->app_name = input('app') ?? App('http')->getName();
     }
 
     /**

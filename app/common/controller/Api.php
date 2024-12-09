@@ -5,14 +5,10 @@ use think\facade\Config;
 
 class Api extends Base
 {
-    public $module;//请求的应用
-    public $app_name;//应用别名
-
     public function __construct()
     {
         parent::__construct();
         $this->initSiteStatus();
-        $this->initModuleName();
     }
 
     /**
@@ -36,13 +32,5 @@ class Api extends Base
                 throw new \think\exception\HttpResponseException($response);
             }
         }
-    }
-
-    /**
-     * 实例化应用名称
-     */
-    protected function initModuleName()
-    {
-        $this->module = $this->app_name = $this->params['app'] ?? App('http')->getName();
     }
 }

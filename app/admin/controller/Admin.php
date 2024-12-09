@@ -14,11 +14,6 @@ use app\common\model\Module as ModuleModel;
  */
 class Admin extends Base
 {
-    /**
-     * 是否批量验证
-     * @var bool
-     */
-    protected $batchValidate = false;
     protected $title;
     public $isRoot;
     protected $menu = [];

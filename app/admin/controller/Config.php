@@ -1,12 +1,15 @@
 <?php
+
 namespace app\admin\controller;
 
 use think\facade\View;
 use think\facade\Cache;
+use think\exception\ValidateException;
 use app\admin\model\Config as MuuConfigModel;
 // +----------------------------------------------------------------------
 // | TODO:系统设置 站点信息内容包含：站点基本信息 联络和客服信息 版权信息
 // +----------------------------------------------------------------------
+
 /**
  * 后台配置控制器
  */
@@ -36,10 +39,9 @@ class Config extends Admin
             }
             // 清除缓存
             Cache::delete(request()->host() . '_MUUCMF_SYS_CONFIG_DATA', null);
-            return $this->success('保存成功',$config, cookie('__forward__'));
-
-        }else{
-            $id = input('id', 1,'intval');
+            return $this->success('保存成功', $config, cookie('__forward__'));
+        } else {
+            $id = input('id', 1, 'intval');
             View::assign('id', $id);
             // 配置分组
             $type = config('system.CONFIG_GROUP_LIST');
@@ -64,15 +66,15 @@ class Config extends Admin
         $group = input('group', 0);
         /* 查询条件初始化 */
         $map = [];
-        $map[] = ['status','=', 1]; 
+        $map[] = ['status', '=', 1];
         if (isset($_GET['group'])) {
-            $map[] = ['group','=',$group];
+            $map[] = ['group', '=', $group];
         }
         if (isset($_GET['name'])) {
-            $map[] = ['name','like', '%' . (string)input('name') . '%'];
+            $map[] = ['name', 'like', '%' . (string)input('name') . '%'];
         }
 
-        list($list,$page) = $this->commonLists('Config', $map, 'sort,id');
+        list($list, $page) = $this->commonLists('Config', $map, 'sort,id');
         $list = $list->toArray()['data'];
 
         View::assign('group', config('system.CONFIG_GROUP_LIST'));
@@ -92,48 +94,46 @@ class Config extends Admin
     public function edit()
     {
         if (request()->isPost()) {
-            $data = input('');
-            //验证器
-            $validate = $this->validate(
-                [
-                    'name'  => $data['name'],
-                    'title'   => $data['title'],
-                ],[
-                    'name'  => 'require|max:36',
-                    'title'   => 'require',
-                ],[
-                    'name.require' => '标识必须填写',
-                    'name.max'     => '标识最多不能超过36个字符',
-                    'title.require'   => '标题必须填写', 
-                ]
-            );
-            if(true !== $validate){
-                // 验证失败 输出错误信息
-                return $this->error($validate);
-            }
+            $data = input() ?? [];
+            $data['status'] = 1; //默认状态为启用
 
-            $data['status'] = 1;//默认状态为启用
+            //验证器
+            try {
+                validate(
+                    [
+                        'name'  => 'require|max:36',
+                        'title'   => 'require',
+                    ],
+                    [
+                        'name.require' => '标识必须填写',
+                        'name.max'     => '标识最多不能超过36个字符',
+                        'title.require'   => '标题必须填写',
+                    ]
+                )->check($data);
+            } catch (ValidateException $e) {
+                // 验证失败 输出错误信息
+                return $this->error($e->getError());
+            }
 
             $res = $resId = $this->ConfigModel->edit($data);
 
-            if($res){
+            if ($res) {
                 Cache::delete(request()->host() . '_MUUCMF_SYS_CONFIG_DATA', null);
                 //记录行为
                 action_log('update_config', 'config', $resId, is_login());
                 return $this->success('操作成功', $res, Cookie('__forward__'));
-            }else{
+            } else {
                 return $this->error('操作失败');
             }
-            
         } else {
             $id = input('id', 0, 'intval');
             /* 获取数据 */
-            if($id != 0){
+            if ($id != 0) {
                 $info = $this->ConfigModel->find($id);
-            }else{
+            } else {
                 $info = [];
             }
-            
+
             View::assign('type', get_config_type_list());
             View::assign('group', config('system.CONFIG_GROUP_LIST'));
             View::assign('info', $info);
@@ -154,7 +154,7 @@ class Config extends Admin
             return $this->error('参数错误');
         }
 
-        if ($this->ConfigModel->where('id','in', $id)->delete()) {
+        if ($this->ConfigModel->where('id', 'in', $id)->delete()) {
             Cache::delete(request()->host() . '_MUUCMF_SYS_CONFIG_DATA', null);
             //记录行为
             action_log('update_config', 'config', $id, is_login());
@@ -163,5 +163,4 @@ class Config extends Admin
             return $this->error('删除失败');
         }
     }
-
 }
