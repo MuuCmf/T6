@@ -2,7 +2,6 @@
 
 namespace app\common\logic;
 
-use app\articles\model\ArticlesComment as CommentModel;
 use app\common\model\Support as SupportModel;
 
 /*
@@ -11,12 +10,10 @@ use app\common\model\Support as SupportModel;
 
 class Comment extends Base
 {
-    protected $CommentModel;
     protected $SupportModel;
 
     public function __construct()
     {
-        $this->CommentModel = new CommentModel();
         $this->SupportModel = new SupportModel();
     }
 
@@ -70,7 +67,6 @@ class Comment extends Base
      */
     public function formatData($data = [])
     {
-
         if (!empty($data)) {
             
             $data['info_id'] = (string)$data['info_id'];
