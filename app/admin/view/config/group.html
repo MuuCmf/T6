@@ -76,13 +76,13 @@
                                     <div class="upload-img-box">
                                         <div class="upload-pre-item popup-gallery">
                                             {notempty name="config.value"}
-                                                <div class="each">
-                                                    <a href="{$config.value|get_attachment_src='attachment'}">
-                                                        <img src="{$config.value|get_attachment_src='attachment'}">
-                                                    </a>
-                                                    <div class="text-center opacity del_btn" ></div>
-                                                    <div onclick="admin_image.removeImage($(this),'{$config.value}')"  class="text-center del_btn">删除</div>
-                                                </div>
+                                            <div class="each">
+                                                <a href="{$config.value|get_attachment_src}">
+                                                    <img src="{$config.value|get_attachment_src}">
+                                                </a>
+                                                <div class="text-center opacity del_btn" ></div>
+                                                <div onclick="admin_image.removeImage($(this),'{$config.value}')"  class="text-center del_btn">删除</div>
+                                            </div>
                                             {/notempty}
                                         </div>
                                     </div>
