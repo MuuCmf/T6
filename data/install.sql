@@ -370,6 +370,7 @@ CREATE TABLE IF NOT EXISTS `muucmf_comment` (
   `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键ID',
   `shopid` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '平台ID',
   `uid` int(11) UNSIGNED NOT NULL COMMENT '用户ID',
+  `to_uid` INT(11) NOT NULL DEFAULT '0' COMMENT '回复至uid',
   `app` varchar(60) NOT NULL DEFAULT '' COMMENT '关联应用的唯一标识',
   `pid` bigint(20) UNSIGNED NOT NULL DEFAULT '0' COMMENT '上级评论ID',
   `info_id` bigint(20) UNSIGNED NOT NULL COMMENT '数据ID',

@@ -358,3 +358,5 @@ ALTER TABLE `muucmf_comment` CHANGE `id` `id` BIGINT(20) UNSIGNED NOT NULL AUTO_
 INSERT INTO `muucmf_extend_config` (`id`, `name`, `type`, `title`, `group`, `extra`, `remark`, `create_time`, `update_time`, `status`, `value`, `sort`) VALUES
 (55, 'VOD_TENCENT_PROCEDURE_NAME', 'string', '自适应转码任务流名称', 1, '', '', 0, 1733203026, 1, 'SimpleAesEncryptPreset', 0);
 
+ALTER TABLE `muucmf_comment` ADD `to_uid` INT(11) NOT NULL DEFAULT '0' COMMENT '回复至uid' AFTER `uid`;
+
