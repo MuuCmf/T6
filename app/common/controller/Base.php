@@ -186,10 +186,21 @@ class Base
      */
     protected function appInstalled()
     {
-        $is_install = (new Module())->checkInstalled($this->app_name);
-        if(!$is_install){
-            return $this->error('您访问的应用未安装');
+        if ($this->app_name == 'admin' 
+            || $this->app_name == 'common' 
+            || $this->app_name == 'channel' 
+            || $this->app_name == 'ucenter'
+            || $this->app_name == 'index'
+        ) {
+            return true;
         }
+
+        $m = (new Module())->getModule($this->app_name);
+        if (!empty($m) && $m['name'] ==$this->app_name && $m['is_setup'] == 1) {
+            return true;
+        }
+
+        return $this->error('您访问的应用未安装');
     }
 
     /**
