@@ -411,9 +411,11 @@ class Module extends Base
      */
     public function checkInstalled($name)
     {
-        if ($name == 'admin' 
-            || $name == 'common' 
-            || $name == 'channel' 
+        if (
+            $name == 'admin'
+            || $name == 'api'
+            || $name == 'common'
+            || $name == 'channel'
             || $name == 'ucenter'
             || $name == 'index'
         ) {

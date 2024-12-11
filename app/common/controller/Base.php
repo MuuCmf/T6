@@ -187,6 +187,7 @@ class Base
     protected function appInstalled()
     {
         if ($this->app_name == 'admin' 
+            || $this->app_name == 'api' 
             || $this->app_name == 'common' 
             || $this->app_name == 'channel' 
             || $this->app_name == 'ucenter'
