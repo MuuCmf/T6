@@ -4880,7 +4880,29 @@ CREATE TABLE IF NOT EXISTS `muucmf_seo_rule` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 AUTO_INCREMENT=10000 ;
 
--- --------------------------------------------------------
+--
+-- 表的结构 `muucmf_share`
+--
+
+DROP TABLE IF EXISTS `muucmf_share`;
+CREATE TABLE IF NOT EXISTS `muucmf_share` (
+  `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+  `shopid` bigint(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '订单所属店铺ID',
+  `app` varchar(60) NOT NULL DEFAULT '' COMMENT '关联应用的唯一标识',
+  `uid` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '用户ID',
+  `to_uid` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '至用户ID',
+  `info_type` varchar(32) NOT NULL COMMENT '关联模型，如：classroom:知识内容，column：专栏',
+  `info_id` bigint(20) UNSIGNED NOT NULL COMMENT '数据ID',
+  `status` tinyint(4) NOT NULL DEFAULT '0' COMMENT '状态，1，正常，0，禁用，-1，已删除',
+  `metadata` mediumtext NOT NULL COMMENT '元数据',
+  `create_time` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '创建时间',
+  `update_time` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '更新时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户分享表' ROW_FORMAT=COMPACT;
+
+--
+-- 表的结构 `muucmf_support`
+--
 
 DROP TABLE IF EXISTS `muucmf_support`;
 CREATE TABLE IF NOT EXISTS `muucmf_support` (
