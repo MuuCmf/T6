@@ -237,10 +237,9 @@ $html_header = <<<EOF
 <title>$html_title</title>
 $install_css
 
-<script type="text/javascript" src="https://cdn.bootcss.com/jquery/1.8.2/jquery.min.js"></script>
-<script type="text/javascript" src="https://cdn.bootcss.com/jquery-mousewheel/3.0.6/jquery.mousewheel.min.js"></script>
-<script src="https://cdn.bootcss.com/iCheck/1.0.2/icheck.min.js"></script>
-<script type="text/javascript" src="https://cdn.bootcdn.net/ajax/libs/jquery-validate/1.11.1/jquery.validate.min.js"></script>
+<script src="/static/common/lib/zui/lib/jquery/jquery.js"></script>
+<script src="/static/common/lib/icheck/icheck.min.js"></script>
+<script src="/static/common/lib/jquery.validate/jquery.validate.min.js"></script>
 </head>
 <body>
 <div class="header">
