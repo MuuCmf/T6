@@ -65,6 +65,21 @@ class Comment extends Base
             
             $data['info_id'] = (string)$data['info_id'];
             $data['content'] = htmlspecialchars_decode($data['content']);
+            // 处理图片
+            if ($data['images'] !== null || $data['images'] !== 'null' || !empty($data['images'])) {
+                $data['images'] = json_decode($data['images'], true);
+                if (is_array($data['images']) && !empty($data['images'])) {
+                    $temp_images = [];
+                    foreach ($data['images'] as $key => $val) {
+                        $thumb = get_thumb_image($val, 60, 60);
+                        $temp_images[$key]['thumb'] = $thumb;
+                        $temp_images[$key]['preview'] = get_attachment_src($val);
+                        $temp_images[$key]['image'] = $val;
+                    }
+                    $data['images'] = $temp_images;
+                }
+            }
+
             $data['status_str'] = $this->_status[$data['status']];
             if (!empty($data['create_time'])) {
                 $data['create_time_str'] = time_format($data['create_time']);

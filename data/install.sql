@@ -376,6 +376,7 @@ CREATE TABLE IF NOT EXISTS `muucmf_comment` (
   `info_id` bigint(20) UNSIGNED NOT NULL COMMENT '数据ID',
   `info_type` varchar(64) NOT NULL COMMENT '数据类型',
   `content` text NOT NULL COMMENT '评论内容',
+  `images` text COMMENT '图片',
   `support` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '点赞数量',
   `create_time` int(11) UNSIGNED NOT NULL COMMENT '创建时间',
   `update_time` int(11) UNSIGNED NOT NULL COMMENT '更新时间',

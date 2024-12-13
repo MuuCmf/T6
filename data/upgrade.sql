@@ -374,3 +374,5 @@ CREATE TABLE IF NOT EXISTS `muucmf_share` (
   `update_time` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '更新时间',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户分享表' ROW_FORMAT=COMPACT;
+
+ALTER TABLE `muucmf_comment` ADD `images` TEXT NULL COMMENT '图片' AFTER `content`;
