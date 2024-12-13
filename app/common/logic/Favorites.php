@@ -25,9 +25,12 @@ class Favorites extends Base
         }
 
         $data['info_id'] = (string)$data['info_id'];
-        //获取应用名
+        // 获取应用名
         $data['module_name'] =  $data['app'] == 'system' ? '系统' : Module::where('name', $data['app'])->value('alias');
-        $data['user_info'] = query_user($data['uid'], ['nickname', 'avatar']); //用户信息
+        // 获取应用信息
+        $data['app_info'] = (new Module())->getModule($data['app']);
+        // 获取用户信息
+        $data['user_info'] = query_user($data['uid'], ['nickname', 'avatar']); 
 
         $data = $this->setTimeAttr($data);
 

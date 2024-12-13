@@ -28,9 +28,20 @@ class History extends Base
 
         //获取应用名
         $data['module_name'] =  $data['app'] == 'system' ? '系统' : Module::where('name', $data['app'])->value('alias');
+        // 获取应用信息
+        $data['app_info'] = (new Module())->getModule($data['app']);
+        // 获取用户信息
         $data['user_info'] = query_user($data['uid'], ['nickname', 'avatar']); //用户信息
 
-        $data = $this->setTimeAttr($data);
+        if (!empty($data['create_time'])) {
+            $data['create_time_str'] = time_format($data['create_time']);
+            $data['create_time_friendly_str'] = friendly_date($data['create_time']);
+        }
+        if (!empty($data['update_time'])) {
+            $data['update_time_str'] = time_format($data['update_time']);
+            $data['update_time_friendly_str'] = friendly_date($data['update_time']);
+        }
+        
         return $data;
     }
 }

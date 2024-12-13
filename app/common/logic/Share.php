@@ -2,6 +2,8 @@
 
 namespace app\common\logic;
 
+use app\common\model\Module;
+
 class Share extends Base
 {
     /**
@@ -24,11 +26,22 @@ class Share extends Base
                     $data['products']['price'] = sprintf("%.2f", $data['products']['price'] / 100);
                 }
             }
-
+            // info_id转字符串
             $data['info_id'] = (string)$data['info_id'];
-            $data['user_info'] = query_user($data['uid'], ['nickname', 'avatar']); //用户信息
 
-            $data = $this->setTimeAttr($data);
+            // 获取应用信息
+            $data['app_info'] = (new Module())->getModule($data['app']);
+            // 获取用户信息
+            $data['user_info'] = query_user($data['uid'], ['nickname', 'avatar']);
+            // 设置时间属性
+            if (!empty($data['create_time'])) {
+                $data['create_time_str'] = time_format($data['create_time']);
+                $data['create_time_friendly_str'] = friendly_date($data['create_time']);
+            }
+            if (!empty($data['update_time'])) {
+                $data['update_time_str'] = time_format($data['update_time']);
+                $data['update_time_friendly_str'] = friendly_date($data['update_time']);
+            }
         }
 
         return $data;

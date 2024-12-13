@@ -2,6 +2,7 @@
 
 namespace app\common\logic;
 
+use app\common\model\Module;
 use app\common\model\Support as SupportModel;
 
 /*
@@ -10,13 +11,6 @@ use app\common\model\Support as SupportModel;
 
 class Comment extends Base
 {
-    protected $SupportModel;
-
-    public function __construct()
-    {
-        $this->SupportModel = new SupportModel();
-    }
-
     /**
      * 内容状态
      */
@@ -80,10 +74,14 @@ class Comment extends Base
                 $data['update_time_str'] = time_format($data['update_time']);
                 $data['update_time_friendly_str'] = friendly_date($data['update_time']);
             }
-
-            $data['user_info'] = query_user($data['uid']);
+            // 获取用户信息
+            $data['user_info'] = query_user($data['uid'], ['nickname', 'avatar']);
+            // 获取to_uid用户数据
+            $data['to_user_info'] = query_user($data['to_uid'], ['nickname', 'avatar']);
+            // 获取应用信息
+            $data['app_info'] = (new Module())->getModule($data['app']);
             //判断是否点赞
-            if ($this->SupportModel->yesSupport($data['shopid'], 'articles', get_uid(), $data['id'], 'Comment')) {
+            if ((new SupportModel())->yesSupport($data['shopid'], 'articles', get_uid(), $data['id'], 'Comment')) {
                 $data['support_yesno'] = 1;
             } else {
                 $data['support_yesno'] = 0;
