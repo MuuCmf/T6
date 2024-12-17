@@ -96,7 +96,7 @@ class Comment extends Base
             // 获取应用信息
             $data['app_info'] = (new Module())->getModule($data['app']);
             //判断是否点赞
-            if ((new SupportModel())->yesSupport($data['shopid'], 'articles', get_uid(), $data['id'], 'Comment')) {
+            if ((new SupportModel())->yesSupport($data['shopid'], $data['app'], get_uid(), $data['id'], 'Comment')) {
                 $data['support_yesno'] = 1;
             } else {
                 $data['support_yesno'] = 0;
