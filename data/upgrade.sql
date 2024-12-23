@@ -376,3 +376,7 @@ CREATE TABLE IF NOT EXISTS `muucmf_share` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户分享表' ROW_FORMAT=COMPACT;
 
 ALTER TABLE `muucmf_comment` ADD `images` TEXT NULL COMMENT '图片' AFTER `content`;
+
+INSERT INTO `muucmf_menu` (`id`, `title`, `pid`, `sort`, `url`, `hide`, `type`, `tip`, `group`, `is_dev`, `icon`, `module`) VALUES
+('867B8F71-CFBE-BB93-2B91-8D03FAA827F6', '状态管理', 'BA26CFE2-13FE-6D73-F21F-EB74D4CC4E74', 0, 'admin/Favorites/status', 0, 0, '', '', 0, '', 'admin'),
+('BA26CFE2-13FE-6D73-F21F-EB74D4CC4E74', '收藏记录', '8F5C83E0-3753-C731-4EEF-5D004137B11D', 92, 'admin/Favorites/list', 0, 0, '', '用户互动', 0, 'sticky-note', 'admin');
