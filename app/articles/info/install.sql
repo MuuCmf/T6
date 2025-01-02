@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS `muucmf_articles_articles` (
   `description` varchar(200) NOT NULL COMMENT '描述',
   `category_id` int(11) unsigned NOT NULL COMMENT '分类ID',
   `cover` varchar(255) NOT NULL DEFAULT '' COMMENT '封面',
-  `content` text COMMENT '内容',
+  `content` mediumtext COMMENT '内容',
   `status` tinyint(2) NOT NULL DEFAULT '0' COMMENT '状态',
   `sort` int(5) NOT NULL DEFAULT '0' COMMENT '排序',
   `position` int(4) NOT NULL DEFAULT '0' COMMENT '定位，展示位',
@@ -26,7 +26,7 @@ CREATE TABLE IF NOT EXISTS `muucmf_articles_articles` (
   `create_time` int(11) unsigned NOT NULL COMMENT '创建时间',
   `update_time` int(11) unsigned NOT NULL COMMENT '更新时间',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=MyISAM AUTO_INCREMENT=54 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='文章';
+) ENGINE=MyISAM AUTO_INCREMENT=100 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC COMMENT='文章';
 
 
 -- -----------------------------
