@@ -23,6 +23,10 @@ class Index extends Common
         $this->_category();
     }
 
+    public function index()
+    {
+        $this->redirect('/articles/lists');
+    }
 
     /**
      * 文章列表
