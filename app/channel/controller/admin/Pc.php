@@ -77,6 +77,12 @@ class Pc extends MuuAdmin
             // 获取应用模块列表
             $moduleModel = new ModuleModel();
             $module_list = $moduleModel->getAll(['is_setup' => 1]);
+            // 移除不支持PC端首页的应用
+            foreach($module_list as $k => $v){
+                if (!file_exists(base_path() . $v['name'] . '/controller/pc/Index.php')) {
+                    unset($module_list[$k]);
+                }
+            };
             View::assign('module_list', $module_list);
 
             $this->setTitle('导航管理');
