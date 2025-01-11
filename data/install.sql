@@ -182,7 +182,7 @@ CREATE TABLE IF NOT EXISTS `muucmf_author` (
   `update_time` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '更新时间',
   PRIMARY KEY (`id`) USING BTREE,
   KEY `uid` (`uid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='创作者表' ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='角色用户表' ROW_FORMAT=COMPACT;
 
 --
 -- 表的结构 `muucmf_author_group`
@@ -190,12 +190,12 @@ CREATE TABLE IF NOT EXISTS `muucmf_author` (
 DROP TABLE IF EXISTS `muucmf_author_group`;
 CREATE TABLE IF NOT EXISTS `muucmf_author_group` (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键ID',
-  `title` varchar(64) NOT NULL COMMENT '创作者分组标题',
+  `title` varchar(64) NOT NULL COMMENT '角色分组标题',
   `status` TINYINT(2) NOT NULL COMMENT '状态',
   `create_time` int(11) NOT NULL COMMENT '创建时间',
   `update_time` int(11) NOT NULL COMMENT '更新时间',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='创作者分组' ROW_FORMAT=COMPACT;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='角色分组' ROW_FORMAT=COMPACT;
 
 --
 -- 表的结构 `muucmf_author_follow`
@@ -4539,7 +4539,7 @@ CREATE TABLE IF NOT EXISTS `muucmf_menu` (
 INSERT INTO `muucmf_menu` (`id`, `title`, `pid`, `sort`, `url`, `hide`, `type`, `tip`, `group`, `is_dev`, `icon`, `module`) VALUES
 ('017966CD-EA9F-1D79-B126-85CC3DE9FA6B', '字段列表', '3C011249-2C51-D40B-19EC-2A8CA4DCFE51', 0, 'admin/field/list', 0, 0, '', '', 0, '', 'admin'),
 ('05929499-FF7F-7615-C021-EDECADD02115', '行为限制列表', 'D18841ED-C034-2E7A-D0B2-92D0AC647179', 41, 'admin/action/limit', 0, 0, '', '行为管理', 0, 'ban', 'admin'),
-('0B25C961-E014-46C4-2F7E-DE3EEF90D9F0', '添加、编辑创作者', 'A7DA37AC-E001-7C55-083F-E03A03FA5CEC', 0, 'admin/author/edit', 0, 0, '', '', 0, '', 'admin'),
+('0B25C961-E014-46C4-2F7E-DE3EEF90D9F0', '添加、编辑角色用户', 'A7DA37AC-E001-7C55-083F-E03A03FA5CEC', 0, 'admin/author/edit', 0, 0, '', '', 0, '', 'admin'),
 ('0CC7C474-337A-476B-8F70-6837990AA884', '顶部导航', 'A4650B98-DAD4-8194-030C-1B2AB4F35CBA', 60, 'channel/admin.pc/navbar', 0, 0, '', 'PC管理', 0, 'sitemap', 'admin'),
 ('0DB5F050-66EA-03D0-CE04-895DB8C50982', '系统升级', '167253B8-B360-E5C8-3F94-F0502E971DAF', 999, 'admin/Update/index', 0, 0, '', '系统升级', 0, 'cloud-download', 'admin'),
 ('0F3D6CB1-0C7E-4292-CF19-6E32FC9D2F8D', '查看行为日志', '113D646E-6D67-CF09-8C2C-4B10D57A6902', 0, 'admin/action/detail', 1, 0, '', '', 0, '', 'admin'),
@@ -4594,7 +4594,7 @@ INSERT INTO `muucmf_menu` (`id`, `title`, `pid`, `sort`, `url`, `hide`, `type`, 
 ('9E841904-2E51-0F7D-61BB-247E05AD6526', '删除菜单', '6E7257F5-44DA-009D-548F-47B895DDC1CB', 0, 'admin/Menu/del', 1, 0, '', '', 0, '', 'admin'),
 ('A4650B98-DAD4-8194-030C-1B2AB4F35CBA', '渠道', '0', 4, 'channel/admin.Account/index', 0, 0, '', '', 0, 'cubes', 'admin'),
 ('A53BEFBB-17F7-56CD-ADF9-3D6754061E70', '积分日志', 'D18841ED-C034-2E7A-D0B2-92D0AC647179', 9, 'admin/Score/log', 0, 0, '', '积分管理', 0, 'calendar', 'admin'),
-('A7DA37AC-E001-7C55-083F-E03A03FA5CEC', '创作者列表', 'D18841ED-C034-2E7A-D0B2-92D0AC647179', 5, 'admin/author/lists', 0, 0, '', '创作者管理', 0, 'user-plus', 'admin'),
+('A7DA37AC-E001-7C55-083F-E03A03FA5CEC', '角色用户列表', 'D18841ED-C034-2E7A-D0B2-92D0AC647179', 5, 'admin/author/lists', 0, 0, '', '角色管理', 0, 'user-plus', 'admin'),
 ('A8DBCB14-BA8A-7888-824F-AF15DF7AF84D', '控制台', 'DA900619-B54E-49E7-8027-21C94ECD6FAC', 0, 'admin/index/index', 0, 0, '', '控制台', 0, 'cog', 'admin'),
 ('A996C9AD-FF89-E8C9-55FB-2F682AC473EA', '清空日志', '113D646E-6D67-CF09-8C2C-4B10D57A6902', 0, 'admin/Action/clear', 1, 0, '', '', 0, '', 'admin'),
 ('AA5E505D-8F99-EFBD-F434-D099109DF291', '提现管理', '8F5C83E0-3753-C731-4EEF-5D004137B11D', 12, 'admin/withdraw/lists', 0, 0, '', '提现管理', 0, 'money', 'admin'),
@@ -4637,7 +4637,7 @@ INSERT INTO `muucmf_menu` (`id`, `title`, `pid`, `sort`, `url`, `hide`, `type`, 
 ('F8D89EF4-792E-B14F-8456-09394EDE7C72', '编辑模块', '20216DCF-1138-09A3-346A-C92E08E33677', 0, 'admin/Module/edit', 1, 0, '', '模块管理', 0, '', 'admin'),
 ('FAD7E420-2621-D50C-48AF-BAEEA2F361F5', '应用商店', '7BE5FA0B-7009-AB46-FE7B-A9364ACAF687', 0, 'admin/Appcloud/index', 0, 0, '', '云端', 0, 'cloud', 'admin'),
 ('FD6493CE-98CB-A5A7-3236-080E11318831', '备份', '2B76BD2C-80AB-319C-CE6E-1B0E6930B3CC', 0, 'admin/Database/export', 0, 0, '备份数据库', '', 0, '', 'admin'),
-('8553C20D-7FCB-4252-15F4-5ECFC0A56092', '创作者类型', 'D18841ED-C034-2E7A-D0B2-92D0AC647179', 4, 'admin/Author/groupList', 0, 0, '', '创作者管理', 0, 'window-restore', 'admin'),
+('8553C20D-7FCB-4252-15F4-5ECFC0A56092', '角色类型', 'D18841ED-C034-2E7A-D0B2-92D0AC647179', 4, 'admin/Author/groupList', 0, 0, '', '角色管理', 0, 'window-restore', 'admin'),
 ('8BBDA16F-8A60-47CE-F4BD-0C3AC4AC7677', '添加、编辑分组', '8553C20D-7FCB-4252-15F4-5ECFC0A56092', 0, 'admin/Author/groupEdit', 0, 0, '', '', 0, '', 'admin'),
 ('7472E236-A4ED-6AC7-712E-3479158D5E21', '抖音小程序配置', 'A4650B98-DAD4-8194-030C-1B2AB4F35CBA', 30, 'channel/admin.DouyinMiniprogram/index', 0, 0, '', '抖音小程序', 0, '', 'admin'),
 ('835882C7-20C1-B7B3-1373-330D0F3E9262', '未结算订单', 'A59BE3B9-EDD9-673E-3FAC-D7AD8FC39F38', 0, 'channel/admin.DouyinMiniprogram/orders', 0, 0, '', '', 0, '', 'admin'),

@@ -382,3 +382,10 @@ INSERT INTO `muucmf_menu` (`id`, `title`, `pid`, `sort`, `url`, `hide`, `type`, 
 ('BA26CFE2-13FE-6D73-F21F-EB74D4CC4E74', '收藏记录', '8F5C83E0-3753-C731-4EEF-5D004137B11D', 92, 'admin/Favorites/list', 0, 0, '', '用户互动', 0, 'sticky-note', 'admin');
 
 ALTER TABLE `muucmf_articles_articles` CHANGE `content` `content` MEDIUMTEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '内容';
+
+UPDATE `muucmf_menu` SET `title` = '添加、编辑角色用户' WHERE `muucmf_menu`.`id` = '0B25C961-E014-46C4-2F7E-DE3EEF90D9F0';
+UPDATE `muucmf_menu` SET `title` = '角色类型', `group` = '角色管理' WHERE `muucmf_menu`.`id` = '8553C20D-7FCB-4252-15F4-5ECFC0A56092';
+UPDATE `muucmf_menu` SET `title` = '角色用户列表', `group` = '角色管理' WHERE `muucmf_menu`.`id` = 'A7DA37AC-E001-7C55-083F-E03A03FA5CEC';
+ALTER TABLE `muucmf_author` COMMENT = '角色用户表';
+ALTER TABLE `muucmf_author_group` CHANGE `title` `title` VARCHAR(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '角色分组标题';
+ALTER TABLE `muucmf_author_group` COMMENT = '角色分组表';

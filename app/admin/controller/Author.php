@@ -81,7 +81,7 @@ class Author extends Admin
         // 记录当前列表页的cookie
         cookie('__forward__', $_SERVER['REQUEST_URI']);
         // 设置页面title
-        $this->setTitle('创作者列表');
+        $this->setTitle('角色用户列表');
         // 输出模板
         return View::fetch();
     }
@@ -133,14 +133,14 @@ class Author extends Admin
                 $data = $this->AuthorLogic->formatData($data);
             }
             View::assign('data', $data);
-            // 获取创作者分组
+            // 获取角色分组
             $group_map = [
                 ['status', '=', 1]
             ];
             $group = $this->AuthorGroupModel->getList($group_map, 999);
             View::assign('group', $group);
             // 设置页面Title
-            $this->setTitle($title . '创作者');
+            $this->setTitle($title . '角色用户');
             // 输出模板
             return View::fetch();
         }
@@ -175,7 +175,7 @@ class Author extends Admin
     }
 
     /**
-     * 检查用户创造者绑定状态，禁止用户绑定多个创造者
+     * 检查角色用户绑定状态，禁止用户绑定多个同类型角色
      */
     public function checkBind()
     {
@@ -238,7 +238,7 @@ class Author extends Admin
         //显示页面
         $builder = new AdminListBuilder();
         $builder
-            ->title('创造者类型')
+            ->title('角色类型')
             ->suggest('')
             ->buttonNew(url('groupEdit'))
             ->setStatusUrl(url('groupStatus'))
@@ -280,9 +280,9 @@ class Author extends Admin
             $builder = new AdminConfigBuilder();
             if ($id != 0) {
                 $profile = $this->AuthorGroupModel->where(['id'=>$id])->find();
-                $builder->title('修改创作者类型');
+                $builder->title('修改角色类型');
             } else {
-                $builder->title('添加创作者类型');
+                $builder->title('添加角色类型');
                 $profile = [];
             }
             
