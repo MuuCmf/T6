@@ -8,14 +8,14 @@
 <ol class="breadcrumb">
 	<i class="icon icon-angle-left"></i>
 	<li>
-		<a href="{:url('lists')}">创作者管理</a>
+		<a href="{:url('lists')}">角色用户管理</a>
 	</li>
 	<li>
-		创作者列表
+		角色用户列表
 	</li>
 </ol>
 <div class="margin-bottom">
-	<a class="btn btn-primary margin-right" href="{:url('edit')}" role="button">+ 新增创作者</a>
+	<a class="btn btn-primary margin-right" href="{:url('edit')}" role="button">+ 新增角色用户</a>
 </div>
 
 <section class="author-list-section">
@@ -81,7 +81,7 @@
 				}
 			})
 		</script>
-        {if empty($lists)}
+        {if empty($lists.data)}
         {include file="common/_empty"/}
         {else /}
 		<div class="items-section clearfix">
