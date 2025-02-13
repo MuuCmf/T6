@@ -10,10 +10,10 @@
 <ol class="breadcrumb">
 	<i class="icon icon-angle-left"></i>
 	<li>
-		<a href="{:url('lists')}">创作者管理</a>
+		<a href="{:url('lists')}">角色用户管理</a>
 	</li>
 	<li>
-		新增/编辑 创作者
+		新增/编辑 角色用户
 	</li>
 </ol>
 
@@ -22,35 +22,35 @@
 
 		<input type="hidden" name="id" value="{$data['id']}">
 		<div class="form-title">
-			<h4>新增/编辑 创作者</h4>
+			<h4>新增/编辑 角色用户</h4>
 		</div>
 		<div class="form-body">
 			<div class="form-group">
 				<label class="col-sm-2 control-label">真实姓名</label>
 				<div class="form-controls col-sm-8">
-					<input type="text" class="form-control" name="name" placeholder="请填写创作者真实姓名" value="{$data['name']}">
-					<div class="help-block">请填写创作者真实姓名</div>
+					<input type="text" class="form-control" name="name" placeholder="请填写角色用户真实姓名" value="{$data['name']}">
+					<div class="help-block">请填写角色用户真实姓名</div>
 				</div>
 			</div>
 
 			<div class="form-group">
 				<label class="col-sm-2 control-label">简短描述</label>
 				<div class="form-controls col-sm-8">
-					<textarea class="form-control" rows="3" name="description" placeholder="请填写创作者简短描述">{$data['description']}</textarea>
-					<div class="help-block">请填写创作者简短描述</div>
+					<textarea class="form-control" rows="3" name="description" placeholder="请填写角色用户简短描述">{$data['description']}</textarea>
+					<div class="help-block">请填写角色用户简短描述</div>
 				</div>
 			</div>
 
 			<div class="form-group">
 				<label class="col-sm-2 control-label">职称</label>
 				<div class="form-controls col-sm-8">
-					<input type="text" class="form-control" name="professional" placeholder="请填写创作者职称" value="{$data['professional']|default=''}">
+					<input type="text" class="form-control" name="professional" placeholder="请填写角色用户职称" value="{$data['professional']|default=''}">
 					<div class="help-block">如：全栈工程师、原创插画师等</div>
 				</div>
 			</div>
 
 			<div class="form-group">
-				<label class="col-sm-2 control-label">创作者类型</label>
+				<label class="col-sm-2 control-label">角色类型</label>
 				<div class="form-controls col-sm-8">
 					<select name="group_id" class="form-control">
 						<option value="">请选择类型</option>
@@ -62,11 +62,11 @@
 						{/if}
 						{/volist}
 					</select>
-					<div class="help-block">创作者者类型</div>
+					<div class="help-block">请选择角色类型</div>
 				</div>
 			</div>
 			<div class="form-group">
-				<label class="col-sm-2 control-label">创作者图片</label>
+				<label class="col-sm-2 control-label">角色图片</label>
 				<div class="form-controls col-sm-8">
 					{:single_image_upload('cover', $data['cover'])}
 					<div class="help-block">建议尺寸不小于：600*600px的正方形图片</div>
