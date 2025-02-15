@@ -20,9 +20,9 @@ class Module extends Base
             if (empty($item['icon'])) {
                 //图标所在位置为模块静态目录下（推荐）
                 if (file_exists(PUBLIC_PATH . '/static/' . $item['name'] . '/images/icon.png')) {
-                    $item['icon_100'] = $item['icon_200'] = $item['icon_300'] = $item['icon_400'] = '/static/' . $item['name'] . '/images/icon.png';
+                    $item['icon_100'] = $item['icon_200'] = $item['icon_300'] = $item['icon_400'] = request()->domain() . '/static/' . $item['name'] . '/images/icon.png';
                 } else {
-                    $item['icon_100'] = $item['icon_200'] = $item['icon_300'] = $item['icon_400'] = '/static/admin/images/module_default_icon.png';
+                    $item['icon_100'] = $item['icon_200'] = $item['icon_300'] = $item['icon_400'] = request()->domain() . '/static/admin/images/module_default_icon.png';
                 }
             } else {
                 $width = 100;
@@ -34,13 +34,11 @@ class Module extends Base
 
                 if (strpos($item['icon'], 'https://') !== false && file_exists(PUBLIC_PATH . '/static/' . $item['name'] . '/images/icon.png')) {
                     //图标所在位置为模块静态目录下（推荐）
-                    $item['icon_100'] = $item['icon_200'] = $item['icon_300'] = $item['icon_400'] = '/static/' . $item['name'] . '/images/icon.png';
+                    $item['icon_100'] = $item['icon_200'] = $item['icon_300'] = $item['icon_400'] = request()->domain() . '/static/' . $item['name'] . '/images/icon.png';
                 }
             }
 
             // 调整入口路径
-            // TODO逐步废弃module表entry入口配置
-
             if (file_exists(APP_PATH . '/' . $item['name'] . '/info/info.php') && $item['name'] != '.' && $item['name'] != '..') {
                 // 获取配置数据
                 $info = $this->getInfo($item['name']);
