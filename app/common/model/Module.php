@@ -316,14 +316,16 @@ class Module extends Base
 
         if ($withoutData == 0) {
             //如果不保留数据
+            $uninstall_file = '';
             if (file_exists(APP_PATH . $module['name'] . '/info/uninstall.sql')) {
                 $uninstall_file = APP_PATH . $module['name'] . '/info/uninstall.sql';
             }
-            //读取sql语句
-            $uninstallSql = file_get_contents($uninstall_file);
-
+            
             if (empty($uninstallSql)) {
                 return true;
+            }else{
+                //读取sql语句
+                $uninstallSql = file_get_contents($uninstall_file);
             }
 
             $uninstallSql = str_replace("\r", "", $uninstallSql);
