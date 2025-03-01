@@ -18,8 +18,6 @@ if (!function_exists('single_image_upload')) {
         $upload_picture = '上传图片';
         $delete_picture = '删除';
         $api = url('api/file/upload', ['enforce' => $enforce]);
-        //兼容name数组形式
-        $input_name = $name;
 
         $name = preg_replace('/\[.*?\]/', '', $name);
         $html = <<<EOF
@@ -31,7 +29,7 @@ if (!function_exists('single_image_upload')) {
             $html .= <<<EOF
                     <div class="each">
                         <img src="{$image_path}">
-                        <div class="text-center opacity del_btn"></div>
+                        <div class="text-center opacity"></div>
                         <div data-id="{$image}" class="text-center del_btn">{$delete_picture}</div>
                     </div>
     EOF;
@@ -94,7 +92,7 @@ if (!function_exists('single_image_upload')) {
                     $("input[name='{$name}']").parent().parent().find('.upload-pre-item').html(
                         '<div class="each">' +
                         '<img src="'+ data.data.url+'">' +
-                        '<div class="text-center opacity del_btn"></div>' +
+                        '<div class="text-center opacity"></div>' +
                         '<div data-id="'+data.data.attachment+'" class="text-center del_btn">{$delete_picture}</div>'+
                         '</div>'
                     );
@@ -123,7 +121,7 @@ if (!function_exists('single_image_upload')) {
             //移除图片
             $('.single-image-upload').on('click','.del_btn',function(){
                 var id = $(this).data('id');
-                admin_image.removeImage($(this),id);
+                manage_image.removeImage($(this),id);
             })
 
         })
@@ -162,7 +160,7 @@ if (!function_exists('multi_image_upload')) {
                 $html .= '
                             <div class="each">
                                 <img src="' . $path . '">
-                                <div class="text-center opacity del_btn"></div>
+                                <div class="text-center opacity"></div>
                                 <div data-id="' . $aId . '" class="text-center del_btn">' . $delete_picture . '</div>
                             </div>
                         ';
@@ -212,7 +210,7 @@ if (!function_exists('multi_image_upload')) {
                 var ids = $("input[name='{$name}']").val();
                 ids = ids.split(',');
                 if( ids.indexOf(data.data.attachment) == -1){
-                    var rids = admin_image.upAttachVal('add',data.data.attachment, $("[name='{$name}']"));
+                    var rids = manage_image.upAttachVal('add',data.data.attachment, $("[name='{$name}']"));
                     if(rids.length>limit){
                         toast.error({$limit_exceed});
                         return;
@@ -221,7 +219,7 @@ if (!function_exists('multi_image_upload')) {
                     $("input[name='{$name}']").parent().find('.upload-pre-item').append(
                         '<div class="each">'+
                         '<img src="'+ data.data.url+'">'+
-                        '<div class="text-center opacity del_btn"></div>' +
+                        '<div class="text-center opacity"></div>' +
                         '<div data-id="'+data.data.attachment+'" class="text-center del_btn">{$delete_picture}</div>'+
                         '</div>'
                     );
@@ -240,7 +238,7 @@ if (!function_exists('multi_image_upload')) {
             //移除图片
             $('.multi-image-upload').on('click','.del_btn',function(){
                 var id = $(this).data('id');
-                admin_image.removeImage($(this),id);
+                manage_image.removeImage($(this),id);
             })
         });
         </script>

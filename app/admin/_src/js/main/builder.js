@@ -1,4 +1,4 @@
-var admin_image ={
+var manage_image ={
     /**
      *
      * @param obj

@@ -80,8 +80,8 @@
                                                 <a href="{$config.value|get_attachment_src}">
                                                     <img src="{$config.value|get_attachment_src}">
                                                 </a>
-                                                <div class="text-center opacity del_btn" ></div>
-                                                <div onclick="admin_image.removeImage($(this),'{$config.value}')"  class="text-center del_btn">删除</div>
+                                                <div class="text-center opacity"></div>
+                                                <div onclick="manage_image.removeImage($(this),'{$config.value}')"  class="text-center del_btn">删除</div>
                                             </div>
                                             {/notempty}
                                         </div>
@@ -114,7 +114,7 @@
                                                 $("[name='config[{$config.name}]']").val(data.data.attachment);
                                                 $("[name='config[{$config.name}]']").parent().find('.upload-pre-item').html(
                                                         '<div class="each"><a href="'+ data.data.url+'" title="点击查看大图"><img src="'+ data.data.url+'"></a><div class="text-center opacity del_btn" ></div>' +
-                                                        '<div onclick="admin_image.removeImage($(this),\''+ data.data.attachment +'\')"  class="text-center del_btn">删除</div></div>'
+                                                        '<div onclick="manage_image.removeImage($(this),\''+ data.data.attachment +'\')"  class="text-center del_btn">删除</div></div>'
                                                 );
                                             } else {
                                                 handle_ajax(data.msg);

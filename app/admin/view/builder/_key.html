@@ -273,8 +273,8 @@
                     <a href="{$field.value|get_attachment_src}" title="点击查看大图">
                         <img src="{$field.value|get_attachment_src}">
                     </a>
-                    <div class="text-center opacity del_btn" ></div>
-                    <div onclick="admin_image.removeImage($(this),'{$field.value}')"  class="text-center del_btn">删除</div>
+                    <div class="text-center opacity"></div>
+                    <div onclick="manage_image.removeImage($(this),'{$field.value}')"  class="text-center del_btn">删除</div>
                 </div>
             {/notempty}
             </div>
@@ -310,8 +310,8 @@
                     if (data.code) {
                         $("[name='{$field.name}']").val(data.data.attachment);
                         $("[name='{$field.name}']").parent().find('.upload-pre-item').html(
-                                '<div class="each"><a href="'+ data.data.url +'" data-toggle="lightbox" title="显示大图"><img src="'+ data.data.url +'"></a><div class="text-center opacity del_btn" ></div>' +
-                                    '<div onclick="admin_image.removeImage($(this),\''+data.data.attachment+'\')" class="text-center del_btn">删除</div>' +
+                                '<div class="each"><a href="'+ data.data.url +'" data-toggle="lightbox" title="显示大图"><img src="'+ data.data.url +'"></a><div class="text-center opacity"></div>' +
+                                    '<div onclick="manage_image.removeImage($(this),\''+data.data.attachment+'\')" class="text-center del_btn">删除</div>' +
                                 '</div>'
                         );
                         //重启webuploader,可多次上传
@@ -351,8 +351,8 @@
                                 <a href="{$aId|get_attachment_src}" data-toggle="lightbox" title="显示大图">
                                     <img src="{$aId|get_attachment_src}">
                                 </a>
-                                <div class="text-center opacity del_btn" ></div>
-                                <div onclick="admin_image.removeImage($(this),'{$aId}')"  class="text-center del_btn">
+                                <div class="text-center opacity"></div>
+                                <div onclick="manage_image.removeImage($(this),'{$aId}')"  class="text-center del_btn">
                                     删除
                                 </div>
                             </div>
@@ -398,7 +398,7 @@
                     attachs = attachs.split(',');
 
               if(attachs.indexOf(data.data.attachment) == -1){
-                    var rids = admin_image.upAttachVal('add',data.data.attachment, $("[name='{$field.name}']"));
+                    var rids = manage_image.upAttachVal('add',data.data.attachment, $("[name='{$field.name}']"));
                   if(rids.length>limit){
                       toast.error('超过图片限制');
                       return;
@@ -408,8 +408,8 @@
                         '<a href="'+ data.data.url+'" data-toggle="lightbox" title="显示大图">'+
                         '   <img src="'+ data.data.url+'">'+
                         '</a>'+
-                        '<div class="text-center opacity del_btn" ></div>' +
-                            '<div onclick="admin_image.removeImage($(this),\''+data.data.attachment+'\')" class="text-center del_btn">删除</div>'+
+                        '<div class="text-center opacity" ></div>' +
+                            '<div onclick="manage_image.removeImage($(this),\''+data.data.attachment+'\')" class="text-center del_btn">删除</div>'+
                         '</div>'
                     );
                 }else{

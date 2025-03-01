@@ -291,11 +291,16 @@
 			}
 
 			.opacity {
+				position: absolute;
+				bottom: 0;
+				left: 0;
+				right: 0;
 				filter: alpha(opacity=50);
 				-moz-opacity: 0.5;
 				-khtml-opacity: 0.5;
 				background: #000;
 				opacity: 0.5;
+				height: 30px;
 			}
 		}
 	}
@@ -338,11 +343,16 @@
 			}
 
 			.opacity {
+				position: absolute;
+				bottom: 0;
+				left: 0;
+				right: 0;
 				filter: alpha(opacity=50);
 				-moz-opacity: 0.5;
 				-khtml-opacity: 0.5;
 				background: #000;
 				opacity: 0.5;
+				height: 30px;
 			}
 		}
 	}
@@ -435,11 +445,16 @@
 			}
 
 			.opacity {
+				position: absolute;
+				bottom: 0;
+				left: 0;
+				right: 0;
 				filter: alpha(opacity=50);
 				-moz-opacity: 0.5;
 				-khtml-opacity: 0.5;
 				background: #000;
 				opacity: 0.5;
+				height: 30px;
 			}
 		}
 	}
