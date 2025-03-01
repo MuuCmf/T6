@@ -20,7 +20,7 @@
          folder instead of downloading all of them to reduce the load. -->
   <link rel="stylesheet" href="__STATIC__/admin/css/skins/_all-skins.min.css">
   <!-- Muu BASE style -->
-  <link href="__STATIC__/admin/css/main.min.css" rel="stylesheet">
+  <link href="__STATIC__/admin/css/main.min.css?v={$version}" rel="stylesheet">
   <script src="__STATIC__/common/lib/zui/lib/jquery/jquery.js"></script>
   {block name="style"}{/block}
 </head>
@@ -54,7 +54,7 @@
 <script src="__STATIC__/common/lib/jquery.lazyload/jquery.lazyload.js"></script>
 <script src="__STATIC__/admin/js/adminlte.min.js"></script>
 <!-- main -->
-<script src="__STATIC__/admin/js/main.min.js"></script>
+<script src="__STATIC__/admin/js/main.min.js?v={$version}"></script>
 {block name="script"}{/block}
 <script>
 $(document).ready(function(){
