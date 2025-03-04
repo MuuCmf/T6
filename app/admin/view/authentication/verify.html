@@ -1,4 +1,4 @@
-<form action="{:url('authentication')}" method="post" class="form-horizontal ajax-form form-authentication">
+<form action="{:url('verify')}" method="post" class="form-horizontal ajax-form form-authentication-verify">
 	<input type="hidden" name="id" class="form-control" value="{$data['id']}" />
 	<input type="hidden" name="uid" class="form-control" value="{$data['uid']}" />
 	<div class="form-body">
@@ -7,6 +7,13 @@
 			<label class="col-sm-2 control-label">姓名</label>
 			<div class="form-controls col-sm-8">
 				<div class="text">{$data['name']}</div>
+			</div>
+		</div>
+
+        <div class="form-group">
+			<label class="col-sm-2 control-label">证件类型</label>
+			<div class="form-controls col-sm-8">
+				<div class="text">{$data['card_type_str']}</div>
 			</div>
 		</div>
 

@@ -4656,9 +4656,10 @@ INSERT INTO `muucmf_menu` (`id`, `title`, `pid`, `sort`, `url`, `hide`, `type`, 
 ('06AEED1A-9E0E-97B9-6395-EA9959B2BE6E', '状态管理', 'A7DA37AC-E001-7C55-083F-E03A03FA5CEC', 0, 'admin/Author/status', 0, 0, '', '', 0, '', 'admin'),
 ('C3F2915A-B874-B3DB-3FD2-8743E5ABF242', '企业微信配置', 'A4650B98-DAD4-8194-030C-1B2AB4F35CBA', 26, 'channel/admin.WechatWork/config', 0, 0, '', '企业微信', 0, 'wechat', 'admin'),
 ('FF8D1924-A5EC-7830-B6BA-C0DA6C8B9CBF', '用户选择', 'DA4333DF-D814-819B-D657-401FE5153AB4', 0, 'admin/Member/chooseUser', 0, 0, '', '', 0, '', 'admin'),
-('89CBF0B3-DBEF-6AFC-88BF-B888148AA87A', '实名认证', 'DA4333DF-D814-819B-D657-401FE5153AB4', 0, 'admin/Member/authentication', 0, 0, '', '', 0, '', 'admin'),
 ('867B8F71-CFBE-BB93-2B91-8D03FAA827F6', '状态管理', 'BA26CFE2-13FE-6D73-F21F-EB74D4CC4E74', 0, 'admin/Favorites/status', 0, 0, '', '', 0, '', 'admin'),
-('BA26CFE2-13FE-6D73-F21F-EB74D4CC4E74', '收藏记录', '8F5C83E0-3753-C731-4EEF-5D004137B11D', 92, 'admin/Favorites/list', 0, 0, '', '用户互动', 0, 'sticky-note', 'admin');
+('BA26CFE2-13FE-6D73-F21F-EB74D4CC4E74', '收藏记录', '8F5C83E0-3753-C731-4EEF-5D004137B11D', 92, 'admin/Favorites/list', 0, 0, '', '用户互动', 0, 'sticky-note', 'admin'),
+('034108E8-15E1-4538-AADD-9B6516C6F5C0', '实名认证', 'D18841ED-C034-2E7A-D0B2-92D0AC647179', 8, 'admin/Authentication/list', 0, 0, '', '用户管理', 0, 'id-card', 'admin'),
+('072BD3D3-A601-D26D-D54A-0BA4CB2D0DE4', '实名认证审核', '034108E8-15E1-4538-AADD-9B6516C6F5C0', 0, 'admin/Authentication/verify', 0, 0, '', '', 0, '', 'admin');
 
 -- --------------------------------------------------------
 

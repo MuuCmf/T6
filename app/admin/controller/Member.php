@@ -2,13 +2,11 @@
 
 namespace app\admin\controller;
 
-use think\Exception;
 use think\facade\Db;
 use think\facade\View;
 use app\admin\builder\AdminConfigBuilder;
 use app\common\model\Member as MemberModel;
 use app\common\model\MemberSync as MemberSyncModel;
-use app\common\model\MemberAuthentication as AuthenticationModel;
 use app\admin\model\AuthGroup;
 use app\common\model\ScoreLog as ScoreLogModel;
 use app\common\model\ScoreType as ScoreTypeModel;
@@ -54,24 +52,24 @@ class Member extends Admin
         }
 
         //排序
-        $sort = input('order', 'create_time', 'text');
-        $order = '';
-        if ($sort == 'uid') {
-            $order = 'uid desc';
+        $order = input('order', 'create_time', 'text');
+        $order_type = '';
+        if ($order == 'uid') {
+            $order_type = 'uid desc';
         }
-        if ($sort == 'create_time') {
-            $order = 'create_time desc';
+        if ($order == 'create_time') {
+            $order_type = 'create_time desc';
         }
-        if ($sort == 'last_login_time') {
-            $order = 'last_login_time desc';
+        if ($order == 'last_login_time') {
+            $order_type = 'last_login_time desc';
         }
-        if ($sort == 'login') {
-            $order = 'login desc';
+        if ($order == 'login') {
+            $order_type = 'login desc';
         }
         $map[] = ['status', '>=', 0];
         // 每页显示数量
         $rows = input('rows', 15, 'intval');
-        $list = $this->MemberModel->where($map)->order($order)->paginate(['list_rows' => $rows, 'query' => request()->param()], false);
+        $list = $this->MemberModel->where($map)->order($order_type)->paginate(['list_rows' => $rows, 'query' => request()->param()], false);
         $pager = $list->render();
         $list = $list->toArray();
         $list_arr = $list['data'];
@@ -332,71 +330,6 @@ class Member extends Admin
             return $this->success($title . '成功');
         } else {
             return $this->error($title . '失败');
-        }
-    }
-
-    /**
-     * 用户认证
-     */
-    public function authentication()
-    {
-        $uid = input('uid', 0, 'intval');
-        if (request()->isPost()) {
-            $id = input('id', '=', 'intval');
-            $status = input('status', 0, 'intval');
-            $uid = input('uid', '=', 'intval');
-            $reason = input('reason', '', 'text');
-
-            $authenticationModel = new AuthenticationModel();
-            Db::startTrans();
-            try {
-                //写入数据
-                $data = [
-                    'id' => $id,
-                    'shopid' => $this->shopid,
-                    'uid' => $uid,
-                    'status' => $status
-                ];
-                if ($status == -1) {
-                    $data['reason'] = $reason;
-                }
-
-                $res = $authenticationModel->edit($data);
-                if (!$res) {
-                    throw new Exception('数据写入失败');
-                }
-
-                // 更改用户表认证状态值
-                $res = $this->MemberModel->edit([
-                    'shopid' => $this->shopid,
-                    'uid' => $uid,
-                    'authentication' => $status
-                ]);
-                if (!$res) {
-                    throw new Exception('数据写入失败');
-                }
-            } catch (Exception $e) {
-                Db::rollback();
-                return $this->error('发生错误：' . $e->getMessage());
-            }
-            Db::commit();
-            //返回提示
-            return $this->success('提交成功！', $res);
-        } else {
-            // 查询用户认证数据
-            $map = [
-                ['shopid', '=', $this->shopid],
-                ['uid', '=', $uid]
-            ];
-
-            $authenticationModel = new AuthenticationModel();
-            $data = $authenticationModel->where($map)->find();
-            if (!empty($data)) {
-                $data = $authenticationModel->handle($data);
-                View::assign('data', $data);
-            }
-
-            return View::fetch();
         }
     }
 

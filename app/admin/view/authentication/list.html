@@ -1,0 +1,159 @@
+{extend name="common/main"/}
+
+{block name="body"}
+<div class="authentication-list-section">
+    <div class="main-title">
+        <h2>实名认证列表</h2>
+    </div>
+    <div class="button-box row clearfix">
+        <!-- 高级搜索 -->
+        <div class="search-form col-md-6">
+            <div class="" style="line-height: 32px;width:400px;">
+                <div class="input-group">
+                    <input type="text" name="search" class="search-input form-control" value="{:input('search')}"
+                                placeholder="用户名/昵称/Email/手机/UID">
+                    <span class="input-group-btn">
+                        <a class="btn btn-default" href="javascript:;" id="search" url="{:url('list')}">
+                            <i class="icon-search"></i>
+                        </a>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="status-nav" data-status="{$status}">
+        <div class="status-nav" data-status="{$status}">
+            <a class="all btn" href="{:url('list')}">
+                全部
+            </a>
+            <a class="status2 btn" href="{:url('list', ['status'=>2])}">
+                已实名
+            </a>
+            <a class="status1 btn" href="{:url('list', ['status'=>1])}">
+                未审核
+                {if $status == 1 && $list.total > 0}
+                <span class="label label-badge label-danger">{$list.total}</span>
+                {/if}
+            </a>
+            <a class="status-1 btn" href="{:url('list', ['status'=>-1])}">
+                审核未通过 
+            </a>
+        </div>
+    </div>
+    <script>
+        $(function(){
+            var status = $('.status-nav').data('status');
+            // console.log(status);
+            $('.status-nav .btn').removeClass('btn-info');
+            if(status == 'all'){
+                $('.status-nav .all').addClass('btn-info');
+            }
+            if(status == 2){
+                $('.status-nav .status2').addClass('btn-info');
+            }
+            if(status == 1){
+                $('.status-nav .status1').addClass('btn-info');
+            }
+            if(status == -1){
+                $('.status-nav .status-1').addClass('btn-info');
+            }
+        })
+    </script>
+    <!-- 数据列表 -->
+    <div class="data-table with-padding">
+
+        {notempty name="list.data"}
+        <table class="table table-bordered table-striped user-table muu-table">
+            <thead>
+            <tr>
+                <th class="row-selected row-selected">
+                    <input type="checkbox" class="check-all" id="check-all">
+                    <label for="check-all"></label>
+                </th>
+                <th class="">{:lang('UID')}</th>
+                <th class="">头像/昵称</th>
+                <th class="">真实姓名</th>
+                <th class="">证件类型</th>
+                <th class="">创建时间</th>
+                <th>操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            {volist name="list.data" id="vo"}
+                <tr>
+                    <td>
+                        <input class="ids" id="user-{$vo.uid}" type="checkbox" name="ids[]" value="{$vo.uid}"/>
+                        <label for="user-{$vo.uid}"></label>
+                    </td>
+                    <td>{$vo.uid}</td>
+                    <td>
+                        <a href="{:url('admin/Member/detail',['uid'=>$vo['uid']])}">
+                            <div class="avatar">
+                                <img src="{$vo['avatar64']}">
+                            </div>
+                            <div class="title text-ellipsis">{$vo.nickname|text}</div>
+                        </a>
+                    </td>
+                    <td>{$vo.name}</td>
+                    <td>{$vo.card_type_str}</td>
+                    <td><span>{$vo.create_time_str}</span></td>
+                    <td>
+                        {if $vo.status == 0}
+                        {$vo.status_str}
+                        {/if}
+                        {if $vo.status == 1}
+                        <a type="button" class="btn btn-sm btn-warning" data-remote="{:url('verify',['uid' => $vo['uid']])}" data-toggle="modal" >
+                            {$vo.status_str}
+                        </a>
+                        {/if}
+                        {if $vo.status == 2}
+                        <span class="text-success">{$vo.status_str}</span>
+                        {/if}
+                        {if $vo.status == -1}
+                        <span class="text-danger">{$vo.status_str}</span>
+                        {/if}
+                    </td>
+                </tr>
+            {/volist}
+            </tbody>
+        </table>
+
+        {else/}
+        {include file="common/_empty"/}
+        {/notempty}
+        <!-- 分页 -->
+        <div class="page">
+            {:htmlspecialchars_decode($pager)}
+        </div>
+        <!-- /分页-->
+    </div>
+</div>
+
+{/block}
+{block name="script"}
+<script>
+$(function(){
+    //搜索功能
+    $("#search").click(function () {
+        var url = $(this).attr('url');
+        var query = $('.search-form').find('input').serialize();
+        query = query.replace(/(&|^)(\w*?\d*?\-*?_*?)*?=?((?=&)|(?=$))/g, '');
+        query = query.replace(/^&/g, '');
+        if (url.indexOf('?') > 0) {
+            url += '&' + query;
+        } else {
+            url += '?' + query;
+        }
+        window.location.href = url;
+    });
+    //回车搜索
+    $(".search-input").keyup(function (e) {
+        if (e.keyCode === 13) {
+            $("#search").click();
+            return false;
+        }
+    });
+});
+</script>   
+{/block}

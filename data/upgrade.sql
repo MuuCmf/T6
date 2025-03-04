@@ -389,3 +389,9 @@ UPDATE `muucmf_menu` SET `title` = '角色用户列表', `group` = '角色管理
 ALTER TABLE `muucmf_author` COMMENT = '角色用户表';
 ALTER TABLE `muucmf_author_group` CHANGE `title` `title` VARCHAR(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '角色分组标题';
 ALTER TABLE `muucmf_author_group` COMMENT = '角色分组表';
+
+INSERT INTO `muucmf_menu` (`id`, `title`, `pid`, `sort`, `url`, `hide`, `type`, `tip`, `group`, `is_dev`, `icon`, `module`) VALUES
+('034108E8-15E1-4538-AADD-9B6516C6F5C0', '实名认证', 'D18841ED-C034-2E7A-D0B2-92D0AC647179', 8, 'admin/Authentication/list', 0, 0, '', '用户管理', 0, 'id-card', 'admin'),
+('072BD3D3-A601-D26D-D54A-0BA4CB2D0DE4', '实名认证审核', '034108E8-15E1-4538-AADD-9B6516C6F5C0', 0, 'admin/Authentication/verify', 0, 0, '', '', 0, '', 'admin');
+
+DELETE FROM muucmf_menu WHERE `muucmf_menu`.`id` = '89CBF0B3-DBEF-6AFC-88BF-B888148AA87A';
