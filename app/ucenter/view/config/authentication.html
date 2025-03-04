@@ -1,0 +1,120 @@
+{extend name="../../common/view/main"/}
+{block name="style"}
+<script type="text/javascript" charset="utf-8" src="__STATIC__/common/lib/webuploader/js/webuploader.js"></script>
+<link href="__STATIC__/common/lib/webuploader/css/webuploader.css" type="text/css" rel="stylesheet">
+<link href="__STATIC__/ucenter/css/main.min.css" rel="stylesheet">
+{/block}
+{block name="body"}
+
+<div id="main-container" class="user-config">
+    <div class="container-fixed clearfix">
+        <div class="left-slide">
+            {include file="common/_slide"/}
+        </div>
+        <div class="right-content">
+            <div id="usercenter-content-td ">
+                <div class="config-content authentication-section">
+                    <h2>实名认证</h2>
+                    
+                    {if $data.status == 1 && $force == 0}
+                    <div class="tips">
+                        <h3 class="verify">您的申请正在审核中，请稍后访问！</h3>
+                    </div>
+                    {/if}
+
+                    {if $data.status == 2 && $force == 0}
+                    <div class="tips">
+                        <h3 class="success">已通过实名认证</h3>
+                        <a href="{:url('authentication', ['force' => 1])}" class="btn btn-primary">重新认证</a>
+                    </div>
+                    {/if}
+
+                    {if $data.status == -1 && $force == 0}
+                    <div class="tips">
+                        <h3 class="fail">未通过审核</h3>
+                        <div class="reason">
+                            <h4>原因：</h4>
+                            <div class="">
+                                {$data.reason|default=''}
+                            </div>
+                        </div>
+                        <a href="{:url('authentication', ['force' => 1])}" class="btn btn-primary">重新认证</a>
+                    </div>
+                    {/if}
+
+                    {if empty($data.status) || $force == 1}
+                    <form action="{:Url('ucenter/Config/authentication')}" method="post" class="ajax-form form-horizontal">
+                        <div class="form-group">
+                            <label class="col-xs-2 control-label">真实姓名</label>
+        
+                            <div class="col-xs-10">
+                                <input type="text" class="form-control" value="" name="name" placeholder="请输入真实姓名">
+                            </div>
+                        </div>
+        
+                        <div class="form-group">
+                            <label class="col-xs-2 control-label">证件类型</label>
+        
+                            <div class="col-xs-10">
+                                <select name="card_type" class="form-control">
+                                    <option value="">请选择证件类型</option>
+                                    {volist name="$card_type" id="v"}
+                                    <option value="{$key}">{$v}</option>
+                                    {/volist}
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-xs-2 control-label">证件号码</label>
+                            <div class="col-xs-10">
+                                <input type="text" class="form-control" value="" name="card_no" placeholder="请输入证件号码">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">证件正面</label>
+                            <div class="form-controls col-sm-8">
+                                {:single_image_upload('front', '')}
+                                <div class="help-block">证件照上信息需完整且清晰可辨（无反光、遮挡、水印、证件套、logo等）</div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label">证件背面</label>
+                            <div class="form-controls col-sm-8">
+                                {:single_image_upload('back', '')}
+                                <div class="help-block">证件照上信息需完整且清晰可辨（无反光、遮挡、水印、证件套、logo等）</div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-sm-offset-2 col-xs-10">
+                                <p class="text-danger" id="submitTip"></p>
+                                <button type="submit" class="btn btn-primary">保存</button>
+                            </div>
+                        </div>
+                    </form>
+                    {/if}
+                </div>
+            </div>
+        </div>
+        <div class="clearfix"></div>
+    </div>
+</div>
+
+{/block}
+
+{block name="script"}
+<script src="__STATIC__/ucenter/js/main.min.js"></script>
+<script>
+$(function () {
+        $(window).resize(function () {
+            $("#main-container").css("min-height", $(window).height() - 343);
+        }).resize();
+
+        // 设置当前高亮菜单
+        $("#{$tab}").addClass('active');
+    })
+</script>
+{/block}

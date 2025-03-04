@@ -4,9 +4,12 @@ namespace app\common\model;
 class MemberAuthentication extends Base
 {
     protected $autoWriteTimestamp = true;
-    protected $_card_type = [
+
+    public $_card_type = [
         0 => '身份证',
+        1 => '护照',
     ];
+    
     protected $_status  = [
         -1 => '审核未通过',
         0  => '未认证',

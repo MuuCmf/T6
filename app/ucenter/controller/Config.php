@@ -7,12 +7,15 @@ namespace app\ucenter\controller;
 use app\common\model\MemberSync;
 use think\facade\Db;
 use think\facade\View;
+use think\exception\ValidateException;
 use app\common\model\Attachment;
 use app\common\model\Verify;
 use app\common\model\Member;
 use app\common\model\ScoreType;
 use app\common\model\ScoreLog;
 use app\common\model\Action;
+use app\common\model\MemberAuthentication;
+use app\common\validate\Authentication as AuthenticationValidate;
 
 class Config extends Base
 {
@@ -65,9 +68,9 @@ class Config extends Base
             
             //显示页面
             View::assign('user', $user);
-            // $this->_getExpandInfo();
             // 当前方法赋值变量
             View::assign('tab', 'base');
+            $this->setTitle('基本信息');
 
             return View::fetch();
         }
@@ -288,7 +291,7 @@ class Config extends Base
                 return $this->error($commonMemberModel->error);
             }
         } else {
-
+            $this->setTitle('密码修改');
             View::assign('tab', 'password');
             return View::fetch();
         }
@@ -379,7 +382,6 @@ class Config extends Base
     //积分规则
     public function scorerule()
     {
-
         View::assign('tab', 'scorerule');
         $this->setTitle('积分规则');
         return View::fetch();
@@ -414,7 +416,7 @@ class Config extends Base
      */
     public function wechat()
     {
-        if (request()->isAjax()) {
+        if (request()->isPost()) {
             //绑定用户信息
             $params = input('param.');
             //是否绑定过其他账号
@@ -448,6 +450,7 @@ class Config extends Base
 
         View::assign('has_bind', $has_bind);
         View::assign('tab', 'wechat');
+        $this->setTitle('绑定微信');
 
         return View::fetch();
     }
@@ -465,5 +468,83 @@ class Config extends Base
             return $this->success('解除绑定成功');
         }
         return $this->error('解除绑定失败，请稍后再试！');
+    }
+
+    /**
+     * 处理用户身份认证请求
+     *
+     * 此方法用于处理用户提交的身份认证信息，包括姓名、证件类型、证件号码及相关图片。
+     * 如果请求为 POST 方法，将验证输入并尝试保存认证信息。
+     * 成功时返回成功消息，失败时返回错误消息。
+     *
+     * @return \think\response\View|\think\response\Json
+     */
+    public function authentication()
+    {
+        $MemberAuthentication = new MemberAuthentication();
+        $uid = get_uid();
+
+        if (request()->isPost()) {
+            $name = input('name', '', 'trim');
+            $card_type = input('card_type', 0, 'intval');
+            $card_no = input('card_no', '', 'trim');
+            $front = input('front', '', 'trim');
+            $back = input('back', '', 'trim');
+            
+            $data = [
+                'shopid'  => $this->shopid,
+                'uid'     => get_uid(),
+                'name'    => $name,
+                'card_type' => $card_type,
+                'card_no' => $card_no,
+                'front' => $front,
+                'back' => $back,
+                'status' => 1, // 默认未审核状态
+            ];
+
+            // 查询是否已存在
+            $map = [
+                ['shopid', '=', $this->shopid],
+                ['uid', '=', $uid],
+            ];
+            $authentication = $MemberAuthentication->getDataByMap($map);
+            if (!empty($authentication)) {
+                $data['id'] = $authentication['id'];
+            }
+
+            // 数据验证
+            try {
+                validate(AuthenticationValidate::class)->check($data);
+            } catch (ValidateException $e) {
+                // 验证失败 输出错误信息
+                return $this->error($e->getError());
+            }
+
+            $res = $MemberAuthentication->edit($data);
+            if ($res) {
+                return $this->success('提交成功', $res, url('authentication'));
+            }
+            return $this->error('提交失败，请稍后再试！');
+        }
+
+        // 允许编辑参数
+        $force = input('force', 0, 'intval');
+        View::assign('force', $force);
+
+        // 查询用户认证信息
+        $data = $MemberAuthentication->where(['shopid' => $this->shopid, 'uid' => $uid])->find();
+        if (!empty($data)) {
+            $data = $MemberAuthentication->handle($data);
+        }
+        View::assign('data', $data);
+
+        // 证件类型
+        $card_type = $MemberAuthentication->_card_type;
+        View::assign('card_type', $card_type);
+
+        View::assign('tab', 'authentication');
+        $this->setTitle('实名认证');
+
+        return View::fetch();
     }
 }
