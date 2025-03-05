@@ -395,3 +395,5 @@ INSERT INTO `muucmf_menu` (`id`, `title`, `pid`, `sort`, `url`, `hide`, `type`, 
 ('072BD3D3-A601-D26D-D54A-0BA4CB2D0DE4', '实名认证审核', '034108E8-15E1-4538-AADD-9B6516C6F5C0', 0, 'admin/Authentication/verify', 0, 0, '', '', 0, '', 'admin');
 
 DELETE FROM muucmf_menu WHERE `muucmf_menu`.`id` = '89CBF0B3-DBEF-6AFC-88BF-B888148AA87A';
+
+ALTER TABLE `muucmf_orders` ADD `agreed_time` VARCHAR(128) NULL DEFAULT '' COMMENT '约定时间，如约定日期时间发货或服务' AFTER `end_time`;
