@@ -3,26 +3,10 @@
  */
  .author-list-section {
 	.status-nav {
-		li {
-			a {
-				color: #333;
-				&:hover {
-					background-color: #fff;
-					
-				}
-			}
-		}
-		li.active{
-			a {
-				color: #47d1af;
-				background-color: #fff;
-				border-bottom-color: #47d1af;
-				&:hover {
-					background-color: #fff;
-					border-bottom: #47d1af;
-				}
-			}
-		}
+		margin-bottom: 10px;
+        .btn {
+            border: 1px solid #ddd;
+        }
 	}
 
 	.items-section {

@@ -31,30 +31,33 @@ class Author extends Admin
     {
         $map = [];
         $keyword = input('keyword','','text');
-        View::assign('keyword', $keyword);
         if(!empty($keyword)){
             $map[] = ['name', 'like', '%'.$keyword.'%'];
         }
+        View::assign('keyword', $keyword);
+
         $status = input('status', 'all');
         if($status === 'all'){
             $map[] = ['status', '>', -3];
-        }
-        if(intval($status) == 1){
-            $map[] = ['status', '=', 1];
-        }
-        if(intval($status) == 0 && $status != 'all'){
-            $map[] = ['status', '=', 0];
-        }
-        if(intval($status) == -1){
-            $map[] = ['status', '=', -1];
-        }
-        if(intval($status) == -2){
-            $map[] = ['status', '=', -2];
-        }
-        if(intval($status) == -3){
-            $map[] = ['status', '=', -3];
+        }else{
+            if(intval($status) == 1){
+                $map[] = ['status', '=', 1];
+            }
+            if(intval($status) == 0 && $status != 'all'){
+                $map[] = ['status', '=', 0];
+            }
+            if(intval($status) == -1){
+                $map[] = ['status', '=', -1];
+            }
+            if(intval($status) == -2){
+                $map[] = ['status', '=', -2];
+            }
+            if(intval($status) == -3){
+                $map[] = ['status', '=', -3];
+            }
         }
         View::assign('status', $status);
+
         $rows = input('rows',20, 'intval');
         $order_field = input('order_field', 'id', 'text');
         $order_type = input('order_type', 'desc', 'text');
@@ -78,6 +81,11 @@ class Author extends Admin
             return $this->success('success', $lists);
         }
         View::assign('lists',$lists);
+
+        // 获取未审核数量
+        $unverify = $this->AuthorModel->where('status', -1)->count();
+        View::assign('unverify', $unverify);
+        
         // 记录当前列表页的cookie
         cookie('__forward__', $_SERVER['REQUEST_URI']);
         // 设置页面title
@@ -171,6 +179,26 @@ class Author extends Admin
             return $this->success($title . '成功');
         }else{
             return $this->error($title . '失败');
+        }
+    }
+
+    /**
+     * 真实删除
+     * 
+     * 根据传入的ID数组删除对应的作者记录
+     * @access public
+     * @param mixed $ids 要删除的作者ID，支持数组或逗号分隔的字符串
+     * @return json 返回删除操作的结果信息
+     */
+    public function del()
+    {
+        $ids = input('ids/a');
+        !is_array($ids)&&$ids=explode(',',$ids);
+        $res = $this->AuthorModel->where('id', 'in', $ids)->delete();
+        if($res){
+            return $this->success('删除成功');
+        }else{
+            return $this->error('删除失败');
         }  
     }
 
@@ -187,9 +215,9 @@ class Author extends Admin
             ['uid', '=', $uid]
         ]);
         if($res && $res['id'] != $id){
-            return $this->error('该用户已绑定创造者数据');
+            return $this->error('该用户已绑定角色');
         }else{
-            return $this->success('验证成功，允许绑定创造者');
+            return $this->success('验证成功，允许绑定角色');
         }
     }
 

@@ -32,8 +32,8 @@
             </a>
             <a class="status1 btn" href="{:url('list', ['status'=>1])}">
                 未审核
-                {if $status == 1 && $list.total > 0}
-                <span class="label label-badge label-danger">{$list.total}</span>
+                {if $unverify > 0}
+                <span class="label label-badge label-danger">{$unverify}</span>
                 {/if}
             </a>
             <a class="status-1 btn" href="{:url('list', ['status'=>-1])}">

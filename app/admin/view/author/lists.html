@@ -50,6 +50,9 @@
 				</a>
 				<a class="status-1 btn" href="{:url('lists', ['status'=>-1])}">
 					未审核
+					{if $unverify > 0}
+					<span class="label label-badge label-danger">{$unverify}</span>
+					{/if}
 				</a>
 				<a class="status-2 btn" href="{:url('lists', ['status'=>-2])}">
 					审核未通过 
@@ -78,6 +81,9 @@
 				}
 				if(status == -2){
 					$('.status-nav .status-2').addClass('btn-info');
+				}
+				if(status == -3){
+					$('.status-nav .status-3').addClass('btn-info');
 				}
 			})
 		</script>
@@ -111,10 +117,16 @@
                         
                         <a href="{:url('edit', ['id' => $v['id']])}" class="btn btn-sm btn-primary">编辑</a>
                         
+						{if $v['status'] != -3}
                         <a href="{:url('status', ['ids' => $v['id'],'status'=> -3])}" data-confirm="确认执行删除操作？" class="btn btn-sm btn-danger ajax-get">
                             <i class="fa fa-times"></i> 删除
                         </a>
-                        
+						{/if}
+						{if $v['status'] == -3}
+                        <a href="{:url('del', ['ids' => $v['id']])}" data-confirm="确认执行删除操作？" class="btn btn-sm btn-danger ajax-get">
+                            <i class="fa fa-times"></i> 彻底删除
+                        </a>
+                        {/if}
                     </div>
                 </div>
             </div>

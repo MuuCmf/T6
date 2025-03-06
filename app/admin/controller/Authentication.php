@@ -89,10 +89,14 @@ class Authentication extends Admin
             $v = $this->AuthenticationModel->handle($v);
         }
         unset($v);
-
-        $this->setTitle('实名认证列表');
         View::assign('pager', $pager);
         View::assign('list', $list);
+
+        // 获取未审核的认证数量
+        $unverify = $this->AuthenticationModel->where('status', '=', 1)->count();
+        View::assign('unverify', $unverify);
+
+        $this->setTitle('实名认证列表');
         // 记录当前列表页的cookie
         cookie('__forward__', $_SERVER['REQUEST_URI']);
 
