@@ -264,7 +264,7 @@
                 callback();
             }
             //关闭模态框
-            $('[data-dismiss="modal"]').click();
+            $('#tip_Modal [data-dismiss="modal"]').click();
             //移除dom
             $('#tip_Modal').remove();
             $('.modal-backdrop').remove();

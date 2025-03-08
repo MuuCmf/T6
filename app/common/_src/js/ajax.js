@@ -227,7 +227,7 @@
         //$('#tip_Modal').remove();
         if($('#tip_Modal').length > 0){
             //return false;
-            $('#tio_Modal').remove();
+            $('#tip_Modal').remove();
         }
         if(confirmText == ''){
             confirmText = '确认执行该操作？';
@@ -279,7 +279,7 @@
                 $('#tip_Modal').remove();
             }
             //关闭模态框
-            $('[data-dismiss="modal"]').click();
+            $('#tip_Modal [data-dismiss="modal"]').click();
             //移除dom
             $('#tip_Modal').remove();
             $('.modal-backdrop').remove();
