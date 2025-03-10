@@ -1,0 +1,308 @@
+{extend name="common/main"/}
+{block name="style"}
+<link href="__STATIC__/common/lib/webuploader/css/webuploader.css" type="text/css" rel="stylesheet">
+<link href="__STATIC__/common/lib/cropper/cropper.min.css" rel="stylesheet">
+{/block}
+{block name="body"}
+<div class="main-title">
+    <h2>用户资料管理</h2>
+</div>
+
+<div class="with-padding">
+    
+    <section class="member-edit-section">
+        <div class="tab-wrap">
+            <ul class="nav nav-simple tab-menu">
+                <li class="active"><a data-tab href="#tabBase">基础信息</a></li>
+                <li><a data-tab href="#tabScore">积分设置</a></li>
+                <li><a data-tab href="#tabAuthgroup">权限组</a></li>
+            </ul>
+        </div>
+
+        <form action="" method="post" class="form-horizontal ajax-form" role="form">
+
+            <input type="hidden" name="uid" value="{$member['uid']}">
+
+            <div class="form-body">
+                <div class="tab-content">
+                    <!--基础信息-->
+                    <div class="tab-pane active" id="tabBase">
+                        <div class="builder_item">
+                            <label class="item-label">头像</label>
+                            <div class="form-controls">
+                                <div class="avatar-view">
+                                    <input type="hidden" name="avatar" value="{$member['avatar']}">
+                                    <img src="{$member.avatar256}" alt="">
+                                </div>
+
+                                <div class="avatar-upload-box">
+                                    <button type="button" class="btn btn-info btn-block" data-toggle="modal"
+                                        data-target="#avatar-modal">
+                                        更换头像
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="builder_item">
+                            <label class="item-label">用户名</label>
+                            <div class="form-controls">
+                                <input type="text" class="form-control" name="username" placeholder="请填写用户名"
+                                    value="{$member['username']}">
+                            </div>
+                        </div>
+                        <div class="builder_item">
+                            <label class="item-label">昵称</label>
+                            <div class="form-controls">
+                                <input type="text" class="form-control" name="nickname" placeholder="请填写用户昵称"
+                                    value="{$member['nickname']}">
+                            </div>
+                        </div>
+                        <div class="builder_item">
+                            <label class="item-label">邮箱</label>
+                            <div class="form-controls">
+                                <input type="text" class="form-control" name="email" placeholder="请填写用户邮箱地址"
+                                    value="{$member['email']}">
+                            </div>
+                        </div>
+                        <div class="builder_item">
+                            <label class="item-label">手机号</label>
+                            <div class="form-controls">
+                                <input type="text" class="form-control" name="mobile" placeholder="请填写用户手机号码"
+                                    value="{$member['mobile']}">
+                            </div>
+                        </div>
+
+                        <div class="builder_item">
+                            <label class="item-label">性别</label>
+                            <div class="controls">
+                                {if $member.sex == 0}
+                                <input id="id_sex_0" name="sex" value="0" type="radio" checked>
+                                <label for="id_sex_0"> 不详</label>
+                                <input id="id_sex_1" name="sex" value="1" type="radio">
+                                <label for="id_sex_1"> 男</label>
+                                <input id="id_sex_2" name="sex" value="2" type="radio">
+                                <label for="id_sex_2"> 女</label>
+                                {/if}
+                                {if $member.sex == 1}
+                                <input id="id_sex_0" name="sex" value="0" type="radio">
+                                <label for="id_sex_0"> 不详</label>
+                                <input id="id_sex_1" name="sex" value="1" type="radio" checked>
+                                <label for="id_sex_1"> 男</label>
+                                <input id="id_sex_2" name="sex" value="2" type="radio">
+                                <label for="id_sex_2"> 女</label>
+                                {/if}
+                                {if $member.sex == 2}
+                                <input id="id_sex_0" name="sex" value="0" type="radio">
+                                <label for="id_sex_0"> 不详</label>
+                                <input id="id_sex_1" name="sex" value="1" type="radio">
+                                <label for="id_sex_1"> 男</label>
+                                <input id="id_sex_2" name="sex" value="2" type="radio" checked>
+                                <label for="id_sex_2"> 女</label>
+                                {/if}
+                            </div>
+                        </div>
+
+                        <div class="builder_item">
+                            <label class="item-label">状态</label>
+                            <div class="controls">
+                                {if $member.status == 1}
+                                <input id="id_status_1" name="status" value="1" type="radio" checked>
+                                <label for="id_status_1"> 启用</label>
+                                <input id="id_status_0" name="status" value="0" type="radio">
+                                <label for="id_status_0"> 禁用</label>
+                                {else /}
+                                <input id="id_status_1" name="status" value="1" type="radio">
+                                <label for="id_status_1"> 启用</label>
+                                <input id="id_status_0" name="status" value="0" type="radio" checked>
+                                <label for="id_status_0"> 禁用</label>
+                                {/if}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--积分设置-->
+                    <div class="tab-pane" id="tabScore">
+                        {volist name="member.score" id="vo"}
+                        <div class="builder_item">
+                            <label class="item-label">{$vo.title}</label>
+                            <div class="form-controls">
+                                <div class="input-group">
+                                    <input type="text" class="form-control" name="score{$vo.id}" placeholder="请填写该积分类型整数值"
+                                    value="{$vo.value}">
+                                    <span class="input-group-addon">{$vo.unit}</span>
+                                </div>
+                            </div>
+                        </div>
+                        {/volist}
+                    </div>
+
+                    <!--权限组设置-->
+                    <div class="tab-pane" id="tabAuthgroup">
+                        <div class="builder_item">
+                            <label class="item-label">权限组</label>
+                            <div class="form-controls">
+                                {volist name="auth_group" id="vo"}
+                                {if $vo.checked == true}
+                                <input type="checkbox" name="auth_group[]" id="auth_group_{$vo.id}" value="{$vo.id}" checked>
+								<label class="checkbox-inline" for="auth_group_{$vo.id}"> {$vo.title}</label>
+                                {else /}
+                                <input type="checkbox" name="auth_group[]" id="auth_group_{$vo.id}" value="{$vo.id}">
+                                <label class="checkbox-inline" for="auth_group_{$vo.id}"> {$vo.title}</label>
+                                {/if}
+                                {/volist}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="builder_item">
+                    <label class="item-label"></label>
+                    <div class="form-controls">
+                        <button type="submit" class="btn btn-lg btn-primary">确认提交</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+
+        <div class="modal fade" id="avatar-modal">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="avatar-header">
+                        <h4 class="avatar-title">上传头像</h4>
+                        <button class="close" data-dismiss="modal">×</button>
+                    </div>
+                    <div class="avatar-body">
+                        <div class="row">
+                            <div class="col-md-9">
+                                <div class="avatar-upload">
+                                    <input class="avatar-data" name="avatar_data" type="hidden">
+                                    <a class="avatar-input" id="upload_avatar" name="avatar_file" type="file">
+                                        上传头像
+                                    </a>
+                                    <p class="description">选择一张本地的图片编辑后上传为头像支持jpg、png、gif图片大小不能超过2m</p>
+                                </div>
+                                <div class="avatar-wrapper">
+                                    <div></div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <p class="avatar-preview-title">头像预览</p>
+                                <div class="avatar-preview preview-sm">
+                                    <img src="{$member.avatar64}">
+                                </div>
+                                <div class="avatar-preview preview-md">
+                                    <img src="{$member.avatar128}">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="avatar-btns">
+                            <button type="button" class="btn btn-primary avatar-save" data-role="avatar_btn">
+                                保存
+                            </button>
+                            <button type="button" class="btn btn-default avatar-cancel" data-dismiss="modal">取消</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+{/block}
+{block name="script"}
+<script type="text/javascript" charset="utf-8" src="__STATIC__/common/lib/webuploader/js/webuploader.js"></script>
+<script src="__STATIC__/common/lib/cropper/cropper.min.js"></script>
+
+<script>
+    //上传头像
+    $(function () {
+        var avatarData = $('[name="avatar_data"]');
+        var path;
+        var uploader = WebUploader.create({
+            // 选完文件后，是否自动上传。
+            auto: false,
+            // swf文件路径
+            swf: 'Uploader.swf',
+            // 文件接收服务端。
+            server: "{:url('api/File/avatar')}",
+            // 选择文件的按钮。可选。
+            // 内部根据当前运行是创建，可能是input元素，也可能是flash.
+            pick: '#upload_avatar',
+            // 只允许选择图片文件。
+            accept: {
+                title: 'Images',
+                extensions: 'gif,jpg,jpeg,bmp,png',
+                mimeTypes: 'image/jpg,image/jpeg,image/png'
+            }
+        });
+        uploader.on('fileQueued', function (file) {
+            uploader.upload();
+            toast.showLoading();
+        });
+        /*上传成功*/
+        uploader.on('uploadSuccess', function (file, ret) {
+            toast.hideLoading();
+
+            if (ret.code == 0) {
+                toast.error(ret.msg);
+                $('.avatar-wrapper').show();
+                $('.avatar-upload').hide();
+            } else {
+                path = ret.data.attachment;
+                var src = ret.data.url;
+                $('.avatar-wrapper').html('<img src="' + src + '" />');
+                $('.avatar-wrapper').show();
+                $('.avatar-upload').hide();
+                $('.avatar-wrapper img').load(function () {
+                    //图片加载完成后初始化裁剪组件
+                    var image = $('.avatar-wrapper img');
+
+                    image.cropper({
+                        aspectRatio: 1,
+                        preview: $('.avatar-preview'),
+                        strict: false,
+                        crop: function (data) {
+                            var json = ['{"x":' + data.detail.x, '"y":' + data
+                                .detail.y, '"height":' + data.detail.height,
+                            '"width":' + data.detail.width, '"rotate":' +
+                            data.detail.rotate + '}'
+                            ].join();
+                            avatarData.val(json);
+                        }
+                    });
+                })
+                //重置队列
+                uploader.reset();
+            }
+        });
+
+        $('[data-role=avatar_btn]').click(function () {
+            var avatarJson = JSON.parse(avatarData.val());
+            var x = parseInt(avatarJson.x);
+            var y = parseInt(avatarJson.y);
+            var w = parseInt(avatarJson.width);
+            var h = parseInt(avatarJson.height);
+
+            var crop = x + ',' + y + ',' + w + ',' + h;
+
+            //检查是否已经裁剪过
+            if (typeof (crop) == 'undefined') {
+                toast.error("还未裁切图片");
+                return;
+            }
+
+            var uid = $('input[name="uid"]').val();
+            //提交到服务器
+            var url = "{:url('edit')}";
+
+            $.post(url, {
+                uid: uid,
+                crop: crop,
+                avatar: path
+            }, function (res) {
+                handle_ajax(res);
+            });
+        })
+    });
+</script>
+{/block}

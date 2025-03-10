@@ -4,12 +4,11 @@ namespace app\admin\controller;
 
 use think\facade\Db;
 use think\facade\View;
-use app\admin\builder\AdminConfigBuilder;
+use app\common\model\Attachment;
 use app\common\model\Member as MemberModel;
 use app\common\model\MemberSync as MemberSyncModel;
 use app\admin\model\AuthGroup;
 use app\common\model\ScoreLog as ScoreLogModel;
-use app\common\model\ScoreType as ScoreTypeModel;
 
 /**
  * 后台用户控制器
@@ -133,37 +132,46 @@ class Member extends Admin
             if (!empty($uid)) {
                 $member_data['uid'] = $uid;
             }
-            $member_data['nickname'] = $data['nickname'];
+
+            // 头像部分处理
+            $crop = input('post.crop', '', 'text');
             $member_data['avatar'] = $data['avatar'];
-            $member_data['username'] = $data['username'];
-            $member_data['email'] = $data['email'];
-            $member_data['mobile'] = $data['mobile'];
-            $member_data['realname'] = $data['realname'];
-            $member_data['sex'] = intval($data['sex']);
-            $member_data['status'] = intval($data['status']);
-            $member_data['status'] = intval($data['status']);
+            if (!empty($crop) && !empty($data['avatar'])) {
+                // 裁切图片
+                $Attachment = new Attachment();
+                $path = $Attachment->cropImage($data['avatar'], $crop);
+                $member_data['avatar'] = $path;
+            } else {
+                // 用户资料
+                $member_data['nickname'] = $data['nickname'];
+                $member_data['username'] = $data['username'];
+                $member_data['email'] = $data['email'];
+                $member_data['mobile'] = $data['mobile'];
+                $member_data['sex'] = intval($data['sex']);
+                $member_data['status'] = intval($data['status']);
 
-            if ($member_data['username'] == '' && $member_data['email'] == '' && $member_data['mobile'] == '') {
-                return $this->error('用户名、邮箱、手机号，至少填写一项！');
-            }
-            $check_nickname = $this->MemberModel->checkNickname($member_data['nickname'], $uid);
-            if ($check_nickname !== true) {
-                return $this->error($check_nickname);
-            }
+                if ($member_data['username'] == '' && $member_data['email'] == '' && $member_data['mobile'] == '') {
+                    return $this->error('用户名、邮箱、手机号，至少填写一项！');
+                }
+                $check_nickname = $this->MemberModel->checkNickname($member_data['nickname'], $uid);
+                if ($check_nickname !== true) {
+                    return $this->error($check_nickname);
+                }
 
-            $check_username = $this->MemberModel->checkUsername($member_data['username'], $uid);
-            if ($check_username !== true) {
-                return $this->error($check_username);
-            }
+                $check_username = $this->MemberModel->checkUsername($member_data['username'], $uid);
+                if ($check_username !== true) {
+                    return $this->error($check_username);
+                }
 
-            $check_email = $this->MemberModel->checkEmail($member_data['email'], $uid);
-            if ($check_email !== true) {
-                return $this->error($check_email);
-            }
+                $check_email = $this->MemberModel->checkEmail($member_data['email'], $uid);
+                if ($check_email !== true) {
+                    return $this->error($check_email);
+                }
 
-            $check_mobile = $this->MemberModel->checkMobile($member_data['mobile'], $uid);
-            if ($check_mobile !== true) {
-                return $this->error($check_mobile);
+                $check_mobile = $this->MemberModel->checkMobile($member_data['mobile'], $uid);
+                if ($check_mobile !== true) {
+                    return $this->error($check_mobile);
+                }
             }
 
             // 写入数据并返回UID
@@ -200,8 +208,10 @@ class Member extends Admin
             /* 积分 end*/
 
             /*用户组 start*/
-            $authGroup = new AuthGroup();
-            $authGroup->addToGroup($uid, $data['auth_group']);
+            if(isset($data['auth_group']) && !empty($data['auth_group'])){
+                $authGroup = new AuthGroup();
+                $authGroup->addToGroup($uid, $data['auth_group']);
+            }
             /*用户组END*/
 
             return $this->success('保存成功', $uid, cookie('__forward__'));
@@ -210,60 +220,26 @@ class Member extends Admin
             // 获取用户数据
             $member = query_user($uid);
 
-            $builder = new AdminConfigBuilder();
-            $builder->title('用户资料管理');
-            $builder->keyUid()
-                ->keySingleImage('avatar', '头像', '')
-                ->keyText('username', '用户名')
-                ->keyText('email', '邮箱')
-                ->keyText('mobile', '手机号')
-                ->keyText('nickname', '昵称')
-                ->keyText('realname', '真实姓名')
-                ->keyRadio('sex', '性别', '', [0 => '不详', 1 => '男', 2 => '女'])
-                ->keyRadio('status', '状态', '', [1 => '启用', 0 => '禁用']);
-            $field_key = ['uid', 'avatar', 'username', 'email', 'mobile', 'nickname', 'realname', 'sex', 'status'];
-
-            /* 积分设置 */
-            $score_key = [];
-            $scoreTypeModel = new ScoreTypeModel();
-            $field = $scoreTypeModel->getTypeList([['status', '=', 1]]);
-            foreach ($field as $vf) {
-                $score_key[] = 'score' . $vf['id'];
-                $builder->keyText('score' . $vf['id'], $vf['title']);
-            }
-            /*积分设置end*/
-
-
-            /*权限组*/
             // 用户拥有的权限组
             $auth = Db::name('auth_group_access')->where(['uid' => $uid])->select();
             $temp_auth_group_arr = [];
             foreach ($auth as $key => $val) {
                 $temp_auth_group_arr[] = $val['group_id'];
             }
-            if (empty($member)) {
-                $member['auth_group'] = 1;
-            } else {
-                $member['auth_group'] = implode(',', $temp_auth_group_arr);
-            }
 
             // 系统设置启用的权限组
-            $auth_group = Db::name('auth_group')->where('status', '=', 1)->select();
-            $auth_group_options = [];
-            foreach ($auth_group as $val) {
-                $auth_group_options[$val['id']] = $val['title'];
+            $auth_group = Db::name('auth_group')->where('status', '=', 1)->select()->toArray();
+            foreach ($auth_group as &$val) {
+                $val['checked'] = in_array($val['id'], $temp_auth_group_arr) ? true : false;
             }
-            $builder->keyCheckBox('auth_group', '权限组', '可以多选', $auth_group_options);
-            /*权限组end*/
+            unset($val);
 
-            $builder->data($member);
-            $builder
-                ->group('基础设置', implode(',', $field_key))
-                ->group('积分设置', implode(',', $score_key))
-                ->group('权限组', 'auth_group')
-                ->buttonSubmit('', '保存')
-                ->buttonBack()
-                ->display();
+            View::assign('member', $member);
+            View::assign('auth_group', $auth_group);
+            // 设置页面TITLE
+            $this->setTitle('用户资料管理');
+
+            return View::fetch();
         }
     }
 

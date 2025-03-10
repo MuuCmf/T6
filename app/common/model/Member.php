@@ -443,6 +443,7 @@ class Member extends Base
                 $auth_g_id = Db::name('auth_group_access')->where(['uid' => $uid])->select()->toArray();
                 foreach ($auth_g_id as $k => $val) {
                     $auth_group = Db::name('auth_group')->where(['id' => $val['group_id']])->value('title');
+                    $member['auth_group'][$k]['id'] = $val['group_id'];
                     $member['auth_group'][$k]['title'] = $auth_group;
                 }
                 unset($val);
