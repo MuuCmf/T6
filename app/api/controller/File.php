@@ -182,6 +182,70 @@ class File extends Api
         }
     }
 
+
+    /**
+     * 获取文件列表
+     * 
+     * @return json 返回文件列表数据
+     * 
+     * 支持以下查询参数:
+     * @param string $keyword 关键字搜索
+     * @param string $driver 存储驱动类型
+     * @param string $type 文件类型
+     * @param int $rows 每页数量,默认20条
+     * @param string $order_field 排序字段,默认id
+     * @param string $order_type 排序方式,默认desc
+     * 
+     * 返回数据包含:
+     * - 基础文件信息
+     * - 腾讯云点播媒体文件额外信息(psign和播放地址)
+     */
+    public function lists()
+    {
+        // 关键字
+        $keyword = input('keyword','','text');
+        // 驱动
+        $driver = input('driver','','text');
+        // 类型
+        $type = input('type','','text');
+        $rows = input('rows',20, 'intval');
+        // 查询条件
+        $map = [
+            ['shopid', '=', 0],
+            ['uid', '=', get_uid()]
+        ];
+        if(!empty($keyword)){
+            $map[] = ['filename', 'like', '%'.$keyword.'%'];
+        }
+        if(!empty($driver)){
+            $map[] = ['driver', '=', $driver];
+        }
+        if(!empty($type)){
+            $map[] = ['type', '=', $type];
+        }
+        // 排序
+        $order_field = input('order_field', 'id', 'text');
+        $order_type = input('order_type', 'desc', 'text');
+        $order = $order_field . ' ' . $order_type;
+        $fields = '*';
+        $lists = $this->Attachment->getListByPage($map, $order, $fields, $rows);
+        $lists = $lists->toArray();
+        
+        foreach($lists['data'] as &$val){
+            if($val['driver'] == 'tcvod'){
+                $data = $this->Attachment->vodMediaHandle($val['file_id'], $val['attachment']);
+                if(!empty($data)) {
+                    $val['psign'] = $data['psign'];
+                    $val['all_media_url'] = $data['all_media_url'];
+                }
+            }
+        }
+        unset($val);
+
+        // 返回数据
+        return $this->success('success', $lists);
+    }
+
     /**
      * 文件数据写入附件表接口
      */

@@ -42,7 +42,7 @@
 
         keyword = keyword || '';
         // 这里仅获取云点播数据
-        var url = '/admin/attachment/lists?page='+page+'&driver=tcvod' + '&type='+type+ '&keyword='+keyword;
+        var url = '/api/file/lists?page='+page+'&driver=tcvod' + '&type='+type+ '&keyword='+keyword;
         $.get(url,function(res){
             //console.log(res);
             if(res.code){
@@ -244,7 +244,7 @@
                 var index = filename.lastIndexOf(".");
                 var suffix = filename.substr(index+1);
                 //接口路径
-                var url = '/admin/attachment/edit';
+                var url = '/api/file/attachment';
                 //异步请求
                 $.ajax({
                     url: url,//请求路径
