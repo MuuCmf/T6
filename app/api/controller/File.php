@@ -212,8 +212,11 @@ class File extends Api
         // 查询条件
         $map = [
             ['shopid', '=', 0],
-            ['uid', '=', get_uid()]
         ];
+        $uid = get_uid();
+        if($uid != 1 && !empty($uid)){
+            $map[] = ['uid', '=', $uid];
+        }
         if(!empty($keyword)){
             $map[] = ['filename', 'like', '%'.$keyword.'%'];
         }
