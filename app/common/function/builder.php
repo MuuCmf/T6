@@ -372,7 +372,7 @@ if (!function_exists('history_log')) {
      * @param int $uid 执行行为的用户id
      * @return boolean
      */
-    function history_log($shopid = 0, $app, $uid, $info_id ,$info_type, $metadata)
+    function history_log($shopid, $app, $uid, $info_id ,$info_type, $metadata)
     { 
         return (new History())->addLog($shopid, $app, $uid, $info_id ,$info_type, $metadata);
     }

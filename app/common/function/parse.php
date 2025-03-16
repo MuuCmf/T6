@@ -228,7 +228,7 @@ if (!function_exists('filter_base64')) {
  * @return string
  */
 if (!function_exists('msubstr')) {
-    function msubstr($str, $start = 0, $length, $charset = "utf-8", $suffix = true)
+    function msubstr($str, $start, $length, $charset = "utf-8", $suffix = true)
     {
         if (function_exists("mb_substr"))
             $slice = mb_substr($str, $start, $length, $charset);

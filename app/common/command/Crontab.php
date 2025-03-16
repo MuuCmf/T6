@@ -1,4 +1,5 @@
 <?php
+
 namespace app\common\command;
 
 use think\console\Command;
@@ -10,9 +11,10 @@ use Workerman\Lib\Timer;
 use Workerman\Worker;
 use app\common\model\Crontab as CrontabModel;
 
-class Crontab extends Command{
+class Crontab extends Command
+{
     protected $interval;
-    protected $CrontabModel;//计划任务模型
+    protected $CrontabModel; //计划任务模型
 
     public function __construct()
     {
@@ -24,7 +26,7 @@ class Crontab extends Command{
     {
         // 指令配置 php think crontab start --d 守护进程启动
         $this->setName('crontab')
-            ->addArgument('status', Argument::REQUIRED, 'start/stop/reload/status/connections')
+            ->addArgument('status', Argument::OPTIONAL, 'start/stop/reload/status/connections', 'start')
             ->addOption('d', null, Option::VALUE_NONE, 'daemon（守护进程）方式启动')
             ->addOption('i', null, Option::VALUE_OPTIONAL, '多长时间执行一次')
             ->setDescription('开启/关闭/重启 定时任务');
@@ -44,6 +46,7 @@ class Crontab extends Command{
 
     protected function execute(Input $input, Output $output)
     {
+        Worker::$pidFile = app()->getRootPath() . 'Crontab.pid';
         $this->init($input, $output);
         //创建定时器任务
         $task = new Worker();
@@ -59,10 +62,10 @@ class Crontab extends Command{
     {
         //查询任务队列
         $map = [
-            ['status','=',1]
+            ['status', '=', 1]
         ];
         $task_list = $this->CrontabModel->where($map)->field('id,shopid,execute,cycle,day,hour,minute')->select()->toArray();
-        foreach ($task_list as $index => $task){
+        foreach ($task_list as $index => $task) {
             //格式化天
             $d = $task['day'];
             //格式化小时
@@ -70,43 +73,43 @@ class Crontab extends Command{
             //格式化分钟
             $i = $task['minute'];
 
-            switch ($task['cycle']){
-                case 'month'://每月执行
+            switch ($task['cycle']) {
+                case 'month': //每月执行
                     $rule = "{$i} {$h} {$d} * *";
                     break;
-                case 'day'://每天执行
+                case 'day': //每天执行
                     $rule = "{$i} {$h} * * *";
                     break;
-                case 'hour'://每小时执行
+                case 'hour': //每小时执行
                     $rule = "{$i} * * * *";
                     break;
                 default:
                     //N段时间执行
-                    switch ($task['cycle']){
-                        case 'day-n'://n天执行
-                            $time_interval = ($d * 24 * 60 *60) + ($h * 60 * 60) + (60 * $i);
+                    switch ($task['cycle']) {
+                        case 'day-n': //n天执行
+                            $time_interval = ($d * 24 * 60 * 60) + ($h * 60 * 60) + (60 * $i);
                             break;
-                        case 'hour-n'://n小时执行
+                        case 'hour-n': //n小时执行
                             $time_interval = ($h * 60 * 60) + (60 * $i);
                             break;
-                        case 'minute-n'://n分钟执行
+                        case 'minute-n': //n分钟执行
                             $time_interval = $i * 60;
                             break;
                         default:
                             $time_interval = 60;
                             break;
                     }
-                    Timer::add($time_interval, function () use ($task){
-                        (new $task['execute'])->handle($task['shopid'],$task['id']);//处理任务
+                    Timer::add($time_interval, function () use ($task) {
+                        (new $task['execute'])->handle($task['shopid'], $task['id']); //处理任务
                     });
                     $rule = false;
                     break;
             }
             //完整日期任务
-            if ($rule){
+            if ($rule) {
                 //加载任务
-                new \Workerman\Crontab\Crontab($rule, function() use ($task){
-                    (new $task['execute'])->handle($task['shopid'],$task['id']);//处理任务
+                new \Workerman\Crontab\Crontab($rule, function () use ($task) {
+                    (new $task['execute'])->handle($task['shopid'], $task['id']); //处理任务
                 });
             }
         }
@@ -117,5 +120,4 @@ class Crontab extends Command{
         //手动暂停定时器
         Worker::stopAll();
     }
-
 }
