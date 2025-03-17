@@ -1,4 +1,5 @@
 <?php
+
 namespace app\channel\controller\admin;
 
 use app\admin\builder\AdminConfigBuilder;
@@ -30,7 +31,7 @@ class DouyinMiniprogram extends MuuAdmin
      */
     public function index()
     {
-        if (request()->isPost()){
+        if (request()->isPost()) {
             $params = input('post.');
             $data = [
                 'id' => 0,
@@ -45,25 +46,25 @@ class DouyinMiniprogram extends MuuAdmin
                 'salt' => $params['salt']
             ];
             $map = [
-                ['shopid' ,'=' ,$this->shopid],
+                ['shopid', '=', $this->shopid],
             ];
             $id = $this->MiniProgramModel->where($map)->value('id');
-            if ($id){
+            if ($id) {
                 $data['id'] = $id;
             }
             $this->MiniProgramModel->edit($data);
             return $this->success('保存成功');
-        }else{
+        } else {
             //查询分组数据
             //查询数据
             $config = $this->MiniProgramModel->where([
-                ['shopid' ,'=' ,$this->shopid],
+                ['shopid', '=', $this->shopid],
             ])->find();
 
             // 设置回调地址
-            $callback_url = url('channel/douyin/callback', ['shopid'=>$this->shopid], false, true);
+            $callback_url = url('channel/douyin/callback', ['shopid' => $this->shopid], false, true);
             $config['callback'] = $callback_url;
-            
+
             $builder = new AdminConfigBuilder();
             $builder->title('抖音小程序配置')->suggest('基于第三方授权各项参数配置');
 
@@ -103,34 +104,34 @@ class DouyinMiniprogram extends MuuAdmin
     {
         $keyword = input('keyword', '', 'text');
         View::assign('keyword', $keyword);
-        $status = input('status') == null?'all':input('status');
+        $status = input('status') == null ? 'all' : input('status');
         View::assign('status', $status);
         $rows = input('rows', 20, 'intval');
 
         // 获取查询条件
         $map = [];
-        if($status == 'all'){
-            $map[] = ['status', 'in', [0,1]];
-        }else{
+        if ($status == 'all') {
+            $map[] = ['status', 'in', [0, 1]];
+        } else {
             $map[] = ['status', '=', $status];
         }
-        
+
         // 获取列表
         $lists = $this->DouyinMpSettleModel->getListByPage($map, 'id DESC', '*', $rows);
         $pager = $lists->render();
         $lists = $lists->toArray();
-        
-        foreach($lists['data'] as &$val){
+
+        foreach ($lists['data'] as &$val) {
             $val = $this->DouyinMpSettleModel->handle($val);
         }
         unset($val);
 
         // ajax请求返回数据
-        if(request()->isAjax()){
+        if (request()->isAjax()) {
             return $this->success('success', $lists);
         }
-        View::assign('pager',$pager);
-        View::assign('lists',$lists);
+        View::assign('pager', $pager);
+        View::assign('lists', $lists);
 
         // 记录当前列表页的cookie
         Cookie('__forward__', $_SERVER['REQUEST_URI']);
@@ -150,7 +151,7 @@ class DouyinMiniprogram extends MuuAdmin
 
         $keyword = input('keyword', '', 'text');
         View::assign('keyword', $keyword);
-        $status = input('status') == null?'all':input('status');
+        $status = input('status') == null ? 'all' : input('status');
         View::assign('status', $status);
         $rows = input('rows', 20, 'intval');
 
@@ -166,30 +167,30 @@ class DouyinMiniprogram extends MuuAdmin
         $lists = $OrdersModel->getListByPage($map, 'id DESC', '*', $rows);
         $pager = $lists->render();
         $lists = $lists->toArray();
-        
-        foreach($lists['data'] as &$val){
+
+        foreach ($lists['data'] as &$val) {
             $val = $OrdersLogic->formatData($val);
             // 是否允许结算
             $val['can_settle'] = 0;
-            if($val['paid_time'] + (86400 *7) < time()){
+            if ($val['paid_time'] + (86400 * 7) < time()) {
                 $val['can_settle'] = 1;
             }
 
             // 查询是否有分账数据
             $val['has_settle'] = 0;
             $has_settle = $this->DouyinMpSettleModel->where('order_no', $val['order_no'])->find();
-            if(!empty($has_settle)){
+            if (!empty($has_settle)) {
                 $val['has_settle'] = 1;
             }
         }
         unset($val);
 
         // ajax请求返回数据
-        if(request()->isAjax()){
+        if (request()->isAjax()) {
             return $this->success('success', $lists);
         }
-        View::assign('pager',$pager);
-        View::assign('lists',$lists);
+        View::assign('pager', $pager);
+        View::assign('lists', $lists);
 
         // 记录当前列表页的cookie
         Cookie('__forward__', $_SERVER['REQUEST_URI']);
@@ -206,7 +207,7 @@ class DouyinMiniprogram extends MuuAdmin
     {
         $order_no = input('order_no', '', 'text');
         $OrdersModel = new OrdersModel();
-        if(!empty($order_no)){
+        if (!empty($order_no)) {
             $order_info = $OrdersModel->where('order_no', $order_no)->find();
             $settle_no = build_order_no();
             // 查询是否已有该订单分账数据
@@ -214,7 +215,7 @@ class DouyinMiniprogram extends MuuAdmin
 
             // 预写入分账表
             $settle_id = 0;
-            if(empty($has_settle)){
+            if (empty($has_settle)) {
                 $settle_id = $this->DouyinMpSettleModel->edit([
                     'shopid' => $this->shopid,
                     'settle_no' => $settle_no,
@@ -223,14 +224,14 @@ class DouyinMiniprogram extends MuuAdmin
                     'status' => 0
                 ]);
             }
-            
+
             // 请求结算分账
             $result = (new DouyinMpService)->settle($settle_no, $order_no);
-            
+
             // "err_no" => 0
             // "err_tips" => "success"
             // "settle_no" => "7147090344914766092"
-            if($result['err_no'] == 0){
+            if ($result['err_no'] == 0) {
                 // 更新结算分账表
                 $this->DouyinMpSettleModel->edit([
                     'id' => $settle_id,
@@ -248,7 +249,7 @@ class DouyinMiniprogram extends MuuAdmin
                 ]);
 
                 return $this->success('手动结算发送成功');
-            }else{
+            } else {
                 return $this->error($result['err_tips']);
             }
         }
@@ -267,9 +268,9 @@ class DouyinMiniprogram extends MuuAdmin
         // 查询分账表数据
         $has_settle = $this->DouyinMpSettleModel->where('order_no', '=', $order_no)->find();
         $settle_no = $has_settle['settle_no'];
-       
+
         $result = (new DouyinMpService)->settleQuery($settle_no);
-        if($result['err_no'] == 0){
+        if ($result['err_no'] == 0) {
             // 更新结算分账表
             $this->DouyinMpSettleModel->edit([
                 'id' => $has_settle['id'],
@@ -283,7 +284,7 @@ class DouyinMiniprogram extends MuuAdmin
             ]);
 
             return $this->success('校验成功');
-        }else{
+        } else {
             return $this->error($result['err_tips']);
         }
     }
@@ -292,8 +293,9 @@ class DouyinMiniprogram extends MuuAdmin
      * @title 模板消息通知
      * @return \think\response\View
      */
-    public function templateMessage(){
-        if (request()->isAjax()){
+    public function templateMessage()
+    {
+        if (request()->isAjax()) {
             $params = request()->post();
             $data = [
                 'switch'      => $params['switch'],
@@ -302,16 +304,16 @@ class DouyinMiniprogram extends MuuAdmin
                 'tmplmsg'     => $params['tmplmsg']
             ];
             $data = json_encode($data);
-            $result = $this->MiniProgramModel->where('shopid',$this->shopid)->save(['tmplmsg' => $data]);
-            if ($result){
+            $result = $this->MiniProgramModel->where('shopid', $this->shopid)->save(['tmplmsg' => $data]);
+            if ($result) {
                 return $this->success('保存成功');
             }
             return $this->error('保存失败，请稍后再试');
         }
-        $type = 'weixin_app';//当前模板消息类型
+        $type = 'douyin_mp'; //当前模板消息类型
         $TemplateMessageLogic = new TemplateMessage();
-        $detail = $this->MiniProgramModel->where('shopid',$this->shopid)->value('tmplmsg');
-        $detail = $TemplateMessageLogic->formatData($detail);//格式化原始数据
+        $detail = $this->MiniProgramModel->where('shopid', $this->shopid)->value('tmplmsg');
+        $detail = $TemplateMessageLogic->formatData($detail); //格式化原始数据
         View::assign([
             'type' => $type,
             'element' => $TemplateMessageLogic->oauth_type[$type],

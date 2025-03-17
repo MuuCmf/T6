@@ -99,7 +99,7 @@ class WechatMiniProgram extends MuuAdmin
             }
             return $this->error('保存失败，请稍后再试');
         }
-        $type = 'weixin_app'; //当前模板消息类型
+        $type = 'weixin_mp'; //当前模板消息类型
         $TemplateMessageLogic = new TemplateMessage();
         $detail = $this->MiniProgramModel->where('shopid', $this->shopid)->value('tmplmsg');
         $detail = $TemplateMessageLogic->formatData($detail); //格式化原始数据

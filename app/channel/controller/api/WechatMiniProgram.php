@@ -1,4 +1,5 @@
 <?php
+
 namespace app\channel\controller\api;
 
 use app\common\controller\Api;
@@ -19,7 +20,7 @@ class WechatMiniProgram extends Api
     protected $MemberSyncModel;
     protected $MemberModel;
     protected $middleware = [
-        'app\\common\\middleware\\CheckAuth' => ['only'=>['bindMobile']],
+        'app\\common\\middleware\\CheckAuth' => ['only' => ['bindMobile']],
     ];
     function __construct()
     {
@@ -29,7 +30,7 @@ class WechatMiniProgram extends Api
         //初始化用户模型
         $this->MemberModel = new Member();
     }
-    
+
     /**
      * code 换取用户信息
      * @param $code
@@ -37,29 +38,29 @@ class WechatMiniProgram extends Api
     public function code($code)
     {
         $result = MiniProgramServer::user($code);
-        if (!isset($result['openid'])){
+        if (!isset($result['openid'])) {
             return $this->error($result['errmsg']);
         }
         //查询是否注册过
         $map = [];
-        $map[] = ['openid','=',$result['openid']];
-        $map[] = ['type','=', 'weixin_mp'];
+        $map[] = ['openid', '=', $result['openid']];
+        $map[] = ['type', '=', 'weixin_mp'];
         $user = $this->MemberSyncModel->getDataByMap($map);
-        if (!empty($user)){
-            $user = query_user($user['uid'],['uid','nickname','avatar','email','mobile','realname','sex','score']);
-            if(is_array($user)){
+        if (!empty($user)) {
+            $user = query_user($user['uid'], ['uid', 'nickname', 'avatar', 'email', 'mobile', 'realname', 'sex', 'score']);
+            if (is_array($user)) {
                 $this->MemberModel->updateLogin($user['uid']);
-                $token = JWTAuth::builder(['uid'=>$user['uid']]);
+                $token = JWTAuth::builder(['uid' => $user['uid']]);
                 $token = 'Bearer ' . $token;
                 $res = [
                     'token'     => $token
                 ];
-                return $this->success('success',$res);
-            }else{
-                return $this->error('error','用户已禁用或删除');
+                return $this->success('success', $res);
+            } else {
+                return $this->error('error', '用户已禁用或删除');
             }
-        }else{
-            return $this->error('error','没有查询到用户信息');
+        } else {
+            return $this->error('error', '没有查询到用户信息');
         }
     }
 
@@ -70,22 +71,22 @@ class WechatMiniProgram extends Api
     {
         $params = input('param.');
         $oauth = MiniProgramServer::user($params['code']);
-        if (!isset($oauth['openid'])){
+        if (!isset($oauth['openid'])) {
             return $this->error($oauth['errmsg']);
         }
         //查询是否注册过
-        $map[] = ['openid','=',$oauth['openid']];
-        $map[] = ['type','=', 'weixin_mp'];
+        $map[] = ['openid', '=', $oauth['openid']];
+        $map[] = ['type', '=', 'weixin_mp'];
         $user = $this->MemberSyncModel->getDataByMap($map);
         // 已登录过
-        if (!empty($user)){
-            $user = query_user($user['uid'],['uid','nickname','avatar','email','mobile','realname','sex','score']);
+        if (!empty($user)) {
+            $user = query_user($user['uid'], ['uid', 'nickname', 'avatar', 'email', 'mobile', 'realname', 'sex', 'score']);
             $this->MemberModel->updateLogin($user['uid']);
-        }else{
+        } else {
             // 未登录过，创建用户
-            $result = MiniProgramServer::decryptData($oauth['session_key'],$params['iv'],$params['encrypted_data']);
+            $result = MiniProgramServer::decryptData($oauth['session_key'], $params['iv'], $params['encrypted_data']);
             $nickname = $result['nickName'];
-            if($nickname == '微信用户'){
+            if ($nickname == '微信用户') {
                 $nickname = rand_nickname(config('system.USER_NICKNAME_PREFIX'));
             }
             $data = [
@@ -100,14 +101,14 @@ class WechatMiniProgram extends Api
             $user = $this->MemberModel->oauth($this->shopid, $data);
         }
 
-        if ($user){
+        if ($user) {
             $this->MemberModel->updateLogin($user['uid']);
-            $token = JWTAuth::builder(['uid'=>$user['uid']]);
+            $token = JWTAuth::builder(['uid' => $user['uid']]);
             $token = 'Bearer ' . $token;
-            return $this->success('success',['token'=>$token]);
+            return $this->success('success', ['token' => $token]);
         }
 
-        return $this->error('需要登录','login');
+        return $this->error('需要登录', 'login');
     }
 
     /**
@@ -119,18 +120,18 @@ class WechatMiniProgram extends Api
         //小程序路径
         $path = input('param.path');
         //二维码url参数
-        $scene = input('param.scene','');
-        $width = input('param.width','500');
+        $scene = input('param.scene', '');
+        $width = input('param.width', '500');
         $option = [
             'page' => $path,
             'width' => $width
         ];
         $result = MiniProgramServer::unlimitQrcode($scene, $option);
         // 发生错误时返回数组
-        if(is_array($result)){
+        if (is_array($result)) {
             return $this->error('error', $result);
         }
-        Header("Content-type: image/jpeg");//直接输出显示jpg格式图片
+        Header("Content-type: image/jpeg"); //直接输出显示jpg格式图片
         echo $result;
     }
 
@@ -145,14 +146,14 @@ class WechatMiniProgram extends Api
         $encrypted = input('encrypted');
         $code_decode = MiniProgramServer::user($code);
         $session_key = $code_decode['session_key'];
-        $data = MiniProgramServer::decryptData($session_key,$iv,$encrypted);
+        $data = MiniProgramServer::decryptData($session_key, $iv, $encrypted);
         //保存手机号
         $res = $this->MemberModel->edit([
             'uid' => $uid,
             'mobile' => $data['phoneNumber']
         ]);
 
-        if ($res){
+        if ($res) {
             return $this->success('绑定手机号成功');
         }
         return $this->error('绑定手机号失败');
@@ -187,7 +188,7 @@ class WechatMiniProgram extends Api
     public function toMiniProgramDetail()
     {
         $id = input('id', 0, 'intval');
-        if(!empty($id)){
+        if (!empty($id)) {
             $TominiprogramModel = new TominiprogramModel();
             $TominiprogramLogic = new TominiprogramLogic();
             $data = $TominiprogramModel->getDataById($id);
@@ -198,5 +199,4 @@ class WechatMiniProgram extends Api
 
         return $this->error('参数错误');
     }
-
 }
