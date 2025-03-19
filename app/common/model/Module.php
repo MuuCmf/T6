@@ -207,6 +207,7 @@ class Module extends Base
             $module = array_merge($module, $info);
         }
 
+        // 导入菜单
         if (file_exists(APP_PATH . $module['name'] . DIRECTORY_SEPARATOR . 'info' . DIRECTORY_SEPARATOR . 'guide.json')) {
             //如果存在guide.json
             $guide = file_get_contents(APP_PATH . $module['name'] . DIRECTORY_SEPARATOR . 'info' . DIRECTORY_SEPARATOR . 'guide.json');
@@ -243,48 +244,49 @@ class Module extends Base
                     }
                 }
             }
+        }
 
-            if (file_exists(APP_PATH . '/' . $module['name'] . '/info/install.sql')) {
-                $install_sql = APP_PATH . '/' . $module['name'] . '/info/install.sql';
+        // 导入sql文件
+        if (file_exists(APP_PATH . '/' . $module['name'] . '/info/install.sql')) {
+            $install_sql = APP_PATH . '/' . $module['name'] . '/info/install.sql';
+            $install_sql = file_get_contents($install_sql);
+            $install_sql = str_replace("\r", "\n", $install_sql);
+            $install_sql = explode(";\n", $install_sql);
+            //系统配置表前缀
+            $prefix = config('database.connections.mysql.prefix');
 
-                $install_sql = file_get_contents($install_sql);
-                $install_sql = str_replace("\r", "\n", $install_sql);
-                $install_sql = explode(";\n", $install_sql);
-                //系统配置表前缀
-                $prefix = config('database.connections.mysql.prefix');
+            foreach ($install_sql as $value) {
 
-                foreach ($install_sql as $value) {
-
-                    $value = trim($value);
-                    if (empty($value)) continue;
-                    if (strpos($value, 'CREATE TABLE') !== false) { //创建表
-                        //获取表名
-                        $name = preg_replace("/[\s\S]*CREATE TABLE IF NOT EXISTS `(\w+)`[\s\S]*/", "\\1", $value);
-                        //获取表前缀
-                        $orginal = preg_replace("/[\s\S]*CREATE TABLE IF NOT EXISTS `([a-zA-Z]+_)[\s\S]*/", "\\1", $value);
-                        //替换表前缀
-                        $value = str_replace(" `{$orginal}", " `{$prefix}", $value);
-                        $msg = "创建数据表{$name}";
-                        if (false === Db::execute($value)) {
-                            throw new Exception($msg . '...失败;');
-                        }
+                $value = trim($value);
+                if (empty($value)) continue;
+                if (strpos($value, 'CREATE TABLE') !== false) { //创建表
+                    //获取表名
+                    $name = preg_replace("/[\s\S]*CREATE TABLE IF NOT EXISTS `(\w+)`[\s\S]*/", "\\1", $value);
+                    //获取表前缀
+                    $orginal = preg_replace("/[\s\S]*CREATE TABLE IF NOT EXISTS `([a-zA-Z]+_)[\s\S]*/", "\\1", $value);
+                    //替换表前缀
+                    $value = str_replace(" `{$orginal}", " `{$prefix}", $value);
+                    $msg = "创建数据表{$name}";
+                    if (false === Db::execute($value)) {
+                        throw new Exception($msg . '...失败;');
                     }
-                    //写入前清空
-                    if (strpos($value, 'INSERT INTO') !== false) { //写入数据
-                        //获取表名
-                        $name = preg_replace("/[\s\S]*INSERT INTO `(\w+)`[\s\S]*/", "\\1", $value);
-                        //获取表前缀
-                        $orginal = preg_replace("/[\s\S]*INSERT INTO `([a-zA-Z]+_)[\s\S]*/", "\\1", $value);
-                        //替换表前缀
-                        $value = str_replace(" `{$orginal}", " `{$prefix}", $value);
-                        //如果存在数据就跳过
-                        $value = str_replace('INSERT INTO', 'INSERT IGNORE INTO', $value);
+                }
+                //写入前清空
+                if (strpos($value, 'INSERT INTO') !== false) { //写入数据
+                    //获取表名
+                    $name = preg_replace("/[\s\S]*INSERT INTO `(\w+)`[\s\S]*/", "\\1", $value);
+                    //获取表前缀
+                    $orginal = preg_replace("/[\s\S]*INSERT INTO `([a-zA-Z]+_)[\s\S]*/", "\\1", $value);
+                    //替换表前缀
+                    $value = str_replace(" `{$orginal}", " `{$prefix}", $value);
+                    //如果存在数据就跳过
+                    $value = str_replace('INSERT INTO', 'INSERT IGNORE INTO', $value);
 
-                        Db::execute($value);
-                    }
+                    Db::execute($value);
                 }
             }
         }
+
         $module['is_setup'] = 1;
         // 写入数据库
         $rs = $this->update($module);
