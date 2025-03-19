@@ -1,16 +1,18 @@
 <div class="modal-content">
     <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
-		<h3 class="modal-title">修改{$cName}</h3>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                aria-hidden="true">×</span></button>
+        <h3 class="modal-title">修改{$cName}</h3>
     </div>
     <div class="modal-body information-popout">
-        <form class="form-horizontal center_info ajax-form" role="form"
-            action="{:url('ucenter/config/account')}" method="post">
+        <form class="form-horizontal center_info ajax-form" role="form" action="{:url('ucenter/config/account')}"
+            method="post">
             <div class="form-group">
                 <label for="account" class="col-xs-2 control-label">{$cName}</label>
 
                 <div class="col-xs-10">
-                    <input type="text" class="form-control pull-left" id="account" name="account" placeholder="{$cName}">
+                    <input type="text" class="form-control pull-left" id="account" name="account"
+                        placeholder="{$cName}">
                 </div>
             </div>
 
@@ -43,41 +45,33 @@
         $("[data-role='getVerify']").click(function () {
             var $this = $(this);
             toast.showLoading();
-            var account =$this.parents('.center_info').find('#account').val();
+            var account = $this.parents('.center_info').find('#account').val();
             var type = $this.parents('.center_info').find('[name="type"]').val();
+            var time = "{:config('extend.SMS_RESEND')}";
             $.post("{:url('api/Verify/send')}", {
-                account: account, 
-                type: type, 
-                action:'config'
+                account: account,
+                type: type,
+                action: 'config'
             }, function (res) {
                 toast.hideLoading();
-                if(res.code == 200){
-                    DecTime.obj = $this
-                    DecTime.time = "{:config('extend.SMS_RESEND')}";
-                    $this.attr('disabled',true)
-                    DecTime.dec_time();
+                if (res.code == 200) {
+                    toast.hideLoading();
+                    var interval = setInterval(function () {
+                        if (time > 0) {
+                            $this.attr('disabled', true)
+                            $this.text('重新获取(' + time-- + 'S)')
+                        } else {
+                            $this.text("获取验证码")
+                            $this.attr('disabled', false)
+                            clearInterval(interval);
+                        }
+                    }, 1000);
                     toast.success(res.msg);
                 }
-                else{
+                else {
                     toast.error(res.msg);
                 }
             })
         })
-
-        var DecTime = {
-            obj:0,
-            time:0,
-            dec_time : function(){
-                if(this.time > 0){
-                    this.obj.text('重新获取('+this.time--+'S)')
-                    setTimeout("DecTime.dec_time()",1000)
-                }else{
-                    this.obj.text("获取验证码")
-                    this.obj.attr('disabled',false)
-                }
-            }
-        }
     })
-
-    
 </script>

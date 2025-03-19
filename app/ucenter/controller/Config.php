@@ -65,7 +65,7 @@ class Config extends Base
         } else {
             //调用基本信息
             $user = query_user(is_login(), ['username', 'nickname', 'signature', 'email', 'mobile', 'avatar', 'sex', 'birthday']);
-            
+
             //显示页面
             View::assign('user', $user);
             // 当前方法赋值变量
@@ -175,28 +175,28 @@ class Config extends Base
             $signature = input('signature', '', 'text');
 
             $data['uid'] = $uid;
-            
-            if(!empty($avatar)){
+
+            if (!empty($avatar)) {
                 $data['avatar'] = $avatar;
             }
-            if(!empty($nickname)){
+            if (!empty($nickname)) {
                 // 过滤掉emoji表情符号
                 $nickname = filter_emoji($nickname);
                 $data['nickname'] = $nickname;
             }
-            if(!empty($sex) && $sex != 0){
+            if (!empty($sex) && $sex != 0) {
                 $data['sex'] = $sex;
             }
-            if(!empty($birthday)){
+            if (!empty($birthday)) {
                 $birthday_format = date_parse_from_format('Y年m月d日', $birthday);
                 $birthday = mktime(0, 0, 0, $birthday_format['month'], $birthday_format['day'], $birthday_format['year']);
                 $birthday = date('Y-m-d', $birthday);
                 $data['birthday'] = $birthday;
             }
-            if(!empty($signature)){
+            if (!empty($signature)) {
                 $data['signature'] = $signature;
             }
-            
+
             $result = (new Member)->edit($data);
             if ($result) {
                 return $this->success('修改成功');
@@ -490,7 +490,7 @@ class Config extends Base
             $card_no = input('card_no', '', 'trim');
             $front = input('front', '', 'trim');
             $back = input('back', '', 'trim');
-            
+
             $data = [
                 'shopid'  => $this->shopid,
                 'uid'     => get_uid(),
