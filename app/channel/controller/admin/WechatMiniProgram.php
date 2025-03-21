@@ -9,7 +9,7 @@ use app\admin\controller\Admin as MuuAdmin;
 use app\channel\logic\TemplateMessage;
 use app\channel\model\WechatMpConfig;
 use app\channel\validate\WechatMiniProgram as WechatMiniProgramValidate;
-
+use app\channel\facade\wechat\MiniProgram as MiniProgramServer;
 
 class WechatMiniProgram extends MuuAdmin
 {
@@ -72,7 +72,7 @@ class WechatMiniProgram extends MuuAdmin
                 ->keyText('secret', 'AppSecret', 'AppSecret是小程序的密钥，具有该账户完全的权限，请您妥善保管.')
                 ->keyText('originalid', '原始ID', '小程序原始ID')
                 ->keyTextArea('description', '小程序描述', '小程序描述');
-                
+
             $builder->data($config);
             $builder->buttonSubmit();
             $builder->display();

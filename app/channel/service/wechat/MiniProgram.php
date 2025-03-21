@@ -19,6 +19,7 @@ class MiniProgram extends Wechat
         //服务配置文件
         $config = $this->config = $this->initConfig();
         $app = Factory::miniProgram($config);
+
         parent::__construct($app);
     }
 
@@ -103,5 +104,21 @@ class MiniProgram extends Wechat
     public function getLivePlaybacks(int $roomid)
     {
         return $this->app->live->getPlaybacks($roomid);
+    }
+
+    /**
+     * 获取小程序全局接口调用凭据
+     * 
+     * @return mixed 返回access_token对象
+     * @throws \EasyWeChat\Kernel\Exceptions\InvalidArgumentException
+     * @throws \EasyWeChat\Kernel\Exceptions\RuntimeException
+     */
+    public function getAccessToken()
+    {
+        // 获取 access token 实例
+        // $accessToken = $app->access_token; // EasyWeChat\Core\AccessToken 实例
+        // $token = $accessToken->getToken(); // token 字符串
+        // $token = $accessToken->getToken(true); // 强制重新从微信服务器获取 token.
+        return $this->app->access_token;
     }
 }
