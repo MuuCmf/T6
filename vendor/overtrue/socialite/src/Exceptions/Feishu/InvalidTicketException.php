@@ -1,12 +1,7 @@
 <?php
 
-namespace Overtrue\Socialite\Exceptions\Feishu;
+namespace Overtrue\Socialite\Exceptions\FeiShu;
 
-use Overtrue\Socialite\Exceptions\Exception;
+use Overtrue\Socialite\Exceptions;
 
-/**
- * Class BadRequestException.
- */
-class InvalidTicketException extends Exception
-{
-}
+class InvalidTicketException extends Exceptions\Exception {}

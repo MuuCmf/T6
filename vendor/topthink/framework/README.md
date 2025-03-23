@@ -21,7 +21,6 @@ ThinkPHP 6.1
 * 原生多应用支持
 * 系统服务注入支持
 * ORM作为独立组件使用
-* 增加Filesystem
 * 全新的事件系统
 * 模板引擎分离出核心
 * 内部功能中间件化
@@ -34,7 +33,7 @@ ThinkPHP 6.1
 * 统一和精简大量用法
 
 
-> ThinkPHP6.1的运行环境要求PHP7.2.5+，兼容PHP8.1
+> ThinkPHP6.1的运行环境要求PHP7.2.5+，最高兼容PHP8.2
 
 ## 安装
 
@@ -78,7 +77,7 @@ ThinkPHP遵循Apache2开源协议发布，并提供免费使用。
 
 本项目包含的第三方源码和二进制文件之版权信息另行标注。
 
-版权所有Copyright © 2006-2021 by ThinkPHP (http://thinkphp.cn) All rights reserved。
+版权所有Copyright © 2006-2023 by ThinkPHP (http://thinkphp.cn) All rights reserved。
 
 ThinkPHP® 商标和著作权所有者为上海顶想信息科技有限公司。
 

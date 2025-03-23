@@ -31,17 +31,17 @@ class CheckAuth extends JWTAuth
         try {
             $payload = $this->auth->auth();
             // 可以获取payload里自定义的字段，比如uid
-            $uid = $payload['uid']->getValue();
+            $uid = $payload['uid'];
         } catch (TokenExpiredException $e) { // 捕获token过期
             // 尝试刷新token，会将旧token加入黑名单
             try {
                 $this->auth->setRefresh();
                 $token = $this->auth->refresh();
                 $payload = $this->auth->auth(false);
-                $uid = $payload['uid']->getValue();
+                $uid = $payload['uid'];
             } catch (TokenBlacklistGracePeriodException $e) {
                 $payload = $this->auth->auth(false);
-                $uid = $payload['uid']->getValue();
+                $uid = $payload['uid'];
             } catch (JWTException $exception) {
                 // 如果捕获到此异常，即代表 refresh 也过期了，用户无法刷新令牌，需要重新登录。
                 // 浏览器端基于session部分判断
@@ -59,7 +59,7 @@ class CheckAuth extends JWTAuth
         } catch (TokenBlacklistGracePeriodException $e) { 
             // 捕获黑名单宽限期
             $payload = $this->auth->auth(false);
-            $uid = $payload['uid']->getValue();
+            $uid = $payload['uid'];
         } catch (TokenBlacklistException $exception) { 
             // 捕获黑名单，退出登录或者已经自动刷新，当前token就会被拉黑
             // 浏览器端基于session部分判断

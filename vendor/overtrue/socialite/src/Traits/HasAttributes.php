@@ -2,83 +2,63 @@
 
 namespace Overtrue\Socialite\Traits;
 
+use JetBrains\PhpStorm\Pure;
+use Overtrue\Socialite\Exceptions;
+
 trait HasAttributes
 {
     protected array $attributes = [];
 
-    /**
-     * @return array
-     */
-    public function getAttributes()
+    public function getAttributes(): array
     {
         return $this->attributes;
     }
 
-    /**
-     * @param string $name
-     * @param string $default
-     *
-     * @return mixed
-     */
-    public function getAttribute($name, $default = null)
+    public function getAttribute(string $name, mixed $default = null): mixed
     {
-        return isset($this->attributes[$name]) ? $this->attributes[$name] : $default;
+        return $this->attributes[$name] ?? $default;
     }
 
-    /**
-     * @param string $name
-     * @param mixed  $value
-     *
-     * @return $this
-     */
-    public function setAttribute($name, $value)
+    public function setAttribute(string $name, mixed $value): self
     {
         $this->attributes[$name] = $value;
 
         return $this;
     }
 
-    /**
-     * @param array $attributes
-     *
-     * @return $this
-     */
-    public function merge(array $attributes)
+    public function merge(array $attributes): self
     {
-        $this->attributes = array_merge($this->attributes, $attributes);
+        $this->attributes = \array_merge($this->attributes, $attributes);
 
         return $this;
     }
 
-    #[\ReturnTypeWillChange]
-    public function offsetExists($offset)
+    public function offsetExists(mixed $offset): bool
     {
-        return array_key_exists($offset, $this->attributes);
+        return \array_key_exists($offset, $this->attributes);
     }
 
-    #[\ReturnTypeWillChange]
-    public function offsetGet($offset)
+    public function offsetGet(mixed $offset): mixed
     {
         return $this->getAttribute($offset);
     }
 
-    #[\ReturnTypeWillChange]
-    public function offsetSet($offset, $value)
+    public function offsetSet(mixed $offset, mixed $value): void
     {
         $this->setAttribute($offset, $value);
     }
 
-    #[\ReturnTypeWillChange]
-    public function offsetUnset($offset)
+    public function offsetUnset(mixed $offset): void
     {
         unset($this->attributes[$offset]);
     }
 
-    public function __get($property)
+    public function __get(string $property): mixed
     {
         return $this->getAttribute($property);
     }
 
+    #[Pure]
     public function toArray(): array
     {
         return $this->getAttributes();
@@ -86,6 +66,10 @@ trait HasAttributes
 
     public function toJSON(): string
     {
-        return \json_encode($this->getAttributes(), JSON_UNESCAPED_UNICODE);
+        $result = \json_encode($this->getAttributes(), JSON_UNESCAPED_UNICODE);
+
+        $result === false && throw new Exceptions\Exception('Cannot Processing this instance as JSON stringify.');
+
+        return $result;
     }
 }

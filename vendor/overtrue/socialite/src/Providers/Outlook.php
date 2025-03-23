@@ -2,12 +2,17 @@
 
 namespace Overtrue\Socialite\Providers;
 
+use JetBrains\PhpStorm\ArrayShape;
+use JetBrains\PhpStorm\Pure;
+use Overtrue\Socialite\Contracts;
 use Overtrue\Socialite\User;
 
 class Outlook extends Base
 {
     public const NAME = 'outlook';
+
     protected array $scopes = ['User.Read'];
+
     protected string $scopeSeparator = ' ';
 
     protected function getAuthUrl(): string
@@ -20,13 +25,6 @@ class Outlook extends Base
         return 'https://login.microsoftonline.com/common/oauth2/v2.0/token';
     }
 
-    /**
-     * @param  string  $token
-     * @param  array|null  $query
-     *
-     * @return array
-     * @throws \GuzzleHttp\Exception\GuzzleException
-     */
     protected function getUserByToken(string $token, ?array $query = []): array
     {
         $response = $this->getHttpClient()->get(
@@ -38,34 +36,30 @@ class Outlook extends Base
             ]
         );
 
-        return \json_decode($response->getBody()->getContents(), true) ?? [];
+        return $this->fromJsonBody($response);
     }
 
-    /**
-     * @param array $user
-     *
-     * @return \Overtrue\Socialite\User
-     */
-    protected function mapUserToObject(array $user): User
+    #[Pure]
+    protected function mapUserToObject(array $user): Contracts\UserInterface
     {
         return new User([
-            'id' => $user['id'] ?? null,
-            'nickname' => null,
-            'name' => $user['displayName'] ?? null,
-            'email' => $user['userPrincipalName'] ?? null,
-            'avatar' => null,
+            Contracts\ABNF_ID => $user[Contracts\ABNF_ID] ?? null,
+            Contracts\ABNF_NICKNAME => null,
+            Contracts\ABNF_NAME => $user['displayName'] ?? null,
+            Contracts\ABNF_EMAIL => $user['userPrincipalName'] ?? null,
+            Contracts\ABNF_AVATAR => null,
         ]);
     }
 
-    /**
-     * @param string $code
-     *
-     * @return array|string[]
-     */
+    #[ArrayShape([
+        Contracts\RFC6749_ABNF_CLIENT_ID => 'null|string',
+        Contracts\RFC6749_ABNF_CLIENT_SECRET => 'null|string',
+        Contracts\RFC6749_ABNF_CODE => 'string',
+        Contracts\RFC6749_ABNF_REDIRECT_URI => 'null|string',
+        Contracts\RFC6749_ABNF_GRANT_TYPE => 'string',
+    ])]
     protected function getTokenFields(string $code): array
     {
-        return parent::getTokenFields($code) + [
-            'grant_type' => 'authorization_code',
-        ];
+        return parent::getTokenFields($code) + [Contracts\RFC6749_ABNF_GRANT_TYPE => Contracts\RFC6749_ABNF_AUTHORATION_CODE];
     }
 }

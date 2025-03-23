@@ -91,14 +91,28 @@ abstract class OneToOne extends Relation
         $query->via($joinAlias);
 
         if ($this instanceof BelongsTo) {
-            $joinOn = $name . '.' . $this->foreignKey . '=' . $joinAlias . '.' . $this->localKey;
+
+            $foreignKeyExp = $this->foreignKey;
+
+            if (strpos($foreignKeyExp, '.') === false) {
+                $foreignKeyExp = $name . '.' . $this->foreignKey;
+            }
+
+            $joinOn = $foreignKeyExp . '=' . $joinAlias . '.' . $this->localKey;
         } else {
-            $joinOn = $name . '.' . $this->localKey . '=' . $joinAlias . '.' . $this->foreignKey;
+
+            $foreignKeyExp = $this->foreignKey;
+
+            if (strpos($foreignKeyExp, '.') === false) {
+                $foreignKeyExp = $joinAlias . '.' . $this->foreignKey;
+            }
+
+            $joinOn = $name . '.' . $this->localKey . '=' . $foreignKeyExp;
         }
 
         if ($closure) {
             // 执行闭包查询
-            $closure($this->getClosureType($closure));
+            $closure($this->getClosureType($closure, $query));
 
             // 使用withField指定获取关联的字段
             if ($this->withField) {
@@ -187,6 +201,10 @@ abstract class OneToOne extends Relation
      */
     public function save($data, bool $replace = true)
     {
+        if ($data instanceof Model) {
+            $data = $data->getData();
+        }
+
         $model = $this->make();
 
         return $model->replace($replace)->save($data) ? $model : false;
@@ -206,9 +224,8 @@ abstract class OneToOne extends Relation
         // 保存关联表数据
         $data[$this->foreignKey] = $this->parent->{$this->localKey};
 
-        return new $this->model($data);
+        return (new $this->model($data))->setSuffix($this->getModel()->getSuffix());
     }
-
 
     /**
      * 绑定关联表的属性到父模型属性

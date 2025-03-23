@@ -2,18 +2,25 @@
 
 namespace Overtrue\Socialite\Providers;
 
-use Overtrue\Socialite\Contracts\ProviderInterface;
-use Overtrue\Socialite\Exceptions\AuthorizeFailedException;
+use JetBrains\PhpStorm\Pure;
+use Overtrue\Socialite\Contracts;
+use Overtrue\Socialite\Exceptions;
 use Overtrue\Socialite\User;
 
-class QCloud extends Base implements ProviderInterface
+class QCloud extends Base
 {
     public const NAME = 'qcloud';
+
     protected array $scopes = ['login'];
+
     protected string $accessTokenKey = 'UserAccessToken';
+
     protected string $refreshTokenKey = 'UserRefreshToken';
+
     protected string $expiresInKey = 'ExpiresAt';
+
     protected ?string $openId;
+
     protected ?string $unionId;
 
     protected function getAuthUrl(): string
@@ -28,7 +35,7 @@ class QCloud extends Base implements ProviderInterface
 
     protected function getAppId(): string
     {
-        return $this->config->get('app_id') ?? $this->getClientId();
+        return $this->config->get(Contracts\ABNF_APP_ID) ?? $this->getClientId();
     }
 
     protected function getSecretId(): string
@@ -41,12 +48,6 @@ class QCloud extends Base implements ProviderInterface
         return $this->config->get('secret_key');
     }
 
-    /**
-     * @param  string  $code
-     *
-     * @return array
-     * @throws \Overtrue\Socialite\Exceptions\AuthorizeFailedException
-     */
     public function TokenFromCode(string $code): array
     {
         $response = $this->performRequest(
@@ -65,10 +66,7 @@ class QCloud extends Base implements ProviderInterface
     }
 
     /**
-     * @param string $token
-     *
-     * @return array
-     * @throws \Overtrue\Socialite\Exceptions\AuthorizeFailedException
+     * @throws Exceptions\AuthorizeFailedException
      */
     protected function getUserByToken(string $token): array
     {
@@ -89,23 +87,20 @@ class QCloud extends Base implements ProviderInterface
         );
     }
 
-    /**
-     * @param array $user
-     *
-     * @return \Overtrue\Socialite\User
-     */
-    protected function mapUserToObject(array $user): User
+    #[Pure]
+    protected function mapUserToObject(array $user): Contracts\UserInterface
     {
-        return new User(
-            [
-                'id' => $this->openId ?? null,
-                'name' => $user['Nickname'] ?? null,
-                'nickname' => $user['Nickname'] ?? null,
-            ]
-        );
+        return new User([
+            Contracts\ABNF_ID => $this->openId ?? null,
+            Contracts\ABNF_NAME => $user['Nickname'] ?? null,
+            Contracts\ABNF_NICKNAME => $user['Nickname'] ?? null,
+        ]);
     }
 
-    public function performRequest(string $method, string $host, string $action, string $version, array $options = [], ?string $secretId = null, ?string $secretKey = null)
+    /**
+     * @throws Exceptions\AuthorizeFailedException
+     */
+    public function performRequest(string $method, string $host, string $action, string $version, array $options = [], ?string $secretId = null, ?string $secretKey = null): array
     {
         $method = \strtoupper($method);
         $timestamp = \time();
@@ -128,13 +123,12 @@ class QCloud extends Base implements ProviderInterface
                 $credential,
                 $signature
             );
-        $options['debug'] = \fopen(storage_path('logs/laravel-2020-07-15.log'), 'w+');
         $response = $this->getHttpClient()->get("https://{$host}/", $options);
 
-        $response = json_decode($response->getBody()->getContents(), true) ?? [];
+        $response = $this->fromJsonBody($response);
 
-        if (!empty($response['Response']['Error'])) {
-            throw new AuthorizeFailedException(
+        if (! empty($response['Response']['Error'])) {
+            throw new Exceptions\AuthorizeFailedException(
                 \sprintf('%s: %s', $response['Response']['Error']['Code'], $response['Response']['Error']['Message']),
                 $response
             );
@@ -143,52 +137,49 @@ class QCloud extends Base implements ProviderInterface
         return $response['Response'] ?? [];
     }
 
-    protected function sign(string $requestMethod, string $host, array $query, string $payload, $headers, $credential, ?string $secretKey = null)
+    protected function sign(string $requestMethod, string $host, array $query, string $payload, array $headers, string $credential, ?string $secretKey = null): bool|string
     {
-        $canonicalRequestString = \join(
+        $canonicalRequestString = \implode(
             "\n",
             [
                 $requestMethod,
                 '/',
                 \http_build_query($query),
                 "content-type:{$headers['Content-Type']}\nhost:{$host}\n",
-                "content-type;host",
-                hash('SHA256', $payload),
+                'content-type;host',
+                \hash('SHA256', $payload),
             ]
         );
 
-        $signString = \join(
+        $signString = \implode(
             "\n",
             [
                 'TC3-HMAC-SHA256',
                 $headers['X-TC-Timestamp'],
                 $credential,
-                hash('SHA256', $canonicalRequestString),
+                \hash('SHA256', $canonicalRequestString),
             ]
         );
 
         $secretKey = $secretKey ?? $this->getSecretKey();
-        $secretDate = hash_hmac('SHA256', \gmdate('Y-m-d', $headers['X-TC-Timestamp']), "TC3{$secretKey}", true);
-        $secretService = hash_hmac('SHA256', $this->getServiceFromHost($host), $secretDate, true);
-        $secretSigning = hash_hmac('SHA256', "tc3_request", $secretService, true);
+        $secretDate = \hash_hmac('SHA256', \gmdate('Y-m-d', $headers['X-TC-Timestamp']), "TC3{$secretKey}", true);
+        $secretService = \hash_hmac('SHA256', $this->getServiceFromHost($host), $secretDate, true);
+        $secretSigning = \hash_hmac('SHA256', 'tc3_request', $secretService, true);
 
-        return hash_hmac('SHA256', $signString, $secretSigning);
+        return \hash_hmac('SHA256', $signString, $secretSigning);
     }
 
     /**
-     * @param string|array $body
-     *
-     * @return array
-     * @throws AuthorizeFailedException
+     * @throws Exceptions\AuthorizeFailedException
      */
-    protected function parseAccessToken($body)
+    protected function parseAccessToken(array|string $body): array
     {
-        if (!is_array($body)) {
-            $body = json_decode($body, true);
+        if (! \is_array($body)) {
+            $body = \json_decode($body, true);
         }
 
-        if (empty($body['UserOpenId'])) {
-            throw new AuthorizeFailedException('Authorize Failed: ' . json_encode($body, JSON_UNESCAPED_UNICODE), $body);
+        if (empty($body['UserOpenId'] ?? null)) {
+            throw new Exceptions\AuthorizeFailedException('Authorize Failed: '.\json_encode($body, JSON_UNESCAPED_UNICODE), $body);
         }
 
         $this->openId = $body['UserOpenId'] ?? null;
@@ -198,12 +189,9 @@ class QCloud extends Base implements ProviderInterface
     }
 
     /**
-     * @param string $accessToken
-     *
-     * @return mixed
-     * @throws \Overtrue\Socialite\Exceptions\AuthorizeFailedException
+     * @throws Exceptions\AuthorizeFailedException
      */
-    protected function getFederationToken(string $accessToken)
+    protected function getFederationToken(string $accessToken): array
     {
         $response = $this->performRequest(
             'GET',
@@ -218,12 +206,12 @@ class QCloud extends Base implements ProviderInterface
                 ],
                 'headers' => [
                     'X-TC-Region' => 'ap-guangzhou', // 官方人员说写死
-                ]
+                ],
             ]
         );
 
-        if (empty($response['Credentials'])) {
-            throw new AuthorizeFailedException('Get Federation Token failed.', $response);
+        if (empty($response['Credentials'] ?? null)) {
+            throw new Exceptions\AuthorizeFailedException('Get Federation Token failed.', $response);
         }
 
         return $response['Credentials'];
@@ -231,30 +219,25 @@ class QCloud extends Base implements ProviderInterface
 
     protected function getCodeFields(): array
     {
-        $fields = array_merge(
+        $fields = \array_merge(
             [
-                'app_id' => $this->getAppId(),
-                'redirect_url' => $this->redirectUrl,
-                'scope' => $this->formatScopes($this->scopes, $this->scopeSeparator),
-                'response_type' => 'code',
+                Contracts\ABNF_APP_ID => $this->getAppId(),
+                Contracts\RFC6749_ABNF_REDIRECT_URI => $this->redirectUrl,
+                Contracts\RFC6749_ABNF_SCOPE => $this->formatScopes($this->scopes, $this->scopeSeparator),
+                Contracts\RFC6749_ABNF_RESPONSE_TYPE => Contracts\RFC6749_ABNF_CODE,
             ],
             $this->parameters
         );
 
         if ($this->state) {
-            $fields['state'] = $this->state;
+            $fields[Contracts\RFC6749_ABNF_STATE] = $this->state;
         }
 
         return $fields;
     }
 
-    /**
-     * @param string $host
-     *
-     * @return mixed|string
-     */
-    protected function getServiceFromHost(string $host)
+    protected function getServiceFromHost(string $host): string
     {
-        return explode('.', $host)[0];
+        return \explode('.', $host)[0] ?? '';
     }
 }

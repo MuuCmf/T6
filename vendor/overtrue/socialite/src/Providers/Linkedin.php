@@ -2,6 +2,8 @@
 
 namespace Overtrue\Socialite\Providers;
 
+use JetBrains\PhpStorm\ArrayShape;
+use Overtrue\Socialite\Contracts;
 use Overtrue\Socialite\User;
 
 /**
@@ -10,6 +12,7 @@ use Overtrue\Socialite\User;
 class Linkedin extends Base
 {
     public const NAME = 'linkedin';
+
     protected array $scopes = ['r_liteprofile', 'r_emailaddress'];
 
     protected function getAuthUrl(): string
@@ -22,38 +25,27 @@ class Linkedin extends Base
         return 'https://www.linkedin.com/oauth/v2/accessToken';
     }
 
-    /**
-     * @param string $code
-     *
-     * @return array
-     */
-    protected function getTokenFields($code): array
+    #[ArrayShape([
+        Contracts\RFC6749_ABNF_CLIENT_ID => 'null|string',
+        Contracts\RFC6749_ABNF_CLIENT_SECRET => 'null|string',
+        Contracts\RFC6749_ABNF_CODE => 'string',
+        Contracts\RFC6749_ABNF_REDIRECT_URI => 'null|string',
+        Contracts\RFC6749_ABNF_GRANT_TYPE => 'string',
+    ])]
+    protected function getTokenFields(string $code): array
     {
-        return parent::getTokenFields($code) + ['grant_type' => 'authorization_code'];
+        return parent::getTokenFields($code) + [Contracts\RFC6749_ABNF_GRANT_TYPE => Contracts\RFC6749_ABNF_AUTHORATION_CODE];
     }
 
-    /**
-     * @param  string  $token
-     * @param  array|null  $query
-     *
-     * @return array
-     * @throws \GuzzleHttp\Exception\GuzzleException
-     */
     protected function getUserByToken(string $token, ?array $query = []): array
     {
         $basicProfile = $this->getBasicProfile($token);
         $emailAddress = $this->getEmailAddress($token);
 
-        return array_merge($basicProfile, $emailAddress);
+        return \array_merge($basicProfile, $emailAddress);
     }
 
-    /**
-     * @param  string  $token
-     *
-     * @return array
-     * @throws \GuzzleHttp\Exception\GuzzleException
-     */
-    protected function getBasicProfile(string $token)
+    protected function getBasicProfile(string $token): array
     {
         $url = 'https://api.linkedin.com/v2/me?projection=(id,firstName,lastName,profilePicture(displayImage~:playableStreams))';
 
@@ -64,16 +56,10 @@ class Linkedin extends Base
             ],
         ]);
 
-        return \json_decode($response->getBody(), true) ?? [];
+        return $this->fromJsonBody($response);
     }
 
-    /**
-     * @param  string  $token
-     *
-     * @return array
-     * @throws \GuzzleHttp\Exception\GuzzleException
-     */
-    protected function getEmailAddress(string $token)
+    protected function getEmailAddress(string $token): array
     {
         $url = 'https://api.linkedin.com/v2/emailAddress?q=members&projection=(elements*(handle~))';
 
@@ -84,38 +70,30 @@ class Linkedin extends Base
             ],
         ]);
 
-        return \json_decode($response->getBody(), true)['elements.0.handle~'] ?? [];
+        return $this->fromJsonBody($response)['elements'][0]['handle~'] ?? [];
     }
 
-    /**
-     * @param array $user
-     *
-     * @return \Overtrue\Socialite\User
-     */
-    protected function mapUserToObject(array $user): User
+    protected function mapUserToObject(array $user): Contracts\UserInterface
     {
-        $preferredLocale = ($user['firstName.preferredLocale.language'] ?? null).'_'.($user['firstName.preferredLocale.country']) ?? null;
-        $firstName = $user['firstName.localized.'.$preferredLocale] ?? null;
-        $lastName = $user['lastName.localized.'.$preferredLocale] ?? null;
+        $preferredLocale = ($user['firstName']['preferredLocale']['language'] ?? null).'_'.
+            ($user['firstName']['preferredLocale']['country'] ?? null);
+        $firstName = $user['firstName']['localized'][$preferredLocale] ?? null;
+        $lastName = $user['lastName']['localized'][$preferredLocale] ?? null;
         $name = $firstName.' '.$lastName;
 
-        $images = $user['profilePicture.displayImage~.elements'] ?? [];
-        $avatars = array_filter($images, function ($image) {
-            return ($image['data']['com.linkedin.digitalmedia.mediaartifact.StillImage']['storageSize']['width'] ?? 0) === 100;
-        });
-        $avatar = array_shift($avatars);
-        $originalAvatars = array_filter($images, function ($image) {
-            return ($image['data']['com.linkedin.digitalmedia.mediaartifact.StillImage']['storageSize']['width'] ?? 0) === 800;
-        });
-        $originalAvatar = array_shift($originalAvatars);
+        $images = $user['profilePicture']['displayImage~']['elements'] ?? [];
+        $avatars = \array_filter($images, static fn ($image) => ($image['data']['com.linkedin.digitalmedia.mediaartifact.StillImage']['storageSize']['width'] ?? 0) === 100);
+        $avatar = \array_shift($avatars);
+        $originalAvatars = \array_filter($images, static fn ($image) => ($image['data']['com.linkedin.digitalmedia.mediaartifact.StillImage']['storageSize']['width'] ?? 0) === 800);
+        $originalAvatar = \array_shift($originalAvatars);
 
         return new User([
-            'id' => $user['id'] ?? null,
-            'nickname' => $name,
-            'name' => $name,
-            'email' => $user['emailAddress'] ?? null,
-            'avatar' => $avatar['identifiers.0.identifier'] ?? null,
-            'avatar_original' => $originalAvatar['identifiers.0.identifier'] ?? null,
+            Contracts\ABNF_ID => $user[Contracts\ABNF_ID] ?? null,
+            Contracts\ABNF_NICKNAME => $name,
+            Contracts\ABNF_NAME => $name,
+            Contracts\ABNF_EMAIL => $user['emailAddress'] ?? null,
+            Contracts\ABNF_AVATAR => $avatar['identifiers']['0']['identifier'] ?? null,
+            'avatar_original' => $originalAvatar['identifiers']['0']['identifier'] ?? null,
         ]);
     }
 }

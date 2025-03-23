@@ -23,6 +23,8 @@ use \ReflectionClass;
 use TencentCloud\Common\Http\HttpConnection;
 use TencentCloud\Common\Profile\ClientProfile;
 use TencentCloud\Common\Profile\HttpProfile;
+use TencentCloud\Common\Profile\RegionBreakerProfile;
+use TencentCloud\Common\CircuitBreaker;
 use TencentCloud\Common\Exception\TencentCloudSDKException;
 
 
@@ -35,7 +37,7 @@ abstract class AbstractClient
     /**
      * @var string SDK版本
      */
-    public static $SDK_VERSION = "SDK_PHP_3.0.768";
+    public static $SDK_VERSION = "SDK_PHP_3.0.1344";
 
     /**
      * @var integer http响应码200
@@ -48,12 +50,16 @@ abstract class AbstractClient
      * @var Credential 认证类实例，保存认证相关字段
      */
     private $credential;
-
+    
+    private $sseResponseCallbackFunc;
+    
     /**
      * @var ClientProfile 会话配置信息类
      */
     private $profile;
 
+    private $regionBreakerProfile;
+    private $circuitBreaker;
     /**
      * @var string 产品地域
      */
@@ -103,6 +109,13 @@ abstract class AbstractClient
         $this->sdkVersion = AbstractClient::$SDK_VERSION;
         $this->apiVersion = $version;
 
+        if ($this->profile->enableRegionBreaker) {
+            if (is_null($this->profile->getRegionBreakerProfile())) {
+                throw new TencentCloudSDKException("ClientError", "RegionBreakerProfile have not been set yet.");
+                }
+            $this->circuitBreaker = new CircuitBreaker($this->profile->getRegionBreakerProfile());
+        }
+
         if (version_compare(phpversion(), $this->PHP_VERSION_MINIMUM, '<') && $profile->getCheckPHPVersion()) {
             throw new TencentCloudSDKException("ClientError", "PHP version must >= ".$this->PHP_VERSION_MINIMUM.", your current is ".phpversion());
         }
@@ -127,7 +140,16 @@ abstract class AbstractClient
     {
         return $this->region;
     }
-
+    
+    /**
+     * 设置sse
+     * @param string $funcName sse响应回调函数名
+     */
+    public function setSseResponseCallbackFunc($funcName)
+    {
+        $this->sseResponseCallbackFunc = $funcName;
+    }
+    
     /**
      * 设置认证信息实例
      * @param Credential $credential 认证信息实例
@@ -172,9 +194,117 @@ abstract class AbstractClient
      */
     public function __call($action, $request)
     {
-        return $this->doRequestWithOptions($action, $request[0], array());
+        if ($this->profile->enableRegionBreaker) {
+            return $this->doRequestWithOptionsOnRegionBreaker($action, $request[0], array());
+        }
+        else {
+            return $this->doRequestWithOptions($action, $request[0], array());
+        }
     }
 
+    /**
+     * @param string $action
+     * @param array  $headers
+     * @param string $body json content
+     * @return mixed
+     * @throws TencentCloudSDKException
+     */
+    public function callJson($action, $body, $headers=null) {
+        try {
+            $responseData = null;
+            $options = array(
+                "IsCommonJson" => true,
+            );
+            if ($this->profile->getHttpProfile()->getReqMethod() == HttpProfile::$REQ_GET) {
+                throw new TencentCloudSDKException("ClientError", "Common client call doesn't support GET method");
+            }
+            if ($this->profile->getSignMethod() != ClientProfile::$SIGN_TC3_SHA256) {
+                throw new TencentCloudSDKException("ClientError", "Common client call must use TC3-HMAC-SHA256");
+            }
+            $responseData = $this->doRequestWithTC3($action, $body, $options, $headers, null);
+            if ($responseData->getStatusCode() !== AbstractClient::$HTTP_RSP_OK) {
+                throw new TencentCloudSDKException($responseData->getReasonPhrase(), $responseData->getBody());
+            }
+            $resp = json_decode($responseData->getBody(), true)["Response"];
+            if (array_key_exists("Error", $resp)) {
+                throw new TencentCloudSDKException($resp["Error"]["Code"], $resp["Error"]["Message"], $resp["RequestId"]);
+            }
+            return $resp;
+        } catch (\Exception $e) {
+            if (!($e instanceof TencentCloudSDKException)) {
+                throw new TencentCloudSDKException("", $e->getMessage());
+            } else {
+                throw $e;
+            }
+        }
+    }
+    
+    /**
+     * @param string $action
+     * @param array  $headers
+     * @param string $body json content
+     * @return mixed
+     * @throws TencentCloudSDKException
+     */
+    public function callJsonWithSSEResponse($callback, $action, $body, $headers = null)
+    {
+        try {
+            $responseData = null;
+            $options = array(
+                "IsCommonJson" => true,
+            );
+            if ($this->profile->getHttpProfile()->getReqMethod() == HttpProfile::$REQ_GET) {
+                throw new TencentCloudSDKException("ClientError", "Common client call doesn't support GET method");
+            }
+            if ($this->profile->getSignMethod() != ClientProfile::$SIGN_TC3_SHA256) {
+                throw new TencentCloudSDKException("ClientError", "Common client call must use TC3-HMAC-SHA256");
+            }
+            $responseData = $this->doRequestWithTC3($action, $body, $options, $headers, null);
+            if ($responseData->getStatusCode() !== AbstractClient::$HTTP_RSP_OK) {
+                throw new TencentCloudSDKException($responseData->getReasonPhrase(), $responseData->getBody());
+            }
+            $contentType = $responseData->getHeaderLine('Content-Type');
+            if ($contentType === 'text/event-stream') {
+                $body = $responseData->getBody();
+                $buffer = '';                
+                if (isset($callback) && is_callable($callback)) {
+                    while (!$body->eof()) {
+                        $buffer .= $body->read(1024);
+                        $delimiterPosition = strpos($buffer, "\n\n");
+                        while ($delimiterPosition !== false) {
+                            $chunk = substr($buffer, 0, $delimiterPosition + 2);
+                            $buffer = substr($buffer, $delimiterPosition + 2);
+                            
+                            $callback($chunk);
+                            $delimiterPosition = strpos($buffer, "\n\n");
+                        }
+                    }
+                    if (!empty($buffer)) {
+                        $callback($buffer);
+                    }
+                } else {
+                    while (!$body->eof()) {
+                        $buffer .= $body->read(1024);
+                    }
+                    return $buffer;
+                }
+            } else {
+                $resp = json_decode($responseData->getBody(), true)["Response"];
+                if (array_key_exists("Error", $resp)) {
+                    throw new TencentCloudSDKException($resp["Error"]["Code"], $resp["Error"]["Message"], $resp["RequestId"]);
+                }                
+                return $resp;
+            }            
+
+        } catch (\Exception $e) {
+            if (!($e instanceof TencentCloudSDKException)) {
+                throw new TencentCloudSDKException("", $e->getMessage());
+            } else {
+                throw $e;
+            }
+        }
+    }
+    
     /**
      * @param string $action  方法名
      * @param array  $headers  自定义headers
@@ -217,6 +347,39 @@ abstract class AbstractClient
     protected function doRequestWithOptions($action, $request, $options)
     {
         try {
+            $serializeRequest = $request->serialize();
+            $method = $this->getPrivateMethod($request, "arrayMerge");
+            $serializeRequest = $method->invoke($request, $serializeRequest);
+            $responseData = $this->getResponseData($action, $request, $options);
+            
+            if ($responseData->getStatusCode() !== AbstractClient::$HTTP_RSP_OK) {
+                throw new TencentCloudSDKException($responseData->getReasonPhrase(), $responseData->getBody());
+            }
+            
+            $contentType = $responseData->getHeaderLine('Content-Type');
+            if ($contentType === 'text/event-stream') {
+                return $this->handleEventStreamResponse($responseData);
+            } else {
+                return $this->handleJsonResponse($action, $responseData);
+            }
+        } catch (\Exception $e) {
+            if (!($e instanceof TencentCloudSDKException)) {
+                throw new TencentCloudSDKException("", $e->getMessage());
+            } else {
+                throw $e;
+            }
+        }
+    }
+
+    protected function doRequestWithOptionsOnRegionBreaker($action, $request, $options)
+    {
+        try {
+            $endpoint = $this->profile->getRegionBreakerProfile()->masterEndpoint;
+            list($generation, $need_break) = $this->circuitBreaker->beforeRequests();
+            if ($need_break) {
+                $endpoint = $this->profile->getRegionBreakerProfile()->slaveEndpoint;
+            }
+            $this->profile->getHttpProfile()->setEndpoint($endpoint);
             $responseData = null;
             $serializeRequest = $request->serialize();
             $method = $this->getPrivateMethod($request, "arrayMerge");
@@ -236,13 +399,23 @@ abstract class AbstractClient
             if ($responseData->getStatusCode() !== AbstractClient::$HTTP_RSP_OK) {
                 throw new TencentCloudSDKException($responseData->getReasonPhrase(), $responseData->getBody());
             }
-            $tmpResp = json_decode($responseData->getBody(), true)["Response"];
-            if (array_key_exists("Error", $tmpResp)) {
-                throw new TencentCloudSDKException($tmpResp["Error"]["Code"], $tmpResp["Error"]["Message"], $tmpResp["RequestId"]);
+            
+            $contentType = $responseData->getHeaderLine('Content-Type');
+            if ($contentType === 'text/event-stream') {
+                return $this->handleEventStreamResponse($responseData);
+            } else {
+                $tmpResp = json_decode($responseData->getBody(), true)["Response"];
+                if (array_key_exists("Error", $tmpResp)) {
+                    $this->circuitBreaker->afterRequests($generation, True);
+                    throw new TencentCloudSDKException($tmpResp["Error"]["Code"], $tmpResp["Error"]["Message"], $tmpResp["RequestId"]);
+                }
+                $this->circuitBreaker->afterRequests($generation, True);
+                return $this->returnResponse($action, $tmpResp);
             }
-
-            return $this->returnResponse($action, $tmpResp);
+            
+            
         } catch (\Exception $e) {
+            $this->circuitBreaker->afterRequests($generation, False);
             if (!($e instanceof TencentCloudSDKException)) {
                 throw new TencentCloudSDKException("", $e->getMessage());
             } else {
@@ -250,7 +423,61 @@ abstract class AbstractClient
             }
         }
     }
-
+    
+    private function getResponseData($action, $request, $options)
+    {
+        switch ($this->profile->getSignMethod()) {
+            case ClientProfile::$SIGN_HMAC_SHA1:
+            case ClientProfile::$SIGN_HMAC_SHA256:
+                return $this->doRequest($action, $request->serialize());
+            case ClientProfile::$SIGN_TC3_SHA256:
+                return $this->doRequestWithTC3($action, $request, $options, array(), "");
+            default:
+                throw new TencentCloudSDKException("ClientError", "Invalid sign method");
+        }
+    }
+    
+    private function handleEventStreamResponse($responseData)
+    {
+        $body = $responseData->getBody();
+        $buffer = '';
+        $temp_func = $this->sseResponseCallbackFunc;
+        
+        if (isset($temp_func) && is_callable($temp_func)) {
+            while (!$body->eof()) {
+                $buffer .= $body->read(1024);
+                $delimiterPosition = strpos($buffer, "\n\n");
+                while ($delimiterPosition !== false) {
+                    $chunk = substr($buffer, 0, $delimiterPosition + 2);
+                    $buffer = substr($buffer, $delimiterPosition + 2);
+                    
+                    $temp_func($chunk);
+                    $delimiterPosition = strpos($buffer, "\n\n");
+                }
+            }
+            if (!empty($buffer)) {
+                $temp_func($buffer);
+            }
+        } else {
+            while (!$body->eof()) {
+                $buffer .= $body->read(1024);
+            }
+            return $buffer;
+        }
+    }
+    
+    private function handleJsonResponse($action, $responseData)
+    {
+        $tmpResp = json_decode($responseData->getBody(), true)["Response"];
+        if (array_key_exists("Error", $tmpResp)) {
+            throw new TencentCloudSDKException($tmpResp["Error"]["Code"], $tmpResp["Error"]["Message"], $tmpResp["RequestId"]);
+        }
+        
+        return $this->returnResponse($action, $tmpResp);
+    }
+    
+    
+    
     private function doRequest($action, $request)
     {
         switch ($this->profile->getHttpProfile()->getReqMethod()) {
@@ -300,19 +527,23 @@ abstract class AbstractClient
             $payload = "";
         }
         if (HttpProfile::$REQ_POST == $reqmethod)  {
-             if (isset($options["IsMultipart"]) && $options["IsMultipart"] === true) {
-                 $boundary = uniqid();
-                 $headers["Content-Type"] = "multipart/form-data; boundary=" . $boundary;
-                 $canonicalQueryString = "";
-                 $payload = $this->getMultipartPayload($request, $boundary, $options);
-             } else if (isset($options["IsOctetStream"]) && $options["IsOctetStream"] === true) {
-                 $headers["Content-Type"] = "application/octet-stream";
-                 $canonicalQueryString = "";
-             } else {
-                 $headers["Content-Type"] = "application/json";
-                 $canonicalQueryString = "";
-                 $payload = $request->toJsonString();
-             }
+            if (isset($options["IsMultipart"]) && $options["IsMultipart"] === true) {
+                $boundary = uniqid();
+                $headers["Content-Type"] = "multipart/form-data; boundary=" . $boundary;
+                $canonicalQueryString = "";
+                $payload = $this->getMultipartPayload($request, $boundary, $options);
+            } else if (isset($options["IsOctetStream"]) && $options["IsOctetStream"] === true) {
+                $headers["Content-Type"] = "application/octet-stream";
+                $canonicalQueryString = "";
+            } else if (isset($options["IsCommonJson"]) && $options["IsCommonJson"] === true) {
+                $headers["Content-Type"] = "application/json";
+                $canonicalQueryString = "";
+                $payload = json_encode($request);
+            } else {
+                $headers["Content-Type"] = "application/json";
+                $canonicalQueryString = "";
+                $payload = $request->toJsonString();
+            }
         }
 
         if ($this->profile->getUnsignedPayload() == true) {

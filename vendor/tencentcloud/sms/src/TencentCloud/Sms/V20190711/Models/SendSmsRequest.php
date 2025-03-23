@@ -20,10 +20,10 @@ use TencentCloud\Common\AbstractModel;
 /**
  * SendSms请求参数结构体
  *
- * @method array getPhoneNumberSet() 获取下发手机号码，采用 e.164 标准，格式为+[国家或地区码][手机号]，单次请求最多支持200个手机号且要求全为境内手机号或全为境外手机号。
-例如：+8613711112222， 其中前面有一个+号 ，86为国家码，13711112222为手机号。
- * @method void setPhoneNumberSet(array $PhoneNumberSet) 设置下发手机号码，采用 e.164 标准，格式为+[国家或地区码][手机号]，单次请求最多支持200个手机号且要求全为境内手机号或全为境外手机号。
-例如：+8613711112222， 其中前面有一个+号 ，86为国家码，13711112222为手机号。
+ * @method array getPhoneNumberSet() 获取下发手机号码，采用 E.164 标准，格式为+[国家或地区码][手机号]，单次请求最多支持200个手机号且要求全为境内手机号或全为境外手机号。
+例如：+8618501234444， 其中前面有一个+号 ，86为国家码，18501234444为手机号。
+ * @method void setPhoneNumberSet(array $PhoneNumberSet) 设置下发手机号码，采用 E.164 标准，格式为+[国家或地区码][手机号]，单次请求最多支持200个手机号且要求全为境内手机号或全为境外手机号。
+例如：+8618501234444， 其中前面有一个+号 ，86为国家码，18501234444为手机号。
  * @method string getTemplateID() 获取模板 ID，必须填写已审核通过的模板 ID。模板ID可登录 [短信控制台](https://console.cloud.tencent.com/smsv2) 查看，若向境外手机号发送短信，仅支持使用国际/港澳台短信模板。
  * @method void setTemplateID(string $TemplateID) 设置模板 ID，必须填写已审核通过的模板 ID。模板ID可登录 [短信控制台](https://console.cloud.tencent.com/smsv2) 查看，若向境外手机号发送短信，仅支持使用国际/港澳台短信模板。
  * @method string getSmsSdkAppid() 获取短信SdkAppid在 [短信控制台](https://console.cloud.tencent.com/smsv2)  添加应用后生成的实际SdkAppid，示例如1400006666。
@@ -34,16 +34,16 @@ use TencentCloud\Common\AbstractModel;
  * @method void setTemplateParamSet(array $TemplateParamSet) 设置模板参数，若无模板参数，则设置为空。
  * @method string getExtendCode() 获取短信码号扩展号，默认未开通，如需开通请联系 [sms helper](https://cloud.tencent.com/document/product/382/3773)。
  * @method void setExtendCode(string $ExtendCode) 设置短信码号扩展号，默认未开通，如需开通请联系 [sms helper](https://cloud.tencent.com/document/product/382/3773)。
- * @method string getSessionContext() 获取用户的 session 内容，可以携带用户侧 ID 等上下文信息，server 会原样返回。
- * @method void setSessionContext(string $SessionContext) 设置用户的 session 内容，可以携带用户侧 ID 等上下文信息，server 会原样返回。
+ * @method string getSessionContext() 获取用户的 session 内容，可以携带用户侧 ID 等上下文信息，server 会原样返回。注意长度需小于512字节。
+ * @method void setSessionContext(string $SessionContext) 设置用户的 session 内容，可以携带用户侧 ID 等上下文信息，server 会原样返回。注意长度需小于512字节。
  * @method string getSenderId() 获取国内短信无senderid，无需填写该项；若需开通国际/港澳台短信senderid，请联系smshelper。
  * @method void setSenderId(string $SenderId) 设置国内短信无senderid，无需填写该项；若需开通国际/港澳台短信senderid，请联系smshelper。
  */
 class SendSmsRequest extends AbstractModel
 {
     /**
-     * @var array 下发手机号码，采用 e.164 标准，格式为+[国家或地区码][手机号]，单次请求最多支持200个手机号且要求全为境内手机号或全为境外手机号。
-例如：+8613711112222， 其中前面有一个+号 ，86为国家码，13711112222为手机号。
+     * @var array 下发手机号码，采用 E.164 标准，格式为+[国家或地区码][手机号]，单次请求最多支持200个手机号且要求全为境内手机号或全为境外手机号。
+例如：+8618501234444， 其中前面有一个+号 ，86为国家码，18501234444为手机号。
      */
     public $PhoneNumberSet;
 
@@ -73,7 +73,7 @@ class SendSmsRequest extends AbstractModel
     public $ExtendCode;
 
     /**
-     * @var string 用户的 session 内容，可以携带用户侧 ID 等上下文信息，server 会原样返回。
+     * @var string 用户的 session 内容，可以携带用户侧 ID 等上下文信息，server 会原样返回。注意长度需小于512字节。
      */
     public $SessionContext;
 
@@ -83,14 +83,14 @@ class SendSmsRequest extends AbstractModel
     public $SenderId;
 
     /**
-     * @param array $PhoneNumberSet 下发手机号码，采用 e.164 标准，格式为+[国家或地区码][手机号]，单次请求最多支持200个手机号且要求全为境内手机号或全为境外手机号。
-例如：+8613711112222， 其中前面有一个+号 ，86为国家码，13711112222为手机号。
+     * @param array $PhoneNumberSet 下发手机号码，采用 E.164 标准，格式为+[国家或地区码][手机号]，单次请求最多支持200个手机号且要求全为境内手机号或全为境外手机号。
+例如：+8618501234444， 其中前面有一个+号 ，86为国家码，18501234444为手机号。
      * @param string $TemplateID 模板 ID，必须填写已审核通过的模板 ID。模板ID可登录 [短信控制台](https://console.cloud.tencent.com/smsv2) 查看，若向境外手机号发送短信，仅支持使用国际/港澳台短信模板。
      * @param string $SmsSdkAppid 短信SdkAppid在 [短信控制台](https://console.cloud.tencent.com/smsv2)  添加应用后生成的实际SdkAppid，示例如1400006666。
      * @param string $Sign 短信签名内容，使用 UTF-8 编码，必须填写已审核通过的签名，签名信息可登录 [短信控制台](https://console.cloud.tencent.com/smsv2)  查看。注：国内短信为必填参数。
      * @param array $TemplateParamSet 模板参数，若无模板参数，则设置为空。
      * @param string $ExtendCode 短信码号扩展号，默认未开通，如需开通请联系 [sms helper](https://cloud.tencent.com/document/product/382/3773)。
-     * @param string $SessionContext 用户的 session 内容，可以携带用户侧 ID 等上下文信息，server 会原样返回。
+     * @param string $SessionContext 用户的 session 内容，可以携带用户侧 ID 等上下文信息，server 会原样返回。注意长度需小于512字节。
      * @param string $SenderId 国内短信无senderid，无需填写该项；若需开通国际/港澳台短信senderid，请联系smshelper。
      */
     function __construct()

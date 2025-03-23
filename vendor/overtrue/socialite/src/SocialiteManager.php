@@ -3,144 +3,117 @@
 namespace Overtrue\Socialite;
 
 use Closure;
-use InvalidArgumentException;
-use Overtrue\Socialite\Contracts\FactoryInterface;
-use Overtrue\Socialite\Contracts\ProviderInterface;
+use JetBrains\PhpStorm\Pure;
 
-class SocialiteManager implements FactoryInterface
+class SocialiteManager implements Contracts\FactoryInterface
 {
     protected Config $config;
+
     protected array $resolved = [];
-    protected array $customCreators = [];
-    protected array $providers = [
-        Providers\QQ::NAME => Providers\QQ::class,
-        Providers\Tapd::NAME => Providers\Tapd::class,
-        Providers\Weibo::NAME => Providers\Weibo::class,
+
+    protected static array $customCreators = [];
+
+    protected const PROVIDERS = [
         Providers\Alipay::NAME => Providers\Alipay::class,
-        Providers\QCloud::NAME => Providers\QCloud::class,
-        Providers\GitHub::NAME => Providers\GitHub::class,
-        Providers\Google::NAME => Providers\Google::class,
-        Providers\WeChat::NAME => Providers\WeChat::class,
-        Providers\Douban::NAME => Providers\Douban::class,
-        Providers\WeWork::NAME => Providers\WeWork::class,
-        Providers\DouYin::NAME => Providers\DouYin::class,
-        Providers\Taobao::NAME => Providers\Taobao::class,
-        Providers\FeiShu::NAME => Providers\FeiShu::class,
-        Providers\Outlook::NAME => Providers\Outlook::class,
-        Providers\Linkedin::NAME => Providers\Linkedin::class,
-        Providers\Facebook::NAME => Providers\Facebook::class,
+        Providers\Azure::NAME => Providers\Azure::class,
+        Providers\Coding::NAME => Providers\Coding::class,
         Providers\DingTalk::NAME => Providers\DingTalk::class,
-        Providers\OpenWeWork::NAME => Providers\OpenWeWork::class,
-        Providers\Line::NAME => Providers\Line::class,
+        Providers\DouYin::NAME => Providers\DouYin::class,
+        Providers\Douban::NAME => Providers\Douban::class,
+        Providers\Facebook::NAME => Providers\Facebook::class,
+        Providers\FeiShu::NAME => Providers\FeiShu::class,
+        Providers\Figma::NAME => Providers\Figma::class,
+        Providers\GitHub::NAME => Providers\GitHub::class,
         Providers\Gitee::NAME => Providers\Gitee::class,
+        Providers\Google::NAME => Providers\Google::class,
+        Providers\Lark::NAME => Providers\Lark::class,
+        Providers\Line::NAME => Providers\Line::class,
+        Providers\Linkedin::NAME => Providers\Linkedin::class,
+        Providers\OpenWeWork::NAME => Providers\OpenWeWork::class,
+        Providers\Outlook::NAME => Providers\Outlook::class,
+        Providers\QCloud::NAME => Providers\QCloud::class,
+        Providers\QQ::NAME => Providers\QQ::class,
+        Providers\Taobao::NAME => Providers\Taobao::class,
+        Providers\Tapd::NAME => Providers\Tapd::class,
+        Providers\TouTiao::NAME => Providers\TouTiao::class,
+        Providers\WeChat::NAME => Providers\WeChat::class,
+        Providers\WeWork::NAME => Providers\WeWork::class,
+        Providers\Weibo::NAME => Providers\Weibo::class,
+        Providers\XiGua::NAME => Providers\XiGua::class,
+        Providers\PayPal::NAME => Providers\PayPal::class,
     ];
 
+    #[Pure]
     public function __construct(array $config)
     {
         $this->config = new Config($config);
     }
 
-    /**
-     * @param \Overtrue\Socialite\Config $config
-     *
-     * @return $this
-     */
-    public function config(Config $config)
+    public function config(Config $config): self
     {
         $this->config = $config;
 
         return $this;
     }
 
-    /**
-     * @param string $name
-     *
-     * @return \Overtrue\Socialite\Contracts\ProviderInterface
-     */
-    public function create(string $name): ProviderInterface
+    public function create(string $name): Contracts\ProviderInterface
     {
-        $name = strtolower($name);
+        $name = \strtolower($name);
 
-        if (!isset($this->resolved[$name])) {
+        if (! isset($this->resolved[$name])) {
             $this->resolved[$name] = $this->createProvider($name);
         }
 
         return $this->resolved[$name];
     }
 
-    /**
-     * @param string   $name
-     * @param \Closure $callback
-     *
-     * @return $this
-     */
     public function extend(string $name, Closure $callback): self
     {
-        $this->customCreators[strtolower($name)] = $callback;
+        self::$customCreators[\strtolower($name)] = $callback;
 
         return $this;
     }
 
-    /**
-     * @return \Overtrue\Socialite\Contracts\ProviderInterface[]
-     */
     public function getResolvedProviders(): array
     {
         return $this->resolved;
     }
 
-    /**
-     * @param string $provider
-     * @param array  $config
-     *
-     * @return \Overtrue\Socialite\Contracts\ProviderInterface
-     */
-    public function buildProvider(string $provider, array $config): ProviderInterface
+    public function buildProvider(string $provider, array $config): Contracts\ProviderInterface
     {
-        return new $provider($config);
+        $instance = new $provider($config);
+
+        $instance instanceof Contracts\ProviderInterface || throw new Exceptions\InvalidArgumentException("The {$provider} must be instanceof ProviderInterface.");
+
+        return $instance;
     }
 
     /**
-     * @param string $name
-     *
-     * @return ProviderInterface
-     * @throws \InvalidArgumentException
-     *
+     * @throws Exceptions\InvalidArgumentException
      */
-    protected function createProvider(string $name)
+    protected function createProvider(string $name): Contracts\ProviderInterface
     {
         $config = $this->config->get($name, []);
         $provider = $config['provider'] ?? $name;
 
-        if (isset($this->customCreators[$provider])) {
+        if (isset(self::$customCreators[$provider])) {
             return $this->callCustomCreator($provider, $config);
         }
 
-        if (!$this->isValidProvider($provider)) {
-            throw new InvalidArgumentException("Provider [$provider] not supported.");
+        if (! $this->isValidProvider($provider)) {
+            throw new Exceptions\InvalidArgumentException("Provider [{$name}] not supported.");
         }
 
-        return $this->buildProvider($this->providers[$provider] ?? $provider, $config);
+        return $this->buildProvider(self::PROVIDERS[$provider] ?? $provider, $config);
     }
 
-    /**
-     * @param string $driver
-     * @param array  $config
-     *
-     * @return ProviderInterface
-     */
-    protected function callCustomCreator(string $driver, array $config): ProviderInterface
+    protected function callCustomCreator(string $name, array $config): Contracts\ProviderInterface
     {
-        return $this->customCreators[$driver]($config);
+        return self::$customCreators[$name]($config);
     }
 
-    /**
-     * @param string $provider
-     *
-     * @return bool
-     */
     protected function isValidProvider(string $provider): bool
     {
-        return isset($this->providers[$provider]) || is_subclass_of($provider, ProviderInterface::class);
+        return isset(self::PROVIDERS[$provider]) || \is_subclass_of($provider, Contracts\ProviderInterface::class);
     }
 }

@@ -2,9 +2,4 @@
 
 namespace Overtrue\Socialite\Exceptions;
 
-/**
- * Class BadRequestException.
- */
-class BadRequestException extends Exception
-{
-}
+class BadRequestException extends Exception {}

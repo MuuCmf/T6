@@ -1,5 +1,33 @@
 # 变更历史
 
+## [1.4.12](../../compare/v1.4.11...v1.4.12) - 2025-01-27
+
+- 修正`APIv2`特殊`GET`请求抛异常问题，相关记录见[这里](https://github.com/wechatpay-apiv3/wechatpay-php/issues/146)。
+
+## [1.4.11](../../compare/v1.4.10...v1.4.11) - 2024-12-27
+
+- 对`APIv2`服务端返回值做精细判断，对于`return_code`(返回状态码)及/或`result_code`(业务结果)有key且值不为`SUCCESS`的情形，抛出客户端`RejectionException`异常，并加入[AuthcodetoopenidTest.php](./tests/OpenAPI/V2/Tools/AuthcodetoopenidTest.php)异常处理示例。
+
+## [1.4.10](../../compare/v1.4.9...v1.4.10) - 2024-09-19
+
+- 客户端在`RSA`非对称加解密方案上，不再支持`OPENSSL_PKCS1_PADDING`填充模式，相关记录见[这里](https://github.com/wechatpay-apiv3/wechatpay-php/issues/133)；
+- 增加[`#[\SensitiveParameter]`](https://www.php.net/manual/zh/class.sensitiveparameter.php)参数注解，加强信息安全；
+- 支持PHP8.4运行时；
+
+## [1.4.9](../../compare/v1.4.8...v1.4.9) - 2023-11-21
+
+- 支持PHP8.3运行时
+
+## [1.4.8](../../compare/v1.4.7...v1.4.8) - 2023-01-05
+
+- 新增海外账单下载`/v3/global/statements`应答特殊处理逻辑;
+
+## [1.4.7](../../compare/v1.4.6...v1.4.7) - 2022-12-06
+
+- 对PHP8.2的官方支持，如下PHP8.2的特性需要被提及：
+  - ext-openssl 有若干调整，已知在 `OpenSSL3.0` 上，常量 `RSA_SSLV23_PADDING` 被删除(详细可阅读 openssl/openssl#14216, openssl/openssl#14283)，PHP做了兼容处理，如果扩展依赖的是`OpenSSL3.0`，则对应的`OPENSSL_SSLV23_PADDING`常量将不存在，进而影响到了「非对称加解密混合填充模式的测试用例」的覆盖(详情可阅读 shivammathur/setup-php#658)。本类库并不支持此填充模式，删除对`OPENSSL_SSLV23_PADDING`的测试断言，向前兼容；
+  - 对象动态属性的废弃提示([Deprecate dynamic properties](https://wiki.php.net/rfc/deprecate_dynamic_properties))，本类库实例构造的是`ArrayIterator`的一个“伪”动态属性结构体，对象属性访问实则访问的是`ArrayObject`内置`__storage`属性，形似动态属性实则不是；此废弃提示对本类库本身无影响；
+
 ## [1.4.6](../../compare/v1.4.5...v1.4.6) - 2022-08-19
 
 - 取消 `APIv2` 上的`trigger_error`提醒，以消除不必要的恐慌;

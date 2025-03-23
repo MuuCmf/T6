@@ -2,7 +2,9 @@
 
 namespace Overtrue\Socialite\Providers;
 
-use Overtrue\Socialite\Exceptions\InvalidArgumentException;
+use JetBrains\PhpStorm\Pure;
+use Overtrue\Socialite\Contracts;
+use Overtrue\Socialite\Exceptions;
 use Overtrue\Socialite\User;
 use Psr\Http\Message\ResponseInterface;
 
@@ -14,10 +16,15 @@ use Psr\Http\Message\ResponseInterface;
 class WeChat extends Base
 {
     public const NAME = 'wechat';
+
     protected string $baseUrl = 'https://api.weixin.qq.com/sns';
+
     protected array $scopes = ['snsapi_login'];
+
     protected bool $withCountryCode = false;
+
     protected ?array $component = null;
+
     protected ?string $openid = null;
 
     public function __construct(array $config)
@@ -29,11 +36,6 @@ class WeChat extends Base
         }
     }
 
-    /**
-     * @param string $openid
-     *
-     * @return $this
-     */
     public function withOpenid(string $openid): self
     {
         $this->openid = $openid;
@@ -41,40 +43,31 @@ class WeChat extends Base
         return $this;
     }
 
-    public function withCountryCode()
+    public function withCountryCode(): self
     {
         $this->withCountryCode = true;
 
         return $this;
     }
 
-    /**
-     * @param  string  $code
-     *
-     * @return array
-     * @throws \Overtrue\Socialite\Exceptions\AuthorizeFailedException|\GuzzleHttp\Exception\GuzzleException
-     */
     public function tokenFromCode(string $code): array
     {
         $response = $this->getTokenFromCode($code);
 
-        return $this->normalizeAccessTokenResponse($response->getBody()->getContents());
+        return $this->normalizeAccessTokenResponse($response->getBody());
     }
 
     /**
-     * @param  array  $componentConfig  ['id' => xxx, 'token' => xxx]
-     *
-     * @return \Overtrue\Socialite\Providers\WeChat
-     * @throws \Overtrue\Socialite\Exceptions\InvalidArgumentException
+     * @param  array<string,string>  $componentConfig  [Contracts\ABNF_ID => xxx, Contracts\ABNF_TOKEN => xxx]
      */
-    public function withComponent(array $componentConfig)
+    public function withComponent(array $componentConfig): self
     {
         $this->prepareForComponent($componentConfig);
 
         return $this;
     }
 
-    public function getComponent()
+    public function getComponent(): ?array
     {
         return $this->component;
     }
@@ -83,60 +76,45 @@ class WeChat extends Base
     {
         $path = 'oauth2/authorize';
 
-        if (in_array('snsapi_login', $this->scopes)) {
+        if (\in_array('snsapi_login', $this->scopes)) {
             $path = 'qrconnect';
         }
 
         return $this->buildAuthUrlFromBase("https://open.weixin.qq.com/connect/{$path}");
     }
 
-    /**
-     * @param string $url
-     *
-     * @return string
-     */
     protected function buildAuthUrlFromBase(string $url): string
     {
-        $query = http_build_query($this->getCodeFields(), '', '&', $this->encodingType);
+        $query = \http_build_query($this->getCodeFields(), '', '&', $this->encodingType);
 
-        return $url . '?' . $query . '#wechat_redirect';
+        return $url.'?'.$query.'#wechat_redirect';
     }
 
     protected function getCodeFields(): array
     {
-        if (!empty($this->component)) {
-            $this->with(array_merge($this->parameters, ['component_appid' => $this->component['id']]));
+        if (! empty($this->component)) {
+            $this->with(\array_merge($this->parameters, ['component_appid' => $this->component[Contracts\ABNF_ID]]));
         }
 
-        return array_merge([
+        return \array_merge([
             'appid' => $this->getClientId(),
-            'redirect_uri' => $this->redirectUrl,
-            'response_type' => 'code',
-            'scope' => $this->formatScopes($this->scopes, $this->scopeSeparator),
-            'state' => $this->state ?: md5(uniqid()),
+            Contracts\RFC6749_ABNF_REDIRECT_URI => $this->redirectUrl,
+            Contracts\RFC6749_ABNF_RESPONSE_TYPE => Contracts\RFC6749_ABNF_CODE,
+            Contracts\RFC6749_ABNF_SCOPE => $this->formatScopes($this->scopes, $this->scopeSeparator),
+            Contracts\RFC6749_ABNF_STATE => $this->state ?: \md5(\uniqid(Contracts\RFC6749_ABNF_STATE, true)),
             'connect_redirect' => 1,
         ], $this->parameters);
     }
 
     protected function getTokenUrl(): string
     {
-        if (!empty($this->component)) {
-            return $this->baseUrl . '/oauth2/component/access_token';
-        }
-
-        return $this->baseUrl . '/oauth2/access_token';
+        return \sprintf($this->baseUrl.'/oauth2%s/access_token', empty($this->component) ? '' : '/component');
     }
 
-    /**
-     * @param string $code
-     *
-     * @return \Overtrue\Socialite\User
-     * @throws \Overtrue\Socialite\Exceptions\AuthorizeFailedException|\GuzzleHttp\Exception\GuzzleException
-     */
-    public function userFromCode(string $code): User
+    public function userFromCode(string $code): Contracts\UserInterface
     {
-        if (in_array('snsapi_base', $this->scopes)) {
-            return $this->mapUserToObject(\json_decode($this->getTokenFromCode($code)->getBody()->getContents(), true) ?? []);
+        if (\in_array('snsapi_base', $this->scopes)) {
+            return $this->getSnsapiBaseUserFromCode($code);
         }
 
         $token = $this->tokenFromCode($code);
@@ -145,79 +123,67 @@ class WeChat extends Base
 
         $user = $this->userFromToken($token[$this->accessTokenKey]);
 
-        return $user->setRefreshToken($token['refresh_token'])
-            ->setExpiresIn($token['expires_in'])
+        return $user->setRefreshToken($token[Contracts\RFC6749_ABNF_REFRESH_TOKEN])
+            ->setExpiresIn($token[Contracts\RFC6749_ABNF_EXPIRES_IN])
             ->setTokenResponse($token);
     }
 
-    /**
-     * @param  string  $token
-     *
-     * @return array
-     * @throws \GuzzleHttp\Exception\GuzzleException
-     */
+    protected function getSnsapiBaseUserFromCode(string $code): Contracts\UserInterface
+    {
+        $token = $this->fromJsonBody($this->getTokenFromCode($code));
+        $user = [
+            'openid' => $token['openid'],
+        ];
+        if (isset($token['unionid'])) {
+            $user['unionid'] = $token['unionid'];
+        }
+
+        return $this->mapUserToObject($token)->setProvider($this)->setRaw($user)->setAccessToken($token[$this->accessTokenKey]);
+    }
+
     protected function getUserByToken(string $token): array
     {
         $language = $this->withCountryCode ? null : (isset($this->parameters['lang']) ? $this->parameters['lang'] : 'zh_CN');
 
-        $response = $this->getHttpClient()->get($this->baseUrl . '/userinfo', [
-            'query' => array_filter([
-                'access_token' => $token,
+        $response = $this->getHttpClient()->get($this->baseUrl.'/userinfo', [
+            'query' => \array_filter([
+                Contracts\RFC6749_ABNF_ACCESS_TOKEN => $token,
                 'openid' => $this->openid,
                 'lang' => $language,
             ]),
         ]);
 
-        return \json_decode($response->getBody()->getContents(), true) ?? [];
+        return $this->fromJsonBody($response);
     }
 
-    /**
-     * @param array $user
-     *
-     * @return \Overtrue\Socialite\User
-     */
-    protected function mapUserToObject(array $user): User
+    #[Pure]
+    protected function mapUserToObject(array $user): Contracts\UserInterface
     {
         return new User([
-            'id' => $user['openid'] ?? null,
-            'name' => $user['nickname'] ?? null,
-            'nickname' => $user['nickname'] ?? null,
-            'avatar' => $user['headimgurl'] ?? null,
-            'email' => null,
+            Contracts\ABNF_ID => $user['openid'] ?? null,
+            Contracts\ABNF_NAME => $user[Contracts\ABNF_NICKNAME] ?? null,
+            Contracts\ABNF_NICKNAME => $user[Contracts\ABNF_NICKNAME] ?? null,
+            Contracts\ABNF_AVATAR => $user['headimgurl'] ?? null,
+            Contracts\ABNF_EMAIL => null,
         ]);
     }
 
-    /**
-     * @param string $code
-     *
-     * @return array
-     */
     protected function getTokenFields(string $code): array
     {
-        if (!empty($this->component)) {
-            return [
-                'appid' => $this->getClientId(),
-                'component_appid' => $this->component['id'],
-                'component_access_token' => $this->component['token'],
-                'code' => $code,
-                'grant_type' => 'authorization_code',
-            ];
-        }
-
-        return [
+        return empty($this->component) ? [
             'appid' => $this->getClientId(),
             'secret' => $this->getClientSecret(),
-            'code' => $code,
-            'grant_type' => 'authorization_code',
+            Contracts\RFC6749_ABNF_CODE => $code,
+            Contracts\RFC6749_ABNF_GRANT_TYPE => Contracts\RFC6749_ABNF_AUTHORATION_CODE,
+        ] : [
+            'appid' => $this->getClientId(),
+            'component_appid' => $this->component[Contracts\ABNF_ID],
+            'component_access_token' => $this->component[Contracts\ABNF_TOKEN],
+            Contracts\RFC6749_ABNF_CODE => $code,
+            Contracts\RFC6749_ABNF_GRANT_TYPE => Contracts\RFC6749_ABNF_AUTHORATION_CODE,
         ];
     }
 
-    /**
-     * @param  string  $code
-     *
-     * @return \Psr\Http\Message\ResponseInterface
-     * @throws \GuzzleHttp\Exception\GuzzleException
-     */
     protected function getTokenFromCode(string $code): ResponseInterface
     {
         return $this->getHttpClient()->get($this->getTokenUrl(), [
@@ -226,7 +192,10 @@ class WeChat extends Base
         ]);
     }
 
-    protected function prepareForComponent(array $component)
+    /**
+     * @throws Exceptions\InvalidArgumentException
+     */
+    protected function prepareForComponent(array $component): void
     {
         $config = [];
         foreach ($component as $key => $value) {
@@ -235,25 +204,25 @@ class WeChat extends Base
             }
 
             switch ($key) {
-                case 'id':
-                case 'app_id':
+                case Contracts\ABNF_ID:
+                case Contracts\ABNF_APP_ID:
                 case 'component_app_id':
-                    $config['id'] = $value;
+                    $config[Contracts\ABNF_ID] = $value;
                     break;
-                case 'token':
+                case Contracts\ABNF_TOKEN:
+                case Contracts\RFC6749_ABNF_ACCESS_TOKEN:
                 case 'app_token':
-                case 'access_token':
                 case 'component_access_token':
-                    $config['token'] = $value;
+                    $config[Contracts\ABNF_TOKEN] = $value;
                     break;
             }
         }
 
-        if (2 !== count($config)) {
-            throw new InvalidArgumentException('Please check your config arguments is available.');
+        if (\count($config) !== 2) {
+            throw new Exceptions\InvalidArgumentException('Please check your config arguments were available.');
         }
 
-        if (1 === count($this->scopes) && in_array('snsapi_login', $this->scopes)) {
+        if (\count($this->scopes) === 1 && \in_array('snsapi_login', $this->scopes)) {
             $this->scopes = ['snsapi_base'];
         }
 
