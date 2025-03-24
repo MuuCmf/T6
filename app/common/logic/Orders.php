@@ -70,7 +70,8 @@ class Orders extends Base
         'offline' => '线下支付',
         'score' => '积分',
         'convert' => '兑换码',
-        '' => '无'
+        'password' => '密码',
+        '' => '未知'
     ];
 
     /**
