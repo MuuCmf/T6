@@ -71,6 +71,7 @@ class Orders extends Base
         'score' => '积分',
         'convert' => '兑换码',
         'password' => '密码',
+        'admin' => '后台手动设置',
         '' => '未知'
     ];
 
