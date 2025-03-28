@@ -116,7 +116,9 @@
         {/notempty}
     </section>
     <div class="page-section">
+        {if !empty($pager)}
         {:htmlspecialchars_decode($pager)}
+        {/if}
     </div>
 </div>
 {/block}

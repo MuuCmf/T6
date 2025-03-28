@@ -55,7 +55,9 @@
                     <div class="paging">
                         <div style="text-align:center;">
                             <div class="my-page">
+                                {if !empty($pager)}
                                 {:htmlspecialchars_decode($pager)}
+                                {/if}
                             </div>
                         </div>
                     </div> 

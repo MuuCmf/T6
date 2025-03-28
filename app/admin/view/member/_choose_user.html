@@ -46,7 +46,9 @@
     </div>
     <!-- 分页 -->
     <div class="page">
+        {if !empty($pager)}
         {:htmlspecialchars_decode($pager)}
+        {/if}
     </div>
 </div>
 <script>

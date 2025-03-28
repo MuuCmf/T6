@@ -119,7 +119,11 @@
   </form>
 
   <!-- 分页 -->
-  <div class="page-section">{:htmlspecialchars_decode($pager)}</div>
+  <div class="page-section">
+    {if !empty($pager)}
+    {:htmlspecialchars_decode($pager)}
+    {/if}
+  </div>
   <!-- /分页-->
 </div>
 {/block} {block name="script"} {/block}

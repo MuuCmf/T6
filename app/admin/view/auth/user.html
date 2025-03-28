@@ -63,7 +63,9 @@
     {/notempty}
 
     <div class="page">
+        {if !empty($pager)}
         {:htmlspecialchars_decode($pager)}
+        {/if}
     </div>
 </div>
 

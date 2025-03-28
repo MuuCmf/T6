@@ -165,7 +165,9 @@
 </section>
 	
 <div class="page-section">
+	{if !empty($pager)}
 	{:htmlspecialchars_decode($pager)}
+	{/if}
 </div>
 {include file="admin/common/_preview" /}
 {/block}
