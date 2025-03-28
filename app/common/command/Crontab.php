@@ -26,30 +26,32 @@ class Crontab extends Command
     {
         // 指令配置 php think crontab start --d 守护进程启动
         $this->setName('crontab')
-            ->addArgument('status', Argument::OPTIONAL, 'start/stop/reload/status/connections', 'start')
-            ->addOption('d', null, Option::VALUE_NONE, 'daemon（守护进程）方式启动')
-            ->addOption('i', null, Option::VALUE_OPTIONAL, '多长时间执行一次')
+            ->addArgument('action', Argument::OPTIONAL, 'start/stop/reload/status/connections', 'start')
+            ->addOption('daemon', 'd', Option::VALUE_NONE, 'Run the crontab server in daemon mode.')
             ->setDescription('开启/关闭/重启 定时任务');
     }
     protected function init(Input $input, Output $output)
     {
+        $action = $input->getArgument('action');
         global $argv;
-        if ($input->hasOption('i'))
-            $this->interval = floatval($input->getOption('i'));
-        $argv[1] = $input->getArgument('status') ?: 'start';
-        if ($input->hasOption('d')) {
-            $argv[2] = '-d';
-        } else {
-            unset($argv[2]);
+        array_shift($argv);
+        array_shift($argv);
+        array_unshift($argv, 'muucmf', $action);
+
+        Worker::$pidFile = app()->getRootPath() . 'Crontab.pid';
+
+        // 开启守护进程模式
+        if ($this->input->hasOption('daemon')) {
+            Worker::$daemonize = true;
         }
     }
 
     protected function execute(Input $input, Output $output)
     {
-        Worker::$pidFile = app()->getRootPath() . 'Crontab.pid';
         $this->init($input, $output);
         //创建定时器任务
         $task = new Worker();
+        $task->name = 'Crontab';
         $task->count = 1;
         $task->onWorkerStart = [$this, 'start'];
         $task->runAll();
