@@ -797,10 +797,14 @@ if (!function_exists('get_attachment_src')) {
      */
     function get_attachment_src($attachment, $enforce = 'auto')
     {
-        //不存在http://
-        $not_http_remote = (strpos($attachment, 'http://') === false);
-        //不存在https://
-        $not_https_remote = (strpos($attachment, 'https://') === false);
+        $not_http_remote = false;
+        $not_https_remote = false;
+        if (!empty($attachment)) {
+            //不存在http://
+            $not_http_remote = (strpos($attachment, 'http://') === false);
+            //不存在https://
+            $not_https_remote = (strpos($attachment, 'https://') === false);
+        }
 
         if ($not_http_remote && $not_https_remote) {
             // 判断文件类型

@@ -226,8 +226,10 @@ class Admin extends Base
         $list = $table->where($options['where'])->order($options['order'])->paginate($listRows);
         // 获取分页显示
         $page = $list->render();
-        $page = htmlspecialchars($page);
-
+        if(!empty($page)){
+            $page = htmlspecialchars_decode($page);
+        }
+        
         return [$list, $page];
     }
 

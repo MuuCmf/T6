@@ -42,7 +42,7 @@ class Tominiprogram extends MuuAdmin
         }
         unset($val);
         View::assign([
-            'page' => $pager,
+            'pager' => $pager,
             'lists' => $lists['data'],
             'type'  => $this->type
         ]);

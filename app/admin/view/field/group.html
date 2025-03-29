@@ -65,7 +65,9 @@
 
         <!-- 分页 -->
         <div class="page">
+            {if !empty($page)}
             {:htmlspecialchars_decode($page)}
+            {/if}
         </div>
         <!-- /分页-->
     </div>

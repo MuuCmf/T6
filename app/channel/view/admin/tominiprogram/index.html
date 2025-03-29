@@ -47,7 +47,7 @@
             </td>
             <td>{$vo.type_str}</td>
             <td>
-                <a class="btn btn-warning" href="{:url('edit',['id'=>$vo['id'],'type' => $type])}" >编辑</a>
+                <a class="btn btn-primary" href="{:url('edit',['id'=>$vo['id'],'type' => $type])}" >编辑</a>
                 <a class="btn btn-danger  ajax-post confirm" href="{:url('del',['id'=>$vo['id']])}" >删除</a>
             </td>
         </tr>
@@ -62,7 +62,9 @@
 
     <!-- 分页 -->
     <div class="page">
-        {:htmlspecialchars_decode($page)}
+        {if !empty($pager)}
+        {:htmlspecialchars_decode($pager)}
+        {/if}
     </div>
     <!-- /分页-->
 </div>

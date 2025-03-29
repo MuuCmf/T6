@@ -161,7 +161,9 @@
             </tbody>
         </table>
         <div class="page">
+            {if !empty($page)}
             {:htmlspecialchars_decode($page)}
+            {/if}
         </div>
     </div>
     <!-- 分页 -->
