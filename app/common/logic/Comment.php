@@ -64,9 +64,12 @@ class Comment extends Base
         if (!empty($data)) {
             
             $data['info_id'] = (string)$data['info_id'];
-            $data['content'] = htmlspecialchars_decode($data['content']);
+            if(!empty($data['content'])){
+                $data['content'] = htmlspecialchars_decode($data['content']);
+            }
+
             // 处理图片
-            if ($data['images'] !== null || $data['images'] !== 'null' || !empty($data['images'])) {
+            if ($data['images'] !== null && $data['images'] !== 'null' && !empty($data['images'])) {
                 $data['images'] = json_decode($data['images'], true);
                 if (is_array($data['images']) && !empty($data['images'])) {
                     $temp_images = [];
