@@ -4,7 +4,7 @@ namespace app\api\controller;
 
 use app\common\controller\Api;
 use app\common\logic\Orders as OrdersLogic;
-use \app\common\model\Orders as OrdersModel;
+use app\common\model\Orders as OrdersModel;
 use app\channel\facade\bytedance\MiniProgram as DouyinMiniProgramServer;
 use think\Exception;
 use think\facade\Db;
@@ -73,7 +73,7 @@ class Orders extends Api
                 $order = $this->OrdersModel->getDataById($order_id);
                 $order = $this->OrdersLogic->formatData($order);
                 //免费商品或需退费商品后续业务逻辑处理
-                if ($order['paid_fee'] <= 0 && $order['paid'] == 1) {
+                if ($order['paid'] == 1) {
                     if (method_exists($appOrdersService, 'step')) {
                         // 免费商品直接处理后续逻辑，约定step方法
                         $appOrdersService->step($order);
@@ -106,8 +106,7 @@ class Orders extends Api
      */
     public function list()
     {
-
-        $uid = request()->uid;
+        $uid = get_uid();
         $status = input('status');
         $rows = input('rows', 15, 'intval');
         $map = [
@@ -140,9 +139,13 @@ class Orders extends Api
      */
     public function detail()
     {
+        $uid = get_uid();
         $order_no = $this->params['order_no'];
         $order_data = $this->OrdersModel->getDataByOrderNo($order_no);
         $order_data = $this->OrdersLogic->formatData($order_data);
+        if($uid != $order_data['uid']) {
+            return $this->error('非法操作');
+        }
 
         // pc端商品路径
         if ($order_data['order_info_type'] == 'vipcard') {
