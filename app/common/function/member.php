@@ -23,7 +23,7 @@ if (!function_exists('is_login')) {
             if (!empty($token)) {
                 try {
                     $payload = JWTAuth::decode($token);
-                    $uid = $payload['uid']->getValue();
+                    $uid = $payload['uid'];
                 } catch (JWTException $exception) {
                     // 如果捕获到此异常，即代表 refresh 也过期了，用户无法刷新令牌，需要重新登录。
                     $uid = 0;
