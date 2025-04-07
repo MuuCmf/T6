@@ -60,7 +60,7 @@ class Verify extends Model
      *
      * @return     boolean  ( description_of_the_return_value )
      */
-    public function checkVerify($account, $type = 'mobile', $verify)
+    public function checkVerify($account, $type, $verify)
     {
 
         $data = $this->where(['account' => $account, 'type' => $type, 'verify' => $verify])->find();
