@@ -212,6 +212,7 @@
                                 $(elem).text(`重新获取`)
                             }
                         },1000)
+                        toast.success(result.msg);
                     }else{
                         if (typeof result.msg == "object"){
                             toast.error(result.msg.Message);
