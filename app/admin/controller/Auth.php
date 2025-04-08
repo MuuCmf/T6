@@ -78,27 +78,47 @@ class Auth extends Admin
     public function changeStatus($method = null)
     {
         $ids = input('id/a');
-
         if (empty($ids)) {
             return $this->error('请选择要操作的数据');
         }
-
-        switch (strtolower($method)) {
+        !is_array($ids) && $ids = explode(',',$ids);
+        
+        $method = input('method', 'forbidgroup', 'text');
+        switch ($method) {
             case 'forbidgroup':
-                return $this->forbid('AuthGroup');
+                $status = 0;
                 break;
             case 'resumegroup':
-                return $this->resume('AuthGroup');
+                $status = 1;
                 break;
             case 'deletegroup':
                 if (in_array(1, $ids) || in_array(2, $ids) || in_array(3, $ids)) {
                     return $this->error('系统默认组禁止删除');
                 }
-                return $this->delete('AuthGroup');
+                $status = -1;
                 break;
             default:
                 return $this->error($method . '失败');
         }
+        
+        $title = '更新';
+        if($status == 0){
+            $title = '禁用';
+        }
+        if($status == 1){
+            $title = '启用';
+        }
+        if($status == -1){
+            $title = '删除';
+        }
+        $data['status'] = $status;
+
+        $res = (new AuthGroup())->where('id', 'in', $ids)->update($data);
+        if($res){
+            return $this->success($title . '成功');
+        }else{
+            return $this->error($title . '失败');
+        }  
     }
 
     /**

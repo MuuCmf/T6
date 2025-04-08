@@ -275,7 +275,7 @@ class Admin extends Base
     final protected function editRow($table, $data, $where, $msg)
     {
         $id = array_unique((array)input('id/a', 0));
-        $id = is_array($id) ? implode(',', $id) : $id;
+        !is_array($id) && $id = explode(',',$id);
 
         if ($where) {
             $where = $where;
@@ -284,7 +284,7 @@ class Admin extends Base
         }
 
         $msg = array_merge(['success' => '操作成功！', 'error' => '操作失败', 'url' => ''], (array)$msg);
-
+        
         if (Db::name($table)->where($where)->update($data) !== false) {
             return $this->success($msg['success'], '', $msg['url']);
         } else {
