@@ -8,6 +8,7 @@ use app\common\model\Attachment;
 use app\common\model\Member as MemberModel;
 use app\common\model\MemberSync as MemberSyncModel;
 use app\admin\model\AuthGroup;
+use app\common\model\ScoreType as ScoreTypeModel;
 use app\common\model\ScoreLog as ScoreLogModel;
 
 /**
@@ -217,9 +218,27 @@ class Member extends Admin
             return $this->success('保存成功', $uid, cookie('__forward__'));
         } else {
 
-            // 获取用户数据
-            $member = query_user($uid);
+            // 获取启用的积分类型
+            $score_types = (new ScoreTypeModel())->getTypeList(['status' => 1]);
 
+            // 获取用户数据
+            if(empty($uid)){
+                $member['uid'] = 0;
+                $member['nickname'] = '';
+                $member['username'] = '';
+                $member['email'] = '';
+                $member['mobile'] = '';
+                $member['sex'] = 0;
+                $member['avatar'] = 'static/images/default_avatar.jpg';
+                $member['avatar64'] = request()->domain() . '/static/common/images/default_avatar_64_64.jpg';
+                $member['avatar128'] = request()->domain() . '/static/common/images/default_avatar_128_128.jpg';
+                $member['avatar256'] = request()->domain() . '/static/common/images/default_avatar_256_256.jpg';
+                $member['avatar512'] = request()->domain() . '/static/common/images/default_avatar_512_512.jpg';
+                $member['score'] = $score_types;
+                $member['status'] = 1;
+            }else{
+                $member = query_user($uid);
+            }
             // 用户拥有的权限组
             $auth = Db::name('auth_group_access')->where(['uid' => $uid])->select();
             $temp_auth_group_arr = [];
