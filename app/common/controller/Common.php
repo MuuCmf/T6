@@ -124,7 +124,7 @@ class Common extends Base
      */
     protected function initMuuConfig()
     {
-        $this->muu_config_data = $muu_config_data = (new ConfigLogic())->frontend($this->shopid);
+        $this->muu_config_data = $muu_config_data = (new ConfigLogic())->frontend();
         View::assign('muu_config_data', $muu_config_data);
     }
 

@@ -1,8 +1,10 @@
 <?php
+
 use think\facade\Db;
 use think\facade\Config;
 use app\common\model\ActionLog;
 use app\common\model\History;
+
 /**
  * 后台公共文件
  * 主要定义后台公共函数库
@@ -11,7 +13,7 @@ use app\common\model\History;
 if (!function_exists('get_attribute_type')) {
     /**
      * 获取属性类型信息
-     */ 
+     */
     function get_attribute_type($type = '')
     {
         // TODO 可以加入系统配置
@@ -28,7 +30,7 @@ if (!function_exists('get_attribute_type')) {
             'picture' => array('上传图片', 'int(10) UNSIGNED NOT NULL'),
             'file' => array('上传附件', 'int(10) UNSIGNED NOT NULL'),
         ];
-        
+
         return $type ? $_type[$type][0] : $_type;
     }
 }
@@ -38,7 +40,6 @@ if (!function_exists('get_list_field')) {
 
     function get_list_field($data, $grid, $model)
     {
-
         // 获取当前字段数据
         foreach ($grid['field'] as $field) {
             $array = explode('|', $field);
@@ -71,7 +72,8 @@ if (!function_exists('get_list_field')) {
                     $href = str_replace(
                         array('[DELETE]', '[EDIT]', '[MODEL]'),
                         array('del?ids=[id]&model=[MODEL]', 'edit?id=[id]&model=[MODEL]', $model['id']),
-                        $href);
+                        $href
+                    );
 
                     // 替换数据变量
                     $href = preg_replace_callback('/\[([a-z_]+)\]/', function ($match) use ($data) {
@@ -99,22 +101,22 @@ if (!function_exists('get_status_title')) {
             return false;
         }
         switch ($status) {
-            case -2 :
+            case -2:
                 return '审核未通过';
                 break;
-            case -1 :
+            case -1:
                 return '删除';
                 break;
-            case 0  :
+            case 0:
                 return '禁用';
                 break;
-            case 1  :
+            case 1:
                 return '启用';
                 break;
-            case 2  :
+            case 2:
                 return '未审核';
                 break;
-            default :
+            default:
                 return false;
                 break;
         }
@@ -152,7 +154,7 @@ if (!function_exists('get_config_type_list')) {
             'entity' => '枚举',
             'style' => '风格',
         ];
-        
+
         return $list;
     }
 }
@@ -167,7 +169,7 @@ if (!function_exists('get_config_type')) {
     {
         $list = get_config_type_list();
 
-        if(empty($list[$type])){
+        if (empty($list[$type])) {
             $list[$type] = '未设置';
         }
         return $list[$type];
@@ -201,6 +203,18 @@ if (!function_exists('get_extend_group')) {
 }
 
 if (!function_exists('int_to_string')) {
+    /**
+     * 将数组中的数字转换成对应的文字
+     * @param array $data 要转换的数据集
+     * @param array $map 转换映射关系 ['字段名'=>['值'=>'对应文字']]
+     * @return array 转换后的数据集
+     * 
+     * 示例:
+     * $map = ['status'=>[1=>'启用',-1=>'删除',0=>'禁用',-2=>'未审核',3=>'草稿']]
+     * $data = [['id'=>1,'status'=>1],['id'=>2,'status'=>0]]
+     * int_to_string($data,$map);
+     * 返回: [['id'=>1,'status'=>1,'status_text'=>'启用'],['id'=>2,'status'=>0,'status_text'=>'禁用']]
+     */
     function int_to_string(&$data, $map = ['status' => [1 => '启用', -1 => '删除', 0 => '禁用', -2 => '未审核', 3 => '草稿']])
     {
         if ($data === false || $data === null) {
@@ -219,6 +233,18 @@ if (!function_exists('int_to_string')) {
 }
 
 if (!function_exists('lists_plus')) {
+    /**
+     * 处理列表数据，为每条数据添加模块别名和积分变动信息
+     * 
+     * @param array &$data 需要处理的数据列表（通过引用传递）
+     * @return array 处理后的数据列表
+     * 
+     * 功能说明：
+     * 1. 从module表获取所有模块的别名信息
+     * 2. 为每条数据添加对应模块的别名
+     * 3. 从action_log表获取最新的积分变动记录
+     * 4. 如果存在积分变动，则添加到vary字段
+     */
     function lists_plus(&$data)
     {
         $alias = Db::name('module')->select();
@@ -227,38 +253,21 @@ if (!function_exists('lists_plus')) {
             $alias_set[$value['name']] = $value['alias'];
         }
         foreach ($data as $key => $value) {
-            if(empty($data[$key]['module'])){
+            if (empty($data[$key]['module'])) {
                 $data[$key]['alias'] = '';
-            }else{
+            } else {
                 $data[$key]['alias'] = $alias_set[$data[$key]['module']];
             }
-            
+
             $mid = Db::name('action_log')->field("max(create_time),remark")->where('action_id=' . $data[$key]['id'])->select();
             $mid_s = $mid[0]['remark'];
-            if( isset($mid_s) && strpos($mid_s , lang('_INTEGRAL_')) !== false)
-            {
+            if (isset($mid_s) && strpos($mid_s, lang('_INTEGRAL_')) !== false) {
                 $data[$key]['vary'] = $mid_s;
-            }else{
+            } else {
                 $data[$key]['vary'] = '';
             }
         }
         return $data;
-    }
-}
-
-if (!function_exists('extra_menu')) {
-    /**
-     * 动态扩展左侧菜单,base.html里用到
-     */
-    function extra_menu($extra_menu, &$base_menu)
-    {
-        foreach ($extra_menu as $key => $group) {
-            if (isset($base_menu['child'][$key])) {
-                $base_menu['child'][$key] = array_merge($base_menu['child'][$key], $group);
-            } else {
-                $base_menu['child'][$key] = $group;
-            }
-        }
     }
 }
 
@@ -356,7 +365,7 @@ if (!function_exists('action_log')) {
      * @return boolean
      */
     function action_log($action = null, $model = null, $record_id = null, $uid = null)
-    {   
+    {
         $actionLogModel = new ActionLog();
 
         return $actionLogModel->add($action, $model, $record_id, $uid);
@@ -372,9 +381,9 @@ if (!function_exists('history_log')) {
      * @param int $uid 执行行为的用户id
      * @return boolean
      */
-    function history_log($shopid, $app, $uid, $info_id ,$info_type, $metadata)
-    { 
-        return (new History())->addLog($shopid, $app, $uid, $info_id ,$info_type, $metadata);
+    function history_log($shopid, $app, $uid, $info_id, $info_type, $metadata)
+    {
+        return (new History())->addLog($shopid, $app, $uid, $info_id, $info_type, $metadata);
     }
 }
 
@@ -387,13 +396,14 @@ if (!function_exists('str_replace_limit')) {
      * @param  Int   $limit    允许替换的次数，默认为-1，不限次数
      * @return Mixed
      */
-    function str_replace_limit($search, $replace, $subject, $limit=-1){
-        if(is_array($search)){
-            foreach($search as $k=>$v){
-                $search[$k] = '`'. preg_quote($search[$k], '`'). '`';
+    function str_replace_limit($search, $replace, $subject, $limit = -1)
+    {
+        if (is_array($search)) {
+            foreach ($search as $k => $v) {
+                $search[$k] = '`' . preg_quote($search[$k], '`') . '`';
             }
-        }else{
-            $search = '`'. preg_quote($search, '`'). '`';
+        } else {
+            $search = '`' . preg_quote($search, '`') . '`';
         }
         return preg_replace($search, $replace, $subject, $limit);
     }
@@ -403,7 +413,7 @@ if (!function_exists('get_stemma')) {
     /**
      * 获取数据的所有子孙数据的id值
      */
-    function get_stemma($pids, Model &$model, $field = 'id')
+    function get_stemma($pids, &$model, $field = 'id')
     {
         $collection = array();
 
@@ -438,21 +448,21 @@ if (!function_exists('get_nav_url')) {
         switch ($url) {
             case 'http://' === substr($url, 0, 7):
                 return $url;
-            break;
+                break;
             case 'https://' === substr($url, 0, 8):
                 return $url;
-            break;
+                break;
             case '#' === substr($url, 0, 1):
                 return $url;
-            break;
-            case strpos($url,'/') !== false:
+                break;
+            case strpos($url, '/') !== false:
                 $url = url($url);
                 return $url;
-            break;
+                break;
             default:
                 $url = url($url . '/index/index');
                 return $url;
-            break;
+                break;
         }
     }
 }
@@ -491,21 +501,20 @@ if (!function_exists('get_nav_active')) {
                     return 1;
                 };
                 break;
-
         }
         return 0;
     }
 }
 
-/**
- * 把返回的数据集转换成Tree
- * @param array $list 要转换的数据集
- * @param string $pid parent标记字段
- * @param string $level level标记字段
- * @return array
- * @author 麦当苗儿 <zuojiazi@vip.qq.com>
- */
 if (!function_exists('list_to_tree')) {
+    /**
+     * 把返回的数据集转换成Tree
+     * @param array $list 要转换的数据集
+     * @param string $pid parent标记字段
+     * @param string $level level标记字段
+     * @return array
+     * @author 麦当苗儿 <zuojiazi@vip.qq.com>
+     */
     function list_to_tree($list, $pk = 'id', $pid = 'pid', $child = '_child', $root = 0)
     {
         // 创建Tree
@@ -514,17 +523,17 @@ if (!function_exists('list_to_tree')) {
             // 创建基于主键的数组引用
             $refer = array();
             foreach ($list as $key => $data) {
-                $refer[$data[$pk]] =& $list[$key];
+                $refer[$data[$pk]] = &$list[$key];
             }
             foreach ($list as $key => $data) {
                 // 判断是否存在parent
                 $parentId = $data[$pid];
                 if ($root == $parentId) {
-                    $tree[] =& $list[$key];
+                    $tree[] = &$list[$key];
                 } else {
                     if (isset($refer[$parentId])) {
-                        $parent =& $refer[$parentId];
-                        $parent[$child][] =& $list[$key];
+                        $parent = &$refer[$parentId];
+                        $parent[$child][] = &$list[$key];
                     }
                 }
             }
@@ -534,16 +543,16 @@ if (!function_exists('list_to_tree')) {
     }
 }
 
-/**
- * 将list_to_tree的树还原成列表
- * @param  array $tree 原来的树
- * @param  string $child 孩子节点的键
- * @param  string $order 排序显示的键，一般是主键 升序排列
- * @param  array $list 过渡用的中间数组，
- * @return array        返回排过序的列表数组
- * @author yangweijie <yangweijiester@gmail.com>
- */
 if (!function_exists('tree_to_list')) {
+    /**
+     * 将list_to_tree的树还原成列表
+     * @param  array $tree 原来的树
+     * @param  string $child 孩子节点的键
+     * @param  string $order 排序显示的键，一般是主键 升序排列
+     * @param  array $list 过渡用的中间数组，
+     * @return array        返回排过序的列表数组
+     * @author yangweijie <yangweijiester@gmail.com>
+     */
     function tree_to_list($tree, $child = '_child', $order = 'id', &$list = array())
     {
         if (is_array($tree)) {

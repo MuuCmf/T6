@@ -63,7 +63,7 @@ class Config extends Base
      * @param $shopid
      * @return array
      */
-    public function frontend($shopid = 0)
+    public function frontend()
     {
         $config = [];
         //获取基础配置

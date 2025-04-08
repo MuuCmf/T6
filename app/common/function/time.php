@@ -1,4 +1,5 @@
 <?php
+
 /**
  * 时间戳格式化
  * @param int $time
@@ -22,63 +23,64 @@ if (!function_exists('time_format')) {
  * @return string
  */
 if (!function_exists('friendly_date')) {
-    function friendly_date($sTime,$type = 'normal',$alt = 'false') {
+    function friendly_date($sTime, $type = 'normal', $alt = 'false')
+    {
         if (empty($sTime))
             return '';
         //sTime=源时间，cTime=当前时间，dTime=时间差
         $cTime      =   time();
         $dTime      =   $cTime - $sTime;
-        $dDay       =   intval(date("z",$cTime)) - intval(date("z",$sTime));
+        $dDay       =   intval(date("z", $cTime)) - intval(date("z", $sTime));
         //$dDay     =   intval($dTime/3600/24);
-        $dYear      =   intval(date("Y",$cTime)) - intval(date("Y",$sTime));
+        $dYear      =   intval(date("Y", $cTime)) - intval(date("Y", $sTime));
         //normal：n秒前，n分钟前，n小时前，日期
-        if($type=='normal'){
-            if( $dTime < 60 ){
-                if($dTime < 10){
+        if ($type == 'normal') {
+            if ($dTime < 60) {
+                if ($dTime < 10) {
                     return '刚刚';    //by yangjs
-                }else{
+                } else {
                     return intval(floor($dTime / 10) * 10) . '秒前';
                 }
-            }elseif( $dTime < 3600 ){
-                return intval($dTime/60) . '分钟前';
+            } elseif ($dTime < 3600) {
+                return intval($dTime / 60) . '分钟前';
                 //今天的数据.年份相同.日期相同.
-            }elseif( $dYear==0 && $dDay == 0  ){
-                return '今天' . date('H:i',$sTime);
-            }elseif($dYear==0){
-                return date("m月d日 H:i",$sTime);
-            }else{
-                return date("Y-m-d H:i",$sTime);
+            } elseif ($dYear == 0 && $dDay == 0) {
+                return '今天' . date('H:i', $sTime);
+            } elseif ($dYear == 0) {
+                return date("m月d日 H:i", $sTime);
+            } else {
+                return date("Y-m-d H:i", $sTime);
             }
-        }elseif($type=='mohu'){
-            if( $dTime < 60 ){
-                return $dTime. '分钟前';
-            }elseif( $dTime < 3600 ){
-                return intval($dTime/60). '分钟前';
-            }elseif( $dTime >= 3600 && $dDay == 0  ){
-                return intval($dTime/3600). '小时前';
-            }elseif( $dDay > 0 && $dDay<=7 ){
-                return intval($dDay). '天前';
-            }elseif( $dDay > 7 &&  $dDay <= 30 ){
-                return intval($dDay/7) . '周前';
-            }elseif( $dDay > 30 ){
-                return intval($dDay/30) . '月前';
+        } elseif ($type == 'mohu') {
+            if ($dTime < 60) {
+                return $dTime . '分钟前';
+            } elseif ($dTime < 3600) {
+                return intval($dTime / 60) . '分钟前';
+            } elseif ($dTime >= 3600 && $dDay == 0) {
+                return intval($dTime / 3600) . '小时前';
+            } elseif ($dDay > 0 && $dDay <= 7) {
+                return intval($dDay) . '天前';
+            } elseif ($dDay > 7 &&  $dDay <= 30) {
+                return intval($dDay / 7) . '周前';
+            } elseif ($dDay > 30) {
+                return intval($dDay / 30) . '月前';
             }
             //full: Y-m-d , H:i:s
-        }elseif($type=='full'){
-            return date("Y-m-d , H:i:s",$sTime);
-        }elseif($type=='ymd'){
-            return date("Y-m-d",$sTime);
-        }else{
-            if( $dTime < 60 ){
-                return $dTime. '秒前';
-            }elseif( $dTime < 3600 ){
-                return intval($dTime/60). '分钟前';
-            }elseif( $dTime >= 3600 && $dDay == 0  ){
-                return intval($dTime/3600). '小时前';
-            }elseif($dYear==0){
-                return date("Y-m-d H:i:s",$sTime);
-            }else{
-                return date("Y-m-d H:i:s",$sTime);
+        } elseif ($type == 'full') {
+            return date("Y-m-d , H:i:s", $sTime);
+        } elseif ($type == 'ymd') {
+            return date("Y-m-d", $sTime);
+        } else {
+            if ($dTime < 60) {
+                return $dTime . '秒前';
+            } elseif ($dTime < 3600) {
+                return intval($dTime / 60) . '分钟前';
+            } elseif ($dTime >= 3600 && $dDay == 0) {
+                return intval($dTime / 3600) . '小时前';
+            } elseif ($dYear == 0) {
+                return date("Y-m-d H:i:s", $sTime);
+            } else {
+                return date("Y-m-d H:i:s", $sTime);
             }
         }
     }
@@ -96,56 +98,78 @@ if (!function_exists('datetime')) {
         $time = is_numeric($time) ? $time : strtotime($time);
         return date($format, $time);
     }
-
 }
 
-function get_time_ago($type = 'second', $some = 1, $time = null)
-{
-    $time = empty($time) ? time() : $time;
-    switch ($type) {
-        case 'second':
-            $result = $time - $some;
-            break;
-        case 'minute':
-            $result = $time - $some * 60;
-            break;
-        case 'hour':
-            $result = $time - $some * 60 * 60;
-            break;
-        case 'day':
-            $result = strtotime('-' . $some . ' day', $time);
-            break;
-        case 'week':
-            $result = strtotime('-' . ($some * 7) . ' day', $time);
-            break;
-        case 'month':
-            $result = strtotime('-' . $some . ' month', $time);
-            break;
-        case 'year':
-            $result = strtotime('-' . $some . ' year', $time);
-            break;
-        default:
-            $result = $time - $some;
+if (!function_exists('get_time_ago')) {
+    /**
+     * 获取指定时间之前的时间戳
+     * @param string $type 时间类型，可选值：second(秒)、minute(分钟)、hour(小时)、day(天)、week(周)、month(月)、year(年)
+     * @param int $some 时间数量
+     * @param int|null $time 指定时间戳，默认为当前时间
+     * @return int 返回计算后的时间戳
+     */
+    function get_time_ago($type = 'second', $some = 1, $time = null)
+    {
+        $time = empty($time) ? time() : $time;
+        switch ($type) {
+            case 'second':
+                $result = $time - $some;
+                break;
+            case 'minute':
+                $result = $time - $some * 60;
+                break;
+            case 'hour':
+                $result = $time - $some * 60 * 60;
+                break;
+            case 'day':
+                $result = strtotime('-' . $some . ' day', $time);
+                break;
+            case 'week':
+                $result = strtotime('-' . ($some * 7) . ' day', $time);
+                break;
+            case 'month':
+                $result = strtotime('-' . $some . ' month', $time);
+                break;
+            case 'year':
+                $result = strtotime('-' . $some . ' year', $time);
+                break;
+            default:
+                $result = $time - $some;
+        }
+        return $result;
     }
-    return $result;
 }
 
-/**
- * 转化时间单位
- */
-function get_time_unit($key = null){
+if (!function_exists('get_time_unit')) {
+    /**
+     * 获取时间单位
+     * @param string|null $key 时间单位键名
+     * @return array|string 返回时间单位数组或指定单位的中文名称
+     * 
+     * 时间单位对应关系:
+     * - second: 秒
+     * - minute: 分
+     * - hour: 小时  
+     * - day: 日
+     * - week: 周
+     * - month: 月
+     * - year: 年
+     */
+    function get_time_unit($key = null)
+    {
 
-    $array = [
-        'second' => '秒', 
-        'minute' => '分', 
-        'hour' => '小时', 
-        'day' => '日', 
-        'week' => '周', 
-        'month' => '月', 
+        $array = [
+        'second' => '秒',
+        'minute' => '分',
+        'hour' => '小时',
+        'day' => '日',
+        'week' => '周',
+        'month' => '月',
         'year' => '年'
     ];
 
-    return empty($key)?$array:$array[$key];
+    return empty($key) ? $array : $array[$key];
+}
 }
 
 /**
@@ -153,11 +177,11 @@ function get_time_unit($key = null){
  *
  * @return     <type>  ( description_of_the_return_value )
  */
-if(!function_exists("yestodayTime") ) {
+if (!function_exists("yestodayTime")) {
     function yestodayTime()
     {
-        $beginToday = mktime(0,0,0,date('m'),date('d')-1,date('Y'));
-        $endToday = mktime(0,0,0,date('m'),date('d'),date('Y'))-1;
+        $beginToday = mktime(0, 0, 0, date('m'), date('d') - 1, date('Y'));
+        $endToday = mktime(0, 0, 0, date('m'), date('d'), date('Y')) - 1;
 
         return array($beginToday, $endToday);
     }
@@ -168,11 +192,11 @@ if(!function_exists("yestodayTime") ) {
  *
  * @return     <type>  ( description_of_the_return_value )
  */
-if(!function_exists("dayTime") ) {
+if (!function_exists("dayTime")) {
     function dayTime()
     {
-        $beginToday = mktime(0,0,0,date('m'),date('d'),date('Y'));
-        $endToday = mktime(0,0,0,date('m'),date('d')+1,date('Y'))-1;
+        $beginToday = mktime(0, 0, 0, date('m'), date('d'), date('Y'));
+        $endToday = mktime(0, 0, 0, date('m'), date('d') + 1, date('Y')) - 1;
 
         return array($beginToday, $endToday);
     }
@@ -183,13 +207,13 @@ if(!function_exists("dayTime") ) {
  *
  * @return     <type>  ( description_of_the_return_value )
  */
-if(!function_exists("weekTime") ) {
+if (!function_exists("weekTime")) {
     function weekTime()
     {
-        $beginThisweek = mktime(0,0,0,date('m'),date('d')-date('w')+1,date('y'));  
-        $endThisweek = mktime(23,59,59,date("m"),date("d")-date("w")+7,date("Y"));;  
-        
-        return array($beginThisweek,$endThisweek);
+        $beginThisweek = mktime(0, 0, 0, date('m'), date('d') - date('w') + 1, date('y'));
+        $endThisweek = mktime(23, 59, 59, date("m"), date("d") - date("w") + 7, date("Y"));;
+
+        return array($beginThisweek, $endThisweek);
     }
 }
 
@@ -198,16 +222,16 @@ if(!function_exists("weekTime") ) {
  *
  * @return     <type>  ( description_of_the_return_value )
  */
-if(!function_exists("monthTime") ) {
+if (!function_exists("monthTime")) {
     function monthTime()
     {
         $year = date("Y");
         $month = date("m");
         $allday = date("t");
-        $first_time = strtotime($year."-".$month."-1");
-        $last_time = strtotime($year."-".$month."-".$allday);
+        $first_time = strtotime($year . "-" . $month . "-1");
+        $last_time = strtotime($year . "-" . $month . "-" . $allday);
 
-        return array($first_time,$last_time);
+        return array($first_time, $last_time);
     }
 }
 
@@ -217,7 +241,7 @@ if(!function_exists("monthTime") ) {
  * @param null $day 当前时间
  * @return int|null
  */
-if(!function_exists("get_some_day") ) {
+if (!function_exists("get_some_day")) {
     function get_some_day($some = 30, $day = null)
     {
         $time = $day ? $day : time();

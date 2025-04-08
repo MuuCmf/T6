@@ -22,7 +22,7 @@ class Config extends Api
      */
     public function system()
     {
-        $config = $this->ConfigLogic->frontend($this->shopid);
+        $config = $this->ConfigLogic->frontend();
         return $this->success('success', $config);
     }
 
