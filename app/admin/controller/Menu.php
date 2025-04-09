@@ -2,7 +2,6 @@
 
 namespace app\admin\controller;
 
-use think\facade\Db;
 use think\facade\View;
 use app\admin\model\AuthRule;
 use app\admin\model\Menu as MenuModel;
@@ -14,7 +13,6 @@ use app\common\service\Tree;
  */
 class Menu extends Admin
 {
-
     protected $MenuModel;
     protected $ModuleModel;
 
@@ -38,20 +36,24 @@ class Menu extends Admin
     public function index()
     {
         $title = input('title', '', 'text');
-        if (!empty($title)) {
-            $list_map['title'] = ['like', '%' . $title . '%'];
-        }
 
         $list_map = [];
-        $list_map['type'] =   0;
+        if (!empty($title)) {
+            $list_map[] = ['title', 'like', '%' . $title . '%'];
+        }
+        $list_map[] = ['type', '=', '0'];
 
-        $list = $this->MenuModel->where($list_map)->order('sort asc')->select()->toArray();
-        foreach ($list as &$val) {
+        $result_list = $this->MenuModel->where($list_map)->order('sort asc')->select();
+        if(!empty($result_list)){
+            $result_list = $result_list->toArray();
+        }
+        foreach ($result_list as &$val) {
             $val = $this->MenuModel->handle($val);
         }
         unset($val);
+        
         // 转树结构
-        $list = list_to_tree($list, 'id', 'pid', '_child', '0');
+        $list = list_to_tree($result_list, 'id', 'pid', '_child', '0');
 
         // ajax请求返回数据
         if (request()->isAjax()) {
@@ -73,7 +75,7 @@ class Menu extends Admin
     {
         $app = input('app', '', 'text');
         // 获取主菜单
-        if(!empty($app)){
+        if (!empty($app)) {
             $where[] = ['module', '=', $app];
         }
         $where[] = ['pid', '=', '0'];

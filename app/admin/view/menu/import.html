@@ -3,14 +3,14 @@
 {block name="body"}
 	<div class="main-title cf">
 		<h2>
-			{:lang("_BATCH_IMPORT_")}[{$data.title|default=L('_TOP_MENU_WITH_SINGLE_')}]
+			导入[{$data.title|default=''}]
 		</h2>
 	</div>
 	<!-- 标签页导航 -->
 <div class="tab-wrap with-padding">
 	<div class="tab-content">
 	<!-- 表单 -->
-	<form id="form" action="{:Url('import')}" method="post" class="form-horizontal">
+	<form id="form" action="{:url('import')}" method="post" class="form-horizontal">
 		<!-- 基础文档模型 -->
 		<div id="tab1" class="">
 			<div class="form-item builder_item">
@@ -27,7 +27,7 @@
 		</div>
 		<div class="form-item builder_item">
 			<button class="btn submit-btn ajax-post" id="submit" type="submit" target-form="form-horizontal">{:lang("_SURE_WITH_SPACE_")}</button>
-			<a class="btn btn-return" href="{:Url('index?pid='.$pid)}">{:lang("_RETURN_WITH_SPACE_")}</a>
+			<a class="btn btn-return" href="{:url('index?pid='.$pid)}">{:lang("_RETURN_WITH_SPACE_")}</a>
 			<input type="hidden" name="pid" value="{$pid}"/>
 			<input type="hidden" name="cate_id" value="{$cate_id|default=0}">
 		</div>
