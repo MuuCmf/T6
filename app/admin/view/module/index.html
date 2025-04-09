@@ -103,7 +103,9 @@
         
         <!--模块分页-->
         <div class="pager">
+            {notempty name="page"}
             {:htmlspecialchars_decode($page)}
+            {/notempty}
         </div>
     </div>
 

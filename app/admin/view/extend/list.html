@@ -70,7 +70,9 @@
             </tbody>
         </table>
         <div class="">
+            {notempty name="page"}
             {:htmlspecialchars_decode($page)}
+            {/notempty}
         </div>
     </div>
 {/block}
