@@ -1,5 +1,5 @@
 <?php
-// 微信访问路由定义文件
+// 路由定义文件
 
 use think\facade\Route;
 //微信公众号
@@ -14,8 +14,13 @@ Route::group('official',function (){
 });
 
 //微信小程序
-Route::group('weixin',function (){
-    
+Route::group('weixin_mp',function (){
+    Route::rule('code' ,'channel/api.WechatMiniProgram/code');
+    Route::rule('login' ,'channel/api.WechatMiniProgram/login');
+    Route::rule('unlimitQrcode' ,'channel/api.WechatMiniProgram/unlimitQrcode');
+    Route::rule('bindMobile' ,'channel/api.WechatMiniProgram/bindMobile');
+    Route::rule('to_mp_lists' ,'channel/api.WechatMiniProgram/toMiniProgramLists');
+    Route::rule('to_mp_detail' ,'channel/api.WechatMiniProgram/toMiniProgramDetail');
 });
 
 //企业微信

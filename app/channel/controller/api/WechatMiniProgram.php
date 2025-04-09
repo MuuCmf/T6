@@ -35,8 +35,13 @@ class WechatMiniProgram extends Api
      * code 换取用户信息
      * @param $code
      */
-    public function code($code)
+    public function code()
     {
+        $code = input('code', '', 'trim');
+        if (empty($code)) {
+            return $this->error('code不能为空');
+        }
+
         $result = MiniProgramServer::user($code);
         if (!isset($result['openid'])) {
             return $this->error($result['errmsg']);

@@ -616,7 +616,7 @@ class Attachment extends Base
     }
 
     /**
-     * 获取文件名
+     * 获取文件file_id
      */
     public function getFileID($attachment)
     {
