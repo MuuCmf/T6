@@ -388,29 +388,39 @@ class Action extends Admin
     /**
      * 行为限制状态
      */
-    public function limitStatus(int $status = 0)
+    public function limitStatus()
     {
         $ids = array_unique((array)input('ids/a', 0));
         $ids = is_array($ids) ? implode(',', $ids) : $ids;
-
+        $status = input('status', 0, 'intval');
         if (empty($ids)) {
             return $this->error('请选择要操作的数据');
         }
 
-        $map = ['id' => ['in', $ids]];
+        $ActionLimitModel = new ActionLimitModel();
 
-        switch (strtolower($status)) {
+        $title = '更新';
+        switch ($status) {
             case 0:
-                return $this->forbid('action_limit', $map);
+                $title = '禁用';
                 break;
             case 1:
-                return $this->resume('action_limit', $map);
+                $title = '启用';
                 break;
             case -1:
-                return $this->delete('action_limit', $map);
+                $title = '删除';
                 break;
             default:
                 return $this->error('参数错误');
+        }
+
+        $data['status'] = $status;
+
+        $res = $ActionLimitModel->where('id', 'in', $ids)->update($data);
+        if ($res) {
+            return $this->success($title . '成功', $res, 'refresh');
+        } else {
+            return $this->error($title . '失败');
         }
     }
 }

@@ -345,15 +345,4 @@ class Admin extends Base
         $data['status'] = -1;
         return $this->editRow($table, $data, $where, $msg);
     }
-
-    /**
-     * 获取版本号(已废弃，暂保留避免在线更新时报错)
-     */
-    protected function version()
-    {
-        $path = PUBLIC_PATH . '/../data/version.ini';
-        $version = file_get_contents($path);
-
-        return $version;
-    }
 }
