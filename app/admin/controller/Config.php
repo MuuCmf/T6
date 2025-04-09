@@ -74,13 +74,13 @@ class Config extends Admin
             $map[] = ['name', 'like', '%' . (string)input('name') . '%'];
         }
 
-        list($list, $page) = $this->commonLists('Config', $map, 'sort,id');
+        list($list, $pager) = $this->commonLists('Config', $map, 'sort,id');
         $list = $list->toArray()['data'];
 
         View::assign('group', config('system.CONFIG_GROUP_LIST'));
         View::assign('group_id', input('get.group', 0));
         View::assign('list', $list);
-        View::assign('page', $page);
+        View::assign('pager', $pager);
         // 记录当前列表页的cookie
         Cookie('__forward__', $_SERVER['REQUEST_URI']);
         $this->setTitle('配置管理');

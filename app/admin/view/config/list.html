@@ -82,7 +82,9 @@
             </tbody>
         </table>
         <div class="">
-            {:htmlspecialchars_decode($page)}
+            {if !empty($pager)}
+            {:htmlspecialchars_decode($pager)}
+            {/if}
         </div>
     </div>
 
