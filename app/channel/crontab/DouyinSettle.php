@@ -19,7 +19,7 @@ class DouyinSettle
     protected $OrderModel;
     protected $DouyinMpService;
     protected $DouyinMpSettleModel;
-    
+
     public function __construct()
     {
         $this->OrderModel = new OrderModel();

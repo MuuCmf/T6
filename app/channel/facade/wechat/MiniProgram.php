@@ -1,4 +1,5 @@
 <?php
+
 namespace app\channel\facade\wechat;
 
 use think\Facade;
@@ -12,8 +13,8 @@ use think\Facade;
  * @method getLiveRooms() static
  * @method getLivePlaybacks(int $roomid) static
  */
-class MiniProgram extends Facade {
-
+class MiniProgram extends Facade
+{
     // getFacadeClass: 获取当前Facade对应类名
     protected static function getFacadeClass()
     {

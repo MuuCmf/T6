@@ -1,5 +1,7 @@
 <?php
+
 namespace app\channel\service\wechat;
+
 use think\facade\Cache;
 
 /**
@@ -7,7 +9,8 @@ use think\facade\Cache;
  * Class Wechat
  * @package app\common\service
  */
-abstract class Wechat{
+abstract class Wechat
+{
     public $title;
     public $type;
     public $app;
@@ -20,8 +23,8 @@ abstract class Wechat{
         $this->separator = DIRECTORY_SEPARATOR;
         $this->app = $app;
     }
-    public function log(){
-
+    public function log()
+    {
         $log['level'] = 'debug'; //可选项debug
         $log['file'] = app()->getRootPath() . "runtime/wechatservice/{$this->type}/";
         $log['file'] .=  date('Y') . '-' . date('m') . '/';
@@ -34,7 +37,8 @@ abstract class Wechat{
      * 获取实例化app
      * @return mixed
      */
-    public function getApp(){
+    public function getApp()
+    {
         return $this->app;
     }
 }

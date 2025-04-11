@@ -1,4 +1,5 @@
 <?php
+
 namespace app\channel\facade\wechat;
 
 use think\Facade;
@@ -21,7 +22,8 @@ use think\Facade;
  * @method getQrcodeUrl(string $ticket) static
  * @method sendTemplateMsg(array $data) static
  */
-class OfficialAccount extends Facade {
+class OfficialAccount extends Facade
+{
     // getFacadeClass: 获取当前Facade对应类名
     protected static function getFacadeClass()
     {

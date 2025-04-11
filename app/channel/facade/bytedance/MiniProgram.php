@@ -1,4 +1,5 @@
 <?php
+
 namespace app\channel\facade\bytedance;
 
 use think\Facade;
@@ -6,8 +7,8 @@ use think\Facade;
 /**
  * Class MiniProgram
  */
-class MiniProgram extends Facade {
-
+class MiniProgram extends Facade
+{
     // getFacadeClass: 获取当前Facade对应类名
     protected static function getFacadeClass()
     {

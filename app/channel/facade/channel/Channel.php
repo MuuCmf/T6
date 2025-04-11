@@ -1,4 +1,5 @@
 <?php
+
 namespace app\channel\facade\channel;
 
 use think\Facade;
@@ -8,8 +9,8 @@ use think\Facade;
  * @method config(string $channel,int $shopid) static
  * @method test() static
  */
-class Channel extends Facade {
-
+class Channel extends Facade
+{
     // getFacadeClass: 获取当前Facade对应类名
     protected static function getFacadeClass()
     {

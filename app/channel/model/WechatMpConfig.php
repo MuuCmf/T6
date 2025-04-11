@@ -1,11 +1,13 @@
 <?php
+
 namespace app\channel\model;
 
 use app\common\model\Base;
 
-class WechatMpConfig extends Base{
+class WechatMpConfig extends Base
+{
     //自动写入创建和更新的时间戳字段
-    protected $autoWriteTimestamp = true; 
+    protected $autoWriteTimestamp = true;
 
     /**
      * 获取配置
@@ -14,15 +16,15 @@ class WechatMpConfig extends Base{
     {
         // 获取配置
         $config = $this->where([
-            ['shopid' ,'=' ,$shopid],
+            ['shopid', '=', $shopid],
         ])->find();
-        
-        if(!empty($config['tmplmsg'])){
+
+        if (!empty($config['tmplmsg'])) {
             $config['tmplmsg'] = json_decode($config['tmplmsg'], true);
-        }else{
+        } else {
             $config['tmplmsg'] = [];
         }
-        
+
 
         return $config;
     }

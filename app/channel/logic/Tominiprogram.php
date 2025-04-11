@@ -23,5 +23,4 @@ class Tominiprogram extends Base
         $data = $this->setTimeAttr($data);
         return $data;
     }
-
 }

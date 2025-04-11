@@ -1,4 +1,5 @@
 <?php
+
 namespace app\channel\service\baidu;
 
 use muucmf\Rsa;
@@ -44,10 +45,10 @@ class BaiduMp
         $this->shopid = request()->param('shopid') ?? 0;
         //获取配置信息
         $map = [
-            ['shopid' ,'=' ,$this->shopid],
+            ['shopid', '=', $this->shopid],
         ];
         $data = (new BaiduMpConfig())->where($map)->find();
-        if (empty($data)){
+        if (empty($data)) {
             throw  new Exception('小程序配置信息不存在');
         }
         $data = $data->toArray();
@@ -75,7 +76,7 @@ class BaiduMp
         ];
 
         // 参数按字典顺序排序
-        ksort($assocArr); 
+        ksort($assocArr);
 
         $parts = [];
         foreach ($assocArr as $k => $v) {
@@ -91,23 +92,20 @@ class BaiduMp
         $result['promotionTag'] = '';
 
         return $result;
-        
     }
 
     /**
      * 生成二维码
      */
-    public function createQRCode($path)
-    {
-        
-    }
+    public function createQRCode($path) {}
 
     /**
      * 回调验签
      * @param array $map 验签参数
      * @return stirng
-    */
-    public function checkSign($assocArr){
+     */
+    public function checkSign($assocArr)
+    {
         if (empty($assocArr)) {
             return false;
         }
@@ -116,7 +114,7 @@ class BaiduMp
         unset($assocArr['rsaSign']);
 
         // 参数按字典顺序排序
-        ksort($assocArr); 
+        ksort($assocArr);
 
         $parts = [];
         foreach ($assocArr as $k => $v) {
@@ -138,7 +136,7 @@ class BaiduMp
             'errno' => $code,
             'msg' => $msg,
         ];
-        if($code == 0){
+        if ($code == 0) {
             $result['data'] = [
                 'isConsumed' => $isConsumed
             ];
@@ -149,7 +147,7 @@ class BaiduMp
     /**
      * post请求
      **/
-    private function sendPost($url,$data)
+    private function sendPost($url, $data)
     {
         $post_data = json_encode($data);
         $options = array(
@@ -161,7 +159,7 @@ class BaiduMp
             )
         );
         $context = stream_context_create($options);
-        $result = file_get_contents($this->api.$url, false, $context);
+        $result = file_get_contents($url, false, $context);
         return $result;
     }
 }

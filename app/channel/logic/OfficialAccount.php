@@ -1,4 +1,5 @@
 <?php
+
 namespace app\channel\logic;
 
 use app\common\logic\Base as MuuBase;
@@ -11,9 +12,10 @@ use app\common\logic\Base as MuuBase;
  */
 class OfficialAccount extends MuuBase
 {
-    public function formatData($data){
-        $data = $this->setImgAttr($data,'1:1');
-        $data = $this->setImgAttr($data,'1:1','qrcode');
+    public function formatData($data)
+    {
+        $data = $this->setImgAttr($data, '1:1');
+        $data = $this->setImgAttr($data, '1:1', 'qrcode');
 
         return $data;
     }
