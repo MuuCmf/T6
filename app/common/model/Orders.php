@@ -60,6 +60,7 @@ class Orders extends Base
         if ($shopid != 'all') {
             $total_all_map[] = ['shopid', '=', $shopid];
         }
+        $total_all_map[] = ['pay_channel', 'not in', ['score', 'password']];
         //已支付
         $total_all_map[] = ['paid', '=', 1];
         //关联应用
@@ -70,6 +71,7 @@ class Orders extends Base
         //本月收入
         $total_month_map = [
             ['app', '=', $app],
+            ['pay_channel', 'not in', ['score', 'password']],
             ['paid', '=', 1],
             ['paid_time', 'between', [monthTime()[0], monthTime()[1]]],
         ];
@@ -82,6 +84,7 @@ class Orders extends Base
         //本周收入
         $total_week_map = [
             ['app', '=', $app],
+            ['pay_channel', 'not in', ['score', 'password']],
             ['paid', '=', 1],
             ['paid_time', 'between', [weekTime()[0], weekTime()[1]]],
         ];
@@ -94,6 +97,7 @@ class Orders extends Base
         //本日收入
         $total_today_map = [
             ['app', '=', $app],
+            ['pay_channel', 'not in', ['score', 'password']],
             ['paid', '=', 1],
             ['paid_time', 'between', [dayTime()[0], dayTime()[1]]],
         ];
@@ -136,6 +140,7 @@ class Orders extends Base
         $today_time = dayTime();
         $map = [
             ['shopid', '=', $shopid],
+            ['pay_channel', 'not in', ['score', 'password']],
             ['paid_time', 'between', [$today_time[0], $today_time[1]]]
         ];
         if (!empty($app)) {
@@ -156,6 +161,7 @@ class Orders extends Base
         $map[] = ['create_time', 'between', [$start, $end]];
         $map[] = ['paid', '=', 1];
         $map[] = ['shopid', '=', $shopid];
+        $map[] = ['pay_channel', 'not in', ['score', 'password']];
         if (!empty($app)) {
             $map[] = ['app', '=', $app];
         }
@@ -174,6 +180,7 @@ class Orders extends Base
         $map[] = ['create_time', 'between', [$start, $end]];
         $map[] = ['paid', '=', 1];
         $map[] = ['shopid', '=', $shopid];
+        $map[] = ['pay_channel', 'not in', ['score', 'password']];
         if (!empty($app)) {
             $map[] = ['app', '=', $app];
         }
@@ -206,6 +213,7 @@ class Orders extends Base
         $where = [
             ['shopid', '=', $shopid],
             ['paid', '=', 1],
+            ['pay_channel', 'not in', ['score', 'password']]
         ];
         if (!empty($app)) {
             $where[] = ['app', '=', $app];
