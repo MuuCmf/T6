@@ -274,13 +274,14 @@ class Action extends Admin
     {
         $this->setTitle('行为限制');
         $action_name = input('get.action', '', 'text');
-        !empty($action_name) && $map['action_list'] = ['like', '%[' . $action_name . ']%', '', 'or'];
+        
 
         $ActionModel = new ActionModel();
         $ActionLimitModel = new ActionLimitModel();
 
         //读取规则列表
         $map[] = ['status', '>=',  0];
+        !empty($action_name) && $map[] = ['action_list', 'like', '%[' . $action_name . ']%'];
         $list = $ActionLimitModel->getListByPage($map);
         // 获取分页显示
         $page = $list->render();
