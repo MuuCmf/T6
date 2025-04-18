@@ -2,11 +2,12 @@
 
 namespace app\common\model;
 
-use think\Model;
 use think\facade\Db;
+use think\Helper\Str;
 
-class ActionLimit extends Model
+class ActionLimit extends Base
 {
+    protected $autoWriteTimestamp = true;
 
     var $item = [];
 
@@ -18,24 +19,21 @@ class ActionLimit extends Model
 
     var $punish = [
         ['warning', '警告并禁止'],
-        ['logout_account', '强制退出登陆'],
-        ['ban_account', '封停账户'],
-        ['ban_ip', '封IP'],
+        ['logoutAccount', '强制退出登陆'],
+        ['banAccount', '封停账户'],
+        ['banIp', '封IP'],
     ];
-
-    protected $autoWriteTimestamp = true;
-
 
     /**
      * ban_account  封停帐号
      * @param $item
      */
-    public function ban_account($item)
+    public function banAccount($item)
     {
-        set_user_status($item['uid'], 0);
+        //TODO 禁用账号
     }
 
-    public function ban_ip($item, $val)
+    public function banIp($item, $val)
     {
         //TODO 进行封停IP的操作
     }
@@ -47,10 +45,9 @@ class ActionLimit extends Model
         $this->url = url();
     }
 
-    public function getList($where)
+    public function logoutAccount($item, $val)
     {
-        $list = $this->where($where)->select()->toArray();
-        return $list;
+        //TODO 强制退出登陆
     }
 
     public function addCheckItem($action = null, $model = null, $record_id = null, $uid = null, $ip = false)
@@ -59,7 +56,12 @@ class ActionLimit extends Model
         return $this;
     }
 
-
+    /**
+     * 检查动作限制
+     * 遍历所有限制项目并逐一进行检查
+     * 
+     * @return void
+     */
     public function check()
     {
         $items = $this->item;
@@ -95,6 +97,7 @@ class ActionLimit extends Model
                 $punishes = explode(',', $val['punish']);
                 foreach ($punishes as $punish) {
                     //执行惩罚
+                    $punish = Str::camel($punish);
                     if (method_exists($this, $punish)) {
                         $this->$punish($item, $val);
                     }
@@ -140,39 +143,6 @@ class ActionLimit extends Model
         }
 
         return $return;
-    }
-
-    /**
-     * [editData description]
-     * @param  [type] $data [description]
-     * @return [type]       [description]
-     */
-    public function edit($data)
-    {
-        if ($data['id']) {
-            $res = $this->update($data);
-        } else {
-            $res = $this->insert($data);
-        }
-
-        return $res;
-    }
-
-    /**
-     * Gets the list by page.
-     *
-     * @param      <type>   $map    The map
-     * @param      string   $order  The order
-     * @param      string   $field  The field
-     * @param      integer  $r      { parameter_description }
-     *
-     * @return     <type>   The list by page.
-     */
-    public function getListByPage($map, $order = 'create_time desc', $field = '*', $r = 20)
-    {
-        $list = $this->where($map)->order($order)->field($field)->paginate($r, false, ['query' => request()->param()]);
-
-        return $list;
     }
 
     /**
