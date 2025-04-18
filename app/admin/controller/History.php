@@ -24,13 +24,17 @@ class History extends Admin
     public function list()
     {
         $app = input('get.app', 'all');
-        $uid = input('get.uid', '');
+        $keyword = input('keyword', '');
+        View::assign('keyword', $keyword);
         $map = [
             ['shopid', '=', $this->shopid],
             ['status', '=', 1]
         ];
         if ($app != 'all')  $map[] = ['app', '=', $app]; //标识
-        if (!empty($uid))  $map[] = ['uid', '=', $uid];
+
+        if (!empty($keyword)) {
+            $map[] = ['metadata', 'like', '%' . $keyword . '%'];
+        }
         // 获取分页列表
         $lists = $this->HistoryModel->getListByPage($map, 'id desc create_time desc', '*', 20);
         // 分页按钮
@@ -54,11 +58,11 @@ class History extends Admin
         View::assign([
             'lists' =>  $lists['data'],
             'pager' =>  $pager,
-            'uid'   =>  $uid,
             'all_module' => $all_module,
             'app'   =>  $app
         ]);
         $this->setTitle('浏览记录');
+
         return View::fetch();
     }
 

@@ -68,7 +68,7 @@ class Favorites extends Base
                     'info_id'   => $info_id,
                     'info_type' => $info_type,
                     'status' => 1,
-                    'metadata' =>   json_encode($products)
+                    'metadata' => json_encode($products, JSON_UNESCAPED_UNICODE)
                 ];
             }else{
                 $f_data = [

@@ -6,6 +6,9 @@ class History extends Base
     //自动写入创建和更新的时间戳字段
     protected $autoWriteTimestamp = true; 
 
+    // 设置json类型字段
+	//protected $json = ['metadata'];
+
     /**
      * 获取收藏量
      *
@@ -70,7 +73,7 @@ class History extends Base
             'shopid' => $shopid,
             'app' => $app,
             'status' => 1,
-            'metadata' => json_encode($metadata)
+            'metadata' => json_encode($metadata, JSON_UNESCAPED_UNICODE)
         ];
         $res = $this->edit($history_data);
 

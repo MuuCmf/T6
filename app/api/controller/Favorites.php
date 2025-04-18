@@ -70,4 +70,5 @@ class Favorites extends Api
 
         return $this->success('success', $count);
     }
+    
 }
