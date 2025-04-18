@@ -8,12 +8,12 @@ class Favorites extends Base
     protected $autoWriteTimestamp = true;
 
     /**
-     * 获取收藏量
-     *
-     * @param      <type>  $info_id    The information identifier
-     * @param      <type>  $info_type  The information type
-     *
-     * @return     <type>  The favorites.
+     * 获取收藏数量
+     * @param int $shopid 商铺ID
+     * @param string $app 应用名称
+     * @param int $info_id 信息ID
+     * @param string $info_type 信息类型
+     * @return int 返回收藏数量
      */
     public function getFavorites($shopid, $app, $info_id, $info_type)
     {
@@ -29,7 +29,13 @@ class Favorites extends Base
     }
 
     /**
-     * 判断用户是否收藏
+     * 检查用户是否有收藏
+     * @param int $shopid 商铺ID
+     * @param string $app 应用名称
+     * @param int $uid 用户ID
+     * @param int $info_id 信息ID
+     * @param string $info_type 信息类型
+     * @return array 收藏数据
      */
     public function yesFavorites($shopid, $app, $uid, $info_id, $info_type)
     {
