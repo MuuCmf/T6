@@ -104,8 +104,8 @@ class Module extends Admin
             }
         }
         unset($item);
-
-        $page = htmlspecialchars_decode($modules->render());
+        $page = $modules->render();
+        
         View::assign('page', $page);
         View::assign('modules', $modules);
         // 记录当前列表页的cookie
