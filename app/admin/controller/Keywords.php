@@ -47,6 +47,7 @@ class Keywords extends Admin
 
         $fields = '*';
         $rows = input('rows', 20, 'intval');
+        View::assign('rows', $rows);
         $lists = $this->KeywordsModel->getListByPage($map, 'create_time desc', $fields, $rows);
         $pager = $lists->render();
         $lists = $lists->toArray();

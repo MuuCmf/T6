@@ -26,6 +26,8 @@ class Favorites extends Admin
         $app = input('get.app', 'all');
         $keyword = input('keyword', '');
         View::assign('keyword', $keyword);
+        $rows = input('rows', 20, 'intval');
+        View::assign('rows', $rows);
         $map = [
             ['shopid', '=', $this->shopid],
             ['status', '=', 1]
@@ -35,7 +37,7 @@ class Favorites extends Admin
             $map[] = ['metadata', 'like', '%' . $keyword . '%'];
         }
         // 获取分页列表
-        $lists = $this->FavoritesModel->getListByPage($map, 'id desc create_time desc', '*', 20);
+        $lists = $this->FavoritesModel->getListByPage($map, 'id desc create_time desc', '*', $rows);
         // 分页按钮
         $pager = $lists->render();
         // 格式化数据

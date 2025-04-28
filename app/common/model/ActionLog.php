@@ -2,10 +2,9 @@
 
 namespace app\common\model;
 
-use think\Model;
 use think\facade\Db;
 
-class ActionLog extends Model
+class ActionLog extends Base
 {
 	/**
 	 * 记录行为日志，并执行该行为的规则

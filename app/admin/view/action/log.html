@@ -35,7 +35,7 @@
     </div>
     <!-- 数据列表 -->
     <div class="data-table">
-        {notempty name="_list"}
+        {notempty name="list.data"}
         <table class="table table-bordered table-striped table-hover muu-table">
             <thead>
                 <tr>
@@ -54,7 +54,7 @@
                 </tr>
             </thead>
             <tbody>
-                {volist name="_list" id="vo"}
+                {volist name="list.data" id="vo"}
                 <tr>
                     <td>
                         <input class="ids" id="ids-{$vo.id}" type="checkbox" name="ids[]" value="{$vo.id}">

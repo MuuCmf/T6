@@ -21,6 +21,8 @@ class Action extends Admin
     public function log()
     {
         //获取列表数据
+        $rows = input('rows', 20, 'intval');
+        View::assign('rows', $rows);
         $aUid = input('get.uid', 0, 'intval');
         if ($aUid) $map[] = ['uid', '=', $aUid];
 
@@ -37,15 +39,13 @@ class Action extends Admin
 
         $map[]    =   ['status', '>', -1];
 
-        list($list, $pager)   =   $this->commonLists('action_log', $map);
+        $list = (new ActionLogModel())->getListByPage($map, 'id desc create_time desc', '*', $rows);
+        // 分页按钮
+        $pager = $list->render();
+        $list = $list->toArray();
 
-        $list = $list->toArray()['data'];
-        int_to_string($list);
-
-        foreach ($list as $key => &$value) {
-            //$model_id                  =   get_document_field($value['model'],"name","id");
-            //$list[$key]['model_id']    =   $model_id ? $model_id : 0;
-            $list[$key]['ip'] = $value['action_ip'];
+        foreach ($list['data'] as $key => &$value) {
+            $list['data'][$key]['ip'] = $value['action_ip'];
         }
         unset($value);
 
@@ -57,7 +57,7 @@ class Action extends Admin
         $actionList = Db::name('Action')->select();
         View::assign('action_list', $actionList);
 
-        View::assign('_list', $list);
+        View::assign('list', $list);
         View::assign('pager', $pager);
         $this->setTitle('日志列表');
 
