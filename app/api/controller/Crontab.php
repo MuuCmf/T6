@@ -65,14 +65,13 @@ class Crontab extends Api
                 $result = $this->OrdersModel->where('id', 'in', $ids)->update($data);
                 if ($result === false) throw new Exception('订单更新失败');
             }
-            
+
             Db::commit();
 
             return json([
                 'code' => 200,
                 'msg' => 'success',
             ]);
-
         } catch (\Exception $e) {
             Db::rollback();
             return json([
@@ -97,50 +96,54 @@ class Crontab extends Api
         try {
             //查询需要完成的订单
             $map = [
-                ['o.status', '=', 4],
-                ['o.paid', '=', 1],
-                ['o.shopid', '=', $shopid],
-                ['o.update_time', 'between', [0,time() - (7 * 24 * 60 * 60)]],
+                ['status', '=', 4],
+                ['paid', '=', 1],
+                ['shopid', '=', $shopid],
+                ['evaluate', '=', 0],
+                ['update_time', 'between', [0, time() - (7 * 24 * 60 * 60)]],
             ];
             $lists = $this->OrdersModel
-                          ->alias('o')
-                          ->field('o.id,o.order_no,o.uid,products,CASE WHEN e.id IS NULL THEN 0 ELSE 1 END evaluate')
-                          ->join('evaluate e','e.order_no = o.order_no')
-                          ->where($map)
-                          ->limit(100)//并发限制
-                          ->select()
-                          ->toArray();
-            if (!empty($lists)){
+                ->field('id,shopid,app,order_no,paid,uid,order_info_type,order_info_id,products,evaluate,status,update_time')
+                ->where($map)
+                ->limit(100) //并发限制
+                ->select()
+                ->toArray();
+
+            if (!empty($lists)) {
                 //写入评价
                 $evaluate_data = [];
-                foreach ($lists as $item){
-                    if ($item['evaluate'] > 0){
-                        $products = json_decode($item['products'],true);
+                foreach ($lists as $item) {
+                    if ($item['evaluate'] == 0) {
+                        $products = json_decode($item['products'], true);
                         $evaluate_data[] = [
-                            'id'     => 'default',
                             'shopid' => $shopid,
-                            'app' => 'minishop',
+                            'app' => $item['app'],
                             'uid' => $item['uid'],
-                            'type' => 'goods',
+                            'type' => $item['order_info_type'],
                             'type_id' => $products['id'],
                             'order_no' => $item['order_no'],
                             'content' => '系统默认好评',
                             'images' => '',
                             'value' => 5.00,
-                            'status' => 1
+                            'status' => 1,
+                            'create_time' => time(),
+                            'update_time' => time(),
                         ];
                     }
                 }
+
+                //写入评价
                 $evaluate_result = (new EvaluateModel())->insertAll($evaluate_data);
                 if ($evaluate_result === false) throw new Exception('评价失败');
+                
                 //更改订单状态
-                $ids = array_column($lists,'id');
+                $ids = array_column($lists, 'id');
                 $data = [
-                    'status'    =>  5,//已评价
+                    'status'    =>  5, //已评价
+                    'evaluate' => 1,
                     'update_time' => time(),
-                    'end_time' => time()
                 ];
-                $result = $this->OrdersModel->where('id','in',$ids)->update($data);
+                $result = $this->OrdersModel->where('id', 'in', $ids)->update($data);
                 if ($result === false) throw new Exception('订单更新失败');
             }
 
@@ -150,7 +153,6 @@ class Crontab extends Api
                 'code' => 200,
                 'msg' => 'success',
             ]);
-
         } catch (\Exception $e) {
             Db::rollback();
             return json([
