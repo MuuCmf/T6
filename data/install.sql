@@ -505,7 +505,8 @@ CREATE TABLE IF NOT EXISTS `muucmf_crontab` (
 
 INSERT INTO `muucmf_crontab` (`id`, `shopid`, `title`, `description`, `execute`, `cycle`, `day`, `hour`, `minute`, `status`, `create_time`, `update_time`) VALUES
 (1, 0, '云小店订单自动确认收货', '订单收货确认用户未处理，系统默认7天后自动处理', 'app\\minishop\\crontab\\Receive', 'minute-n', 1, 1, 1, 1, 1645689347, 1645782464),
-(2, 0, '云小店订单自动评价', '订单收货后用户未评价，系统默认7天后自动好评', 'app\\minishop\\crontab\\Evaluate', 'minute-n', 1, 1, 1, 1, 1645782483, 1645782483);
+(2, 0, '订单自动评价', '订单收货后用户未评价，系统默认7天后自动好评', 'app\\common\\crontab\\Evaluate', 'minute-n', 1, 1, 1, 1, 1645782483, 1645782483),
+(5, 0, '订单24小时自动取消', '订单下单后24小时内未支付，系统自动取消', 'app\\common\\crontab\\Orders', 'hour-n', 1, 1, 1, 1, 1745882710, 1745882794);
 
 -- --------------------------------------------------------
 

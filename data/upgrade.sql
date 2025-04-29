@@ -397,3 +397,8 @@ INSERT INTO `muucmf_menu` (`id`, `title`, `pid`, `sort`, `url`, `hide`, `type`, 
 DELETE FROM muucmf_menu WHERE `muucmf_menu`.`id` = '89CBF0B3-DBEF-6AFC-88BF-B888148AA87A';
 
 ALTER TABLE `muucmf_orders` ADD `agreed_time` VARCHAR(128) NULL DEFAULT '' COMMENT '约定时间，如约定日期时间发货或服务' AFTER `end_time`;
+
+UPDATE `muucmf_crontab` SET `title` = '订单自动评价', `execute` = 'app\\common\\crontab\\Evaluate' WHERE `muucmf_crontab`.`id` = 2;
+
+INSERT INTO `muucmf_crontab` (`id`, `shopid`, `title`, `description`, `execute`, `cycle`, `day`, `hour`, `minute`, `status`, `create_time`, `update_time`) VALUES
+(5, 0, '订单24小时自动取消', '订单下单后24小时内未支付，系统自动取消', 'app\\common\\crontab\\Orders', 'hour-n', 1, 1, 1, 1, 1745882710, 1745882794);
