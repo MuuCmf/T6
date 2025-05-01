@@ -80,6 +80,20 @@ class Evaluate extends Base
         }
     }
 
+    /**
+     * 根据自定义参数获取评价列表并分页
+     * 
+     * @param array $params 查询参数
+     *                      - shopid: 商户ID
+     *                      - app: 应用名称
+     *                      - type: 评价类型
+     *                      - type_id: 类型ID
+     *                      - rows: 每页显示数量，默认10条
+     *                      - order_type: 排序方式，默认desc
+     *                      - order_field: 排序字段，默认id
+     * 
+     * @return \think\Paginator 分页后的评价列表数据
+     */
     public function getListByPageCustom($params)
     {
         $shopid = $params['shopid'] ?? 0;
@@ -90,7 +104,13 @@ class Evaluate extends Base
             ['e.type', '=', $params['type']],
             ['e.type_id', '=', $params['type_id']]
         ];
-        $rows = 10;
+
+        if(empty($params['rows'])){
+            $rows = 10;
+        }else{
+            $rows = $params['rows'];
+        }
+
         $order_type = $params['order_type'] ?? 'desc';
         $order_field = $params['order_field'] ?? 'id';
         $order = 'e.' . $order_field . ' ' . $order_type;
