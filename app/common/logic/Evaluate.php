@@ -13,7 +13,7 @@ class Evaluate extends Base
     {
         if (!empty($data)) {
             // 获取用户
-            $data['user_info'] = query_user($data['uid']);
+            $data['user_info'] = query_user($data['uid'], ['uid', 'nickname', 'avatar']);
             // 处理评价图片
             if ($data['images'] !== null || $data['images'] !== 'null' || !empty($data['images'])) {
                 $data['images'] = json_decode($data['images'], true);
