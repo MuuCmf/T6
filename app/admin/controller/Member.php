@@ -68,7 +68,8 @@ class Member extends Admin
         }
         $map[] = ['status', '>=', 0];
         // 每页显示数量
-        $rows = input('rows', 15, 'intval');
+        $rows = input('rows', 20, 'intval');
+        View::assign('rows', $rows);
         $list = $this->MemberModel->where($map)->order($order_type)->paginate(['list_rows' => $rows, 'query' => request()->param()], false);
         $pager = $list->render();
         $list = $list->toArray();

@@ -115,11 +115,7 @@
         {include file="common/_empty"/}
         {/notempty}
     </section>
-    <div class="page-section">
-        {if !empty($pager)}
-        {:htmlspecialchars_decode($pager)}
-        {/if}
-    </div>
+    {include file="common/_pager"/}
 </div>
 {/block}
 

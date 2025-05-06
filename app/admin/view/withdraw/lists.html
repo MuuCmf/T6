@@ -108,11 +108,9 @@
     {/foreach}
     {/if}
 </div>
-<div class="page-section">
-    {if !empty($pager)}
-    {:htmlspecialchars_decode($pager)}
-    {/if}
-</div>
+<!-- 分页 -->
+{include file="common/_pager"/}
+<!-- /分页-->
 
 {/block}
 

@@ -1,0 +1,60 @@
+<!-- 分页 -->
+<div class="page-section">
+    {if !empty($pager)}
+    <div class="page-pager">
+        {:htmlspecialchars_decode($pager)}
+    </div>
+    <div class="page-action">
+        <div class="input-group">
+            <span class="input-group-addon">每页显示</span>
+            <select class="form-control" data-role="select_page_rows">
+                {eq name="rows" value="10"}
+                <option value="10" selected>10</option>
+                <option value="20">20</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+                {/eq}
+                {eq name="rows" value="20"}
+                <option value="10">10</option>
+                <option value="20" selected>20</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+                {/eq}
+                {eq name="rows" value="50"}
+                <option value="10">10</option>
+                <option value="20">20</option>
+                <option value="50" selected>50</option>
+                <option value="100">100</option>
+                {/eq}
+                {eq name="rows" value="100"}
+                <option value="10">10</option>
+                <option value="20">20</option>
+                <option value="50">50</option>
+                <option value="100" selected>100</option>
+                {/eq}
+            </select>
+            <span class="input-group-addon">条</span>
+        </div>
+    </div>
+    <script>
+        $(function () {
+            // 列数
+            $('[data-role="select_page_rows"]').change(function () {
+                var url = window.location.href;
+                var query = $('[data-role="select_page_rows"]').val();
+                if (url.indexOf('?') > 0) {
+                    if (url.indexOf('rows') > 0) {
+                        url = changeURLArg(url, 'rows', query);
+                    } else {
+                        url += '&' + 'rows=' + query;
+                    }
+                } else {
+                    url += '?' + 'rows=' + query;
+                }
+                window.location.href = url;
+            });
+        })
+    </script>
+    {/if}
+</div>
+<!-- /分页-->

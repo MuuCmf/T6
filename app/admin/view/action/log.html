@@ -83,11 +83,7 @@
         {/notempty}
     </div>
     <!-- 分页 -->
-    <div class="page">
-        {if !empty($pager)}
-        {:htmlspecialchars_decode($pager)}
-        {/if}
-    </div>
+    {include file="common/_pager"/}
     <!-- /分页-->
 </div>
 

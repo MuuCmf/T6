@@ -40,6 +40,7 @@ class Score extends Admin
     public function log()
     {
         $rows = input('rows', 20, 'intval');
+        View::assign('rows', $rows);
         $uid = input('uid', 0, '');
         $map = [];
         if (!empty($uid)) {

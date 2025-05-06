@@ -147,11 +147,7 @@
         </table>
 
         <!-- 分页 -->
-        <div class="page">
-            {if !empty($pager)}
-            {:htmlspecialchars_decode($pager)}
-            {/if}
-        </div>
+        {include file="common/_pager"/}
         <!-- /分页-->
     </div>
 </div>
@@ -160,7 +156,8 @@
 {block name="script"}
 <script>
 $(function(){
-//排序
+
+    //排序
     $('[data-role="select_text"]').change(function(){
         var url = window.location.href;
         var query = $('.select_box').find('select').val();

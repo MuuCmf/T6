@@ -59,6 +59,7 @@ class Author extends Admin
         View::assign('status', $status);
 
         $rows = input('rows',20, 'intval');
+        View::assign('rows', $rows);
         $order_field = input('order_field', 'id', 'text');
         $order_type = input('order_type', 'desc', 'text');
         $order = 'sort DESC,' . $order_field . ' ' . $order_type;

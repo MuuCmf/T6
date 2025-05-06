@@ -38,6 +38,7 @@ class Withdraw extends Admin
         }
         // 每页显示数量
         $rows = input('rows', 15, 'intval');
+        View::assign('rows', $rows);
         // 获取分页列表
         $lists = $this->WithdrawModel->getListByPage($map, 'id desc create_time desc', '*', $rows);
         $pager = $lists->render();
