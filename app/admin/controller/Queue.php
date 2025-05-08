@@ -1,10 +1,7 @@
 <?php
 namespace app\admin\controller;
 
-use think\App;
-use think\facade\Db;
 use think\facade\View;
-//use think\Paginator;
 use think\paginator\driver\Bootstrap;
 
 /**
@@ -12,17 +9,23 @@ use think\paginator\driver\Bootstrap;
  */
 class Queue extends Admin {
 
-    /**
-     * 构造方法
-     * @access public
-     */
     public function __construct()
     {
         parent::__construct();
-
     }
 
-
+    /**
+     * 获取队列列表
+     * 
+     * 从Redis队列中获取分页数据,包含以下功能:
+     * - 连接Redis服务器
+     * - 根据页码获取指定范围的队列数据
+     * - 对队列数据进行JSON解码
+     * - 组装分页数据结构
+     * - 生成分页导航
+     * 
+     * @return mixed 返回渲染后的视图
+     */
     public function lists()
     {
         // 连接redis
@@ -31,6 +34,7 @@ class Queue extends Admin {
         $key = '{queues:' .config('queue.connections.redis.queue'). '}';
         $page = input('page', 1, 'intval');
         $page_size = 10;
+        
         // 起始索引
         $limit_s = ($page-1) * $page_size;
         // 结束索引

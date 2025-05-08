@@ -1,14 +1,15 @@
 <?php
+
 namespace app\admin\controller;
 
-use think\facade\Cache;
 use think\facade\Db;
 use think\facade\View;
 use app\common\model\Crontab as CrontabModel;
 use app\common\logic\Crontab as CrontabLogic;
 use app\common\model\CrontabLog as CrontabLogModel;
 
-class Crontab extends Admin{
+class Crontab extends Admin
+{
 
     protected $CrontabLogic;
     protected $CrontabModel;
@@ -25,15 +26,16 @@ class Crontab extends Admin{
     /**
      * 任务列表
      */
-    public function list(){
+    public function list()
+    {
         $map = [
-            ['status' ,'between' ,[0,1]],
-            ['shopid' ,'=' ,$this->shopid]
+            ['status', 'between', [0, 1]],
+            ['shopid', '=', $this->shopid]
         ];
-        $list = $this->CrontabModel->getListByPage($map,'id DESC','id,title,description,execute,cycle,day,hour,minute,status,update_time');
+        $list = $this->CrontabModel->getListByPage($map, 'id DESC', 'id,title,description,execute,cycle,day,hour,minute,status,update_time');
         $pager = $list->render();
         $list = $list->toArray();
-        foreach ($list['data'] as &$item){
+        foreach ($list['data'] as &$item) {
             $item = $this->CrontabLogic->formatData($item);
         }
         unset($item);
@@ -43,12 +45,13 @@ class Crontab extends Admin{
         ]);
 
         $this->setTitle('计划任务');
-        
-        return view();
+
+        return View::fetch();
     }
 
-    public function edit(){
-        if (request()->isPost()){
+    public function edit()
+    {
+        if (request()->isPost()) {
             $params = input('post.');
             $data = [
                 'id'        =>  $params['id'],
@@ -63,34 +66,35 @@ class Crontab extends Admin{
                 'status'    =>  $params['status']
             ];
             $result = $this->CrontabModel->edit($data);
-            if ($result){
-                return $this->success('设置成功','',url('list'));
+            if ($result) {
+                return $this->success('设置成功', '', url('list'));
             }
             return $this->error('网路异常，请稍后再试');
         }
-        $id = input('id',0);
+        $id = input('id', 0);
         $data = [];
-        if (!empty($id)){
+        if (!empty($id)) {
             $data = $this->CrontabModel->getDataById($id);
-            if ($data){
+            if ($data) {
                 $data = $data->toArray();
             }
         }
         View::assign([
             'data' => $data
         ]);
-        return \view();
+        return View::fetch();
     }
 
-    public function log(){
-        $cid = input('cid',0);
+    public function log()
+    {
+        $cid = input('cid', 0);
         $map = [
-            ['status', 'between', [0,1]],
+            ['status', 'between', [0, 1]],
             ['shopid', '=', $this->shopid],
             ['cid', '=', $cid]
         ];
-        $rows = input('rows',10);
-        $list = $this->CrontabLogModel->getListByPage($map,'id DESC','*',$rows);
+        $rows = input('rows', 10);
+        $list = $this->CrontabLogModel->getListByPage($map, 'id DESC', '*', $rows);
         $pager = $list->render();
         $list = $list->toArray();
         unset($item);
@@ -99,7 +103,7 @@ class Crontab extends Admin{
             'list'  => $list['data'],
             'cid'   => $cid
         ]);
-        return view();
+        return View::fetch();
     }
 
     /**
@@ -108,24 +112,24 @@ class Crontab extends Admin{
     public function status(int $status = 0)
     {
         $ids = input('ids/a');
-        !is_array($ids)&&$ids=explode(',',$ids);
+        !is_array($ids) && $ids = explode(',', $ids);
         $status = input('status', 0, 'intval');
         $title = '更新';
-        if($status == 0){
+        if ($status == 0) {
             $title = '禁用';
         }
-        if($status == 1){
+        if ($status == 1) {
             $title = '启用';
         }
-        if($status == -1){
+        if ($status == -1) {
             $title = '删除';
         }
         $data['status'] = $status;
 
         $res = $this->CrontabModel->where('id', 'in', $ids)->update($data);
-        if($res){
+        if ($res) {
             return $this->success($title . '成功');
-        }else{
+        } else {
             return $this->error($title . '失败');
         }
     }

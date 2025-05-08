@@ -4,7 +4,7 @@
 <div class="crontab-list-section">
     <!-- 标题栏 -->
     <div class="main-title">
-        <h2>任务管理</h2>
+        <h2>计划任务<small>（# 服务启动命令 php think crontab start 建议配合supervisor使用）</small></h2>
     </div>
     <div class="button-box clearfix">
 
@@ -24,7 +24,6 @@
             <button class="btn btn-danger ajax-post confirm" data-confirm="确认清空日志表！" url="{:url('clear')}">
                 清空日志
             </button>
-            <span class="check-tips">（服务启动命令 php think crontab start 建议配合supervisor使用）</span>
         </div>
     </div>
     <!-- 数据列表 -->
@@ -81,13 +80,8 @@
         {else/}
         {include file="common/_empty"/}
         {/notempty}
-        <!-- 分页 -->
-        <div class="page">
-            {if !empty($pager)}
-            {:htmlspecialchars_decode($pager)}
-            {/if}
-        </div>
-        <!-- /分页-->
+        
+        {include file="common/_pager"/}
     </div>
 </div>
 {/block}
