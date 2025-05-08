@@ -33,7 +33,9 @@ class Queue extends Admin {
 
         $key = '{queues:' .config('queue.connections.redis.queue'). '}';
         $page = input('page', 1, 'intval');
-        $page_size = 10;
+        $rows = input('rows', 20, 'intval');
+        View::assign('rows', $rows);
+        $page_size = $rows;
         
         // 起始索引
         $limit_s = ($page-1) * $page_size;

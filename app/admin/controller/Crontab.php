@@ -32,7 +32,10 @@ class Crontab extends Admin
             ['status', 'between', [0, 1]],
             ['shopid', '=', $this->shopid]
         ];
-        $list = $this->CrontabModel->getListByPage($map, 'id DESC', 'id,title,description,execute,cycle,day,hour,minute,status,update_time');
+
+        $rows = input('rows', 20, 'intval');
+        View::assign('rows', $rows);
+        $list = $this->CrontabModel->getListByPage($map, 'id DESC', 'id,title,description,execute,cycle,day,hour,minute,status,update_time', $rows);
         $pager = $list->render();
         $list = $list->toArray();
         foreach ($list['data'] as &$item) {
