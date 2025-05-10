@@ -19,6 +19,10 @@ class Channel extends Base
         'baidu_mp'     => '百度小程序',
         'kuaishou_mp'  => '快手小程序',
         'pc'           => 'pc端',
+        'app'          => 'app',
+        'app_ios'      => '苹果app',
+        'app_android'  => '安卓app',
+        'app_harmony'  => '鸿蒙app',
         'admin'        => '管理端',
         ''             => '未知',
     ];
