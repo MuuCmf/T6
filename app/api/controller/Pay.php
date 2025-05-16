@@ -77,16 +77,17 @@ class Pay extends Api
                     $notify_url .= "/app/{$order_data['app']}";
                 }
 
-                // 初始返回url
-                $return_url = '';
-                // 微信支付
-                if ($this->params['pay_channel'] == 'weixin' && (
+                // 根据渠道发起支付
+                if (
                     $order_data['channel'] == 'weixin_h5' ||
                     $order_data['channel'] == 'weixin_work' ||
                     $order_data['channel'] == 'weixin_mp' ||
                     $order_data['channel'] == 'h5' ||
-                    $order_data['channel'] == 'pc'
-                )) {
+                    $order_data['channel'] == 'pc' || 
+                    $order_data['channel'] == 'app_android' ||
+                    $order_data['channel'] == 'app_ios' || 
+                    $order_data['channel'] == 'app_harmony'
+                ) {
                     // 获取支付参数
                     $config = ChannelServer::config($order_data['channel'], $this->shopid);
                     if ($order_data['channel'] == 'weixin_h5' || $order_data['channel'] == 'weixin_mp' || $order_data['channel'] == 'weixin_work') {
@@ -116,7 +117,9 @@ class Pay extends Api
                         $trade_type = 'NATIVE';
                     }
                     $result_pay = $PayService->server->pay($pay_data, $trade_type);
-
+                    
+                    // 初始返回url
+                    $return_url = '';
                     if (isset($result_pay['code_url'])) {
                         $return_url = url('channel/pay/weixin', ['order_no' => $order_no, 'code_url' => $result_pay['code_url']]);
                     }
