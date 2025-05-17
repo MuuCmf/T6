@@ -625,8 +625,14 @@ class Attachment extends Base
         return $file_id;
     }
 
-    //删除本地文件
-    private function removFile($attachment)
+    
+    /**
+     * 删除指定的附件文件
+     * 
+     * @param string $attachment 附件路径（相对于public/attachment目录）
+     * @return bool 删除成功返回true，文件不存在返回false
+     */
+    public function removFile($attachment)
     {
         $attachment_save_path = app()->getRootPath() . 'public/attachment';
         $attachment_all_path = $attachment_save_path . '/' . $attachment;
@@ -639,6 +645,17 @@ class Attachment extends Base
         }
     }
 
+    /**
+     * 检查文件十六进制内容是否包含恶意脚本
+     * 
+     * 该方法通过读取文件头部和尾部的512字节（或全部内容小于512字节时），
+     * 将其转换为十六进制字符串后，使用正则表达式匹配常见的PHP标签、脚本标签等危险内容。
+     * 若检测到潜在恶意代码，则抛出异常。
+     * 
+     * @param string $image 要检查的文件路径（相对于附件目录）
+     * @throws Exception 当检测到非法内容时抛出
+     * @access private
+     */
     private function checkHex($image)
     {
         $attachment_path = app()->getRootPath() . 'public/attachment';
@@ -665,5 +682,39 @@ class Attachment extends Base
                 throw new Exception('非法文件');
             }
         }
+    }
+
+    /**
+     * 处理附件数据
+     * 
+     * 根据用户ID设置用户信息，若uid为0则设置为系统信息，否则查询用户信息
+     * 同时格式化创建时间和更新时间
+     * 
+     * @param array $data 附件数据数组
+     * @return array 处理后的附件数据
+     */
+    public function handle($data)
+    {
+        if ($data['uid'] == 0) {
+            $avatar = request()->domain() . '/static/common/images/message_icon/system.png';
+            // uid为0时属系统
+            $data['user_info'] = [
+                'nickname' => '系统',
+                'avatar' => $avatar,
+                'avatar64' => $avatar,
+                'avatar128' => $avatar,
+                'avatar256' => $avatar,
+                'avatar512' => $avatar,
+            ];
+        } else {
+            // 包含uid时为用户附件
+            $data['user_info'] = query_user($data['uid'], ['nickname', 'avatar']);
+        }
+
+        //时间戳格式化
+        $data['create_time_str'] = time_format($data['create_time']);
+        $data['update_time_str'] = time_format($data['update_time']);
+
+        return $data;
     }
 }

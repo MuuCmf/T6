@@ -4660,7 +4660,9 @@ INSERT INTO `muucmf_menu` (`id`, `title`, `pid`, `sort`, `url`, `hide`, `type`, 
 ('867B8F71-CFBE-BB93-2B91-8D03FAA827F6', '状态管理', 'BA26CFE2-13FE-6D73-F21F-EB74D4CC4E74', 0, 'admin/Favorites/status', 0, 0, '', '', 0, '', 'admin'),
 ('BA26CFE2-13FE-6D73-F21F-EB74D4CC4E74', '收藏记录', '8F5C83E0-3753-C731-4EEF-5D004137B11D', 92, 'admin/Favorites/list', 0, 0, '', '用户互动', 0, 'sticky-note', 'admin'),
 ('034108E8-15E1-4538-AADD-9B6516C6F5C0', '实名认证', 'D18841ED-C034-2E7A-D0B2-92D0AC647179', 8, 'admin/Authentication/list', 0, 0, '', '用户管理', 0, 'id-card', 'admin'),
-('072BD3D3-A601-D26D-D54A-0BA4CB2D0DE4', '实名认证审核', '034108E8-15E1-4538-AADD-9B6516C6F5C0', 0, 'admin/Authentication/verify', 0, 0, '', '', 0, '', 'admin');
+('072BD3D3-A601-D26D-D54A-0BA4CB2D0DE4', '实名认证审核', '034108E8-15E1-4538-AADD-9B6516C6F5C0', 0, 'admin/Authentication/verify', 0, 0, '', '', 0, '', 'admin'),
+('B2920D70-1301-4758-89C0-5CA6B9E73C44', '删除附件', 'F06C84A8-2A34-902F-2A88-A25925465036', 0, 'admin/Attachment/del', 0, 0, '', '', 0, '', 'admin'),
+('F06C84A8-2A34-902F-2A88-A25925465036', '附件列表', '167253B8-B360-E5C8-3F94-F0502E971DAF', 50, 'admin/Attachment/lists', 0, 0, '', '附件管理', 0, 'th-large', 'admin');
 
 -- --------------------------------------------------------
 

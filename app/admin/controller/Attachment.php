@@ -1,4 +1,5 @@
 <?php
+
 namespace app\admin\controller;
 
 use think\facade\View;
@@ -28,26 +29,27 @@ class Attachment extends Admin
     public function lists()
     {
         // 关键字
-        $keyword = input('keyword','','text');
-        View::assign('keyword',$keyword);
+        $keyword = input('keyword', '', 'text');
+        View::assign('keyword', $keyword);
         // 驱动
-        $driver = input('driver','','text');
-        View::assign('driver',$driver);
+        $driver = input('driver', '', 'text');
+        View::assign('driver', $driver);
         // 类型
-        $type = input('type','','text');
-        View::assign('type',$type);
-        $rows = input('rows',20, 'intval');
+        $type = input('type', '', 'text');
+        View::assign('type', $type);
+        $rows = input('rows', 20, 'intval');
+        View::assign('rows', $rows);
         // 查询条件
         $map = [
             ['shopid', '=', 0]
         ];
-        if(!empty($keyword)){
-            $map[] = ['filename', 'like', '%'.$keyword.'%'];
+        if (!empty($keyword)) {
+            $map[] = ['filename', 'like', '%' . $keyword . '%'];
         }
-        if(!empty($driver)){
+        if (!empty($driver)) {
             $map[] = ['driver', '=', $driver];
         }
-        if(!empty($type)){
+        if (!empty($type)) {
             $map[] = ['type', '=', $type];
         }
         // 排序
@@ -59,10 +61,12 @@ class Attachment extends Admin
         $pager = $lists->render();
         $lists = $lists->toArray();
 
-        foreach($lists['data'] as &$val){
-            if($val['driver'] == 'tcvod'){
+        foreach ($lists['data'] as &$val) {
+            $val = $this->AttachmentModel->handle($val);
+
+            if ($val['driver'] == 'tcvod') {
                 $data = $this->AttachmentModel->vodMediaHandle($val['file_id'], $val['attachment']);
-                if(!empty($data)) {
+                if (!empty($data)) {
                     $val['psign'] = $data['psign'];
                     $val['all_media_url'] = $data['all_media_url'];
                 }
@@ -70,12 +74,12 @@ class Attachment extends Admin
         }
         unset($val);
 
-        if(request()->isAjax()){
+        if (request()->isAjax()) {
             // ajax请求返回数据
             return $this->success('success', $lists);
         }
-        View::assign('pager',$pager);
-        View::assign('lists',$lists);
+        View::assign('pager', $pager);
+        View::assign('lists', $lists);
 
         // 设置页面Title
         $this->setTitle('附件列表');
@@ -93,18 +97,39 @@ class Attachment extends Admin
         $data = input('post.');
 
         $res = $this->AttachmentModel->edit($data);
-        if($res){
+        if ($res) {
             return $this->success('success');
-        }else{
+        } else {
             return $this->error('error');
         }
     }
 
     /**
-     * 删除附件数据风险较大，需谨慎操作
+     * 删除附件 删除附件数据风险较大，需谨慎操作
+     * 
+     * @return mixed 删除结果，成功返回success，失败返回error
+     * @throws \think\Exception 当参数错误或数据不存在时抛出异常
      */
     public function del()
     {
-
+        $id = input('id', 0, 'intval');
+        if (empty($id)) {
+            return $this->error('参数错误');
+        }
+        // 验证数据
+        $data = $this->AttachmentModel->getDataById($id);
+        if (empty($data)) {
+            return $this->error('数据不存在');
+        }
+        
+        // 删除附件数据
+        $res = $this->AttachmentModel->where('id', '=', $id)->delete();
+        if ($res) {
+            // 删除附件文件 TODO:该方法目前仅支持本地附件清除
+            $this->AttachmentModel->removFile($data['attachment']);
+            return $this->success('删除成功');
+        } else {
+            return $this->error('删除失败');
+        }
     }
 }
