@@ -338,6 +338,9 @@ class Attachment extends Base
                     }
                 }
 
+                $driver = config('extend.PICTURE_UPLOAD_DRIVER');
+                $data['driver'] = $driver;
+
                 // 写入数据库
                 $this->save($data);
                 // 返回数据
