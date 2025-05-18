@@ -725,41 +725,57 @@ if (!function_exists('single_file_upload')) {
 
 if (!function_exists('get_thumb_image')) {
     /**通过ID/路径获取到图片的缩略图
-     * @param        $cover_id 图片的ID
+     * @param int/string $attachment 图片的ID/路径
      * @param int $width 需要取得的宽
-     * @param string $height 需要取得的高
+     * @param int $height 需要取得的高
      * @param bool $replace 是否强制替换
      * @return string
      * @auth 大蒙
      */
     function get_thumb_image($attachment, $width = 100, $height = 'auto', $replace = false)
     {
-        //不存在http://
-        $not_http_remote = (strpos($attachment, 'http://') === false);
-        //不存在https://
-        $not_https_remote = (strpos($attachment, 'https://') === false);
-
-        if ($not_http_remote && $not_https_remote) {
+        if(is_int($attachment)){
             $Attachment = new Attachment();
-            $picture = Db::name('attachment')->where(['attachment' => $attachment])->find();
+            $picture = $Attachment->where('attachment','=', $attachment)->find();
 
             if (empty($picture)) {
                 return request()->domain() . '/static/common/images/nopic.png';
             }
-            $attach = $Attachment->getThumbImage($picture['attachment'], $width, $height, $replace);
+            $attach = $Attachment->getThumbImage($picture, $width, $height, $replace);
             if ($attach) {
-                return get_attachment_src($attach['src']);
+                return $attach['src'];
             }
             return $attachment;
         }
 
+        if(is_string($attachment)){
+            //不存在http://
+            $not_http_remote = (strpos($attachment, 'http://') === false);
+            //不存在https://
+            $not_https_remote = (strpos($attachment, 'https://') === false);
+
+            if ($not_http_remote && $not_https_remote) {
+                $Attachment = new Attachment();
+                $picture = $Attachment->where('attachment','=', $attachment)->find();
+
+                if (empty($picture)) {
+                    return request()->domain() . '/static/common/images/nopic.png';
+                }
+
+                $attach = $Attachment->getThumbImage($picture, $width, $height, $replace);
+                if ($attach) {
+                    return $attach['src'];
+                }
+            }
+        }
+        
         return $attachment;
     }
 }
 
 if (!function_exists('thumb')) {
     /**简写函数，等同于get_thumb_image（）
-     * @param $id 图片id
+     * @param $attachment 图片id/路径
      * @param int $width 宽度
      * @param string $height 高度
      * @param int $type 裁剪类型，0居中裁剪
@@ -792,10 +808,10 @@ if (!function_exists('get_pic')) {
 if (!function_exists('get_attachment_src')) {
     /**
      * 附件路径
-     * @param $path
+     * @param $attachment
      * @return mixed
      */
-    function get_attachment_src($attachment, $enforce = 'auto')
+    function get_attachment_src($attachment)
     {
         $not_http_remote = false;
         $not_https_remote = false;
@@ -807,34 +823,29 @@ if (!function_exists('get_attachment_src')) {
         }
 
         if ($not_http_remote && $not_https_remote) {
-            // 判断文件类型
-            $type = 'pic';
-            if (strpos($attachment, 'jpg') !== false || strpos($attachment, 'png') !== false || strpos($attachment, 'gif') !== false || strpos($attachment, 'jpeg') !== false) {
-                $type = 'pic';
-            } else {
-                $type = 'file';
-            }
-            // 初始化上传驱动
-            $driver = 'local';
 
-            // 获取上传驱动
-            if ($type == 'pic' && $enforce == 'auto') {
-                $driver = config('extend.PICTURE_UPLOAD_DRIVER');
+            // 获取附件信息
+            $Attachment = new Attachment();
+            $attachment_data = $Attachment->where('attachment', '=', $attachment)->find();
+            
+            if(empty($attachment_data)) {
+                return $attachment;
             }
-            if ($type == 'file' && $enforce == 'auto') {
-                $driver = config('extend.FILE_UPLOAD_DRIVER');
-            }
+
+            // 初始化上传驱动
+            $driver = $attachment_data['driver'];
+
             // 获取附件路径
-            if ($driver == 'local') {
+            if ($driver == 'local' || strtolower($driver) == 'loacal' || $driver == '') {
                 //本地url
                 return request()->domain() . '/attachment/' . str_replace('//', '/', $attachment); //防止双斜杠的出现
             }
             // 阿里云OSS
-            if ($driver == 'aliyun') {
+            if ($driver == 'oss') {
                 return config('extend.OSS_ALIYUN_BUCKET_DOMAIN') . '/attachment/' . $attachment;
             }
             // 腾讯云COS
-            if ($driver == 'tencent') {
+            if ($driver == 'cos') {
                 return config('extend.COS_TENCENT_BUCKET_DOMAIN') . '/attachment/' . $attachment;
             }
         } else {
@@ -844,6 +855,13 @@ if (!function_exists('get_attachment_src')) {
 }
 
 if (!function_exists('get_attachment_filename')) {
+    /**
+     * 获取附件文件名
+     * 
+     * @param mixed $attachment 附件标识（可能是ID或附件对象）
+     * @return string 返回附件文件名
+     * @throws Exception 如果附件不存在可能抛出异常
+     */
     function get_attachment_filename($attachment)
     {
         $Attachment = new Attachment();
@@ -854,6 +872,12 @@ if (!function_exists('get_attachment_filename')) {
 }
 
 if (!function_exists('get_attachment_file_id')) {
+    /**
+     * 获取附件file_id
+     * 
+     * @param mixed $attachment 附件标识（ID、路径）
+     * @return mixed 返回附件对应的file_id
+     */
     function get_attachment_file_id($attachment)
     {
         $Attachment = new Attachment();
@@ -864,8 +888,13 @@ if (!function_exists('get_attachment_file_id')) {
 }
 
 if (!function_exists('clear_directory')) {
+
     /**
-     * 清空目录
+     * 清空指定目录及其子目录下的所有文件和文件夹
+     * 
+     * @param string $dir 要清空的目录路径
+     * @return void
+     * @throws Exception 删除文件或目录时可能抛出异常
      */
     function clear_directory($dir)
     {

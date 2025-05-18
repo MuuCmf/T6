@@ -443,20 +443,20 @@ class Attachment extends Base
     public function getThumbImage($attachment, $width = 100, $height = 'auto', $replace = false)
     {
         // 获取图片存储类型
-        $driver = config('extend.PICTURE_UPLOAD_DRIVER');
-
-        if (strtolower($driver) == 'local') {
-            $info = $this->localThumb($attachment, $width, $height, $replace);
+        //$driver = config('extend.PICTURE_UPLOAD_DRIVER');
+        $driver = $attachment['driver'];
+        if (strtolower($driver) == 'local' || strtolower($driver) == 'loacal' || strtolower($driver) == '') {
+            $info = $this->localThumb($attachment['attachment'], $width, $height, $replace);
             return $info;
         } else {
             // 远程图片处理
-            if (strtolower($driver) == 'aliyun') {
-                $src = config('extend.OSS_ALIYUN_BUCKET_DOMAIN') . '/attachment/' . $attachment . '?x-oss-process=image/resize,m_fill,h_' . $height . ',w_' . $width;
+            if (strtolower($driver) == 'oss') {
+                $src = config('extend.OSS_ALIYUN_BUCKET_DOMAIN') . '/attachment/' . $attachment['attachment'] . '?x-oss-process=image/resize,m_fill,h_' . $height . ',w_' . $width;
                 $info['src'] = $src;
             }
 
-            if (strtolower($driver) == 'tencent') {
-                $src = config('extend.COS_TENCENT_BUCKET_DOMAIN') . '/attachment/' . $attachment . '?imageView2/1/w/' . $width . '/h/' . $height;
+            if (strtolower($driver) == 'cos') {
+                $src = config('extend.COS_TENCENT_BUCKET_DOMAIN') . '/attachment/' . $attachment['attachment'] . '?imageView2/1/w/' . $width . '/h/' . $height;
                 $info['src'] = $src;
             }
 
@@ -494,7 +494,7 @@ class Attachment extends Base
         } elseif (file_exists($UPLOAD_PATH . $thumbFile) && !$replace) {
             //缩图已存在并且  replace替换为false
             $imageinfo = getimagesize($UPLOAD_PATH . $thumbFile);
-            $info['src'] = $thumbFile;
+            $info['src'] = request()->domain() . '/attachment/' . str_replace('//', '/', $thumbFile);
             $info['width'] = intval($imageinfo[0]);
             $info['height'] = intval($imageinfo[1]);
             return $info;
@@ -508,9 +508,10 @@ class Attachment extends Base
                 if ($old_image_width <= $width && $old_image_height <= $height) {
                     @unlink($UPLOAD_PATH . $thumbFile);
                     @copy($UPLOAD_PATH . $oldFile, $UPLOAD_PATH . $thumbFile);
-                    $info['src'] = $thumbFile;
+                    $info['src'] = request()->domain() . '/attachment/' . str_replace('//', '/', $thumbFile);;
                     $info['width'] = $old_image_width;
                     $info['height'] = $old_image_height;
+
                     return $info;
                 } else {
                     if ($height == "auto") $height = $old_image_height * $width / $old_image_width;
@@ -523,9 +524,10 @@ class Attachment extends Base
                     //默认裁切类型标识缩略图居中裁剪类型，先写死，后续版本增加后台设置
                     $thumb->thumb($width, $height, Image::THUMB_CENTER);
                     $thumb->save($UPLOAD_PATH . $thumbFile);
-                    $info['src'] = $thumbFile;
+                    $info['src'] = request()->domain() . '/attachment/' . str_replace('//', '/', $thumbFile);
                     $info['width'] = $old_image_width;
                     $info['height'] = $old_image_height;
+
                     return $info;
                 }
             }
@@ -624,8 +626,11 @@ class Attachment extends Base
     public function getFileID($attachment)
     {
         $file_id = $this->where('attachment', $attachment)->value('file_id');
+        if (!empty($file_id)) {
+            return $file_id;
+        }
 
-        return $file_id;
+        return '';
     }
 
     
