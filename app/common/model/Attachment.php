@@ -304,6 +304,7 @@ class Attachment extends Base
                 $driver = config('extend.PICTURE_UPLOAD_DRIVER');
                 if ($driver == 'local') {
                     // 本地无需处理
+                    $data['driver'] = 'local';
                     try {
                         $this->checkHex($data['attachment']);
                     } catch (\Exception $e) {
@@ -313,6 +314,7 @@ class Attachment extends Base
                 }
                 // 阿里云OSS
                 if ($driver == 'aliyun') {
+                    $data['driver'] = 'oss';
                     $oss_res = $this->ossUpload('attachment/' . $data['attachment'], $file->getPathname());
                     // 上传成功
                     if ($oss_res === true) {
@@ -326,6 +328,7 @@ class Attachment extends Base
                 }
                 // 腾讯云COS
                 if ($driver == 'tencent') {
+                    $data['driver'] = 'cos';
                     $cos_res = $this->cosUpload('attachment/' . $data['attachment'], $file->getPathname());
                     // 上传成功
                     if ($cos_res === true) {
@@ -337,9 +340,6 @@ class Attachment extends Base
                         }
                     }
                 }
-
-                $driver = config('extend.PICTURE_UPLOAD_DRIVER');
-                $data['driver'] = $driver;
 
                 // 写入数据库
                 $this->save($data);
@@ -450,12 +450,12 @@ class Attachment extends Base
             return $info;
         } else {
             // 远程图片处理
-            if (strtolower($driver) == 'oss') {
+            if (strtolower($driver) == 'oss' || strtolower($driver) == 'tencent') {
                 $src = config('extend.OSS_ALIYUN_BUCKET_DOMAIN') . '/attachment/' . $attachment['attachment'] . '?x-oss-process=image/resize,m_fill,h_' . $height . ',w_' . $width;
                 $info['src'] = $src;
             }
 
-            if (strtolower($driver) == 'cos') {
+            if (strtolower($driver) == 'cos' || strtolower($driver) == 'aliyun') {
                 $src = config('extend.COS_TENCENT_BUCKET_DOMAIN') . '/attachment/' . $attachment['attachment'] . '?imageView2/1/w/' . $width . '/h/' . $height;
                 $info['src'] = $src;
             }
