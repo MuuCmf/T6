@@ -11,11 +11,9 @@ abstract class PayService
     public $module; //模块
     public $shopid; //店铺Id
     public $platform; //平台
-    protected $separator;
 
     public function __construct($app)
     {
-        $this->separator = DIRECTORY_SEPARATOR;
         $this->app = $app;
         $this->sandbox = false; //开启沙箱模式
     }

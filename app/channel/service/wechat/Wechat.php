@@ -14,13 +14,11 @@ abstract class Wechat
     public $title;
     public $type;
     public $app;
-    public $separator;
     public $config;
     public $shopid;
     public $module;
     public function __construct($app)
     {
-        $this->separator = DIRECTORY_SEPARATOR;
         $this->app = $app;
     }
     public function log()
