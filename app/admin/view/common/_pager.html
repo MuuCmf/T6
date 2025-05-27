@@ -38,6 +38,11 @@
     </div>
     <script>
         $(function () {
+            function changeURLArg(url, key, value) {
+                var url = new URL(url);
+                url.searchParams.set(key, value);
+                return url;
+            }
             // 列数
             $('[data-role="select_page_rows"]').change(function () {
                 var url = window.location.href;
