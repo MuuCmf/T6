@@ -20,6 +20,36 @@
     <div class="announce-edit-section">
         <form action="" method="post" class="form-horizontal ajax-form" role="form">
             <input type="hidden" name="id" value="{$data['id']}">
+            <div class="builder_item">
+                <label class="item-label">
+                    终端
+                    <span class="check-tips">（请选择公告显示的终端）</span>
+                </label>
+                <div class="controls">
+                    {if $data['teminal'] == 'mobile'}
+                    <input type="radio" name="teminal" id="teminal-0" value="mobile" checked>
+                    <label class="radio-inline" for="teminal-0">移动端</label>
+                    <input type="radio" name="teminal" id="teminal-1" value="pc"> 
+                    <label class="radio-inline" for="teminal-1">pc端</label>
+                    {/if}
+                    {if $data['teminal'] == 'pc'}
+                    <input type="radio" name="teminal" id="teminal-0" value="mobile">
+                    <label class="radio-inline" for="teminal-0">移动端</label>
+                    <input type="radio" name="teminal" id="teminal-1" value="pc" checked> 
+                    <label class="radio-inline" for="teminal-1">pc端</label>
+                    {/if}
+                </div>
+                <script>
+                    $(function(){
+                        $('[name="teminal"]').change(function(){
+                            var teminal = $('[name="teminal"]:checked').val();
+                            var url = '{:url("admin/announce/edit")}?teminal='+teminal;
+                            // 跳转url
+                            window.location.href = url;
+                        })
+                    })
+                </script>
+            </div>
 
             <div class="builder_item">
                 <label class="item-label">
@@ -81,7 +111,7 @@
                     {:ueditor('content', 'content', $data['content'])}
                 </div>
             </div>
-            {if $micro_is_setup == 1}
+            {if $micro_is_setup == true}
             <!--安装了自定义页面后可调用该方式做公告链接-->
             <div class="builder_item this-page" data-this-page="announce" id="pageType" data-page-type="announce">
                 <label class="item-label">

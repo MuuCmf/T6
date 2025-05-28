@@ -29,12 +29,16 @@ class Announce extends Api
 
     public function lists()
     {
-
+        $teminal = input('terminal', '', 'text');
         //初始化查询条件
         $map = [
             ['shopid', '=', $this->shopid],
             ['status', '=', 1]
         ];
+        if(!empty($teminal)){
+            $map[] = ['teminal', '=', $teminal];
+        }
+        
         $lists = $this->model->getList($map, 5);
         foreach ($lists as &$item) {
             $item = $this->logic->formatData($item);

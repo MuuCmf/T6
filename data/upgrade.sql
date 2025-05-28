@@ -406,3 +406,5 @@ INSERT INTO `muucmf_crontab` (`id`, `shopid`, `title`, `description`, `execute`,
 INSERT INTO `muucmf_menu` (`id`, `title`, `pid`, `sort`, `url`, `hide`, `type`, `tip`, `group`, `is_dev`, `icon`, `module`) VALUES
 ('B2920D70-1301-4758-89C0-5CA6B9E73C44', '删除附件', 'F06C84A8-2A34-902F-2A88-A25925465036', 0, 'admin/Attachment/del', 0, 0, '', '', 0, '', 'admin'),
 ('F06C84A8-2A34-902F-2A88-A25925465036', '附件列表', '167253B8-B360-E5C8-3F94-F0502E971DAF', 50, 'admin/Attachment/lists', 0, 0, '', '附件管理', 0, 'th-large', 'admin');
+
+ALTER TABLE `muucmf_announce` ADD `teminal` CHAR(32) NOT NULL DEFAULT 'mobile' COMMENT '终端：mobile,pc' AFTER `uid`;

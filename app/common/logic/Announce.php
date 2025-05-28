@@ -15,11 +15,18 @@ class Announce
         -1 => '删除',
     ];
 
+    public $_teminal = [
+        'pc' => 'PC端',
+        'mobile' => '移动端'
+    ];
+
     /**
      * 格式化数据
      */
     public function formatData($data)
     {
+        $data['teminal_str'] = $this->_teminal[$data['teminal']];
+        
         if (isset($data['status'])) {
             $data['status_str'] = $this->_status[$data['status']];
         }

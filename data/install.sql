@@ -117,6 +117,7 @@ CREATE TABLE IF NOT EXISTS `muucmf_announce` (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键ID',
   `shopid` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '店铺ID',
   `uid` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '操作用户ID',
+  `teminal` CHAR(32) NOT NULL DEFAULT 'mobile' COMMENT '终端：mobile,pc',
   `type` tinyint(2) NOT NULL DEFAULT '1' COMMENT '公告类型 1、图片 0、文字',
   `title` varchar(128) NOT NULL DEFAULT '' COMMENT '公告标题',
   `content` text COMMENT '公告描述',
