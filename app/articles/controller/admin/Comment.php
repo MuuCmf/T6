@@ -52,7 +52,7 @@ class Comment extends Admin
         View::assign('pager',$pager);
         View::assign('lists',$lists);
         // 记录当前列表页的cookie
-        Cookie('__forward__', $_SERVER['REQUEST_URI']);
+        cookie('__forward__', $_SERVER['REQUEST_URI']);
         // SEO
         $this->setTitle('评论列表');
         // 输出模板
@@ -83,7 +83,7 @@ class Comment extends Admin
             $res = $this->ArticlesModel->edit($data);
 
             if($res){
-                return $this->success($title . '成功', $res, Cookie('__forward__'));
+                return $this->success($title . '成功', $res, cookie('__forward__'));
             }else{
                 return $this->error($title . '失败');
             }
@@ -156,7 +156,7 @@ class Comment extends Admin
             $res = $this->CommentModel->edit($data);
 
             if($res){
-                return $this->success('操作成功', $res, Cookie('__forward__'));
+                return $this->success('操作成功', $res, cookie('__forward__'));
             }else{
                 return $this->error('操作失败');
             }

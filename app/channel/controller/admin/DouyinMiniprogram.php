@@ -134,7 +134,7 @@ class DouyinMiniprogram extends MuuAdmin
         View::assign('lists', $lists);
 
         // 记录当前列表页的cookie
-        Cookie('__forward__', $_SERVER['REQUEST_URI']);
+        cookie('__forward__', $_SERVER['REQUEST_URI']);
 
         $this->setTitle('结算列表');
         // 输出模板
@@ -193,7 +193,7 @@ class DouyinMiniprogram extends MuuAdmin
         View::assign('lists', $lists);
 
         // 记录当前列表页的cookie
-        Cookie('__forward__', $_SERVER['REQUEST_URI']);
+        cookie('__forward__', $_SERVER['REQUEST_URI']);
 
         $this->setTitle('结算列表');
         // 输出模板

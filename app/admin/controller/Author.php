@@ -300,7 +300,7 @@ class Author extends Admin
                 $res = $this->AuthorGroupModel->edit($data);
             }
             if ($res) {
-                return $this->success(empty($id) ? '新增分组成功' : '编辑分组成功', $res, Cookie('__forward__'));
+                return $this->success(empty($id) ? '新增分组成功' : '编辑分组成功', $res, cookie('__forward__'));
             } else {
                 return $this->error(empty($id) ? '新增分组失败' : '编辑分组失败');
             }

@@ -120,7 +120,7 @@ class Announce extends Admin
             $res = $this->AnnounceModel->edit($data);
 
             if ($res) {
-                return $this->success($title . '成功', $res, Cookie('__forward__'));
+                return $this->success($title . '成功', $res, cookie('__forward__'));
             } else {
                 return $this->error($title . '失败');
             }

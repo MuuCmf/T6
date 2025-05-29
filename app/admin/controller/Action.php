@@ -185,7 +185,7 @@ class Action extends Admin
 
         View::assign('modules', $modules);
         // 记录当前列表页的cookie
-        Cookie('__forward__', $_SERVER['REQUEST_URI']);
+        cookie('__forward__', $_SERVER['REQUEST_URI']);
         $this->setTitle('行为日志');
 
         return View::fetch();
@@ -207,7 +207,7 @@ class Action extends Admin
             if (!$res) {
                 return $this->error($ActionModel->getError());
             } else {
-                return $this->success($res['id'] ? '更新成功！' : '新增成功', $res, Cookie('__forward__'));
+                return $this->success($res['id'] ? '更新成功！' : '新增成功', $res, cookie('__forward__'));
             }
         } else {
             $id = input('id');

@@ -68,7 +68,7 @@ class Articles extends Admin
         View::assign('category_tree', $category_tree);
         
         // 记录当前列表页的cookie
-        Cookie('__forward__', $_SERVER['REQUEST_URI']);
+        cookie('__forward__', $_SERVER['REQUEST_URI']);
 
         $this->setTitle('文章列表');
         // 输出模板
@@ -105,7 +105,7 @@ class Articles extends Admin
             if($res){
                 // 写入搜索索引
                 (new SearchModel)->add($this->shopid, 'article', $res, 'article', $data['title'], $data['description'], $data['cover']);
-                return $this->success($title . '成功', $res, Cookie('__forward__'));
+                return $this->success($title . '成功', $res, cookie('__forward__'));
             }else{
                 return $this->error($title . '失败');
             }

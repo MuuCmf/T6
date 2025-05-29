@@ -82,7 +82,7 @@ class Config extends Admin
         View::assign('list', $list);
         View::assign('pager', $pager);
         // 记录当前列表页的cookie
-        Cookie('__forward__', $_SERVER['REQUEST_URI']);
+        cookie('__forward__', $_SERVER['REQUEST_URI']);
         $this->setTitle('配置管理');
         // 输出页面
         return View::fetch();
@@ -121,7 +121,7 @@ class Config extends Admin
                 Cache::delete(request()->host() . '_MUUCMF_SYS_CONFIG_DATA', null);
                 //记录行为
                 action_log('update_config', 'config', $resId, is_login());
-                return $this->success('操作成功', $res, Cookie('__forward__'));
+                return $this->success('操作成功', $res, cookie('__forward__'));
             } else {
                 return $this->error('操作失败');
             }
