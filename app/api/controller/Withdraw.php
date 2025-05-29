@@ -117,6 +117,8 @@ class Withdraw extends Api
                     'amount'    =>  $data['real_price'],
                     'desc'      =>  '提现'
                 ]);
+
+                $return_result = $result;
             }
 
             if ($withdraw_api == 'v3') {
@@ -169,13 +171,14 @@ class Withdraw extends Api
                 //     "state" => "WAIT_USER_CONFIRM"
                 //     "transfer_bill_no" => "1330001234218022505290017891803214"
                 // ]
-
+                
                 if (is_array($result) && isset($result['errCode']) && $result['errCode'] == 0) throw new Exception($result['errMsg']);
-            }
 
+                $return_result = $result['body'];
+            }
+            
             // 记录日志
             Log::write($result, 'notice');
-
 
             // if ($result['return_code'] == 'SUCCESS' && $result['result_code'] == 'SUCCESS') {
             //     //扣除冻结余额
@@ -216,7 +219,7 @@ class Withdraw extends Api
             // }
             Db::commit();
 
-            return $this->success('提现已提交，正在处理...', $result);
+            return $this->success('提现已提交，正在处理...', $return_result);
         } catch (Exception $e) {
             Db::rollback();
             return $this->error('发生错误：' . $e->getMessage());

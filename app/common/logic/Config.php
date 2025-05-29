@@ -44,6 +44,9 @@ class Config extends Base
         'SERVICE_WEIXIN_QRCODE_300',
         'SERVICE_WEIXIN_QRCODE_400',
         'SERVICE_WEIXIN_QRCODE_800',
+        //支付
+        'WX_PAY_MCH_ID',
+        'WX_PAY_WITHDRAW_API',
         //提现
         'WITHDRAW_STATUS',
         'WITHDRAW_TAX_RATE',
@@ -74,11 +77,11 @@ class Config extends Base
             }
         }
 
-        //获取提现配置
-        $withdraw_config = config('extend');
+        //获取扩展配置
+        $extend_config = config('extend');
         foreach ($this->_frontend_params as $key) {
-            if (array_key_exists($key, $withdraw_config)) {
-                $config[$key] = $withdraw_config[$key];
+            if (array_key_exists($key, $extend_config)) {
+                $config[$key] = $extend_config[$key];
             }
         }
 

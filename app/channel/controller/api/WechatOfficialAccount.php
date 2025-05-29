@@ -331,11 +331,18 @@ class WechatOfficialAccount extends Api
             $url = input('post.url');
             if (empty($apis)) {
                 $apis = [
-                    'chooseWXPay',
                     'checkJsApi',
-                    'scanQRCode',
                     'onMenuShareTimeline',
-                    'onMenuShareAppMessage'
+                    'onMenuShareAppMessage',
+                    'scanQRCode',
+                    'chooseWXPay',
+                    'openLocation',
+                    'getLocation',
+                    'chooseImage',
+                    'previewImage',
+                    'uploadImage',
+                    'downloadImage',
+                    'requestMerchantTransfer'
                 ];
             }
             if (empty($url)) {
