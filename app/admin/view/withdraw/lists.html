@@ -81,7 +81,12 @@
                         <span class="paid-status text-success">{$v['paid_str']}</span>
                         <span class="paid-status text-success">（{$v['error_str']}）</span>
                         {else}
-                        <span class="paid-status text-danger">（{$v['error_str']}）</span>
+                        {if $v['error'] == 1}
+                        <span class="paid-status text-danger">提现失败</span>
+                        {/if}
+                        {if $v['error'] == 0}
+                        <span class="paid-status text-danger">处理中</span>
+                        {/if}
                         {/if}
                     </div>
                 </td>

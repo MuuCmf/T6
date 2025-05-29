@@ -6,6 +6,9 @@ use think\Exception;
 use think\facade\Db;
 use think\Request;
 use think\facade\Log;
+use WeChatPay\Crypto\Rsa;
+use WeChatPay\Crypto\AesGcm;
+use WeChatPay\Formatter;
 use app\common\controller\Api;
 use app\channel\facade\channel\Channel as ChannelServer;
 use app\channel\facade\channel\Pay as PayServer;
@@ -17,16 +20,18 @@ use app\common\logic\Withdraw as WithdrawLogic;
 
 class Withdraw extends Api
 {
-    protected $WithdrawModel; //订单模型
-    protected $WithdrawLogic; //订单模型
+    protected $request;
+    protected $WithdrawModel;
+    protected $WithdrawLogic;
     protected $CapitalFlowModel;
     protected $middleware = [
-        'app\\common\\middleware\\CheckAuth',
+        'app\\common\\middleware\\CheckAuth' => ['except' => 'notify']
     ];
 
     function __construct(Request $request)
     {
         parent::__construct();
+        $this->request = $request;
         $this->WithdrawModel = new WithdrawModel();
         $this->WithdrawLogic = new WithdrawLogic();
         $this->CapitalFlowModel = new CapitalFlowModel();
@@ -115,72 +120,182 @@ class Withdraw extends Api
             }
 
             if ($withdraw_api == 'v3') {
-                $result = $PayService->server->toBalanceV3([
+                // $result = $PayService->server->toBalanceV3([
+                //     'appid'                 => $pay_config['appid'],
+                //     'out_batch_no'          => $data['order_no'], //商户系统内部的商家批次单号，要求此参数只能由数字、大小写字母组成，在商户系统内部唯一,
+                //     'batch_name'            => '用户提现',       //该笔批量转账的名称
+                //     'batch_remark'          => 'uid:' . $data['uid'] . "-" . '提现', //转账说明，UTF8编码，最多允许32个字符
+                //     'total_amount'          => $data['price'], //转账总金额 单位为“分”
+                //     'total_num'             => 1,
+                //     'transfer_detail_list'  => [
+                //         [
+                //             'out_detail_no'     => $data['order_no'],
+                //             'transfer_amount'   => $data['price'],
+                //             'transfer_remark'   => $user_info['nickname'] . '(uid:' . $data['uid'] . ')' . '主动提现',
+                //             'openid'            => $openid,
+                //             //'user_name'         => $encryptor($params['name']) // 金额超过`2000`才填写
+                //         ]
+                //     ]
+                // ]);
+
+                $options = [
                     'appid'                 => $pay_config['appid'],
-                    'out_batch_no'          => $data['order_no'], //商户系统内部的商家批次单号，要求此参数只能由数字、大小写字母组成，在商户系统内部唯一,
-                    'batch_name'            => '用户提现',       //该笔批量转账的名称
-                    'batch_remark'          => 'uid:' . $data['uid'] . "-" . '提现', //转账说明，UTF8编码，最多允许32个字符
-                    'total_amount'          => $data['price'], //转账总金额 单位为“分”
-                    'total_num'             => 1,
-                    'transfer_detail_list'  => [
+                    'out_bill_no'           => $data['order_no'], //商户系统内部的商家批次单号，要求此参数只能由数字、大小写字母组成，在商户系统内部唯一,
+                    'transfer_scene_id'     => '1005', // 转账场景ID 该笔转账使用的转账场景，可前往“商户平台-产品中心-商家转账”中申请。如：1000（现金营销），1006（企业报销）等
+                    'openid'                => $openid,
+                    'transfer_amount'       => $data['price'], //转账金额 单位为“分
+                    'transfer_remark'       => '用户ID:' . $data['uid'] . "|" . '提现', //转账备注，用户收款时可见该备注信息，UTF8编码，最多允许32个字符
+                    'notify_url'            => request()->doMain() . '/api/withdraw/notify', // 异步接收微信支付结果通知的回调地址，通知url必须为外网可访问的url，不能携带参数。
+                    'transfer_scene_report_infos' => [
                         [
-                            'out_detail_no'     => $data['order_no'],
-                            'transfer_amount'   => $data['price'],
-                            'transfer_remark'   => $user_info['nickname'] . '(uid:' . $data['uid'] . ')' . '主动提现',
-                            'openid'            => $openid,
-                            //'user_name'         => $encryptor($params['name']) // 金额超过`2000`才填写
+                            "info_type" =>   "岗位类型",
+                            "info_content" => "分享员"
+                        ],
+                        [
+                            "info_type" =>   "报酬说明",
+                            "info_content" => "用户分享佣金"
                         ]
                     ]
-                ]);
+                ];
+
+                $result = $PayService->server->transferV3($options);
+
+                // 返回示例
+                // "status_code" => 200
+                // "body" => array:5 [
+                //     "create_time" => "2025-05-29T18:00:53+08:00"
+                //     "out_bill_no" => "202505298287613722"
+                //     "package_info" => "ABBQO+oYAAABAAAAAAADUhPSNnrx8xJ/VTA4aBAAAADnGpepZahT9IkJjn90+1qgsP0zLrKUHGgUOR/ri0T6AgUpYxHx/wpkEI120w8zFt1RQ5Ochg4ZpiYI1Jki7TMjTMGzFlznwcDasf2VUDJb2UrkmHY="
+                //     "state" => "WAIT_USER_CONFIRM"
+                //     "transfer_bill_no" => "1330001234218022505290017891803214"
+                // ]
 
                 if (is_array($result) && isset($result['errCode']) && $result['errCode'] == 0) throw new Exception($result['errMsg']);
             }
 
             // 记录日志
             Log::write($result, 'notice');
-            if ($result['return_code'] == 'SUCCESS' && $result['result_code'] == 'SUCCESS') {
-                //扣除冻结余额
-                (new MemberWallet())->minusFreeze($data['shopid'], $data['uid'], $data['price']);
 
-                //写入资金流水表
-                $result_capital_flow = (new CapitalFlow())->createFlow([
-                    'uid' => $data['uid'],
-                    'order_no' => $data['order_no'],
-                    'price' => $data['price'],
-                    'shopid' => $data['shopid'],
-                    'app' => 'system',
-                    'channel' => $data['channel'],
-                    'remark' => '用户提现',
-                ]);
-                if (!$result_capital_flow)  throw new Exception('写入资金流水失败');
 
-                //更改提现记录状态
-                $submit_data = [
-                    'id'        => $withdraw_id,
-                    'paid'      => 1,
-                    'paid_time' => time(),
-                ];
-                $cash_with = $this->WithdrawModel->edit($submit_data);
-            } else {
-                //解冻冻结资金(返还至用户余额)
-                $WalletModel->freeze($data['shopid'], $data['uid'], $data['price'], 0);
-                //付款到零钱失败
-                $submit_data = [
-                    'id'     => $withdraw_id,
-                    'error'  => 1,
-                    'error_msg'  => json_encode($result)
-                ];
-                $cash_with = $this->WithdrawModel->edit($submit_data);
-            }
-            if (!$cash_with) {
-                throw new Exception('网络异常,请稍后再试');
-            }
+            // if ($result['return_code'] == 'SUCCESS' && $result['result_code'] == 'SUCCESS') {
+            //     //扣除冻结余额
+            //     (new MemberWallet())->minusFreeze($data['shopid'], $data['uid'], $data['price']);
+
+            //     //写入资金流水表
+            //     $result_capital_flow = (new CapitalFlow())->createFlow([
+            //         'uid' => $data['uid'],
+            //         'order_no' => $data['order_no'],
+            //         'price' => $data['price'],
+            //         'shopid' => $data['shopid'],
+            //         'app' => 'system',
+            //         'channel' => $data['channel'],
+            //         'remark' => '用户提现',
+            //     ]);
+            //     if (!$result_capital_flow)  throw new Exception('写入资金流水失败');
+
+            //     //更改提现记录状态
+            //     $submit_data = [
+            //         'id'        => $withdraw_id,
+            //         'paid'      => 1,
+            //         'paid_time' => time(),
+            //     ];
+            //     $cash_with = $this->WithdrawModel->edit($submit_data);
+            // } else {
+            //     //解冻冻结资金(返还至用户余额)
+            //     $WalletModel->freeze($data['shopid'], $data['uid'], $data['price'], 0);
+            //     //付款到零钱失败
+            //     $submit_data = [
+            //         'id'     => $withdraw_id,
+            //         'error'  => 1,
+            //         'error_msg'  => json_encode($result)
+            //     ];
+            //     $cash_with = $this->WithdrawModel->edit($submit_data);
+            // }
+            // if (!$cash_with) {
+            //     throw new Exception('网络异常,请稍后再试');
+            // }
             Db::commit();
+
+            return $this->success('提现已提交，正在处理...', $result);
         } catch (Exception $e) {
             Db::rollback();
             return $this->error('发生错误：' . $e->getMessage());
         }
-
-        return $this->success('提现已提交，正在处理...');
     }
+
+    /**
+     * 商家转账回调
+     * 获取原始回调数据并记录日志
+     * 
+     * @return void
+     */
+    public function notify()
+    {
+        $header = $this->request->header();
+        $inBody   = file_get_contents('php://input'); //读取微信传过来的信息，是一个json字符串
+
+        // 平台证书验签
+        try {
+            if (empty($header) || empty($inBody)) {
+                throw new \Exception('通知参数为空', 2001);
+            }
+
+            $inWechatpayTimestamp               = $header['WECHATPAY-TIMESTAMP'];
+            $inWechatpayNonce                   = $header['WECHATPAY-NONCE'];
+            $inWechatpaySignature               = $header['WECHATPAY-SIGNATURE'];
+            $inWechatpaySerial                = $header['WECHATPAY-SERIAL'];
+            if (empty($inWechatpayTimestamp) || empty($inWechatpayNonce) || empty($inWechatpaySignature) || empty($inWechatpaySerial)) {
+                throw new \Exception('通知头参数为空', 2002);
+            }
+
+            $platform_serial  =  config('extend.WX_PAY_WITHDRAW_PLATFORM_SERIAL');
+            if ($platform_serial != $inWechatpaySerial) {
+                throw new \Exception('验签失败', 2005);
+            }
+
+            // 平台证书路径
+            $pingtai_public_key_path = app()->getRootPath() . 'public/attachment/cert/wechatpay_' . $platform_serial . '.pem';
+            
+            $apiv3Key = config('extend.WX_PAY_KEY_SECRET');; // 在商户平台上设置的APIv3密钥
+
+            // 根据通知的平台证书序列号，查询本地平台证书文件，
+            $platformPublicKeyInstance = Rsa::from('file://' . $pingtai_public_key_path, Rsa::KEY_TYPE_PUBLIC);
+
+            // 检查通知时间偏移量，允许5分钟之内的偏移
+            $timeOffsetStatus = 300 >= abs(Formatter::timestamp() - (int)$inWechatpayTimestamp);
+            $verifiedStatus = Rsa::verify(
+                // 构造验签名串
+                Formatter::joinedByLineFeed($inWechatpayTimestamp, $inWechatpayNonce, $inBody),
+                $inWechatpaySignature,
+                $platformPublicKeyInstance
+            );
+            if ($timeOffsetStatus && $verifiedStatus) {
+                // 转换通知的JSON文本消息为PHP Array数组
+                $inBodyArray = (array)json_decode($inBody, true);
+                // 使用PHP7的数据解构语法，从Array中解构并赋值变量
+                ['resource' => [
+                    'ciphertext'      => $ciphertext,
+                    'nonce'           => $nonce,
+                    'associated_data' => $aad
+                ]] = $inBodyArray;
+                // 加密文本消息解密
+                $inBodyResource = AesGcm::decrypt($ciphertext, $apiv3Key, $nonce, $aad);
+                // 把解密后的文本转换为PHP Array数组
+                $inBodyResourceArray = (array)json_decode($inBodyResource, true);
+                // print_r($inBodyResourceArray);// 打印解密后的结果
+                Log::write($inBodyResourceArray, 'notice');
+            }
+            //执行自己的代码start
+
+            //执行自己的代码end
+
+            $arr = array("code" => "SUCCESS", "message" => "");
+            echo json_encode($arr);
+        } catch (\Exception $e) {
+            Log::error($e->getMessage());
+            $arr = ["code" => "ERROR", "message" => $e->getMessage()];
+            echo json_encode($arr);
+        }
+    }
+
 }
