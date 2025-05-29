@@ -40,23 +40,23 @@ class Attachment extends Admin
         $rows = input('rows', 20, 'intval');
         View::assign('rows', $rows);
         // 查询条件
-        $map = [
-            ['shopid', '=', 0]
-        ];
+        $map = '`shopid` = 0';
         if (!empty($keyword)) {
-            $map[] = ['filename', 'like', '%' . $keyword . '%'];
+            $map .= ' and (`filename` like "%' . $keyword . '%" or `attachment` like "%' . $keyword . '%")';
         }
         if (!empty($driver)) {
-            $map[] = ['driver', '=', $driver];
+            $map .= ' and (`driver`="' . $driver . '")';
         }
         if (!empty($type)) {
-            $map[] = ['type', '=', $type];
+            $map .= ' and (`type`="' . $type . '")';
         }
+        
         // 排序
         $order_field = input('order_field', 'id', 'text');
         $order_type = input('order_type', 'desc', 'text');
         $order = $order_field . ' ' . $order_type;
         $fields = '*';
+
         $lists = $this->AttachmentModel->getListByPage($map, $order, $fields, $rows);
         $pager = $lists->render();
         $lists = $lists->toArray();

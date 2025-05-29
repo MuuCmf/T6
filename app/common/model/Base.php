@@ -81,13 +81,16 @@ class Base extends Model
      */
     public function getListByPage($map, $order = 'create_time desc', $field = '*', $r = 20)
     {
-        if (is_array($map)) {
-            $list  = $this->where($map)->order($order)->field($field)->paginate(['list_rows' => $r, 'query' => request()->param()], false);
-        } else {
-            $list  = $this->whereRaw($map)->order($order)->field($field)->paginate(['list_rows' => $r, 'query' => request()->param()], false);
+        if(empty($map)){
+            $list  = $this->order($order)->field($field)->paginate(['list_rows' => $r, 'query' => request()->param()], false);
+        }else{
+            if (is_array($map)) {
+                $list  = $this->where($map)->order($order)->field($field)->paginate(['list_rows' => $r, 'query' => request()->param()], false);
+            } else {
+                $list  = $this->whereRaw($map)->order($order)->field($field)->paginate(['list_rows' => $r, 'query' => request()->param()], false);
+            }
         }
-
-
+        
         return $list;
     }
     /**
