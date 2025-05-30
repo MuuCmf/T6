@@ -31,9 +31,7 @@
     <div class="withdraw-lists-item">
         <div class="base-info">
             <span class="">提现单号：{$v['order_no']}</span>
-            <span class="">
-	            提现时间：{$v['paid_time_str']}
-	        </span>
+            
             {if !empty($v.uid) && !empty($v.user_info) && $v.user_info != -1}
             <span class="">
 	            用户：<a href="{:url('admin/member/detail',['uid' => $v['uid']])}">{$v['user_info']['nickname']}</a>
@@ -81,12 +79,12 @@
                         <span class="paid-status text-success">{$v['paid_str']}</span>
                         <span class="paid-status text-success">（{$v['error_str']}）</span>
                         {else}
-                        {if $v['error'] == 1}
-                        <span class="paid-status text-danger">提现失败</span>
-                        {/if}
-                        {if $v['error'] == 0}
-                        <span class="paid-status text-danger">处理中</span>
-                        {/if}
+                            {if $v['error'] == 1}
+                            <span class="paid-status text-danger">提现失败</span>
+                            {/if}
+                            {if $v['error'] == 0}
+                            <span class="paid-status text-danger">未完成</span>
+                            {/if}
                         {/if}
                     </div>
                 </td>
@@ -99,8 +97,11 @@
                 <td style="width: 200px">
                     {if $v['paid'] == 0}
                     <a class="btn btn-sm btn-danger" data-remote="{:url('action', ['id'=>$v['id']])}" data-toggle="modal">
-					    手动处理
+					    人工处理
 				    </a>
+                        {if $v['error'] == 0}
+                        <a class="btn btn-sm btn-warning ajax-post" href="{:url('cancel', ['id'=>$v['id']])}" data-confirm="确认执行取消操作？">取消</a>
+                        {/if}
                     {/if}
                     <a class="btn btn-sm btn-info" data-remote="{:url('detail', ['id'=>$v['id']])}" data-toggle="modal">
 					    查看详情

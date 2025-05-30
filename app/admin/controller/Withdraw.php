@@ -71,7 +71,7 @@ class Withdraw extends Admin
             $data = $this->WithdrawModel->getDataById($id);
             $data = $this->WithdrawLogic->formatData($data);
         }
-
+        
         View::assign('data', $data);
 
         //输出页面
@@ -132,5 +132,33 @@ class Withdraw extends Admin
         
         //输出页面
         return View::fetch();
+    }
+
+    public function cannel()
+    {
+        $id = input('id', 0, 'intval');
+        if (request()->isPost()) {
+            try {
+                $map = [
+                    ['id', '=', $id],
+                    ['paid', '=', 0]
+                ];
+                $data = $this->WithdrawModel->where($map)->find()->toArray();
+                if (!$data) throw new Exception('数据不存在');
+                Db::startTrans(); //开启事务
+                //更改提现记录状态
+                $update_data = [
+                    'id'        => $data['id'],
+                    'paid'      => -1,
+                    'paid_time' => time(),
+                ];
+                $result = $this->WithdrawModel->edit($update_data);
+                if (!$result)   throw new Exception('操作失败,请稍后再试');
+
+            } catch (Exception $e) {
+                Db::rollback();
+                return $this->error($e->getMessage());
+            }
+        }
     }
 }

@@ -171,58 +171,21 @@ class Withdraw extends Api
                 //     "state" => "WAIT_USER_CONFIRM"
                 //     "transfer_bill_no" => "1330001234218022505290017891803214"
                 // ]
-                
+
                 if (is_array($result) && isset($result['errCode']) && $result['errCode'] == 0) throw new Exception($result['errMsg']);
 
                 $return_result = $result['body'];
             }
-            
+
             // 记录日志
             Log::write($result, 'notice');
 
-            // if ($result['return_code'] == 'SUCCESS' && $result['result_code'] == 'SUCCESS') {
-            //     //扣除冻结余额
-            //     (new MemberWallet())->minusFreeze($data['shopid'], $data['uid'], $data['price']);
-
-            //     //写入资金流水表
-            //     $result_capital_flow = (new CapitalFlow())->createFlow([
-            //         'uid' => $data['uid'],
-            //         'order_no' => $data['order_no'],
-            //         'price' => $data['price'],
-            //         'shopid' => $data['shopid'],
-            //         'app' => 'system',
-            //         'channel' => $data['channel'],
-            //         'remark' => '用户提现',
-            //     ]);
-            //     if (!$result_capital_flow)  throw new Exception('写入资金流水失败');
-
-            //     //更改提现记录状态
-            //     $submit_data = [
-            //         'id'        => $withdraw_id,
-            //         'paid'      => 1,
-            //         'paid_time' => time(),
-            //     ];
-            //     $cash_with = $this->WithdrawModel->edit($submit_data);
-            // } else {
-            //     //解冻冻结资金(返还至用户余额)
-            //     $WalletModel->freeze($data['shopid'], $data['uid'], $data['price'], 0);
-            //     //付款到零钱失败
-            //     $submit_data = [
-            //         'id'     => $withdraw_id,
-            //         'error'  => 1,
-            //         'error_msg'  => json_encode($result)
-            //     ];
-            //     $cash_with = $this->WithdrawModel->edit($submit_data);
-            // }
-            // if (!$cash_with) {
-            //     throw new Exception('网络异常,请稍后再试');
-            // }
             Db::commit();
 
             return $this->success('提现已提交，正在处理...', $return_result);
         } catch (Exception $e) {
             Db::rollback();
-            return $this->error('发生错误：' . $e->getMessage());
+            return $this->error('提示：' . $e->getMessage());
         }
     }
 
@@ -236,17 +199,19 @@ class Withdraw extends Api
     {
         $header = $this->request->header();
         $inBody   = file_get_contents('php://input'); //读取微信传过来的信息，是一个json字符串
-
+        Log::write($header, 'notice');
+        Log::write($inBody, 'notice');
         // 平台证书验签
+        Db::startTrans();
         try {
             if (empty($header) || empty($inBody)) {
                 throw new \Exception('通知参数为空', 2001);
             }
 
-            $inWechatpayTimestamp               = $header['WECHATPAY-TIMESTAMP'];
-            $inWechatpayNonce                   = $header['WECHATPAY-NONCE'];
-            $inWechatpaySignature               = $header['WECHATPAY-SIGNATURE'];
-            $inWechatpaySerial                = $header['WECHATPAY-SERIAL'];
+            $inWechatpayTimestamp             = $header['wechatpay-timestamp'];
+            $inWechatpayNonce                 = $header['wechatpay-nonce'];
+            $inWechatpaySignature             = $header['wechatpay-signature'];
+            $inWechatpaySerial                = $header['wechatpay-serial'];
             if (empty($inWechatpayTimestamp) || empty($inWechatpayNonce) || empty($inWechatpaySignature) || empty($inWechatpaySerial)) {
                 throw new \Exception('通知头参数为空', 2002);
             }
@@ -258,7 +223,7 @@ class Withdraw extends Api
 
             // 平台证书路径
             $pingtai_public_key_path = app()->getRootPath() . 'public/attachment/cert/wechatpay_' . $platform_serial . '.pem';
-            
+
             $apiv3Key = config('extend.WX_PAY_KEY_SECRET');; // 在商户平台上设置的APIv3密钥
 
             // 根据通知的平台证书序列号，查询本地平台证书文件，
@@ -287,9 +252,60 @@ class Withdraw extends Api
                 $inBodyResourceArray = (array)json_decode($inBodyResource, true);
                 // print_r($inBodyResourceArray);// 打印解密后的结果
                 Log::write($inBodyResourceArray, 'notice');
+                // 示例
+                // 'mch_id' => '1602403282',
+                // 'out_bill_no' => '202505305841651155',
+                // 'transfer_bill_no' => '1330001234218022505300063062490070',
+                // 'transfer_amount' => 100,
+                // 'state' => 'SUCCESS',
+                // 'openid' => 'odDW80Xr2djHkcNTrfHO4VOAppkY',
+                // 'create_time' => '2025-05-30T08:20:58+08:00',
+                // 'update_time' => '2025-05-30T08:21:11+08:00',
+                // 'mchid' => '1602403282',
             }
             //执行自己的代码start
+            $data = $this->WithdrawModel->where('order_no', $inBodyResourceArray['out_bill_no'])->find();
+            $cash_with = true;
+            if ($inBodyResourceArray['state'] == 'SUCCESS') {
+                // 扣除冻结余额
+                (new MemberWallet())->minusFreeze($data['shopid'], $data['uid'], $data['price']);
 
+                //写入资金流水表
+                $result_capital_flow = (new CapitalFlow())->createFlow([
+                    'uid' => $data['uid'],
+                    'order_no' => $data['order_no'],
+                    'price' => $data['price'],
+                    'shopid' => $data['shopid'],
+                    'app' => 'system',
+                    'channel' => $data['channel'],
+                    'remark' => '用户提现',
+                ]);
+                if (!$result_capital_flow)  throw new Exception('写入资金流水失败');
+
+                //更改提现记录状态
+                $submit_data = [
+                    'id'        => $data['id'],
+                    'paid'      => 1,
+                    'paid_time' => time(),
+                ];
+                $cash_with = $this->WithdrawModel->edit($submit_data);
+            }
+
+            if ($inBodyResourceArray['state'] == 'FAIL') {
+                //解冻冻结资金(返还至用户余额)
+                (new MemberWallet())->freeze($data['shopid'], $data['uid'], $data['price'], 0);
+                //付款到零钱失败
+                $submit_data = [
+                    'id'     => $data['id'],
+                    'error'  => 1,
+                    'error_msg'  => '转账失败'
+                ];
+                $cash_with = $this->WithdrawModel->edit($submit_data);
+            }
+            if (!$cash_with) {
+                throw new Exception('数据处理失败,请稍后再试');
+            }
+            Db::commit();
             //执行自己的代码end
 
             $arr = array("code" => "SUCCESS", "message" => "");
@@ -300,5 +316,4 @@ class Withdraw extends Api
             echo json_encode($arr);
         }
     }
-
 }

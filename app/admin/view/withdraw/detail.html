@@ -1,7 +1,7 @@
 
 <div class="withdraw-detail">
     <div class="user-info">
-        {if !empty($v.uid) && !empty($v.user_info) && is_array($v.user_info)}
+        {if !empty($data.uid) && !empty($data.user_info) && is_array($data.user_info)}
         <div class="cover">
             <img src="{$data['user_info']['avatar64']}">
         </div>
@@ -56,25 +56,21 @@
             <td>
                 {if $data['paid'] == 1 && $data['error'] == 0}
                 <span class="text-success">{$data['paid_time_str']}</span>
-                {else}
-                <span class="paid-status text-danger">（{$data['error_str']}）</span>
+                {/if}
+                {if $data['paid'] == 0}
+                    {if $data['error'] == 1}
+                    <span class="paid-status text-danger">提现失败</span>
+                    {/if}
+                    {if $data['error'] == 0}
+                    <span class="paid-status text-danger">未完成</span>
+                    {/if}
+                {/if}
+                {if $data['paid'] == -1}
+                    <span class="paid-status text-danger">{$data['paid_str']}</span>
                 {/if}
             </td>
         </tr>
     
-        <tr>
-            <td style="width: 300px">
-                状态
-            </td>
-            <td>
-                {if $data['paid'] == 1 && $data['error'] == 0}
-                    <span class="paid-status text-success">{$data['paid_str']}</span>
-                    <span class="paid-status text-success">（{$data['error_str']}）</span>
-                {else}
-                    <span class="paid-status text-danger">（{$data['error_str']}）</span>
-                {/if}
-            </td>
-        </tr>
         {if $data['paid'] == 0 && $data['error'] == 1}
             <td style="width: 300px">
                 失败原因

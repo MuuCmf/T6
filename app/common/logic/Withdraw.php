@@ -13,7 +13,8 @@ class Withdraw extends Base
 {
     public $_paid = [
         0 => '提现中',
-        1 => '已完成'
+        1 => '已完成',
+        -1 => '已取消'
     ];
 
     public $_error = [

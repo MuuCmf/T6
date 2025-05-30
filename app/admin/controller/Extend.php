@@ -130,15 +130,13 @@ class Extend extends Admin
                 ->keyText('WX_PAY_CERT_SERIAL', 'API证书序列号', '商户API证书序列号.')
                 ->keySingleFile('WX_PAY_CERT', 'Cert证书','Cert证书上传', ['enforce' => 'local'])
                 ->keySingleFile('WX_PAY_KEY', 'Key证书','Key证书上传', ['enforce' => 'local'])
-                ->keyRadio('WX_PAY_WITHDRAW_API', '提现方式接口','请选择您申请的提现方式接口', ['v2' => '企业付款到零钱', 'v3' => '商家转账到零钱'])
                 ->keyText('WX_PAY_WITHDRAW_PLATFORM_SERIAL', '支付平台证书序列号', '当使用商家转账到零钱接口时需填写.')
-                ->group('微信', [
+                ->group('微信支付', [
                     'WX_PAY_MCH_ID',
                     'WX_PAY_KEY_SECRET',
                     'WX_PAY_CERT_SERIAL',
                     'WX_PAY_CERT',
                     'WX_PAY_KEY',
-                    'WX_PAY_WITHDRAW_API',
                     'WX_PAY_WITHDRAW_PLATFORM_SERIAL'
                 ]);
 
@@ -147,12 +145,14 @@ class Extend extends Admin
             // 提现参数配置
             $opt = [0 => '关闭' ,1 => '开启'];
             $builder
+                ->keyRadio('WX_PAY_WITHDRAW_API', '提现方式接口','请选择您申请的提现方式接口', ['v2' => '企业付款到零钱', 'v3' => '商家转账到零钱'])
                 ->keySelect('WITHDRAW_STATUS', '提现开关', '如有特殊情况，可暂时关闭提现',$opt)
-                ->keyText('WITHDRAW_TAX_RATE', '提现费率', '默认千分之五（单位：千分比）')
-                ->keyText('WITHDRAW_DAY_NUM', '每日可提现次数', '一天最多可提现多少次')
-                ->keyText('WITHDRAW_MIN_PRICE', '单次最小提现金额', '一次最少提现金额')
-                ->keyText('WITHDRAW_MAX_PRICE', '单次最大提现金额', '一次最大提现金额')
+                ->keyText('WITHDRAW_TAX_RATE', '提现费率', '单位：千分比')
+                ->keyText('WITHDRAW_DAY_NUM', '每日可提现次数', '日最多可提现多少次')
+                ->keyText('WITHDRAW_MIN_PRICE', '单次最小提现金额', '单位：元')
+                ->keyText('WITHDRAW_MAX_PRICE', '单次最大提现金额', '单位：元')
                 ->group('提现配置', [
+                    'WX_PAY_WITHDRAW_API',
                     'WITHDRAW_STATUS',
                     'WITHDRAW_TAX_RATE',
                     'WITHDRAW_DAY_NUM',
