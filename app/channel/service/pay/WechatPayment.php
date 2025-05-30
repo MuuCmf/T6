@@ -236,7 +236,6 @@ class WechatPayment extends PayService
 
         } catch (\Exception $e) {
             // 进行错误处理
-            //echo $e->getMessage(), PHP_EOL;
             return [
                 'errCode' => 0,
                 'errMsg' => $e->getMessage()
@@ -248,6 +247,47 @@ class WechatPayment extends PayService
                 exit;
             }
             //echo $e->getTraceAsString(), PHP_EOL;
+        }
+    }
+
+    public function cancelTransfer($out_bill_no)
+    {
+        try {
+            // 商户号
+            $merchantId = $this->config['mch_id'];
+            // 从本地文件中加载「商户API私钥」，「商户API私钥」会用来生成请求的签名
+            $merchantPrivateKeyFilePath = 'file://' . $this->config['key_path'];
+            $merchantPrivateKeyInstance = Rsa::from($merchantPrivateKeyFilePath, Rsa::KEY_TYPE_PRIVATE);
+            // 「商户API证书」的「证书序列号」
+            $merchantCertificateSerial = $this->config['serial'];
+            // 从本地文件中加载「微信支付平台证书」，用来验证微信支付应答的签名
+            $platformCertificateFilePath = 'file://' . app()->getRootPath() . 'public/attachment/cert/wechatpay_' .$this->config['platform_serial']. '.pem';
+            $platformPublicKeyInstance = Rsa::from($platformCertificateFilePath, Rsa::KEY_TYPE_PUBLIC);
+            // 从「微信支付平台证书」中获取「证书序列号」
+            $platformCertificateSerial = PemUtil::parseCertificateSerialNo($platformCertificateFilePath);
+            // 构造一个 APIv3 客户端实例
+            $instance = Builder::factory([
+                'mchid'      => $merchantId,
+                'serial'     => $merchantCertificateSerial,
+                'privateKey' => $merchantPrivateKeyInstance,
+                'certs'      => [
+                    $platformCertificateSerial => $platformPublicKeyInstance,
+                ],
+            ]);
+
+            $resp = $instance
+            ->chain("/v3/fund-app/mch-transfer/transfer-bills/out-bill-no/{$out_bill_no}/cancel")
+            ->post();
+            
+            // echo $resp->getStatusCode(), PHP_EOL;
+            // echo $resp->getBody(), PHP_EOL;
+
+            return [
+                'status_code' => $resp->getStatusCode(),
+                'body' => json_decode($resp->getBody(), true)
+            ];
+        } catch (\Exception $e) {   
+            //echo $e->getMessage(), PHP_EOL;
         }
     }
 

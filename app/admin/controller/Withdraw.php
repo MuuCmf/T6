@@ -2,13 +2,15 @@
 
 namespace app\admin\controller;
 
+use think\Exception;
+use think\facade\Db;
+use think\facade\View;
 use app\common\model\CapitalFlow;
 use app\common\model\MemberWallet;
 use app\common\model\Withdraw as WithdrawModel;
 use app\common\logic\Withdraw as WithdrawLogic;
-use think\Exception;
-use think\facade\Db;
-use think\facade\View;
+use app\channel\facade\channel\Pay as PayServer;
+use app\channel\facade\channel\Channel as ChannelServer;
 
 class Withdraw extends Admin
 {
@@ -134,7 +136,18 @@ class Withdraw extends Admin
         return View::fetch();
     }
 
-    public function cannel()
+    /**
+     * 取消提现申请
+     * 
+     * 处理用户提交的取消提现请求，执行以下操作：
+     * 1. 验证提现记录是否存在且未支付
+     * 2. 更新提现状态为已取消(paid=-1)
+     * 3. 解冻冻结资金并返还至用户余额
+     * 
+     * @return \think\response\Json 操作结果(成功/失败)
+     * @throws Exception 操作过程中可能抛出的异常
+     */
+    public function cancel()
     {
         $id = input('id', 0, 'intval');
         if (request()->isPost()) {
@@ -143,7 +156,7 @@ class Withdraw extends Admin
                     ['id', '=', $id],
                     ['paid', '=', 0]
                 ];
-                $data = $this->WithdrawModel->where($map)->find()->toArray();
+                $data = $this->WithdrawModel->where($map)->find();
                 if (!$data) throw new Exception('数据不存在');
                 Db::startTrans(); //开启事务
                 //更改提现记录状态
@@ -154,6 +167,19 @@ class Withdraw extends Admin
                 ];
                 $result = $this->WithdrawModel->edit($update_data);
                 if (!$result)   throw new Exception('操作失败,请稍后再试');
+
+                // 请求平台撤销转账(无论是否成功，都执行后续操作)
+                $channel = $data['channel'];
+                $pay_channel = $data['pay_channel'];
+                $pay_config = ChannelServer::config($channel, $this->shopid);
+                $PayService = PayServer::init($pay_config['appid'], $pay_channel, $this->shopid);
+                $result = $PayService->server->cancelTransfer($data['order_no']);
+                
+                //解冻冻结资金(返还至用户余额)
+                (new MemberWallet())->freeze($data['shopid'], $data['uid'], $data['price'], 0);
+ 
+                Db::commit();
+                return $this->success('操作成功');
 
             } catch (Exception $e) {
                 Db::rollback();
