@@ -4238,7 +4238,8 @@ INSERT INTO `muucmf_extend_config` (`id`, `name`, `type`, `title`, `group`, `ext
 (49, 'VOD_TENCENT_PLAYER_KEY', 'string', '播放秘钥', 9, '', '分发播放设置-默认分发配置信息内播放秘钥，仅启用KEY防盗链后有效.', 0, 0, 1, '', 0),
 (50, 'WX_PAY_WITHDRAW_API', 'num', '提现接口选择', 6, 'v2:企业付款到零钱\r\nv3:商家转账到零钱', '', 0, 0, 1, 'v2', 0),
 (51, 'WX_PAY_WITHDRAW_PLATFORM_SERIAL', 'string', '平台证书序列号', 6, '', '', 0, 0, 1, '', 0),
-(55, 'VOD_TENCENT_PROCEDURE_NAME', 'string', '自适应转码任务流名称', 1, '', '', 0, 1733203026, 1, 'SimpleAesEncryptPreset', 0);
+(55, 'VOD_TENCENT_PROCEDURE_NAME', 'string', '自适应转码任务流名称', 1, '', '', 0, 1733203026, 1, 'SimpleAesEncryptPreset', 0),
+(56, 'WITHDRAW_TRANSFER_SCENE_ID', 'string', '商家转账场景ID', 8, '', '', 0, 0, 1, '1005', 0);
 
 -- --------------------------------------------------------
 

@@ -9,6 +9,7 @@ use think\Validate;
 class Common extends Validate
 {
     protected $rule = [
+        'name' =>  'require',
         'title'  =>  'require',
         'description' => 'require',
         'content' => 'require',
@@ -18,6 +19,7 @@ class Common extends Validate
     ];
     
     protected $message = [
+        'name' =>  '标识不能为空',
         'title'  =>  '标题不能为空',
         'description' => '简短描述不能为空',
         'content' => '内容不能为空',
@@ -35,6 +37,8 @@ class Common extends Validate
         'message'   =>  ['type_id', 'title', 'description', 'content'],
         // 关键字
         'keywords'  =>  ['keyword'],
+        // 配置项
+        'config'  =>  ['title', 'name'],
     ];    
     
 }

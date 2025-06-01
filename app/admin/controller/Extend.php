@@ -6,6 +6,8 @@ use think\facade\View;
 use think\facade\Cache;
 use app\admin\builder\AdminConfigBuilder;
 use app\admin\model\ExtendConfig as MuuExtendConfigModel;
+use app\admin\validate\Common as CommonValidate;
+use think\exception\ValidateException;
 
 /**
  * 后台配置控制器
@@ -145,15 +147,17 @@ class Extend extends Admin
             // 提现参数配置
             $opt = [0 => '关闭' ,1 => '开启'];
             $builder
-                ->keyRadio('WX_PAY_WITHDRAW_API', '提现方式接口','请选择您申请的提现方式接口', ['v2' => '企业付款到零钱', 'v3' => '商家转账到零钱'])
                 ->keySelect('WITHDRAW_STATUS', '提现开关', '如有特殊情况，可暂时关闭提现',$opt)
+                ->keyRadio('WX_PAY_WITHDRAW_API', '提现方式接口','请选择您申请的提现方式接口', ['v2' => '企业付款到零钱', 'v3' => '商家转账'])
+                ->keyText('WITHDRAW_TRANSFER_SCENE_ID', '商家转账场景ID', '当使用商家转账接口时需填写，当前仅支持1000（现金营销）、1005（佣金报酬）')
                 ->keyText('WITHDRAW_TAX_RATE', '提现费率', '单位：千分比')
                 ->keyText('WITHDRAW_DAY_NUM', '每日可提现次数', '日最多可提现多少次')
                 ->keyText('WITHDRAW_MIN_PRICE', '单次最小提现金额', '单位：元')
                 ->keyText('WITHDRAW_MAX_PRICE', '单次最大提现金额', '单位：元')
                 ->group('提现配置', [
-                    'WX_PAY_WITHDRAW_API',
                     'WITHDRAW_STATUS',
+                    'WX_PAY_WITHDRAW_API',
+                    'WITHDRAW_TRANSFER_SCENE_ID',
                     'WITHDRAW_TAX_RATE',
                     'WITHDRAW_DAY_NUM',
                     'WITHDRAW_MIN_PRICE',
@@ -338,24 +342,13 @@ class Extend extends Admin
     public function edit($id = 0)
     {
         if (request()->isPost()) {
-            $data = input('');
+            $data = request()->param();
             //验证器
-            $validate = $this->validate(
-                [
-                    'name'  => $data['name'],
-                    'title'   => $data['title'],
-                ],[
-                    'name'  => 'require|max:32',
-                    'title'   => 'require',
-                ],[
-                    'name.require' => '标识必须填写',
-                    'name.max'     => '标识最多不能超过32个字符',
-                    'title.require'   => '标题必须填写', 
-                ]
-            );
-            if(true !== $validate){
+            try {
+                validate(CommonValidate::class)->scene('config')->check($data);
+            } catch (ValidateException $e) {
                 // 验证失败 输出错误信息
-                return $this->error($validate);
+                return $this->error($e->getError());
             }
 
             $data['status'] = 1;//默认状态为启用
