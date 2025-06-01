@@ -139,16 +139,21 @@ class Withdraw extends Api
                 //         ]
                 //     ]
                 // ]);
-
-                $options = [
-                    'appid'                 => $pay_config['appid'],
-                    'out_bill_no'           => $data['order_no'], //商户系统内部的商家批次单号，要求此参数只能由数字、大小写字母组成，在商户系统内部唯一,
-                    'transfer_scene_id'     => '1005', // 转账场景ID 该笔转账使用的转账场景，可前往“商户平台-产品中心-商家转账”中申请。如：1000（现金营销），1006（企业报销）等
-                    'openid'                => $openid,
-                    'transfer_amount'       => $data['price'], //转账金额 单位为“分
-                    'transfer_remark'       => '用户ID:' . $data['uid'] . "|" . '提现', //转账备注，用户收款时可见该备注信息，UTF8编码，最多允许32个字符
-                    'notify_url'            => request()->doMain() . '/api/withdraw/notify', // 异步接收微信支付结果通知的回调地址，通知url必须为外网可访问的url，不能携带参数。
-                    'transfer_scene_report_infos' => [
+                $scenc_id = config('extend.WITHDRAW_TRANSFER_SCENE_ID');
+                if ($scenc_id == 1000) {
+                    $transfer_scene_report_infos = [
+                        [
+                            "info_type" =>   "活动名称",
+                            "info_content" => "会员奖励"
+                        ],
+                        [
+                            "info_type" =>   "奖励说明",
+                            "info_content" => "用户打卡、分享奖励"
+                        ]
+                    ];
+                }
+                if ($scenc_id == 1005) {
+                    $transfer_scene_report_infos = [
                         [
                             "info_type" =>   "岗位类型",
                             "info_content" => "分享员"
@@ -157,7 +162,17 @@ class Withdraw extends Api
                             "info_type" =>   "报酬说明",
                             "info_content" => "用户分享佣金"
                         ]
-                    ]
+                    ];
+                }
+                $options = [
+                    'appid'                 => $pay_config['appid'],
+                    'out_bill_no'           => $data['order_no'], //商户系统内部的商家批次单号，要求此参数只能由数字、大小写字母组成，在商户系统内部唯一,
+                    'transfer_scene_id'     => $scenc_id, // 转账场景ID 该笔转账使用的转账场景，可前往“商户平台-产品中心-商家转账”中申请。如：1000（现金营销），1006（企业报销）等
+                    'openid'                => $openid,
+                    'transfer_amount'       => $data['price'], //转账金额 单位为“分
+                    'transfer_remark'       => '用户ID:' . $data['uid'] . "|" . '提现', //转账备注，用户收款时可见该备注信息，UTF8编码，最多允许32个字符
+                    'notify_url'            => request()->doMain() . '/api/withdraw/notify', // 异步接收微信支付结果通知的回调地址，通知url必须为外网可访问的url，不能携带参数。
+                    'transfer_scene_report_infos' => $transfer_scene_report_infos
                 ];
 
                 $result = $PayService->server->transferV3($options);

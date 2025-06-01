@@ -13,6 +13,8 @@ class Withdraw extends Base
     public function getConfig()
     {
         $config = [
+            'api' => config('extend.WITHDRAW_API'),
+            'scenc_id' => config('extend.WITHDRAW_TRANSFER_SCENE_ID'),
             'status' => config('extend.WITHDRAW_STATUS'),
             'tax_rate' => config('extend.WITHDRAW_TAX_RATE'),
             'day_num' => config('extend.WITHDRAW_DAY_NUM'),
