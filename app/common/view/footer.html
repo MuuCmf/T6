@@ -113,6 +113,25 @@
     <span>Powered by <a href="https://www.muucmf.cc/" target="_blank">MuuCmf T6</a></span>
   </div>
 </div>
+
+<!-- 对话框HTML -->
+<div class="modal fade" id="announceModal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">关闭</span></button>
+        <h4 class="modal-title">公告</h4>
+      </div>
+      <div class="modal-body">
+        <div class="announce-content"></div>
+        <div class="custom-close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">关闭</span></div>
+      </div>
+      <div class="modal-footer">
+        <a type="button" class="btn btn-primary" href="#">查看详情</a>
+      </div>
+    </div>
+  </div>
+</div>
 <script>
   $(function(){
     $("img.lazy").lazyload({

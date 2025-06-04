@@ -8,28 +8,48 @@ use app\common\logic\Announce as AnnounceLogic;
 
 class Announce extends Api
 {
-    protected $model;
-    protected $logic;
+    protected $AnnounceModel;
+    protected $AnnounceLogic;
 
     function __construct()
     {
         parent::__construct();
-        $this->model = new AnnounceModel();
-        $this->logic = new AnnounceLogic();
+        $this->AnnounceModel = new AnnounceModel();
+        $this->AnnounceLogic = new AnnounceLogic();
     }
 
+    /**
+     * 获取公告详情
+     * 
+     * @return \think\response\Json 返回JSON格式的响应数据
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
     public function detail()
     {
         $id = input('get.id', 0);
-        $data = $this->model->getDataById($id);
-        $data = $this->logic->formatData($data);
+        $data = $this->AnnounceModel->getDataById($id);
+        $data = $this->AnnounceLogic->formatData($data);
 
         return $this->success('获取成功！', $data);
     }
 
+    /**
+     * 获取公告列表
+     * 
+     * @return \think\response\Json 返回公告列表数据
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\DbException
+     * @throws \think\db\exception\ModelNotFoundException
+     * 
+     * @api
+     * @param string $teminal 终端标识（可选）
+     * @success-json {"code":1,"msg":"获取成功！","data":[...]}
+     */
     public function lists()
     {
-        $teminal = input('terminal', '', 'text');
+        $teminal = input('teminal', '', 'text');
         //初始化查询条件
         $map = [
             ['shopid', '=', $this->shopid],
@@ -39,9 +59,9 @@ class Announce extends Api
             $map[] = ['teminal', '=', $teminal];
         }
         
-        $lists = $this->model->getList($map, 5);
+        $lists = $this->AnnounceModel->getList($map, 5, 'sort desc, create_time desc');
         foreach ($lists as &$item) {
-            $item = $this->logic->formatData($item);
+            $item = $this->AnnounceLogic->formatData($item);
         }
         unset($item);
 

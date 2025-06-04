@@ -128,6 +128,7 @@ class Announce extends Admin
             if (!empty($id)) {
                 $data = $this->AnnounceModel->getDataById($id);
                 $data = $this->AnnounceLogic->formatData($data);
+                $teminal = $data['teminal'];
                 // 链接参数二次处理
                 if (!empty($data['link'])) {
                     $link = $data['link'];
