@@ -120,7 +120,7 @@
         return res;
     }
 
-    /**zzl
+    /**
      * 验证姓名输入框
      * @returns {{status: number, info: string}}
      */
@@ -135,7 +135,7 @@
         return res;
     }
 
-    /**zzl
+    /**
      * 验证QQ号
      * @returns {{status: number, info: string}}
      */
@@ -150,7 +150,7 @@
         return res;
     }
 
-    /**zzl
+    /**
      * 验证邮箱
      * @returns {{status: number, info: string}}
      */
@@ -165,7 +165,7 @@
         return res;
     }
 
-    /**zzl
+    /**
      * 验证身份证号
      * @returns {{status: number, info: string}}
      */
@@ -246,7 +246,7 @@
         return res;
     }
 
-    /**zzl
+    /**
      * 验证整形数字
      * @returns {{status: number, info: string}|{status: number, info: string}}
      */
@@ -288,7 +288,7 @@
         return res;
     }
 
-    /**zzl
+    /**
      * 验证浮点型数字
      * @returns {{status: number, info: string}|{status: number, info: string}}
      */
@@ -330,7 +330,7 @@
         return res;
     }
 
-    /**zzl
+    /**
      * 验证手机号码或固定电话
      * @returns {{status: number, info: string}|{status: number, info: string}}
      */
@@ -468,7 +468,6 @@
         }
     }
 
-
     /**
      * 显示提示信息
      * @param str
@@ -484,9 +483,8 @@
                 check_form.error(str);
             }
     }
-    /**zzl
+    /**
      * 移除提示信息
-     *
      */
     var removeInfo = function () {
         var html = '';

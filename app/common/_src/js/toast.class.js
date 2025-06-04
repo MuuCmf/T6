@@ -8,46 +8,46 @@ var toast = {
      * @param text 内容
      * @param title 标题
      */
-    success: function (text) {
-        toast.show(text, {placement: 'center', type: 'success',close: true});
+    success: function (text, placement = 'center') {
+        toast.show(text, { placement: placement, type: 'success', close: true });
     },
     /**
      * 失败提示
      * @param text 内容
      * @param title 标题
      */
-    error: function (text) {
-        toast.show(text, {placement: 'center', type: 'danger',close: true});
+    error: function (text, placement = 'center') {
+        toast.show(text, { placement: placement, type: 'danger', close: true });
     },
     /**
      * 信息提示
      * @param text 内容
      * @param title 标题
      */
-    info: function (text) {
-        toast.show(text, {placement: 'center', type: 'info',close: true});
+    info: function (text, placement = 'center') {
+        toast.show(text, { placement: placement, type: 'info', close: true });
     },
     /**
      * 警告提示
      * @param text 内容
      * @param title 标题
      */
-    warning: function (text, title) {
-        toast.show(text, {placement: 'center',type:'warning',close: true});
+    warning: function (text, placement = 'center') {
+        toast.show(text, { placement: placement, type: 'warning', close: true });
     },
     /**
      * 默认提示
      * @param {*} text 
      */
-    default: function (text) {
-        toast.show(text, {placement: 'center',type:'default',close: true});
+    default: function (text, placement = 'center') {
+        toast.show(text, { placement: placement, type: 'default', close: true });
     },
 
     show: function (text, option) {
         var zui = $.zui;
         if (zui) {
             $.zui.messager.show(text, option);
-        }else{
+        } else {
             $.messager.show(text, option);
         }
     },

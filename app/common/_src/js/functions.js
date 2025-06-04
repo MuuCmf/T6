@@ -4,6 +4,7 @@
 function is_login() {
     return parseInt(MID);
 }
+
 /**
  * 模拟Url函数
  * @param url
@@ -32,12 +33,11 @@ function url(url, params, rewrite) {
 
     return website;
 }
+
 /**播放背景音乐
- *
  * @param file 文件路径
  */
 function playsound(file) {
-    
     $('embed').remove();
     $('body').append('<embed src="' + file + '" autostart="true" hidden="true" loop="false">');
 }
