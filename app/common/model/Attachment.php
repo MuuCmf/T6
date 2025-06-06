@@ -595,7 +595,7 @@ class Attachment extends Base
     /**
      * 云点播媒体文件处理
      */
-    public function vodMediaHandle($ile_id, $attachment)
+    public function vodMediaHandle($file_id, $attachment)
     {
         $TcVodService = new TcVod();
         // 云点播key防盗链开关
@@ -603,7 +603,7 @@ class Attachment extends Base
 
         $data = [];
         if ($vod_key_switch == 1) {
-            $data['psign'] = $TcVodService->getPsign($ile_id);
+            $data['psign'] = $TcVodService->getPsign($file_id);
             $data['all_media_url'] = $TcVodService->getKeyMediaUrl($attachment);
         }
 
@@ -633,7 +633,19 @@ class Attachment extends Base
         return '';
     }
 
-    
+    /**
+     * 根据附件标识获取附件数据
+     * @param string $attachment 附件标识
+     * @return array|false 返回附件数据数组，未找到返回false
+     */
+    public function getAttachmentData($attachment)
+    {
+        $data = $this->where('attachment', $attachment)->find();
+        if($data) return $data;
+        
+        return false;
+    }
+
     /**
      * 删除指定的附件文件
      * 
