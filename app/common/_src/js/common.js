@@ -28,7 +28,7 @@ $(function () {
     $('[event-node=logout]').click(function () {
         var url = $(this).data('url');
         $.get(url, function (msg) {
-            toast.success(msg.msg + '。', '温馨提示');
+            toast.success(msg.msg);
             setTimeout(function () {
                 location.href = msg.url;
             }, 1500);

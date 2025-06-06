@@ -15,9 +15,9 @@ var follower = {
                     $this.attr('data-role', 'unfollow');
                     $this.html('已关注');
                     follower.bind_follow();
-                    toast.success(msg.info, '温馨提示');
+                    toast.success(msg.info);
                 } else {
-                    toast.error(msg.info, '温馨提示');
+                    toast.error(msg.info);
                 }
             }, 'json');
         })
@@ -32,9 +32,9 @@ var follower = {
                     $this.attr('data-role', 'follow');
                     $this.html('关注');
                     follower.bind_follow();
-                    toast.success(msg.info, '温馨提示');
+                    toast.success(msg.info);
                 } else {
-                    toast.error(msg.info, '温馨提示');
+                    toast.error(msg.info);
                 }
             }, 'json');
         })

@@ -41,7 +41,7 @@
               if($res.code == 200 && $res.data.paid == 1){
                 window.clearInterval(qrcode_pay_expire);
                 //支付成功业务逻辑
-                toast.success('支付成功，页面即将跳转~', 'success');
+                toast.success('支付成功，页面即将跳转~');
                 setTimeout(function(){
                   //设置二维码过期
                   location.href = $res.url;

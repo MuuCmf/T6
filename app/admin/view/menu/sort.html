@@ -89,9 +89,9 @@
 					},
 					function(data){
 						if (data.code == 1) {
-	                        toast.success(data.msg + {:lang('_THE_PAGE_WILL_AUTOMATICALLY_JUMP_TO_WALK_THE_WALK_TODAY_WITH_SINGLE_')},'alert-success');
+	                        toast.success(data.msg);
 	                    }else{
-	                        toast.error(data.msg,'alert-success');
+	                        toast.error(data.msg);
 	                    }
 	                    setTimeout(function(){
 	                        if (data.status) {

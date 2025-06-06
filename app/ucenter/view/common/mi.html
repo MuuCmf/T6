@@ -108,12 +108,12 @@
             return false;
             function success(data) {
                 if (data.code) {
-                    toast.success(data.msg + '页面即将跳转！', '温馨提示');
+                    toast.success(data.msg + '页面即将跳转！');
                     setTimeout(function () {
                         window.location.href = data.url
                     }, 1500);
                 } else {
-                    toast.error(data.msg, '温馨提示');
+                    toast.error(data.msg);
                     //刷新验证码
                     $(".reloadverify").click();
                 }

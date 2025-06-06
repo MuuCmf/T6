@@ -204,9 +204,9 @@
 
         //弹出提示消息
         if (data.code == 200) {
-            toast.success(data.msg, 'success');
+            toast.success(data.msg);
         } else {
-            toast.error(data.msg, 'danger');
+            toast.error(data.msg);
         }
 
         //需要跳转的话就跳转

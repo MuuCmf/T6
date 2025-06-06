@@ -56,12 +56,12 @@
             $.post(self.attr("action"), self.serialize(), function (res) {
                 toast.hideLoading();
                 if (res.code) {
-                    toast.success(res.msg, '温馨提示');
+                    toast.success(res.msg);
                     setTimeout(function () {
                         window.location.reload();
                     }, 1000);
                 } else {
-                    toast.error(res.msg, '温馨提示');
+                    toast.error(res.msg);
                 }
 
             }, "json");
