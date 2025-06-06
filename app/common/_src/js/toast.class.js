@@ -44,12 +44,13 @@ var toast = {
     },
 
     show: function (text, option) {
-        var zui = $.zui;
-        if (zui) {
-            $.zui.messager.show(text, option);
-        } else {
-            $.messager.show(text, option);
+
+        var placement_arr = ['top', 'bottom', 'top-left', 'top-right', 'bottom-left', 'bottom-right', 'left', 'right', 'center'];
+        if(!placement_arr.includes(option.placement)){
+            option.placement = 'center';
         }
+
+        new $.zui.Messager(text, option).show();
     },
     /**
      *  显示loading
