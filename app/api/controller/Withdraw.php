@@ -326,6 +326,7 @@ class Withdraw extends Api
             $arr = array("code" => "SUCCESS", "message" => "");
             echo json_encode($arr);
         } catch (\Exception $e) {
+            Db::rollback();
             Log::error($e->getMessage());
             $arr = ["code" => "ERROR", "message" => $e->getMessage()];
             echo json_encode($arr);

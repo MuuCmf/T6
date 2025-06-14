@@ -1,4 +1,5 @@
 <?php
+
 namespace app\common\crontab;
 
 use app\common\model\CrontabLog;
@@ -25,7 +26,8 @@ class Evaluate
      * @param int $task_id
      * @return bool
      */
-    public function handle(int $shopid ,int $task_id){
+    public function handle(int $shopid, int $task_id)
+    {
         Db::startTrans();
         try {
             //查询需要完成的订单
@@ -43,7 +45,7 @@ class Evaluate
                 ->select()
                 ->toArray();
 
-            if (!empty($lists)){
+            if (!empty($lists)) {
                 //写入评价
                 $evaluate_data = [];
                 foreach ($lists as $item) {
@@ -68,13 +70,13 @@ class Evaluate
                 $evaluate_result = (new EvaluateModel())->insertAll($evaluate_data);
                 if ($evaluate_result === false) throw new Exception('评价失败');
                 //更改订单状态
-                $ids = array_column($lists,'id');
+                $ids = array_column($lists, 'id');
                 $data = [
                     'status'    =>  5, //已评价
                     'evaluate' => 1,
                     'update_time' => time(),
                 ];
-                $result = $this->OrdersModel->where('id','in',$ids)->update($data);
+                $result = $this->OrdersModel->where('id', 'in', $ids)->update($data);
                 if ($result === false) throw new Exception('订单更新失败');
             }
 
@@ -86,7 +88,7 @@ class Evaluate
                 'description'   =>  'success'
             ]);
             return true;
-        }catch (\Exception $e){
+        } catch (\Exception $e) {
             Db::rollback();
             CrontabLog::addLog([
                 'shopid' => $shopid,
@@ -96,6 +98,5 @@ class Evaluate
             ]);
             return false;
         }
-
     }
 }
