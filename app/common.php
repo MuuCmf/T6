@@ -63,7 +63,10 @@ if (!function_exists('rmdirs')) {
 
         foreach ($files as $fileinfo) {
             $todo = ($fileinfo->isDir() ? 'rmdir' : 'unlink');
-            $todo($fileinfo->getRealPath());
+            if(realpath($fileinfo->getRealPath()) === false){
+                continue;
+            }
+            $todo(realpath($fileinfo->getRealPath()));
         }
         if ($withself) {
             @rmdir($dirname);
