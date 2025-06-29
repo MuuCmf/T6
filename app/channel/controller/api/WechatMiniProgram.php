@@ -32,6 +32,28 @@ class WechatMiniProgram extends Api
     }
 
     /**
+     * 获取微信小程序配置信息
+     * 
+     * 根据当前店铺ID获取微信小程序配置，并过滤敏感信息后返回
+     * 
+     * @return \think\Response 返回处理结果，成功时包含配置信息，失败时返回错误提示
+     * @throws \think\Exception 当未配置微信小程序时抛出异常
+     */
+    public function config()
+    {
+        // 获取配置
+        $mp_config = (new \app\channel\model\WechatMpConfig())->getWechatMpConfigByShopId($this->shopid);
+        if (empty($mp_config)) {
+            return $this->error('没有配置微信小程序');
+        }
+
+        $mp_config = $mp_config->toArray();
+
+        unset($mp_config['secret']);
+        return $this->success('success', $mp_config);
+    }
+
+    /**
      * code 换取用户信息
      * @param $code
      */

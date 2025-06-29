@@ -15,6 +15,7 @@ Route::group('official',function (){
 
 //微信小程序
 Route::group('weixin_mp',function (){
+    Route::rule('config' ,'channel/api.WechatMiniProgram/config');
     Route::rule('code' ,'channel/api.WechatMiniProgram/code');
     Route::rule('login' ,'channel/api.WechatMiniProgram/login');
     Route::rule('unlimitQrcode' ,'channel/api.WechatMiniProgram/unlimitQrcode');
