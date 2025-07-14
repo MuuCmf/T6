@@ -606,6 +606,7 @@ class Attachment extends Base
             $data['psign'] = $TcVodService->getPsign($file_id);
             $data['all_media_url'] = $TcVodService->getKeyMediaUrl($attachment);
         }else{
+            $data['psign'] = '';
             $data['all_media_url'] = $attachment;
         }
 
