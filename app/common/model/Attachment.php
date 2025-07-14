@@ -605,6 +605,8 @@ class Attachment extends Base
         if ($vod_key_switch == 1) {
             $data['psign'] = $TcVodService->getPsign($file_id);
             $data['all_media_url'] = $TcVodService->getKeyMediaUrl($attachment);
+        }else{
+            $data['all_media_url'] = $attachment;
         }
 
         return $data;
