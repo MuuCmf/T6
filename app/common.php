@@ -366,18 +366,6 @@ if (!function_exists('convert_url_query')) {
     }
 }
 
-if (!function_exists('get_area_name')) {
-    /**
-     * 根据ID获取区域名称
-     * @param  [type] $id [description]
-     * @return [type]     [description]
-     */
-    function get_area_name($id)
-    {
-        return Db::name('district')->where(['id' => $id])->field('name')->find();
-    }
-}
-
 if (!function_exists('get_http_https')) {
     //判断是http or https
     function get_http_https(){
@@ -498,6 +486,7 @@ if (!function_exists('get_device_type')) {
         return $type;
     }
 }
+
 if (!function_exists('save_local_storage')) {
     /**
      * 保存至localStorage
