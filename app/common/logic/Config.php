@@ -54,6 +54,7 @@ class Config extends Base
         'WITHDRAW_MIN_PRICE',
         'WITHDRAW_MAX_PRICE',
         //用户
+        'USER_PRIVACY',
         'USER_REG_AGREEMENT',
         'USER_REG_SWITCH',
         'USER_LOGIN_SWITCH',

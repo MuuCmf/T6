@@ -273,3 +273,6 @@ ALTER TABLE `muucmf_announce` ADD `teminal` CHAR(32) NOT NULL DEFAULT 'mobile' C
 
 INSERT INTO `muucmf_extend_config` (`id`, `name`, `type`, `title`, `group`, `extra`, `remark`, `create_time`, `update_time`, `status`, `value`, `sort`) VALUES
 (56, 'WITHDRAW_TRANSFER_SCENE_ID', 'string', '商家转账场景ID', 8, '', '', 0, 0, 1, '1005', 0);
+
+INSERT INTO `muucmf_config` (`id`, `name`, `type`, `title`, `group`, `extra`, `remark`, `create_time`, `update_time`, `status`, `value`, `sort`) VALUES
+(10156, 'USER_PRIVACY', 'editor', '用户隐私条款', 3, '', '用户隐私条款', 1754539145, 1754539145, 1, '用户隐私条款', 999);
