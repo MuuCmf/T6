@@ -276,3 +276,5 @@ INSERT INTO `muucmf_extend_config` (`id`, `name`, `type`, `title`, `group`, `ext
 
 INSERT INTO `muucmf_config` (`id`, `name`, `type`, `title`, `group`, `extra`, `remark`, `create_time`, `update_time`, `status`, `value`, `sort`) VALUES
 (10156, 'USER_PRIVACY', 'editor', '用户隐私条款', 3, '', '用户隐私条款', 1754539145, 1754539145, 1, '用户隐私条款', 999);
+
+UPDATE `muucmf_menu` SET `title` = '订阅通知' WHERE `muucmf_menu`.`id` = 'ED701550-6DFE-62A9-634C-6C2EFC249124';

@@ -258,7 +258,7 @@ class Account extends MuuAdmin
             'element' => $TemplateMessageLogic->oauth_type[$type],
             'data' => $detail
         ]);
-        $this->setTitle('模板消息配置');
+        $this->setTitle('订阅通知配置');
 
         return View::fetch('admin/common/template_message');
     }
