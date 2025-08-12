@@ -422,8 +422,18 @@ class Common extends Base
      */
     public function agreement()
     {
-        $agreement = config('system.USER_REG_AGREEMENT');
+        $agreement = config('system.USER_REG_AGREEMENT') ?? '管理员未设置，敬请期待';
         View::assign('agreement', $agreement);
+        return View::fetch();
+    }
+
+    /**
+     * 用户隐私条款显示页
+     */
+    public function privacy()
+    {
+        $privacy = config('system.USER_PRIVACY') ?? '管理员未设置，敬请期待';
+        View::assign('privacy', $privacy);
         return View::fetch();
     }
 
