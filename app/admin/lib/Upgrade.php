@@ -73,7 +73,8 @@ class Upgrade
                 '.gitignore',
                 'vendor/',
                 '_src/',
-                'data/version.ini'
+                'data/version.ini',
+                'public/favicon.ico'
             ];
             foreach ($ignore_paths as $item) {
                 if (strpos($path, $item) !== false) {
