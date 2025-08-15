@@ -962,7 +962,11 @@
     {/case}
 
     {case value="textarea"}
+        {if !empty($field.value)}
         <textarea name="{$field.name}" class="text input-large form-control">{$field.value|htmlspecialchars}</textarea>
+        {else /}
+        <textarea name="{$field.name}" class="text input-large form-control"></textarea>
+        {/if}
     {/case}
     {case value="time"}
         {php}
