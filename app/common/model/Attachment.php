@@ -15,7 +15,7 @@ class Attachment extends Base
 {
     // 开启自动写入时间戳字段
     protected $autoWriteTimestamp = true;
-    protected $allowImageExt = ['png', 'jpg', 'jpeg', 'gif'];
+    protected $allowImageExt = ['png', 'jpg', 'jpeg'];
     protected $allowAudioExt = ['mp3', 'wav'];
     protected $allowVideoExt = ['mp4'];
     protected $allowFileExt = ['zip', 'rar', 'txt', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'pdf', 'pem'];
@@ -261,6 +261,7 @@ class Attachment extends Base
             $sha1 = $file->hash('sha1');
             //处理已存在图片
             $pic_info = $this->where(['sha1' => $sha1])->find();
+            
             if (!empty($pic_info)) {
                 $avatar = [];
                 $data = $pic_info->toArray();
@@ -270,7 +271,6 @@ class Attachment extends Base
                 $avatar['attachment'] = $data['attachment'];
                 $avatar['url'] = get_attachment_src($data['attachment']);
             } else {
-                //构建返回数据
                 $data['filename'] = $file->getOriginalName();
                 $data['ext'] = $file->getOriginalExtension();
                 $data['md5'] = $file->hash('md5');
@@ -278,7 +278,7 @@ class Attachment extends Base
                 $data['size'] = $file->getSize();
                 $data['mime'] = $file->getMime();
                 $data['type'] = 'image';  // 类型用字符串 pic file audio video
-
+                
                 // 根据不同mimeType
                 $mime_arr = explode('/', $data['mime']);
                 $mime_type = $mime_arr[0];
@@ -286,7 +286,7 @@ class Attachment extends Base
                     return false;
                 }
 
-                if (!in_array($data['ext'], $this->allowImageExt)) {
+                if (!empty($data['ext']) && !in_array($data['ext'], $this->allowImageExt)) {
                     return false;
                 }
 
