@@ -164,6 +164,11 @@ class Withdraw extends Api
                         ]
                     ];
                 }
+
+                if($scenc_id != 1000 || $scenc_id != 1005){
+                    return $this->success('商家转账场景ID填写有误，请联系管理员');
+                }
+
                 $options = [
                     'appid'                 => $pay_config['appid'],
                     'out_bill_no'           => $data['order_no'], //商户系统内部的商家批次单号，要求此参数只能由数字、大小写字母组成，在商户系统内部唯一,
