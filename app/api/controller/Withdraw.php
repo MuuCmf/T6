@@ -165,7 +165,7 @@ class Withdraw extends Api
                     ];
                 }
 
-                if($scenc_id != 1000 || $scenc_id != 1005){
+                if($scenc_id != 1000 && $scenc_id != 1005){
                     return $this->success('商家转账场景ID填写有误，请联系管理员');
                 }
 
@@ -337,4 +337,5 @@ class Withdraw extends Api
             echo json_encode($arr);
         }
     }
+
 }
