@@ -10,7 +10,7 @@
         <div class="search-form col-md-6">
             <div class="" style="line-height: 32px;width:400px;">
                 <div class="input-group">
-                    <input type="text" name="search" class="search-input form-control" value="{:input('search')}"
+                    <input type="text" name="keyword" class="search-input form-control" value="{$keyword|default=''}"
                                 placeholder="用户名/昵称/Email/手机/UID">
                     <span class="input-group-btn">
                         <a class="btn btn-default" href="javascript:;" id="search" url="{:url('list')}">
@@ -38,6 +38,9 @@
             </a>
             <a class="status-1 btn" href="{:url('list', ['status'=>-1])}">
                 审核未通过 
+                {if $false_verify > 0}
+                <span class="label label-badge label-danger">{$false_verify}</span>
+                {/if}
             </a>
         </div>
     </div>
@@ -75,7 +78,9 @@
                 <th class="">头像/昵称</th>
                 <th class="">真实姓名</th>
                 <th class="">证件类型</th>
+                <th class="">状态</th>
                 <th class="">创建时间</th>
+                <th class="">更新时间</th>
                 <th>操作</th>
             </tr>
             </thead>
@@ -97,22 +102,29 @@
                     </td>
                     <td>{$vo.name}</td>
                     <td>{$vo.card_type_str}</td>
-                    <td><span>{$vo.create_time_str}</span></td>
                     <td>
                         {if $vo.status == 0}
-                        {$vo.status_str}
+                        <span class="text-default">{$vo.status_str}</span>
                         {/if}
+
                         {if $vo.status == 1}
-                        <a type="button" class="btn btn-sm btn-warning" data-remote="{:url('verify',['uid' => $vo['uid']])}" data-toggle="modal" >
-                            {$vo.status_str}
-                        </a>
+                        <span class="text-warning">{$vo.status_str}</span>
                         {/if}
+
                         {if $vo.status == 2}
                         <span class="text-success">{$vo.status_str}</span>
                         {/if}
+
                         {if $vo.status == -1}
                         <span class="text-danger">{$vo.status_str}</span>
                         {/if}
+                    </td>
+                    <td><span>{$vo.create_time_str}</span></td>
+                    <td><span>{$vo.update_time_str}</span></td>
+                    <td>
+                        <a type="button" class="btn btn-sm btn-info" data-remote="{:url('verify',['uid' => $vo['uid']])}" data-toggle="modal" >
+                            编辑
+                        </a>
                     </td>
                 </tr>
             {/volist}

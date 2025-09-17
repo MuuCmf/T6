@@ -48,8 +48,8 @@
 				{if $data['status'] == 2}
 				<input type="radio" name="status" id="is_status-1" value="1"> 
 				<label class="radio-inline" for="is_status-1">待审核</label>
-				<input type="radio" name="status" id="is_status-2" value="2">
-				<label class="radio-inline" for="is_status-2"> 通过审核</label checked>
+				<input type="radio" name="status" id="is_status-2" value="2" checked>
+				<label class="radio-inline" for="is_status-2"> 通过审核</label>
                 <input type="radio" name="status" id="is_status--1" value="-1">
 				<label class="radio-inline" for="is_status--1"> 审核未通过</label>
 				{/if}
@@ -67,7 +67,7 @@
         <div class="{if $data['status'] == -1}form-group{else}form-group hidden{/if}" id="statusReason">
             <label class="col-sm-2 control-label">未通过原因</label>
             <div class="form-controls col-sm-8">
-                <textarea class="form-control" rows="3" name="reason" placeholder="请填写未通过审核原因">{$data['reason']}</textarea>
+                <textarea class="form-control" rows="3" name="reason" placeholder="请填写未通过审核原因">{$data['reason']|default=''}</textarea>
                 <div class="help-block">请填写未通过审核原因</div>
             </div>
         </div>

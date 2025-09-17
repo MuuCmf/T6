@@ -32,7 +32,8 @@ class Authentication extends Admin
     public function list()
     {
         $map = [];
-        $search = input('search', '', 'text');
+        $keyword = input('keyword', '', 'text');
+        View::assign('keyword', $keyword);
         $status = input('status', 'all');
         if($status === 'all'){
             $map[] = ['a.status', 'in', [-1, 0, 1, 2]];
@@ -48,18 +49,18 @@ class Authentication extends Admin
         }
         View::assign('status', $status);
         
-        if (!empty($search)) {
+        if (!empty($keyword)) {
             $uids = $this->MemberModel
-                ->where('uid', '=', $search)
-                ->whereOr('username', 'like', '%' . $search . '%')
-                ->whereOr('nickname', 'like', '%' . $search . '%')
-                ->whereOr('mobile', 'like', '%' . $search . '%')
-                ->whereOr('email', 'like', '%' . $search . '%')
+                ->where('uid', '=', $keyword)
+                ->whereOr('username', 'like', '%' . $keyword . '%')
+                ->whereOr('nickname', 'like', '%' . $keyword . '%')
+                ->whereOr('mobile', 'like', '%' . $keyword . '%')
+                ->whereOr('email', 'like', '%' . $keyword . '%')
                 ->column('uid');
             if (!empty($uids)) {
                 $map[] = ['a.uid', 'in', $uids];
             } else {
-                $map[] = ['m.nickname', 'like', '%' . $search . '%'];
+                $map[] = ['m.nickname', 'like', '%' . $keyword . '%'];
             }
         }
 
@@ -95,6 +96,9 @@ class Authentication extends Admin
         // 获取未审核的认证数量
         $unverify = $this->AuthenticationModel->where('status', '=', 1)->count();
         View::assign('unverify', $unverify);
+        // 获取未通过审核的认证数量
+        $false_verify = $this->AuthenticationModel->where('status', '=', -1)->count();
+        View::assign('false_verify', $false_verify);
 
         $this->setTitle('实名认证列表');
         // 记录当前列表页的cookie
