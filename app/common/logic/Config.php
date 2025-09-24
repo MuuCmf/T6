@@ -58,7 +58,9 @@ class Config extends Base
         'USER_REG_AGREEMENT',
         'USER_REG_SWITCH',
         'USER_LOGIN_SWITCH',
-        'USER_MOBILE_BIND'
+        'USER_MOBILE_BIND',
+        //播放器 SDK
+        'VOD_TENCENT_LICENSE_URL',
     ];
 
 
