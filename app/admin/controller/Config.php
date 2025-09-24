@@ -64,6 +64,8 @@ class Config extends Admin
     public function list()
     {
         $group = input('group', 0);
+        $rows = input('rows', 20, 'intval');
+        View::assign('rows', $rows);
         /* 查询条件初始化 */
         $map = [];
         $map[] = ['status', '=', 1];

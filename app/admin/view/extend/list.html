@@ -69,11 +69,8 @@
             {/notempty}
             </tbody>
         </table>
-        <div class="">
-            {notempty name="page"}
-            {:htmlspecialchars_decode($page)}
-            {/notempty}
-        </div>
+        
+        {include file="common/_pager"/}
     </div>
 {/block}
 

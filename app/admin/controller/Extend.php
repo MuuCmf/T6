@@ -313,6 +313,8 @@ class Extend extends Admin
     public function list()
     {
         $group = input('group', 0);
+        $rows = input('rows', 20, 'intval');
+        View::assign('rows', $rows);
         /* 查询条件初始化 */
         $map = [];
         $map[] = ['status','=', 1]; 
@@ -323,13 +325,13 @@ class Extend extends Admin
             $map[] = ['name','like', '%' . (string)input('name') . '%'];
         }
 
-        list($list,$page) = $this->commonLists('ExtendConfig', $map, 'sort,id');
+        list($list,$pager) = $this->commonLists('ExtendConfig', $map, 'sort,id');
         $list = $list->toArray()['data'];
         
         View::assign('group', config('extend.GROUP_LIST'));
         View::assign('group_id', input('get.group', 0));
         View::assign('list', $list);
-        View::assign('page', $page);
+        View::assign('pager', $pager);
 
         $this->setTitle('配置管理');
 

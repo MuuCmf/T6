@@ -81,11 +81,7 @@
             {/notempty}
             </tbody>
         </table>
-        <div class="">
-            {if !empty($pager)}
-            {:htmlspecialchars_decode($pager)}
-            {/if}
-        </div>
+        {include file="common/_pager"/}
     </div>
 
 

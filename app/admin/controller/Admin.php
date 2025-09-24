@@ -216,8 +216,8 @@ class Admin extends Base
 
         //$total = $table->where($options['where'])->count();
 
-        if (input('r') !== null) {
-            $listRows = (int)input('r');
+        if (input('rows') !== null) {
+            $listRows = (int)input('rows');
         } else {
             $listRows = 20;
         }
