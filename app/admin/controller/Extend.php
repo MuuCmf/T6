@@ -290,7 +290,8 @@ class Extend extends Admin
                 ->keyRadio('VOD_TENCENT_KEY_SWITCH', 'key防盗链开关', 'key防盗链开关', [0 => '不启用', 1 => '启用'])
                 ->keyText('VOD_TENCENT_KEY_VALUE', '防盗链 Key', '必须由大小写字母（a - Z）或者数字（0 - 9）组成，长度在8 - 20个字符之间.')
                 ->keyText('VOD_TENCENT_PLAYER_KEY', '播放秘钥', '请在分发播放设置->默认分发配置信息内播放秘钥，仅启用KEY防盗链后有效.')
-                ->keyText('VOD_TENCENT_LICENSE_URL', 'licenseUrl', 'WEB播放器SDK License 地址.')
+                ->keyRadio('VOD_TENCENT_LICENSE_TYPE', '播放器license版本', '请勾选创建的播放器license版本.', [0 => '基础版', 1 => '高级版'])
+                ->keyText('VOD_TENCENT_LICENSE_URL', '播放器licenseUrl', 'WEB播放器SDK License 地址.')
                 ->group('腾讯云点播', [
                     'VOD_TENCENT_SECRETID',
                     'VOD_TENCENT_SECRETKEY',
@@ -300,6 +301,7 @@ class Extend extends Admin
                     'VOD_TENCENT_KEY_SWITCH',
                     'VOD_TENCENT_KEY_VALUE',
                     'VOD_TENCENT_PLAYER_KEY',
+                    'VOD_TENCENT_LICENSE_TYPE',
                     'VOD_TENCENT_LICENSE_URL'
                 ]);
 

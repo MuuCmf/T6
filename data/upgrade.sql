@@ -280,4 +280,5 @@ INSERT INTO `muucmf_config` (`id`, `name`, `type`, `title`, `group`, `extra`, `r
 UPDATE `muucmf_menu` SET `title` = '订阅通知' WHERE `muucmf_menu`.`id` = 'ED701550-6DFE-62A9-634C-6C2EFC249124';
 
 INSERT INTO `muucmf_extend_config` (`id`, `name`, `type`, `title`, `group`, `extra`, `remark`, `create_time`, `update_time`, `status`, `value`, `sort`) VALUES
-(57, 'VOD_TENCENT_LICENSE_URL', 'string', 'licenseUrl', 9, '', '播放器 License 地址', 0, 0, 1, '', 0);
+(57, 'VOD_TENCENT_LICENSE_URL', 'string', '播放器licenseUrl', 9, '', '播放器 License 地址', 0, 0, 1, '', 0),
+(58, 'VOD_TENCENT_LICENSE_TYPE', 'radio', '播放器license版本', 1, '0:基础版\r\n1:高级版', '请勾选创建的播放器license版本', 0, 0, 1, '0', 0);
