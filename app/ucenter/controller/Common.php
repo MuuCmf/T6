@@ -335,6 +335,29 @@ class Common extends Base
     }
 
     /**
+     * 用户注销功能
+     * 通过用户ID执行注销操作，更新用户状态为-1
+     *
+     * @return mixed 返回操作结果，成功返回成功信息，失败返回错误信息
+     */
+    public function logoff()
+    {
+        $uid = get_uid();
+        if (!$uid) {
+            return $this->error('需要登录', 'login');
+        }
+        $commonMemberModel = new CommonMember;
+        $commonMemberModel->logout($uid);
+
+        $res = $commonMemberModel->where(['uid' => $uid])->update(['status' => -1]);
+        if (!$res) {
+            return $this->error('注销失败');
+        }
+
+        return $this->success('注销成功', '', request()->domain());
+    }
+
+    /**
      * 验证用户帐号是否符合要求接口
      */
     public function checkAccount()
