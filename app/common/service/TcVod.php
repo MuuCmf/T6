@@ -80,8 +80,24 @@ class TcVod
      * 具体含义和取值参见 防盗链参数 中的 exper 参数。
 
      */
-    public function getPsign($fileId, $exper = 0)
-    {
+        public function getPsign($fileId, $exper = 0)
+        {
+        //[
+        //     "appId" => 1500000532
+        //     "fileId" => "5145403700194756531"
+        //     "contentInfo" => [
+        //         "audioVideoType" => "ProtectedAdaptive"
+        //         "drmAdaptiveInfo" => [
+        //         "privateEncryptionDefinition" => 13
+        //          ]
+        //     ]
+        //     "currentTimeStamp" => 1758852259
+        //     "expireTimeStamp" => 1758859459
+        //     "urlAccessInfo" => [
+        //         "exper" => 0
+        //         "t" => "68d610c3"
+        //     ]
+        // ]
         $subAppId = config('extend.VOD_TENCENT_SUBAPPID');
         $key = config('extend.VOD_TENCENT_PLAYER_KEY');
 
@@ -91,6 +107,8 @@ class TcVod
 
         // 判断是否开启上传后转码加密任务流
         $procedure = config('extend.VOD_TENCENT_PROCEDURE');
+        $procedure_name = config('extend.VOD_TENCENT_PROCEDURE_NAME');
+        
         if($procedure == 1){
             // 私有加密或 DRM 保护的 转自适应码流 输出。
             $audioVideoType = 'ProtectedAdaptive';
@@ -98,12 +116,14 @@ class TcVod
             // 上传 的原始音视频。
             $audioVideoType = 'Original';
         }
-        $contentInfo = [
-            "audioVideoType" => $audioVideoType,
-        ];
-        // 开启防盗链key时
-        if($procedure == 1){
+
+        $contentInfo["audioVideoType"] = $audioVideoType;
+
+        if($procedure == 1 && $procedure_name == 'SimpleAesEncryptPreset'){
             $contentInfo["drmAdaptiveInfo"]["privateEncryptionDefinition"] = 12;
+        }
+        if($procedure == 1 && $procedure_name == 'WidevineFairPlayPreset'){
+            $contentInfo["drmAdaptiveInfo"]["privateEncryptionDefinition"] = 13;
         }
 
         $urlAccessInfo = [
@@ -114,14 +134,14 @@ class TcVod
             $urlAccessInfo['exper'] = $exper;
         }
 
-        $payload = array(
+        $payload = [
             "appId" => intval($subAppId),
             "fileId" => $fileId,
             "contentInfo" => $contentInfo,
             "currentTimeStamp" => $currentTime,
             "expireTimeStamp" => $psignExpire,
-            "urlAccessInfo" => $urlAccessInfo
-        );
+            "urlAccessInfo" => $urlAccessInfo,
+        ];
 
         $jwt = \Firebase\JWT\JWT::encode($payload, $key, 'HS256');
 
