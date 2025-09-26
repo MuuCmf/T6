@@ -123,16 +123,23 @@ class TcVod
             $contentInfo["drmAdaptiveInfo"]["privateEncryptionDefinition"] = 12;
         }
         if($procedure == 1 && $procedure_name == 'WidevineFairPlayPreset'){
-            $contentInfo["drmAdaptiveInfo"]["privateEncryptionDefinition"] = 13;
+            // 私有加密或 DRM 保护的不支持试看时间
+            $exper = 0;
+            $contentInfo["drmAdaptiveInfo"]["widevineDefinition"] = 13;
+            // fairPlay 暂不支持
+            // $contentInfo["drmAdaptiveInfo"]["fairPlayDefinition"] = 11;
         }
 
         $urlAccessInfo = [
             "exper" => $exper,
-            "t" => $urlTimeExpire
+            "t" => $urlTimeExpire,
+            "rlimit" => 1,
+            "scheme" => "HTTPS"
         ];
-        if($exper > 0){
-            $urlAccessInfo['exper'] = $exper;
-        }
+
+        $drmLicenseInfo = [
+            "expureTimeStamp" => $psignExpire
+        ];
 
         $payload = [
             "appId" => intval($subAppId),
@@ -141,6 +148,7 @@ class TcVod
             "currentTimeStamp" => $currentTime,
             "expireTimeStamp" => $psignExpire,
             "urlAccessInfo" => $urlAccessInfo,
+            "drmLicenseInfo" => $drmLicenseInfo
         ];
 
         $jwt = \Firebase\JWT\JWT::encode($payload, $key, 'HS256');
