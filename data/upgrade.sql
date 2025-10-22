@@ -283,5 +283,5 @@ INSERT INTO `muucmf_extend_config` (`id`, `name`, `type`, `title`, `group`, `ext
 (57, 'VOD_TENCENT_LICENSE_URL', 'string', '播放器licenseUrl', 9, '', '播放器 License 地址', 0, 0, 1, '', 0),
 (58, 'VOD_TENCENT_LICENSE_TYPE', 'radio', '播放器license版本', 1, '0:基础版\r\n1:高级版', '请勾选创建的播放器license版本', 0, 0, 1, '0', 0);
 
-ALTER TABLE `muucmf_orders` ADD `agreed_start_time` INT(11) UNSIGNED NOT NULL COMMENT '约定开始时间戳' AFTER `agreed_time`;
-ALTER TABLE `muucmf_orders` ADD `agreed_end_time` INT(11) UNSIGNED NOT NULL COMMENT '约定结束时间戳' AFTER `agreed_start_time`;
+ALTER TABLE `muucmf_orders` ADD `agreed_start_time` INT(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '约定开始时间戳' AFTER `agreed_time`;
+ALTER TABLE `muucmf_orders` ADD `agreed_end_time` INT(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '约定结束时间戳' AFTER `agreed_start_time`;
