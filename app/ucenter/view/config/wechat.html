@@ -114,7 +114,7 @@
             scan_qrcode.callback = function(){
                 // 显示扫码完成
                 $('.bind .qrcode .blur').removeClass('hidden');
-                //console.log(scan_qrcode.userInfo)
+                console.log(scan_qrcode.userInfo)
                 // 绑定用户
                 $.post("{:url('ucenter/Config/wechat')}", scan_qrcode.userInfo, function (res) {
                     handle_ajax(res);

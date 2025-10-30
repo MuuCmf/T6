@@ -269,6 +269,12 @@
             $('#tip_Modal').remove();
             $('.modal-backdrop').remove();
         });
+
+        $('#tip_Modal').on('hide.zui.modal', function() {
+            //移除dom
+            $('#tip_Modal').remove();
+            $('.modal-backdrop').remove();
+        });
         
         return false;
     }
