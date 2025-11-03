@@ -118,6 +118,7 @@ class Orders extends Api
             $map[] = ['status', 'between', [0, 9999]];
         } else {
             $map[] = ['status', '=', $status];
+            $map[] = ['refund', '=', 0];
         }
 
         $order_field = input('order_field', 'id', 'text');
