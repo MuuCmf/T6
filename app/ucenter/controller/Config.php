@@ -536,8 +536,12 @@ class Config extends Base
         if (!empty($data)) {
             $data = $MemberAuthentication->handle($data);
         }
+        if(empty($data)){
+            $data = [
+                'status' => 0
+            ];
+        }
         View::assign('data', $data);
-
         // 证件类型
         $card_type = $MemberAuthentication->_card_type;
         View::assign('card_type', $card_type);
