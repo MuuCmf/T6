@@ -5040,7 +5040,7 @@ DROP TABLE IF EXISTS `muucmf_vip_card`;
 CREATE TABLE IF NOT EXISTS `muucmf_vip_card` (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '自增ID',
   `shopid` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '店铺ID',
-  `app` varchar(60) NOT NULL COMMENT '应用唯一标识',
+  `app` varchar(255) NOT NULL COMMENT '应用唯一标识',
   `title` varchar(64) NOT NULL COMMENT 'VIP会员名',
   `description` varchar(255) NOT NULL COMMENT '简短描述',
   `cover` varchar(255) NOT NULL COMMENT '图标',

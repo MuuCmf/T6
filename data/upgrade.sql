@@ -285,3 +285,5 @@ INSERT INTO `muucmf_extend_config` (`id`, `name`, `type`, `title`, `group`, `ext
 
 ALTER TABLE `muucmf_orders` ADD `agreed_start_time` INT(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '约定开始时间戳' AFTER `agreed_time`;
 ALTER TABLE `muucmf_orders` ADD `agreed_end_time` INT(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '约定结束时间戳' AFTER `agreed_start_time`;
+
+ALTER TABLE `muucmf_vip_card` CHANGE `app` `app` VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '应用唯一标识';

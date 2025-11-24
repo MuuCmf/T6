@@ -152,6 +152,15 @@ class VipCard extends Base
         $app = (new Module())->getModule($data['app']);
         $data['app_info'] = $app;
 
+        // 多应用支持调试
+        $app_array = explode(',', $data['app']);
+        $app_array = array_unique($app_array);
+        $app_list = [];
+        foreach ($app_array as $app) {
+            $app_list[$app] = (new Module())->getModule($app);
+        }
+        $data['app_list'] = $app_list;
+
         $data = $this->setImgAttr($data, '1:1');
 
         return $data;

@@ -8,6 +8,7 @@ use app\common\controller\Base;
 use app\admin\model\Menu;
 use app\admin\model\AuthRule;
 use app\common\model\Module as ModuleModel;
+use app\common\logic\Config as ConfigLogic;
 
 /**
  * 控制器基础类
@@ -38,6 +39,10 @@ class Admin extends Base
     {
         $this->setRoot();
         $this->setTitle();
+        //获取系统配置
+        $this->initMuuConfig();
+        //获取micro模块配置
+        $this->initMicroConfig();
         // 当前模块、控制器及方法名
         $this->app_name = strtolower(app('http')->getName());
         View::assign('this_app', $this->app_name);
@@ -63,6 +68,30 @@ class Admin extends Base
         $uid = get_uid();
         if ($uid == 1) $this->isRoot = 1;
         return $uid;
+    }
+
+    /**
+     * 初始化系统配置项
+     */
+    protected function initMuuConfig()
+    {
+        $muu_config_data = (new ConfigLogic())->frontend();
+        View::assign('muu_config_data', $muu_config_data);
+    }
+
+    /**
+     * 初始化micro应用配置项
+     */
+    protected function initMicroConfig()
+    {
+        $micro_config_data = [];
+        $is_install = (new ModuleModel())->checkInstalled('micro');
+        if($is_install){
+            $namespace = "\\app\\micro\\model\\MicroConfig";
+            $MicroConfigModel = new $namespace;
+            $micro_config_data  = $MicroConfigModel->getConfig($this->shopid);
+        }
+        View::assign('micro_config_data', $micro_config_data);
     }
 
     /**
