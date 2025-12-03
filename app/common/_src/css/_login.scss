@@ -27,17 +27,19 @@ body{
       margin: 10px auto 25px;
       >ul{
         display: flex;
+        flex-direction: row;
         list-style: none;
         margin: 0;
+        padding-left: 10px;
         li {
           a {
-            width: 36px;
             color: #777;
             border-bottom-color: #fff;
-            font-size: 18px;
+            font-size: 20px;
+            font-weight: 600;
             padding: 0 0 10px;
+            margin-right: 60px;
             line-height: 35px;
-            margin-right: 80px;
             text-decoration: none;
             &:hover {
               background-color: #fff;
@@ -284,7 +286,7 @@ body{
 /**用户登录*/
 .login-main {
   background: #fff;
-  padding: 20px 75px;
+  padding: 40px 75px 20px 75px;
   border-radius: 5px;
   .login-box {
     text-align: right;
@@ -296,18 +298,15 @@ body{
 
   // 切换登录方式
   .login-box {
-    // width: 530px;
-    // height: 530px;
     background: #fff;
-    // margin: 100px auto;
     position: relative;
     z-index: 2;
 
     .login-method {
       display: flex;
       cursor: pointer;
-      margin-top: -10px;
-
+      margin-top: -30px;
+      margin-right: -45px;
       .iconfont {
         font-size: 50px;
         color: #999;
@@ -362,17 +361,18 @@ body{
   }
 
   .normal-login {
+   
     .nav-tabs {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
       border: 0;
-      font-size: 18px;
+      
       margin: 0;
       .login-method-password {
         margin-right: 40px;
       }
-      //下划线选中
-      .active > .active{
-        display:block !important;
-      }
+      
       >li {
         height: 34px;
         //下划线
@@ -384,11 +384,21 @@ body{
           margin: 4px auto;
         }
         >a {
+          font-size: 20px;
           color: #777;
+          font-weight: 600;
           border: 0;
           text-decoration: none;
           padding: 0;
         }
+      }
+      .active {
+        a {
+          color: #000;
+        }
+      }
+      .active > .active{
+        display:block !important;
       }
     }
     .tab-pane{
@@ -484,7 +494,7 @@ body{
     text-align: center;
     padding-bottom: 18px;
     >h3 {
-      margin: 10px 0 40px;
+      margin: 10px 0;
       font-size: 18px;
       color: #222;
     }
@@ -574,7 +584,7 @@ body{
   transition: all 0.4s ease;
 
   .reset-body {
-    padding: 100px 20px 80px;
+    padding: 55px 20px;
     max-width: 840px;
     margin: 0 auto;
     background: #fff;
@@ -586,19 +596,21 @@ body{
       margin: 10px auto 25px;
       >ul{
         display: flex;
+        flex-direction: row;
+        justify-content: space-around;
         list-style: none;
         margin: 0;
         padding: 0;
         li {
-          flex: 1;
+          
           a {
-            width: 36px;
+            display: block;
             color: #777;
             border-bottom-color: #fff;
-            font-size: 18px;
+            font-size: 20px;
+            font-weight: 600;
             padding: 0 0 10px;
             line-height: 35px;
-            margin-right: 80px;
             text-decoration: none;
             &:hover {
               background-color: #fff;
