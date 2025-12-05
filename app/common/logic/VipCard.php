@@ -121,7 +121,9 @@ class VipCard extends Base
         $data = $this->setStatusAttr($data, $this->_status);
         $data = $this->setTimeAttr($data);
         $data['content'] = htmlspecialchars_decode($data['content']);
-        //获取配置数据
+        $data = $this->setImgAttr($data, '1:1');
+
+        //获取卡项配置数据
         if (!empty($data['config'])) {
             $config = json_decode($data['config'], true);
             if (!empty($config['bg']['image'])) {
@@ -149,19 +151,41 @@ class VipCard extends Base
         }
 
         // 获取应用数据
-        $app = (new Module())->getModule($data['app']);
-        $data['app_info'] = $app;
+        $app_info = (new Module())->getModule($data['app']);
+        $data['app_info'] = $app_info;
 
-        // 多应用支持调试
+        // 多应用支持
+        $app_list = [];
         $app_array = explode(',', $data['app']);
         $app_array = array_unique($app_array);
-        $app_list = [];
         foreach ($app_array as $app) {
             $app_list[$app] = (new Module())->getModule($app);
         }
         $data['app_list'] = $app_list;
 
-        $data = $this->setImgAttr($data, '1:1');
+        // 获取应用支持分类数据
+        $category_tree = [];
+        foreach ($app_array as $app) {
+            $ucfirst_app = ucfirst($app);
+            $category_model_namespace = "app\\{$app}\\model\\{$ucfirst_app}Category";
+            $CategoryModel = new $category_model_namespace();
+
+            $category_logic_namespace = "app\\{$app}\\logic\\Category";
+            $CategoryLogic = new $category_logic_namespace();
+
+            if(is_json($data['category_ids'])){
+                $category_ids_arr = json_decode($data['category_ids'], true);
+                $app_category_ids = $category_ids_arr[$app];
+            }else{
+                $app_category_ids = $data['category_ids'];
+            }
+            
+            $app_category_tree = $CategoryModel->tree($data['shopid'], 1);
+            $app_category_tree = $CategoryLogic->checkedVal($app_category_ids, $app_category_tree);
+            $category_tree[$app] = $app_category_tree;
+        }
+        
+        $data['category_tree'] = $category_tree;
 
         return $data;
     }
