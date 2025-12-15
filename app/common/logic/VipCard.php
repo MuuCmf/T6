@@ -121,6 +121,22 @@ class VipCard extends Base
         $data = $this->setStatusAttr($data, $this->_status);
         $data = $this->setTimeAttr($data);
         $data['content'] = htmlspecialchars_decode($data['content']);
+        // 处理默认图标
+        $micro_config_data = [];
+        $is_install = (new Module())->checkInstalled('micro');
+        if($is_install){
+            $namespace = "\\app\\micro\\model\\MicroConfig";
+            $MicroConfigModel = new $namespace;
+            $micro_config_data = $MicroConfigModel->getConfig($data['shopid']);
+        }
+
+        if(empty($data['cover'])){
+            if(!empty($micro_config_data['logo'])){
+                $data['cover'] = $micro_config_data['logo'];
+            }else{
+                $data['cover'] = config()['system']['WEB_SITE_LOGO'];
+            }
+        }
         $data = $this->setImgAttr($data, '1:1');
 
         //获取卡项配置数据
