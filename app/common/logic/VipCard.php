@@ -193,7 +193,7 @@ class VipCard extends Base
                 
                 $app_category_tree = $CategoryModel->tree($data['shopid'], 1);
                 $app_category_tree = $CategoryLogic->checkedVal($category_ids, $app_category_tree);
-                $multi_app_category_support_arr[$app] = [
+                $multi_app_category_support_arr[$v['app_name']] = [
                     'app' => (new Module())->getModule($v['app_name']),
                     'category_tree' => $app_category_tree,
                 ];
