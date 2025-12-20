@@ -2,10 +2,9 @@
 
 namespace app\common\logic;
 
-/*
- * MuuCmf
- * 订单数据逻辑层
- */
+use app\channel\logic\Channel;
+use app\common\model\Evaluate as EvaluateModel;
+
 class Orders extends Base
 {
     public $shipper = [
@@ -80,10 +79,92 @@ class Orders extends Base
      */
     public function formatData($data)
     {
-        $order_namespace = "app\\{$data['app']}\\logic\\Orders";
-        $appOrdersLogic = new $order_namespace;
+        if($data['app'] == 'vip' || $data['order_info_type'] == 'vipcard'){
+            $order_namespace = "app\\common\\logic\\Orders";
+            if (class_exists($order_namespace)) {
+                $appOrdersLogic = new $order_namespace;
+                $data = $appOrdersLogic->vipFormatData($data);
+            }
+        }else{
+            $order_namespace = "app\\{$data['app']}\\logic\\Orders";
+            if (class_exists($order_namespace)) {
+                $appOrdersLogic = new $order_namespace;
+                $data = $appOrdersLogic->formatData($data);
+            }
+        }
+        
+        return $data;
+    }
 
-        $data = $appOrdersLogic->formatData($data);
+    /**
+     * 格式化VIP订单数据
+     * 
+     * 1. 转换对象为数组（如果输入是对象）
+     * 2. 添加状态、退款状态、渠道等文字描述
+     * 3. 格式化用户信息、价格和时间字段
+     * 4. 处理商品信息（包括封面图、价格等）
+     * 5. 检查评价状态并添加评价信息
+     * 
+     * @param array|object $data 原始订单数据
+     * @return array 格式化后的订单数据
+     */
+    public function vipFormatData($data)
+    {
+        if (is_object($data)) {
+            $data = $data->toArray();
+        }
+        //订单状态
+        $data['status_str'] = $this->_status[$data['status']];
+        //售后退款状态
+        $data['refund_str'] = $this->_refund[$data['refund']];
+        //来源渠道
+        $data['channel_str'] = Channel::$_channel[$data['channel']];
+        //支付渠道
+        $data['pay_channel_str'] = $this->_pay_channel[$data['pay_channel']];
+        //买家信息
+        $data['user_info'] = query_user($data['uid'], ['nickname', 'avatar', 'mobile', 'email', 'create_time']);
+        if (is_array($data['user_info'])) {
+            //格式化用户注册时间
+            $data['user_info'] = $this->setTimeAttr($data['user_info']);
+        }
+        //订单架构
+        if(isset($data['price']) && $data['pay_channel'] != 'score' ){
+            $data['price'] = sprintf("%.2f",$data['price']/100);
+        }
+        //实际支付金额
+        if(isset($data['paid_fee']) && $data['pay_channel'] != 'score') {
+            $data['paid_fee'] = sprintf("%.2f",$data['paid_fee']/100);
+        }
+        //支付状态
+        $data['paid_str'] = $this->_paid[$data['paid']];
+        //支付时间
+        $data = $this->setTimeAttr($data);
+
+        //商品信息
+        $data['products'] = json_decode($data['products'], true);
+        $data['products']['cover_100'] = get_thumb_image($data['products']['cover'], 100, 100);
+        $data['products']['cover_200'] = get_thumb_image($data['products']['cover'], 200, 200);
+        $data['products']['cover_300'] = get_thumb_image($data['products']['cover'], 300, 300);
+        $data['products']['cover_400'] = get_thumb_image($data['products']['cover'], 400, 400);
+        $data['products']['cover_800'] = get_thumb_image($data['products']['cover'], 800, 800);
+        $data['products']['price'] = sprintf("%.2f", $data['products']['price'] / 100); //商品单价
+        if ($data['products']['type'] == 'vipcard') $data['products']['type_str'] = 'VIP卡';
+
+        //是否已评价,已评价获取评价内容，未评价值为0
+        if ($data['paid'] == 1) {
+            $evaluate_map = [];
+            $evaluate_map[] = ['uid', '=', $data['uid']];
+            $evaluate_map[] = ['order_no', '=', $data['order_no']];
+            $evaluate_map[] = ['shopid', '=', $data['shopid']];
+            $evaluate = (new EvaluateModel)->getThisEvaluate($evaluate_map);
+            if (!empty($evaluate)) {
+                $data['evaluate'] = $evaluate;
+            } else {
+                $data['evaluate'] = 0;
+            }
+        } else {
+            $data['evaluate'] = 0;
+        }
 
         return $data;
     }

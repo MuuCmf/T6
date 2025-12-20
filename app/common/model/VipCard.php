@@ -28,14 +28,14 @@ class VipCard extends Base
     }
 
     /**
-     * 获取商品可以会员卡列表
+     * 获取商品可用会员卡列表
      */
     public function getProductAbleCardsList(int $shopid, string $app, int $product_id, string $product_type)
     {
         // 获取应用所有启用中会员卡
         $map[] = ['shopid', '=', $shopid];
-        $map[] = ['app', '=', $app];
         $map[] = ['status', '=', 1];
+        $map[] = ['app', 'like', '%' . $app . '%'];
 
         $card_list = $this->getList($map, 10, 'create_time desc', '*');
         $card_list = $card_list->toArray();
@@ -54,12 +54,25 @@ class VipCard extends Base
 
         //循环查询会员卡是否支持该产品，删除不支持的会员卡元素
         foreach ($card_list as $key => &$val) {
-            if (!in_array($product_data['category_id'], $val['category_ids_arr'])) {
-                unset($card_list[$key]);
-            } else {
-                //根据折扣计算该会员价格
-                $val['member_price'] = intval($product_data['price'] * ($val['discount'] / 10));
-                $val['member_price'] = sprintf("%.2f", $val['member_price'] / 100);
+            
+            if(is_json($val['category_ids'])){
+                // 多应用数据处理
+                if (!$this->getVipCardSupportAppCategoryId($val, $app, $product_data['category_id'])) {
+                    unset($card_list[$key]);
+                } else {
+                    //根据折扣计算该会员价格
+                    $val['member_price'] = intval($product_data['price'] * ($val['discount'] / 10));
+                    $val['member_price'] = sprintf("%.2f", $val['member_price'] / 100);
+                }
+            }else{
+                // 单应用数据处理
+                if (!in_array($product_data['category_id'], $val['category_ids_arr'])) {
+                    unset($card_list[$key]);
+                } else {
+                    //根据折扣计算该会员价格
+                    $val['member_price'] = intval($product_data['price'] * ($val['discount'] / 10));
+                    $val['member_price'] = sprintf("%.2f", $val['member_price'] / 100);
+                }
             }
         }
         unset($val);
@@ -76,9 +89,13 @@ class VipCard extends Base
     {
         //获取用户未到期的所有会员卡
         $vipModel = new Vip();
-
-        $where = "`shopid`={$shopid} and `app`='{$app}' and `uid`={$uid} and (`end_time` > " . time() . " or `end_time`=0) and `status`=1";
-        $vip_card_list = $vipModel->whereRaw($where)->select()->toArray();
+        $where = "v.`shopid`={$shopid} and vc.`app` like '%{$app}%' and v.`uid`={$uid} and (v.`end_time` > " . time() . " or v.`end_time`=0) and v.`status`=1 and vc.`status`=1";
+        $vip_card_list = $vipModel->alias('v')
+        ->join('vip_card vc', 'vc.id = v.card_id')
+        ->whereRaw($where)
+        ->select()
+        ->toArray();
+        
         if (!empty($vip_card_list)) {
             $logic = new VipLogic();
             foreach ($vip_card_list as &$val) {
@@ -132,5 +149,28 @@ class VipCard extends Base
             return $resule;
         }
         return null;
+    }
+
+    /**
+     * 查询多应用卡项是否支持某应用的分类
+     * 
+     * @param array $card VIP卡信息数组，包含multi_app_category_ids字段
+     * @param string $app 应用名称
+     * @param mixed $category_ids 要检查的分类ID或ID数组
+     * @return bool 如果支持返回true，否则返回false
+     */
+    private function getVipCardSupportAppCategoryId($card, $app, $category_ids)
+    {
+        foreach($card['multi_app_category_ids'] as $val){
+            if($val['app_name'] == $app){
+                if(in_array($category_ids, $val['category_ids'])){
+                    return true;
+                }else{
+                    // 跳过本次循环
+                    continue;
+                }
+            }
+        }
+        return false;
     }
 }

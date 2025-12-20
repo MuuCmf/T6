@@ -70,7 +70,7 @@ class VipOrders extends OrdersLogic
                 ]
             ]
         ];
-        $products = json_encode($products);
+        $products = json_encode($products, JSON_UNESCAPED_UNICODE);
         $paid = 0;
         $status = 1;
         $paid_time = 0;
@@ -173,7 +173,7 @@ class VipOrders extends OrdersLogic
         $channel = $params['channel'];
 
         //组装提交数据
-        $data['app'] = $params['app'];
+        $data['app'] = 'vip';
         $data['shopid'] = $shopid;
         $data['order_no'] = build_order_no();
         $data['uid'] = $uid;

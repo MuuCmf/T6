@@ -56,10 +56,16 @@ class Pay extends Api
                     $order_data['channel'] = $channel;
                 }
                 //数据处理
-                $order_namespace = "app\\{$order_data['app']}\\logic\\Orders";
-                $this->OrderLogic = new $order_namespace;
-                $order_data = $this->OrderLogic->formatData($order_data);
-
+                if($order_data['app'] == 'vip' || $order_data['order_info_type'] == 'vipcard'){
+                    $order_namespace = "app\\common\\logic\\Orders";
+                    $this->OrderLogic = new $order_namespace;
+                    $order_data = $this->OrderLogic->vipFormatData($order_data);
+                }else{
+                    $order_namespace = "app\\{$order_data['app']}\\logic\\Orders";
+                    $this->OrderLogic = new $order_namespace;
+                    $order_data = $this->OrderLogic->formatData($order_data);
+                }
+                
                 //初始化支付数据
                 $title = $order_data['products']['title'];
                 if (mb_strlen($title, 'utf8') > 20) {

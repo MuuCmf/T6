@@ -83,6 +83,8 @@ class VipCard extends Base
      */
     public function formatData($data)
     {
+        $data['app_arr'] = explode(',', $data['app']);
+        
         if (!empty($data['month_price'])) {
             $data['month_price'] = sprintf("%.2f", floatval($data['month_price'] / 100));
         }
@@ -157,6 +159,12 @@ class VipCard extends Base
                 $data['config']['bg']['color'] = '#333333';
                 $data['config']['bg']['image'] = '';
             }
+        }
+
+        // 单应用兼容数据
+        $data['category_ids_arr'] = [];
+        if(!is_json($data['category_ids'])){
+            $data['category_ids_arr'] = explode(',', $data['category_ids']);
         }
 
         // 获取单应用数据
