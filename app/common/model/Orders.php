@@ -116,6 +116,70 @@ class Orders extends Base
     }
 
     /**
+     * 统计VIP订单销售金额数据
+     */
+    public function vipTotal($shopid = 'all')
+    {
+        //累计收入
+        if ($shopid != 'all') {
+            $total_all_map[] = ['shopid', '=', $shopid];
+        }
+        $total_all_map[] = ['pay_channel', 'not in', ['score', 'password']];
+        //已支付
+        $total_all_map[] = ['paid', '=', 1];
+        //关联应用
+        $total_all_map[] = ['order_info_type', '=', 'vipcard'];
+        $total_all_sum = $this->where($total_all_map)->sum('paid_fee');
+        $total_all_sum = sprintf("%.2f", $total_all_sum / 100);
+
+        //本月收入
+        $total_month_map = [
+            ['order_info_type', '=', 'vipcard'],
+            ['pay_channel', 'not in', ['score', 'password']],
+            ['paid', '=', 1],
+            ['paid_time', 'between', [monthTime()[0], monthTime()[1]]],
+        ];
+        if ($shopid != 'all') {
+            $total_month_map[] = ['shopid', '=', $shopid];
+        }
+        $total_month_sum = $this->where($total_month_map)->sum('paid_fee');
+        $total_month_sum = sprintf("%.2f", $total_month_sum / 100);
+
+        //本周收入
+        $total_week_map = [
+            ['order_info_type', '=', 'vipcard'],
+            ['pay_channel', 'not in', ['score', 'password']],
+            ['paid', '=', 1],
+            ['paid_time', 'between', [weekTime()[0], weekTime()[1]]],
+        ];
+        if ($shopid != 'all') {
+            $total_week_map[] = ['shopid', '=', $shopid];
+        }
+        $total_week_sum = $this->where($total_week_map)->sum('paid_fee');
+        $total_week_sum = sprintf("%.2f", $total_week_sum / 100);
+
+        //本日收入
+        $total_today_map = [
+            ['order_info_type', '=', 'vipcard'],
+            ['pay_channel', 'not in', ['score', 'password']],
+            ['paid', '=', 1],
+            ['paid_time', 'between', [dayTime()[0], dayTime()[1]]],
+        ];
+        if ($shopid != 'all') {
+            $total_today_map[] = ['shopid', '=', $shopid];
+        }
+        $total_today_sum = $this->where($total_today_map)->sum('paid_fee');
+        $total_today_sum = sprintf("%.2f", $total_today_sum / 100);
+
+        return [
+            'all_sum' => $total_all_sum,
+            'month_sum' => $total_month_sum,
+            'week_sum' => $total_week_sum,
+            'day_sum' => $total_today_sum
+        ];
+    }
+
+    /**
      * 获取今天订单数量
      */
     public function getTodayOrdersCount($shopid = 0, $app = '')
@@ -222,8 +286,6 @@ class Orders extends Base
         $data = sprintf("%.2f", $data / 100);
         return $data;
     }
-
-
 
     /**
      * chart需要的今日24小时订单数据量结构
