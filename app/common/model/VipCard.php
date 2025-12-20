@@ -93,18 +93,24 @@ class VipCard extends Base
         $vip_card_list = $vipModel->alias('v')
         ->join('vip_card vc', 'vc.id = v.card_id')
         ->whereRaw($where)
-        ->select()
-        ->toArray();
-        
-        if (!empty($vip_card_list)) {
-            $logic = new VipLogic();
-            foreach ($vip_card_list as &$val) {
-                $val = $logic->formatData($val);
-            }
-            unset($val);
-        } else {
+        ->field('v.uid vip_uid,v.card_id vip_card_id,v.end_time vip_end_time,v.status vip_status, vc.*')
+        ->select();
+
+        if (empty($vip_card_list)) {
             return null;
+        }else{
+            $vip_card_list = $vip_card_list->toArray();
         }
+
+        $cardLogic = new VipCardLogic();
+        foreach ($vip_card_list as &$v) {
+            unset($v['vip_uid']);
+            unset($v['vip_card_id']);
+            unset($v['vip_end_time']);
+            unset($v['vip_status']);
+            $v = $cardLogic->formatData($v);
+        }
+        unset($v);
 
         //获取商品数据
         $file_name = ucfirst($app) . ucfirst($product_type);
@@ -112,40 +118,45 @@ class VipCard extends Base
         $productModel = new $namespace;
         $product_data = $productModel->where('id', $product_id)->find();
         $product_data = $product_data->toArray();
-
+        
         if (!empty($product_data)) {
             //循环查询会员卡是否支持该产品，删除不支持的会员卡元素
             foreach ($vip_card_list as $key => &$val) {
-                if (empty($val['vip_card_info'])) {
-                    unset($vip_card_list[$key]);
-                    continue;
-                }
 
-                if (!in_array($product_data['category_id'], $val['vip_card_info']['category_ids_arr'])) {
-                    unset($vip_card_list[$key]);
-                } else {
-                    //根据折扣计算该产品会员价格
-                    $member_price = intval($product_data['price'] * ($val['vip_card_info']['discount'] / 10));
-                    $member_price = sprintf("%.2f", $member_price / 100);
-                    $val['member_price'] = $member_price;
+                if(is_json($val['category_ids'])){
+                    // 多应用数据处理
+                    if (!$this->getVipCardSupportAppCategoryId($val, $app, $product_data['category_id'])) {
+                        unset($vip_card_list[$key]);
+                    } else {
+                        //根据折扣计算该会员价格
+                        $member_price = intval($product_data['price'] * ($val['discount'] / 10));
+                        $val['member_price'] = sprintf("%.2f", $member_price / 100);
+                    }
+                }else{
+                    // 单应用数据处理
+                    if (!in_array($product_data['category_id'], $val['category_ids_arr'])) {
+                        unset($card_list[$key]);
+                    } else {
+                        //根据折扣计算该会员价格
+                        $member_price = intval($product_data['price'] * ($val['discount'] / 10));
+                        $val['member_price'] = sprintf("%.2f", $member_price / 100);
+                    }
                 }
             }
             unset($val);
-
+            
             //查询优惠力度最大的会员卡
             $resule = [];
             if (!empty($vip_card_list) && count($vip_card_list) >= 1) {
                 $discount_arr = [];
                 foreach ($vip_card_list as $key => $val) {
-                    if (!empty($val['vip_card_info'])) {
-                        $discount_arr[$key] = $val['vip_card_info']['discount'];
-                    }
+                    $discount_arr[$key] = $val['discount'];
                 }
                 asort($discount_arr);
                 $key = key($discount_arr);
                 $resule = $vip_card_list[$key];
             }
-
+            
             return $resule;
         }
         return null;
@@ -161,6 +172,10 @@ class VipCard extends Base
      */
     private function getVipCardSupportAppCategoryId($card, $app, $category_ids)
     {
+        if(!empty($card['category_ids']) && empty($card['multi_app_category_ids'])){
+            $card['multi_app_category_ids'] = json_decode($card['category_ids'], true);
+        }
+
         foreach($card['multi_app_category_ids'] as $val){
             if($val['app_name'] == $app){
                 if(in_array($category_ids, $val['category_ids'])){
