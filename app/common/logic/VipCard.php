@@ -173,7 +173,6 @@ class VipCard extends Base
 
         // 获取多应用支持的应用列表
         $app_list = [];
-        $app_array = [];
         if(!empty($data['app'])){
             $app_array = explode(',', $data['app']);
             $app_array = array_unique($app_array);
@@ -183,31 +182,6 @@ class VipCard extends Base
             $data['app_list'] = $app_list;
         }
 
-        // 处理多应用支持分类数据
-        $multi_app_category_support_arr = [];
-        if(!empty($app_array) && !empty($data['category_ids']) && is_json($data['category_ids'])){
-            $category_ids_arr = json_decode($data['category_ids'], true);
-            foreach ($category_ids_arr as $v) {
-                $ucfirst_app = ucfirst($v['app_name']);
-                $category_model_namespace = "app\\{$v['app_name']}\\model\\{$ucfirst_app}Category";
-                $CategoryModel = new $category_model_namespace();
-
-                $category_logic_namespace = "app\\{$v['app_name']}\\logic\\Category";
-                $CategoryLogic = new $category_logic_namespace();
-                $category_ids = $v['category_ids'];
-                if(is_array($category_ids)){
-                    $category_ids = implode(',', $category_ids);
-                }
-                
-                $app_category_tree = $CategoryModel->tree($data['shopid'], 1);
-                $app_category_tree = $CategoryLogic->checkedVal($category_ids, $app_category_tree);
-                $multi_app_category_support_arr[$v['app_name']] = [
-                    'app' => (new Module())->getModule($v['app_name']),
-                    'category_tree' => $app_category_tree,
-                ];
-            }
-        }
-        $data['multi_app_category_support_arr'] = $multi_app_category_support_arr;
         $data['multi_app_category_ids'] = json_decode($data['category_ids'], true);
         $data['multi_app_category_ids_json'] = $data['category_ids'];
 
