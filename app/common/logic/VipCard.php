@@ -11,11 +11,6 @@ class VipCard extends Base
      */
     public function queryData($data)
     {
-        //初始化支持分类
-        $category_ids = '';
-        if (!empty($data['category_ids'])) {
-            $category_ids = implode(',', $data['category_ids']);
-        }
         //组装config配置数据
         $title_color = $data['title_color'];
         $description_color = $data['description_color'];
@@ -47,10 +42,25 @@ class VipCard extends Base
         //权益描述
         $content = '';
         if (!empty($data['content'])) $content = $data['content'];
+
+        //权益分类
+        $category_ids = $data['category_ids'];
+        if (!empty($data['category_ids']) && is_array($data['category_ids'])) {
+            $category_ids = implode(',', $data['category_ids']);
+        }
+        if(!empty($data['app_category_ids'])){
+            $category_ids = $data['app_category_ids'];
+        }
+        //应用处理
+        $apps = get_module_name();
+        if(!empty($data['app_name'])){
+            $apps = implode(',', $data['app_name']);
+        }
+
         //组装数据
         $data = [
             'id' => intval($data['id']),
-            'app' => get_module_name(),
+            'app' => $apps,
             'shopid' => $data['shopid'],
             'title' => $data['title'],
             'description' => $data['description'],
