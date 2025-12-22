@@ -44,7 +44,7 @@ class VipCard extends Base
         if (!empty($data['content'])) $content = $data['content'];
 
         //权益分类
-        $category_ids = $data['category_ids'];
+        $category_ids = '';
         if (!empty($data['category_ids']) && is_array($data['category_ids'])) {
             $category_ids = implode(',', $data['category_ids']);
         }
