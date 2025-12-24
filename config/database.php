@@ -47,12 +47,20 @@ return [
             'slave_no'        => '',
             // 是否严格检查字段是否存在
             'fields_strict'   => true,
-            // 是否需要断线重连
-            'break_reconnect' => false,
+            // 是否需要断线重连（建议开启，提高稳定性）
+            'break_reconnect' => true,
             // 监听SQL
             'trigger_sql'     => env('app_debug', true),
-            // 开启字段缓存
-            'fields_cache'    => false,
+            // 开启字段缓存（显著提升性能，减少 SHOW COLUMNS 查询）
+            'fields_cache'    => true,
+            // 连接池配置（优化连接复用）
+            'pool'            => [
+                'enable'      => false,
+                'min_conn'    => 10,
+                'max_conn'    => 100,
+                'wait_queue'  => 20,
+                'wait_timeout'=> 3.0,
+            ],
         ],
 
         // 更多的数据库配置信息
