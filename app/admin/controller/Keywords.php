@@ -1,4 +1,5 @@
 <?php
+
 namespace app\admin\controller;
 
 use think\facade\View;
@@ -7,6 +8,7 @@ use app\common\logic\Keywords as KeywordsLogic;
 
 use app\admin\validate\Common;
 use think\exception\ValidateException;
+
 /**
  * 搜索关键字控制器
  */
@@ -40,28 +42,35 @@ class Keywords extends Admin
         ];
         // 搜索关键字
         $keyword = input('keyword', '', 'text');
-        View::assign('keyword',$keyword);
-        if(!empty($keyword)){
+        View::assign('keyword', $keyword);
+        if (!empty($keyword)) {
             $map[] = ['title', 'like', '%' . $keyword . '%'];
         }
 
         $fields = '*';
         $rows = input('rows', 20, 'intval');
+        // 限制分页数量
+        $rows = min(max($rows, 1), 100);
         View::assign('rows', $rows);
+        // 获取分页列表
         $lists = $this->KeywordsModel->getListByPage($map, 'create_time desc', $fields, $rows);
+        // 分页按钮
         $pager = $lists->render();
         $lists = $lists->toArray();
-        foreach($lists['data'] as &$val){
+        foreach ($lists['data'] as &$val) {
             $val = $this->KeywordsLogic->formatData($val);
         }
         unset($val);
 
-        if(request()->isAjax()){
+        if (request()->isAjax()) {
             // ajax请求返回数据
             return $this->success('success', $lists);
         }
-        View::assign('pager',$pager);
-        View::assign('lists',$lists);
+        View::assign([
+            'lists' => $lists,
+            'pager' => $pager,
+        ]);
+
         // 记录当前列表页的cookie
         cookie('__forward__', $_SERVER['REQUEST_URI']);
         // 输出模板
@@ -75,7 +84,7 @@ class Keywords extends Admin
     {
         $id = input('id', 0, 'intval');
         $title = $id ? "编辑" : "新建";
-        View::assign('title',$title);
+        View::assign('title', $title);
 
         if (request()->isPost()) {
             $data = input();
@@ -88,21 +97,20 @@ class Keywords extends Admin
                 // 验证失败 输出错误信息
                 return $this->error($e->getError());
             }
-            
+
             // 写入数据表
             $res = $this->KeywordsModel->edit($data);
-            
-            if ($res) {
-                return $this->success($title.'成功', $res, cookie('__forward__'));
-            } else {
-                return $this->error($title.'失败');
-            }
 
-        }else{
-            if(!empty($id)){
+            if ($res) {
+                return $this->success($title . '成功', $res, cookie('__forward__'));
+            } else {
+                return $this->error($title . '失败');
+            }
+        } else {
+            if (!empty($id)) {
                 $data = $this->KeywordsModel->getDataById($id);
                 $data = $this->KeywordsLogic->formatData($data);
-            }else{
+            } else {
                 // 初始化数据
                 $data = [];
                 $data['id'] = 0;
@@ -126,27 +134,44 @@ class Keywords extends Admin
      */
     public function status()
     {
-        $ids = input('ids/a');
-        !is_array($ids) && $ids = explode(',',$ids);
+        // 获取参数
+        $ids = input('ids/a', []);
+        if (!is_array($ids)) {
+            $ids = explode(',', (string)$ids);
+        }
+
+        // 验证 IDs
+        $ids = array_filter($ids, 'is_numeric');
+        if (empty($ids)) {
+            return $this->error('请选择要操作的记录');
+        }
+
         $status = input('status', 0, 'intval');
+
+        // 验证状态值
+        $allowedStatus = [-1, 0, 1];
+        if (!in_array($status, $allowedStatus, true)) {
+            return $this->error('无效的状态值');
+        }
+
         $title = '更新';
-        if($status == 0){
+        if ($status == 0) {
             $title = '禁用';
         }
-        if($status == 1){
+        if ($status == 1) {
             $title = '启用';
         }
-        if($status == -1){
+        if ($status == -1) {
             $title = '删除';
         }
+
         $data['status'] = $status;
 
         $res = $this->KeywordsModel->where('id', 'in', $ids)->update($data);
-        if($res){
-            return $this->success($title . '成功');
-        }else{
+        if ($res) {
+            return $this->success($title . '成功', ['affected_rows' => $res], 'refresh');
+        } else {
             return $this->error($title . '失败');
-        }  
+        }
     }
-
 }

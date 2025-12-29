@@ -30,9 +30,9 @@ class History extends Admin
      * @param ModuleModel $moduleModel
      */
     public function __construct(
-        HistoryModel $historyModel = null,
-        HistoryLogic $historyLogic = null,
-        ModuleModel $moduleModel = null
+        HistoryModel $historyModel,
+        HistoryLogic $historyLogic,
+        ModuleModel $moduleModel
     ) {
         parent::__construct();
         $this->historyModel = $historyModel ?? new HistoryModel();
@@ -79,7 +79,7 @@ class History extends Admin
         $allModule = $this->getAllModulesCached();
         
         View::assign([
-            'lists' => $lists['data'],
+            'lists' => $lists,
             'pager' => $pager,
             'all_module' => $allModule,
             'app' => $app
@@ -99,7 +99,7 @@ class History extends Admin
     {
         $map = [
             ['shopid', '=', $this->shopid],
-            ['status', '=', 1]
+            ['status', 'in', [0, 1]]
         ];
         
         // 应用筛选
@@ -136,7 +136,7 @@ class History extends Admin
      */
     protected function getAllModulesCached(): array
     {
-        $cacheKey = 'all_modules_' . $this->shopid;
+        $cacheKey = request()->host() . 'all_modules_' . $this->shopid;
         
         return Cache::remember($cacheKey, function() {
             return $this->moduleModel->getAll([]);
@@ -192,7 +192,7 @@ class History extends Admin
      */
     protected function clearRelatedCache(): void
     {
-        $cacheKey = 'all_modules_' . $this->shopid;
+        $cacheKey = request()->host() . 'all_modules_' . $this->shopid;
         Cache::delete($cacheKey);
     }
 }
