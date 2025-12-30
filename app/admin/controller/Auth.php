@@ -85,13 +85,13 @@ class Auth extends Admin
         
         $method = input('method', 'forbidgroup', 'text');
         switch ($method) {
-            case 'forbidgroup':
+            case 'forbidGroup':
                 $status = 0;
                 break;
-            case 'resumegroup':
+            case 'resumeGroup':
                 $status = 1;
                 break;
-            case 'deletegroup':
+            case 'deleteGroup':
                 if (in_array(1, $ids) || in_array(2, $ids) || in_array(3, $ids)) {
                     return $this->error('系统默认组禁止删除');
                 }
