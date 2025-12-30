@@ -55,7 +55,7 @@ return [
             'fields_cache'    => true,
             // 连接池配置（优化连接复用）
             'pool'            => [
-                'enable'      => false,
+                'enable'      => true,
                 'min_conn'    => 10,
                 'max_conn'    => 100,
                 'wait_queue'  => 20,
