@@ -21,12 +21,15 @@ class Menu extends Admin
      * @access public
      * @param  App  $app  应用对象
      */
-    public function __construct()
+    public function __construct(
+        ?MenuModel $MenuModel = null,
+        ?ModuleModel $ModuleModel = null
+    )
     {
         parent::__construct();
 
-        $this->MenuModel = new MenuModel();
-        $this->ModuleModel = new ModuleModel();
+        $this->MenuModel = $MenuModel ?? new MenuModel();
+        $this->ModuleModel = $ModuleModel ?? new ModuleModel();
     }
 
     /**
@@ -250,7 +253,7 @@ class Menu extends Admin
     {
         if (request()->isPost()) {
             $tree = input('post.tree');
-            $lists = explode(PHP_EOL, $tree);
+            $lists = explode(PHP_EOL, (string)$tree);
 
             if ($lists == array()) {
                 return $this->error('请按格式填写批量导入的菜单，至少一个菜单');
@@ -290,10 +293,9 @@ class Menu extends Admin
      */
     public function sort()
     {
-
         if (request()->isPost()) {
             $ids = input('post.ids');
-            $ids = explode(',', $ids);
+            $ids = explode(',', (string)$ids);
             foreach ($ids as $key => $value) {
                 $res = $this->MenuModel->where(['id' => $value])->update(['sort' => $key + 1]);
             }

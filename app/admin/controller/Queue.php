@@ -60,7 +60,7 @@ class Queue extends Admin {
         ];
 
         // 分页
-        $pager = (new Bootstrap($page_list, $page_size, $page, $count, false, [
+        $pager = (new Bootstrap($page_list, (int)$page_size, (int)$page, $count, false, [
             'path' => '/admin/queue/lists',
             'var_page' => 'page'
         ]))->render();
@@ -82,7 +82,10 @@ class Queue extends Admin {
         $config = config('queue.connections.redis');
         $func   = $config['persistent'] ? 'pconnect' : 'connect';
 
-        $client = new \Redis;
+        if (!class_exists('Redis')) {
+            throw new \RuntimeException('Redis 扩展未安装或未启用');
+        }
+        $client = new \Redis(); // 实例化Redis客户端，若IDE仍提示未定义可忽略，运行环境已安装Redis扩展
         $client->$func($config['host'], $config['port'], $config['timeout']);
 
         if ('' != $config['password']) {

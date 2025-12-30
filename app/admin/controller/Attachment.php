@@ -4,7 +4,6 @@ namespace app\admin\controller;
 
 use think\facade\View;
 use app\common\model\Attachment as AttachmentModel;
-use think\exception\ValidateException;
 
 /**
  * 附件管理控制器
@@ -16,11 +15,12 @@ class Attachment extends Admin
      * 构造方法
      * @access public
      */
-    public function __construct()
-    {
+    public function __construct(
+        ?AttachmentModel $AttachmentModel = null
+    ) {
         parent::__construct();
 
-        $this->AttachmentModel = new AttachmentModel();
+        $this->AttachmentModel = $AttachmentModel ?? new AttachmentModel();
     }
 
     /**

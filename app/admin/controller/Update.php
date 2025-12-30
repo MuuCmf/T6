@@ -22,12 +22,14 @@ class Update extends Admin
      * 构造方法
      * @access public
      */
-    public function __construct()
+    public function __construct(
+        ?UpgradeServer $UpgradeServer = null
+    )
     {
         parent::__construct();
 
         $this->app_name = input('app_name', 'system') ?: 'system';
-        $this->UpgradeServer = new UpgradeServer();
+        $this->UpgradeServer = $UpgradeServer ?? new UpgradeServer();
     }
 
     /**

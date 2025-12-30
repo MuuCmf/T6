@@ -21,11 +21,14 @@ class Keywords extends Admin
      * @access public
      * @param  App  $app  应用对象
      */
-    public function __construct()
+    public function __construct(
+        ?KeywordsModel $KeywordsModel = null,
+        ?KeywordsLogic $KeywordsLogic = null
+    )
     {
         parent::__construct();
-        $this->KeywordsModel = new KeywordsModel();
-        $this->KeywordsLogic = new KeywordsLogic();
+        $this->KeywordsModel = $KeywordsModel ?? new KeywordsModel();
+        $this->KeywordsLogic = $KeywordsLogic ?? new KeywordsLogic();
         // 设置页面title
         $this->setTitle('搜索关键字管理');
     }

@@ -21,11 +21,14 @@ class Module extends Admin
      * 构造方法
      * @access public
      */
-    public function __construct()
+    public function __construct(
+        ?MenuModel $MenuModel = null,
+        ?ModuleModel $ModuleModel = null
+    )
     {
         parent::__construct();
-        $this->MenuModel = new MenuModel();
-        $this->ModuleModel = new ModuleModel();
+        $this->MenuModel = $MenuModel ?? new MenuModel();
+        $this->ModuleModel = $ModuleModel ?? new ModuleModel();
     }
 
     /**
@@ -331,8 +334,16 @@ class Module extends Admin
      */
     public function mdel()
     {
-        $ids = input('ids/a');
-        !is_array($ids) && $ids = explode(',', $ids);
+        $ids = input('ids/a', []);
+        if (!is_array($ids)) {
+            $ids = explode(',', (string)$ids);
+        }
+        
+        // 验证 IDs
+        $ids = array_filter($ids, 'is_numeric');
+        if (empty($ids)) {
+            return $this->error('请选择要操作的数据');
+        }
 
         $res = $this->MenuModel->where('id', 'in', $ids)->delete();
         if ($res) {

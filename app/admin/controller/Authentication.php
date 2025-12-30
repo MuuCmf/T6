@@ -21,12 +21,14 @@ class Authentication extends Admin
      * @access public
      * @param  App  $app  应用对象
      */
-    public function __construct()
-    {
+    public function __construct(
+        ?MemberModel $MemberModel = null,
+        ?AuthenticationModel $AuthenticationModel = null
+    ) {
         parent::__construct();
 
-        $this->MemberModel = new MemberModel();
-        $this->AuthenticationModel = new AuthenticationModel();
+        $this->MemberModel = $MemberModel ?? new MemberModel();
+        $this->AuthenticationModel = $AuthenticationModel ?? new AuthenticationModel();
     }
 
     public function list()

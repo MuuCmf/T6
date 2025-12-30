@@ -23,12 +23,15 @@ class Score extends Admin
      * 构造方法
      * @access public
      */
-    public function __construct()
+    public function __construct(
+        ?ScoreLogModel $ScoreLogModel = null,
+        ?ScoreTypeModel $ScoreTypeModel = null
+    )
     {
         parent::__construct();
 
-        $this->scoreLogModel = new ScoreLogModel();
-        $this->scoreTypeModel = new ScoreTypeModel();
+        $this->scoreLogModel = $ScoreLogModel ?? new ScoreLogModel();
+        $this->scoreTypeModel = $ScoreTypeModel ?? new ScoreTypeModel();
     }
 
     /**

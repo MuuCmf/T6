@@ -30,9 +30,9 @@ class History extends Admin
      * @param ModuleModel $moduleModel
      */
     public function __construct(
-        HistoryModel $historyModel,
-        HistoryLogic $historyLogic,
-        ModuleModel $moduleModel
+        ?HistoryModel $historyModel = null,
+        ?HistoryLogic $historyLogic = null,
+        ?ModuleModel $moduleModel = null
     ) {
         parent::__construct();
         $this->historyModel = $historyModel ?? new HistoryModel();
