@@ -1,0 +1,19 @@
+# Docker
+.env.docker
+.env.local
+
+# Data
+data/*
+!data/.gitkeep
+
+# Logs
+*.log
+docker/logs/*
+
+# SSL
+docker/nginx/ssl/*
+!docker/nginx/ssl/.gitkeep
+
+# Backup
+data/backup/*
+!data/backup/.gitkeep

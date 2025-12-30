@@ -1,0 +1,94 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        BUILD_DATE: ${BUILD_DATE:-$(date -u +'%Y-%m-%dT%H:%M:%SZ')}
+        VCS_REF: ${VCS_REF:-$(git rev-parse --short HEAD)}
+    container_name: muucmf-app-dev
+    restart: unless-stopped
+    volumes:
+      - ./:/var/www/html
+      - ./docker/php/php-dev.ini:/usr/local/etc/php/conf.d/custom.ini
+    environment:
+      - APP_ENV=development
+      - APP_DEBUG=true
+      - DB_HOST=mysql
+      - DB_PORT=3306
+      - DB_DATABASE=muucmf_dev
+      - DB_USERNAME=muucmf
+      - DB_PASSWORD=muucmf_dev
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+    networks:
+      - muucmf-network
+    depends_on:
+      - mysql
+      - redis
+
+  nginx:
+    image: nginx:1.25-alpine
+    container_name: muucmf-nginx-dev
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    volumes:
+      - ./:/var/www/html
+      - ./docker/nginx/nginx-dev.conf:/etc/nginx/nginx.conf:ro
+      - ./docker/nginx/conf.d:/etc/nginx/conf.d:ro
+    networks:
+      - muucmf-network
+    depends_on:
+      - app
+
+  mysql:
+    image: mysql:8.0
+    container_name: muucmf-mysql-dev
+    restart: unless-stopped
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql-dev-data:/var/lib/mysql
+      - ./docker/mysql/my-dev.cnf:/etc/mysql/conf.d/my.cnf:ro
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=muucmf_dev
+      - MYSQL_USER=muucmf
+      - MYSQL_PASSWORD=muucmf_dev
+    command: --default-authentication-plugin=mysql_native_password
+    networks:
+      - muucmf-network
+
+  redis:
+    image: redis:7-alpine
+    container_name: muucmf-redis-dev
+    restart: unless-stopped
+    ports:
+      - "6380:6379"
+    volumes:
+      - redis-dev-data:/data
+    networks:
+      - muucmf-network
+
+  mailhog:
+    image: mailhog/mailhog:latest
+    container_name: muucmf-mailhog-dev
+    restart: unless-stopped
+    ports:
+      - "1025:1025"
+      - "8025:8025"
+    networks:
+      - muucmf-network
+
+networks:
+  muucmf-network:
+    driver: bridge
+
+volumes:
+  mysql-dev-data:
+    driver: local
+  redis-dev-data:
+    driver: local

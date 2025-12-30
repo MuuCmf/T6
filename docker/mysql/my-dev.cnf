@@ -1,0 +1,24 @@
+[mysqld]
+default-storage-engine=INNODB
+character-set-server=utf8mb4
+collation-server=utf8mb4_unicode_ci
+init-connect='SET NAMES utf8mb4'
+
+max_connections=200
+max_allowed_packet=64M
+table_open_cache=1000
+tmp_table_size=32M
+max_heap_table_size=32M
+
+innodb_buffer_pool_size=128M
+innodb_log_file_size=32M
+innodb_flush_log_at_trx_commit=1
+
+general_log=1
+general_log_file=/var/log/mysql/general.log
+
+[mysql]
+default-character-set=utf8mb4
+
+[client]
+default-character-set=utf8mb4

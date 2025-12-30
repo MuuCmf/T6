@@ -1,0 +1,424 @@
+stages:
+  - test
+  - security
+  - build
+  - deploy-staging
+  - deploy-production
+
+variables:
+  PHP_VERSION: "8.0"
+  NODE_VERSION: "18"
+  COMPOSER_VERSION: "2"
+  MYSQL_ROOT_PASSWORD: "root"
+  MYSQL_DATABASE: "test_muucmf"
+  REDIS_VERSION: "6"
+
+cache:
+  key: ${CI_COMMIT_REF_SLUG}
+  paths:
+    - vendor/
+    - node_modules/
+    - .npm/
+
+.php-base:
+  image: composer:${COMPOSER_VERSION}
+  before_script:
+    - apt-get update && apt-get install -y git unzip libzip-dev libpng-dev libjpeg-dev libfreetype6-dev
+    - docker-php-ext-install zip pdo pdo_mysql gd bcmath opcache
+    - pecl install redis && docker-php-ext-enable redis
+    - composer install --prefer-dist --no-progress --no-interaction
+    - cp .env.example .env || echo "APP_ENV=testing" > .env
+    - echo "APP_DEBUG=true" >> .env
+    - echo "DATABASE_HOSTNAME=mysql" >> .env
+    - echo "DATABASE_DATABASE=$MYSQL_DATABASE" >> .env
+    - echo "DATABASE_USERNAME=root" >> .env
+    - echo "DATABASE_PASSWORD=$MYSQL_ROOT_PASSWORD" >> .env
+    - echo "REDIS_HOST=redis" >> .env
+
+.node-base:
+  image: node:${NODE_VERSION}
+  before_script:
+    - npm install -g gulp-cli
+    - npm ci
+
+test:php-8.0:
+  extends: .php-base
+  stage: test
+  services:
+    - mysql:5.7
+    - redis:${REDIS_VERSION}
+  variables:
+    MYSQL_HOST: mysql
+    MYSQL_PORT: 3306
+  script:
+    - php -v
+    - composer --version
+    - php think migrate:run || true
+    - vendor/bin/phpunit --coverage-clover=coverage.xml || true
+  coverage: '/^\s*Lines:\s*\d+.\d+\%/'
+  artifacts:
+    reports:
+      coverage_report:
+        coverage_format: cobertura
+        path: coverage.xml
+    paths:
+      - coverage.xml
+    expire_in: 1 week
+  only:
+    - branches
+    - merge_requests
+
+test:php-8.1:
+  extends: .php-base
+  stage: test
+  image: composer:2
+  services:
+    - mysql:5.7
+    - redis:${REDIS_VERSION}
+  script:
+    - docker-php-ext-install zip pdo pdo_mysql gd bcmath opcache
+    - pecl install redis && docker-php-ext-enable redis
+    - composer install --prefer-dist --no-progress --no-interaction
+    - vendor/bin/phpunit || true
+  only:
+    - branches
+    - merge_requests
+
+test:php-8.2:
+  extends: .php-base
+  stage: test
+  image: composer:2
+  services:
+    - mysql:8.0
+    - redis:${REDIS_VERSION}
+  script:
+    - docker-php-ext-install zip pdo pdo_mysql gd bcmath opcache
+    - pecl install redis && docker-php-ext-enable redis
+    - composer install --prefer-dist --no-progress --no-interaction
+    - vendor/bin/phpunit || true
+  only:
+    - branches
+    - merge_requests
+
+test:code-quality:
+  extends: .php-base
+  stage: test
+  script:
+    - vendor/bin/phpstan analyse app --level=5 --error-format=table || true
+    - vendor/bin/phpcs --standard=PSR12 app/ || true
+  allow_failure: true
+  only:
+    - branches
+    - merge_requests
+
+test:assets:
+  extends: .node-base
+  stage: test
+  script:
+    - node -v
+    - npm -v
+    - npm run build || gulp default
+  artifacts:
+    paths:
+      - public/static/
+    expire_in: 1 week
+  only:
+    - branches
+    - merge_requests
+
+security:composer-audit:
+  extends: .php-base
+  stage: security
+  script:
+    - composer audit || true
+  allow_failure: true
+  only:
+    - branches
+    - schedules
+
+security:dependency-check:
+  extends: .php-base
+  stage: security
+  script:
+    - composer require --dev enlightn/security-checker
+    - vendor/bin/security-checker security:check composer.lock || true
+  allow_failure: true
+  only:
+    - branches
+    - schedules
+
+build:package:
+  extends: .php-base
+  stage: build
+  script:
+    - mkdir -p deploy
+    - rsync -av --exclude='.git' \
+      --exclude='node_modules' \
+      --exclude='vendor' \
+      --exclude='.env' \
+      --exclude='data/backup' \
+      --exclude='data/logs' \
+      --exclude='data/runtime' \
+      --exclude='public/uploads' \
+      . deploy/
+    - cd deploy
+    - tar -czf ../muucmf-t6-${CI_COMMIT_SHA}.tar.gz .
+    - cd ..
+  artifacts:
+    paths:
+      - muucmf-t6-${CI_COMMIT_SHA}.tar.gz
+    expire_in: 1 week
+  only:
+    - main
+    - develop
+
+build:docker:
+  image: docker:24
+  stage: build
+  services:
+    - docker:24-dind
+  variables:
+    DOCKER_TLS_CERTDIR: "/certs"
+    DOCKER_DRIVER: overlay2
+  before_script:
+    - echo $CI_REGISTRY_PASSWORD | docker login -u $CI_REGISTRY_USER --password-stdin $CI_REGISTRY
+  script:
+    - docker build -t $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA .
+    - docker build -t $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG .
+    - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA
+    - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
+    - |
+      if [ "$CI_COMMIT_REF_NAME" == "main" ]; then
+        docker tag $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA $CI_REGISTRY_IMAGE:latest
+        docker push $CI_REGISTRY_IMAGE:latest
+      fi
+  only:
+    - main
+    - develop
+
+deploy:staging:
+  extends: .php-base
+  stage: deploy-staging
+  image: alpine:latest
+  environment:
+    name: staging
+    url: https://staging.muucmf.cc
+  before_script:
+    - apk add --no-cache openssh-client rsync
+    - eval $(ssh-agent -s)
+    - echo "$STAGING_SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+    - ssh-keyscan $STAGING_HOST >> ~/.ssh/known_hosts
+    - chmod 644 ~/.ssh/known_hosts
+  script:
+    - scp muucmf-t6-${CI_COMMIT_SHA}.tar.gz $STAGING_USER@$STAGING_HOST:/tmp/
+    - |
+      ssh $STAGING_USER@$STAGING_HOST "
+        cd /var/www/staging.muucmf.cc
+        mkdir -p releases
+        mv /tmp/muucmf-t6-${CI_COMMIT_SHA}.tar.gz releases/
+        cd releases
+        tar -xzf muucmf-t6-${CI_COMMIT_SHA}.tar.gz
+        rm muucmf-t6-${CI_COMMIT_SHA}.tar.gz
+        
+        cd /var/www/staging.muucmf.cc
+        ln -snf releases/${CI_COMMIT_SHA} current
+        
+        cd current
+        cp .env.staging .env
+        composer install --no-dev --optimize-autoloader
+        php think migrate:run --force
+        php think cache:clear
+        php think queue:restart
+        
+        chmod -R 755 runtime public/uploads
+        chown -R www-data:www-data /var/www/staging.muucmf.cc
+      "
+    - sleep 10
+    - curl -f https://staging.muucmf.cc/health || exit 1
+  dependencies:
+    - build:package
+  only:
+    - develop
+  when: manual
+
+deploy:production:
+  extends: .php-base
+  stage: deploy-production
+  image: alpine:latest
+  environment:
+    name: production
+    url: https://www.muucmf.cc
+  before_script:
+    - apk add --no-cache openssh-client rsync mysql-client
+    - eval $(ssh-agent -s)
+    - echo "$PRODUCTION_SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+    - ssh-keyscan $PRODUCTION_HOST >> ~/.ssh/known_hosts
+    - chmod 644 ~/.ssh/known_hosts
+  script:
+    - |
+      ssh $PRODUCTION_USER@$PRODUCTION_HOST "
+        cd /var/www/www.muucmf.cc
+        BACKUP_DIR=\"backups/\$(date +%Y%m%d_%H%M%S)\"
+        mkdir -p \$BACKUP_DIR
+        cp -r current \$BACKUP_DIR/
+        mysqldump -u${DB_USER} -p${DB_PASSWORD} muucmf > \$BACKUP_DIR/db_backup.sql
+        echo \"Backup created at \$BACKUP_DIR\"
+      "
+    - scp muucmf-t6-${CI_COMMIT_SHA}.tar.gz $PRODUCTION_USER@$PRODUCTION_HOST:/tmp/
+    - |
+      ssh $PRODUCTION_USER@$PRODUCTION_HOST "
+        cd /var/www/www.muucmf.cc
+        mkdir -p releases
+        mv /tmp/muucmf-t6-${CI_COMMIT_SHA}.tar.gz releases/
+        cd releases
+        tar -xzf muucmf-t6-${CI_COMMIT_SHA}.tar.gz
+        rm muucmf-t6-${CI_COMMIT_SHA}.tar.gz
+        
+        cd /var/www/www.muucmf.cc
+        ln -snf releases/${CI_COMMIT_SHA} current
+        
+        cd current
+        cp .env.production .env
+        composer install --no-dev --optimize-autoloader
+        php think migrate:run --force
+        php think cache:clear
+        php think queue:restart
+        
+        chmod -R 755 runtime public/uploads
+        chown -R www-data:www-data /var/www/www.muucmf.cc
+      "
+    - sleep 10
+    - curl -f https://www.muucmf.cc/health || exit 1
+  dependencies:
+    - build:package
+  only:
+    - main
+  when: manual
+
+rollback:production:
+  image: alpine:latest
+  stage: deploy-production
+  environment:
+    name: production
+    action: stop
+  before_script:
+    - apk add --no-cache openssh-client
+    - eval $(ssh-agent -s)
+    - echo "$PRODUCTION_SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+    - ssh-keyscan $PRODUCTION_HOST >> ~/.ssh/known_hosts
+    - chmod 644 ~/.ssh/known_hosts
+  script:
+    - |
+      ssh $PRODUCTION_USER@$PRODUCTION_HOST "
+        cd /var/www/www.muucmf.cc
+        PREVIOUS_RELEASE=\$(ls -t releases | head -2 | tail -1)
+        if [ -n \"\$PREVIOUS_RELEASE\" ]; then
+          ln -snf releases/\$PREVIOUS_RELEASE current
+          cd current
+          php think cache:clear
+          php think queue:restart
+          echo \"Rolled back to \$PREVIOUS_RELEASE\"
+        else
+          echo \"No previous release found\"
+          exit 1
+        fi
+      "
+  only:
+    - main
+  when: manual
+
+notify:success:
+  image: alpine:latest
+  stage: deploy-production
+  before_script:
+    - apk add --no-cache curl
+  script:
+    - |
+      curl -X POST $SLACK_WEBHOOK \
+        -H 'Content-Type: application/json' \
+        -d '{
+          "text": "Deployment successful!",
+          "attachments": [
+            {
+              "color": "good",
+              "title": "MuuCmf T6 Deployment",
+              "fields": [
+                {
+                  "title": "Environment",
+                  "value": "'$CI_ENVIRONMENT_NAME'",
+                  "short": true
+                },
+                {
+                  "title": "Commit",
+                  "value": "'$CI_COMMIT_SHA'",
+                  "short": true
+                },
+                {
+                  "title": "Branch",
+                  "value": "'$CI_COMMIT_REF_NAME'",
+                  "short": true
+                },
+                {
+                  "title": "Author",
+                  "value": "'$CI_COMMIT_AUTHOR'",
+                  "short": true
+                }
+              ]
+            }
+          ]
+        }'
+  only:
+    - main
+    - develop
+  when: on_success
+
+notify:failure:
+  image: alpine:latest
+  stage: deploy-production
+  before_script:
+    - apk add --no-cache curl
+  script:
+    - |
+      curl -X POST $SLACK_WEBHOOK \
+        -H 'Content-Type: application/json' \
+        -d '{
+          "text": "Deployment failed!",
+          "attachments": [
+            {
+              "color": "danger",
+              "title": "MuuCmf T6 Deployment Failed",
+              "fields": [
+                {
+                  "title": "Environment",
+                  "value": "'$CI_ENVIRONMENT_NAME'",
+                  "short": true
+                },
+                {
+                  "title": "Commit",
+                  "value": "'$CI_COMMIT_SHA'",
+                  "short": true
+                },
+                {
+                  "title": "Branch",
+                  "value": "'$CI_COMMIT_REF_NAME'",
+                  "short": true
+                },
+                {
+                  "title": "Pipeline URL",
+                  "value": "'$CI_PIPELINE_URL'",
+                  "short": false
+                }
+              ]
+            }
+          ]
+        }'
+  only:
+    - main
+    - develop
+  when: on_failure

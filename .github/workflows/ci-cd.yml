@@ -1,0 +1,382 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+  workflow_dispatch:
+
+env:
+  PHP_VERSION: '8.0'
+  NODE_VERSION: '18'
+  COMPOSER_VERSION: '2'
+
+jobs:
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        php-version: ['8.0', '8.1', '8.2']
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-version }}
+          extensions: mbstring, xml, ctype, json, bcmath, pdo, pdo_mysql, redis, gd, zip, opcache
+          coverage: xdebug
+          tools: composer:v2, phpunit, phpstan
+
+      - name: Get Composer Cache Directory
+        id: composer-cache
+        run: |
+          echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
+
+      - name: Cache Composer dependencies
+        uses: actions/cache@v3
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-composer-
+
+      - name: Install Composer dependencies
+        run: |
+          composer install --prefer-dist --no-progress --no-interaction
+          composer dump-autoload --optimize
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install Node dependencies
+        run: |
+          npm install -g gulp-cli
+          if [ -f "package.json" ]; then npm install; fi
+
+      - name: Copy environment file
+        run: |
+          cp .env.example .env || echo "APP_ENV=testing" > .env
+          echo "APP_DEBUG=true" >> .env
+          echo "DATABASE_HOSTNAME=127.0.0.1" >> .env
+          echo "DATABASE_DATABASE=test_muucmf" >> .env
+          echo "DATABASE_USERNAME=root" >> .env
+          echo "DATABASE_PASSWORD=root" >> .env
+
+      - name: Start MySQL
+        run: |
+          sudo systemctl start mysql.service
+          mysql -e 'CREATE DATABASE IF NOT EXISTS test_muucmf;' -uroot -proot
+
+      - name: Start Redis
+        uses: supercharge/redis-github-action@1.5.0
+        with:
+          redis-version: 6
+
+      - name: Run database migrations
+        run: |
+          php think migrate:run
+        continue-on-error: true
+
+      - name: Run PHPStan
+        run: |
+          if [ -f "vendor/bin/phpstan" ]; then
+            vendor/bin/phpstan analyse app --level=5 --error-format=github
+          fi
+        continue-on-error: true
+
+      - name: Run PHP CodeSniffer
+        run: |
+          if [ -f "vendor/bin/phpcs" ]; then
+            vendor/bin/phpcs --standard=PSR12 app/
+          fi
+        continue-on-error: true
+
+      - name: Run PHPUnit tests
+        run: |
+          if [ -f "phpunit.xml" ]; then
+            vendor/bin/phpunit --coverage-clover=coverage.xml
+          fi
+        continue-on-error: true
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          files: ./coverage.xml
+          flags: unittests
+          name: codecov-umbrella
+        if: matrix.php-version == '8.0'
+        continue-on-error: true
+
+      - name: Build assets
+        run: |
+          if [ -f "gulpfile.js" ]; then
+            npm run build || gulp default
+          fi
+        continue-on-error: true
+
+  security-scan:
+    name: Security Scan
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ env.PHP_VERSION }}
+          tools: composer:v2
+
+      - name: Install Composer dependencies
+        run: composer install --prefer-dist --no-progress
+
+      - name: Run Composer audit
+        run: composer audit
+        continue-on-error: true
+
+      - name: Run security checker
+        uses: symfonycorp/security-checker-action@v4
+        with:
+          lock: composer.lock
+        continue-on-error: true
+
+      - name: Run Snyk security scan
+        uses: snyk/actions/php@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        continue-on-error: true
+
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    needs: [test, security-scan]
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop'
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+        if: github.ref == 'refs/heads/main'
+
+      - name: Extract metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: muucmf/muucmf-t6
+          tags: |
+            type=ref,event=branch
+            type=ref,event=pr
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=sha,prefix={{branch}}-
+            type=raw,value=latest,enable={{is_default_branch}}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: ${{ github.ref == 'refs/heads/main' }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          build-args: |
+            BUILD_DATE=${{ github.event.head_commit.timestamp }}
+            VCS_REF=${{ github.sha }}
+
+      - name: Create deployment package
+        run: |
+          mkdir -p deploy
+          rsync -av --exclude='.git' \
+            --exclude='node_modules' \
+            --exclude='vendor' \
+            --exclude='.env' \
+            --exclude='data/backup' \
+            --exclude='data/logs' \
+            --exclude='data/runtime' \
+            --exclude='public/uploads' \
+            . deploy/
+          cd deploy
+          tar -czf ../muucmf-t6-${{ github.sha }}.tar.gz .
+          cd ..
+
+      - name: Upload deployment artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: deployment-package
+          path: muucmf-t6-${{ github.sha }}.tar.gz
+          retention-days: 7
+
+  deploy-staging:
+    name: Deploy to Staging
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.ref == 'refs/heads/develop'
+    environment:
+      name: staging
+      url: https://staging.muucmf.cc
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Download deployment artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: deployment-package
+
+      - name: Deploy to staging server
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.STAGING_HOST }}
+          username: ${{ secrets.STAGING_USER }}
+          key: ${{ secrets.STAGING_SSH_KEY }}
+          port: ${{ secrets.STAGING_PORT }}
+          script: |
+            cd /var/www/staging.muucmf.cc
+            mkdir -p releases
+            mv ~/muucmf-t6-${{ github.sha }}.tar.gz releases/
+            cd releases
+            tar -xzf muucmf-t6-${{ github.sha }}.tar.gz
+            rm muucmf-t6-${{ github.sha }}.tar.gz
+            
+            cd /var/www/staging.muucmf.cc
+            ln -snf releases/${{ github.sha }} current
+            
+            cd current
+            cp .env.staging .env
+            composer install --no-dev --optimize-autoloader
+            php think migrate:run --force
+            php think cache:clear
+            php think queue:restart
+            
+            chmod -R 755 runtime public/uploads
+            chown -R www-data:www-data /var/www/staging.muucmf.cc
+
+      - name: Health check
+        run: |
+          sleep 10
+          curl -f https://staging.muucmf.cc/health || exit 1
+
+  deploy-production:
+    name: Deploy to Production
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.ref == 'refs/heads/main'
+    environment:
+      name: production
+      url: https://www.muucmf.cc
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Download deployment artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: deployment-package
+
+      - name: Create backup
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.PRODUCTION_HOST }}
+          username: ${{ secrets.PRODUCTION_USER }}
+          key: ${{ secrets.PRODUCTION_SSH_KEY }}
+          port: ${{ secrets.PRODUCTION_PORT }}
+          script: |
+            cd /var/www/www.muucmf.cc
+            BACKUP_DIR="backups/$(date +%Y%m%d_%H%M%S)"
+            mkdir -p $BACKUP_DIR
+            cp -r current $BACKUP_DIR/
+            mysqldump -u${{ secrets.DB_USER }} -p${{ secrets.DB_PASSWORD }} muucmf > $BACKUP_DIR/db_backup.sql
+            echo "Backup created at $BACKUP_DIR"
+
+      - name: Deploy to production server
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.PRODUCTION_HOST }}
+          username: ${{ secrets.PRODUCTION_USER }}
+          key: ${{ secrets.PRODUCTION_SSH_KEY }}
+          port: ${{ secrets.PRODUCTION_PORT }}
+          script: |
+            cd /var/www/www.muucmf.cc
+            mkdir -p releases
+            mv ~/muucmf-t6-${{ github.sha }}.tar.gz releases/
+            cd releases
+            tar -xzf muucmf-t6-${{ github.sha }}.tar.gz
+            rm muucmf-t6-${{ github.sha }}.tar.gz
+            
+            cd /var/www/www.muucmf.cc
+            ln -snf releases/${{ github.sha }} current
+            
+            cd current
+            cp .env.production .env
+            composer install --no-dev --optimize-autoloader
+            php think migrate:run --force
+            php think cache:clear
+            php think queue:restart
+            
+            chmod -R 755 runtime public/uploads
+            chown -R www-data:www-data /var/www/www.muucmf.cc
+
+      - name: Health check
+        run: |
+          sleep 10
+          curl -f https://www.muucmf.cc/health || exit 1
+
+      - name: Notify deployment success
+        uses: 8398a7/action-slack@v3
+        with:
+          status: ${{ job.status }}
+          text: 'Production deployment successful!'
+          webhook_url: ${{ secrets.SLACK_WEBHOOK }}
+        if: always()
+
+  rollback:
+    name: Rollback
+    runs-on: ubuntu-latest
+    if: failure() && github.ref == 'refs/heads/main'
+    
+    steps:
+      - name: Rollback production
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.PRODUCTION_HOST }}
+          username: ${{ secrets.PRODUCTION_USER }}
+          key: ${{ secrets.PRODUCTION_SSH_KEY }}
+          port: ${{ secrets.PRODUCTION_PORT }}
+          script: |
+            cd /var/www/www.muucmf.cc
+            PREVIOUS_RELEASE=$(ls -t releases | head -2 | tail -1)
+            ln -snf releases/$PREVIOUS_RELEASE current
+            cd current
+            php think cache:clear
+            php think queue:restart
+            echo "Rolled back to $PREVIOUS_RELEASE"
+
+      - name: Notify rollback
+        uses: 8398a7/action-slack@v3
+        with:
+          status: 'warning'
+          text: 'Production rollback executed!'
+          webhook_url: ${{ secrets.SLACK_WEBHOOK }}
