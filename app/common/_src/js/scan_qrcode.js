@@ -73,3 +73,7 @@ var scan_qrcode = {
         })
     }
 };
+
+if (typeof window !== 'undefined') {
+    window.scan_qrcode = scan_qrcode;
+}

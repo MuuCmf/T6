@@ -1,4 +1,4 @@
-var manage_image ={
+window.manage_image ={
     /**
      *
      * @param obj

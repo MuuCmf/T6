@@ -1,0 +1,24 @@
+// 导入模块所以样式文件
+import "./css/announce.scss"
+import "./css/attachment.scss"
+import "./css/common.scss"
+import "./css/custom.scss"
+import "./css/footer.scss"
+import "./css/header.scss"
+import "./css/login.scss"
+import "./css/message.scss"
+import "./css/pagination.scss"
+import "./css/pay.scss"
+
+// 导入模块所有js文件
+import './js/ajax.js'
+import './js/announce.js'
+import './js/common.js'
+import './js/follow.js'
+import './js/form_check.js'
+import './js/functions.js'
+import './js/header.js'
+import './js/login.js'
+import './js/scan_qrcode.js'
+import './js/toast.class.js'
+import './js/uploader.js'

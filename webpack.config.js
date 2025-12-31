@@ -17,37 +17,16 @@ function createConfig(module, isProduction = false) {
   const jsPath = path.join(srcPath, 'js');
   const cssPath = path.join(srcPath, 'css');
 
-  if (module === 'admin' || module === 'common' || module === 'ucenter') {
-    entry['main'] = path.join(jsPath, 'index.js');
-    entry['app'] = path.join(cssPath, module === 'common' ? 'main.scss' : 'index.scss');
-  } else if (module === 'channel') {
-    // channel 模块有 admin 和 pc 两个子目录
-    entry['admin/main'] = path.join(srcPath, 'admin/js/index.js');
-    entry['admin/app'] = path.join(srcPath, 'admin/css/index.scss');
-    entry['pc/main'] = path.join(srcPath, 'pc/js/index.js');
-    entry['pc/app'] = path.join(srcPath, 'pc/css/index.scss');
-  } else {
-    const glob = require('glob');
-    
-    const jsFiles = glob.sync('**/*.js', { cwd: jsPath, ignore: ['**/node_modules/**'] });
-    jsFiles.forEach(file => {
-      const name = file.replace(/\.js$/, '');
-      entry[name] = path.join(jsPath, file);
-    });
-
-    const scssFiles = glob.sync('**/*.scss', { cwd: cssPath, ignore: ['**/node_modules/**'] });
-    scssFiles.forEach(file => {
-      const name = file.replace(/\.scss$/, '');
-      entry[`scss-${name}`] = path.join(cssPath, file);
-    });
-  }
-
+  if (module === 'admin' || module === 'common' || module === 'ucenter' || module === 'channel') {
+    entry['admin'] = path.join(srcPath, 'index.js');
+  } 
+  
   const baseConfig = {
     mode: isProduction ? 'production' : 'development',
     entry,
     output: {
       path: distPath,
-      filename: 'js/[name].min.js',
+      filename: 'js/main.min.js',
       clean: false
     },
     module: {
@@ -117,7 +96,7 @@ function createConfig(module, isProduction = false) {
         verbose: false
       }),
       new MiniCssExtractPlugin({
-        filename: 'css/[name].min.css'
+        filename: 'css/main.min.css'
       }),
       new CopyPlugin({
         patterns: [

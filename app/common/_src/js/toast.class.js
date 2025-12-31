@@ -67,3 +67,8 @@ var toast = {
         $('div').remove('.big_loading');
     }
 }
+
+// 将 toast 对象挂载到全局 window 对象,使其在所有模块中都可访问
+if (typeof window !== 'undefined') {
+    window.toast = toast;
+}
