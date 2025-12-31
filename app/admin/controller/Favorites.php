@@ -30,7 +30,7 @@ class Favorites extends Admin
         View::assign('rows', $rows);
         $map = [
             ['shopid', '=', $this->shopid],
-            ['status', 'in', [0, 1]]
+            ['status', '=', 1]
         ];
         if ($app != 'all')  $map[] = ['app', '=', $app]; //标识
         if (!empty($keyword)) {

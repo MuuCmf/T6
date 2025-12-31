@@ -105,12 +105,6 @@
                 <td>{$v['module_name']}</td>
                 <td>{$v['create_time_str']}</td>
                 <td style="width: 150px">
-                    {if $v['status'] == 1}
-                    <a href="{:url('status', ['ids'=>$v['id'],'status'=> 0])}" class="btn btn-sm btn-warning ajax-get">禁用</a>
-                    {/if}
-                    {if $v['status'] == 0}
-                    <a href="{:url('status', ['ids'=>$v['id'],'status'=> 1])}" class="btn btn-sm btn-info ajax-get">启用</a>
-                    {/if}
                     <a href="{:url('status',['ids'=>$v['id'], 'status'=> -1])}" data-confirm="确认执行删除操作？" class="btn btn-sm btn-danger ajax-get"><i class="fa fa-times"></i> 删除</a>
                 </td>
             </tr>

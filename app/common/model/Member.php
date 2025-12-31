@@ -5,7 +5,6 @@ namespace app\common\model;
 use think\Exception;
 use think\facade\Db;
 use think\facade\Config;
-use think\facade\Cache;
 use app\admin\model\AuthGroup;
 use app\common\model\ActionLog;
 use app\common\model\ScoreType;
@@ -123,15 +122,8 @@ class Member extends Base
             default:
                 return 0; //参数错误
         }
-        // 添加用户信息缓存
-        $cache_key = request()->host() . '_user_info_' . md5($account);
-        $user = Cache::get($cache_key);
-        if (!$user) {
-            $user = $this->where($map)->find();
-            if ($user) {
-                Cache::set($cache_key, $user, 3600);
-            }
-        }
+        // 获取用户数据
+        $user = $this->where($map)->find();
         if ($user) {
             if($user['status'] == 1){
                 // 行为限制
@@ -156,13 +148,13 @@ class Member extends Base
             if($user['status'] == 0){
                 return 0;
             }
-            // 用户不存在或被删除
+            // 用户被删除
             if($user['status'] == -1){
                 return -1;
             }
         }
 
-        return -1;
+        return -1; //用户不存在或被禁用
     }
 
     /**
@@ -191,15 +183,8 @@ class Member extends Base
             default:
                 return 0; //参数错误
         }
-        // 添加用户信息缓存
-        $cache_key = request()->host() . '_user_info_' . md5($account);
-        $user = Cache::get($cache_key);
-        if (!$user) {
-            $user = $this->where($map)->find();
-            if ($user) {
-                Cache::set($cache_key, $user, 3600);
-            }
-        }
+        // 获取用户数据
+        $user = $this->where($map)->find();
         $verifyModel = new Verify();
         if ($user) {
             // 行为限制

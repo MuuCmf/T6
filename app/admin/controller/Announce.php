@@ -3,321 +3,196 @@
 namespace app\admin\controller;
 
 use think\facade\View;
-use think\facade\Cache;
 use app\common\model\Module as ModuleModel;
 use app\common\model\Announce as AnnounceModel;
 use app\common\logic\Announce as AnnounceLogic;
+
 use app\admin\validate\Common;
 use think\exception\ValidateException;
 
 /**
- * 公告管理控制器
- * @package app\admin\controller
+ * 公告控制器
  */
 class Announce extends Admin
 {
-    /** @var ModuleModel 模块模型 */
-    protected $moduleModel;
-    
-    /** @var AnnounceModel 公告模型 */
-    protected $announceModel;
-    
-    /** @var AnnounceLogic 公告逻辑 */
-    protected $announceLogic;
+    protected $ModuleModel;
+    protected $AnnounceModel;
+    protected $AnnounceLogic;
 
     /**
-     * 构造方法 - 使用依赖注入
-     * @param ModuleModel|null $moduleModel
-     * @param AnnounceModel|null $announceModel
-     * @param AnnounceLogic|null $announceLogic
+     * 构造方法
+     * @access public
+     * @param  App  $app  应用对象
      */
-    public function __construct(
-        ModuleModel $moduleModel = null,
-        AnnounceModel $announceModel = null,
-        AnnounceLogic $announceLogic = null
-    ) {
+    public function __construct()
+    {
         parent::__construct();
-        $this->moduleModel = $moduleModel ?? new ModuleModel();
-        $this->announceModel = $announceModel ?? new AnnounceModel();
-        $this->announceLogic = $announceLogic ?? new AnnounceLogic();
+        $this->ModuleModel = new ModuleModel();
+        $this->AnnounceModel = new AnnounceModel();
+        $this->AnnounceLogic = new AnnounceLogic();
         // 设置页面title
         $this->setTitle('公告管理');
     }
 
     /**
-     * 公告列表
-     * @return string|\think\response\Json
+     * 列表
      */
     public function list()
     {
-        // 获取搜索关键词
-        $keyword = input('keyword', '', 'trim');
-        $rows = input('rows', 20, 'intval');
-        
-        // 限制分页数量
-        $rows = min(max($rows, 1), 100);
-        
-        View::assign('keyword', $keyword);
-        View::assign('rows', $rows);
-        
-        // 构建查询条件
-        $map = $this->buildQueryMap($keyword);
-        
-        // 获取分页列表
-        $lists = $this->announceModel->getListByPage(
-            $map, 
-            'sort desc, create_time desc', 
-            '*', 
-            $rows
-        );
-        
-        $pager = $lists->render();
-        $lists = $lists->toArray();
-        
-        // 格式化数据
-        $lists['data'] = $this->formatListData($lists['data']);
-        
-        // AJAX 请求返回 JSON
-        if (request()->isAjax()) {
-            return $this->success('success', $lists);
-        }
-        
-        View::assign('pager', $pager);
-        View::assign('lists', $lists);
-        
-        // 记录当前列表页的cookie
-        cookie('__forward__', request()->url(true));
-        
-        return View::fetch();
-    }
-    
-    /**
-     * 构建查询条件
-     * @param string|null $keyword 搜索关键词
-     * @return array
-     */
-    protected function buildQueryMap(?string $keyword): array
-    {
+        // 查询条件
         $map = [
             ['status', '>', -1],
             ['shopid', '=', 0]
         ];
-        
-        // 关键词搜索
-        if ($keyword !== null && $keyword !== '') {
+        // 搜索关键字
+        $keyword = input('keyword', '', 'text');
+        View::assign('keyword', $keyword);
+        if (!empty($keyword)) {
             $map[] = ['title', 'like', '%' . $keyword . '%'];
         }
-        
-        return $map;
-    }
-    
-    /**
-     * 格式化列表数据
-     * @param array $data
-     * @return array
-     */
-    protected function formatListData(array $data): array
-    {
-        foreach ($data as &$item) {
-            $item = $this->announceLogic->formatData($item);
+
+        $fields = '*';
+        $rows = input('rows', 20, 'intval');
+        View::assign('rows', $rows);
+        $lists = $this->AnnounceModel->getListByPage($map, 'sort desc,create_time desc', $fields, $rows);
+        $pager = $lists->render();
+        $lists = $lists->toArray();
+
+        foreach ($lists['data'] as &$val) {
+            $val = $this->AnnounceLogic->formatData($val);
         }
-        unset($item);
-        
-        return $data;
+        unset($val);
+
+        // ajax请求返回数据
+        if (request()->isAjax()) {
+            return $this->success('success', $lists);
+        }
+
+        View::assign('pager', $pager);
+        View::assign('lists', $lists);
+        // 记录当前列表页的cookie
+        cookie('__forward__', $_SERVER['REQUEST_URI']);
+        // 输出模板
+        return View::fetch();
     }
 
     /**
-     * 编辑、新增公告
-     * @return string|\think\response\Json
+     * 编辑、新增
      */
     public function edit()
     {
         $id = input('id', 0, 'intval');
-        $title = $id > 0 ? "编辑" : "新建";
-        $teminal = input('teminal', 'mobile', 'trim') ?? 'mobile';
-        
+        $title = $id ? "编辑" : "新建";
         View::assign('title', $title);
+        $teminal = input('teminal', 'mobile', 'text');
         View::assign('teminal', $teminal);
 
         if (request()->isPost()) {
-            return $this->handleEdit($id, $title);
-        }
-        
-        return $this->showEditForm($id, $teminal);
-    }
-    
-    /**
-     * 处理编辑提交
-     * @param int $id
-     * @param string $title
-     * @return \think\response\Json
-     */
-    protected function handleEdit(int $id, string $title)
-    {
-        $data = input();
-        $data['shopid'] = $this->shopid;
-        $data['uid'] = get_uid();
-        
-        // 数据验证
-        try {
-            validate(Common::class)->scene('announce')->check([
-                'title' => $data['title'] ?? '',
-                'content' => $data['content'] ?? '',
-            ]);
-        } catch (ValidateException $e) {
-            return $this->error($e->getError());
-        }
-        
-        // 处理链接数据
-        $data['link_to'] = $this->buildLinkData($data);
-        
-        // 写入数据表
-        $res = $this->announceModel->edit($data);
-        
-        if ($res) {
-            return $this->success($title . '成功', $res, cookie('__forward__'));
-        }
-        
-        return $this->error($title . '失败');
-    }
-    
-    /**
-     * 构建链接数据
-     * @param array $data
-     * @return string
-     */
-    protected function buildLinkData(array $data): string
-    {
-        if (empty($data['link_type']) && empty($data['link_title'])) {
-            return '';
-        }
-        
-        $linkTo = [
-            'app' => $data['link_app'] ?? '',
-            'type' => $data['link_type'] ?? '',
-            'title' => $data['link_title'] ?? '',
-            'type_title' => $data['link_type_title'] ?? '',
-            'param' => json_decode($data['link_param'] ?? '{}', true)
-        ];
-        
-        return json_encode($linkTo, JSON_UNESCAPED_UNICODE);
-    }
-    
-    /**
-     * 显示编辑表单
-     * @param int $id
-     * @param string $teminal
-     * @return string
-     */
-    protected function showEditForm(int $id, string $teminal): string
-    {
-        if ($id > 0) {
-            $data = $this->announceModel->getDataById($id);
-            $data = $this->announceLogic->formatData($data);
-            $teminal = $data['teminal'] ?? $teminal;
-            
-            // 链接参数二次处理
-            if (!empty($data['link'])) {
-                $link = $data['link'];
-                $link['param'] = json_encode($link['param'], JSON_UNESCAPED_UNICODE);
-                $data['link'] = $link;
+
+            $data = input();
+            $data['shopid'] = $this->shopid;
+            $data['uid'] = get_uid();
+            // 数据验证
+            try {
+                validate(Common::class)->scene('announce')->check([
+                    'title'  => $data['title'],
+                    'content'  => $data['content'],
+                ]);
+            } catch (ValidateException $e) {
+                // 验证失败 输出错误信息
+                return $this->error($e->getError());
+            }
+            // 处理连接至数据
+            if (!empty($data['link_type']) || !empty($data['link_title'])) {
+                $link_to = [
+                    'app' => $data['link_app'],
+                    'type' => $data['link_type'],
+                    'title' => $data['link_title'],
+                    'type_title' => $data['link_type_title'],
+                    'param' => json_decode($data['link_param'], true)
+                ];
+                $data['link_to'] = json_encode($link_to);
+            } else {
+                $data['link_to'] = '';
+            }
+
+            // 写入数据表
+            $res = $this->AnnounceModel->edit($data);
+
+            if ($res) {
+                return $this->success($title . '成功', $res, cookie('__forward__'));
+            } else {
+                return $this->error($title . '失败');
             }
         } else {
-            // 初始化数据
-            $data = $this->getDefaultData($teminal);
+            if (!empty($id)) {
+                $data = $this->AnnounceModel->getDataById($id);
+                $data = $this->AnnounceLogic->formatData($data);
+                $teminal = $data['teminal'];
+                // 链接参数二次处理
+                if (!empty($data['link'])) {
+                    $link = $data['link'];
+                    $link['param'] = json_encode($link['param']);
+                    $data['link'] = $link;
+                }
+            } else {
+                // 初始化数据
+                $data = [];
+                $data['id'] = 0;
+                $data['teminal'] = $teminal;
+                $data['type'] = 1;
+                $data['title'] = '';
+                $data['content'] = '';
+                $data['cover'] = '';
+                $data['status'] = 1;
+                $data['sort'] = 0;
+            }
+            View::assign('data', $data);
+
+            // 获取Micro应用是否安装
+            $micro_is_setup = $this->ModuleModel->checkInstalled('micro');
+            View::assign('micro_is_setup', $micro_is_setup);
+
+            if ($micro_is_setup) {
+                // 链接至参数
+                bind('micro\\LinksSevice', 'app\\micro\\service\\Link');
+                $links = app('micro\\LinksSevice')->getAllLinks($teminal);
+                View::assign('links', $links);
+
+                $link_static_tmpl = app('micro\\LinksSevice')->getStaticTmpl($teminal);
+                View::assign('link_static_tmpl', $link_static_tmpl);
+            }
+
+            // 输出模板
+            return View::fetch();
         }
-        
-        View::assign('data', $data);
-        
-        // 获取Micro应用是否安装
-        $microIsSetup = $this->moduleModel->checkInstalled('micro');
-        View::assign('micro_is_setup', $microIsSetup);
-        
-        if ($microIsSetup) {
-            $this->loadMicroLinks($teminal);
-        }
-        
-        return View::fetch();
-    }
-    
-    /**
-     * 获取默认数据
-     * @param string $teminal
-     * @return array
-     */
-    protected function getDefaultData(string $teminal): array
-    {
-        return [
-            'id' => 0,
-            'teminal' => $teminal,
-            'type' => 1,
-            'title' => '',
-            'content' => '',
-            'cover' => '',
-            'status' => 1,
-            'sort' => 0,
-        ];
-    }
-    
-    /**
-     * 加载 Micro 链接数据
-     * @param string $teminal
-     * @return void
-     */
-    protected function loadMicroLinks(string $teminal): void
-    {
-        bind('micro\\LinksSevice', 'app\\micro\\service\\Link');
-        $links = app('micro\\LinksSevice')->getAllLinks($teminal);
-        View::assign('links', $links);
-        
-        $linkStaticTmpl = app('micro\\LinksSevice')->getStaticTmpl($teminal);
-        View::assign('link_static_tmpl', $linkStaticTmpl);
     }
 
     /**
      * 状态管理
-     * @return \think\response\Json
      */
     public function status()
     {
-        // 获取参数
-        $ids = input('ids/a', []);
-        if (!is_array($ids)) {
-            $ids = explode(',', (string)$ids);
-        }
-        
-        // 验证 IDs
-        $ids = array_filter($ids, 'is_numeric');
-        if (empty($ids)) {
-            return $this->error('请选择要操作的公告');
-        }
-        
+        $ids = input('ids/a');
+        !is_array($ids) && $ids = explode(',', $ids);
         $status = input('status', 0, 'intval');
-        
-        // 验证状态值
-        $allowedStatus = [-1, 0, 1];
-        if (!in_array($status, $allowedStatus, true)) {
-            return $this->error('无效的状态值');
+        $title = '更新';
+        if ($status == 0) {
+            $title = '禁用';
         }
-        
-        // 根据状态设置标题
-        $statusTitles = [
-            -1 => '删除',
-            0 => '禁用',
-            1 => '启用'
-        ];
-        $title = $statusTitles[$status] ?? '更新';
-        
-        // 执行更新
-        $res = $this->announceModel
-            ->where('id', 'in', $ids)
-            ->where('shopid', '=', 0) // 公告为全局
-            ->update(['status' => $status]);
-        
-        if ($res !== false) {
-            return $this->success($title . '成功', ['affected_rows' => $res]);
+        if ($status == 1) {
+            $title = '启用';
         }
-        
-        return $this->error($title . '失败');
+        if ($status == -1) {
+            $title = '删除';
+        }
+        $data['status'] = $status;
+
+        $res = $this->AnnounceModel->where('id', 'in', $ids)->update($data);
+        if ($res) {
+            return $this->success($title . '成功');
+        } else {
+            return $this->error($title . '失败');
+        }
     }
 }
