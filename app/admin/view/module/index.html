@@ -101,12 +101,9 @@
             {/if}
         </section>
         
-        <!--模块分页-->
-        <div class="pager">
-            {notempty name="page"}
-            {:htmlspecialchars_decode($page)}
-            {/notempty}
-        </div>
+        <!-- 分页 -->
+        {include file="common/_pager"/}
+        <!-- /分页-->
     </div>
 
 {/block}

@@ -24,17 +24,11 @@ class Announce extends Admin
      * @access public
      * @param  App  $app  应用对象
      */
-    public function __construct(
-        ?ModuleModel $moduleModel = null,
-        ?AnnounceModel $announceModel = null,
-        ?AnnounceLogic $announceLogic = null
-    ) {
+    public function __construct() {
         parent::__construct();
         $this->ModuleModel = new ModuleModel();
         $this->AnnounceModel = new AnnounceModel();
         $this->AnnounceLogic = new AnnounceLogic();
-        // 设置页面title
-        $this->setTitle('公告管理');
     }
 
     /**
@@ -75,6 +69,8 @@ class Announce extends Admin
         View::assign('lists', $lists);
         // 记录当前列表页的cookie
         cookie('__forward__', $_SERVER['REQUEST_URI']);
+        // 设置页面title
+        $this->setTitle('公告管理');
         // 输出模板
         return View::fetch();
     }
@@ -94,7 +90,7 @@ class Announce extends Admin
             return $this->handleEdit((int)$id, $title);
         }
         
-        return $this->showEditForm((int)$id, $teminal);
+        return $this->showEditForm((int)$id, (string)$teminal);
     }
     
     /**
@@ -123,7 +119,7 @@ class Announce extends Admin
         $data['link_to'] = $this->buildLinkData($data);
         
         // 写入数据表
-        $res = $this->announceModel->edit($data);
+        $res = $this->AnnounceModel->edit($data);
         
         if ($res) {
             return $this->success($title . '成功', $res, cookie('__forward__'));
@@ -163,8 +159,8 @@ class Announce extends Admin
     protected function showEditForm(int $id, string $teminal): string
     {
         if ($id > 0) {
-            $data = $this->announceModel->getDataById($id);
-            $data = $this->announceLogic->formatData($data);
+            $data = $this->AnnounceModel->getDataById($id);
+            $data = $this->AnnounceLogic->formatData($data);
             $teminal = $data['teminal'] ?? $teminal;
             
             // 链接参数二次处理
@@ -181,7 +177,7 @@ class Announce extends Admin
         View::assign('data', $data);
         
         // 获取Micro应用是否安装
-        $microIsSetup = $this->moduleModel->checkInstalled('micro');
+        $microIsSetup = $this->ModuleModel->checkInstalled('micro');
         View::assign('micro_is_setup', $microIsSetup);
         
         if ($microIsSetup) {
@@ -231,7 +227,7 @@ class Announce extends Admin
     public function status()
     {
         $ids = input('ids/a');
-        !is_array($ids) && $ids = explode(',', $ids);
+        !is_array($ids) && $ids = explode(',', (string)$ids);
         $status = input('status', 0, 'intval');
         $title = '更新';
         if ($status == 0) {

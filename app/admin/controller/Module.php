@@ -56,8 +56,11 @@ class Module extends Admin
                 break;
         };
 
+        $rows = input('rows', 15, 'intval');
+        View::assign('rows', $rows);
+
         $upgradeServer = new UpgradeServer();
-        $modules = $this->ModuleModel->getListByPage($map, 'sort desc,id desc', '*', 15);
+        $modules = $this->ModuleModel->getListByPage($map, 'sort desc,id desc', '*', $rows);
         $cloud = new CloudServer();
         foreach ($modules as &$item) {
             // 云端应用数据处理
@@ -104,9 +107,9 @@ class Module extends Admin
             }
         }
         unset($item);
-        $page = $modules->render();
+        $pager = $modules->render();
         
-        View::assign('page', $page);
+        View::assign('pager', $pager);
         View::assign('modules', $modules);
         // 记录当前列表页的cookie
         cookie('__forward__', $_SERVER['REQUEST_URI']);
