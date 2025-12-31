@@ -24,8 +24,11 @@ class Announce extends Admin
      * @access public
      * @param  App  $app  应用对象
      */
-    public function __construct()
-    {
+    public function __construct(
+        ?ModuleModel $moduleModel = null,
+        ?AnnounceModel $announceModel = null,
+        ?AnnounceLogic $announceLogic = null
+    ) {
         parent::__construct();
         $this->ModuleModel = new ModuleModel();
         $this->AnnounceModel = new AnnounceModel();
@@ -88,84 +91,138 @@ class Announce extends Admin
         View::assign('teminal', $teminal);
 
         if (request()->isPost()) {
-
-            $data = input();
-            $data['shopid'] = $this->shopid;
-            $data['uid'] = get_uid();
-            // 数据验证
-            try {
-                validate(Common::class)->scene('announce')->check([
-                    'title'  => $data['title'],
-                    'content'  => $data['content'],
-                ]);
-            } catch (ValidateException $e) {
-                // 验证失败 输出错误信息
-                return $this->error($e->getError());
-            }
-            // 处理连接至数据
-            if (!empty($data['link_type']) || !empty($data['link_title'])) {
-                $link_to = [
-                    'app' => $data['link_app'],
-                    'type' => $data['link_type'],
-                    'title' => $data['link_title'],
-                    'type_title' => $data['link_type_title'],
-                    'param' => json_decode($data['link_param'], true)
-                ];
-                $data['link_to'] = json_encode($link_to);
-            } else {
-                $data['link_to'] = '';
-            }
-
-            // 写入数据表
-            $res = $this->AnnounceModel->edit($data);
-
-            if ($res) {
-                return $this->success($title . '成功', $res, cookie('__forward__'));
-            } else {
-                return $this->error($title . '失败');
+            return $this->handleEdit((int)$id, $title);
+        }
+        
+        return $this->showEditForm((int)$id, $teminal);
+    }
+    
+    /**
+     * 处理编辑提交
+     * @param int $id
+     * @param string $title
+     * @return \think\response\Json
+     */
+    protected function handleEdit(int $id, string $title)
+    {
+        $data = input();
+        $data['shopid'] = $this->shopid;
+        $data['uid'] = get_uid();
+        
+        // 数据验证
+        try {
+            validate(Common::class)->scene('announce')->check([
+                'title' => $data['title'] ?? '',
+                'content' => $data['content'] ?? '',
+            ]);
+        } catch (ValidateException $e) {
+            return $this->error($e->getError());
+        }
+        
+        // 处理链接数据
+        $data['link_to'] = $this->buildLinkData($data);
+        
+        // 写入数据表
+        $res = $this->announceModel->edit($data);
+        
+        if ($res) {
+            return $this->success($title . '成功', $res, cookie('__forward__'));
+        }
+        
+        return $this->error($title . '失败');
+    }
+    
+    /**
+     * 构建链接数据
+     * @param array $data
+     * @return string
+     */
+    protected function buildLinkData(array $data): string
+    {
+        if (empty($data['link_type']) && empty($data['link_title'])) {
+            return '';
+        }
+        
+        $linkTo = [
+            'app' => $data['link_app'] ?? '',
+            'type' => $data['link_type'] ?? '',
+            'title' => $data['link_title'] ?? '',
+            'type_title' => $data['link_type_title'] ?? '',
+            'param' => json_decode($data['link_param'] ?? '{}', true)
+        ];
+        
+        return json_encode($linkTo, JSON_UNESCAPED_UNICODE);
+    }
+    
+    /**
+     * 显示编辑表单
+     * @param int $id
+     * @param string $teminal
+     * @return string
+     */
+    protected function showEditForm(int $id, string $teminal): string
+    {
+        if ($id > 0) {
+            $data = $this->announceModel->getDataById($id);
+            $data = $this->announceLogic->formatData($data);
+            $teminal = $data['teminal'] ?? $teminal;
+            
+            // 链接参数二次处理
+            if (!empty($data['link'])) {
+                $link = $data['link'];
+                $link['param'] = json_encode($link['param'], JSON_UNESCAPED_UNICODE);
+                $data['link'] = $link;
             }
         } else {
-            if (!empty($id)) {
-                $data = $this->AnnounceModel->getDataById($id);
-                $data = $this->AnnounceLogic->formatData($data);
-                $teminal = $data['teminal'];
-                // 链接参数二次处理
-                if (!empty($data['link'])) {
-                    $link = $data['link'];
-                    $link['param'] = json_encode($link['param']);
-                    $data['link'] = $link;
-                }
-            } else {
-                // 初始化数据
-                $data = [];
-                $data['id'] = 0;
-                $data['teminal'] = $teminal;
-                $data['type'] = 1;
-                $data['title'] = '';
-                $data['content'] = '';
-                $data['cover'] = '';
-                $data['status'] = 1;
-                $data['sort'] = 0;
-            }
-            View::assign('data', $data);
-
-            // 获取Micro应用是否安装
-            $micro_is_setup = $this->ModuleModel->checkInstalled('micro');
-            View::assign('micro_is_setup', $micro_is_setup);
-
-            if ($micro_is_setup) {
-                // 链接至参数
-                bind('micro\\LinksSevice', 'app\\micro\\service\\Link');
-                $links = app('micro\\LinksSevice')->getAllLinks($teminal);
-                View::assign('links', $links);
-
-                $link_static_tmpl = app('micro\\LinksSevice')->getStaticTmpl($teminal);
-                View::assign('link_static_tmpl', $link_static_tmpl);
-            }
-
-            // 输出模板
-            return View::fetch();
+            // 初始化数据
+            $data = $this->getDefaultData($teminal);
         }
+        
+        View::assign('data', $data);
+        
+        // 获取Micro应用是否安装
+        $microIsSetup = $this->moduleModel->checkInstalled('micro');
+        View::assign('micro_is_setup', $microIsSetup);
+        
+        if ($microIsSetup) {
+            $this->loadMicroLinks($teminal);
+        }
+        
+        return View::fetch();
+    }
+    
+    /**
+     * 获取默认数据
+     * @param string $teminal
+     * @return array
+     */
+    protected function getDefaultData(string $teminal): array
+    {
+        return [
+            'id' => 0,
+            'teminal' => $teminal,
+            'type' => 1,
+            'title' => '',
+            'content' => '',
+            'cover' => '',
+            'status' => 1,
+            'sort' => 0,
+        ];
+    }
+    
+    /**
+     * 加载 Micro 链接数据
+     * @param string $teminal
+     * @return void
+     */
+    protected function loadMicroLinks(string $teminal): void
+    {
+        bind('micro\\LinksSevice', 'app\\micro\\service\\Link');
+        $links = app('micro\\LinksSevice')->getAllLinks($teminal);
+        View::assign('links', $links);
+        
+        $linkStaticTmpl = app('micro\\LinksSevice')->getStaticTmpl($teminal);
+        View::assign('link_static_tmpl', $linkStaticTmpl);
     }
 
     /**

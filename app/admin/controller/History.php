@@ -8,11 +8,16 @@ use think\facade\View;
 
 class History extends Admin
 {
+    /** @var HistoryModel 浏览记录模型 */
     protected $HistoryModel;
+    
+    /** @var HistoryLogic 浏览记录逻辑 */
     protected $HistoryLogic;
 
-    public function __construct()
-    {
+    public function __construct(
+        ?HistoryModel $historyModel = null,
+        ?HistoryLogic $historyLogic = null,
+    ) {
         parent::__construct();
         $this->HistoryModel = new HistoryModel();
         $this->HistoryLogic = new HistoryLogic();
