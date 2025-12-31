@@ -20,12 +20,10 @@ class Config extends Admin
      * 构造方法
      * @access public
      */
-    public function __construct(
-        ?MuuConfigModel $ConfigModel = null
-    )
+    public function __construct()
     {
         parent::__construct();
-        $this->ConfigModel = $ConfigModel ?? new MuuConfigModel();
+        $this->ConfigModel = new MuuConfigModel();
     }
 
     // 获取某个标签的配置参数

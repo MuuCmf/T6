@@ -244,17 +244,8 @@ class Action extends Admin
 
     public function setStatus()
     {
-        $ids = input('ids/a', []);
-        if (!is_array($ids)) {
-            $ids = explode(',', (string)$ids);
-        }
-        
-        // 验证 IDs
-        $ids = array_filter($ids, 'is_numeric');
-        if (empty($ids)) {
-            return $this->error('请选择要操作的数据');
-        }
-
+        $ids = input('ids/a');
+        !is_array($ids) && $ids = explode(',', $ids);
         $status = input('status', 0, 'intval');
         $title = '更新';
         if ($status == 0) {

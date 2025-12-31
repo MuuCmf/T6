@@ -15,16 +15,12 @@ class Crontab extends Admin
     protected $CrontabModel;
     protected $CrontabLogModel;
 
-    function __construct(
-        ?CrontabModel $CrontabModel = null,
-        ?CrontabLogic $CrontabLogic = null,
-        ?CrontabLogModel $CrontabLogModel = null
-    )
+    function __construct()
     {
         parent::__construct();
-        $this->CrontabModel = $CrontabModel ?? new CrontabModel();
-        $this->CrontabLogic = $CrontabLogic ?? new CrontabLogic();
-        $this->CrontabLogModel = $CrontabLogModel ?? new CrontabLogModel();
+        $this->CrontabModel = new CrontabModel();
+        $this->CrontabLogic = new CrontabLogic();
+        $this->CrontabLogModel = new CrontabLogModel();
     }
 
     /**
@@ -116,20 +112,11 @@ class Crontab extends Admin
     /**
      * 设置状态
      */
-    public function status()
+    public function status(int $status = 0)
     {
-        $ids = input('ids/a', []);
-        if (!is_array($ids)) {
-            $ids = explode(',', (string)$ids);
-        }
-        
-        // 验证 IDs
-        $ids = array_filter($ids, 'is_numeric');
-        if (empty($ids)) {
-            return $this->error('请选择要操作的数据');
-        }
+        $ids = input('ids/a');
+        !is_array($ids) && $ids = explode(',', $ids);
         $status = input('status', 0, 'intval');
-
         $title = '更新';
         if ($status == 0) {
             $title = '禁用';

@@ -16,16 +16,12 @@ class Author extends Admin
     protected $AuthorLogic;
     protected $AuthorGroupModel;
 
-    public function __construct(
-        ?AuthorModel $AuthorModel = null,
-        ?AuthorLogic $AuthorLogic = null,
-        ?AuthorGroupModel $AuthorGroupModel = null
-    )
+    public function __construct()
     {
         parent::__construct();
-        $this->AuthorModel = $AuthorModel ?? new AuthorModel();
-        $this->AuthorLogic = $AuthorLogic ?? new AuthorLogic();
-        $this->AuthorGroupModel = $AuthorGroupModel ?? new AuthorGroupModel();
+        $this->AuthorModel = new AuthorModel();
+        $this->AuthorLogic = new AuthorLogic();
+        $this->AuthorGroupModel = new AuthorGroupModel();
     }
 
     /**
@@ -164,17 +160,8 @@ class Author extends Admin
      */
     public function status()
     {   
-        $ids = input('ids/a', []);
-        if (!is_array($ids)) {
-            $ids = explode(',', (string)$ids);
-        }
-        
-        // 验证 IDs
-        $ids = array_filter($ids, 'is_numeric');
-        if (empty($ids)) {
-            return $this->error('请选择要操作的数据');
-        }
-
+        $ids = input('ids/a');
+        !is_array($ids)&&$ids=explode(',',$ids);
         $status = input('status', 0, 'intval');
         $title = '更新';
         if($status == 0){
@@ -206,17 +193,8 @@ class Author extends Admin
      */
     public function del()
     {
-        $ids = input('ids/a', []);
-        if (!is_array($ids)) {
-            $ids = explode(',', (string)$ids);
-        }
-        
-        // 验证 IDs
-        $ids = array_filter($ids, 'is_numeric');
-        if (empty($ids)) {
-            return $this->error('请选择要操作的数据');
-        }
-        
+        $ids = input('ids/a');
+        !is_array($ids)&&$ids=explode(',',$ids);
         $res = $this->AuthorModel->where('id', 'in', $ids)->delete();
         if($res){
             return $this->success('删除成功');

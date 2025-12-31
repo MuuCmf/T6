@@ -24,19 +24,17 @@ class Message extends Admin
      * @access public
      * @param  App  $app  应用对象
      */
-    public function __construct(
-        ?MessageModel $MessageModel = null,
-        ?MessageContentModel $MessageContentModel = null,
-        ?MessageTypeModel $MessageTypeModel = null
-    )
+    public function __construct()
     {
         parent::__construct();
         // 消息发送列表
-        $this->MessageModel = $MessageModel ?? new MessageModel();
+        $this->MessageModel = new MessageModel();
         // 消息内容
-        $this->MessageContentModel = $MessageContentModel ?? new MessageContentModel();
+        $this->MessageContentModel = new MessageContentModel();
         // 消息类型
-        $this->MessageTypeModel = $MessageTypeModel ?? new MessageTypeModel();
+        $this->MessageTypeModel = new MessageTypeModel();
+        // 设置页面title
+        $this->setTitle('消息管理');
     }
 
     /**
@@ -116,10 +114,10 @@ class Message extends Admin
     public function send()
     {
         if (request()->isPost()) {
-            $data = input('post.',[]);
+            $data = input();
             // 数据验证
             try {
-                validate(Common::class)->scene('message')->check((array)$data);
+                validate(Common::class)->scene('message')->check($data);
             } catch (ValidateException $e) {
                 // 验证失败 输出错误信息
                 return $this->error($e->getError());
@@ -231,17 +229,8 @@ class Message extends Admin
      */
     public function messageStatus()
     {
-        $ids = input('ids/a', []);
-        if (!is_array($ids)) {
-            $ids = explode(',', (string)$ids);
-        }
-        
-        // 验证 IDs
-        $ids = array_filter($ids, 'is_numeric');
-        if (empty($ids)) {
-            return $this->error('请选择要操作的数据');
-        }
-
+        $ids = input('ids/a');
+        !is_array($ids) && $ids = explode(',',$ids);
         $status = input('status', 0, 'intval');
         $title = '更新';
         if($status == 0){
@@ -269,16 +258,8 @@ class Message extends Admin
      */
     public function typeStatus()
     {
-        $ids = input('ids/a', []);
-        if (!is_array($ids)) {
-            $ids = explode(',', (string)$ids);
-        }
-        
-        // 验证 IDs
-        $ids = array_filter($ids, 'is_numeric');
-        if (empty($ids)) {
-            return $this->error('请选择要操作的数据');
-        }
+        $ids = input('ids/a');
+        !is_array($ids)&&$ids=explode(',',$ids);
         $status = input('status', 0, 'intval');
         $title = '更新';
         if($status == 0){
@@ -395,16 +376,8 @@ class Message extends Admin
      */
     public function contentStatus()
     {
-        $ids = input('ids/a', []);
-        if (!is_array($ids)) {
-            $ids = explode(',', (string)$ids);
-        }
-        
-        // 验证 IDs
-        $ids = array_filter($ids, 'is_numeric');
-        if (empty($ids)) {
-            return $this->error('请选择要操作的数据');
-        }
+        $ids = input('ids/a');
+        !is_array($ids) && $ids = explode(',',$ids);
         $status = input('status', 0, 'intval');
         $title = '更新';
         if($status == 0){

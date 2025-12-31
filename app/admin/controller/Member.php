@@ -23,12 +23,11 @@ class Member extends Admin
      * @access public
      * @param  App  $app  应用对象
      */
-    public function __construct(
-        ?MemberModel $MemberModel = null
-    )
+    public function __construct()
     {
         parent::__construct();
-        $this->MemberModel = $MemberModel ?? new MemberModel();
+
+        $this->MemberModel = new MemberModel();
     }
 
     /**
@@ -100,16 +99,8 @@ class Member extends Admin
      */
     public function initPass()
     {
-        $ids = input('ids/a', []);
-        if (!is_array($ids)) {
-            $ids = explode(',', (string)$ids);
-        }
-        
-        // 验证 IDs
-        $ids = array_filter($ids, 'is_numeric');
-        if (empty($ids)) {
-            return $this->error('请选择要操作的数据');
-        }
+        $ids = input('ids/a');
+        !is_array($ids) && $ids = explode(',', $ids);
 
         foreach ($ids as $key => $val) {
             if (!query_user($val, ['uid'])) {
@@ -190,7 +181,7 @@ class Member extends Admin
 
             /* 积分 start*/
             $data_score = [];
-            foreach ((array)$data as $key => $val) {
+            foreach ($data as $key => $val) {
                 if (substr($key, 0, 5) == 'score') {
                     $data_score[$key] = intval($val);
                 }
@@ -300,15 +291,8 @@ class Member extends Admin
      */
     public function status($method = null)
     {
-        $ids = input('ids/a', []);
-        if (!is_array($ids)) {
-            $ids = explode(',', (string)$ids);
-        }
-        // 验证 IDs
-        $ids = array_filter($ids, 'is_numeric');
-        if (empty($ids)) {
-            return $this->error('请选择要操作的数据');
-        }
+        $ids = input('ids/a');
+        !is_array($ids) && $ids = explode(',', $ids);
         if (count(array_intersect(explode(',', config('auth.auth_administrator')), $ids)) > 0) {
             return $this->error('不允许对超管进行该操作');
         }

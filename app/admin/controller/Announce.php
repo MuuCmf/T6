@@ -32,9 +32,9 @@ class Announce extends Admin
      * @param AnnounceLogic|null $announceLogic
      */
     public function __construct(
-        ?ModuleModel $moduleModel = null,
-        ?AnnounceModel $announceModel = null,
-        ?AnnounceLogic $announceLogic = null
+        ModuleModel $moduleModel = null,
+        AnnounceModel $announceModel = null,
+        AnnounceLogic $announceLogic = null
     ) {
         parent::__construct();
         $this->moduleModel = $moduleModel ?? new ModuleModel();
@@ -140,10 +140,10 @@ class Announce extends Admin
         View::assign('teminal', $teminal);
 
         if (request()->isPost()) {
-            return $this->handleEdit((int)$id, $title);
+            return $this->handleEdit($id, $title);
         }
         
-        return $this->showEditForm((int)$id, $teminal);
+        return $this->showEditForm($id, $teminal);
     }
     
     /**

@@ -14,19 +14,18 @@ use think\exception\ValidateException;
  */
 class Extend extends Admin
 {
+    protected $moduleModel;
     protected $extendConfigModel;
 
     /**
      * 构造方法
      * @access public
      */
-    public function __construct(
-        ?MuuExtendConfigModel $extendConfigModel = null
-    )
+    public function __construct()
     {
         parent::__construct();
 
-        $this->extendConfigModel = $extendConfigModel ?? new MuuExtendConfigModel();
+        $this->extendConfigModel = new MuuExtendConfigModel();
     }
 
     /**

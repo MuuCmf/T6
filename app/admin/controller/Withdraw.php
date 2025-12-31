@@ -16,14 +16,11 @@ class Withdraw extends Admin
 {
     protected $WithdrawModel;
     protected $WithdrawLogic;
-    function __construct(
-        ?WithdrawModel $WithdrawModel = null,
-        ?WithdrawLogic $WithdrawLogic = null
-    )
+    function __construct()
     {
         parent::__construct();
-        $this->WithdrawModel = $WithdrawModel ?? new WithdrawModel();
-        $this->WithdrawLogic = $WithdrawLogic ?? new WithdrawLogic();
+        $this->WithdrawModel = new WithdrawModel();
+        $this->WithdrawLogic = new WithdrawLogic();
     }
 
     /**
