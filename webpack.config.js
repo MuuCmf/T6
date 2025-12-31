@@ -17,16 +17,36 @@ function createConfig(module, isProduction = false) {
   const jsPath = path.join(srcPath, 'js');
   const cssPath = path.join(srcPath, 'css');
 
-  if (module === 'admin' || module === 'common' || module === 'ucenter' || module === 'channel') {
+  if (module === 'admin' || module === 'common' || module === 'ucenter' || module === 'channel' || module === 'index') {
     entry['admin'] = path.join(srcPath, 'index.js');
-  } 
+  } else {
+    // articles 模块特殊处理: admin, pc 和 diy 子目录分别构建
+    entry['admin'] = path.join(srcPath, 'admin/index.js');
+    entry['pc'] = path.join(srcPath, 'pc/index.js');
+    // diy 目录下的文件
+    entry['diy/pc/articles_list'] = path.join(srcPath, 'diy/pc/index.js');
+    entry['diy/mobile/articles_list'] = path.join(srcPath, 'diy/mobile/articles_list.js');
+    entry['diy/link/articles_detail'] = path.join(srcPath, 'diy/link/articles_detail.js');
+    entry['diy/link/articles_list'] = path.join(srcPath, 'diy/link/articles_list.js');
+  }
   
   const baseConfig = {
     mode: isProduction ? 'production' : 'development',
     entry,
     output: {
       path: distPath,
-      filename: 'js/main.min.js',
+      filename: (pathData) => {
+        // articles 模块保持目录结构
+        if (module === 'articles') {
+          // diy 目录下的文件保持原始文件名,只添加 .min
+          if (pathData.chunk.name.startsWith('diy/')) {
+            const chunkName = pathData.chunk.name.replace('diy/', '');
+            return `diy/${chunkName}.min.js`;
+          }
+          return `${pathData.chunk.name}/js/main.min.js`;
+        }
+        return 'js/main.min.js';
+      },
       clean: false
     },
     module: {
@@ -92,11 +112,22 @@ function createConfig(module, isProduction = false) {
     },
     plugins: [
       new CleanWebpackPlugin({
-        cleanOnceBeforeBuildPatterns: ['**/*', '!lib/**', '!images/**'],
+        cleanOnceBeforeBuildPatterns: ['**/*', '!lib/**', '!images/**', '!diy/**'],
         verbose: false
       }),
       new MiniCssExtractPlugin({
-        filename: 'css/main.min.css'
+        filename: (pathData) => {
+          // articles 模块保持目录结构
+          if (module === 'articles') {
+            // diy 目录下的文件保持原始文件名,只添加 .min
+            if (pathData.chunk.name.startsWith('diy/')) {
+              const chunkName = pathData.chunk.name.replace('diy/', '');
+              return `diy/${chunkName}.min.css`;
+            }
+            return `${pathData.chunk.name}/css/main.min.css`;
+          }
+          return 'css/main.min.css';
+        }
       }),
       new CopyPlugin({
         patterns: [

@@ -1,7 +1,7 @@
 {
-  "name": "MuuCmf-T6",
+  "name": "muucmf_t6",
   "version": "1.0.0",
-  "description": "Muucmf.cn",
+  "description": "Muucmf.cc",
   "main": "index.js",
   "scripts": {
     "dev": "webpack --mode development",

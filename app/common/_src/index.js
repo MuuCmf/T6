@@ -9,6 +9,7 @@ import "./css/login.scss"
 import "./css/message.scss"
 import "./css/pagination.scss"
 import "./css/pay.scss"
+import "./css/search.scss"
 
 // 导入模块所有js文件
 import './js/ajax.js'
