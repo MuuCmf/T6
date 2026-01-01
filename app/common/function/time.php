@@ -9,7 +9,7 @@
 if (!function_exists('time_format')) {
     function time_format($time = NULL, $format = 'Y-m-d H:i')
     {
-        $time = $time === NULL ? time() : intval($time);
+        $time = empty($time) ? time() : intval($time);
         return date($format, $time);
     }
 }
