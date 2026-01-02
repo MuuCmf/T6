@@ -6,8 +6,7 @@
  *
  * 当添加新的需要独立配置的模块时：
  * 1. 在 app/{模块名}/ 目录下创建 webpack.config.js
- * 2. 在 webpack.config.js 的 modules 数组中添加模块名
- * 3. 在 package.json 中添加构建命令（可选）
+ * 2. 在 package.json 中添加构建命令（可选）
  *
  * 无需手动在此文件中注册！
  */
