@@ -1,4 +1,5 @@
 <?php
+
 namespace app\admin\controller;
 
 use think\facade\View;
@@ -30,35 +31,35 @@ class Author extends Admin
     public function lists()
     {
         $map = [];
-        $keyword = input('keyword','','text');
-        if(!empty($keyword)){
-            $map[] = ['name', 'like', '%'.$keyword.'%'];
+        $keyword = input('keyword', '', 'text');
+        if (!empty($keyword)) {
+            $map[] = ['name', 'like', '%' . $keyword . '%'];
         }
         View::assign('keyword', $keyword);
 
         $status = input('status', 'all');
-        if($status === 'all'){
+        if ($status === 'all') {
             $map[] = ['status', '>', -3];
-        }else{
-            if(intval($status) == 1){
+        } else {
+            if (intval($status) == 1) {
                 $map[] = ['status', '=', 1];
             }
-            if(intval($status) == 0 && $status != 'all'){
+            if (intval($status) == 0 && $status != 'all') {
                 $map[] = ['status', '=', 0];
             }
-            if(intval($status) == -1){
+            if (intval($status) == -1) {
                 $map[] = ['status', '=', -1];
             }
-            if(intval($status) == -2){
+            if (intval($status) == -2) {
                 $map[] = ['status', '=', -2];
             }
-            if(intval($status) == -3){
+            if (intval($status) == -3) {
                 $map[] = ['status', '=', -3];
             }
         }
         View::assign('status', $status);
 
-        $rows = input('rows',20, 'intval');
+        $rows = input('rows', 20, 'intval');
         View::assign('rows', $rows);
         $order_field = input('order_field', 'id', 'text');
         $order_type = input('order_type', 'desc', 'text');
@@ -68,25 +69,25 @@ class Author extends Admin
         $lists = $this->AuthorModel->getListByPage($map, $order, '*', $rows);
         // 分页按钮
         $pager = $lists->render();
-        View::assign('pager',$pager);
+        View::assign('pager', $pager);
 
         // 格式化数据
         $lists = $lists->toArray();
-        foreach($lists['data'] as &$val){
+        foreach ($lists['data'] as &$val) {
             $val = $this->AuthorLogic->formatData($val);
         }
         unset($val);
 
         // ajax返回
-        if(request()->isAjax()){
+        if (request()->isAjax()) {
             return $this->success('success', $lists);
         }
-        View::assign('lists',$lists);
+        View::assign('lists', $lists);
 
         // 获取未审核数量
         $unverify = $this->AuthorModel->where('status', -1)->count();
         View::assign('unverify', $unverify);
-        
+
         // 记录当前列表页的cookie
         cookie('__forward__', $_SERVER['REQUEST_URI']);
         // 设置页面title
@@ -99,7 +100,7 @@ class Author extends Admin
      * 编辑/添加
      */
     public function edit()
-    {   
+    {
         $id = input('id', 0, 'intval');
         $title = $id ? "编辑" : "新建";
         View::assign('title', $title);
@@ -115,12 +116,12 @@ class Author extends Admin
                 return $this->error($e->getError());
             }
             $res = $this->AuthorModel->edit($data);
-            if($res){
-                return $this->success($title . '成功',$res, cookie('__forward__'));
-            }else{
+            if ($res) {
+                return $this->success($title . '成功', $res, cookie('__forward__'));
+            } else {
                 return $this->success($title . '失败');
             }
-        }else{
+        } else {
             // 初始化数据结构
             $data = [];
             $data['id'] = 0;
@@ -137,7 +138,7 @@ class Author extends Admin
             $data['status'] = 0;
             $data['reason'] = '';
             $data['user_info'] = [];
-            if(!empty($id)){
+            if (!empty($id)) {
                 $data = $this->AuthorModel->getDataById($id);
                 $data = $this->AuthorLogic->formatData($data);
             }
@@ -159,26 +160,29 @@ class Author extends Admin
      * 设置内容状态
      */
     public function status()
-    {   
+    {
         $ids = input('ids/a');
-        !is_array($ids)&&$ids=explode(',',$ids);
+        if (empty($ids)) {
+            return $this->error('请选择要操作的数据');
+        }
+        !is_array($ids) && $ids = explode(',', $ids);
         $status = input('status', 0, 'intval');
         $title = '更新';
-        if($status == 0){
+        if ($status == 0) {
             $title = '禁用';
         }
-        if($status == 1){
+        if ($status == 1) {
             $title = '启用';
         }
-        if($status == -1){
+        if ($status == -1) {
             $title = '删除';
         }
         $data['status'] = $status;
 
         $res = $this->AuthorModel->where('id', 'in', $ids)->update($data);
-        if($res){
+        if ($res) {
             return $this->success($title . '成功');
-        }else{
+        } else {
             return $this->error($title . '失败');
         }
     }
@@ -194,13 +198,13 @@ class Author extends Admin
     public function del()
     {
         $ids = input('ids/a');
-        !is_array($ids)&&$ids=explode(',',$ids);
+        !is_array($ids) && $ids = explode(',', $ids);
         $res = $this->AuthorModel->where('id', 'in', $ids)->delete();
-        if($res){
+        if ($res) {
             return $this->success('删除成功');
-        }else{
+        } else {
             return $this->error('删除失败');
-        }  
+        }
     }
 
     /**
@@ -215,9 +219,9 @@ class Author extends Admin
             ['shopid', '=', 0],
             ['uid', '=', $uid]
         ]);
-        if($res && $res['id'] != $id){
+        if ($res && $res['id'] != $id) {
             return $this->error('该用户已绑定角色');
-        }else{
+        } else {
             return $this->success('验证成功，允许绑定角色');
         }
     }
@@ -227,7 +231,7 @@ class Author extends Admin
      */
     public function verify()
     {
-        $id = input('id',0,'intval');
+        $id = input('id', 0, 'intval');
         View::assign('id', $id);
         if (request()->isPost()) {
             $status = input('status', -1, 'intval');
@@ -237,18 +241,18 @@ class Author extends Admin
                 'reason' => $reason
             ]);
 
-            if($res){
+            if ($res) {
                 return $this->success('操作成功');
-            }else{
+            } else {
                 return $this->error('操作失败');
-            }  
+            }
         }
 
-        if(!empty($id)){
+        if (!empty($id)) {
             $data = $this->AuthorModel->getDataById($id);
             $data = $this->AuthorLogic->formatData($data);
         }
-        View::assign('data',$data);
+        View::assign('data', $data);
 
         // 输出模板
         return View::fetch();
@@ -273,7 +277,7 @@ class Author extends Admin
             ->setStatusUrl(url('groupStatus'))
             ->buttonEnable()
             ->buttonDisable()
-            ->buttonDelete(url('groupStatus'),'删除')
+            ->buttonDelete(url('groupStatus'), '删除')
             ->keyId()
             ->keyText('title', '名称')
             ->keyStatus()
@@ -308,17 +312,17 @@ class Author extends Admin
 
             $builder = new AdminConfigBuilder();
             if ($id != 0) {
-                $profile = $this->AuthorGroupModel->where(['id'=>$id])->find();
+                $profile = $this->AuthorGroupModel->where(['id' => $id])->find();
                 $builder->title('修改角色类型');
             } else {
                 $builder->title('添加角色类型');
                 $profile = [];
             }
-            
+
             $builder
                 ->keyReadOnly("id", 'ID')
                 ->keyText('title', '名称')
-                ->keyStatus('status','状态')
+                ->keyStatus('status', '状态')
                 ->data($profile);
             $builder
                 ->buttonSubmit(url('groupEdit'), $id == 0 ? lang('Add') : lang('Edit'))
@@ -333,13 +337,12 @@ class Author extends Admin
     public function groupStatus($ids, $status)
     {
         $ids = array_unique((array)$ids);
-        $ids = implode(',',$ids);
-        $rs = $this->AuthorGroupModel->where('id','in', $ids)->update(['status' => $status]);
+        $ids = implode(',', $ids);
+        $rs = $this->AuthorGroupModel->where('id', 'in', $ids)->update(['status' => $status]);
         if ($rs) {
-            return $this->success('设置成功', $_SERVER['HTTP_REFERER']); 
-        }else{
+            return $this->success('设置成功', $_SERVER['HTTP_REFERER']);
+        } else {
             return $this->error('设置失败');
         }
     }
-
 }
