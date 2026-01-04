@@ -51,6 +51,16 @@ class Tominiprogram extends MuuAdmin
         return view();
     }
 
+    /**
+     * 编辑小程序信息
+     * 
+     * 处理AJAX请求和非AJAX请求两种情况：
+     * - AJAX请求时，接收并验证表单数据，调用模型保存数据
+     * - 非AJAX请求时，根据ID获取小程序信息并渲染编辑页面
+     * 
+     * @return mixed AJAX请求返回JSON响应，非AJAX请求返回视图渲染结果
+     * @throws \think\Exception 数据库操作异常时抛出
+     */
     public function edit()
     {
         $id = input('id', 0);
@@ -69,6 +79,7 @@ class Tominiprogram extends MuuAdmin
             }
             return $this->error('保存失败');
         }
+
         $id = input('id', 0);
         $data = $this->TominiprogramModel->where('id', $id)->where('shopid', $this->shopid)->find();
         if ($data) {
@@ -81,7 +92,9 @@ class Tominiprogram extends MuuAdmin
             'data' => $data,
             'type' => input('type', 'weixin_app')
         ]);
-        return \view();
+        $this->setTitle('编辑跳转小程序');
+
+        return View::fetch();
     }
 
     /**

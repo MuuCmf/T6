@@ -18,9 +18,10 @@ class Tominiprogram extends Base
     public function formatData($data)
     {
         $data['type_str'] = $this->_type[$data['type']];
-
+        
         $data = $this->setImgAttr($data, '1:1', 'qrcode');
         $data = $this->setTimeAttr($data);
+
         return $data;
     }
 }
