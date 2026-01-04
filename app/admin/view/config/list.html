@@ -71,8 +71,8 @@
                     <td>{$config.group|get_config_group}</td>
                     <td>{$config.type|get_config_type}</td>
                     <td>
-                        <a title="{:lang('_EDIT_')}" href="{:Url('edit?id='.$config['id'])}">编辑</a>
-                        <a class="confirm ajax-get" title="{:lang('_DELETE_')}" href="{:Url('del?id='.$config['id'])}">删除</a>
+                        <a class="btn btn-sm btn-primary" title="{:lang('_EDIT_')}" href="{:Url('edit?id='.$config['id'])}">编辑</a>
+                        <a class="btn btn-sm btn-danger confirm ajax-get" title="{:lang('_DELETE_')}" href="{:Url('del?id='.$config['id'])}">删除</a>
                     </td>
                 </tr>
             {/volist}
