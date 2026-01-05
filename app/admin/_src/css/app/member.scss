@@ -303,10 +303,12 @@
 
     .user-section {
         padding: 0 14px;
+        display: flex;
+        flex-wrap: wrap;
+        width: 598px;
 
         .user-item {
-            float: left;
-            width: 172px;
+            width: 178px;
             margin: 6px;
             padding: 5px;
             border: 1px solid #eee;
