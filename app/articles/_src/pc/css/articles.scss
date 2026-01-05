@@ -1,11 +1,12 @@
-
 .article-section {
     padding-bottom: 38px;
+
     .right-block {
 
-        /*变量块标题*/  
+        /*变量块标题*/
         .slide-title {
             padding: 0 0 10px 0;
+
             .extend-line {
                 width: 5px;
                 height: 22px;
@@ -13,6 +14,7 @@
                 background-color: #03b8cf;
                 margin: 3px 0 3px 0;
             }
+
             .title {
                 margin: 0;
                 margin-left: 15px;
@@ -28,44 +30,52 @@
                     font-size: 16px;
                     font-weight: 600;
                     color: #666;
+
                     &:hover {
                         color: #03b8cf;
                         text-decoration: none;
+                        background-color: #f2f2f2;
                     }
                 }
+
                 a.active {
                     color: #fff;
                     background-color: #03b8cf;
                     border-color: #03b8cf;
+
                     &:hover {
-                        color: #fff!important;
+                        color: #fff !important;
                         text-decoration: none;
                     }
                 }
             }
         }
-    
+
         /*热门*/
         .hot-section {
             .list-group {
                 .top-item {
                     position: relative;
                     margin-bottom: 10px;
+
                     .cover {
                         position: relative;
+
                         .image {
                             display: block;
                             border-radius: 3px;
                         }
+
                         .bg {
                             position: absolute;
                             top: 0;
                             bottom: 0;
                             left: 0;
                             right: 0;
-                            background: rgba(0,0,0,.4);
+                            background: rgba(0, 0, 0, .4);
                             z-index: 3;
                         }
+
                         .num {
                             position: absolute;
                             top: 0;
@@ -75,6 +85,7 @@
                             font-size: 36px;
                             font-style: italic;
                         }
+
                         .num1 {
                             top: 0;
                             left: -8px;
@@ -85,6 +96,7 @@
                             background-size: 60px 68px;
                             background-position: 0 0;
                         }
+
                         .num2 {
                             top: 0;
                             left: -8px;
@@ -96,6 +108,7 @@
                             background-position: 0 -35px;
                         }
                     }
+
                     .content {
                         position: absolute;
                         left: 0;
@@ -103,32 +116,39 @@
                         bottom: 0;
                         z-index: 5;
                         padding: 10px;
+
                         .title {
                             color: #fff;
                             line-height: 22px;
                         }
+
                         .info {
                             color: #fff;
                         }
                     }
                 }
+
                 .other-item {
                     position: relative;
                     margin-bottom: 10px;
+
                     .cover {
                         float: left;
                         width: 80px;
+
                         img {
                             display: block;
                             margin: 0;
                             border-radius: 3px;
                         }
                     }
+
                     .content {
                         position: relative;
                         margin-left: 80px;
                         padding: 0 0 0 10px;
                         height: 60px;
+
                         a {
                             .title {
                                 margin: 5px 0 10px 0;
@@ -136,23 +156,27 @@
                                 font-size: 14px;
                                 color: #000;
                             }
+
                             &:hover {
                                 text-decoration: none;
+
                                 .title {
                                     color: #03b8cf;
                                 }
                             }
                         }
-                        
+
                         .description {
                             color: #666;
                         }
+
                         .info {
                             position: absolute;
                             left: 0;
                             right: 0;
                             bottom: 0;
                             padding: 0 0 0 10px;
+
                             .create-time {
                                 float: left;
                                 color: #999;
@@ -182,51 +206,63 @@
                     float: left;
                     width: 200px;
                     height: 150px;
+
                     .image {
                         border-radius: 5px;
                     }
                 }
+
                 .content {
                     position: relative;
                     margin-left: 210px;
                     height: 150px;
+
                     .title {
                         font-size: 20px;
                         font-weight: 600;
                         margin-bottom: 10px;
+
                         a {
                             color: #000;
+
                             &:hover {
                                 color: #03b8cf;
                             }
                         }
                     }
+
                     .description {
                         font-size: 14px;
                         color: #666;
                     }
+
                     .data {
                         position: absolute;
                         left: 0;
                         right: 0;
                         bottom: 0;
                         line-height: 26px;
+
                         .category {
                             font-size: 16px;
                             color: #888;
                         }
+
                         .view {
                             color: #888;
                             padding-right: 10px;
                         }
+
                         .support {
                             color: #888;
                             padding-right: 10px;
                         }
+
                         .favorites {
                             color: #888;
                             padding-right: 10px;
                         }
+
                         .time {
                             text-align: right;
                             color: #888;
@@ -252,32 +288,37 @@
 
     .articles-title {
         .title {
-            
+
             h2 {
                 color: #000;
                 font-size: 32px;
                 font-weight: 500;
             }
         }
+
         .info {
             .category {
                 font-size: 16px;
+
                 a {
                     color: #03b8cf;
+
                     &:hover {
                         text-decoration-line: underline;
                     }
                 }
             }
+
             .create-time {
                 padding-left: 20px;
                 color: #333;
             }
         }
+
         >.description {
             margin-top: 10px;
         }
-        
+
     }
 
     .news-content {
@@ -299,16 +340,20 @@
         flex-direction: row;
         padding: 10px 0;
         margin-top: 20px;
+
         .item {
             flex: 1;
             padding-right: 10px;
+
             .meta-nav {
                 font-size: 16px;
                 font-weight: 600;
             }
+
             a {
                 color: #03b8cf;
                 font-size: 16px;
+
                 &:hover {
                     color: #000;
                 }
@@ -320,10 +365,12 @@
         padding: 10px;
         margin-top: 30px;
         text-align: center;
+
         /*点赞按钮容器*/
         .support-section {
             display: inline-block;
             margin: 10px;
+
             .support-btn {
                 width: 80px;
                 height: 80px;
@@ -337,16 +384,19 @@
                 color: #ddd;
                 cursor: pointer;
             }
+
             .support-btn.active {
                 border-color: #ffcc00;
                 background-color: #ffcc00;
                 color: #fff;
             }
         }
+
         /*收藏按钮容器*/
         .favorites-section {
             display: inline-block;
             margin: 10px;
+
             .favorites-btn {
                 width: 80px;
                 height: 80px;
@@ -360,6 +410,7 @@
                 color: #ddd;
                 cursor: pointer;
             }
+
             .favorites-btn.active {
                 border-color: #ffcc00;
                 background-color: #ffcc00;
@@ -367,12 +418,11 @@
             }
         }
     }
-    
+
     /*评论容器*/
     .comment-section {
-        h3 {
+        h3 {}
 
-        }
         .add-comment {
             .user {
                 float: left;
@@ -380,27 +430,32 @@
                 height: 97px;
                 padding-top: 10px;
                 overflow: hidden;
+
                 .avatar {
                     width: 48px;
                     height: 48px;
                     margin: 0 auto;
                     border-radius: 50%;
                     overflow: hidden;
+
                     img {
                         width: 100%;
                         display: block;
                         margin: 0;
                     }
                 }
+
                 .nickname {
                     margin-top: 10px;
                     text-align: center;
                     color: #666;
                 }
             }
+
             .form-comment {
                 margin-left: 120px;
                 padding-left: 10px;
+
                 .textarea {
                     padding: 16px 16px 23px;
                     width: 100%;
@@ -410,10 +465,12 @@
                     border: none;
                     color: #1f1f1f;
                     appearance: textarea;
+
                     &:focus {
                         outline: none;
                     }
                 }
+
                 .comment-submit-box {
                     margin-top: 5px;
                     text-align: right;
@@ -422,32 +479,40 @@
         }
 
         .list-section {
-            .loading,.empty {
+
+            .loading,
+            .empty {
                 text-align: center;
                 padding: 10px 0;
                 line-height: 120px;
                 color: #999;
             }
+
             .item {
                 margin-bottom: 10px;
+
                 .avatar {
                     float: left;
                     width: 48px;
                     height: 48px;
                     border-radius: 50%;
                     overflow: hidden;
+
                     img {
                         width: 100%;
                         margin: 0;
                         display: block;
                     }
                 }
+
                 .content {
                     margin-left: 48px;
                     padding: 0 0 0 10px;
+
                     .nickname {
                         color: #999;
                     }
+
                     .comment-detail {
                         .comment-bottom {
                             .time {
@@ -455,19 +520,23 @@
                                 color: #999;
                                 font-size: 12px;
                             }
+
                             .support {
                                 float: right;
                                 color: #999;
                                 font-size: 12px;
                                 cursor: pointer;
+
                                 p {
                                     display: inline-block;
                                     margin-left: 10px;
                                     font-size: 12px;
                                 }
                             }
+
                             .support.active {
                                 color: #ffcc00;
+
                                 p {
                                     color: #999;
                                 }
@@ -478,6 +547,529 @@
             }
         }
     }
+}
 
+.Blue {
+    .articles-lists-section {
+        .articles-lists-box {
+            .items {
+                .item {
+                    .title {
+                        a {
+                            &:hover {
+                                color: #03b8cf;
+                                ;
+                            }
+                        }
+                    }
+                }
+            }
+        }
 
+        .right-block {
+            .extend-line {
+                background-color: #03b8cf;
+            }
+
+            .category-section {
+                .list-group {
+                    .list-group-item {
+                        &:hover {
+                            color: #03b8cf;
+                        }
+                    }
+                    .list-group-item.active {
+                        background-color: #03b8cf;
+                        border-color: #03b8cf;
+                    }
+                }
+            }
+        }
+    }
+
+    .articles-detail-section {
+        .articles-title {
+            .category {
+                a {
+                    color: #03b8cf;
+                }
+            }
+        }
+
+        .nav-link {
+            .item {
+                a {
+                    color: #03b8cf;
+                }
+            }
+        }
+
+        .comment-section {
+            .comment-submit-box {
+                .btn-info {
+                    background-color: #03b8cf;
+                    border-color: #03b8cf;
+                }
+            }
+        }
+
+        .right-block {
+            .extend-line {
+                background-color: #03b8cf;
+            }
+
+            .list-group {
+                .other-item {
+                    a {
+                        &:hover {
+                            color: #03b8cf;
+                        }
+                    }
+                }
+            }
+
+            .btn-articles {
+                background-color: #03b8cf;
+                border-color: #03b8cf;
+            }
+        }
+    }
+}
+
+.Green {
+    .articles-lists-section {
+        .articles-lists-box {
+            .items {
+                .item {
+                    .title {
+                        a {
+                            &:hover {
+                                color: #00ce74;
+                                ;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        .right-block {
+            .extend-line {
+                background-color: #00ce74;
+            }
+
+            .category-section {
+                .list-group {
+                    .list-group-item {
+                        &:hover {
+                            color: #00ce74;
+                        }
+                    }
+                    .list-group-item.active {
+                        background-color: #00ce74;
+                        border-color: #00ce74;
+                    }
+                }
+            }
+        }
+    }
+
+    .articles-detail-section {
+        .articles-title {
+            .category {
+                a {
+                    color: #00ce74;
+                }
+            }
+        }
+
+        .nav-link {
+            .item {
+                a {
+                    color: #00ce74;
+                }
+            }
+        }
+
+        .comment-section {
+            .comment-submit-box {
+                .btn-info {
+                    background-color: #00ce74;
+                    border-color: #00ce74;
+                }
+            }
+        }
+
+        .right-block {
+            .extend-line {
+                background-color: #00ce74;
+            }
+
+            .list-group {
+                .other-item {
+                    a {
+                        &:hover {
+                            color: #00ce74;
+                        }
+                    }
+                }
+            }
+
+            .btn-articles {
+                background-color: #00ce74;
+                border-color: #00ce74;
+            }
+        }
+    }
+}
+
+.LightRed {
+    .articles-lists-section {
+        .articles-lists-box {
+            .items {
+                .item {
+                    .title {
+                        a {
+                            &:hover {
+                                color: #ea644a;
+                                ;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        .right-block {
+            .extend-line {
+                background-color: #ea644a;
+            }
+
+            .category-section {
+                .list-group {
+                    .list-group-item {
+                        &:hover {
+                            color: #ea644a;
+                        }
+                    }
+                    .list-group-item.active {
+                        background-color: #ea644a;
+                        border-color: #ea644a;
+                    }
+                }
+            }
+        }
+    }
+
+    .articles-detail-section {
+        .articles-title {
+            .category {
+                a {
+                    color: #ea644a;
+                }
+            }
+        }
+
+        .nav-link {
+            .item {
+                a {
+                    color: #ea644a;
+                }
+            }
+        }
+
+        .comment-section {
+            .comment-submit-box {
+                .btn-info {
+                    background-color: #ea644a;
+                    border-color: #ea644a;
+                }
+            }
+        }
+
+        .right-block {
+            .extend-line {
+                background-color: #ea644a;
+            }
+
+            .list-group {
+                .other-item {
+                    a {
+                        &:hover {
+                            color: #ea644a;
+                        }
+                    }
+                }
+            }
+
+            .btn-articles {
+                background-color: #ea644a;
+                border-color: #ea644a;
+            }
+        }
+    }
+}
+
+.Orange {
+    .articles-lists-section {
+        .articles-lists-box {
+            .items {
+                .item {
+                    .title {
+                        a {
+                            &:hover {
+                                color: #ff9900;
+                                ;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        .right-block {
+            .extend-line {
+                background-color: #ff9900;
+            }
+
+            .category-section {
+
+                .list-group {
+                    .list-group-item {
+                        &:hover {
+                            color: #ff9900;
+                        }
+                    }
+                    .list-group-item.active {
+                        background-color: #ff9900;
+                        border-color: #ff9900;
+                    }
+                }
+            }
+        }
+    }
+
+    .articles-detail-section {
+        .articles-title {
+            .category {
+                a {
+                    color: #ff9900;
+                }
+            }
+        }
+
+        .nav-link {
+            .item {
+                a {
+                    color: #ff9900;
+                }
+            }
+        }
+
+        .comment-section {
+            .comment-submit-box {
+                .btn-info {
+                    background-color: #ff9900;
+                    border-color: #ff9900;
+                }
+            }
+        }
+
+        .right-block {
+            .extend-line {
+                background-color: #ff9900;
+            }
+
+            .list-group {
+                .other-item {
+                    a {
+                        &:hover {
+                            color: #ff9900;
+                        }
+                    }
+                }
+            }
+
+            .btn-articles {
+                background-color: #ff9900;
+                border-color: #ff9900;
+            }
+        }
+    }
+}
+
+.LightPink {
+    .articles-lists-section {
+        .articles-lists-box {
+            .items {
+                .item {
+                    .title {
+                        a {
+                            &:hover {
+                                color: #FFB6C1;
+                                ;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        .right-block {
+            .extend-line {
+                background-color: #FFB6C1;
+            }
+
+            .category-section {
+
+                .list-group {
+                    .list-group-item {
+                        &:hover {
+                            color: #FFB6C1;
+                        }
+                    }
+                    .list-group-item.active {
+                        background-color: #FFB6C1;
+                        border-color: #FFB6C1;
+                    }
+                }
+            }
+        }
+    }
+
+    .articles-detail-section {
+        .articles-title {
+            .category {
+                a {
+                    color: #FFB6C1;
+                }
+            }
+        }
+
+        .nav-link {
+            .item {
+                a {
+                    color: #FFB6C1;
+                }
+            }
+        }
+
+        .comment-section {
+            .comment-submit-box {
+                .btn-info {
+                    background-color: #FFB6C1;
+                    border-color: #FFB6C1;
+                }
+            }
+        }
+
+        .right-block {
+            .extend-line {
+                background-color: #FFB6C1;
+            }
+
+            .list-group {
+                .other-item {
+                    a {
+                        &:hover {
+                            color: #FFB6C1;
+                        }
+                    }
+                }
+            }
+
+            .btn-articles {
+                background-color: #FFB6C1;
+                border-color: #FFB6C1;
+            }
+        }
+    }
+}
+
+.Magenta {
+    .articles-lists-section {
+        .articles-lists-box {
+            .items {
+                .item {
+                    .title {
+                        a {
+                            &:hover {
+                                color: #8666b8;
+                                ;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        .right-block {
+            .extend-line {
+                background-color: #8666b8;
+            }
+
+            .category-section {
+
+                .list-group {
+                    .list-group-item {
+                        &:hover {
+                            color: #8666b8;
+                        }
+                    }
+                    .list-group-item.active {
+                        background-color: #8666b8;
+                        border-color: #8666b8;
+                    }
+                }
+            }
+        }
+    }
+
+    .articles-detail-section {
+        .articles-title {
+            .category {
+                a {
+                    color: #8666b8;
+                }
+            }
+        }
+
+        .nav-link {
+            .item {
+                a {
+                    color: #8666b8;
+                }
+            }
+        }
+
+        .comment-section {
+            .comment-submit-box {
+                .btn-info {
+                    background-color: #8666b8;
+                    border-color: #8666b8;
+                }
+            }
+        }
+
+        .right-block {
+            .extend-line {
+                background-color: #8666b8;
+            }
+
+            .list-group {
+                .other-item {
+                    a {
+                        &:hover {
+                            color: #8666b8;
+                        }
+                    }
+                }
+            }
+
+            .btn-articles {
+                background-color: #8666b8;
+                border-color: #8666b8;
+            }
+        }
+    }
 }
