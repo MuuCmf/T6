@@ -666,7 +666,7 @@ $html_header
         <li>不得对本软件或与之关联的商业授权进行出租、出售、抵押或发放子许可证。</li>
         <li>无论用途如何、是否经过修改或美化、修改程度如何，只要使用本系统的整体或任何部分，未经授权许可，页面页脚处的本系统的版权信息都必须保留，而不能清除或修改（另行约定除外）。</li>
         <li>禁止在本系统的整体或任何部分基础上以发展任何派生版本、修改版本或第三方版本用于重新分发。</li>
-        <li>如果您未能遵守本协议的条款，您的授权将被终止，所许可的权利将被收回，同时您应承担相应法律责任。</li>
+        <li>如果您未能遵守本协议的条款，您的授权将被终止，所许可的权利将被收回，同时您负有相应法律责任。</li>
       </ol>
       <p></p>
 
@@ -827,7 +827,11 @@ EOF;
     $sitepath = str_replace('install', "", $sitepath);
 
     //管理员账号密码
-    $auth_key = substr(md5(uniqid(true)), 0, 32);
+    // 优先使用环境变量中的AUTH_KEY，如果不存在则随机生成
+    $auth_key = getenv('AUTH_KEY');
+    if (empty($auth_key)) {
+        $auth_key = substr(md5(uniqid(true)), 0, 32);
+    }
     $newPassword = user_md5($password, $auth_key);
     $pdo->query("INSERT INTO `{$db_prefix}member` (`uid`, `shopid`, `username`, `email`, `mobile`, `realname`, `nickname`, `password`, `sex`, `avatar`, `birthday`, `qq`, `login`, `signature`, `score1`, `score2`, `score3`, `score4`, `status`, `reg_ip`, `last_login_time`, `last_login_ip`, `create_time`, `update_time`) VALUES ('1', '0', '{$admin}', 'admin@admin.com', '', '', '{$admin}', '{$newPassword}', '0', '', '0000-00-00', '', '0', '', '', '', '', '', '1', '', '', '', '', '')");
     show_js_msg('创建管理员账号 ... 成功 ');

@@ -61,9 +61,8 @@ COPY --from=composer /app /var/www/html
 RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 755 /var/www/html \
     && mkdir -p /var/www/html/runtime \
-    && mkdir -p /var/www/html/public/uploads \
     && chown -R www-data:www-data /var/www/html/runtime \
-    && chown -R www-data:www-data /var/www/html/public/uploads
+    && chown -R www-data:www-data /var/www/html/public/attachment
 
 COPY docker/php/php.ini /usr/local/etc/php/conf.d/custom.ini
 COPY docker/php/opcache.ini /usr/local/etc/php/conf.d/opcache.ini

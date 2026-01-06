@@ -18,15 +18,15 @@ services:
       - ./extend:/var/www/html/extend
       - ./data:/var/www/html/data
       - ./data/runtime:/var/www/html/runtime
-      - ./data/uploads:/var/www/html/public/uploads
     environment:
       - APP_ENV=${APP_ENV:-production}
       - APP_DEBUG=${APP_DEBUG:-false}
+      - AUTH_KEY=${AUTH_KEY:-muucmf_auth_key}
       - database.hostname=mysql
       - database.hostport=3306
-      - database.database=muucmf
-      - database.username=muucmf
-      - database.password=muucmf_password
+      - database.database=${DATABASE_DATABASE:-muucmf}
+      - database.username=${DATABASE_USERNAME:-muucmf}
+      - database.password=${DATABASE_PASSWORD:-muucmf_password}
       - redis.host=redis
       - redis.port=6379
       - redis.password=${REDIS_PASSWORD:-}
@@ -52,10 +52,10 @@ services:
       - ./route:/var/www/html/route
       - ./extend:/var/www/html/extend
       - ./data/runtime:/var/www/html/runtime
-      - ./data/uploads:/var/www/html/public/uploads
     environment:
       - APP_ENV=${APP_ENV:-production}
       - APP_DEBUG=${APP_DEBUG:-false}
+      - AUTH_KEY=${AUTH_KEY:-muucmf_auth_key}
       - database.hostname=mysql
       - database.hostport=3306
       - database.database=${DATABASE_DATABASE:-muucmf}
@@ -173,6 +173,8 @@ volumes:
     driver: local
   redis-data:
     driver: local
+
+
 
 
 
