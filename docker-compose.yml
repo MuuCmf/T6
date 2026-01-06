@@ -16,19 +16,20 @@ services:
       - ./public:/var/www/html/public
       - ./route:/var/www/html/route
       - ./extend:/var/www/html/extend
+      - ./data:/var/www/html/data
       - ./data/runtime:/var/www/html/runtime
       - ./data/uploads:/var/www/html/public/uploads
     environment:
       - APP_ENV=${APP_ENV:-production}
       - APP_DEBUG=${APP_DEBUG:-false}
-      - DB_HOST=mysql
-      - DB_PORT=3306
-      - DB_DATABASE=${DB_DATABASE:-muucmf}
-      - DB_USERNAME=${DB_USERNAME:-muucmf}
-      - DB_PASSWORD=${DB_PASSWORD:-muucmf_password}
-      - REDIS_HOST=redis
-      - REDIS_PORT=6379
-      - REDIS_PASSWORD=${REDIS_PASSWORD:-}
+      - database.hostname=mysql
+      - database.hostport=3306
+      - database.database=muucmf
+      - database.username=muucmf
+      - database.password=muucmf_password
+      - redis.host=redis
+      - redis.port=6379
+      - redis.password=${REDIS_PASSWORD:-}
     networks:
       - muucmf-network
     depends_on:
@@ -55,14 +56,14 @@ services:
     environment:
       - APP_ENV=${APP_ENV:-production}
       - APP_DEBUG=${APP_DEBUG:-false}
-      - DB_HOST=mysql
-      - DB_PORT=3306
-      - DB_DATABASE=${DB_DATABASE:-muucmf}
-      - DB_USERNAME=${DB_USERNAME:-muucmf}
-      - DB_PASSWORD=${DB_PASSWORD:-muucmf_password}
-      - REDIS_HOST=redis
-      - REDIS_PORT=6379
-      - REDIS_PASSWORD=${REDIS_PASSWORD:-}
+      - database.hostname=mysql
+      - database.hostport=3306
+      - database.database=${DATABASE_DATABASE:-muucmf}
+      - database.username=${DATABASE_USERNAME:-muucmf}
+      - database.password=${DATABASE_PASSWORD:-muucmf_password}
+      - redis.host=redis
+      - redis.port=6379
+      - redis.password=${REDIS_PASSWORD:-}
     networks:
       - muucmf-network
     depends_on:
@@ -88,25 +89,25 @@ services:
       - app
 
   mysql:
-    image: mysql:8.0
+    image: mysql:5.7
     container_name: muucmf-mysql
     restart: unless-stopped
     ports:
-      - "${MYSQL_PORT:-3306}:3306"
+      - "3306:3306"
     volumes:
       - mysql-data:/var/lib/mysql
       - ./docker/mysql/my.cnf:/etc/mysql/conf.d/my.cnf:ro
       - ./data/backup:/backup
     environment:
-      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD:-root_password}
-      - MYSQL_DATABASE=${DB_DATABASE:-muucmf}
-      - MYSQL_USER=${DB_USERNAME:-muucmf}
-      - MYSQL_PASSWORD=${DB_PASSWORD:-muucmf_password}
+      - MYSQL_ROOT_PASSWORD=muucmf_password
+      - MYSQL_DATABASE=muucmf
+      - MYSQL_USER=muucmf
+      - MYSQL_PASSWORD=muucmf_password
     command: --default-authentication-plugin=mysql_native_password
     networks:
       - muucmf-network
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-pmuucmf_password"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -138,8 +139,8 @@ services:
     environment:
       - PMA_HOST=mysql
       - PMA_PORT=3306
-      - PMA_USER=${DB_USERNAME:-muucmf}
-      - PMA_PASSWORD=${DB_PASSWORD:-muucmf_password}
+      - PMA_USER=${DATABASE_USERNAME:-muucmf}
+      - PMA_PASSWORD=${DATABASE_PASSWORD:-muucmf_password}
       - UPLOAD_LIMIT=100M
     networks:
       - muucmf-network
@@ -172,3 +173,9 @@ volumes:
     driver: local
   redis-data:
     driver: local
+
+
+
+
+
+

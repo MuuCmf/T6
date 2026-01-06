@@ -1,6 +1,6 @@
 <?php
 
-namespace app\common\Model;
+namespace app\common\model;
 
 use think\Model;
 use think\facade\Db;

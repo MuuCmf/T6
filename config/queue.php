@@ -31,7 +31,7 @@ return [
             // 密码
             'password'   => env('redis.password', ''),
             'select'     => env('redis.select', 0),
-            'timeout'    => 0,
+            'timeout'    => 2,
             'persistent' => false,
         ],
     ],

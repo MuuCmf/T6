@@ -14,16 +14,8 @@ function input(&$data)
 {
     foreach ((array)$data as $key => $value) {
         if (is_string($value)) {
-            if (function_exists('get_magic_quotes_gpc') && PHP_VERSION < '7.4') {
-                if (!get_magic_quotes_gpc()) {
-                    $value = htmlentities($value, ENT_NOQUOTES);
-                    $value = addslashes(trim($value));
-                }
-            } else {
-                $value = htmlentities($value, ENT_NOQUOTES);
-                $value = addslashes(trim($value));
-            }
-
+            // Only trim whitespace - let PDO handle SQL escaping and handle HTML escaping at output time
+            $data[$key] = trim($value);
         } else {
             $data[$key] = input($value);
         }
@@ -838,6 +830,7 @@ EOF;
     $auth_key = substr(md5(uniqid(true)), 0, 32);
     $newPassword = user_md5($password, $auth_key);
     $pdo->query("INSERT INTO `{$db_prefix}member` (`uid`, `shopid`, `username`, `email`, `mobile`, `realname`, `nickname`, `password`, `sex`, `avatar`, `birthday`, `qq`, `login`, `signature`, `score1`, `score2`, `score3`, `score4`, `status`, `reg_ip`, `last_login_time`, `last_login_ip`, `create_time`, `update_time`) VALUES ('1', '0', '{$admin}', 'admin@admin.com', '', '', '{$admin}', '{$newPassword}', '0', '', '0000-00-00', '', '0', '', '', '', '', '', '1', '', '', '', '', '')");
+    show_js_msg('创建管理员账号 ... 成功 ');
 
     //写配置数据
     $db = [
@@ -963,114 +956,7 @@ auth_key = {$auth_key}
 [JWT]
 SECRET = {$secret}";
 
-    @file_put_contents('../.env', $_env);
-
-
-$database = "<?php
-
-return [
-    // 默认使用的数据库连接配置
-    'default'         => env('database.driver', 'mysql'),
-
-    // 自定义时间查询规则
-    'time_query_rule' => [],
-
-    // 自动写入时间戳字段
-    // true为自动识别类型 false关闭
-    // 字符串则明确指定时间字段类型 支持 int timestamp datetime date
-    'auto_timestamp'  => true,
-
-    // 时间字段取出后的默认时间格式
-    'datetime_format' => false,
-
-    // 数据库连接配置信息
-    'connections'     => [
-        'mysql' => [
-            // 数据库类型
-            'type'            => env('database.type', 'mysql'),
-            // 服务器地址
-            'hostname'        => env('database.hostname', '{$db_host}'),
-            // 数据库名
-            'database'        => env('database.database', '{$db_name}'),
-            // 用户名
-            'username'        => env('database.username', '{$db_user}'),
-            // 密码
-            'password'        => env('database.password', '{$db_pwd}'),
-            // 端口
-            'hostport'        => env('database.hostport', '{$db_port}'),
-            // 数据库连接参数
-            'params'          => [],
-            // 数据库编码默认采用utf8
-            'charset'         => env('database.charset', 'utf8'),
-            // 数据库表前缀
-            'prefix'          => env('database.prefix', 'muucmf_'),
-
-            // 数据库部署方式:0 集中式(单一服务器),1 分布式(主从服务器)
-            'deploy'          => 0,
-            // 数据库读写是否分离 主从式有效
-            'rw_separate'     => false,
-            // 读写分离后 主服务器数量
-            'master_num'      => 1,
-            // 指定从服务器序号
-            'slave_no'        => '',
-            // 是否严格检查字段是否存在
-            'fields_strict'   => true,
-            // 是否需要断线重连
-            'break_reconnect' => false,
-            // 监听SQL
-            'trigger_sql'     => env('app_debug', false),
-            // 开启字段缓存
-            'fields_cache'    => false,
-        ],
-
-        // 更多的数据库配置信息
-    ],
-];";
-
-@file_put_contents('../config/database.php', $database);
-
-$auth = "<?php
-
-return[
-    // 权限设置
-    'auth_on'            => true,                                             // 认证开关
-    'auth_type'          => 1,                                                // 认证方式，1为实时认证；2为登录认证。
-    'auth_group'         => 'muucmf_auth_group',                              // 用户组数据表名
-    'auth_group_access'  => 'muucmf_auth_group_access',                       // 用户-用户组关系表
-    'auth_rule'          => 'muucmf_auth_rule',                               // 权限规则表
-    'auth_user'          => env('auth.auth_user', 'muucmf_member'),           // 用户信息表
-    'auth_key'           => env('auth.auth_key', '{$auth_key}'),              // 系统用户非常规MD5加密key
-    'auth_administrator' => 1,                                                // 管理员用户ID
-];
-";
-
-@file_put_contents('../config/auth.php', $auth);
-
-$jwt = "<?php
-
-
-return [
-    'secret'      => env('JWT_SECRET', '{$secret}'),
-    //Asymmetric key
-    'public_key'  => env('JWT_PUBLIC_KEY'),
-    'private_key' => env('JWT_PRIVATE_KEY'),
-    'password'    => env('JWT_PASSWORD'),
-    //JWT time to live
-    'ttl'         => env('JWT_TTL', 1200),
-    //Refresh time to live
-    'refresh_ttl' => env('JWT_REFRESH_TTL', 20160),
-    //JWT hashing algorithm
-    'algo'        => env('JWT_ALGO', 'HS256'),
-    //token获取方式，数组靠前值优先
-    'token_mode'    => ['header', 'param'],
-    //黑名单后有效期
-    'blacklist_grace_period' => env('BLACKLIST_GRACE_PERIOD', 10),
-    'blacklist_storage' => thans\jwt\provider\storage\Tp6::class,
-];
-";
-
-@file_put_contents('../config/jwt.php', $jwt);
-
+  @file_put_contents('../.env', $_env);
 }
 
 function user_md5($str, $key = '')
@@ -1085,10 +971,10 @@ function env_check(&$env_items)
     $env_items[] = array('name' => '操作系统', 'min' => '无限制', 'good' => 'linux', 'cur' => PHP_OS, 'status' => 1);
     $env_items[] = array(
         'name' => 'PHP版本',
-        'min' => '7.4',
-        'good' => '7.4',
+        'min' => '8.0',
+        'good' => '8.0',
         'cur' => PHP_VERSION,
-        'status' => (PHP_VERSION < 7.4 ? 0 : 1)
+        'status' => (PHP_VERSION < 8.0 ? 0 : 1)
     );
     $tmp = function_exists('gd_info') ? gd_info() : array();
     preg_match("/[\d.]+/", $tmp['GD Version'], $match);

@@ -44,7 +44,9 @@ return [
             'expire'     => 0,
             // 序列化机制 例如 ['serialize', 'unserialize']
             'serialize'  => [],
-            // 
+            // 连接超时时间（秒）
+            'timeout'    => 2,
+            //
             'select'     => env('redis.select', 0),
         ],  
     ],

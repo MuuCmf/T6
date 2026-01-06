@@ -1,3 +1,13 @@
+FROM composer:2.5 AS composer
+
+WORKDIR /app
+
+COPY composer.json composer.lock ./
+RUN composer install --prefer-dist --no-dev --no-autoloader --no-scripts --ignore-platform-req=ext-gd
+
+COPY . .
+RUN composer dump-autoload --optimize --classmap-authoritative
+
 FROM php:8.0-cli-alpine
 
 WORKDIR /var/www/html
@@ -34,11 +44,7 @@ RUN apk add --no-cache \
     && rm -rf /tmp/pear \
     && apk del --purge autoconf g++ make
 
-COPY composer.json composer.lock ./
-RUN composer install --prefer-dist --no-dev --no-autoloader --no-scripts
-
-COPY . .
-RUN composer dump-autoload --optimize --classmap-authoritative
+COPY --from=composer /app /var/www/html
 
 RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 755 /var/www/html \
@@ -50,8 +56,9 @@ RUN chown -R www-data:www-data /var/www/html \
 COPY docker/php/php.ini /usr/local/etc/php/conf.d/custom.ini
 COPY docker/php/opcache.ini /usr/local/etc/php/conf.d/opcache.ini
 COPY docker/worker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+COPY docker/worker/entrypoint.sh /var/www/html/docker/worker/entrypoint.sh
 
-RUN chmod +x /var/www/html/docker/worker/entrypoint.sh
+RUN apk add --no-cache dos2unix && dos2unix /var/www/html/docker/worker/entrypoint.sh && chmod +x /var/www/html/docker/worker/entrypoint.sh
 
 EXPOSE 9000
 
