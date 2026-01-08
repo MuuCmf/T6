@@ -89,7 +89,7 @@ class Withdraw extends Api
 
             //获取用户openid
             $openid = get_openid($this->shopid, $uid, $channel);
-            if (!$openid)   throw new Exception('用户不存在');
+            if (!$openid)   throw new Exception('用户未绑定微信');
 
             //用户钱包模型
             $WalletModel = new MemberWallet();
