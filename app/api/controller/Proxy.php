@@ -60,9 +60,6 @@ class Proxy extends Api
             Cache::set($cacheKey, $base64Data, 86400);
 
             return $this->success('success', $base64Data);
-        } catch (\think\exception\HttpResponseException $e) {
-            // 正常响应，直接抛出
-            throw $e;
         } catch (\Exception $e) {
             // 异常错误
             $this->error('图片代理失败: ' . $e->getMessage());

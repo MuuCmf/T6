@@ -50,6 +50,10 @@ class VipCard extends Base
         $namespace = "app\\{$app}\\model\\{$file_name}";
         $productModel = new $namespace;
         $product_data = $productModel->where('id', $product_id)->find();
+
+        if (empty($product_data)) {
+            return null;
+        }
         $product_data = $product_data->toArray();
 
         //循环查询会员卡是否支持该产品，删除不支持的会员卡元素
@@ -115,6 +119,9 @@ class VipCard extends Base
         $namespace = "app\\{$app}\\model\\{$file_name}";
         $productModel = new $namespace;
         $product_data = $productModel->where('id', $product_id)->find();
+        if (empty($product_data)) {
+            return null;
+        }
         $product_data = $product_data->toArray();
         
         if (!empty($product_data)) {
@@ -209,6 +216,9 @@ class VipCard extends Base
         $namespace = "app\\{$app}\\model\\{$file_name}";
         $productModel = new $namespace;
         $product_data = $productModel->where('id', $product_id)->find();
+        if (empty($product_data)) {
+            return null;
+        }
         $product_data = $product_data->toArray();
         
         if (!empty($product_data)) {
