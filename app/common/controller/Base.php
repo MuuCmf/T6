@@ -76,7 +76,9 @@ class Base
             $response = json($result);
         }
 
-        throw new HttpResponseException($response);
+        return $response;
+
+        //throw new HttpResponseException($response);
     }
 
     /**
@@ -115,7 +117,9 @@ class Base
             $response = json($result);
         }
 
-        throw new HttpResponseException($response);
+        return $response;
+
+        //throw new HttpResponseException($response);
     }
 
     /**
