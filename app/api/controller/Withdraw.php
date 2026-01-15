@@ -54,6 +54,7 @@ class Withdraw extends Api
             $config = $this->WithdrawModel->getConfig(); //获取提现配置
             //是否开启提现
             if ($config['status'] < 1) throw new Exception('提现暂时关闭，如有特殊需求请联系客服');
+
             //初始化提现数据
             $data['shopid'] =   $this->shopid;
             $data['uid']    =   $uid;
@@ -72,6 +73,7 @@ class Withdraw extends Api
             $rate = floatval($config['tax_rate']) / 1000;
             $deduct_money = intval($data['price'] * $rate);
             $data['real_price'] = intval(ceil(($data['price'] - $deduct_money))); //单位分
+            
             //最低金额
             if ($data['price'] < intval($config['min_price']) * 100) throw new Exception('提现金额最少为' . $config['min_price'] . '元');
             //最大金额
@@ -107,6 +109,7 @@ class Withdraw extends Api
             // 发起提现
             $pay_config = ChannelServer::config($channel, $this->shopid);
             $PayService = PayServer::init($pay_config['appid'], $pay_channel, $this->shopid);
+
             // 提现接口
             $withdraw_api = config('extend.WX_PAY_WITHDRAW_API');
             if ($withdraw_api == 'v2') {
@@ -219,8 +222,8 @@ class Withdraw extends Api
     {
         $header = $this->request->header();
         $inBody   = file_get_contents('php://input'); //读取微信传过来的信息，是一个json字符串
-        Log::write($header, 'notice');
-        Log::write($inBody, 'notice');
+        Log::write($header, 'notice_v3_header');
+        Log::write($inBody, 'notice_v3_body');
         // 平台证书验签
         Db::startTrans();
         try {
@@ -328,14 +331,18 @@ class Withdraw extends Api
             Db::commit();
             //执行自己的代码end
 
-            $arr = array("code" => "SUCCESS", "message" => "");
-            echo json_encode($arr);
+            return json([
+                "code" => "SUCCESS", 
+                "message" => ""
+            ]);
+
         } catch (\Exception $e) {
             Db::rollback();
             Log::error($e->getMessage());
-            $arr = ["code" => "ERROR", "message" => $e->getMessage()];
-            echo json_encode($arr);
+            return json([
+                "code" => "FAIL", 
+                "message" => '失败'
+            ], 500);
         }
     }
-
 }

@@ -94,8 +94,10 @@ class Withdraw extends Admin
                     ['error', '=', 1],
                     ['paid', '=', 0]
                 ];
-                $data = $this->WithdrawModel->where($map)->find()->toArray();
-                if (!$data) throw new Exception('数据不存在');
+                $data = $this->WithdrawModel->where($map)->find();
+                if (!$data) throw new Exception('该提现记录无法人工处理');
+                $data = $data->toArray();
+
                 Db::startTrans(); //开启事务
                 //扣除用户余额
                 (new MemberWallet())->spending($data['shopid'], $data['uid'], $data['price']);
