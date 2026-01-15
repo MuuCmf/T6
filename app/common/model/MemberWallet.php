@@ -208,13 +208,11 @@ class MemberWallet extends Base
         $wallet = $this->where('uid', $uid)->field('balance, freeze, revenue')->find();
         if (!empty($wallet)) {
             $wallet = $wallet->toArray();
-            // 计算可用余额
-            $able_balance = intval($wallet['balance'] - $wallet['freeze']);
             // 数据转换单位
             $wallet['balance'] = sprintf("%.2f", floatval($wallet['balance'] / 100));
             $wallet['freeze'] = sprintf("%.2f", floatval($wallet['freeze'] / 100));
             $wallet['revenue'] = sprintf("%.2f", floatval($wallet['revenue'] / 100));
-            $wallet['able_balance'] = sprintf("%.2f", floatval($able_balance / 100));
+            $wallet['able_balance'] = $wallet['balance'];
         } else {
             $wallet['balance'] = 0;
             $wallet['freeze'] = 0;
