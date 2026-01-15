@@ -96,7 +96,7 @@ class Withdraw extends Api
             //用户钱包模型
             $WalletModel = new MemberWallet();
             $wallet = $WalletModel->where('uid', $uid)->find()->toArray();
-            if (intval($wallet['balance'] - $wallet['freeze']) < $data['price']) {
+            if (intval($wallet['balance']) < $data['price']) {
                 throw new Exception('账户余额不足');
             }
             //冻结资金
