@@ -157,4 +157,131 @@ class Orders extends Api
 
         return $this->success('success', $order_data, $return_url);
     }
+
+    /**
+     * @title 取消订单
+     * @return \think\Response|void
+     */
+    public function cancel()
+    {
+        if (request()->isPost()) {
+            Db::startTrans();
+            try {
+                $uid = get_uid();
+                $id = input('id', 0, 'intval');
+                $order_no = input('order_no', '', 'text');
+
+                // 获取订单信息
+                if($id) {
+                    $order = $this->OrdersModel->getDataById($id);
+                }
+
+                if($order_no) {
+                    $order = $this->OrdersModel->getDataByOrderNo($order_no);
+                }
+
+                if (!$order) {
+                    return $this->error('订单不存在');
+                }
+
+                // 验证订单归属
+                if ($order['uid'] != $uid) {
+                    return $this->error('非法操作');
+                }
+
+                // 验证订单状态: 只能取消待付款订单(status=1)或未支付订单
+                if ($order['status'] != 1) {
+                    return $this->error('该订单状态不允许取消');
+                }
+
+                if ($order['paid'] == 1) {
+                    return $this->error('已支付订单不能取消，请申请退款');
+                }
+
+                // 更新订单状态为已取消
+                $update_data = [
+                    'id' => $order['id'],
+                    'status' => 0,
+                ];
+
+                $res = $this->OrdersModel->edit($update_data);
+
+                if (!$res) {
+                    throw new Exception('取消订单失败');
+                }
+
+                Db::commit();
+
+                return $this->success('取消订单成功');
+            } catch (Exception $e) {
+                Db::rollback();
+                if (\think\facade\App::isDebug()) {
+                    return $this->error($e->getMessage() . $e->getFile() . $e->getLine());
+                } else {
+                    return $this->error($e->getMessage());
+                }
+            }
+        }
+    }
+
+    /**
+     * @title 删除订单
+     * @return \think\Response|void
+     */
+    public function delete()
+    {
+        if (request()->isPost()) {
+            Db::startTrans();
+            try {
+                $uid = get_uid();
+                $id = input('id', 0, 'intval');
+                $order_no = input('order_no', '', 'text');
+
+                // 获取订单信息
+                if($id) {
+                    $order = $this->OrdersModel->getDataById($id);
+                }
+
+                if($order_no) {
+                    $order = $this->OrdersModel->getDataByOrderNo($order_no);
+                }
+
+                if (!$order) {
+                    return $this->error('订单不存在');
+                }
+
+                // 验证订单归属
+                if ($order['uid'] != $uid) {
+                    return $this->error('非法操作');
+                }
+
+                // 验证订单状态: 只能删除已取消订单(status=0)或已完成订单(status=5)
+                if (!in_array($order['status'], [0, 5])) {
+                    return $this->error('该订单状态不允许删除');
+                }
+
+                // 更新订单状态为已删除
+                $update_data = [
+                    'id' => $order['id'],
+                    'status' => -1,
+                ];
+                $res = $this->OrdersModel->edit($update_data);
+
+                if (!$res) {
+                    throw new Exception('删除订单失败');
+                }
+
+                Db::commit();
+
+                return $this->success('删除订单成功');
+            } catch (Exception $e) {
+                Db::rollback();
+                if (\think\facade\App::isDebug()) {
+                    return $this->error($e->getMessage() . $e->getFile() . $e->getLine());
+                } else {
+                    return $this->error($e->getMessage());
+                }
+            }
+        }
+    }
 }
