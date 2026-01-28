@@ -1,45 +1,3 @@
-ALTER TABLE `muucmf_wechat_config` ADD `auth_login` TINYINT(2) NOT NULL DEFAULT '1' COMMENT '是否启用网页授权登录' AFTER `tmplmsg`;
-
-INSERT INTO `muucmf_menu` (`id`, `title`, `pid`, `sort`, `url`, `hide`, `type`, `tip`, `group`, `is_dev`, `icon`, `module`) VALUES
-('EDE0967F-0156-2219-F43D-6412CB252638', '状态管理', 'DA4333DF-D814-819B-D657-401FE5153AB4', 0, 'admin/Member/status', 0, 0, '', '', 0, '', 'admin');
-DELETE FROM muucmf_menu WHERE `muucmf_menu`.`id` = '121A5A7C-982C-CCD9-63CA-4AA00F4D5349';
-DELETE FROM muucmf_menu WHERE `muucmf_menu`.`id` = 'B88ED493-4BB4-E41A-EAEA-E501E3A685A1';
-
-INSERT INTO `muucmf_menu` (`id`, `title`, `pid`, `sort`, `url`, `hide`, `type`, `tip`, `group`, `is_dev`, `icon`, `module`) VALUES
-('E3F348B0-8DA2-C62A-062E-5C406B09D922', '状态管理', '8553C20D-7FCB-4252-15F4-5ECFC0A56092', 0, 'admin/Author/groupStatus', 0, 0, '', '', 0, '', 'admin');
-INSERT INTO `muucmf_menu` (`id`, `title`, `pid`, `sort`, `url`, `hide`, `type`, `tip`, `group`, `is_dev`, `icon`, `module`) VALUES
-('06AEED1A-9E0E-97B9-6395-EA9959B2BE6E', '状态管理', 'A7DA37AC-E001-7C55-083F-E03A03FA5CEC', 0, 'admin/Author/status', 0, 0, '', '', 0, '', 'admin');
-DELETE FROM muucmf_menu WHERE `muucmf_menu`.`id` = '826245D5-A2DC-5575-D0C3-9B36D8014D66';
-DELETE FROM muucmf_menu WHERE `muucmf_menu`.`id` = '9935C318-787D-A3D9-CCFA-2EAC75CE715B';
-UPDATE `muucmf_menu` SET `title` = '新增、编辑用户组' WHERE `muucmf_menu`.`id` = '4E0C013B-C00F-449F-324E-473115528F00';
-DELETE FROM muucmf_menu WHERE `muucmf_menu`.`id` = '22AADF5F-AD46-2125-5833-46AE0F01D749';
-DELETE FROM muucmf_menu WHERE `muucmf_menu`.`id` = '24B6E16C-401D-8CCA-C8E1-DCD118AAC005';
-DELETE FROM muucmf_menu WHERE `muucmf_menu`.`id` = '76DEEC60-2249-BF97-1A6E-FA314258928F';
-UPDATE `muucmf_menu` SET `title` = '状态管理', `url` = 'admin/Auth/changeStatus', `tip` = '用户组状态管理' WHERE `muucmf_menu`.`id` = '68121540-2C69-EAC2-F2EF-B7ADBBE74C09';
-DELETE FROM muucmf_menu WHERE `muucmf_menu`.`id` = 'BB7A70BD-6DBB-45EB-F4A8-F7A671F62121';
-INSERT INTO `muucmf_menu` (`id`, `title`, `pid`, `sort`, `url`, `hide`, `type`, `tip`, `group`, `is_dev`, `icon`, `module`) VALUES
-('7C934436-0EFC-A814-C5FB-521A764E75BA', '清空日志', 'A53BEFBB-17F7-56CD-ADF9-3D6754061E70', 0, 'admin/Score/clear', 0, 0, '', '', 0, '', 'admin');
-INSERT INTO `muucmf_menu` (`id`, `title`, `pid`, `sort`, `url`, `hide`, `type`, `tip`, `group`, `is_dev`, `icon`, `module`) VALUES
-('44C36AB5-BF84-8C51-B097-FE7730A22BC3', '公告状态管理', 'DAF83BB8-F5C2-0CBB-AD8B-FEBB44D12FA3', 0, 'admin/Announce/status', 0, 0, '', '', 0, '', 'admin');
-INSERT INTO `muucmf_menu` (`id`, `title`, `pid`, `sort`, `url`, `hide`, `type`, `tip`, `group`, `is_dev`, `icon`, `module`) VALUES
-('72483346-528E-3DFD-C1F6-5054030E78C7', '关键字状态管理', '1E10322E-B5A4-6CFE-6F33-F629B1D72A6F', 0, 'admin/Keywords/status', 0, 0, '', '', 0, '', 'admin');
-INSERT INTO `muucmf_menu` (`id`, `title`, `pid`, `sort`, `url`, `hide`, `type`, `tip`, `group`, `is_dev`, `icon`, `module`) VALUES
-('1AF87B7B-BCC4-4493-39EE-F726D6A8DB0E', '状态管理', '4B6E56C7-715A-DEBB-F335-9B290240F781', 0, 'admin/Message/typeStatus', 0, 0, '', '', 0, '', 'admin');
-INSERT INTO `muucmf_menu` (`id`, `title`, `pid`, `sort`, `url`, `hide`, `type`, `tip`, `group`, `is_dev`, `icon`, `module`) VALUES
-('83FB02F1-F7B5-E5B9-2D40-DED038ABE5EE', '消息状态管理', 'D15A9C87-9B85-DE05-ADCF-EAAD05BD94FD', 0, 'admin/Message/messageStatus', 0, 0, '', '', 0, '', 'admin');
-INSERT INTO `muucmf_menu` (`id`, `title`, `pid`, `sort`, `url`, `hide`, `type`, `tip`, `group`, `is_dev`, `icon`, `module`) VALUES
-('E8197AF4-11D1-F0B1-0153-AD74521C3283', '状态管理', 'B4CCC48C-113F-4A31-9378-F9F77EEA9F4B', 0, 'admin/Feedback/status', 0, 0, '', '', 0, '', 'admin');
-INSERT INTO `muucmf_menu` (`id`, `title`, `pid`, `sort`, `url`, `hide`, `type`, `tip`, `group`, `is_dev`, `icon`, `module`) VALUES
-('759FD998-08F4-A420-337C-55C0D5C31B0A', '状态管理', '1B23C61A-3B9E-07DC-6FC8-DA8A2F7A80D0', 0, 'admin/History/status', 0, 0, '', '', 0, '', 'admin');
-
-INSERT INTO `muucmf_menu` (`id`, `title`, `pid`, `sort`, `url`, `hide`, `type`, `tip`, `group`, `is_dev`, `icon`, `module`) VALUES
-('D3E5BCC8-BAED-D970-9E40-6EB17CAFF94A', '用户详情', 'DA4333DF-D814-819B-D657-401FE5153AB4', 0, 'admin/Member/detail', 0, 0, '', '', 0, '', 'admin');
-
-ALTER TABLE `muucmf_field_setting` DROP `field`;
-ALTER TABLE `muucmf_field_setting` ADD `field_alias` VARCHAR(32) NOT NULL COMMENT '字段描述' AFTER `field_name`;
-ALTER TABLE `muucmf_field_setting` DROP `child_form_type`;
-ALTER TABLE `muucmf_action_log` CHANGE `remark` `remark` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '日志备注';
-
 ALTER TABLE `muucmf_attachment` CHANGE `attachment` `attachment` VARCHAR(160);
 ALTER TABLE `muucmf_action` CONVERT TO CHARACTER SET `utf8mb4` COLLATE `utf8mb4_general_ci`; 
 ALTER TABLE `muucmf_action_limit` CONVERT TO CHARACTER SET `utf8mb4` COLLATE `utf8mb4_general_ci`; 
@@ -292,3 +250,83 @@ ALTER TABLE `muucmf_vip_card` CHANGE `category_ids` `category_ids` TEXT CHARACTE
 
 ALTER TABLE `muucmf_config` CHANGE `group` `group` VARCHAR(32) NOT NULL COMMENT '配置分组';
 ALTER TABLE `muucmf_extend_config` CHANGE `group` `group` VARCHAR(32) NOT NULL COMMENT '配置分组';
+
+
+UPDATE `muucmf_extend_config` SET `value` = 'public:公共配置项\r\naliyun_oss:阿里云OSS\r\ntencent_cos:腾讯云COS\r\naliyun_sms:阿里云短信\r\ntencent_sms:腾讯云短信\r\nweixinpay:微信支付\r\nalipay:支付宝支付\r\ntencent_vod:腾讯云点播\r\nstore:存储配置\r\nsms:短信配置\r\nvod:点播配置\r\npay:支付配置\r\nwithdraw:提现配置' WHERE `muucmf_extend_config`.`id` = 1;
+
+-- 公共配置项
+UPDATE `muucmf_extend_config` SET `group` = 'public' WHERE id = 1;
+
+-- 存储配置
+UPDATE `muucmf_extend_config` SET `group` = 'store' WHERE id = 3;
+UPDATE `muucmf_extend_config` SET `group` = 'store' WHERE id = 4;
+
+-- 阿里云OSS
+UPDATE `muucmf_extend_config` SET `group` = 'aliyun_oss' WHERE id = 6;
+UPDATE `muucmf_extend_config` SET `group` = 'aliyun_oss' WHERE id = 7;
+UPDATE `muucmf_extend_config` SET `group` = 'aliyun_oss' WHERE id = 8;
+UPDATE `muucmf_extend_config` SET `group` = 'aliyun_oss' WHERE id = 9;
+UPDATE `muucmf_extend_config` SET `group` = 'aliyun_oss' WHERE id = 11;
+
+-- 腾讯云COS
+UPDATE `muucmf_extend_config` SET `group` = 'tencent_cos' WHERE id = 12;
+UPDATE `muucmf_extend_config` SET `group` = 'tencent_cos' WHERE id = 13;
+UPDATE `muucmf_extend_config` SET `group` = 'tencent_cos' WHERE id = 14;
+UPDATE `muucmf_extend_config` SET `group` = 'tencent_cos' WHERE id = 15;
+UPDATE `muucmf_extend_config` SET `group` = 'tencent_cos' WHERE id = 16;
+UPDATE `muucmf_extend_config` SET `group` = 'tencent_cos' WHERE id = 17;
+
+-- 腾讯云短信
+UPDATE `muucmf_extend_config` SET `group` = 'tencent_sms' WHERE id = 18;
+UPDATE `muucmf_extend_config` SET `group` = 'tencent_sms' WHERE id = 19;
+UPDATE `muucmf_extend_config` SET `group` = 'tencent_sms' WHERE id = 20;
+UPDATE `muucmf_extend_config` SET `group` = 'tencent_sms' WHERE id = 21;
+UPDATE `muucmf_extend_config` SET `group` = 'tencent_sms' WHERE id = 28;
+UPDATE `muucmf_extend_config` SET `group` = 'tencent_sms' WHERE id = 29;
+UPDATE `muucmf_extend_config` SET `group` = 'tencent_sms' WHERE id = 30;
+
+-- 短信配置
+UPDATE `muucmf_extend_config` SET `group` = 'sms' WHERE id = 22;
+UPDATE `muucmf_extend_config` SET `group` = 'sms' WHERE id = 23;
+
+-- 阿里云短信
+UPDATE `muucmf_extend_config` SET `group` = 'aliyun_sms' WHERE id = 24;
+UPDATE `muucmf_extend_config` SET `group` = 'aliyun_sms' WHERE id = 25;
+UPDATE `muucmf_extend_config` SET `group` = 'aliyun_sms' WHERE id = 26;
+UPDATE `muucmf_extend_config` SET `group` = 'aliyun_sms' WHERE id = 27;
+UPDATE `muucmf_extend_config` SET `group` = 'aliyun_sms' WHERE id = 31;
+
+-- 微信支付
+UPDATE `muucmf_extend_config` SET `group` = 'weixinpay' WHERE id = 32;
+UPDATE `muucmf_extend_config` SET `group` = 'weixinpay' WHERE id = 33;
+UPDATE `muucmf_extend_config` SET `group` = 'weixinpay' WHERE id = 43;
+UPDATE `muucmf_extend_config` SET `group` = 'weixinpay' WHERE id = 44;
+UPDATE `muucmf_extend_config` SET `group` = 'weixinpay' WHERE id = 47;
+UPDATE `muucmf_extend_config` SET `group` = 'weixinpay' WHERE id = 51;
+
+-- 云点播配置
+UPDATE `muucmf_extend_config` SET `group` = 'vod' WHERE id = 34;
+
+-- 腾讯云点播
+UPDATE `muucmf_extend_config` SET `group` = 'tencent_vod' WHERE id = 35;
+UPDATE `muucmf_extend_config` SET `group` = 'tencent_vod' WHERE id = 36;
+UPDATE `muucmf_extend_config` SET `group` = 'tencent_vod' WHERE id = 37;
+UPDATE `muucmf_extend_config` SET `group` = 'tencent_vod' WHERE id = 45;
+UPDATE `muucmf_extend_config` SET `group` = 'tencent_vod' WHERE id = 46;
+UPDATE `muucmf_extend_config` SET `group` = 'tencent_vod' WHERE id = 48;
+UPDATE `muucmf_extend_config` SET `group` = 'tencent_vod' WHERE id = 49;
+UPDATE `muucmf_extend_config` SET `group` = 'tencent_vod' WHERE id = 55;
+UPDATE `muucmf_extend_config` SET `group` = 'tencent_vod' WHERE id = 57;
+UPDATE `muucmf_extend_config` SET `group` = 'tencent_vod' WHERE id = 58;
+
+-- 提现配置
+UPDATE `muucmf_extend_config` SET `group` = 'withdraw' WHERE id = 38;
+UPDATE `muucmf_extend_config` SET `group` = 'withdraw' WHERE id = 39;
+UPDATE `muucmf_extend_config` SET `group` = 'withdraw' WHERE id = 40;
+UPDATE `muucmf_extend_config` SET `group` = 'withdraw' WHERE id = 41;
+UPDATE `muucmf_extend_config` SET `group` = 'withdraw' WHERE id = 42;
+UPDATE `muucmf_extend_config` SET `group` = 'withdraw' WHERE id = 50;
+UPDATE `muucmf_extend_config` SET `group` = 'withdraw' WHERE id = 56;
+
+UPDATE `muucmf_extend_config` SET `extra` = 'local:本地\r\ntetencent:腾讯云COS\r\naliyun:阿里云OSS' WHERE `muucmf_extend_config`.`id` = 3;
+UPDATE `muucmf_extend_config` SET `extra` = 'local:本地\r\ntetencent:腾讯云COS\r\naliyun:阿里云OSS' WHERE `muucmf_extend_config`.`id` = 4;
