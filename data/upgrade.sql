@@ -251,7 +251,6 @@ ALTER TABLE `muucmf_vip_card` CHANGE `category_ids` `category_ids` TEXT CHARACTE
 ALTER TABLE `muucmf_config` CHANGE `group` `group` VARCHAR(32) NOT NULL COMMENT '配置分组';
 ALTER TABLE `muucmf_extend_config` CHANGE `group` `group` VARCHAR(32) NOT NULL COMMENT '配置分组';
 
-
 UPDATE `muucmf_extend_config` SET `value` = 'public:公共配置项\r\naliyun_oss:阿里云OSS\r\ntencent_cos:腾讯云COS\r\naliyun_sms:阿里云短信\r\ntencent_sms:腾讯云短信\r\nweixinpay:微信支付\r\nalipay:支付宝支付\r\ntencent_vod:腾讯云点播\r\nstore:存储配置\r\nsms:短信配置\r\nvod:点播配置\r\npay:支付配置\r\nwithdraw:提现配置' WHERE `muucmf_extend_config`.`id` = 1;
 
 -- 公共配置项
@@ -330,3 +329,7 @@ UPDATE `muucmf_extend_config` SET `group` = 'withdraw' WHERE id = 56;
 
 UPDATE `muucmf_extend_config` SET `extra` = 'local:本地\r\ntetencent:腾讯云COS\r\naliyun:阿里云OSS' WHERE `muucmf_extend_config`.`id` = 3;
 UPDATE `muucmf_extend_config` SET `extra` = 'local:本地\r\ntetencent:腾讯云COS\r\naliyun:阿里云OSS' WHERE `muucmf_extend_config`.`id` = 4;
+UPDATE `muucmf_extend_config` SET `type` = 'string' WHERE `muucmf_extend_config`.`id` = 32;
+UPDATE `muucmf_extend_config` SET `type` = 'file' WHERE `muucmf_extend_config`.`id` = 43;
+UPDATE `muucmf_extend_config` SET `type` = 'file' WHERE `muucmf_extend_config`.`id` = 44;
+UPDATE `muucmf_extend_config` SET `extra` = 'tencent:腾讯云点播', `value` = 'tencent' WHERE `muucmf_extend_config`.`id` = 34;
