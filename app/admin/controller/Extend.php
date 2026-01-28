@@ -345,8 +345,10 @@ class Extend extends Admin
     /**
      * 编辑系统配置
      */
-    public function edit($id = 0)
+    public function edit()
     {
+        $id = input('id', 0, 'intval');
+
         if (request()->isPost()) {
             $data = request()->param();
             //验证器

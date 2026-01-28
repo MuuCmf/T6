@@ -289,3 +289,6 @@ ALTER TABLE `muucmf_orders` ADD `agreed_end_time` INT(11) UNSIGNED NOT NULL DEFA
 ALTER TABLE `muucmf_vip_card` CHANGE `app` `app` VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '应用唯一标识';
 
 ALTER TABLE `muucmf_vip_card` CHANGE `category_ids` `category_ids` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '支持的分类IDS';
+
+ALTER TABLE `muucmf_config` CHANGE `group` `group` VARCHAR(32) NOT NULL COMMENT '配置分组';
+ALTER TABLE `muucmf_extend_config` CHANGE `group` `group` VARCHAR(32) NOT NULL COMMENT '配置分组';

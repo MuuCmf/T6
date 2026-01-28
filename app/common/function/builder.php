@@ -185,7 +185,10 @@ if (!function_exists('get_config_group')) {
     function get_config_group($group = 0)
     {
         $list = Config::get('system.CONFIG_GROUP_LIST');
-        return $group ? $list[$group] : '';
+        if (empty($list[$group])) {
+            $list[$group] = '未设置';
+        }
+        return $list[$group];
     }
 }
 
@@ -195,10 +198,13 @@ if (!function_exists('get_extend_group')) {
      * @param string $group 配置分组
      * @return string
      */
-    function get_extend_group($group = 1)
+    function get_extend_group($group)
     {
         $list = Config::get('extend.GROUP_LIST');
-        return $group ? $list[$group] : '';
+        if (empty($list[$group])) {
+            $list[$group] = '未设置';
+        }
+        return $list[$group];
     }
 }
 

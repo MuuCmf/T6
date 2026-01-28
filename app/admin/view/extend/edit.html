@@ -28,8 +28,13 @@
                 <label class="item-label">类型<span class="check-tips">（系统会根据不同类型解析配置值）</span></label>
                 <div class="controls">
                     <select name="type" class="form-control" style="width:auto;">
+                        <option value="">请选择类型</option>
                         {volist name="type" id="type"}
-                        <option value="{$key}">{$type}</option>
+                            {if $key == $info.type}
+                                <option selected="selected" value="{$key}">{$type}</option>
+                            {else /}
+                                <option value="{$key}">{$type}</option>
+                            {/if}
                         {/volist}
                     </select>
                 </div>
@@ -38,8 +43,13 @@
                 <label class="item-label">分组<span class="check-tips">（用于批量设置）</span></label>
                 <div class="controls">
                     <select name="group" class="form-control">
+                        <option value="">请选择分组</option>
                         {volist name="group" id="group"}
-                        <option value="{$key}">{$group}</option>
+                            {if $key == $info.group}
+                                <option selected="selected" value="{$key}">{$group}</option>
+                            {else /}
+                                <option value="{$key}">{$group}</option>
+                            {/if}
                         {/volist}
                     </select>
                 </div>
@@ -79,8 +89,5 @@
 {/block}
 
 {block name="script"}
-<script type="text/javascript">
-    Think.setValue("type", "{$info.type|default='num'}");
-    Think.setValue("group", {$info.group|default=1});
-</script>
+
 {/block}
