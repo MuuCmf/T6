@@ -4191,8 +4191,8 @@ CREATE TABLE IF NOT EXISTS `muucmf_extend_config` (
 --
 INSERT INTO `muucmf_extend_config` (`id`, `name`, `type`, `title`, `group`, `extra`, `remark`, `create_time`, `update_time`, `status`, `value`, `sort`) VALUES
 (1, 'GROUP_LIST', 'entity', '扩展分组', 'public', '', '分组后便于管理参数', 0, 1769571772, 1, 'public:公共配置项\r\naliyun_oss:阿里云OSS\r\ntencent_cos:腾讯云COS\r\naliyun_sms:阿里云短信\r\ntencent_sms:腾讯云短信\r\nweixinpay:微信支付\r\nalipay:支付宝支付\r\ntencent_vod:腾讯云点播\r\nstore:存储配置\r\nsms:短信配置\r\nvod:点播配置\r\npay:支付配置\r\nwithdraw:提现配置', 0),
-(3, 'PICTURE_UPLOAD_DRIVER', 'select', '图片上传驱动', 'store', 'local:本地\r\ntetencent:腾讯云COS\r\naliyun:阿里云OSS', '', 0, 1649315854, 1, 'local', 0),
-(4, 'FILE_UPLOAD_DRIVER', 'select', '文件上传驱动', 'store', 'local:本地\r\ntetencent:腾讯云COS\r\naliyun:阿里云OSS', '', 0, 1649315862, 1, 'local', 0),
+(3, 'PICTURE_UPLOAD_DRIVER', 'select', '图片上传驱动', 'store', 'local:本地\r\ntencent:腾讯云COS\r\naliyun:阿里云OSS', '', 0, 1649315854, 1, 'local', 0),
+(4, 'FILE_UPLOAD_DRIVER', 'select', '文件上传驱动', 'store', 'local:本地\r\ntencent:腾讯云COS\r\naliyun:阿里云OSS', '', 0, 1649315862, 1, 'local', 0),
 (6, 'OSS_ALIYUN_ACCESSKEYID', 'string', 'AccessKeyID', 'aliyun_oss', '', 'Access Key ID是您访问阿里云API的密钥，具有该账户完全的权限，请您妥善保管.', 1630910114, 1630918767, 1, '', 0),
 (7, 'OSS_ALIYUN_ACCESSKEYSECRET', 'string', 'AccessKeySecret', 'aliyun_oss', '', 'Access Key Secret是您访问阿里云API的密钥，具有该账户完全的权限，请您妥善保管.', 1630910174, 1630918648, 1, '', 0),
 (8, 'OSS_ALIYUN_ENDPOINT', 'string', 'Endpoint', 'aliyun_oss', '', '如：oss-cn-beijing.aliyuncs.com', 1630910253, 1630918691, 1, '', 0),
@@ -4220,7 +4220,7 @@ INSERT INTO `muucmf_extend_config` (`id`, `name`, `type`, `title`, `group`, `ext
 (31, 'SMS_ALIYUN_REGION', 'string', 'Region', 'aliyun_sms', '', '地域参数，格式 如：cn-beijing.', 0, 0, 1, 'cn-beijing', 0),
 (32, 'WX_PAY_MCH_ID', 'string', '微信商户ID', 'weixinpay', '', 'Mch ID是您微信商户的商 户ID，请您妥善保管.', 0, 0, 1, '', 0),
 (33, 'WX_PAY_KEY_SECRET', 'string', '微信商户API密钥', 'weixinpay', '', 'Key Secret是您微信商户的API密钥，请您妥善保管.', 0, 0, 1, '', 0),
-(34, 'VOD_UPLOAD_DRIVER', 'select', '云点播上传驱动', 'vod', '', '云点播上传驱动', 0, 0, 1, 'tencent:腾讯云点播', 0),
+(34, 'VOD_UPLOAD_DRIVER', 'select', '云点播上传驱动', 'vod', '', '云点播上传驱动', 0, 0, 1, 'disable:不启用\r\ntencent:腾讯云点播', 0),
 (35, 'VOD_TENCENT_SECRETID', 'string', 'SecretID', 'tencent_vod', '', 'SecretID 是您项目的安全密钥', 0, 1664100236, 1, '', 0),
 (36, 'VOD_TENCENT_SECRETKEY', 'string', 'SecretKEY', 'tencent_vod', '', 'SecretKEY 是您项目的安全密钥', 0, 1664100208, 1, '', 0),
 (37, 'VOD_TENCENT_SUBAPPID', 'string', 'SubAppId', 'tencent_vod', '', 'SubAppId 是您云点播平台子应用ID', 0, 1664100162, 1, '1500003662', 0),

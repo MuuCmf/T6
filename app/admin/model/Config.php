@@ -32,24 +32,21 @@ class Config extends Base
      * 根据配置类型解析配置
      * @param  integer $type  配置类型
      * @param  string  $value 配置值
-     * @author 麦当苗儿 <zuojiazi@vip.qq.com>
      */
     private function parse($type, $value)
     {
-        switch ($type) {
-            case 3: //解析数组
-                $array = preg_split('/[,;\r\n]+/', trim($value, ",;\r\n"));
-                if (strpos($value, ':')) {
-                    $value  = array();
-                    foreach ($array as $val) {
-                        list($k, $v) = explode(':', $val);
-                        $value[$k]   = $v;
-                    }
-                } else {
-                    $value =    $array;
+        if($type == 'select' || $type == 'entity' || $type == 'checkbox' || $type == 'radio'){
+            // 解析数组
+            $array = preg_split('/[,;\r\n]+/', trim($value, ",;\r\n"));
+            if (strpos($value, ':')) {
+                $value  = array();
+                foreach ($array as $val) {
+                    list($k, $v) = explode(':', $val);
+                    $value[$k]   = $v;
                 }
-                break;
+            }
         }
+
         return $value;
     }
 }

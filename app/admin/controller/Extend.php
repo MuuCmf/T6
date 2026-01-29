@@ -48,16 +48,15 @@ class Extend extends Admin
             return $this->success('保存成功',$config, 'refresh');
 
         }else{
-
-            $list = Db::name("ExtendConfig")->where(['status' => 1])->field('id,name,title,extra,value,group,remark,type')->order('sort asc')->select()->toArray();
             $list = $this->extendConfigModel->lists();
-//            dump($list);die();
+
             $builder = new AdminConfigBuilder();
             $builder->title('短信配置')->suggest('基于第三方短信发送各项参数配置');
     
             // 基础配置
-            $opt = ['aliyun' => '阿里云', 'tencent' => '腾讯云'];
-            $builder->keySelect('SMS_SEND_DRIVER', '选择平台', '请选择短信发送第三方平台' , $opt);
+            $sms_send_driver_opt = $this->extendConfigModel->getExtraByName('SMS_SEND_DRIVER');
+            
+            $builder->keySelect('SMS_SEND_DRIVER', '选择平台', '请选择短信发送第三方平台' , $sms_send_driver_opt);
             $builder->keyInteger('SMS_RESEND', '验证码有效期', '单位：秒');
             $builder->group('基础配置', ['SMS_SEND_DRIVER', 'SMS_RESEND']);
             
@@ -168,7 +167,6 @@ class Extend extends Admin
             $builder->buttonSubmit();
             $builder->display();
         }
-        
     }
 
     /**
@@ -178,7 +176,7 @@ class Extend extends Admin
     {
         if (request()->isPost()) {
             $config = input('post.');
-            //dump($config);exit;
+
             if ($config && is_array($config)) {
                 foreach ($config as $name => $value) {
                     $map = ['name' => $name];
@@ -191,17 +189,17 @@ class Extend extends Admin
             return $this->success('保存成功',$config, 'refresh');
 
         }else{
-
-            $list = Db::name("ExtendConfig")->where(['status' => 1])->field('id,name,title,extra,value,group,remark,type')->order('sort asc')->select()->toArray();
             $list = $this->extendConfigModel->lists();
             $builder = new AdminConfigBuilder();
             $builder->title('存储配置')->suggest('基于第三方云存储各项参数配置');
-            
+
             // 基础配置
-            $opt = ['local' => '本地','aliyun' => '阿里云', 'tencent' => '腾讯云'];
+            $picture_upload_driver_opt = $this->extendConfigModel->getExtraByName('PICTURE_UPLOAD_DRIVER');
+            $file_upload_driver_opt = $this->extendConfigModel->getExtraByName('FILE_UPLOAD_DRIVER');
+            
             $builder
-                ->keySelect('PICTURE_UPLOAD_DRIVER', '图片', '图片上传驱动', $opt)
-                ->keySelect('FILE_UPLOAD_DRIVER', '文件', '文件上传驱动', $opt)
+                ->keySelect('PICTURE_UPLOAD_DRIVER', '图片', '图片上传驱动', $picture_upload_driver_opt)
+                ->keySelect('FILE_UPLOAD_DRIVER', '文件', '文件上传驱动', $file_upload_driver_opt)
                 ->group('基础配置', [
                     'PICTURE_UPLOAD_DRIVER', 
                     'FILE_UPLOAD_DRIVER'
@@ -265,17 +263,16 @@ class Extend extends Admin
             return $this->success('保存成功',$config, 'refresh');
 
         }else{
-
-            $list = Db::name("ExtendConfig")->where(['status' => 1])->field('id,name,title,extra,value,group,remark,type')->order('sort asc')->select()->toArray();
             $list = $this->extendConfigModel->lists();
 
             $builder = new AdminConfigBuilder();
             $builder->title('音视频点播配置')->suggest('基于第三方音视频点播各项参数配置');
             
             // 基础配置
-            $opt = ['disable' => '不启用', 'tencent' => '腾讯云'];
+            $vod_upload_driver_opt = $this->extendConfigModel->getExtraByName('VOD_UPLOAD_DRIVER');
+            
             $builder
-                ->keySelect('VOD_UPLOAD_DRIVER', '音视频点播', '音视频点播上传驱动', $opt)
+                ->keySelect('VOD_UPLOAD_DRIVER', '音视频点播', '音视频点播上传驱动', $vod_upload_driver_opt)
                 ->group('基础配置', [
                     'VOD_UPLOAD_DRIVER'
                 ]);
@@ -373,12 +370,17 @@ class Extend extends Admin
             
         } else {
             /* 获取数据 */
-            if($id != 0){
+            $info = [
+                'type' => '',
+                'group' => '',
+                'name' => '',
+                'title' => '',
+                'value' => '',
+                'extra' => '',
+            ];
+            if(!empty($id)){
                 $info = $this->extendConfigModel->getDataById($id);
-            }else{
-                $info = [];
             }
-
             View::assign('type', get_config_type_list());
             View::assign('group', config('extend.GROUP_LIST'));
             View::assign('info', $info);

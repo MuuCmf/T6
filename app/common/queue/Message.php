@@ -124,29 +124,4 @@ class Message
         // ...任务达到最大重试次数后，失败了
     }
 
-    /**
-     * 根据配置类型解析配置
-     * @param  integer $type  配置类型
-     * @param  string  $value 配置值
-     */
-    private static function parse($type, $value){
-        switch ($type) {
-            case 'entity': //解析成数组
-                $array = preg_split('/[,;\r\n]+/', trim($value, ",;\r\n"));
-                if(strpos($value,':')){
-                    $value  = array();
-                    foreach ($array as $val) {
-                        list($k, $v) = explode(':', $val);
-                        $value[$k]   = $v;
-                    }
-                }else{
-                    $value =    $array;
-                }
-            break;
-        }
-        return $value;
-    } 
-    
-    
-
 }

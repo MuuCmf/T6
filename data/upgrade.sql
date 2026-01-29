@@ -327,9 +327,9 @@ UPDATE `muucmf_extend_config` SET `group` = 'withdraw' WHERE id = 42;
 UPDATE `muucmf_extend_config` SET `group` = 'withdraw' WHERE id = 50;
 UPDATE `muucmf_extend_config` SET `group` = 'withdraw' WHERE id = 56;
 
-UPDATE `muucmf_extend_config` SET `extra` = 'local:本地\r\ntetencent:腾讯云COS\r\naliyun:阿里云OSS' WHERE `muucmf_extend_config`.`id` = 3;
-UPDATE `muucmf_extend_config` SET `extra` = 'local:本地\r\ntetencent:腾讯云COS\r\naliyun:阿里云OSS' WHERE `muucmf_extend_config`.`id` = 4;
+UPDATE `muucmf_extend_config` SET `extra` = 'local:本地\r\ntencent:腾讯云COS\r\naliyun:阿里云OSS' WHERE `muucmf_extend_config`.`id` = 3;
+UPDATE `muucmf_extend_config` SET `extra` = 'local:本地\r\ntencent:腾讯云COS\r\naliyun:阿里云OSS' WHERE `muucmf_extend_config`.`id` = 4;
+UPDATE `muucmf_extend_config` SET `extra` = 'disable:不启用\r\ntencent:腾讯云点播' WHERE `muucmf_extend_config`.`id` = 34;
 UPDATE `muucmf_extend_config` SET `type` = 'string' WHERE `muucmf_extend_config`.`id` = 32;
 UPDATE `muucmf_extend_config` SET `type` = 'file' WHERE `muucmf_extend_config`.`id` = 43;
 UPDATE `muucmf_extend_config` SET `type` = 'file' WHERE `muucmf_extend_config`.`id` = 44;
-UPDATE `muucmf_extend_config` SET `extra` = 'tencent:腾讯云点播', `value` = 'tencent' WHERE `muucmf_extend_config`.`id` = 34;

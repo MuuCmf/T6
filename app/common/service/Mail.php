@@ -72,8 +72,6 @@ class Mail
         } catch (Exception $e) {
             return "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
         }
-        
-        
     }
 
     /**

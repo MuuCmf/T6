@@ -29,11 +29,11 @@
                 <div class="controls">
                     <select name="type" class="form-control" style="width:auto;">
                         <option value="">请选择类型</option>
-                        {volist name="type" id="type"}
+                        {volist name="type" id="value"}
                             {if $key == $info.type}
-                                <option selected="selected" value="{$key}">{$type}</option>
+                                <option selected="selected" value="{$key}">{$value}</option>
                             {else /}
-                                <option value="{$key}">{$type}</option>
+                                <option value="{$key}">{$value}</option>
                             {/if}
                         {/volist}
                     </select>
@@ -44,11 +44,11 @@
                 <div class="controls">
                     <select name="group" class="form-control">
                         <option value="">请选择分组</option>
-                        {volist name="group" id="group"}
+                        {volist name="group" id="value"}
                             {if $key == $info.group}
-                                <option selected="selected" value="{$key}">{$group}</option>
+                                <option selected="selected" value="{$key}">{$value}</option>
                             {else /}
-                                <option value="{$key}">{$group}</option>
+                                <option value="{$key}">{$value}</option>
                             {/if}
                         {/volist}
                     </select>
@@ -63,7 +63,7 @@
                 </div>
             </div>
             <div class="form-item builder_item">
-                <label class="item-label">配置项<span class="check-tips">（如果是枚举型 需要配置该项）</span></label>
+                <label class="item-label">配置项<span class="check-tips">（如果是单选、多选、下拉选择类型数据， 需要填写配置项）</span></label>
                 <div class="controls">
                     <label class="textarea input-large">
                         <textarea name="extra" class="form-control" style="width: 400px;height: 200px">{$info.extra|default=''}</textarea>

@@ -1,4 +1,5 @@
 <?php
+
 namespace app\admin\model;
 
 use think\Model;
@@ -6,7 +7,8 @@ use think\Model;
 /**
  * 系统扩展配置模型 ，第三方功能整合的专用配置数据模型
  */
-class ExtendConfig extends Model {
+class ExtendConfig extends Model
+{
 
     /**
      * 新增或编辑数据
@@ -17,19 +19,18 @@ class ExtendConfig extends Model {
      */
     public function edit($data)
     {
-        if(empty($data['id'])){
+        if (empty($data['id'])) {
             $res = $this->insertGetId($data);
-        }else{
+        } else {
             $res = $this->update($data);
         }
 
-        if(!empty($this->id)){
+        if (!empty($this->id)) {
             return $this->id;
-        }else{
+        } else {
             if (is_object($res)) return  $res->id;
             return $res;
         }
-        
     }
 
     /**
@@ -41,9 +42,9 @@ class ExtendConfig extends Model {
      */
     public function getDataById($id)
     {
-        if($id>0){
+        if ($id > 0) {
             $data = $this->find($id);
-            if(!empty($data)){
+            if (!empty($data)) {
                 return $data;
             }
         }
@@ -55,12 +56,13 @@ class ExtendConfig extends Model {
      * @return array 配置数组
      * @author 麦当苗儿 <zuojiazi@vip.qq.com>
      */
-    public function lists(){
+    public function lists()
+    {
         $map    = array('status' => 1);
         $list   = $this->where($map)->field('type,name,value')->select()->toArray();
-        
+
         $config = array();
-        if($list && is_array($list)){
+        if ($list && is_array($list)) {
             foreach ($list as $value) {
                 $config[$value['name']] = $this->parse($value['type'], $value['value']);
             }
@@ -69,27 +71,35 @@ class ExtendConfig extends Model {
     }
 
     /**
+     * 根据配置名称获取配置extra值
+     * @param  string $name  配置名称
+     * @return array 配置extra值
+     */
+    public function getExtraByName($name)
+    {
+        $data = $this->where(['name' => $name])->find();
+        return $this->parse($data['type'], $data['extra']);
+    }
+
+    /**
      * 根据配置类型解析配置
      * @param  integer $type  配置类型
      * @param  string  $value 配置值
-     * @author 麦当苗儿 <zuojiazi@vip.qq.com>
      */
-    private function parse($type, $value){
-        switch ($type) {
-            case 3: //解析数组
-                $array = preg_split('/[,;\r\n]+/', trim($value, ",;\r\n"));
-                if(strpos($value,':')){
-                    $value  = array();
-                    foreach ($array as $val) {
-                        list($k, $v) = explode(':', $val);
-                        $value[$k]   = $v;
-                    }
-                }else{
-                    $value =    $array;
+    private function parse($type, $value)
+    {
+        if($type == 'select' || $type == 'entity' || $type == 'checkbox' || $type == 'radio'){
+            // 解析数组
+            $array = preg_split('/[,;\r\n]+/', trim($value, ",;\r\n"));
+            if (strpos($value, ':')) {
+                $value  = array();
+                foreach ($array as $val) {
+                    list($k, $v) = explode(':', $val);
+                    $value[$k]   = $v;
                 }
-                break;
+            }
         }
+
         return $value;
     }
-
 }
