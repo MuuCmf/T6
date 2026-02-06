@@ -167,8 +167,10 @@ class Action extends Base
         foreach ($rules as $rule) {
 
             //检查执行周期
-            $map = ['action_id' => $action_id, 'uid' => $uid];
-            $map['create_time'] = ['gt', time() - intval($rule['cycle']) * 3600];
+            $map = [];
+            $map[] = ['action_id', '=', $action_id];
+            $map[] = ['uid', '=', $uid];
+            $map[] = ['create_time',  '>', time() - intval($rule['cycle']) * 3600];
             $exec_count = Db::name('ActionLog')->where($map)->count();
             if ($exec_count > $rule['max']) {
                 continue;

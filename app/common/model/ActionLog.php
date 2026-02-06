@@ -70,9 +70,8 @@ class ActionLog extends Base
 			//未定义日志规则，记录操作url
 			$data['remark'] = '操作url：' . $_SERVER['REQUEST_URI'];
 		}
-		$res = $this->save($data);
 
-		$log_id = $this->insertGetId($data);
+		$res = $log_id = $this->insertGetId($data);
 
 	    //解析积分规则并执行
 		$ActionModel = new Action();
