@@ -1,13 +1,13 @@
 {extend name="common/main"/}
 
 {block name="body"}
-    <div class="main-title cf">
+    <div class="main-title">
         <h2>
             新增、编辑行为规则
         </h2>
     </div>
     <!-- 表单 -->
-    <div class="with-padding">
+    <div class="with-padding action-edit-section">
         <form id="form" action="{:url()}" method="post" class="form-horizontal">
             <div class="form-item builder_item">
                 <label class="item-label">行为标识<span class="check-tips">（输入行为标识 英文字母）</span></label>
@@ -61,29 +61,24 @@
                 </div>
             </div>
 
-            <div class="form-item builder_item">
+            <div class="form-item score-rule-item">
                 <label class="item-label">积分规则<span class="check-tips">（输入积分规则，不写则只记录日志）</span></label>
 
                 <div class="controls action_rule">
-
-                    {php}if(empty($data['rule'])){{/php}
-                        暂无规则
-                    {php}}{/php}
-
                     <div class="clearfix">
-                        <div class="pull-left text-center" style="width: 100px">
+                        <div class="rule-label pull-left">
                            表名
                         </div>
-                        <div class="pull-left text-center" style="width: 100px">
+                        <div class="rule-label pull-left">
                            积分类型
                         </div>
-                        <div class="pull-left text-center" style="width: 100px">
+                        <div class="rule-label pull-left">
                            积分操作
                         </div>
-                        <div class="pull-left text-center" style="width: 100px">
+                        <div class="rule-label pull-left">
                            周期（小时）
                         </div>
-                        <div class="pull-left text-center" style="width: 100px">
+                        <div class="rule-label pull-left">
                            最大限制次数
                         </div>
                     </div>

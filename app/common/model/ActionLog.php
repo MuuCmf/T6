@@ -3,6 +3,7 @@
 namespace app\common\model;
 
 use think\facade\Db;
+use app\common\model\Action;
 
 class ActionLog extends Base
 {
@@ -71,6 +72,19 @@ class ActionLog extends Base
 		}
 		$res = $this->save($data);
 
+		$log_id = $this->insertGetId($data);
+
+	    //解析积分规则并执行
+		$ActionModel = new Action();
+	    if (!empty($action_info['rule'])) {
+	        //解析行为
+	        $rules = $ActionModel->parseAction($action, $uid);
+	        //执行行为
+	        $res = $ActionModel->executeAction($rules, $action_info['id'], $uid, $log_id);
+	    }
+
 		return $res;
 	}
+
+	
 }

@@ -245,8 +245,7 @@ class Member extends Base
         session('user_auth_sign', data_auth_sign($auth));
 
         //记录行为
-        $actionLog = new ActionLog();
-        $actionLog->add('user_login', 'member', $uid, $uid);
+        action_log('user_login', 'member', $uid, $uid);
 
         //记住登录
         if ($remember == 1) {

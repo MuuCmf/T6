@@ -1,5 +1,6 @@
 // 导入所有样式文件
 import './css/app/access_user.scss'
+import './css/app/action.scss'
 import './css/app/announce.scss'
 import './css/app/authentication.scss'
 import './css/app/author.scss'
