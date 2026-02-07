@@ -27,7 +27,7 @@ class Withdraw extends Admin
      * @title 提现列表
      * @return \think\response\View
      */
-    public function lists()
+    public function list()
     {
         $order_no = input('get.order_no', '', 'string'); //提现单号
         $map = [

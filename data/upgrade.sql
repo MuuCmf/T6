@@ -333,3 +333,8 @@ UPDATE `muucmf_extend_config` SET `extra` = 'disable:不启用\r\ntencent:腾讯
 UPDATE `muucmf_extend_config` SET `type` = 'string' WHERE `muucmf_extend_config`.`id` = 32;
 UPDATE `muucmf_extend_config` SET `type` = 'file' WHERE `muucmf_extend_config`.`id` = 43;
 UPDATE `muucmf_extend_config` SET `type` = 'file' WHERE `muucmf_extend_config`.`id` = 44;
+
+UPDATE `muucmf_menu` SET `url` = 'admin/withdraw/list' WHERE `muucmf_menu`.`id` = 'AA5E505D-8F99-EFBD-F434-D099109DF291';
+UPDATE `muucmf_menu` SET `url` = 'admin/Attachment/list' WHERE `muucmf_menu`.`id` = 'F06C84A8-2A34-902F-2A88-A25925465036';
+UPDATE `muucmf_menu` SET `url` = 'admin/queue/list' WHERE `muucmf_menu`.`id` = 'E400FF60-A02F-1A24-A28F-CF687914B8D3';
+UPDATE `muucmf_menu` SET `url` = 'admin/Keywords/list' WHERE `muucmf_menu`.`id` = '1E10322E-B5A4-6CFE-6F33-F629B1D72A6F';

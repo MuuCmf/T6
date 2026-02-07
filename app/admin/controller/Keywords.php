@@ -31,7 +31,7 @@ class Keywords extends Admin
     /**
      * 列表
      */
-    public function lists()
+    public function list()
     {
         // 查询条件
         $map = [

@@ -26,7 +26,7 @@ class Queue extends Admin {
      * 
      * @return mixed 返回渲染后的视图
      */
-    public function lists()
+    public function list()
     {
         // 连接redis
         $redis = $this->connRedis();
@@ -60,15 +60,15 @@ class Queue extends Admin {
         ];
 
         // 分页
-        $pager = (new Bootstrap($page_list, $page_size, $page, $count, false, [
-            'path' => '/admin/queue/lists',
+        $pager = (new Bootstrap($page_list, (int)$page_size, (int)$page, $count, false, [
+            'path' => '/admin/queue/list',
             'var_page' => 'page'
         ]))->render();
         
         $this->setTitle('消息队列');
         View::assign('pager', $pager);
         View::assign('lists', $lists);
-        //dump($lists);
+
         // 输出模板
         return View::fetch();
     }

@@ -26,7 +26,7 @@ class Attachment extends Admin
     /**
      * 附件列表
      */
-    public function lists()
+    public function list()
     {
         // 关键字
         $keyword = input('keyword', '', 'text');
