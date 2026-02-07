@@ -1,29 +1,33 @@
 {extend name="common/main"/}
 
 {block name="body"}
-    <!-- 标题栏 -->
-    <div class="main-title">
-        <h2>扩展资料</h2>
-    </div>
-    <div class="button-box row clearfix">
+<!-- 标题栏 -->
+<div class="main-title">
+    <h2>扩展资料</h2>
+</div>
+<div class="button-box row clearfix">
 
-        <div class="col-md-6">
-            <a type="button" class="btn btn-info {if !check_auth('admin/Field/editGroup')}disabled{/if}" href="{:url('editGroup')}">新增</a>
-            <button class="btn btn-success ajax-post {if !check_auth('admin/Field/setGroupStatus')}disabled{/if}" url="{:url('setGroupStatus', ['status' => 1])}" target-form="ids">
-                启用
-            </button>
-            <button class="btn btn-warning ajax-post confirm {if !check_auth('admin/Field/setGroupStatus')}disabled{/if}" url="{:url('setGroupStatus',['status' => 0])}" target-form="ids">
-                禁用
-            </button>
-            <button class="btn btn-danger ajax-post confirm {if !check_auth('admin/Field/setGroupStatus')}disabled{/if}" url="{:url('setGroupStatus',['status' => -1])}" target-form="ids">
-                删除
-            </button>
-        </div>
+    <div class="col-md-6">
+        <a type="button" class="btn btn-info {if !check_auth('admin/Field/editGroup')}disabled{/if}"
+            href="{:url('editGroup')}">新增</a>
+        <button class="btn btn-success ajax-post {if !check_auth('admin/Field/setGroupStatus')}disabled{/if}"
+            url="{:url('setGroupStatus', ['status' => 1])}" target-form="ids">
+            启用
+        </button>
+        <button class="btn btn-warning ajax-post confirm {if !check_auth('admin/Field/setGroupStatus')}disabled{/if}"
+            url="{:url('setGroupStatus',['status' => 0])}" target-form="ids">
+            禁用
+        </button>
+        <button class="btn btn-danger ajax-post confirm {if !check_auth('admin/Field/setGroupStatus')}disabled{/if}"
+            url="{:url('setGroupStatus',['status' => -1])}" target-form="ids">
+            删除
+        </button>
     </div>
-    <!-- 数据列表 -->
-    <div class="data-table with-padding">
-        <table class="table table-bordered table-striped user-table muu-table">
-            <thead>
+</div>
+<!-- 数据列表 -->
+<div class="data-table with-padding">
+    <table class="table table-bordered table-striped user-table muu-table">
+        <thead>
             <tr>
                 <th class="row-selected row-selected">
                     <input type="checkbox" class="check-all" id="check-all">
@@ -33,79 +37,92 @@
                 <th class="">排序</th>
                 <th class="">是否公开</th>
                 <th class="">状态</th>
-                <th class="">操作</th>
-
+                <th width="240">操作</th>
             </tr>
-            </thead>
-            <tbody>
+        </thead>
+        <tbody>
             {notempty name="list"}
-                {volist name="list" id="vo"}
-                    <tr>
-                        <td>
-                            <input class="ids" id="profile-{$vo.id}" type="checkbox" name="id[]" value="{$vo.id}"/>
-                            <label for="profile-{$vo.id}"></label>
-                        </td>
-                        <td>{$vo.profile_name}</td>
-                        <td>{$vo.sort}</td>
-                        <td>{$vo.visiable}</td>
-                        <td>{$vo.status_text}</td>
-                        <td>
-                            <a class="btn btn-sm btn-primary {if !check_auth('admin/Field/list')}disabled{/if}" href="{:url('admin/Field/list',['group_id'=>$vo['id']])}" >管理字段</a>
-                            <a class="btn btn-sm btn-info {if !check_auth('admin/Field/editGroup')}disabled{/if}" href="{:url('admin/Field/editGroup',['id'=>$vo['id']])}" >编辑</a>
-                        </td>
-                    </tr>
-                {/volist}
-            {else/}
-                <td colspan="13" class="text-center">
-                    空空如也~
+            {volist name="list" id="vo"}
+            <tr>
+                <td>
+                    <input class="ids" id="profile-{$vo.id}" type="checkbox" name="ids[]" value="{$vo.id}" />
+                    <label for="profile-{$vo.id}"></label>
                 </td>
+                <td>{$vo.profile_name}</td>
+                <td>{$vo.sort}</td>
+                <td>{$vo.visiable}</td>
+                <td>{$vo.status_text}</td>
+                <td>
+                    <a class="btn btn-sm btn-primary {if !check_auth('admin/Field/list')}disabled{/if}"
+                        href="{:url('admin/Field/list',['group_id'=>$vo['id']])}">管理字段</a>
+                    <a class="btn btn-sm btn-info {if !check_auth('admin/Field/editGroup')}disabled{/if}"
+                        href="{:url('admin/Field/editGroup',['id'=>$vo['id']])}">编辑</a>
+                    {if $vo['status'] == 1}
+                    <a href="{:url('setGroupStatus', ['ids'=>$vo['id'],'status'=> 0])}"
+                        class="btn btn-sm btn-warning ajax-get">禁用</a>
+                    {/if}
+                    {if $vo['status'] == 0}
+                    <a href="{:url('setGroupStatus', ['ids'=>$vo['id'],'status'=> 1])}"
+                        class="btn btn-sm btn-info ajax-get">启用</a>
+                    {/if}
+                    <a href="{:url('setGroupStatus', ['ids' => $vo['id'],'status'=> -1])}" data-confirm="确认执行删除操作？"
+                        class="btn btn-sm btn-danger ajax-get">
+                        <i class="fa fa-times"></i> 删除
+                    </a>
+                </td>
+            </tr>
+            {/volist}
+            {else/}
+            <td colspan="13" class="text-center">
+                空空如也~
+            </td>
             {/notempty}
-            </tbody>
-        </table>
+        </tbody>
+    </table>
 
-        <!-- 分页 -->
-        <div class="page">
-            {if !empty($page)}
-            {:htmlspecialchars_decode($page)}
-            {/if}
-        </div>
-        <!-- /分页-->
+    <!-- 分页 -->
+    <div class="page">
+        {if !empty($page)}
+        {:htmlspecialchars_decode($page)}
+        {/if}
     </div>
+    <!-- /分页-->
+</div>
 {/block}
 
 {block name="script"}
-    <script>
-    $(function(){
-    //排序
-        $('[data-role="select_text"]').change(function(){
+<script>
+    $(function () {
+        //排序
+        $('[data-role="select_text"]').change(function () {
             var url = window.location.href;
             var query = $('.select_box').find('select').val();
             if (url.indexOf('?') > 0) {
-                if(url.indexOf('order') > 0){    
-                    url = changeURLArg(url,'order',query);
-                }else{
-                    url += '&' + 'order='+query;
+                if (url.indexOf('order') > 0) {
+                    url = changeURLArg(url, 'order', query);
+                } else {
+                    url += '&' + 'order=' + query;
                 }
             } else {
-                url += '?' + 'order='+query;
+                url += '?' + 'order=' + query;
             }
             window.location.href = url;
         });
 
         //设置url中参数值
-        function changeURLArg(url,arg,arg_val){
-            var pattern=arg+'=([^&]*)';
-            var replaceText=arg+'='+arg_val; 
-            if(url.match(pattern)){
-                var tmp='/('+ arg+'=)([^&]*)/gi';
-                tmp=url.replace(eval(tmp),replaceText);
+        function changeURLArg(url, arg, arg_val) {
+            var pattern = arg + '=([^&]*)';
+            var replaceText = arg + '=' + arg_val;
+            if (url.match(pattern)) {
+                var tmp = '/(' + arg + '=)([^&]*)/gi';
+                tmp = url.replace(eval(tmp), replaceText);
                 return tmp;
-            }else{ 
-                if(url.match('[\?]')){ 
-                    return url+'&'+replaceText; 
-                }else{ 
-                    return url+'?'+replaceText; 
-                } 
+            } else {
+                if (url.match('[\?]')) {
+                    return url + '&' + replaceText;
+                } else {
+                    return url + '?' + replaceText;
+                }
             }
         }
 
@@ -130,5 +147,5 @@
             }
         });
     });
-    </script>
+</script>
 {/block}

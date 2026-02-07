@@ -78,8 +78,8 @@ class History extends Admin
      */
     public function status()
     {
-        $ids = input('ids/a');
-        !is_array($ids) && $ids = explode(',', $ids);
+        $ids = input('ids');
+        !is_array($ids) && $ids = explode(',', (string)$ids);
         $status = input('status', 0, 'intval');
         $title = '更新';
         if ($status == -1) {
