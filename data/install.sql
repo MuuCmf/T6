@@ -4220,7 +4220,7 @@ INSERT INTO `muucmf_extend_config` (`id`, `name`, `type`, `title`, `group`, `ext
 (31, 'SMS_ALIYUN_REGION', 'string', 'Region', 'aliyun_sms', '', '地域参数，格式 如：cn-beijing.', 0, 0, 1, 'cn-beijing', 0),
 (32, 'WX_PAY_MCH_ID', 'string', '微信商户ID', 'weixinpay', '', 'Mch ID是您微信商户的商 户ID，请您妥善保管.', 0, 0, 1, '', 0),
 (33, 'WX_PAY_KEY_SECRET', 'string', '微信商户API密钥', 'weixinpay', '', 'Key Secret是您微信商户的API密钥，请您妥善保管.', 0, 0, 1, '', 0),
-(34, 'VOD_UPLOAD_DRIVER', 'select', '云点播上传驱动', 'vod', '', '云点播上传驱动', 0, 0, 1, 'disable:不启用\r\ntencent:腾讯云点播', 0),
+(34, 'VOD_UPLOAD_DRIVER', 'select', '云点播上传驱动', 'vod', 'disable:不启用\r\ntencent:腾讯云点播', '云点播上传驱动', 0, 0, 1, 'disable', 0),
 (35, 'VOD_TENCENT_SECRETID', 'string', 'SecretID', 'tencent_vod', '', 'SecretID 是您项目的安全密钥', 0, 1664100236, 1, '', 0),
 (36, 'VOD_TENCENT_SECRETKEY', 'string', 'SecretKEY', 'tencent_vod', '', 'SecretKEY 是您项目的安全密钥', 0, 1664100208, 1, '', 0),
 (37, 'VOD_TENCENT_SUBAPPID', 'string', 'SubAppId', 'tencent_vod', '', 'SubAppId 是您云点播平台子应用ID', 0, 1664100162, 1, '1500003662', 0),
