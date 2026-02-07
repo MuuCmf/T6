@@ -3,8 +3,8 @@
 namespace app\admin\controller;
 
 use think\facade\View;
-use app\admin\model\AuthRule;
-use app\admin\model\Menu as MenuModel;
+use app\common\model\AuthRule;
+use app\common\model\Menu as MenuModel;
 use app\common\model\Module as ModuleModel;
 use app\common\service\Tree;
 

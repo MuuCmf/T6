@@ -5,7 +5,7 @@ namespace app\common\model;
 use think\Exception;
 use think\facade\Db;
 use think\facade\Config;
-use app\admin\model\AuthGroup;
+use app\common\model\AuthGroup;
 use app\common\model\ActionLog;
 use app\common\model\ScoreType;
 use app\channel\logic\Channel;

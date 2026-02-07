@@ -5,8 +5,8 @@ namespace app\admin\controller;
 use think\facade\Db;
 use think\facade\View;
 use app\common\controller\Base;
-use app\admin\model\Menu;
-use app\admin\model\AuthRule;
+use app\common\model\Menu;
+use app\common\model\AuthRule;
 use app\common\model\Module as ModuleModel;
 use app\common\logic\Config as ConfigLogic;
 

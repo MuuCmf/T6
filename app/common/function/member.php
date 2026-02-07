@@ -1,6 +1,6 @@
 <?php
 
-use app\admin\model\AuthRule;
+use app\common\model\AuthRule;
 use think\facade\Db;
 use muucmf\Auth;
 use app\common\model\Member;

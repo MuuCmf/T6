@@ -3,7 +3,7 @@ namespace app\common\queue;
 
 use think\facade\Db;
 use think\queue\Job;
-use app\admin\model\AuthGroup;
+use app\common\model\AuthGroup;
 use app\common\service\Mail;
 use app\common\model\Message as MessageModel;
 use app\common\model\MessageContent as MessageContentModel;

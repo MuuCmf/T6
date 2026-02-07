@@ -4,8 +4,8 @@ namespace app\admin\controller;
 
 use think\facade\Db;
 use think\facade\View;
-use app\admin\model\AuthRule;
-use app\admin\model\AuthGroup;
+use app\common\model\AuthRule;
+use app\common\model\AuthGroup;
 
 class Auth extends Admin
 {

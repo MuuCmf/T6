@@ -7,7 +7,7 @@ use think\facade\View;
 use app\common\model\Attachment;
 use app\common\model\Member as MemberModel;
 use app\common\model\MemberSync as MemberSyncModel;
-use app\admin\model\AuthGroup;
+use app\common\model\AuthGroup;
 use app\common\model\ScoreType as ScoreTypeModel;
 use app\common\model\ScoreLog as ScoreLogModel;
 

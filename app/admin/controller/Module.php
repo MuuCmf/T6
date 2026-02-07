@@ -8,9 +8,8 @@ use app\admin\lib\Cloud as CloudServer;
 use think\facade\Db;
 use think\facade\View;
 use app\common\service\Tree;
-use app\admin\model\Menu as MenuModel;
+use app\common\model\Menu as MenuModel;
 use app\common\model\Module as ModuleModel;
-
 
 class Module extends Admin
 {

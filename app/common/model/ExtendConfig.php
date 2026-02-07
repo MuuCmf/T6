@@ -1,13 +1,11 @@
 <?php
 
-namespace app\admin\model;
-
-use app\common\model\Base;
+namespace app\common\model;
 
 /**
- * 系统配置模型
+ * 系统扩展配置模型 ，第三方功能整合的专用配置数据模型
  */
-class Config extends Base
+class ExtendConfig extends Base
 {
     /**
      * 获取配置列表
@@ -17,15 +15,26 @@ class Config extends Base
     public function lists()
     {
         $map    = array('status' => 1);
-        $data   = $this->where($map)->field('type,name,value')->select();
+        $list   = $this->where($map)->field('type,name,value')->select()->toArray();
 
         $config = array();
-        if ($data && is_array($data)) {
-            foreach ($data as $value) {
+        if ($list && is_array($list)) {
+            foreach ($list as $value) {
                 $config[$value['name']] = $this->parse($value['type'], $value['value']);
             }
         }
         return $config;
+    }
+
+    /**
+     * 根据配置名称获取配置extra值
+     * @param  string $name  配置名称
+     * @return array 配置extra值
+     */
+    public function getExtraByName($name)
+    {
+        $data = $this->where(['name' => $name])->find();
+        return $this->parse($data['type'], $data['extra']);
     }
 
     /**

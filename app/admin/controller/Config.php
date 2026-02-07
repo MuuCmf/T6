@@ -5,7 +5,7 @@ namespace app\admin\controller;
 use think\facade\View;
 use think\facade\Cache;
 use think\exception\ValidateException;
-use app\admin\model\Config as MuuConfigModel;
+use app\common\model\Config as MuuConfigModel;
 // +----------------------------------------------------------------------
 // | TODO:系统设置 站点信息内容包含：站点基本信息 联络和客服信息 版权信息
 // +----------------------------------------------------------------------

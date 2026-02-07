@@ -2,7 +2,7 @@
 namespace app\admin\controller;
 
 use think\facade\View;
-use app\admin\model\AuthGroup;
+use app\common\model\AuthGroup;
 use app\common\model\MessageContent as MessageContentModel;
 use app\common\model\MessageType as MessageTypeModel;
 use app\common\model\Message as MessageModel;

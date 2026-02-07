@@ -5,7 +5,7 @@ use think\facade\Db;
 use think\facade\View;
 use think\facade\Cache;
 use app\admin\builder\AdminConfigBuilder;
-use app\admin\model\ExtendConfig as MuuExtendConfigModel;
+use app\common\model\ExtendConfig as MuuExtendConfigModel;
 use app\admin\validate\Common as CommonValidate;
 use think\exception\ValidateException;
 

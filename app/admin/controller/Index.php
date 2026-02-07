@@ -5,9 +5,8 @@ namespace app\admin\controller;
 use think\facade\Config;
 use think\facade\Db;
 use think\facade\View;
-use app\admin\model\CountActive;
 use app\common\model\Module as ModuleModel;
-use app\admin\model\AuthRule;
+use app\common\model\AuthRule as AuthRuleModel;
 
 class Index extends Admin
 {
@@ -31,7 +30,6 @@ class Index extends Admin
         $this->getUserCount();
         $this->getRegUser();
         $this->getActionLog();
-        $this->getOtherCount();
         
         $this->setTitle('控制台');
         // 模板输出
@@ -162,29 +160,6 @@ class Index extends Admin
         View::assign(['actionLog' => $actionLog]);
     }
 
-    private function getOtherCount()
-    {
-
-        //日活跃
-        $today = date('Y-m-d 00:00', time());
-        $startTime = strtotime($today . " - 10 day");
-        $endTime = strtotime($today);
-        $startTime = strtotime(date('Y-m-d') . ' - 9 day');
-
-        $countActiveModel = new CountActive;
-        $activeList = $countActiveModel->getActiveList($startTime, time(), 'day');
-
-        View::assign('activeList', json_encode($activeList));
-        //周活跃
-        $startTime = strtotime(date('Y-m-d') . ' - ' . date('w') . ' day - 49 day');
-        $weekActiveList = $countActiveModel->getActiveList($startTime, time(), 'week');
-        View::assign('weekActiveList', json_encode($weekActiveList));
-        //月活跃
-        $startTime = strtotime(date('Y-m-01') . ' - 9 month');
-        $monthActiveList = $countActiveModel->getActiveList($startTime, time(), 'month');
-        View::assign('monthActiveList', json_encode($monthActiveList));
-    }
-
     /**
      * 已安装应用模块列表
      */
@@ -198,7 +173,7 @@ class Index extends Admin
         // 应用权限
         foreach ($all_module_list as $key => $item) {
             // 判断主菜单权限
-            if (!$this->isRoot && !$this->checkRule(strtolower($item['entry']), get_uid(), AuthRule::RULE_MAIN, null)) {
+            if (!$this->isRoot && !$this->checkRule(strtolower($item['entry']), get_uid(), AuthRuleModel::RULE_MAIN, null)) {
                 unset($all_module_list[$key]);
                 continue; //继续循环
             }
