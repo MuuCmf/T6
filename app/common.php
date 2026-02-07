@@ -73,37 +73,6 @@ if (!function_exists('rmdirs')) {
         }
         return true;
     }
-
-}
-
-if (!function_exists('copydirs')) {
-
-    /**
-     * 复制文件夹
-     * @param string $source 源文件夹
-     * @param string $dest 目标文件夹
-     */
-    function copydirs($source, $dest)
-    {
-        if (!is_dir($dest)) {
-            mkdir($dest, 0755, true);
-        }
-        foreach (
-            $iterator = new RecursiveIteratorIterator(
-                new RecursiveDirectoryIterator($source, RecursiveDirectoryIterator::SKIP_DOTS), RecursiveIteratorIterator::SELF_FIRST) as $item
-        ) {
-            if ($item->isDir()) {
-                $sontDir = $dest . DIRECTORY_SEPARATOR . $iterator->getSubPathName();
-                if (!is_dir($sontDir)) {
-                    mkdir($sontDir, 0777, true);
-                    chmod($sontDir, 0777);
-                }
-            } else {
-                copy($item, $dest . DIRECTORY_SEPARATOR . $iterator->getSubPathName());
-            }
-        }
-    }
-
 }
 
 if (!function_exists('think_encrypt')) {
