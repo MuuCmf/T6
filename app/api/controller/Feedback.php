@@ -24,17 +24,19 @@ class Feedback extends Api
     {
         $uid = request()->uid;
         $content = input('post.content', '');
+        $type = input('post.type', 'other');
         if (empty($content)) {
             $this->error('内容不能为空');
         }
         if (input('?post.images')) {
             $images = input('post.images');
-            $images = explode(',', $images);
+            $images = explode(',', (string)$images);
         } else {
             $images = '';
         }
         $data = [
             'shopid' => $this->shopid,
+            'type' => $type,
             'content' => $content,
             'images' => $images,
             'uid' => $uid,

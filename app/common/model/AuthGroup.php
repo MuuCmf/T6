@@ -2,13 +2,12 @@
 
 namespace app\common\model;
 
-use think\Model;
 use think\facade\Db;
 
 /**
  * 用户组模型类
  */
-class AuthGroup extends Model
+class AuthGroup extends Base
 {
     const TYPE_ADMIN                = 1;                    // 管理员用户组类型标识
     const MEMBER                    = 'member';

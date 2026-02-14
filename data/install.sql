@@ -4275,10 +4275,11 @@ CREATE TABLE IF NOT EXISTS `muucmf_feedback` (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键ID',
   `shopid` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '平台ID',
   `app` varchar(60) NOT NULL DEFAULT '' COMMENT '关联应用模板name',
+  `type` char(32) NOT NULL DEFAULT '' COMMENT '反馈类型',
   `content` varchar(255) DEFAULT NULL COMMENT '反馈内容',
   `images` varchar(255) DEFAULT NULL COMMENT '反馈图片，支持多张',
   `uid` int(11) UNSIGNED NOT NULL COMMENT '用户ID',
-  `status` tinyint(2) NOT NULL DEFAULT '0' COMMENT '状态，1，正常，0，禁用，-1，已删除',
+  `status` tinyint(2) NOT NULL DEFAULT '0' COMMENT '状态',
   `create_time` int(11) UNSIGNED NOT NULL COMMENT '创建时间',
   `update_time` int(11) UNSIGNED NOT NULL COMMENT '更新时间',
   PRIMARY KEY (`id`)

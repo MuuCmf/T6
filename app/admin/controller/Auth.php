@@ -9,9 +9,14 @@ use app\common\model\AuthGroup;
 
 class Auth extends Admin
 {
+    protected $AuthGroup;
+    protected $AuthRule;
+
     public function __construct()
     {
         parent::__construct();
+        $this->AuthGroup = new AuthGroup();
+        $this->AuthRule = new AuthRule();
     }
 
     /**
@@ -21,7 +26,7 @@ class Auth extends Admin
     {
         $map[] = ['module', '=', 'admin'];
         $map[] = ['status', '>', -1];
-        $list = Db::name('AuthGroup')->where($map)->order('id asc')->select()->toArray();
+        $list = $this->AuthGroup->where($map)->order('id asc')->select()->toArray();
         $list = int_to_string($list);
 
         $this->setTitle('用户组管理');
@@ -52,8 +57,7 @@ class Auth extends Admin
             $data['type'] = AuthGroup::TYPE_ADMIN;
 
             if ($data) {
-                $AuthGroup = new AuthGroup();
-                $res = $AuthGroup->editData($data);
+                $res = $this->AuthGroup->editData($data);
                 if ($res === false) {
                     return $this->error('操作失败');
                 } else {
@@ -63,7 +67,7 @@ class Auth extends Admin
                 return $this->error('操作失败');
             }
         } else {
-            $auth_group = Db::name('AuthGroup')->where(['module' => 'admin', 'type' => AuthGroup::TYPE_ADMIN])->find((int)$id);
+            $auth_group = $this->AuthGroup->where(['module' => 'admin', 'type' => AuthGroup::TYPE_ADMIN])->find((int)$id);
 
             View::assign('auth_group', $auth_group);
             $this->setTitle('编辑用户组');
@@ -113,7 +117,7 @@ class Auth extends Admin
         }
         $data['status'] = $status;
 
-        $res = (new AuthGroup())->where('id', 'in', $ids)->update($data);
+        $res = $this->AuthGroup->where('id', 'in', $ids)->update($data);
         if($res){
             return $this->success($title . '成功');
         }else{
@@ -133,7 +137,7 @@ class Auth extends Admin
             return $this->error('参数错误');
         }
         // 权限组列表
-        $auth_group = Db::name('AuthGroup')->where(['status' => 1, 'module' => 'admin', 'type' => AuthGroup::TYPE_ADMIN])->field('id,title,rules')->select()->toArray();
+        $auth_group = $this->AuthGroup->where(['status' => 1, 'module' => 'admin', 'type' => AuthGroup::TYPE_ADMIN])->field('id,title,rules')->select()->toArray();
         View::assign('auth_group', $auth_group);
 
         $prefix = config('database.connections.mysql.prefix');
@@ -176,12 +180,11 @@ class Auth extends Admin
         if (empty($uid) || empty($gid)) {
             return $this->error('参数错误');
         }
-        $AuthGroup = new AuthGroup();
 
-        if (!$AuthGroup->find($gid)) {
+        if (!$this->AuthGroup->find($gid)) {
             return $this->error('该用户组不存在');
         }
-        if ($AuthGroup->removeFromGroup($uid, $gid)) {
+        if ($this->AuthGroup->removeFromGroup($uid, $gid)) {
             return $this->success('操作成功');
         } else {
             return $this->error('操作失败');
@@ -195,7 +198,7 @@ class Auth extends Admin
     {
         $this->setTitle('管理权限');
         $group_id = input('group_id', 0, 'intval');
-        $group = Db::name('AuthGroup')->find($group_id);
+        $group = $this->AuthGroup->find($group_id);
         View::assign('this_group', $group);
 
         // 更新权限菜单
@@ -205,15 +208,15 @@ class Auth extends Admin
         View::assign('node_list', $node_list);
 
         // 用户权限组
-        $auth_group = Db::name('AuthGroup')->where(['status' => 1, 'type' => AuthGroup::TYPE_ADMIN])->field('id,title,rules')->select()->toArray();
+        $auth_group = $this->AuthGroup->where(['status' => 1, 'type' => AuthGroup::TYPE_ADMIN])->field('id,title,rules')->select()->toArray();
         View::assign('auth_group', $auth_group);
 
         $map = ['type' => AuthRule::RULE_MAIN, 'status' => 1];
-        $main_rules = Db::name('AuthRule')->where($map)->column('id', 'name');
+        $main_rules = $this->AuthRule->where($map)->column('id', 'name');
         View::assign('main_rules', $main_rules);
 
         $map = ['type' => AuthRule::RULE_URL, 'status' => 1];
-        $child_rules = Db::name('AuthRule')->where($map)->column('id', 'name');
+        $child_rules = $this->AuthRule->where($map)->column('id', 'name');
         View::assign('auth_rules', $child_rules);
 
         return View::fetch();
@@ -228,11 +231,10 @@ class Auth extends Admin
         //需要新增的节点必然位于$nodes
         $nodes = $this->returnNodes(false);
         //dump($nodes);
-        $AuthRule = new AuthRule();
         //status全部取出,以进行更新
         $map = [['type', 'in', '1,2']];
         //需要更新和删除的节点必然位于$rules
-        $rules = $AuthRule->where($map)->order('name')->select()->toArray();
+        $rules = $this->AuthRule->where($map)->order('name')->select()->toArray();
         //构建insert数据
         $data = []; //保存需要插入和更新的新节点
         foreach ($nodes as $value) {
@@ -265,18 +267,18 @@ class Auth extends Admin
         if (count($update)) {
             foreach ($update as $k => $row) {
                 if ($row != $diff[$row['id']]) {
-                    $AuthRule->where(['id' => $row['id']])->update($row);
+                    $this->AuthRule->where(['id' => $row['id']])->update($row);
                 }
             }
         }
 
         if (count($ids)) {
-            $AuthRule->where('id', 'in', implode(',', $ids))->update(['status' => -1]);
+            $this->AuthRule->where('id', 'in', implode(',', $ids))->update(['status' => -1]);
             //删除规则是否需要从每个用户组的访问授权表中移除该规则?
         }
 
         if (count($data)) {
-            $AuthRule->insertAll(array_values($data));
+            $this->AuthRule->insertAll(array_values($data));
         }
         return true;
     }
