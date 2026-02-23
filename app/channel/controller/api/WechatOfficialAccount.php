@@ -184,12 +184,9 @@ class WechatOfficialAccount extends Api
      */
     public static function qrcode($scene_key)
     {
-        //模板调用
-        $access_token = OfficialAccount::getToken();
-        $qrcode_url = 'https://api.weixin.qq.com/cgi-bin/qrcode/create?access_token=' . $access_token['access_token'];
-        $qrcode_url .= "&islogin=1";
-        $qrcode_url .= "&scene_key=" . $scene_key;
-        $result = OfficialAccount::createQrcode($qrcode_url, 60 * 60);
+        $event_key = "islogin=scan_login";
+        $event_key .= "&scene_key=" . $scene_key;
+        $result = OfficialAccount::createQrcode($event_key, 60 * 60);
         $ticket = $result['ticket'];
         $qrcode = OfficialAccount::getQrcodeUrl($ticket);
         $fp = fopen($qrcode, 'rb');
@@ -274,7 +271,7 @@ class WechatOfficialAccount extends Api
     public function oauth()
     {
         $target_url = input('param.target_url', request()->domain());
-        $target_url = explode('#', $target_url);
+        $target_url = explode('#', (string)$target_url);
         $oauth_data = [
             'target_url' => urlencode($target_url[0])
         ];
