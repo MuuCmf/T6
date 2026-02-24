@@ -69,6 +69,7 @@
             progressTitle: '获取信息中',//进度标题
             task: '',//进行任务
             appName: '{$appName}',//应用类型 0系统 1应用
+            frame: '{$frame|default="t6"}', //框架版本
             api: '{$cloud}',//接口api
             localVersion: '{$version}',//本地版本
             upgradeVersion: '{$upgradeVersion}',//要升级的版本
@@ -100,6 +101,7 @@
                     version: that.upgradeVersion,
                     auth_code:that.authCode,
                     app_name:that.appName,
+                    frame: that.frame
                 }, function (res) {
                     
                     if (res.code == 200) {
@@ -138,6 +140,7 @@
                         that.versionPackage.md5 = item.md5
                     }
                     $.post("{:url('upgrade')}", {
+                        frame: that.frame,
                         app_name: that.appName,
                         version: that.upgradeVersion,
                         file: item.name,
@@ -209,6 +212,7 @@
                 }
                 let item = that.errPackage[i]['data'];
                 $.post("{:url('upgrade')}", {
+                        frame: that.frame,
                         app_name: that.appName,
                         version: that.upgradeVersion,
                         file: item.name,
@@ -242,6 +246,7 @@
                     return false;
                 }
                 $.post("{:url('finish')}", {
+                    frame: that.frame,
                     app_name: that.appName,
                     version: that.upgradeVersion,
                     file: that.versionPackage.name,
@@ -273,6 +278,7 @@
                 let that = this;
                 that.progressTitle = '安装中...';
                 $.post("{:url('admin/module/install')}", {
+                    frame: that.frame,
                     name: that.appName,
                 }, function (res) {
                     if(res.code == 200){

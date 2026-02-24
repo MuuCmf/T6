@@ -32,7 +32,7 @@ class Upgrade
     }
 
     /**
-     * @title 获取版本号
+     * @title 获取应用当前版本号
      * @param string $app
      * @return false|string
      */
@@ -94,7 +94,6 @@ class Upgrade
      */
     public function downFile(array $params, $save_path = '')
     {
-        $app = $params['app_name'];
         $source = $this->api . "upgrade/download?" . http_build_query($params);
         //地址追加授权域名
         $source .= "&auth_code=" . urlencode(Cloud::authCode());
@@ -121,6 +120,7 @@ class Upgrade
 
         //备份文件
         if (is_file($save_path)) {
+            $app = $params['app_name'];
             $this->backup($save_path, $app);
         }
         //创建目录
@@ -167,21 +167,11 @@ class Upgrade
      */
     public function cloudVersion($params = [])
     {
-        if (empty($params['app_name'])) {
-            return [
-                'code' => 0,
-                'data' => [
-                    'remark' => '缺少参数'
-                ]
-            ];
-        }
-
         $api = $this->api . 'app/version';
         $domain = request()->host();
         $ip   = request()->ip();
         $params['domain'] = $domain;
         $params['ip'] = $ip;
-        $params['issue'] = 'T6';
         $output = curl_request($api, $params);
         // 初始化返回数据
         $result = [
@@ -242,6 +232,7 @@ class Upgrade
         }
         $result = curl_request($url, [
             'app_name'  =>  $app_name,
+            'frame' => 't6',
             'version' =>  $version,
             'auth_code' => $auth_code
         ]);

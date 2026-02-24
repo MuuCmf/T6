@@ -88,7 +88,7 @@
                                     {if $vo.source=='local'}
                                     <button type="button" class="btn btn-success" data-remote="{:url('install', ['name' => $vo['name']])}" data-toggle="modal" data-size="sm">安装</a>
                                     {else}
-                                    <a class="btn  btn-success" href="{:url('admin/update/start', ['app_name' => $vo['name'], 'version'=>$vo['version'], 'scene'=>'setup'])}">安装</a>
+                                    <a class="btn  btn-success" href="{:url('admin/update/start', ['app_name' => $vo['name'], 'version'=>$vo['version'], 'scene'=>'setup', 'frame' => 't6'])}">安装</a>
                                     {/if}
                                 </div>
                             {/if}
