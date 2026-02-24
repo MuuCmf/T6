@@ -28,7 +28,7 @@ class Author extends Admin
     /**
      * 作者列表
      */
-    public function lists()
+    public function list()
     {
         $map = [];
         $keyword = input('keyword', '', 'text');

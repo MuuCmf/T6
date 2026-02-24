@@ -340,3 +340,4 @@ UPDATE `muucmf_menu` SET `url` = 'admin/queue/list' WHERE `muucmf_menu`.`id` = '
 UPDATE `muucmf_menu` SET `url` = 'admin/Keywords/list' WHERE `muucmf_menu`.`id` = '1E10322E-B5A4-6CFE-6F33-F629B1D72A6F';
 
 ALTER TABLE `muucmf_feedback` ADD `type` CHAR(32) NOT NULL DEFAULT 'other' COMMENT '类型' AFTER `app`;
+UPDATE `muucmf_menu` SET `url` = 'admin/author/list' WHERE `muucmf_menu`.`id` = 'A7DA37AC-E001-7C55-083F-E03A03FA5CEC';
