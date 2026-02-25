@@ -75,6 +75,82 @@ if (!function_exists('rmdirs')) {
     }
 }
 
+
+if (!function_exists('copydirs')) {
+
+    /**
+     * 递归复制目录（包含所有文件和子目录）
+     * @param string $source 源目录路径
+     * @param string $dest 目标目录路径
+     * @param bool $overwrite 是否覆盖已存在的文件（默认true）
+     * @return bool 复制成功返回true，失败返回false
+     */
+    function copydirs($source, $dest, $overwrite = true)
+    {
+        // 1. 校验源目录是否存在
+        if (!is_dir($source)) {
+            trigger_error("源目录不存在：{$source}", E_USER_ERROR);
+            return false;
+        }
+
+        // 2. 创建目标目录（递归创建，如不存在则创建）
+        if (!is_dir($dest)) {
+            if (!mkdir($dest, 0755, true)) {
+                trigger_error("无法创建目标目录：{$dest}", E_USER_ERROR);
+                return false;
+            }
+            // 修改目录权限（可选，确保后续可写入）
+            chmod($dest, 0755);
+        }
+
+        // 3. 打开源目录并遍历所有内容
+        $dir = opendir($source);
+        if (!$dir) {
+            trigger_error("无法打开源目录：{$source}", E_USER_ERROR);
+            return false;
+        }
+
+        // 4. 循环处理目录中的每个文件/子目录
+        while (($file = readdir($dir)) !== false) {
+            // 跳过 . 和 ..（当前目录和上级目录）
+            if ($file == '.' || $file == '..') {
+                continue;
+            }
+
+            $sourcePath = rtrim($source, '/\\') . DIRECTORY_SEPARATOR . $file;
+            $destPath = rtrim($dest, '/\\') . DIRECTORY_SEPARATOR . $file;
+
+            // 5. 如果是子目录，递归调用自身
+            if (is_dir($sourcePath)) {
+                if (!copydirs($sourcePath, $destPath, $overwrite)) {
+                    closedir($dir);
+                    return false;
+                }
+            }
+            // 6. 如果是文件，执行复制
+            else if (is_file($sourcePath)) {
+                // 判断是否覆盖：目标文件存在且不覆盖则跳过
+                if (file_exists($destPath) && !$overwrite) {
+                    continue;
+                }
+                // 复制文件（保留文件属性，如修改时间）
+                if (!copy($sourcePath, $destPath)) {
+                    trigger_error("文件复制失败：{$sourcePath} -> {$destPath}", E_USER_WARNING);
+                    closedir($dir);
+                    return false;
+                }
+                // 同步文件权限
+                chmod($destPath, fileperms($sourcePath));
+            }
+        }
+
+        // 7. 关闭目录句柄
+        closedir($dir);
+        return true;
+    }
+}
+
+
 if (!function_exists('think_encrypt')) {
     /**
      * 系统加密方法
