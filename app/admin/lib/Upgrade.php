@@ -64,7 +64,6 @@ class Upgrade
                 '.env',
                 'config/auth.php',
                 'config/cache.php',
-                'config/cloud.php', // 调试临时添加
                 'config/database.php',
                 'config/jwt.php',
                 'config/queue.php',

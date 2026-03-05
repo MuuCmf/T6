@@ -47,7 +47,8 @@ class Cloud
         $url = $this->api . 'authorization/app';
         $result = curl_request($url, [
             'app_name'  =>  $app_name,
-            'auth_code' =>  self::authCode()
+            'auth_code' =>  self::authCode(),
+            'frame' => 't6',
         ]);
         try {
             $result = json_decode($result, true);
