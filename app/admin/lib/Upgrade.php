@@ -87,12 +87,15 @@ class Upgrade
 
     /**
      * @title下载远端文件
-     * @param string $params  参数
+     * @param array $params  参数
      * @param string $save_path 保存路径
      * @return string
      */
     public function downFile(array $params, $save_path = '')
     {
+        if(empty($params['frame'])){
+            $params['frame'] = 't6';
+        }
         $source = $this->api . "upgrade/download?" . http_build_query($params);
         //地址追加授权域名
         $source .= "&auth_code=" . urlencode(Cloud::authCode());
@@ -171,6 +174,7 @@ class Upgrade
         $ip   = request()->ip();
         $params['domain'] = $domain;
         $params['ip'] = $ip;
+        $params['frame'] = 't6';
         $output = curl_request($api, $params);
         // 初始化返回数据
         $result = [

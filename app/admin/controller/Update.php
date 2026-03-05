@@ -43,7 +43,6 @@ class Update extends Admin
         // 读取云端最新版本号
         $cloud_version = $this->UpgradeServer->cloudVersion([
             'app_name' => $this->app_name,
-            'frame' => 't6'
         ]);
         if (is_array($cloud_version) && !empty($cloud_version)) {
             $cloud_version = $cloud_version['data'];
@@ -138,7 +137,6 @@ class Update extends Admin
                     $params = [
                         'md5'       =>  $md5,
                         'app_name'  =>  $this->app_name,
-                        'frame' => 't6',
                         'version'   =>  $version
                     ];
                     // 下载文件
@@ -171,7 +169,6 @@ class Update extends Admin
                         $params = [
                             'md5'   => $params['md5'],
                             'app_name' => $this->app_name,
-                            'frame' => 't6',
                             'version'  => $params['version']
                         ];
                         //更新系统版本号
@@ -200,7 +197,6 @@ class Update extends Admin
         // 读取云端最新版本号
         $cloud_version = $this->UpgradeServer->cloudVersion([
             'app_name' => $this->app_name,
-            'frame' => 't6'
         ]);
         if (is_array($cloud_version) && !empty($cloud_version)) {
             $cloud_version = $cloud_version['data'];
