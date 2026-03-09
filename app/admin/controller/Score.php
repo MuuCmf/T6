@@ -7,6 +7,7 @@ use think\facade\Db;
 use think\facade\View;
 use app\admin\builder\AdminConfigBuilder;
 use app\admin\builder\AdminListBuilder;
+use app\common\model\Member as MemberModel;
 use app\common\model\ScoreLog as ScoreLogModel;
 use app\common\model\ScoreType as ScoreTypeModel;
 
@@ -15,7 +16,7 @@ use app\common\model\ScoreType as ScoreTypeModel;
  */
 class Score extends Admin
 {
-
+    protected $MemberModel;
     protected $scoreLogModel;
     protected $scoreTypeModel;
 
@@ -27,6 +28,7 @@ class Score extends Admin
     {
         parent::__construct();
 
+        $this->MemberModel = new MemberModel();
         $this->scoreLogModel = new ScoreLogModel();
         $this->scoreTypeModel = new ScoreTypeModel();
     }
@@ -39,42 +41,68 @@ class Score extends Admin
      */
     public function log()
     {
+        $keyword = input('keyword', '', 'trim');
         $rows = input('rows', 20, 'intval');
         View::assign('rows', $rows);
-        $uid = input('uid', 0, '');
-        $map = [];
-        if (!empty($uid)) {
-            $map[] = ['uid', '=', $uid];
+        $where = [];
+        if (!empty($keyword)) {
+            $where[] = function($query) use ($keyword) {
+                $query->where('m.nickname', 'like', '%' . $keyword . '%')
+                      ->whereOr('m.mobile', 'like', '%' . $keyword . '%')
+                      ->whereOr('m.uid', 'like', '%' . $keyword . '%');
+            };
         }
 
-        $scoreLog = $this->scoreLogModel->where($map)->order('create_time desc')->paginate($rows);
-        //分页HTML
+        $scoreLog = $this->scoreLogModel
+        ->alias('sl')
+        ->join('member m', 'sl.uid = m.uid')
+        ->field('sl.*, m.nickname, m.mobile')
+        ->order('sl.create_time desc')
+        ->where($where)
+        ->paginate([
+                'list_rows' => $rows,
+                'query' => [
+                    'keyword' => $keyword
+                ],
+            ], false);
+        
         $page = $scoreLog->render();
-        //转数组处理
-        $scoreLog = $scoreLog->toArray()['data'];
-
+        // 转数组处理
+        $scoreLog = $scoreLog->toArray();
+        // 处理积分类型名称
         $scoreTypes = $this->scoreTypeModel->getTypeListByIndex();
-
-        foreach ($scoreLog as &$v) {
-            if (empty($v['uid'])) $v['uid'] = 0;
-            $v['adjustType'] = $v['action'] == 'inc' ? '增加' : '减少';
-            $v['scoreType'] = $scoreTypes[$v['type']]['title'];
-            $class = $v['action'] == 'inc' ? 'text-success' : 'text-danger';
-            $v['value'] = '<span class="' . $class . '">' .  ($v['action'] == 'inc' ? '+' : '-') . $v['value'] . $scoreTypes[$v['type']]['unit'] . '</span>';
-            $v['finally_value'] = $v['finally_value'] . $scoreTypes[$v['type']]['unit'];
+        // 处理积分变动类型
+        foreach ($scoreLog['data'] as &$v) {
+            if (empty($v['uid'])){
+                $v['uid'] = 0;
+            }else{
+                $v['user_info'] = $this->MemberModel->info($v['uid'], '*');
+            }
+            $v['adjust_type'] = $v['action'] == 'inc' ? '增加' : '减少';
+            $v['score_type'] = $scoreTypes[$v['type']]['title'];
+            $v['value'] = ($v['action'] == 'inc' ? '+' : '-') . $v['value'] . $scoreTypes[$v['type']]['unit'];
+            $v['final_value'] = $v['finally_value'] . $scoreTypes[$v['type']]['unit'];
+            if (!empty($v['create_time'])) {
+                $v['create_time_str'] = time_format($v['create_time']);
+                $v['create_time_friendly_str'] = friendly_date($v['create_time']);
+            }
         }
         unset($v);
 
-        $builder = new AdminListBuilder();
+        // ajax请求返回
+        if (request()->isAjax()){
+            return $this->success('success',$scoreLog);
+        }
 
+        $builder = new AdminListBuilder();
         $builder->title('积分日志');
-        $builder->data($scoreLog);
+        $builder->data($scoreLog['data']);
         $builder->page($page);
         $builder
             ->keyId()
             ->keyUid()
-            ->keyText('scoreType', '积分类型')
-            ->keyText('adjustType', '调整类型')
+            ->keyText('score_type', '积分类型')
+            ->keyText('adjust_type', '调整类型')
             ->keyHtml('value', '积分变动')
             ->keyText('finally_value', '积分最终值')
             ->keyText('remark', '变动描述')
@@ -101,9 +129,25 @@ class Score extends Admin
      */
     public function type()
     {
+        $status = input('status', '', 'text');
+        $keyword = input('keyword', 0, '');
+        $map = [];
+        if (!empty($keyword)) {
+            $map[] = ['title', 'like', '%' . $keyword . '%'];
+        }
         //读取数据
-        $map[] = ['status', '>', -1];
+        if (empty($status)) {
+            $map[] = ['status', 'in', [0, 1]];
+        } else {
+            $map[] = ['status', '=', intval($status)];
+        }
         $list = $this->scoreTypeModel->getTypeList($map);
+
+        // ajax请求返回
+        if (request()->isAjax()){
+            return $this->success('success',$list);
+        }
+
         // 记录当前列表页的cookie
         cookie('__forward__', $_SERVER['REQUEST_URI']);
         //显示页面
