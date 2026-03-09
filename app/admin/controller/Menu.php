@@ -69,7 +69,7 @@ class Menu extends Admin
     }
 
     /**
-     * 获取分组后的管理菜单树
+     * 获取分组后的权限管理菜单树
      */
     public function tree()
     {
@@ -93,46 +93,74 @@ class Menu extends Admin
                 continue; //继续循环
             }
 
-            // 获取当前主菜单的子菜单项
+            // 获取当前主菜单的分组
             $groups = $this->MenuModel->where('pid', $item['id'])->order('sort asc')->column('group');
             $groups = array_unique($groups);
             //获取二级分类的合法url
-            $where = [];
-            $where['pid'] = $item['id'];
-            $where['hide'] = 0;
-            $second_urls = $this->MenuModel->where($where)->order('sort asc')->select()->toArray();
-
+            $map_2_url = [];
+            $map_2_url['pid'] = $item['id'];
+            $map_2_url['hide'] = 0;
+            $urls_2 = $this->MenuModel->where($map_2_url)->order('sort asc')->column('url');
+            // 检测菜单权限
             if (!$this->isRoot) {
-                // 检测菜单权限
-                $to_check_urls = [];
-                foreach ($second_urls as $key => $to_check_url) {
-                    $rule = $to_check_url['url'];
-                    if ($this->checkRule($rule, get_uid(), 1, null)) {
-                        $to_check_urls[] = $to_check_url['url'];
+                $to_check_urls_2 = [];
+                foreach ($urls_2 as $url) {
+                    if ($this->checkRule($url, get_uid())) {
+                        $to_check_urls_2[] = $url;
                     }
                 }
             }
+            
             // 按照分组生成子菜单树
-            foreach ($groups as $k => $g) {
-                $map = [];
-                $map[] = ['group', '=', $g];
-                if (isset($to_check_urls)) {
-                    if (empty($to_check_urls)) {
+            foreach ($groups as $group) {
+                $map_2_level = [];
+                if (isset($to_check_urls_2)) {
+                    if (empty($to_check_urls_2)) {
                         // 没有任何权限
                         continue;
                     } else {
-                        $map[] = ['url', 'in', $to_check_urls];
+                        $map_2_level[] = ['url', 'in', $to_check_urls_2];
                     }
                 }
-                $map[] = ['pid', '=', $item['id']];
-                $map[] = ['hide', '=', 0];
-                $menu_list = $this->MenuModel->where($map)->field('id,pid,title,url,icon,tip,type,module')->order('sort asc')->select()->toArray();
+                $map_2_level[] = ['group', '=', $group];
+                $map_2_level[] = ['pid', '=', $item['id']];
+                $map_2_level[] = ['hide', '=', 0];
+                $menu_2_list = $this->MenuModel->where($map_2_level)->field('id,pid,title,url,icon,tip,type,module')->order('sort asc')->select()->toArray();
 
-                if ($menu_list) {
-                    $menus['group'] = $g;
-                    $menus['lists'] = list_to_tree($menu_list, 'id', 'pid', 'operater', $item['id']);
+                if (!empty($menu_2_list)) {
+                    $menus['group'] = $group;
+                    $menus['lists'] = $menu_2_list;
                 }
-                $main_menu[$key]['child'][] = $menus;
+
+                // 按照三级分类生成子菜单树
+                foreach ($menus['lists'] as $k2 => $v2) {
+                    $map_3_level = [];
+                    if (isset($to_check_urls_3)) {
+                        if (empty($to_check_urls_3)) {
+                            // 没有任何权限
+                            continue;
+                        } else {
+                            $map_3_level[] = ['url', 'in', $to_check_urls_3];
+                        }
+                    }
+                    $map_3_level[] = ['pid', '=', $v2['id']];
+                    $map_3_level[] = ['hide', '=', 0];
+                    $menu_3_list = $this->MenuModel->where($map_3_level)->field('id,pid,title,url,icon,tip,type,module')->order('sort asc')->select()->toArray();
+
+                    // 检测三级菜单权限
+                    foreach($menu_3_list as $k3 => $v3){
+                        if (!$this->isRoot && !$this->checkRule($v3['url'], get_uid(), AuthRule::RULE_MAIN, null)) {
+                            unset($menu_3_list[$k3]);
+                            continue; //继续循环
+                        }
+                    }
+
+                    if (!empty($menu_3_list)) {
+                        $menus['lists'][$k2]['_child'] = $menu_3_list;
+                    }
+                }
+
+                $main_menu[$key]['_child'][] = $menus;
             }
         }
 

@@ -10,6 +10,7 @@ use think\facade\View;
 use app\common\service\Tree;
 use app\common\model\Menu as MenuModel;
 use app\common\model\Module as ModuleModel;
+use app\common\model\AuthRule;
 
 class Module extends Admin
 {
@@ -333,7 +334,7 @@ class Module extends Admin
      */
     public function mdel()
     {
-        $ids = input('ids/a');
+        $ids = input('ids');
         !is_array($ids) && $ids = explode(',', $ids);
 
         $res = $this->MenuModel->where('id', 'in', $ids)->delete();
@@ -342,5 +343,40 @@ class Module extends Admin
         } else {
             return $this->error('删除失败');
         }
+    }
+
+    /**
+     * 获取所有已安装应用模块列表
+     */
+    public function all()
+    {
+        // 支持的端（PC端、移动端）默认是所有端
+        $support = input('support', 'all', 'text');
+        // 获取所有应用模块
+        $all_module_list = (new ModuleModel())->getAll([
+            ['is_setup', '=', 1],
+            ['name', '<>', 'ucenter'],
+            ['name', '<>', 'channel']
+        ]);
+        // 应用权限
+        foreach ($all_module_list as $key => $item) {
+            // 判断主菜单权限
+            if (!$this->isRoot && !$this->checkRule(strtolower($item['entry']), get_uid(), AuthRule::RULE_MAIN, null)) {
+                unset($all_module_list[$key]);
+                continue; //继续循环
+            }
+
+            // 判断是否支持PC端
+            if ($support == 'pc') {
+                if (!file_exists(base_path() . $item['name'] . '/controller/pc/Index.php')) {
+                    unset($all_module_list[$key]);
+                }
+            }
+        }
+
+        // 重新索引数组，确保返回的是数组而不是对象
+        $all_module_list = array_values($all_module_list);
+
+        return $this->success('success', $all_module_list);
     }
 }
