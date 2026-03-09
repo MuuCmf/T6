@@ -93,6 +93,10 @@ class Authentication extends Admin
         View::assign('pager', $pager);
         View::assign('list', $list);
 
+        if (request()->isAjax()) {
+            return $this->success('success', $list);
+        }
+
         // 获取未审核的认证数量
         $unverify = $this->AuthenticationModel->where('status', '=', 1)->count();
         View::assign('unverify', $unverify);

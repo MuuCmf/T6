@@ -49,6 +49,11 @@ class Config extends Admin
             // 配置项列表
             $list = $this->ConfigModel->where(['status' => 1, 'group' => $id])->field('id,name,title,extra,value,group,remark,type')->order('sort asc')->select()->toArray();
 
+            // ajax请求返回数据
+            if (request()->isAjax()) {
+                return $this->success('success', $list);
+            }
+
             View::assign('list', $list);
             // 设置页面Title
             $this->setTitle($type[$id] . '设置');
@@ -63,24 +68,57 @@ class Config extends Admin
      */
     public function list()
     {
-        $group = input('group', 0);
+        // 加载方式 all 全量查询  page 分页查询
+        $load = input('load', 'page', 'text');
+        $keyword = input('keyword', '', 'trim');
+        $group = input('group', 0, 'intval');
         $rows = input('rows', 20, 'intval');
         View::assign('rows', $rows);
+
         /* 查询条件初始化 */
         $map = [];
         $map[] = ['status', '=', 1];
-        if (isset($_GET['group'])) {
-            $map[] = ['group', '=', $group];
+        if (!empty($group)) {
+            $map[] = ['group', 'in', $group];
         }
-        if (isset($_GET['name'])) {
-            $map[] = ['name', 'like', '%' . (string)input('name') . '%'];
+        if (!empty($keyword)) {
+            $map[] = ['title', 'like', '%' . $keyword . '%'];
         }
 
-        list($list, $pager) = $this->commonLists('Config', $map, 'sort,id');
-        $list = $list->toArray()['data'];
+        if ($load == 'page') {
+            // 分页查询
+            $list = $this->ConfigModel->getListByPage($map, 'sort asc,id desc', '*', $rows);
+            $pager = $list->render();
+            $list = $list->toArray();
+            foreach ($list['data'] as $key => $item) {
+                $list['data'][$key]['type_name'] = get_config_type($item['type']);
+                $list['data'][$key]['group_name'] = get_config_group($item['group']);
+                // pic类型生成缩微图组
+                if ($item['type'] == 'pic' && !empty($item['value'])) {
+                    $list['data'][$key]['thumb'] = thumb_group($item['value']);
+                }
+            }
+        } else {
+            // 全量查询
+            $list = $this->ConfigModel->where($map)->field('id,name,title,extra,value,group,remark,type')->order('sort asc')->select()->toArray();
+            foreach ($list as $key => $item) {
+                $list[$key]['type_name'] = get_config_type($item['type']);
+                $list[$key]['group_name'] = get_config_group($item['group']);
+                // pic类型生成缩微图组
+                if ($item['type'] == 'pic' && !empty($item['value'])) {
+                    $list['data'][$key]['thumb'] = thumb_group($item['value']);
+                }
+            }
+            $pager = null;
+        }
 
-        View::assign('group', config('system.CONFIG_GROUP_LIST'));
-        View::assign('group_id', input('get.group', 0));
+        // ajax请求返回数据
+        if (request()->isAjax()) {
+            return $this->success('success', $list);
+        }
+
+        View::assign('group_list', config('system.CONFIG_GROUP_LIST'));
+        View::assign('group_active', $group);
         View::assign('list', $list);
         View::assign('pager', $pager);
         // 记录当前列表页的cookie

@@ -773,6 +773,28 @@ if (!function_exists('get_thumb_image')) {
     }
 }
 
+if (!function_exists('thumb_group')) {
+    /**
+     * 生成一组缩微图方法
+     * @param $attachment
+     * @param int $width
+     * @param int $height
+     * @param int $type
+     * @param bool $replace
+     * @return array
+     */
+    function thumb_group($attachment, $width = 100, $height = 100, $replace = false)
+    {
+        $thumb = [];
+        for ($i = 1; $i <= 8; $i++) {
+            $thumb["thumb_" . $width * $i] = get_thumb_image($attachment, $width * $i, $height * $i, $replace);
+        }
+        $thumb["origin"] = get_attachment_src($attachment);
+
+        return $thumb;
+    }
+}
+
 if (!function_exists('thumb')) {
     /**简写函数，等同于get_thumb_image（）
      * @param $attachment 图片id/路径

@@ -48,6 +48,12 @@ class Withdraw extends Admin
         foreach ($lists['data'] as &$item) {
             $item = $this->WithdrawLogic->formatData($item);
         }
+        unset($item);
+
+        // ajax请求返回数据
+        if (request()->isAjax()) {
+            return $this->success('success', $lists);
+        }
 
         View::assign([
             'order_no'  =>  $order_no,

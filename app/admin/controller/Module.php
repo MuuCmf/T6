@@ -108,6 +108,11 @@ class Module extends Admin
         }
         unset($item);
         $pager = $modules->render();
+
+        // ajax请求返回数据
+        if (request()->isAjax()) {
+            return $this->success('success', $modules);
+        }
         
         View::assign('pager', $pager);
         View::assign('modules', $modules);

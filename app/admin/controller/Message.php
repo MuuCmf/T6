@@ -51,6 +51,11 @@ class Message extends Admin
         }
         unset($val);
 
+        // ajax请求返回数据
+        if (request()->isAjax()) {
+            return $this->success('success', $list);
+        }
+
         View::assign('list', $list);
         // 记录当前列表页的cookie
         cookie('__forward__', $_SERVER['REQUEST_URI']);
