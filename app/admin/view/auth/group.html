@@ -49,7 +49,7 @@
 			</td>
 			<td>{$vo.status_str}</td>
 			<td>
-				<a class="btn btn-sm btn-primary {if !check_auth('admin/Auth/editGroup')}disabled{/if}" href="{:url('editGroup', ['id'=>$vo.id])}">编辑</a>
+				<a class="btn btn-sm btn-primary {if !check_auth('admin/Auth/editGroup')}disabled{/if}" href="{:url('groupEdit', ['id'=>$vo.id])}">编辑</a>
 				{eq name="vo.status" value="1"}
 				<a class="btn btn-sm btn-warning ajax-get {if !check_auth('admin/Auth/groupStatus')}disabled{/if}" href="{:url('groupStatus', ['status'=>'0', 'id'=>$vo.id])}" >禁用</a>
 				{else/}
