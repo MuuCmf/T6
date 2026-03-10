@@ -341,3 +341,6 @@ UPDATE `muucmf_menu` SET `url` = 'admin/Keywords/list' WHERE `muucmf_menu`.`id` 
 
 ALTER TABLE `muucmf_feedback` ADD `type` CHAR(32) NOT NULL DEFAULT 'other' COMMENT '类型' AFTER `app`;
 UPDATE `muucmf_menu` SET `url` = 'admin/author/list' WHERE `muucmf_menu`.`id` = 'A7DA37AC-E001-7C55-083F-E03A03FA5CEC';
+
+INSERT INTO `muucmf_menu` (`id`, `title`, `pid`, `sort`, `url`, `hide`, `type`, `tip`, `group`, `is_dev`, `icon`, `module`) VALUES
+('BDE6A6B2-3EA1-BD31-A9D4-44B442156839', '上传用户头像', 'DA4333DF-D814-819B-D657-401FE5153AB4', 0, 'admin/Member/avatar', 0, 0, '', '', 0, '', 'admin');
