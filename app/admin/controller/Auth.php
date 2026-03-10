@@ -26,16 +26,56 @@ class Auth extends Admin
     /**
      * 权限组列表
      */
-    public function index()
+    public function group()
     {
-        $map[] = ['module', '=', 'admin'];
-        $map[] = ['status', '>', -1];
-        $list = $this->AuthGroupModel->where($map)->order('id asc')->select()->toArray();
-        $list = int_to_string($list);
+        // 加载方式 all 全量查询  page 分页查询
+        $load = input('load', 'page', 'text');
 
-        $this->setTitle('用户组管理');
+        // 查询条件
+        $map[] = ['module', '=', 'admin'];
+        $map[] = ['status', 'in', [0, 1]];
+
+        $rows = input('rows', 15, 'intval');
+        $keyword = input('keyword', '', 'text');
+
+        if (!empty($keyword)) {
+            $map[] = ['title', 'like', '%' . $keyword . '%'];
+        }
+
+        $fields = '*';
+        if ($load == 'page') {
+            // 分页查询
+            $list = $this->AuthGroupModel->getListByPage($map, 'id desc', $fields, $rows);
+            if (!empty($list)) {
+                $pager = $list->render();
+                $list = $list->toArray();
+                // 获取权限组用户数量
+                foreach ($list['data'] as $key => $item) {
+                    $list['data'][$key]['user_count'] = $this->AuthGroupAccessModel->memberCount($item['id']);
+                    $list['data'][$key]['status_str'] = $this->AuthGroupModel->_status[$item['status']];
+                }
+            }
+        } else {
+            // 全量查询
+            $list = $this->AuthGroupModel->where($map)->select();
+            if (!empty($list)) {
+                $list = $list->toArray();
+                // 处理状态字段
+                foreach ($list as $key => $item) {
+                    $list[$key]['status_str'] = $this->AuthGroupModel->_status[$item['status']];
+                }
+            }
+            $pager = '';
+        }
+
+        // 处理ajax请求
+        if(request()->isAjax()){
+            return $this->success('success!', $list);
+        }
+
         View::assign('_list', $list);
-        View::assign('_use_tip', true);
+        View::assign('_pager', $pager);
+
         // 记录当前列表页的cookie
         cookie('__forward__', $_SERVER['REQUEST_URI']);
         // 输出模板
@@ -61,7 +101,7 @@ class Auth extends Admin
             $data['type'] = AuthGroup::TYPE_ADMIN;
 
             if ($data) {
-                $res = $this->AuthGroupModel->editData($data);
+                $res = $this->AuthGroupModel->edit($data);
                 if ($res === false) {
                     return $this->error('操作失败');
                 } else {

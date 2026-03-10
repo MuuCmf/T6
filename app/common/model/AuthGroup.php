@@ -20,23 +20,11 @@ class AuthGroup extends Base
 
     public $error;
 
-    /**
-     * 编辑/新增数据
-     *
-     * @param      <type>  $data   The data
-     *
-     * @return     <type>  ( description_of_the_return_value )
-     */
-    public function editData($data)
-    {
-        if (!empty($data['id'])) {
-            $res = $this->update($data);
-        } else {
-            $res = $this->insert($data);
-        }
-
-        return $res;
-    }
+    public $_status = [
+        1  => '启用',
+        0  => '禁用',
+        -1 => '已删除',
+    ];
 
     /**
      * 返回用户组列表
@@ -293,5 +281,17 @@ class AuthGroup extends Base
     public function checkGroupId($gid)
     {
         return $this->checkId('AuthGroup', $gid, '以下用户组id不存在:');
+    }
+
+    /**
+     * 处理状态字段
+     * @param array $data  数据数组
+     */
+    public function handleStatus($data)
+    {
+        if (isset($data['status'])) {
+            $data['status_str'] = $this->_status[$data['status']];
+        }
+        return $data;
     }
 }

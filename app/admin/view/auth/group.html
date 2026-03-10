@@ -1,40 +1,80 @@
-{extend name="common/main"/}
-
+{extend name="common/main" /}
 {block name="body"}
-<div class="builder">
-	<div class="main-title">
-        <h2>权限组授权</h2>
-	</div>
 
-    <div id="auth_groups" class="with-padding">
-        <form class="form-horizontal" action="{:Url('addToGroup')}" method="post" enctype="application/x-www-form-urlencoded" >
-			<label class="item-label">{$nickname}{:lang("_USER_GROUP_LIST_")}</label>
-            <div class="clearfix">
-                {volist name="auth_groups" id="vo"}
-                    <input class="auth_groups" id="auth-groups-{$vo.id}" type="checkbox" name="group_id[]" value="{$vo.id}">
-                    <label for="auth-groups-{$vo.id}">{$vo.title}</label>
-                {/volist}
-            </div>
-
-            <input type="hidden" name="uid" value="{:input('uid')}">
-            <input type="hidden" name="batch" value="true">
-            <div style="margin-top: 10px;">
-                <button type="submit" class="btn submit-btn ajax-post" target-form="form-horizontal">{:lang("_SURE_WITH_SPACE_")}</button>
-                <button class="btn btn-return" onclick="javascript:history.back(-1);return false;">{:lang("_RETURN_WITH_SPACE_")}</button>
-            </div>
-        </form>
-    </div>
+<!-- 标题栏 -->
+<div class="main-title">
+	<h2>用户权限组管理</h2>
 </div>
+
+<div class="tools auth-botton button-box">
+    <a id="add-group" class="btn btn-info {if !check_auth('admin/Auth/editGroup')}disabled{/if}" href="{:url('editGroup')}">新增</a>
+    <a class="btn btn-danger {if !check_auth('admin/Menu/index')}disabled{/if}" href="{:url('admin/Menu/index')}">权限菜单管理</a>
+</div>
+<!-- 数据列表 -->
+<div class="data-table with-padding">
+{notempty name="_list.data"}
+<table class="table table-bordered table-striped muu-table">
+	<thead>
+	    <tr>
+			<th class="row-selected row-selected">
+				<input class="check-all" id="check-all" type="checkbox"/>
+				<label for="check-all"></label>
+			</th>
+			<th class="">用户组</th>
+			<th class="">描述</th>
+			<th class="">授权</th>
+			<th class="">状态</th>
+			<th class="">操作</th>
+		</tr>
+	</thead>
+	<tbody>
+		
+		{volist name="_list.data" id="vo"}
+		<tr>
+	        <td>
+	        	<input class="ids" id="ids-{$vo.id}" type="checkbox" name="ids[]" value="{$vo.id}">
+	            <label for="ids-{$vo.id}"></label>
+	        </td>
+			<td>{$vo.title}</td>
+			<td><span>{:mb_strimwidth($vo['description'],0,60,"...","utf-8")}</span></td>
+
+
+			<td>
+				<a class=" btn btn-danger btn-xs {if !check_auth('admin/Auth/access')}disabled{/if}" href="{:url('Auth/access?group_name='.$vo['title'].'&group_id='.$vo['id'])}" >			
+					管理权限
+				</a>
+				<a class=" btn btn-warning btn-xs {if !check_auth('admin/Auth/user')}disabled{/if}" href="{:url('Auth/user?group_name='.$vo['title'].'&group_id='.$vo['id'])}" >
+					用户授权
+				</a>
+			</td>
+			<td>{$vo.status_str}</td>
+			<td>
+				<a class="btn btn-sm btn-primary {if !check_auth('admin/Auth/editGroup')}disabled{/if}" href="{:url('editGroup', ['id'=>$vo.id])}">编辑</a>
+				{eq name="vo.status" value="1"}
+				<a class="btn btn-sm btn-warning ajax-get {if !check_auth('admin/Auth/changeStatus')}disabled{/if}" href="{:url('changeStatus', ['method'=>'forbidGroup', 'id'=>$vo.id])}" >禁用</a>
+				{else/}
+				<a class="btn btn-sm btn-info ajax-get {if !check_auth('admin/Auth/changeStatus')}disabled{/if}" href="{:url('changeStatus', ['method'=>'resumeGroup', 'id'=>$vo.id])}" >启用</a>
+				{/eq}
+				{if $vo.id == 1 || $vo.id == 2 || $vo.id ==3}
+				<a class="btn btn-sm btn-danger disabled">删除</a>
+				{else /}
+				<a class="btn btn-sm btn-danger confirm ajax-get {if !check_auth('admin/Auth/changeStatus')}disabled{/if}" href="{:url('changeStatus', ['method'=>'deleteGroup', 'id'=>$vo.id])}" >删除</a>
+				{/if}
+	            </td>
+		</tr>
+		{/volist}
+	</tbody>
+</table>
+{else/}
+	<div class="text-center">空空如也~ </div>
+{/notempty}
+
+<!-- 分页 -->
+{include file="common/_pager"/}
+<!-- /分页-->
+</div>
+
 {/block}
+
 {block name="script"}
-<script type="text/javascript">
-    $(function(){
-        var group = [{$user_groups}];
-        $('.auth_groups').each(function(){
-            if( $.inArray( parseInt(this.value,10),group )>-1 ){
-                $(this).prop('checked',true);
-            }
-        });
-    });
-</script>
 {/block}
