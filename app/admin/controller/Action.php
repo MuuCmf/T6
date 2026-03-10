@@ -4,6 +4,7 @@ namespace app\admin\controller;
 
 use think\facade\Db;
 use think\facade\View;
+use app\common\model\Member as MemberModel;
 use app\common\model\Action as ActionModel;
 use app\common\model\ActionLimit as ActionLimitModel;
 use app\common\model\ActionLog as ActionLogModel;
@@ -15,6 +16,7 @@ use app\common\model\ScoreType as ScoreTypeModel;
  */
 class Action extends Admin
 {
+    protected $MemberModel;
     protected $ActionModel;
     protected $ActionLimitModel;
     protected $ActionLogModel;
@@ -25,6 +27,7 @@ class Action extends Admin
     {
         parent::__construct();
 
+        $this->MemberModel = new MemberModel();
         $this->ActionModel = new ActionModel();
         $this->ActionLimitModel = new ActionLimitModel();
         $this->ActionLogModel = new ActionLogModel();
@@ -62,7 +65,16 @@ class Action extends Admin
         $list = $list->toArray();
 
         foreach ($list['data'] as $key => &$value) {
-            $list['data'][$key]['ip'] = $value['action_ip'];
+            // 处理用户信息
+            $value['user_info'] = $this->MemberModel->info($value['uid'], '*');
+            // 处理行为名称
+            $value['action'] = $this->ActionModel->getDataById($value['action_id']);
+
+            // 处理创建时间
+            if (!empty($value['create_time'])) {
+                $value['create_time_str'] = time_format($value['create_time']);
+                $value['create_time_friendly_str'] = friendly_date($value['create_time']);
+            }
         }
         unset($value);
 
@@ -189,13 +201,33 @@ class Action extends Admin
     public function action()
     {
         //获取列表数据
-        $map[] = ['status', '>', -1];
+        $map[] = ['status', 'in', [1, 0]];
         $list = $this->ActionModel->getListByPage($map, 'update_time desc', '*', 20);
-        $page = $list->render();
-        View::assign('page', $page);
+        $paper = $list->render();
         $list = $list->toArray();
-        lists_plus($list['data']);
-        int_to_string($list['data']);
+
+        $alias = $this->ModuleModel->select();
+        foreach ($alias as $value) {
+            $alias_set[$value['name']] = $value['alias'];
+        }
+
+        foreach ($list['data'] as &$value) {
+            if (empty($value['module'])) {
+                $value['module_alias'] = '';
+            }else{
+                $value['module_alias'] = $alias_set[$value['module']];
+            }
+            $value['rule'] = unserialize($value['rule']);
+            $value['status_str'] = $value['status'] == 1 ? '启用' : '禁用';
+        }
+        unset($value);
+
+        if( request()->isAjax()){
+            return $this->success('success', $list);
+        }
+
+        // 分页按钮
+        View::assign('paper', $paper);
         View::assign('list', $list);
 
         $modules = $this->ModuleModel->getAll([
@@ -263,7 +295,7 @@ class Action extends Admin
     public function setStatus()
     {
         $ids = input('ids');
-        !is_array($ids) && $ids = explode(',', $ids);
+        !is_array($ids) && $ids = explode(',', (string)$ids);
         $status = input('status', 0, 'intval');
         $title = '更新';
         if ($status == 0) {
@@ -308,8 +340,14 @@ class Action extends Admin
             empty($val['action_list']) &&  $val['action_list'] = '所有行为';
 
             $val['punish'] = $this->ActionLimitModel->getPunishName($val['punish']);
+            $val['status_str'] = $val['status'] == 1 ? '启用' : '禁用';
         }
         unset($val);
+
+        // ajax请求返回数据
+        if( request()->isAjax()){
+            return $this->success('success', $list);
+        }
 
         //显示页面
         View::assign('list', $list);

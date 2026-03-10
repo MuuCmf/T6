@@ -1,0 +1,276 @@
+<?php
+// +----------------------------------------------------------------------
+// | Admin Routes
+// +----------------------------------------------------------------------
+
+use think\facade\Route;
+
+// 行为控制器路由
+Route::group('action', function () {
+    // 行为日志相关
+    Route::get('log', 'admin/Action/log'); // 行为日志列表
+    Route::get('log/detail', 'admin/Action/detail'); // 查看行为日志详情
+    Route::post('log/delete', 'admin/Action/remove'); // 删除日志
+    Route::post('log/clear', 'admin/Action/clear'); // 清空日志
+    Route::any('log/csv', 'admin/Action/csv'); // 导出CSV
+    
+    // 行为管理相关
+    Route::get('action', 'admin/Action/action'); // 用户行为、积分规则列表
+    Route::any('edit', 'admin/Action/edit'); // 新增、编辑行为
+    Route::post('status', 'admin/Action/setStatus'); // 设置行为状态
+    
+    // 行为限制相关
+    Route::get('limit', 'admin/Action/limit'); // 行为限制列表
+    Route::any('limit/edit', 'admin/Action/limitEdit'); // 编辑行为限制
+    Route::post('limit/status', 'admin/Action/limitStatus'); // 行为限制状态
+});
+
+Route::group('auth', function () {
+    // 权限组管理
+    Route::any('group/list', 'admin/Auth/group');
+    Route::post('group/edit', 'admin/Auth/groupEdit');
+    Route::post('group/status', 'admin/Auth/groupStatus');
+    Route::post('group/delete', 'admin/Auth/groupDelete');
+    
+    // 用户相关
+    Route::get('group/user', 'admin/Auth/user');
+    Route::post('group/user/remove', 'admin/Auth/removeFromGroup');
+    
+    // 权限访问
+    Route::get('access', 'admin/Auth/access');
+});
+
+Route::group('config', function () {
+    // 配置分组数据列表
+    Route::any('group/list', 'admin/Config/groupList');
+    
+    // 获取配置分组列表
+    Route::get('group', 'admin/Config/group');
+    
+    // 系统配置参数管理
+    Route::get('list', 'admin/Config/list');
+    
+    // 编辑系统配置
+    Route::post('edit', 'admin/Config/edit');
+    
+    // 删除配置参数
+    Route::post('del', 'admin/Config/del');
+});
+
+Route::group('crontab', function () {
+    // 定时任务管理
+    Route::get('list', 'admin/Crontab/list');
+    Route::post('edit', 'admin/Crontab/edit');
+    Route::post('status', 'admin/Crontab/status');
+    Route::post('clear', 'admin/Crontab/clear');
+    Route::get('log', 'admin/Crontab/log');
+});
+
+Route::group('douyin', function () {
+    // 抖音小程序配置
+    Route::any('config', 'admin/DouyinMiniprogram/config');
+
+    // 抖音订单结算列表
+    Route::get('settle', 'admin/DouyinMiniprogram/settle');
+
+    // 未结算订单列表
+    Route::get('orders', 'admin/DouyinMiniprogram/orders');
+
+    // 手动触发结算分账
+    Route::post('manual/settle', 'admin/DouyinMiniprogram/manualSettle');
+
+    // 结算及分账结果查询
+    Route::post('manual/settle_query', 'admin/DouyinMiniprogram/manualSettleQuery');
+
+    // 模板消息通知
+    Route::any('template_message', 'admin/DouyinMiniprogram/templateMessage');
+});
+
+Route::group('field', function () {
+    // 分组管理
+    Route::get('group', 'admin/Field/group');
+    Route::post('group/edit', 'admin/Field/editGroup');
+    Route::post('group/status', 'admin/Field/setGroupStatus');
+    
+    // 字段管理
+    Route::get('list', 'admin/Field/list');
+    Route::post('edit', 'admin/Field/editField');
+    Route::post('status', 'admin/Field/setFieldStatus');
+});
+
+Route::group('message', function () {
+    // 消息类型管理
+    Route::get('type', 'admin/Message/type');
+    Route::post('type/edit', 'admin/Message/typeEdit');
+    Route::post('type/status', 'admin/Message/typeStatus');
+    
+    // 消息发送管理
+    Route::post('send', 'admin/Message/send');
+    Route::get('list', 'admin/Message/list');
+    Route::post('status', 'admin/Message/status');
+    
+    // 消息内容管理
+    Route::get('content', 'admin/Message/content');
+    Route::post('content/edit', 'admin/Message/contentEdit');
+    Route::post('content/status', 'admin/Message/contentStatus');
+});
+
+// 模块管理路由配置
+Route::group('module', function () {
+    // 模块列表
+    Route::get('index', 'admin/Module/index');
+    
+    // 编辑模块数据
+    Route::post('edit', 'admin/Module/edit');
+    
+    // 获取应用模块详情
+    Route::get('info', 'admin/Module/info');
+    
+    // 获取云端最新版本
+    Route::get('cv', 'admin/Module/cv');
+    
+    // 安装应用模块
+    Route::get('install', 'admin/Module/install');
+    Route::post('install', 'admin/Module/install');
+    
+    // 卸载应用模块
+    Route::get('uninstall', 'admin/Module/uninstall');
+    Route::post('uninstall', 'admin/Module/uninstall');
+    
+    // 应用权限菜单
+    Route::get('menu', 'admin/Module/menu');
+    Route::post('menu', 'admin/Module/menu');
+    
+    // 菜单删除
+    Route::post('menu/del', 'admin/Module/menuDel');
+    
+    // 获取应用模块列表
+    Route::get('all', 'admin/Module/all');  
+});
+
+Route::group('pc', function () {
+    // 顶部通用导航
+    Route::any('navbar', 'admin/Pc/navbar');
+
+    // 底部快捷导航
+    Route::any('footer', 'admin/Pc/footer');
+
+    // 用户导航
+    Route::any('user', 'admin/Pc/user');
+
+    // SEO规则列表
+    Route::get('seo/list', 'admin/Pc/seoList');
+
+    // 编辑SEO规则
+    Route::any('seo/edit', 'admin/Pc/seoEdit');
+
+    // SEO规则状态
+    Route::post('seo/status', 'admin/Pc/seoStatus');
+});
+
+Route::group('role', function () {
+    // 角色管理
+    Route::get('list', 'admin/Role/list');
+    Route::post('edit', 'admin/Role/edit');
+    Route::post('status', 'admin/Role/status');
+    Route::post('del', 'admin/Role/del');
+    Route::post('check/bind', 'admin/Role/checkBind');
+    Route::post('verify', 'admin/Role/verify');
+
+    // 角色用户列表
+    Route::get('user', 'admin/Role/user');
+
+    // 角色分组管理
+    Route::get('group', 'admin/Role/group');
+    Route::post('group/edit', 'admin/Role/groupEdit');
+    Route::post('group/status', 'admin/Role/groupStatus');
+    Route::post('group/delete', 'admin/Role/groupDel');
+});
+
+Route::group('score', function () {
+    // 积分日志
+    Route::get('log', 'admin/Score/log');
+    Route::post('clear', 'admin/Score/clear');
+    
+    // 积分类型管理
+    Route::get('type', 'admin/Score/type');
+    Route::post('type/edit', 'admin/Score/typeEdit');
+    Route::post('type/status', 'admin/Score/typeStatus');
+    Route::post('type/delete', 'admin/Score/typeDel');
+});
+
+Route::group('tominiprogram', function () {
+    // 跳转小程序列表
+    Route::get('list', 'admin/Tominiprogram/list');
+    
+    // 添加、编辑跳转小程序
+    Route::any('edit', 'admin/Tominiprogram/edit');
+    
+    // 更新跳转小程序状态
+    Route::post('status', 'admin/Tominiprogram/status');
+    
+    // 删除跳转小程序
+    Route::post('delete', 'admin/Tominiprogram/del');
+});
+
+Route::group('wechat_mp', function () {
+    // 微信小程序配置
+    Route::any('config', 'admin/WechatMiniProgram/config');
+    
+    // 模板消息通知
+    Route::any('message', 'admin/WechatMiniProgram/templateMessage');
+});
+
+Route::group('wechat', function () {
+    // 公众号配置
+    Route::any('config', 'admin/WechatOfficial/config');
+    
+    // 菜单管理
+    Route::any('menu', 'admin/WechatOfficial/menu');
+    
+    // 自动回复列表
+    Route::get('autoreply', 'admin/WechatOfficial/autoReply');
+    
+    // 添加、更新自动回复
+    Route::post('autoreply/edit', 'admin/WechatOfficial/editAutoReply');
+    
+    // 修改自动回复状态
+    Route::post('autoreply/status', 'admin/WechatOfficial/autoReplyStatus');
+    
+    // 素材列表
+    Route::get('material', 'admin/WechatOfficial/material');
+    
+    // 模板消息通知
+    Route::any('message', 'admin/WechatOfficial/templateMessage');
+});
+
+Route::group('wechat_work', function () {
+    // 企业微信配置
+    Route::any('config', 'admin/WechatWork/config');
+
+    // 企业微信回调
+    Route::any('callback', 'admin/WechatWork/callback');
+
+    // 网页授权
+    Route::get('oauth', 'admin/WechatWork/oauth');
+
+    // 网页授权回调
+    Route::get('oauth_callback', 'admin/WechatWork/oauthCallback');
+
+    // 生成微信SDK
+    Route::post('jssdk', 'admin/WechatWork/jssdk');
+});
+
+Route::group('withdraw', function () {
+    // 提现列表
+    Route::get('list', 'admin/Withdraw/list');
+    
+    // 提现详情
+    Route::get('detail', 'admin/Withdraw/detail');
+    
+    // 手动处理提现
+    Route::post('action', 'admin/Withdraw/action');
+    
+    // 取消提现申请
+    Route::post('cancel', 'admin/Withdraw/cancel');
+});

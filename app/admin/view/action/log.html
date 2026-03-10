@@ -63,7 +63,7 @@
                     <td>{$vo.id} </td>
                     <td>{:get_action($vo['action_id'],'title')}</td>
                     <td><a href="{:url('admin/member/detail',['uid'=>$vo['uid']])}">{:get_nickname($vo['uid'])}</a></td>
-                    <td>{$vo.ip}</td>
+                    <td>{$vo.action_ip}</td>
                     <td>{$vo['remark']}</td>
                     <td>
                         <span>{$vo.create_time|time_format}</span>
