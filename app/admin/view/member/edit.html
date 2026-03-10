@@ -1,6 +1,6 @@
 {extend name="common/main"/}
 {block name="style"}
-<link href="__STATIC__/common/lib/webuploader/css/webuploader.css" type="text/css" rel="stylesheet">
+
 <link href="__STATIC__/common/lib/cropper/cropper.min.css" rel="stylesheet">
 {/block}
 {block name="body"}
@@ -177,7 +177,8 @@
                             <div class="col-md-9">
                                 <div class="avatar-upload">
                                     <input class="avatar-data" name="avatar_data" type="hidden">
-                                    <a class="avatar-input" id="upload_avatar" name="avatar_file" type="file">
+                                    <input class="avatar-input" id="upload_avatar" name="avatar_file" type="file" style="display:none;">
+                                    <a class="btn btn-primary" onclick="document.getElementById('upload_avatar').click();">
                                         上传头像
                                     </a>
                                     <p class="description">选择一张本地的图片编辑后上传为头像支持jpg、png、gif图片大小不能超过2m</p>
@@ -210,98 +211,146 @@
 </div>
 {/block}
 {block name="script"}
-<script type="text/javascript" charset="utf-8" src="__STATIC__/common/lib/webuploader/js/webuploader.js"></script>
+
 <script src="__STATIC__/common/lib/cropper/cropper.min.js"></script>
 
 <script>
     //上传头像
     $(function () {
         var avatarData = $('[name="avatar_data"]');
-        var path;
-        var uploader = WebUploader.create({
-            // 选完文件后，是否自动上传。
-            auto: false,
-            // swf文件路径
-            swf: 'Uploader.swf',
-            // 文件接收服务端。
-            server: "{:url('api/File/avatar')}",
-            // 选择文件的按钮。可选。
-            // 内部根据当前运行是创建，可能是input元素，也可能是flash.
-            pick: '#upload_avatar',
-            // 只允许选择图片文件。
-            accept: {
-                title: 'Images',
-                extensions: 'gif,jpg,jpeg,bmp,png',
-                mimeTypes: 'image/jpg,image/jpeg,image/png'
-            }
-        });
-        uploader.on('fileQueued', function (file) {
-            uploader.upload();
-            toast.showLoading();
-        });
-        /*上传成功*/
-        uploader.on('uploadSuccess', function (file, ret) {
-            toast.hideLoading();
-
-            if (ret.code == 0) {
-                toast.error(ret.msg);
-                $('.avatar-wrapper').show();
-                $('.avatar-upload').hide();
-            } else {
-                path = ret.data.attachment;
-                var src = ret.data.url;
-                $('.avatar-wrapper').html('<img src="' + src + '" />');
-                $('.avatar-wrapper').show();
-                $('.avatar-upload').hide();
-                $('.avatar-wrapper img').load(function () {
-                    //图片加载完成后初始化裁剪组件
-                    var image = $('.avatar-wrapper img');
-
-                    image.cropper({
-                        aspectRatio: 1,
-                        preview: $('.avatar-preview'),
-                        strict: false,
-                        crop: function (data) {
-                            var json = ['{"x":' + data.detail.x, '"y":' + data
-                                .detail.y, '"height":' + data.detail.height,
-                            '"width":' + data.detail.width, '"rotate":' +
-                            data.detail.rotate + '}'
-                            ].join();
-                            avatarData.val(json);
-                        }
-                    });
-                })
-                //重置队列
-                uploader.reset();
+        var selectedFile;
+        var fileInput = document.getElementById('upload_avatar');
+        
+        // 监听文件选择事件
+        fileInput.addEventListener('change', function (e) {
+            if (e.target.files && e.target.files[0]) {
+                selectedFile = e.target.files[0];
+                
+                // 验证文件类型
+                var validTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/bmp'];
+                if (!validTypes.includes(selectedFile.type)) {
+                    toast.error('请选择有效的图片文件（jpg、png、gif、bmp）');
+                    return;
+                }
+                
+                // 验证文件大小（2MB）
+                if (selectedFile.size > 2 * 1024 * 1024) {
+                    toast.error('图片大小不能超过2MB');
+                    return;
+                }
+                
+                // 使用FileReader读取本地文件
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    // 创建图片元素
+                    var img = new Image();
+                    img.onload = function () {
+                        $('.avatar-wrapper').html(img);
+                        $('.avatar-wrapper').show();
+                        $('.avatar-upload').hide();
+                        
+                        // 图片加载完成后初始化裁剪组件
+                        var image = $('.avatar-wrapper img');
+                        image.cropper({
+                            aspectRatio: 1,
+                            preview: '.avatar-preview',
+                            autoCropArea: 0.8,
+                            viewMode: 1
+                        });
+                    };
+                    img.src = e.target.result;
+                };
+                reader.readAsDataURL(selectedFile);
             }
         });
 
         $('[data-role=avatar_btn]').click(function () {
-            var avatarJson = JSON.parse(avatarData.val());
-            var x = parseInt(avatarJson.x);
-            var y = parseInt(avatarJson.y);
-            var w = parseInt(avatarJson.width);
-            var h = parseInt(avatarJson.height);
-
-            var crop = x + ',' + y + ',' + w + ',' + h;
-
-            //检查是否已经裁剪过
-            if (typeof (crop) == 'undefined') {
+            var image = $('.avatar-wrapper img');
+            if (!image.data('cropper')) {
                 toast.error("还未裁切图片");
                 return;
             }
 
-            var uid = $('input[name="uid"]').val();
-            //提交到服务器
-            var url = "{:url('edit')}";
+            try {
+                // 检查cropper实例是否存在
+                var cropper = image.data('cropper');
+                if (!cropper) {
+                    toast.error("裁剪组件未初始化，请重新选择图片");
+                    return;
+                }
+                
+                // 使用cropper实例直接调用getCroppedCanvas方法（此方式已验证可行）
+                var canvas = cropper.getCroppedCanvas({
+                    width: 256,
+                    height: 256,
+                    imageSmoothingEnabled: true,
+                    imageSmoothingQuality: 'high'
+                });
+                
+                // 检查canvas是否成功创建
+                if (!canvas) {
+                    // 如果带参数失败，尝试不带参数
+                    canvas = cropper.getCroppedCanvas();
+                    if (!canvas) {
+                        toast.error("图片裁剪失败，请重试");
+                        return;
+                    }
+                }
+            } catch (error) {
+                console.error('裁剪图片时发生错误:', error);
+                toast.error("图片裁剪失败，请重试");
+                return;
+            }
 
-            $.post(url, {
-                uid: uid,
-                crop: crop,
-                avatar: path
-            }, function (res) {
-                handle_ajax(res);
-            });
+            // 检查selectedFile是否存在
+            if (!selectedFile) {
+                toast.error("请先选择要上传的图片");
+                return;
+            }
+
+            // 将Canvas转换为Blob
+            canvas.toBlob(function (blob) {
+                // 检查blob是否成功创建
+                if (!blob) {
+                    toast.error("图片处理失败，请重试");
+                    return;
+                }
+                
+                // 创建FormData对象
+                var formData = new FormData();
+                formData.append('avatar', blob, selectedFile.name);
+                formData.append('uid', $('input[name="uid"]').val());
+
+                // 提交到服务器
+                var url = "{:url('avatar')}";
+                
+                toast.showLoading();
+                $.ajax({
+                    url: url,
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function (res) {
+                        toast.hideLoading();
+                        // 处理上传成功的响应
+                        if (res.code == 200) {
+                            // 设置表单元素
+                            $('input[name="avatar"]').val(res.data.attachment);
+                            
+                            // 设置预览区域
+                            $('.avatar-view img').attr('src', res.data.url);
+                            
+                            // 关闭模态框
+                            $('#avatar-modal').modal('hide');
+                        }
+                    },
+                    error: function () {
+                        toast.hideLoading();
+                        toast.error("上传失败，请重试");
+                    }
+                });
+            }, 'image/jpeg');
         })
     });
 </script>

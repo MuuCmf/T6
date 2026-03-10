@@ -17,6 +17,7 @@ use app\common\model\ScoreLog as ScoreLogModel;
 class Member extends Admin
 {
     protected $MemberModel;
+    protected $Attachment;
 
     /**
      * 构造方法
@@ -28,6 +29,7 @@ class Member extends Admin
         parent::__construct();
 
         $this->MemberModel = new MemberModel();
+        $this->Attachment = new Attachment();
     }
 
     /**
@@ -261,6 +263,40 @@ class Member extends Admin
 
             return View::fetch();
         }
+    }
+
+    /**
+     * 管理端用户头像上传
+     * @return [type] [description]
+     */
+    public function avatar()
+    {
+        $uid = input('uid', 0, 'intval');
+        /* 调用文件上传组件上传文件 */
+        $files = request()->file();
+
+        if (empty($files)) {
+            $return['code'] = 0;
+            $return['msg'] = 'No Avatar Image upload or server upload limit exceeded';
+            return json($return);
+        }
+
+        $arr = $this->Attachment->upload($this->shopid, $files, 'avatar', $uid);
+
+        if (is_array($arr)) {
+            $return['code'] = 200;
+            $return['msg'] = 'Upload successful';
+            $return['data'] = $arr;
+
+            return $this->success('上传成功', $arr);
+        } else {
+            $return['code'] = 0;
+            $return['msg'] = 'Upload failed';
+
+            return $this->error($return['msg']);
+        }
+
+        return $this->error('Upload failed');
     }
 
     /**
