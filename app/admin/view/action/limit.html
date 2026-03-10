@@ -10,7 +10,7 @@
     <div class="with-padding">
     <div class="clearfix button-box tool-box row">
         <div class="col-xs-8 pd0">
-            <a type="button" class="btn btn-info" href="{:url('editLimit')}" title="新增">
+            <a type="button" class="btn btn-info" href="{:url('limitEdit')}" title="新增">
                 新增
             </a>
             <button class="btn btn-success ajax-post" url="{:url('limitStatus',['status'=>'1'])}" target-form="ids">
@@ -69,8 +69,21 @@
                     <td>{$vo.action_list}</td>
                     <td>{$vo.status_str}</td>
                     <td>
-                        <a class="btn btn-sm btn-info" href="{:url('admin/action/editLimit',['id'=>$vo['id']])}">
+                        <a class="btn btn-sm btn-info" href="{:url('limitEdit',['id'=>$vo['id']])}">
                             编辑
+                        </a>
+                        {if $vo['status'] == 1}
+                        <a href="{:url('limitStatus', ['ids'=>$vo['id'],'status'=> 0])}"
+                            class="btn btn-sm btn-warning ajax-get">禁用</a>
+                        {/if}
+
+                        {if $vo['status'] == 0}
+                        <a href="{:url('limitStatus', ['ids'=>$vo['id'], 'status'=> 1])}"
+                            class="btn btn-sm btn-info ajax-get">启用</a>
+                        {/if}
+                        <a href="{:url('limitStatus', ['ids'=>$vo['id'], 'status'=> '-1'])}"
+                            class="btn btn-sm btn-danger confirm ajax-post">
+                            删除
                         </a>
                     </td>
                 </tr>

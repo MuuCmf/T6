@@ -360,7 +360,7 @@ class Action extends Admin
      * [editLimit description]
      * @return [type] [description]
      */
-    public function editLimit()
+    public function limitEdit()
     {
         $aId = input('id', 0, 'intval');
 
@@ -370,7 +370,7 @@ class Action extends Admin
             $data['name'] = input('post.name', '', 'text');
             $data['frequency'] = input('post.frequency', 1, 'intval');
             $data['time_number'] = input('post.time_number', 1, 'intval');
-            $data['time_unit'] = input('post.time_unit', '', 'text');
+            $data['time_unit'] = input('post.time_unit', 'minute', 'text');
             $data['punish'] = input('post.punish/a', array());
             $data['if_message'] = input('post.if_message', '', 'text');
             $data['message_content'] = input('post.message_content', '', 'text');

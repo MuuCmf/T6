@@ -349,3 +349,6 @@ UPDATE `muucmf_menu` SET `url` = 'admin/Auth/group' WHERE `muucmf_menu`.`id` = '
 
 UPDATE `muucmf_menu` SET `url` = 'admin/Auth/groupEdit' WHERE `muucmf_menu`.`id` = '4E0C013B-C00F-449F-324E-473115528F00';
 UPDATE `muucmf_menu` SET `url` = 'admin/Auth/groupStatus' WHERE `muucmf_menu`.`id` = '68121540-2C69-EAC2-F2EF-B7ADBBE74C09';
+
+UPDATE `muucmf_menu` SET `url` = 'admin/action/limitEdit' WHERE `muucmf_menu`.`id` = '3AEDD7F6-0783-715A-9DBB-8C1E8758D616';
+UPDATE `muucmf_menu` SET `url` = 'admin/action/limitStatus' WHERE `muucmf_menu`.`id` = 'B0798577-F1CB-669D-6DE8-BD04145FFDE9';
