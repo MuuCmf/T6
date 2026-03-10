@@ -185,37 +185,56 @@ class Auth extends Admin
      */
     public function user()
     {
-        $group_id = input('group_id', 1, 'intval');
-        View::assign('group_id', $group_id);
+        $group_id = input('group_id', 0, 'intval');
         if (empty($group_id)) {
             return $this->error('参数错误');
         }
-        // 权限组列表
-        $auth_group = $this->AuthGroupModel->where(['status' => 1, 'module' => 'admin', 'type' => AuthGroup::TYPE_ADMIN])->field('id,title,rules')->select()->toArray();
-        View::assign('auth_group', $auth_group);
+        View::assign('group_id', $group_id);
 
-        $prefix = config('database.connections.mysql.prefix');
-        $l_table = $prefix . (AuthGroup::MEMBER);
-        $r_table = $prefix . (AuthGroup::AUTH_GROUP_ACCESS);
+        // 搜索关键词 支持昵称/手机号/uid
+        $keyword = input('keyword', '', 'text');
+        View::assign('keyword', $keyword);
+
+        $l_table = AuthGroup::MEMBER;
+        $r_table = AuthGroup::AUTH_GROUP_ACCESS;
         $where = [
             ['a.group_id', '=', $group_id],
-            ['status', '>=', 0]
+            ['m.status', '>=', 0]
         ];
-        $list = Db::table($l_table . ' m')->join($r_table . ' a ', ' m.uid=a.uid')->where($where)->order('m.uid desc')
+        if (!empty($keyword)) {
+            $where[] = function($query) use ($keyword) {
+                $query->where('m.nickname', 'like', '%' . $keyword . '%')
+                      ->whereOr('m.mobile', 'like', '%' . $keyword . '%')
+                      ->whereOr('m.uid', 'like', '%' . $keyword . '%');
+            };
+        }
+
+        $list = Db::name($l_table)
+            ->alias('m')
+            ->join($r_table . ' a', 'm.uid = a.uid')
+            ->where($where)
+            ->field('m.uid,m.avatar,m.nickname,m.mobile,m.last_login_time,m.last_login_ip,m.status')
+            ->order('m.uid desc')
             ->paginate([
                 'list_rows' => 20,
-                'query' => [
-                    'group_id' => $group_id
-                ],
+                'query' => request()->param(),
             ], false);
-        // 获取分页显示
+
+        // 处理分页信息
         $pager = $list->render();
         View::assign('pager', $pager);
         // 转数组
-        $list = $list->toArray()['data'];
-        // 更改状态值
-        int_to_string($list);
-        View::assign('_list', $list);
+        $list = $list->toArray();
+        foreach ($list['data'] as &$v) {
+            $v = $this->MemberModel->info($v['uid'], '*');
+        }
+        unset($v);
+        View::assign('list', $list);
+
+        // 处理ajax请求
+        if( request()->isAjax()){
+            return $this->success('success!', $list);
+        }
 
         $this->setTitle('用户授权');
         return View::fetch();

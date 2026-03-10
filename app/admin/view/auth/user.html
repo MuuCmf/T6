@@ -14,24 +14,9 @@
                 <li class="active"><a href="javascript:;">用户授权</a></li>
             </ul>
         </div>
-        <div class="col-xs-2 text-right">
-            <select name="group" class="form-control">
-                {volist name="auth_group" id="vo"}
-                {eq name="vo['id']" value="$group_id"}
-                <option value="{:url('admin/Auth/user',['group_id'=>$vo['id'],'group_name'=>$vo['title']])}" selected >
-                    {$vo.title}
-                </option>
-                {else}
-                <option value="{:url('admin/Auth/user',['group_id'=>$vo['id'],'group_name'=>$vo['title']])}">
-                    {$vo.title}
-                </option>
-                {/eq}
-                {/volist}
-            </select>
-        </div>
     </div>
 
-    {notempty name="_list"}
+    {notempty name="list.data"}
 	<table class="table table-bordered table-striped">
     <thead>
     <tr>
@@ -44,7 +29,7 @@
 		</tr>
     </thead>
     <tbody>
-		{volist name="_list" id="vo"}
+		{volist name="list.data" id="vo"}
 		<tr>
 			<td>{$vo.uid} </td>
 			<td>{$vo.nickname}</td>
@@ -68,13 +53,8 @@
         {/if}
     </div>
 </div>
-
 {/block}
 
 {block name="script"}
-<script type="text/javascript" charset="utf-8">
-	$('select[name=group]').change(function(){
-		location.href = this.value;
-	});
-</script>
+
 {/block}
