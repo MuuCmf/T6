@@ -23,6 +23,21 @@ class CheckRule extends Base
             $request->isRoot = 1;
             return $next($request);
         }
+
+        // 检查权限
+        $rule = strtolower(app('http')->getName() . '/' . $request->controller() . '/' . $request->action());
+        // 排除权限校验
+        $except = [
+            'admin/menu/tree',
+            'admin/module/all',
+            'admin/module/info',
+            'admin/config/group',
+            'admin/extend/group',
+        ];
+
+        if (in_array($rule, $except)) {
+            return $next($request);
+        }
         
         $Auth = new \muucmf\Auth();
         $rule = strtolower(app('http')->getName() . '/' . $request->controller() . '/' . $request->action());

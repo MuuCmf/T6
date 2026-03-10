@@ -2,7 +2,7 @@
 /.vscode
 *.log
 *.lock
-attachment/
+public/attachment/
 log/
 runtime/
 node_modules/

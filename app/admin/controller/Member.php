@@ -99,7 +99,7 @@ class Member extends Admin
      */
     public function initPass()
     {
-        $ids = input('ids/a');
+        $ids = input('uid');
         !is_array($ids) && $ids = explode(',', $ids);
 
         foreach ($ids as $key => $val) {
@@ -289,40 +289,34 @@ class Member extends Admin
     /**
      * 会员状态修改
      */
-    public function status($method = null)
+    public function status()
     {
-        $ids = input('ids/a');
-        !is_array($ids) && $ids = explode(',', $ids);
+        $ids = input('uid');
+        !is_array($ids) && $ids = explode(',', (string)$ids);
         if (count(array_intersect(explode(',', config('auth.auth_administrator')), $ids)) > 0) {
             return $this->error('不允许对超管进行该操作');
         }
         if (empty($ids)) {
             return $this->error('请选择要操作的数据');
         }
+        $status = input('status', 0, 'intval');
 
         $title = '更新用户';
-        switch (strtolower($method)) {
-            case 'forbid':
+        switch ($status) {
+            case 0:
                 $title = '禁用用户';
-                $status = 0;
                 break;
-            case 'resume':
+            case 1:
                 $title = '启用用户';
-                $status = 1;
                 break;
-            case 'delete':
+            case -1:
                 $title = '删除用户';
-                $status = -1;
                 break;
             default:
         }
-
         $data['status'] = $status;
-
         $res = $this->MemberModel->where('uid', 'in', $ids)->update($data);
         if ($res) {
-            (new MemberSyncModel())->where('uid', 'in', $ids)->delete();
-            (new MemberModel())->where('uid', 'in', $ids)->delete();
             return $this->success($title . '成功');
         } else {
             return $this->error($title . '失败');
