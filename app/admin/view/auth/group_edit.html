@@ -6,7 +6,7 @@
 	</div>
 
     <div class="with-padding">
-        <form class="form-horizontal ajax-form" action="{:url('admin/Auth/editGroup')}" method="post">
+        <form class="form-horizontal ajax-form" action="{:url()}" method="post">
             <input type="hidden" name="id" value="{$auth_group.id|default=0}" />
             <div class="form-item builder_item">
                 <label for="auth-title" class="item-label">用户组</label>

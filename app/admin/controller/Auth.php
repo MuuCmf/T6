@@ -86,13 +86,16 @@ class Auth extends Admin
     /**
      * 编辑用户组
      */
-    public function editGroup()
+    public function groupEdit()
     {
         $id = input('id', 0, 'intval');
         if (request()->isPost()) {
             $data = input();
             $data['module'] = 'admin';
             $data['type'] = AuthGroup::TYPE_ADMIN;
+            if (empty($data['id'])) {
+                $data['rules'] = '';
+            }
 
             if ($data) {
                 $res = $this->AuthGroupModel->edit($data);
@@ -117,50 +120,63 @@ class Auth extends Admin
     /**
      * 用户组状态修改
      */
-    public function changeStatus($method = null)
+    public function groupStatus()
     {
-        $ids = input('id/a');
+        $ids = input('id');
         if (empty($ids)) {
             return $this->error('请选择要操作的数据');
         }
-        !is_array($ids) && $ids = explode(',',$ids);
-        
-        $method = input('method', 'forbidGroup', 'text');
-        switch ($method) {
-            case 'forbidGroup':
-                $status = 0;
-                break;
-            case 'resumeGroup':
-                $status = 1;
-                break;
-            case 'deleteGroup':
-                if (in_array(1, $ids) || in_array(2, $ids) || in_array(3, $ids)) {
-                    return $this->error('系统默认组禁止删除');
-                }
-                $status = -1;
-                break;
-            default:
-                return $this->error($method . '失败');
+        !is_array($ids) && $ids = explode(',', $ids);
+
+        $status = input('status', 0, 'intval');
+
+        // 系统默认组禁止删除
+        if ($status == -1 && (in_array(1, $ids) || in_array(2, $ids) || in_array(3, $ids))) {
+            return $this->error('系统默认组禁止删除');
         }
-        
+
         $title = '更新';
-        if($status == 0){
+        if ($status == 0) {
             $title = '禁用';
         }
-        if($status == 1){
+        if ($status == 1) {
             $title = '启用';
         }
-        if($status == -1){
+        if ($status == -1) {
             $title = '删除';
         }
         $data['status'] = $status;
 
         $res = $this->AuthGroupModel->where('id', 'in', $ids)->update($data);
-        if($res){
+        if ($res) {
             return $this->success($title . '成功');
-        }else{
+        } else {
             return $this->error($title . '失败');
-        }  
+        }
+    }
+
+    /**
+     * 真实删除权限组
+     */
+    public function groupDelete()
+    {
+        $id = input('id', 0, 'intval');
+
+        if (empty($id)) {
+            return $this->error('参数错误');
+        }
+
+        if (in_array($id, [1, 2, 3])) {
+            return $this->error('系统默认组禁止删除');
+        }
+
+        $res = $this->AuthGroupModel->where('id', $id)->delete();
+
+        if ($res) {
+            return $this->success('删除成功');
+        } else {
+            return $this->error('删除失败');
+        }
     }
 
     /**

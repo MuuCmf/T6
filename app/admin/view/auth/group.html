@@ -7,7 +7,7 @@
 </div>
 
 <div class="tools auth-botton button-box">
-    <a id="add-group" class="btn btn-info {if !check_auth('admin/Auth/editGroup')}disabled{/if}" href="{:url('editGroup')}">新增</a>
+    <a id="add-group" class="btn btn-info {if !check_auth('admin/Auth/groupEdit')}disabled{/if}" href="{:url('groupEdit')}">新增</a>
     <a class="btn btn-danger {if !check_auth('admin/Menu/index')}disabled{/if}" href="{:url('admin/Menu/index')}">权限菜单管理</a>
 </div>
 <!-- 数据列表 -->
@@ -51,16 +51,16 @@
 			<td>
 				<a class="btn btn-sm btn-primary {if !check_auth('admin/Auth/editGroup')}disabled{/if}" href="{:url('editGroup', ['id'=>$vo.id])}">编辑</a>
 				{eq name="vo.status" value="1"}
-				<a class="btn btn-sm btn-warning ajax-get {if !check_auth('admin/Auth/changeStatus')}disabled{/if}" href="{:url('changeStatus', ['method'=>'forbidGroup', 'id'=>$vo.id])}" >禁用</a>
+				<a class="btn btn-sm btn-warning ajax-get {if !check_auth('admin/Auth/groupStatus')}disabled{/if}" href="{:url('groupStatus', ['status'=>'0', 'id'=>$vo.id])}" >禁用</a>
 				{else/}
-				<a class="btn btn-sm btn-info ajax-get {if !check_auth('admin/Auth/changeStatus')}disabled{/if}" href="{:url('changeStatus', ['method'=>'resumeGroup', 'id'=>$vo.id])}" >启用</a>
+				<a class="btn btn-sm btn-info ajax-get {if !check_auth('admin/Auth/groupStatus')}disabled{/if}" href="{:url('groupStatus', ['status'=>1, 'id'=>$vo.id])}">启用</a>
 				{/eq}
 				{if $vo.id == 1 || $vo.id == 2 || $vo.id ==3}
 				<a class="btn btn-sm btn-danger disabled">删除</a>
 				{else /}
-				<a class="btn btn-sm btn-danger confirm ajax-get {if !check_auth('admin/Auth/changeStatus')}disabled{/if}" href="{:url('changeStatus', ['method'=>'deleteGroup', 'id'=>$vo.id])}" >删除</a>
+				<a class="btn btn-sm btn-danger confirm ajax-get {if !check_auth('admin/Auth/changeStatus')}disabled{/if}" href="{:url('groupStatus', ['status'=>-1, 'id'=>$vo.id])}" >删除</a>
 				{/if}
-	            </td>
+	        </td>
 		</tr>
 		{/volist}
 	</tbody>
