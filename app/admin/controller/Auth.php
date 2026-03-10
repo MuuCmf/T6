@@ -78,6 +78,7 @@ class Auth extends Admin
 
         // 记录当前列表页的cookie
         cookie('__forward__', $_SERVER['REQUEST_URI']);
+        $this->setTitle('用户组管理');
         // 输出模板
         return View::fetch();
     }
@@ -90,13 +91,6 @@ class Auth extends Admin
         $id = input('id', 0, 'intval');
         if (request()->isPost()) {
             $data = input();
-            if (isset($data['rules']) && !empty($data['rules'])) {
-                sort($data['rules']);
-                $data['rules'] = implode(',', array_unique($data['rules']));
-            } else {
-                $data['rules'] = '';
-            }
-
             $data['module'] = 'admin';
             $data['type'] = AuthGroup::TYPE_ADMIN;
 
