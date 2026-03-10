@@ -346,3 +346,6 @@ INSERT INTO `muucmf_menu` (`id`, `title`, `pid`, `sort`, `url`, `hide`, `type`, 
 ('BDE6A6B2-3EA1-BD31-A9D4-44B442156839', '上传用户头像', 'DA4333DF-D814-819B-D657-401FE5153AB4', 0, 'admin/Member/avatar', 0, 0, '', '', 0, '', 'admin');
 
 UPDATE `muucmf_menu` SET `url` = 'admin/Auth/group' WHERE `muucmf_menu`.`id` = 'E62328CE-8E20-DD00-E0E8-832D1C8E3B65';
+
+UPDATE `muucmf_menu` SET `url` = 'admin/Auth/groupEdit' WHERE `muucmf_menu`.`id` = '4E0C013B-C00F-449F-324E-473115528F00';
+UPDATE `muucmf_menu` SET `url` = 'admin/Auth/groupStatus' WHERE `muucmf_menu`.`id` = '68121540-2C69-EAC2-F2EF-B7ADBBE74C09';
