@@ -137,46 +137,39 @@ class Member extends Admin
                 $member_data['uid'] = $uid;
             }
 
-            // 头像部分处理
-            $crop = input('post.crop', '', 'text');
+            // 头像
             $member_data['avatar'] = $data['avatar'];
-            if (!empty($crop) && !empty($data['avatar'])) {
-                // 裁切图片
-                $Attachment = new Attachment();
-                $path = $Attachment->cropImage($data['avatar'], $crop);
-                $member_data['avatar'] = $path;
-            } else {
-                // 用户资料
-                $member_data['nickname'] = $data['nickname'];
-                $member_data['username'] = $data['username'];
-                $member_data['email'] = $data['email'];
-                $member_data['mobile'] = $data['mobile'];
-                $member_data['sex'] = intval($data['sex']);
-                $member_data['status'] = intval($data['status']);
+            // 用户资料
+            $member_data['nickname'] = $data['nickname'];
+            $member_data['username'] = $data['username'];
+            $member_data['email'] = $data['email'];
+            $member_data['mobile'] = $data['mobile'];
+            $member_data['sex'] = intval($data['sex']);
+            $member_data['status'] = intval($data['status']);
 
-                if ($member_data['username'] == '' && $member_data['email'] == '' && $member_data['mobile'] == '') {
-                    return $this->error('用户名、邮箱、手机号，至少填写一项！');
-                }
-                $check_nickname = $this->MemberModel->checkNickname($member_data['nickname'], $uid);
-                if ($check_nickname !== true) {
-                    return $this->error($check_nickname);
-                }
-
-                $check_username = $this->MemberModel->checkUsername($member_data['username'], $uid);
-                if ($check_username !== true) {
-                    return $this->error($check_username);
-                }
-
-                $check_email = $this->MemberModel->checkEmail($member_data['email'], $uid);
-                if ($check_email !== true) {
-                    return $this->error($check_email);
-                }
-
-                $check_mobile = $this->MemberModel->checkMobile($member_data['mobile'], $uid);
-                if ($check_mobile !== true) {
-                    return $this->error($check_mobile);
-                }
+            if ($member_data['username'] == '' && $member_data['email'] == '' && $member_data['mobile'] == '') {
+                return $this->error('用户名、邮箱、手机号，至少填写一项！');
             }
+            $check_nickname = $this->MemberModel->checkNickname($member_data['nickname'], $uid);
+            if ($check_nickname !== true) {
+                return $this->error($check_nickname);
+            }
+
+            $check_username = $this->MemberModel->checkUsername($member_data['username'], $uid);
+            if ($check_username !== true) {
+                return $this->error($check_username);
+            }
+
+            $check_email = $this->MemberModel->checkEmail($member_data['email'], $uid);
+            if ($check_email !== true) {
+                return $this->error($check_email);
+            }
+
+            $check_mobile = $this->MemberModel->checkMobile($member_data['mobile'], $uid);
+            if ($check_mobile !== true) {
+                return $this->error($check_mobile);
+            }
+
 
             // 写入数据并返回UID
             $uid = $this->MemberModel->edit($member_data);
@@ -212,7 +205,7 @@ class Member extends Admin
             /* 积分 end*/
 
             /*用户组 start*/
-            if(isset($data['auth_group']) && !empty($data['auth_group'])){
+            if (isset($data['auth_group']) && !empty($data['auth_group'])) {
                 $authGroup = new AuthGroup();
                 $authGroup->addToGroup($uid, $data['auth_group']);
             }
@@ -225,7 +218,7 @@ class Member extends Admin
             $score_types = (new ScoreTypeModel())->getTypeList(['status' => 1]);
 
             // 获取用户数据
-            if(empty($uid)){
+            if (empty($uid)) {
                 $member['uid'] = 0;
                 $member['nickname'] = '';
                 $member['username'] = '';
@@ -239,7 +232,7 @@ class Member extends Admin
                 $member['avatar512'] = request()->domain() . '/static/common/images/default_avatar_512_512.jpg';
                 $member['score'] = $score_types;
                 $member['status'] = 1;
-            }else{
+            } else {
                 $member = query_user($uid);
             }
             // 用户拥有的权限组
