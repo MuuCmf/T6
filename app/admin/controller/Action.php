@@ -251,13 +251,13 @@ class Action extends Admin
     {
         if (request()->isPost()) {
             /* 获取数据对象 */
-            $data = input('');
+            $data = input();
 
             $res = $this->ActionModel->editAction($data);
             if (!$res) {
                 return $this->error($this->ActionModel->getError());
             } else {
-                return $this->success($res['id'] ? '更新成功！' : '新增成功', $res, cookie('__forward__'));
+                return $this->success(!empty($res['id']) ? '更新成功！' : '新增成功', $res, cookie('__forward__'));
             }
         } else {
             $id = input('id');

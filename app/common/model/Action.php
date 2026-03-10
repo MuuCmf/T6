@@ -43,7 +43,7 @@ class Action extends Base
         /* 添加或新增行为 */
         if (empty($data['id'])) { //新增数据
 
-            $res = $this->insert($data); //添加行为
+            $res = $this->save($data); //添加行为
             if (!$res) {
                 $this->error = lang('_NEW_BEHAVIOR_WITH_EXCLAMATION_');
                 return false;
