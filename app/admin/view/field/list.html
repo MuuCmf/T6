@@ -50,8 +50,7 @@
                     <td>{$vo.visiable}</td>
                     <td>{$vo.required}</td>
                     <td>{$vo.sort}</td>
-                    <td>{$vo.form_type}</td>
-                    <td>{$vo.create_time|time_format}</td>
+                    <td>{$vo.form_type_str|default=''}</td>
                     <td>{$vo.status|get_status_title}</td>
                     <td>
                         <a class="btn btn-sm btn-primary" href="{:url('admin/field/editField',['id'=>$vo['id']])}" >编辑</a>

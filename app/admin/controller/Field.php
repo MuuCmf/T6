@@ -202,7 +202,7 @@ class Field extends Admin
 
         foreach ($field_list as &$val) {
             if(!empty($val['form_type']) && array_key_exists($val['form_type'], $type_default)){
-                $val['form_type'] = $type_default[$val['form_type']];
+                $val['form_type_str'] = $type_default[$val['form_type']];
             }
         }
         unset($val);
