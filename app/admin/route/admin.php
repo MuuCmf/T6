@@ -105,7 +105,7 @@ Route::group('field', function () {
     
     // 字段管理
     Route::get('list', 'admin/Field/list');
-    Route::post('edit', 'admin/Field/editField');
+    Route::any('edit', 'admin/Field/editField');
     Route::post('status', 'admin/Field/setFieldStatus');
 });
 

@@ -33,14 +33,22 @@ class Field extends Admin
      */
     public function group()
     {
-        $r = 20;
         $map[] = ['status', '>=', 0];
-        $profileList = $this->FieldGroupModel->where($map)->order("sort asc")->paginate($r);
-
-        $page = $profileList->render();
-
-        $profileList = $profileList->toArray()['data'];
-        int_to_string($profileList);
+        $profileList = $this->FieldGroupModel->where($map)->order("sort asc")->select();
+        $profileList = $profileList->toArray();
+        foreach ($profileList as &$value) {
+            // 可见性
+            $value['visiable_str'] = $value['visiable'] == 1 ? '可见' : '隐藏';
+            // 状态
+            $value['status_str'] = $value['status'] == 1 ? '启用' : '禁用';
+            
+            // 处理创建时间
+            if (!empty($value['create_time'])) {
+                $value['create_time_str'] = time_format($value['create_time']);
+                $value['create_time_friendly_str'] = friendly_date($value['create_time']);
+            }
+        }
+        unset($value);
 
         // ajax请求返回数据
         if (request()->isAjax()) {
@@ -48,7 +56,6 @@ class Field extends Admin
         }
 
         View::assign('title', '扩展资料');
-        View::assign('page', $page);
         View::assign('list', $profileList);
 
         return View::fetch();
@@ -189,14 +196,21 @@ class Field extends Admin
             'radio' => '单选项',
             'checkbox' => '多选项',
             'select' => '下拉框',
-            'time' => '日期',
+            'time' => '日期/时间',
             'textarea' => '文本域'
         ];
 
         foreach ($field_list as &$val) {
-            $val['form_type'] = $type_default[$val['form_type']];
+            if(!empty($val['form_type']) && array_key_exists($val['form_type'], $type_default)){
+                $val['form_type'] = $type_default[$val['form_type']];
+            }
         }
         unset($val);
+
+        // ajax请求返回数据
+        if (request()->isAjax()) {
+            return $this->success('success', $field_list);
+        }
 
         View::assign('title', '扩展资料');
         View::assign('list', $field_list);
@@ -306,7 +320,26 @@ class Field extends Admin
      */
     public function setFieldStatus($ids, $status)
     {
-        $builder = new AdminListBuilder();
-        return $builder->doSetStatus('field_setting', $ids, $status);
+        $ids = input('ids');
+        !is_array($ids) && $ids = explode(',', $ids);
+        $status = input('status', 0, 'intval');
+        $title = '更新';
+        if ($status == 0) {
+            $title = '禁用字段';
+        }
+        if ($status == 1) {
+            $title = '启用字段';
+        }
+        if ($status == -1) {
+            $title = '删除字段';
+        }
+        $data['status'] = $status;
+
+        $res = $this->FieldSettingModel->where('id', 'in', $ids)->update($data);
+        if ($res) {
+            return $this->success($title . '成功');
+        } else {
+            return $this->error($title . '失败');
+        }
     }
 }

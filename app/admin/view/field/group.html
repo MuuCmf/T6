@@ -51,7 +51,7 @@
                 <td>{$vo.profile_name}</td>
                 <td>{$vo.sort}</td>
                 <td>{$vo.visiable}</td>
-                <td>{$vo.status_text}</td>
+                <td>{$vo.status_str}</td>
                 <td>
                     <a class="btn btn-sm btn-primary {if !check_auth('admin/Field/list')}disabled{/if}"
                         href="{:url('admin/Field/list',['group_id'=>$vo['id']])}">管理字段</a>
@@ -79,14 +79,6 @@
             {/notempty}
         </tbody>
     </table>
-
-    <!-- 分页 -->
-    <div class="page">
-        {if !empty($page)}
-        {:htmlspecialchars_decode($page)}
-        {/if}
-    </div>
-    <!-- /分页-->
 </div>
 {/block}
 
