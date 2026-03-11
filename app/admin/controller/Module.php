@@ -266,6 +266,11 @@ class Module extends Admin
         $list = list_to_tree($list, 'id', 'pid', '_child', $pid);
         View::assign('list', $list);
 
+        // ajax请求返回数据
+        if(request()->isAjax()){
+            return $this->success('success', $list);
+        }
+
         // 记录当前列表页的cookie
         cookie('__forward__', $_SERVER['REQUEST_URI']);
         $this->setTitle('后台菜单管理');
@@ -276,9 +281,8 @@ class Module extends Admin
     /**
      * 新增/编辑应用权限菜单
      */
-    public function medit()
+    public function menuEdit()
     {
-
         if (request()->isPost()) {
             $data = input('');
             if ($data['title'] == '') {
@@ -291,7 +295,7 @@ class Module extends Admin
             $res = $this->MenuModel->edit($data);
             if ($res) {
                 //记录行为
-                action_log('update_menu', 'Menu', $data['id'], is_login());
+                action_log('update_menu', 'Menu', $res, is_login());
                 return $this->success('保存成功', $res, cookie('__forward__'));
             } else {
                 return $this->error('保存失败');
@@ -322,7 +326,7 @@ class Module extends Admin
             View::assign('info', $info);
             $menus = $this->MenuModel->where('module', '=', $app)->order('sort asc,id asc')->select()->toArray();
             $tree = new Tree();
-            $menus = $tree->toFormatTree($menus, $title = 'title', $pk = 'id', $pid = 'pid', $root = '0');
+            $menus = $tree->toFormatTree($menus, 'title', 'id', 'pid', 0);
             View::assign('Menus', $menus);
 
             $moduleModel = new ModuleModel();
@@ -337,10 +341,10 @@ class Module extends Admin
     /**
      * 菜单删除
      */
-    public function mdel()
+    public function menudel()
     {
-        $ids = input('ids');
-        !is_array($ids) && $ids = explode(',', $ids);
+        $ids = input('id');
+        !is_array($ids) && $ids = explode(',', (string)$ids);
 
         $res = $this->MenuModel->where('id', 'in', $ids)->delete();
         if ($res) {

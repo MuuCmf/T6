@@ -44,14 +44,14 @@ class Menu extends Admin
         $list_map[] = ['type', '=', '0'];
 
         $result_list = $this->MenuModel->where($list_map)->order('sort asc')->select();
-        if(!empty($result_list)){
+        if (!empty($result_list)) {
             $result_list = $result_list->toArray();
         }
         foreach ($result_list as &$val) {
             $val = $this->MenuModel->handle($val);
         }
         unset($val);
-        
+
         // 转树结构
         $list = list_to_tree($result_list, 'id', 'pid', '_child', '0');
 
@@ -110,7 +110,7 @@ class Menu extends Admin
                     }
                 }
             }
-            
+
             // 按照分组生成子菜单树
             foreach ($groups as $group) {
                 $map_2_level = [];
@@ -148,7 +148,7 @@ class Menu extends Admin
                     $menu_3_list = $this->MenuModel->where($map_3_level)->field('id,pid,title,url,icon,tip,type,module')->order('sort asc')->select()->toArray();
 
                     // 检测三级菜单权限
-                    foreach($menu_3_list as $k3 => $v3){
+                    foreach ($menu_3_list as $k3 => $v3) {
                         if (!$this->isRoot && !$this->checkRule($v3['url'], get_uid(), AuthRule::RULE_MAIN, null)) {
                             unset($menu_3_list[$k3]);
                             continue; //继续循环
@@ -208,7 +208,7 @@ class Menu extends Admin
             $res = $this->MenuModel->edit($data);
             if ($res) {
                 //记录行为
-                action_log('update_menu', 'Menu', $data['id'], is_login());
+                action_log('update_menu', 'Menu', $res, is_login());
                 return $this->success('保存成功', $res, cookie('__forward__'));
             } else {
                 return $this->error('保存失败');
@@ -318,7 +318,6 @@ class Menu extends Admin
      */
     public function sort()
     {
-
         if (request()->isPost()) {
             $ids = input('post.ids');
             $ids = explode(',', $ids);

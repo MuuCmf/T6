@@ -139,13 +139,15 @@ Route::group('module', function () {
     
     // 应用权限菜单
     Route::get('menu', 'admin/Module/menu');
-    Route::post('menu', 'admin/Module/menu');
+
+    // 新增/编辑应用权限菜单
+    Route::any('menu/edit', 'admin/Module/menuEdit');
     
     // 菜单删除
     Route::post('menu/del', 'admin/Module/menuDel');
     
     // 获取应用模块列表
-    Route::get('all', 'admin/Module/all');  
+    Route::get('all', 'admin/Module/all');
 });
 
 Route::group('pc', function () {

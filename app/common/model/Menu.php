@@ -39,11 +39,18 @@ class Menu extends Base
      */
     public function edit($data)
     {
-        if ($data['id']) {
+        if (!empty($data['id'])) {
             $res = $this->update($data);
         } else {
             $data['id'] = create_guid();
             $res = $this->save($data);
+        }
+
+        if (!empty($this->id)) {
+            return $this->id;
+        } else {
+            if (is_object($res)) return  $res->id;
+            return $res;
         }
 
         return $res;
