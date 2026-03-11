@@ -2,7 +2,8 @@
 
 namespace app\admin\controller;
 
-use think\facade\Config;
+use think\Exception;
+use think\facade\Cache;
 use think\facade\Db;
 use think\facade\View;
 use app\common\model\Module as ModuleModel;
@@ -27,9 +28,27 @@ class Index extends Admin
      */
     public function index()
     {
-        $this->getUserCount();
-        $this->getRegUser();
-        $this->getActionLog();
+        $count = $this->getUserCount();
+        $regMember = $this->getRegUser();
+        $actionLog = $this->getActionLog();
+        $systemInfo = $this->getSystemInfo();
+
+        $result = [
+            'count' => $count,
+            'reg_member' => $regMember,
+            'action_log' => $actionLog,
+            'system_info' => $systemInfo,
+        ];
+
+        // 异步请求
+        if( request()->isAjax()){
+            return $this->success('success', $result);
+        }
+ 
+        View::assign('count', $count);
+        View::assign('regMember', $regMember);
+        View::assign('actionLog', $actionLog);
+        View::assign('systemInfo', $systemInfo);
         
         $this->setTitle('控制台');
         // 模板输出
@@ -42,33 +61,32 @@ class Index extends Admin
      */
     private function getUserCount()
     {
-
         $t = time();
         $start = mktime(0, 0, 0, date("m", $t), date("d", $t), date("Y", $t));
         $end = mktime(23, 59, 59, date("m", $t), date("d", $t), date("Y", $t));
 
-        //进入注册
+        //今日注册用户
         $reg_users_map[] = ['status', '=', 1];
         $reg_users_map[] = ['create_time', '>=', $start];
         $reg_users_map[] = ['create_time', '<=', $end];
         $reg_users = Db::name('Member')->where($reg_users_map)->count();
 
-        //进入登录用户
+        //今日登录用户
         $login_users_map[] = ['status', '=', 1];
         $login_users_map[] = ['last_login_time', '>=', $start];
         $login_users_map[] = ['last_login_time', '<=', $end];
         $login_users = Db::name('Member')->where($login_users_map)->count();
         //总用户数
-        $total_user = Db::name('Member')->count();
+        $total_user = Db::name('Member')->where('status', 'in', [0, 1])->count();
         //今日用户行为
-        $today_action_log = Db::name('ActionLog')->where('status=1 and create_time>=' . $start)->count();
+        $today_action_log = Db::name('ActionLog')->where('status', '=', 1)->where('create_time', '>=', $start)->count();
 
         $count['today_user'] = $reg_users;
         $count['login_users'] = $login_users;
         $count['total_user'] = $total_user;
         $count['today_action_log'] = $today_action_log;
 
-        View::assign(['count' => $count]);
+        return $count;
     }
 
     /**
@@ -82,7 +100,7 @@ class Index extends Admin
 
         $week = [];
         $regMemeberCount = [];
-        $count_day = Config::get('system.COUNT_DAY');
+        $count_day = config('system.COUNT_DAY');
 
         //每日注册用户
         for ($i = $count_day; $i--; $i >= 0) {
@@ -111,10 +129,13 @@ class Index extends Admin
 
         $regMember['days'] = $week;
         $regMember['data'] = $regMemeberCount;
-        $regMember = json_encode($regMember);
 
-        View::assign(['count_day' => $count_day]);
-        View::assign(['regMember' => $regMember]);
+        $regMemberResult = [
+            'count_day' => $count_day,
+            'data' => $regMember
+        ];
+
+        return $regMemberResult;
     }
 
     /**
@@ -125,7 +146,7 @@ class Index extends Admin
     {
         $today = date('Y-m-d', time());
         $today = strtotime($today);
-        $count_day = 7; //默认一周
+        $count_day = config('system.COUNT_DAY'); //默认一周
 
         $week = [];
         $actionLogData = [];
@@ -149,15 +170,73 @@ class Index extends Admin
             $map[] = ['create_time', '>=', $day];
             $map[] = ['create_time', '<=', $day_after];
             $user = Db::name('action_log')->where($map)->count() * 1;
-            //dump($user);exit;
             $actionLogData[] = $user;
         }
 
+        $actionLog['count_day'] = $count_day;
         $actionLog['days'] = $week;
         $actionLog['data'] = $actionLogData;
-        $actionLog = json_encode($actionLog);
 
-        View::assign(['actionLog' => $actionLog]);
+        return $actionLog;
+    }
+
+    private function getSystemInfo()
+    {
+        // 获取操作系统
+        $os = PHP_OS;
+
+        // 获取服务器软件信息
+        $server_software = $_SERVER['SERVER_SOFTWARE'] ?? '未知版本';
+
+        // 获取MySQL版本号
+        $mysql_version = $this->getMysqlVersion();
+
+        // 获取Redis版本号
+        $redis_version = $this->getRedisVersion();
+
+        // 上传最大文件大小
+        $upload_max_filesize = ini_get('upload_max_filesize');
+
+        // PHP版本号
+        $php_version = phpversion();
+
+        // 系统版本号
+        $version = $this->version();
+
+        $systemInfo = [
+            'os' => $os,
+            'server_software' => $server_software,
+            'mysql_version' => $mysql_version,
+            'redis_version' => $redis_version,
+            'upload_max_filesize' => $upload_max_filesize,
+            'php_version' => $php_version,
+            'version' => $version,
+        ];
+
+        return $systemInfo;
+    }
+
+    private function getMysqlVersion()
+    {
+        $version = Db::query("SELECT VERSION() as mysql_version")[0]['mysql_version'];
+
+        return $version;
+    }
+
+    public function getRedisVersion()
+    {
+        try {
+            // 1. 获取Redis缓存连接实例（默认使用config/cache.php中的redis配置）
+            $redis = Cache::store('redis')->handler();
+            // 2. 执行INFO命令获取Redis详细信息（包含版本号）
+            $info = $redis->info();
+            // 3. 提取版本号（不同Redis版本key可能为redis_version或version）
+            $version = $info['redis_version'] ?? $info['version'] ?? '未知版本';
+            
+            return $version;
+        } catch (Exception $e) {
+            return false;
+        }
     }
 
     /**

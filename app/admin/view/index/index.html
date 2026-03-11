@@ -72,7 +72,7 @@
                 <div class="box" data-id="count_xday_reg">
                     <div class="box-header count_common_box">
                         <span class="caption-subject">
-                            最近{$count_day}天用户增长
+                            最近{$actionLog.count_day}天用户增长
                         </span>
                         <div class="box-tools pull-right">
                             <button type="button" class="btn btn-primary btn-sm" data-widget="collapse"><i class="icon icon-minus"></i></i>
@@ -108,27 +108,31 @@
                             <table class="table table-bordered table-striped ">
                                 <tr>
                                     <th>{:lang('server OS')}</th>
-                                    <td>{$Think.const.PHP_OS}</td>
+                                    <td>{$systemInfo.os}</td>
                                 </tr>
                                 <tr>
                                     <th>运行环境</th>
-                                    <td>{$_SERVER['SERVER_SOFTWARE']}</td>
+                                    <td>{$systemInfo.server_software}</td>
                                 </tr>
                                 <tr>
                                     <th>PHP</th>
-                                    <td>{:phpversion()}</td>
+                                    <td>{$systemInfo.php_version}</td>
                                 </tr>
                                 <tr>
                                     <th>{:lang('Mysql version')}</th>
-                                    <td>{$mysql_version}</td>
+                                    <td>{$systemInfo.mysql_version}</td>
+                                </tr>
+                                <tr>
+                                    <th>{:lang('Redis version')}</th>
+                                    <td>{$systemInfo.redis_version}</td>
                                 </tr>
                                 <tr>
                                     <th>上传限制</th>
-                                    <td>{:ini_get('upload_max_filesize')}</td>
+                                    <td>{$systemInfo.upload_max_filesize}</td>
                                 </tr>
                                 <tr>
                                     <th>开发框架</th>
-                                    <td data-id="version" data-value="{$version}">{$version}</td>
+                                    <td data-id="version" data-value="{$systemInfo.version}">{$systemInfo.version}</td> 
                                 </tr>
                             </table>
                         </div>
@@ -150,7 +154,7 @@
                 </div>
                 <div class="modal-body">
                     <label>默认展示天数 </label>
-                    <input class="form-control" name="count_day" value="{$count_day}">
+                    <input class="form-control" name="count_day" value="{$actionLog.count_day}">
                 </div>
                 <div class="modal-footer">
                     <button class="btn " data-role="saveCountSetting">
