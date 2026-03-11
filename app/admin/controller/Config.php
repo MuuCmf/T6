@@ -48,6 +48,12 @@ class Config extends Admin
             View::assign('type', $type);
             // 配置项列表
             $list = $this->ConfigModel->where(['status' => 1, 'group' => $group])->field('id,name,title,extra,value,group,remark,type')->order('sort asc')->select()->toArray();
+            foreach ($list as $key => $value) {
+                // pic类型生成缩微图组
+                if ($value['type'] == 'pic' && !empty($value['value'])) {
+                    $list[$key]['thumb'] = thumb_group($value['value']);
+                }
+            }
 
             // ajax请求返回数据
             if (request()->isAjax()) {
