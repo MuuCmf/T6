@@ -355,3 +355,10 @@ UPDATE `muucmf_menu` SET `url` = 'admin/action/limitStatus' WHERE `muucmf_menu`.
 
 UPDATE `muucmf_menu` SET `url` = 'admin/Module/menu', `type` = '0' WHERE `muucmf_menu`.`id` = 'D273258A-2842-7AF2-802C-6AC91C98CB9A';
 UPDATE `muucmf_menu` SET `url` = 'admin/Module/menuEdit', `type` = '0' WHERE `muucmf_menu`.`id` = 'DABA8BF4-83F7-9354-895B-DAAC65A11CB1';
+
+UPDATE `muucmf_menu` SET `icon` = 'gear' WHERE `muucmf_menu`.`id` = '167253B8-B360-E5C8-3F94-F0502E971DAF';
+UPDATE `muucmf_menu` SET `icon` = 'home' WHERE `muucmf_menu`.`id` = 'DA900619-B54E-49E7-8027-21C94ECD6FAC';
+UPDATE `muucmf_menu` SET `icon` = 'credit-card' WHERE `muucmf_menu`.`id` = 'AA5E505D-8F99-EFBD-F434-D099109DF291';
+UPDATE `muucmf_menu` SET `icon` = 'comments' WHERE `muucmf_menu`.`id` = '6E50C73A-CA2B-7CA8-889E-99B25D578164';
+UPDATE `muucmf_menu` SET `icon` = 'comments' WHERE `muucmf_menu`.`id` = '11482681-D521-66FA-FF90-2B5556191EA3';
+UPDATE `muucmf_menu` SET `icon` = 'comments' WHERE `muucmf_menu`.`id` = 'C3F2915A-B874-B3DB-3FD2-8743E5ABF242';
