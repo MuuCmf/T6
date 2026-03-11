@@ -41,10 +41,10 @@ Route::group('auth', function () {
 });
 
 Route::group('config', function () {
-    // 配置分组数据列表
+    // 配置分组列表
     Route::any('group/list', 'admin/Config/groupList');
     
-    // 获取配置分组列表
+    // 获取配置分组数据列表
     Route::get('group', 'admin/Config/group');
     
     // 系统配置参数管理
@@ -84,6 +84,17 @@ Route::group('douyin', function () {
 
     // 模板消息通知
     Route::any('template_message', 'admin/DouyinMiniprogram/templateMessage');
+});
+
+Route::group('extend', function () {
+    // 扩展配置分组列表
+    Route::any('group/list', 'admin/Extend/groupList');
+    
+    // 扩展配置管理
+    Route::get('list', 'admin/Extend/list');
+    Route::any('edit', 'admin/Extend/edit');
+    // 删除扩展配置参数
+    Route::post('del', 'admin/Extend/del');
 });
 
 Route::group('field', function () {

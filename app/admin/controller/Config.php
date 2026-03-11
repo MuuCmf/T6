@@ -41,13 +41,13 @@ class Config extends Admin
             Cache::delete(request()->host() . '_MUUCMF_SYS_CONFIG_DATA', null);
             return $this->success('保存成功', $config, cookie('__forward__'));
         } else {
-            $id = input('id', 1, 'intval');
-            View::assign('id', $id);
+            $group = input('group', 1, 'intval');
+            View::assign('group', $group);
             // 配置分组
             $type = config('system.CONFIG_GROUP_LIST');
             View::assign('type', $type);
             // 配置项列表
-            $list = $this->ConfigModel->where(['status' => 1, 'group' => $id])->field('id,name,title,extra,value,group,remark,type')->order('sort asc')->select()->toArray();
+            $list = $this->ConfigModel->where(['status' => 1, 'group' => $group])->field('id,name,title,extra,value,group,remark,type')->order('sort asc')->select()->toArray();
 
             // ajax请求返回数据
             if (request()->isAjax()) {
@@ -56,11 +56,21 @@ class Config extends Admin
 
             View::assign('list', $list);
             // 设置页面Title
-            $this->setTitle($type[$id] . '设置');
+            $this->setTitle($type[$group] . '设置');
             // 记录当前列表页的cookie
             cookie('__forward__', $_SERVER['REQUEST_URI']);
             return View::fetch();
         }
+    }
+
+    /**
+     * 获取配置分组列表
+     */
+    public function groupList()
+    {
+        // 配置分组
+        $type = config('system.CONFIG_GROUP_LIST');
+        return $this->success('success', $type);
     }
 
     /**

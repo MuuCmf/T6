@@ -309,28 +309,79 @@ class Extend extends Admin
     }
 
     /**
+     * 获取扩展配置分组列表
+     */
+    public function groupList()
+    {
+        // 配置分组
+        $group = config('extend.GROUP_LIST');
+        return $this->success('success', $group);
+    }
+
+    /**
      * 扩展配置管理
      */
     public function list()
     {
-        $group = input('group', 0);
+        // 加载方式 all 全量查询  page 分页查询
+        $load = input('load', 'page', 'text');
+        // 配置分组 多个分组用,号隔开
+        $group = input('group', '', 'text');
+        $keyword = input('keyword', '', 'trim');
+        View::assign('keyword', $keyword);
         $rows = input('rows', 20, 'intval');
         View::assign('rows', $rows);
+
         /* 查询条件初始化 */
         $map = [];
-        $map[] = ['status','=', 1]; 
-        if (isset($_GET['group'])) {
-            $map[] = ['group','=',$group];
+        $map[] = ['status', '=', 1];
+        if (!empty($group)) {
+            // 如果$group为,分割的字符串，转换为数组
+            $group = explode(',', $group);
+            // 筛选出$group中包含的配置分组
+            $group = array_intersect($group, array_keys(config('extend.GROUP_LIST')));
+            // 筛选出配置项
+            $map[] = ['group', 'in', $group];
         }
-        if (isset($_GET['name'])) {
-            $map[] = ['name','like', '%' . (string)input('name') . '%'];
+        if (!empty($keyword)) {
+            $map[] = [
+                'OR',
+                ['name', 'like', '%' . $keyword . '%'],
+                ['title', 'like', '%' . $keyword . '%']
+            ];
         }
 
-        list($list,$pager) = $this->commonLists('ExtendConfig', $map, 'sort,id');
-        $list = $list->toArray()['data'];
+        if ($load == 'page') {
+            // 分页查询
+            $list = $this->extendConfigModel->getListByPage($map, 'sort asc,id desc', '*', $rows);
+            $pager = $list->render();
+            $list = $list->toArray();
+            foreach ($list['data'] as $key => $item) {
+                $list['data'][$key]['type_name'] = get_config_type($item['type']);
+                $list['data'][$key]['group_name'] = get_extend_config_group($item['group']);
+                // pic类型生成缩微图组
+                if ($item['type'] == 'pic' && !empty($item['value'])) {
+                    $list['data'][$key]['thumb'] = thumb_group($item['value']);
+                }
+            }
+        } else {
+            // 全量查询
+            $list = $this->extendConfigModel->where($map)->field('id,name,title,extra,value,group,remark,type')->order('sort asc')->select()->toArray();
+            $pager = '';
+            foreach ($list as $key => $item) {
+                $list[$key]['type_name'] = get_config_type($item['type']);
+                $list[$key]['group_name'] = get_extend_config_group($item['group']);
+                // pic类型生成缩微图组
+                if ($item['type'] == 'pic' && !empty($item['value'])) {
+                    $list['data'][$key]['thumb'] = thumb_group($item['value']);
+                }
+            }
+        }
+
+        if( request()->isAjax()){
+            return $this->success('success', $list);
+        }
         
-        View::assign('group', config('extend.GROUP_LIST'));
-        View::assign('group_id', input('get.group', 0));
         View::assign('list', $list);
         View::assign('pager', $pager);
 

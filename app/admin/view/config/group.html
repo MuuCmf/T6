@@ -16,9 +16,9 @@
 
     <div class="tab-wrap">
         <ul class="nav nav-pills">
-            {volist name="type" id="group"}
-                <li class="{eq name='id' value='$key'}active{/eq}">
-                    <a href="{:url('?id='.$key)}">{$group}</a>
+            {volist name="type" id="vo"}
+                <li class="{eq name='group' value='$key'}active{/eq}">
+                    <a href="{:url('?group='.$key)}">{$vo}</a>
                 </li>
             {/volist}
         </ul>

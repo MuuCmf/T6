@@ -4,6 +4,7 @@ use think\facade\Db;
 
 require_once(__DIR__ . '/common/function/attachment.php');
 require_once(__DIR__ . '/common/function/builder.php');
+require_once(__DIR__ . '/common/function/config.php');
 require_once(__DIR__ . '/common/function/editor.php');
 require_once(__DIR__ . '/common/function/member.php');
 require_once(__DIR__ . '/common/function/parse.php');
@@ -375,7 +376,7 @@ if (!function_exists('curl_request')) {
         if (curl_errno($curl)) {
             return curl_error($curl);
         }
-        curl_close($curl);
+
         if ($returnCookie) {
             list($header, $body) = explode("\r\n\r\n", $data, 2);
             preg_match_all("/Set\-Cookie:([^;]*);/", $header, $matches);
