@@ -79,6 +79,11 @@ class Withdraw extends Admin
             $data = $this->WithdrawModel->getDataById($id);
             $data = $this->WithdrawLogic->formatData($data);
         }
+
+        // ajax请求返回数据
+        if (request()->isAjax()) {
+            return $this->success('success', $data);
+        }
         
         View::assign('data', $data);
 

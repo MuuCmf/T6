@@ -59,6 +59,11 @@ class Queue extends Admin {
             'data'=> $page_list
         ];
 
+        // ajax请求返回数据
+        if (request()->isAjax()) {
+            return $this->success('success', $page_list);
+        }
+
         // 分页
         $pager = (new Bootstrap($page_list, (int)$page_size, (int)$page, $count, false, [
             'path' => '/admin/queue/list',

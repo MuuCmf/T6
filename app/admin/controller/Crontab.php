@@ -10,7 +10,6 @@ use app\common\model\CrontabLog as CrontabLogModel;
 
 class Crontab extends Admin
 {
-
     protected $CrontabLogic;
     protected $CrontabModel;
     protected $CrontabLogModel;
@@ -42,6 +41,12 @@ class Crontab extends Admin
             $item = $this->CrontabLogic->formatData($item);
         }
         unset($item);
+
+        // ajax请求返回数据
+        if (request()->isAjax()) {
+            return $this->success('success', $list);
+        }
+
         View::assign([
             'pager' => $pager,
             'list' => $list['data']
@@ -101,6 +106,12 @@ class Crontab extends Admin
         $pager = $list->render();
         $list = $list->toArray();
         unset($item);
+
+        // ajax请求返回数据
+        if (request()->isAjax()) {
+            return $this->success('success', $list);
+        }
+
         View::assign([
             'pager' => $pager,
             'list'  => $list['data'],
@@ -112,10 +123,10 @@ class Crontab extends Admin
     /**
      * 设置状态
      */
-    public function status(int $status = 0)
+    public function status()
     {
-        $ids = input('ids/a');
-        !is_array($ids) && $ids = explode(',', $ids);
+        $ids = input('ids');
+        !is_array($ids) && $ids = explode(',', (string)$ids);
         $status = input('status', 0, 'intval');
         $title = '更新';
         if ($status == 0) {
