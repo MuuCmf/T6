@@ -56,6 +56,20 @@ class Update extends Admin
         //备份地址
         $backup_path = $this->app_name == 'system' ? '网站根目录->data->upgrade' : '网站根目录->app->' . $this->app_name . '->info->backup';
 
+        // ajax请求返回
+        if (request()->isAjax()) {
+            $result = [
+                'local_version' => $local_version,
+                'cloud_version' => $cloud_version,
+                'upgrade' => $upgrade,
+                'backup_path' => $backup_path,
+                'app_name' => $this->app_name,
+                'scene' => 'upgrade',
+                'frame' => 't6',
+            ];
+            return $this->success('success', $result);
+        }
+
         View::assign('localVersion', $local_version);
         View::assign('cloudVersion', $cloud_version);
         View::assign('upgrade', $upgrade);
@@ -161,18 +175,16 @@ class Update extends Admin
                 //执行升级sql
                 $this->UpgradeServer->executeUpgradeSql($this->app_name);
 
+                // 更新版本号
                 if ($params['skip'] == 0) {
 
                     // 系统更新
                     if ($this->app_name == 'system') {
-                        //替换版本文件
-                        $params = [
-                            'md5'   => $params['md5'],
-                            'app_name' => $this->app_name,
-                            'version'  => $params['version']
-                        ];
+                        // 更改root_path() . 'data/version.ini'文件内容为版本号
+                        file_put_contents(root_path() . 'data/version.ini', $params['version']);
+                        
                         //更新系统版本号
-                        $this->UpgradeServer->downFile($params, root_path() . 'data/version.ini');
+                        //$this->UpgradeServer->downFile($params, root_path() . 'data/version.ini');
                     } else {
                         //更新应用版本号
                         Db::name('module')->where('name', '=', $this->app_name)->update(['version' => $params['version']]);
