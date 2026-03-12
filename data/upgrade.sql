@@ -362,3 +362,7 @@ UPDATE `muucmf_menu` SET `icon` = 'credit-card' WHERE `muucmf_menu`.`id` = 'AA5E
 UPDATE `muucmf_menu` SET `icon` = 'comments' WHERE `muucmf_menu`.`id` = '6E50C73A-CA2B-7CA8-889E-99B25D578164';
 UPDATE `muucmf_menu` SET `icon` = 'comments' WHERE `muucmf_menu`.`id` = '11482681-D521-66FA-FF90-2B5556191EA3';
 UPDATE `muucmf_menu` SET `icon` = 'comments' WHERE `muucmf_menu`.`id` = 'C3F2915A-B874-B3DB-3FD2-8743E5ABF242';
+
+UPDATE `muucmf_menu` SET `url` = 'admin/Score/typeEdit' WHERE `muucmf_menu`.`id` = 'F66F609F-AB60-31E2-77EA-9214069E9D2A';
+UPDATE `muucmf_menu` SET `url` = 'admin/Score/typeStatus' WHERE `muucmf_menu`.`id` = 'EBBE670F-8CAB-3C4B-BD2A-7F238F75B7A4';
+UPDATE `muucmf_menu` SET `url` = 'admin/Score/typeDel' WHERE `muucmf_menu`.`id` = 'C51CEC8C-4E4C-B606-F397-3C0D3ED8C0E0';

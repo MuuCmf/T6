@@ -173,7 +173,7 @@ class Score extends Admin
     /**
      * 编辑积分类型
      */
-    public function editType()
+    public function typeEdit()
     {
         $aId = input('id', 0, 'intval');
 
@@ -218,24 +218,42 @@ class Score extends Admin
     /**
      * 设置积分类型状态
      */
-    public function setTypeStatus($ids, $status)
+    public function typeStatus($ids, $status)
     {
+        $ids = input('ids/a');
+        !is_array($ids) && $ids = explode(',', (string)$ids);
         $ids = array_unique((array)$ids);
-        $ids = implode(',', $ids);
-        $rs = $this->scoreTypeModel->where('id', 'in', $ids)->update(['status' => $status]);
-        if ($rs) {
-            return $this->success('设置成功', $_SERVER['HTTP_REFERER']);
+        
+        $status = input('status', 0, 'intval');
+        $title = '更新';
+        if($status == 0){
+            $title = '禁用';
+        }
+        if($status == 1){
+            $title = '启用';
+        }
+        if($status == -1){
+            $title = '删除';
+        }
+        $data['status'] = $status;
+        
+        $res = $this->scoreTypeModel->where('id', 'in', $ids)->update($data);
+        if ($res) {
+            return $this->success($title . '成功');
         } else {
-            return $this->error('设置失败');
+            return $this->error($title . '失败');
         }
     }
 
     /**
      * 删除积分类型
      */
-    public function delType()
+    public function typeDel()
     {
-        $ids = input('ids/a');
+        $ids = input('ids');
+        !is_array($ids) && $ids = explode(',', (string)$ids);
+        $ids = array_unique((array)$ids);
+
         $res = $this->scoreTypeModel->delType($ids);
         if ($res) {
             return $this->success('删除成功');
