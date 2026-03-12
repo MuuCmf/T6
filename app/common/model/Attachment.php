@@ -734,6 +734,17 @@ class Attachment extends Base
             $data['user_info'] = query_user($data['uid'], ['nickname', 'avatar']);
         }
 
+        // 根据驱动类型获取完整URL
+        $data['url'] = get_attachment_src($data['attachment']);
+
+        // 图片类型附件生成一组缩略图
+        if ($data['type'] == 'image') {
+            $data['thumb'] = thumb_group($data['attachment']);
+        }
+
+        // 根据driver的值返回driver的文字描述值
+        $data['driver_str'] = $this->driverMap[$data['driver']] ?? $data['driver'];
+
         //时间戳格式化
         $data['create_time_str'] = time_format($data['create_time']);
         $data['update_time_str'] = time_format($data['update_time']);
