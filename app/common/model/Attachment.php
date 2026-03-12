@@ -20,6 +20,14 @@ class Attachment extends Base
     protected $allowVideoExt = ['mp4'];
     protected $allowFileExt = ['zip', 'rar', 'txt', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'pdf', 'pem'];
 
+        // 附件驱动映射
+    protected $driverMap = [
+        'local' => '本地',
+        'oss' => '阿里云OSS',
+        'cos' => '腾讯云COS',
+        'tcvod' => '腾讯VOD',
+    ];
+
     public function setUploadtimeAttr($value)
     {
         return strtotime($value);
