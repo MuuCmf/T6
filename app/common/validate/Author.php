@@ -32,7 +32,7 @@ class Author extends Validate
     ];
 
     protected $scene = [
-        'edit'   =>  ['name', 'description', 'cover', 'professional', 'group_id', 'uid', 'content'],
+        'edit'   =>  ['name', 'description', 'cover', 'professional', 'group_id', 'uid'],
     ];
 
     protected function checkUidUnique($value, $rule, $data)
