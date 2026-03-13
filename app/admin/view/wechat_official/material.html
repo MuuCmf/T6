@@ -1,0 +1,120 @@
+<!-- 对话框HTML -->
+<div class="modal fade" id="material-model">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">关闭</span></button>
+                <h4 class="modal-title">素材列表</h4>
+            </div>
+            <div class="modal-body" :class="{'load-indicator':loading,'loading':loading}">
+                <div class="material-body empty" v-if="list.length < 1 && !loading">
+                    暂无数据
+                </div>
+               <div v-if="!loading && list.length > 0">
+                   <div class="material-body" >
+                       <div class="col-md-3 material-item" v-for="(item,index) in list" :key="index" @click="chooseMaterial(item)">
+                           <!--语音-->
+                           <div class="voice-box boder-default" :class="{'checked':material.media_id == item.media_id}" v-if="type == 'voice'">
+                                <div class="icon col-md-4"><i class="fa fa-volume-up" aria-hidden="true"></i></div>
+                                <div class="col-md-8 voice-name"><span>{{item.name}}</span></div>
+                           </div>
+                           <!--图片-->
+                           <div class="image-box boder-default" :class="{'checked':material.media_id == item.media_id}" v-if="type == 'image'">
+                               <img  :src="item.url" alt="">
+                           </div>
+                           <!--图文-->
+                           <div class="news-box boder-default" :class="{'checked':material.media_id == item.media_id}" v-if="type == 'news'">
+                               <div class="head">
+                                   <img :src="item.content.news_item[0].thumb_url" alt="">
+                               </div>
+                               <div class="news-text">
+                                   <h4>{{item.content.news_item[0].title}}</h4>
+                                   <p>{{item.content.news_item[0].digest}}</p>
+                               </div>
+                           </div>
+                           <!--视频-->
+                           <div class="video-box boder-default" :class="{'checked':material.media_id == item.media_id}" v-if="type == 'video'">
+                               <div class="head">
+                                   <img :src="item.cover_url" alt="">
+                               </div>
+                               <div class="video-text">
+                                   <h4>{{item.name}}</h4>
+                                   <p>{{item.description}}</p>
+                               </div>
+                           </div>
+                       </div>
+                   </div>
+               </div>
+
+                <ul class="pager" data-ride="pager" :data-page="page" :data-rec-total="count" data-max-nav-count="8" data-elements="prev_icon,nav,next_icon"></ul>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" @click="confirm">选择</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+
+    var vue = new Vue({
+        el: '#material-model',
+        data: {
+            list:[],
+            page:1,
+            type:'news',
+            loading:true,
+            count:0,
+            material:{},
+        },
+        created:function () {
+            //解决非微信环境下 素材图片不显示2
+            $("head").append('<meta name="referrer" content="never">');
+        },
+        methods: {
+            getList(){
+                let that = this;
+                $.post("{:url('material')}",{
+                    page:that.page,
+                    type:that.type
+                }, function (res) {
+                    if (res.code == 200){
+                        that.list = res.data.item;
+                        that.count = res.data.total_count;
+                    }else{
+                        that.list = [];
+                        alert(res.msg)
+                    }
+                    that.loading = false;
+                    //初始化分页器
+                    if (that.page == 1){
+                        // 获取分页器实例对象
+                        var myPager = $('.pager').data('zui.pager');
+                        myPager.set(1, that.count, 20);
+                    }
+                }, 'json');
+            },
+            chooseMaterial(material){
+                this.material = material;
+            },
+            confirm(){
+                vm.chooseMaterialCallback(this.material);
+                $('#materialModel').modal('toggle', 'center')
+            }
+        },
+    })
+    $('.pager').on('onPageChange', function(e, state, oldState) {
+        if (state.page !== oldState.page) {
+            vue.page = state.page;
+            vue.getList();
+            console.log('页码从', oldState.page, '变更为', state.page);
+        }
+    });
+    $("#material-model").on('show.zui.modal', function() {
+        vue.loading = true;
+        vue.page = 1;
+        vue.type = $('#material-type').val();
+        vue.getList();
+        console.log(vue.type)
+    })
+</script>

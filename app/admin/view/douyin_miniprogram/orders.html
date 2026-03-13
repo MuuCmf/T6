@@ -1,0 +1,136 @@
+{extend name="../../admin/view/common/main"/}
+{block name="style"}
+<link href="__CSS__/main.min.css" type="text/css" rel="stylesheet">
+{/block}
+
+{block name="body"}
+<div class="main-title">
+	<h2>结算列表</h2>
+</div>
+
+<div class="search-box clearfix margin-bottom row">
+	<form action="{:url('article', array('action'=> 'lists'))}" method="get" class="search-form" role="form">
+		<div class="col-sm-3">
+			<div class="input-group">
+				<div class="input-control search-box has-icon-left has-icon-right search-example" id="searchboxExample">
+				<input class="form-control" name="keyword" placeholder="关键字" id="" type="text" value="{$keyword}">
+				<label for="inputSearchExample4" class="input-control-icon-left search-icon"><i class="icon icon-search"></i></label>
+				</div>
+				<span class="input-group-btn">
+				<button class="btn btn-primary" type="submit">搜索</button>
+				</span>
+			</div>
+		</div>
+	</form>
+</div>
+
+<div class="margin-bottom">
+    <a class="btn" href="{:url('settle')}">结算列表</a>
+    <a class="btn btn-info" href="{:url('orders')}">未结算订单</a>
+</div>
+
+<section class="orders-list-section with-padding clearfix">
+
+    {if empty($lists.data)}
+    <div class="orders-lists">
+        {include file="../../common/view/empty"/}
+    </div>
+    {else /}
+    <div class="orders-lists card">
+        {volist name="$lists.data" id="v"}
+        <div class="order-lists-item">
+            <div class="base-info">
+                <span class="">订单号：{$v['order_no']}</span>
+                {if $v['paid'] == 1}
+                <span class="">
+                    支付时间：{$v['paid_time_str']|default=''}
+                </span>
+                {else}
+                <span class="">
+                    支付时间：未支付
+                </span>
+                {/if} 
+                <span class="">
+                    用户：<a href="">{$v['user_info']['nickname']}</a>
+                </span>
+                <span class="pull-right text-right">
+                    
+                </span>
+            </div>
+            <table class="table table-bordered muu-table">
+                <thead>
+                    <tr>
+                        <th>订单信息</th>
+                        <th>单价</th>
+                        <th>应支付金额</th>
+                        <th>订单有效期至</th>
+                        <th>支付状态</th>
+                        <th width=240>操作</th>
+                    </tr>
+                </thead>
+    
+                <tbody>
+                    <tr>
+                        <td>
+                            <div class="cover">
+                                <img src="{$v['products']['cover_100']}">
+                            </div>
+                            <div class="info">
+                                <div class="app">{$v['app']}</div>
+                                <div class="title text-ellipsis">{$v['products']['title']}</div>
+                                <div class="type">{$v['products']['type_str']}</div>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="yuan text-danger">￥</span> <span class="text-danger"> {$v['price']}</span>
+                        </td>
+                        <td>
+                            <span class="yuan text-danger">￥</span> <span class="text-danger"> {$v['paid_fee']}</span>
+                        </td>
+                        <td>
+                            {if $v.end_time == 0}
+                            永久
+                            {else}
+                            {$v['end_time_str']}
+                            {/if}
+                        </td>
+                        <td>
+                            <div class="">
+                                {if $v['paid'] == 1}
+                                <span class="paid-status text-success">{$v['paid_str']}</span>
+                                {else}
+                                <span class="paid-status text-danger">{$v['paid_str']}</span>
+                                {/if}
+                            </div>
+                        </td>
+                        <td>
+                            {if $v['can_settle'] == 1}
+                            <a href="{:url('manualSettle',['order_no'=>$v['order_no']])}" class="btn btn-primary ajax-post">手动结算</a>
+                            {else /}
+                            <button type="button" class="btn btn-default" disabled>手动结算</button>
+                            {/if}
+
+                            {if $v['has_settle'] == 1}
+                            <a href="{:url('manualSettleQuery',['order_no'=>$v['order_no']])}" class="btn btn-warning ajax-post">查询校验结算数据</a>
+                            {else /}
+                            <button type="button" class="btn btn-default" disabled>查询校验结算数据</button>
+                            {/if}
+
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        {/volist}
+    </div>
+    <div class="page-section">
+        {if !empty($pager)}
+        {:htmlspecialchars_decode($pager)}
+        {/if}
+    </div>
+    {/if}
+
+{/block}
+{block name="script"}
+
+{/block}
