@@ -209,7 +209,7 @@ class Score extends Admin
                 ->keyText('unit', '单位')
                 ->keySelect('status', '状态', null, array(-1 => '删除', 0 => '禁用', 1 => '启用'))
                 ->data($type)
-                ->buttonSubmit(url('editType'))
+                ->buttonSubmit(url('typeEdit'))
                 ->buttonBack()
                 ->display();
         }
