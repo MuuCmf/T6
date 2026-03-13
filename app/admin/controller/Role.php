@@ -11,10 +11,7 @@ use app\common\model\Author as AuthorModel;
 use app\common\logic\Author as AuthorLogic;
 use app\common\model\AuthorGroup as AuthorGroupModel;
 
-/**
- * 角色管理控制器已迁移至Role.php，该文件逐步废弃
- */
-class Author extends Admin
+class Role extends Admin
 {
     protected $AuthorModel;
     protected $AuthorLogic;
@@ -262,13 +259,26 @@ class Author extends Admin
     }
 
     /**
-     * 创造者分组
+     * 角色分组
      */
-    public function groupList()
+    public function group()
     {
+        $rows = input('rows', 20, 'intval');
+        View::assign('rows', $rows);
+        $order_field = input('order_field', 'id', 'text');
+        $order_type = input('order_type', 'desc', 'text');
+        $order = $order_field . ' ' . $order_type;
         //读取数据
         $map[] = ['status', '>', -1];
-        $list = $this->AuthorGroupModel->getList($map);
+        $list = $this->AuthorGroupModel->getListByPage($map, $order, '*', $rows);
+        // 分页按钮
+        $pager = $list->render();
+
+        // ajax返回
+        if (request()->isAjax()) {
+            return $this->success('success', $list);
+        }
+        
         // 记录当前列表页的cookie
         cookie('__forward__', $_SERVER['REQUEST_URI']);
         //显示页面
@@ -287,6 +297,7 @@ class Author extends Admin
             ->keyDoActionEdit('groupEdit?id=###')
             ->keyDoActionDelete('groupStatus?ids=###&status=-1')
             ->data($list)
+            ->page($pager)
             ->display();
     }
 
@@ -337,10 +348,16 @@ class Author extends Admin
     /**
      * 设置分组状态
      */
-    public function groupStatus($ids, $status)
+    public function groupStatus()
     {
-        $ids = array_unique((array)$ids);
-        $ids = implode(',', $ids);
+        $ids = input('ids');
+        if (empty($ids)) {
+            return $this->error('请选择要操作的数据');
+        }
+        !is_array($ids) && $ids = explode(',', $ids);
+
+        $status = input('status', 0, 'intval');
+
         $rs = $this->AuthorGroupModel->where('id', 'in', $ids)->update(['status' => $status]);
         if ($rs) {
             return $this->success('设置成功', $_SERVER['HTTP_REFERER']);

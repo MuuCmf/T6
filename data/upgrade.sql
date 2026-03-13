@@ -366,3 +366,10 @@ UPDATE `muucmf_menu` SET `icon` = 'comments' WHERE `muucmf_menu`.`id` = 'C3F2915
 UPDATE `muucmf_menu` SET `url` = 'admin/Score/typeEdit' WHERE `muucmf_menu`.`id` = 'F66F609F-AB60-31E2-77EA-9214069E9D2A';
 UPDATE `muucmf_menu` SET `url` = 'admin/Score/typeStatus' WHERE `muucmf_menu`.`id` = 'EBBE670F-8CAB-3C4B-BD2A-7F238F75B7A4';
 UPDATE `muucmf_menu` SET `url` = 'admin/Score/typeDel' WHERE `muucmf_menu`.`id` = 'C51CEC8C-4E4C-B606-F397-3C0D3ED8C0E0';
+
+UPDATE `muucmf_menu` SET `url` = 'admin/Role/status', `type` = '0' WHERE `muucmf_menu`.`id` = '06AEED1A-9E0E-97B9-6395-EA9959B2BE6E';
+UPDATE `muucmf_menu` SET `url` = 'admin/Role/edit', `type` = '0' WHERE `muucmf_menu`.`id` = '0B25C961-E014-46C4-2F7E-DE3EEF90D9F0';
+UPDATE `muucmf_menu` SET `url` = 'admin/Role/group', `type` = '0' WHERE `muucmf_menu`.`id` = '8553C20D-7FCB-4252-15F4-5ECFC0A56092';
+UPDATE `muucmf_menu` SET `url` = 'admin/Role/groupEdit', `type` = '0' WHERE `muucmf_menu`.`id` = '8BBDA16F-8A60-47CE-F4BD-0C3AC4AC7677';
+UPDATE `muucmf_menu` SET `url` = 'admin/Role/list', `type` = '0' WHERE `muucmf_menu`.`id` = 'A7DA37AC-E001-7C55-083F-E03A03FA5CEC';
+UPDATE `muucmf_menu` SET `url` = 'admin/Role/groupStatus', `type` = '0' WHERE `muucmf_menu`.`id` = 'E3F348B0-8DA2-C62A-062E-5C406B09D922';
