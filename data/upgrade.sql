@@ -373,3 +373,5 @@ UPDATE `muucmf_menu` SET `url` = 'admin/Role/group', `type` = '0' WHERE `muucmf_
 UPDATE `muucmf_menu` SET `url` = 'admin/Role/groupEdit', `type` = '0' WHERE `muucmf_menu`.`id` = '8BBDA16F-8A60-47CE-F4BD-0C3AC4AC7677';
 UPDATE `muucmf_menu` SET `url` = 'admin/Role/list', `type` = '0' WHERE `muucmf_menu`.`id` = 'A7DA37AC-E001-7C55-083F-E03A03FA5CEC';
 UPDATE `muucmf_menu` SET `url` = 'admin/Role/groupStatus', `type` = '0' WHERE `muucmf_menu`.`id` = 'E3F348B0-8DA2-C62A-062E-5C406B09D922';
+
+ALTER TABLE `muucmf_author` CHANGE `content` `content` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '角色详情';

@@ -172,7 +172,7 @@ CREATE TABLE IF NOT EXISTS `muucmf_author` (
   `professional` VARCHAR(64) NULL DEFAULT '' COMMENT '职称',
   `avatar_card` varchar(255) NOT NULL DEFAULT '' COMMENT '手持身份证照片',
   `certificate` varchar(255) NOT NULL DEFAULT '' COMMENT '资格证书',
-  `content` text NOT NULL COMMENT '详情',
+  `content` text NULL COMMENT '详情',
   `sort` int(11) NOT NULL DEFAULT '0' COMMENT '排序值',
   `view` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '阅读量',
   `verify` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '认证类型ID',
