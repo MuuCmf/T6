@@ -155,17 +155,17 @@ class Score extends Admin
         $builder
             ->title('积分类型')
             ->suggest('id<=4的不能删除')
-            ->buttonNew(url('editType'))
-            ->setStatusUrl(url('setTypeStatus'))
+            ->buttonNew(url('typeEdit'))
+            ->setStatusUrl(url('typeStatus'))
             ->buttonEnable()
             ->buttonDisable()
-            ->buttonDelete(url('delType'), '删除')
+            ->buttonDelete(url('typeDel'), '删除')
             ->keyId()
             ->keyText('title', '名称')
             ->keyText('unit', '单位')
             ->keyStatus()
-            ->keyDoActionEdit('editType?id=###')
-            ->keyDoActionDelete('delType?ids=###')
+            ->keyDoActionEdit('typeEdit?id=###')
+            ->keyDoActionDelete('typeDel?ids=###')
             ->data($list)
             ->display();
     }
