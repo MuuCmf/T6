@@ -375,3 +375,10 @@ UPDATE `muucmf_menu` SET `url` = 'admin/Role/list', `type` = '0' WHERE `muucmf_m
 UPDATE `muucmf_menu` SET `url` = 'admin/Role/groupStatus', `type` = '0' WHERE `muucmf_menu`.`id` = 'E3F348B0-8DA2-C62A-062E-5C406B09D922';
 
 ALTER TABLE `muucmf_author` CHANGE `content` `content` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '角色详情';
+
+UPDATE `muucmf_menu` SET `url` = 'admin/WechatOfficial/config' WHERE `muucmf_menu`.`id` = '6E50C73A-CA2B-7CA8-889E-99B25D578164';
+UPDATE `muucmf_menu` SET `url` = 'admin/WechatOfficial/autoReply' WHERE `muucmf_menu`.`id` = '782D3C8F-D46D-35F2-D778-31FD2DCAB7F5';
+UPDATE `muucmf_menu` SET `url` = 'admin/WechatOfficial/editAutoReply' WHERE `muucmf_menu`.`id` = '9D3627DF-27CD-D480-5354-8C570B4DF3AC';
+UPDATE `muucmf_menu` SET `url` = 'admin/WechatOfficial/config' WHERE `muucmf_menu`.`id` = 'A4650B98-DAD4-8194-030C-1B2AB4F35CBA';
+UPDATE `muucmf_menu` SET `url` = 'admin/WechatOfficial/templateMessage' WHERE `muucmf_menu`.`id` = 'ED701550-6DFE-62A9-634C-6C2EFC249124';
+UPDATE `muucmf_menu` SET `url` = 'admin/WechatOfficial/menu' WHERE `muucmf_menu`.`id` = 'F8C08807-1339-95ED-FDEC-8E5D853FC1D8';

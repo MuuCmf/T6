@@ -24,7 +24,7 @@ class WechatMiniProgram extends Admin
      * @throws \think\db\exception\DbException
      * @throws \think\db\exception\ModelNotFoundException
      */
-    public function index()
+    public function config()
     {
         if (request()->isPost()) {
             $params = input('post.');
@@ -106,6 +106,6 @@ class WechatMiniProgram extends Admin
             'element' => $TemplateMessageLogic->oauth_type[$type],
             'data' => $detail
         ]);
-        return \view('admin/common/template_message');
+        return \view('common/template_message');
     }
 }

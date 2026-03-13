@@ -54,6 +54,6 @@ class WechatConfig extends Base
      */
     public function callbackUrl($shopid = 0)
     {
-        return url('channel/official/callback', ['shopid' => $shopid], false, true);
+        return url('api/wechat/callback', ['shopid' => $shopid], false, true);
     }
 }

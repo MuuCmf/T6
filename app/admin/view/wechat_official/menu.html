@@ -261,7 +261,7 @@
         created() {
             let that = this;
             //获取菜单列表
-            $.get('{:url("menu")}', {}, function (res) {
+            $.get('{:url("menu", ["output" => "json"])}', {}, function (res) {
                 that.menuList = res.data;
                 that.menuList.forEach(function (t) {
                     if (!t.sub_button) {

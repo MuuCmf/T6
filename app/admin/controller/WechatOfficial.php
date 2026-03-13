@@ -260,6 +260,6 @@ class WechatOfficial extends Admin
         ]);
         $this->setTitle('订阅通知配置');
 
-        return View::fetch('admin/common/template_message');
+        return View::fetch('common/template_message');
     }
 }

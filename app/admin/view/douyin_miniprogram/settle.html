@@ -1,17 +1,16 @@
-{extend name="../../admin/view/common/main"/}
+{extend name="common/main"/}
 {block name="style"}
-<link href="__ADMIN_CSS__/main.min.css" type="text/css" rel="stylesheet">
+
 {/block}
 
 {block name="body"}
-
 <div class="main-title">
 	<h2>结算列表</h2>
 </div>
 
 <div class="search-box clearfix margin-bottom row">
 
-	<form action="{:url('article', array('action'=> 'lists'))}" method="get" class="search-form" role="form">
+	<form action="{:url()}" method="get" class="search-form" role="form">
 		<div class="col-sm-3">
 			<div class="input-group">
 				<div class="input-control search-box has-icon-left has-icon-right search-example" id="searchboxExample">
