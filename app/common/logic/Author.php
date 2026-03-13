@@ -55,8 +55,10 @@ class Author extends Base
     {
         if (!empty($data)) {
             $data = $this->setCoverAttr($data, '1:1');
-            $data['content'] = htmlspecialchars_decode($data['content']);
-
+            if(!empty($data['content'])){
+                $data['content'] = htmlspecialchars_decode($data['content']);
+            }
+            
             // 绑定用户的创造者获取用户数据
             if (!empty($data['uid'])) {
                 $data['user_info'] = query_user($data['uid']);
