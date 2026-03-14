@@ -101,7 +101,7 @@ class Work extends Wechat
     public function oauth(array $params = [])
     {
         //授权回调参数处理
-        $callbackUrl = request()->domain() . "/api/wechat_work/callback";
+        $callbackUrl = request()->domain() . "/api/wechat_work/oauth_callback";
         if ($params) {
             $callbackUrl .= "?muu=muucmf";
             foreach ($params as $key => $item) {
