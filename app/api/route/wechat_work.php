@@ -3,6 +3,6 @@
 use think\facade\Route;
 
 Route::group('wechat_work', function () {
-    Route::get('config', 'WechatWork/config');
-    Route::any('callback', 'WechatWork/callback');
+    Route::get('config', 'api/WechatWork/config');
+    Route::any('callback', 'api/WechatWork/callback');
 });

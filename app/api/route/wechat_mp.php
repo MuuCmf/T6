@@ -3,7 +3,7 @@
 use think\facade\Route;
 
 Route::group('wechat_mp', function () {
-    Route::get('code', 'WechatMiniProgram/code');
-    Route::post('login', 'WechatMiniProgram/login');
-    Route::post('bindMobile', 'WechatMiniProgram/bindMobile');
+    Route::get('code', 'api/WechatMiniProgram/code');
+    Route::post('login', 'api/WechatMiniProgram/login');
+    Route::post('bindMobile', 'api/WechatMiniProgram/bindMobile');
 });
