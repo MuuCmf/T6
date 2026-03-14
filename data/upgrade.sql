@@ -389,3 +389,17 @@ UPDATE `muucmf_menu` SET `url` = 'admin/Pc/footer' WHERE `muucmf_menu`.`id` = 'E
 UPDATE `muucmf_menu` SET `url` = 'admin/Seo/edit' WHERE `muucmf_menu`.`id` = '25583213-2F69-FB2D-3AE0-D522569BBCD3';
 UPDATE `muucmf_menu` SET `url` = 'admin/Seo/status' WHERE `muucmf_menu`.`id` = '40EE3F01-B5B0-9821-D6E9-F327562C5D29';
 UPDATE `muucmf_menu` SET `url` = 'admin/Seo/list' WHERE `muucmf_menu`.`id` = '5962E368-3742-4699-E35A-6D268A73CA2A';
+UPDATE `muucmf_menu` SET `url` = 'admin/WechatMiniProgram/config' WHERE `muucmf_menu`.`id` = '11482681-D521-66FA-FF90-2B5556191EA3';
+UPDATE `muucmf_menu` SET `url` = 'admin/WechatMiniProgram/templateMessage' WHERE `muucmf_menu`.`id` = '812DB499-01B8-787D-7EDA-AC4A9FDCAFBC';
+UPDATE `muucmf_menu` SET `url` = 'admin/WechatWork/config' WHERE `muucmf_menu`.`id` = 'C3F2915A-B874-B3DB-3FD2-8743E5ABF242';
+UPDATE `muucmf_menu` SET `url` = 'admin/Tominiprogram/list' WHERE `muucmf_menu`.`id` = '4B3DFCDA-258E-0CBC-66D5-BB95CE81B9D5';
+UPDATE `muucmf_menu` SET `url` = 'admin/Tominiprogram/edit' WHERE `muucmf_menu`.`id` = '91377A3B-2DF4-9334-E70C-6240DB520341';
+INSERT INTO `muucmf_menu` (`id`, `title`, `pid`, `sort`, `url`, `hide`, `type`, `tip`, `group`, `is_dev`, `icon`, `module`) VALUES
+('5F56DFBD-99CA-3695-EAFA-0DB0F5FA2240', '状态管理', '4B3DFCDA-258E-0CBC-66D5-BB95CE81B9D5', 0, 'admin/Tominiprogram/status', 0, 0, '', '', 0, '', 'admin');
+ALTER TABLE `muucmf_tominiprogram` ADD `status` TINYINT(2) NOT NULL DEFAULT '1' COMMENT '状态' AFTER `type`;
+UPDATE `muucmf_menu` SET `url` = 'admin/DouyinMiniprogram/config' WHERE `muucmf_menu`.`id` = '7472E236-A4ED-6AC7-712E-3479158D5E21';
+UPDATE `muucmf_menu` SET `url` = 'admin/DouyinMiniprogram/orders' WHERE `muucmf_menu`.`id` = '835882C7-20C1-B7B3-1373-330D0F3E9262';
+UPDATE `muucmf_menu` SET `url` = 'cadmin/DouyinMiniprogram/settle' WHERE `muucmf_menu`.`id` = 'A59BE3B9-EDD9-673E-3FAC-D7AD8FC39F38';
+DELETE FROM muucmf_menu WHERE `muucmf_menu`.`id` = 'ED701550-6DFE-62A9-634C-6C2EFC249124';
+DELETE FROM muucmf_menu WHERE `muucmf_menu`.`id` = '812DB499-01B8-787D-7EDA-AC4A9FDCAFBC';
+DELETE FROM muucmf_menu WHERE `muucmf_menu`.`id` = '0762BC67-2FAC-2C3D-94F0-9292DF07DEDE';

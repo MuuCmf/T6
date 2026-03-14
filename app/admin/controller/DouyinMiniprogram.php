@@ -25,11 +25,8 @@ class DouyinMiniprogram extends Admin
 
     /**
      * 小程序配置
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\DbException
-     * @throws \think\db\exception\ModelNotFoundException
      */
-    public function index()
+    public function config()
     {
         if (request()->isPost()) {
             $params = input('post.');
@@ -63,7 +60,12 @@ class DouyinMiniprogram extends Admin
 
             // 设置回调地址
             $callback_url = url('channel/douyin/callback', ['shopid' => $this->shopid], false, true);
-            $config['callback'] = $callback_url;
+            $config['callback'] = (string)$callback_url;
+
+            // ajax数据返回
+            if (request()->isAjax()) {
+                return $this->success('success', $config);
+            }
 
             $builder = new AdminConfigBuilder();
             $builder->title('抖音小程序配置')->suggest('基于第三方授权各项参数配置');

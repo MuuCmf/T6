@@ -25,9 +25,9 @@ class Tominiprogram extends Admin
         $this->type = request()->param('type') ?? 'weixin_app';
     }
 
-    public function index()
+    public function list()
     {
-        $rows = 10;
+        $rows = input('rows', 10, 'intval');
         $map = [
             ['shopid', '=', $this->shopid],
             ['type', '=', $this->type]
@@ -40,6 +40,12 @@ class Tominiprogram extends Admin
             $val = $this->TominiprogramLogic->formatData($val);
         }
         unset($val);
+
+        // ajax 返回数据
+        if (request()->isAjax()) {
+            return $this->success('', $lists);
+        }
+
         View::assign([
             'pager' => $pager,
             'lists' => $lists['data'],
@@ -74,7 +80,7 @@ class Tominiprogram extends Admin
             ];
             $result = $this->TominiprogramModel->edit($data);
             if ($result) {
-                return $this->success('保存成功', null, url('index')->build());
+                return $this->success('保存成功', $result, url('list'));
             }
             return $this->error('保存失败');
         }
@@ -97,14 +103,32 @@ class Tominiprogram extends Admin
     }
 
     /**
+     * 更新跳转小程序状态
+     */
+    public function status()
+    {
+        $ids = input('ids');
+        $ids = is_array($ids) ? $ids : explode(',', (string)$ids);
+        if (empty($ids)) {
+            return $this->error('请选择要操作的数据');
+        }
+
+        $status = input('status', 0, 'intval');
+        $result = $this->TominiprogramModel->where('id', 'in', $ids)->where('shopid', $this->shopid)->update(['status' => $status]);
+        if ($result) {
+            return $this->success('更新成功');
+        }
+        return $this->error('更新失败');
+    }
+
+    /**
      * 设置分组状态：删除=-1，禁用=0，启用=1
      * @param $status
      */
     public function del()
     {
-        $status = input('status', 0, 'intval');
         $id = array_unique((array)input('id', 0));
-        if ($id[0] == 0) {
+        if (empty($id)) {
             return $this->error('请选择要操作的数据');
         }
         $id = is_array($id) ? $id : explode(',', $id);

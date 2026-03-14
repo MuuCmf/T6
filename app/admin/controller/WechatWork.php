@@ -38,6 +38,12 @@ class WechatWork extends Admin
         } else {
             //查询微信平台配置
             $data = (new WechatWorkConfig())->getConfigByShopId($this->shopid);
+
+            // ajax 返回数据
+            if (request()->isAjax()) {
+                return $this->success('', $data);
+            }
+
             View::assign('data', $data);
             //设置页面title
             $this->setTitle('企业微信配置');
