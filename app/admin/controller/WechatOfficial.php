@@ -50,11 +50,10 @@ class WechatOfficial extends Admin
         } else {
             //查询微信平台配置
             $data = $this->wechatConfigModel->getWechatConfigByShopId($this->shopid);
-            if (!$data) {
-                $data['id'] = 0;
-                $data['cover'] = "";
-                $data['url'] = $this->wechatConfigModel->callbackUrl($this->shopid);
-                $data['auth_login'] = 1;
+
+            // ajax请求返回json数据
+            if (request()->isAjax()) {
+                return $this->success('success', $data);
             }
             View::assign('data', $data);
             //设置页面title
@@ -97,7 +96,7 @@ class WechatOfficial extends Admin
             } else {
                 $menu = [];
             }
-            return $this->result(200, 'success', $menu);
+            return $this->success('success', $menu);
         }
 
         $this->setTitle('菜单管理');
@@ -110,21 +109,40 @@ class WechatOfficial extends Admin
      */
     public function autoReply()
     {
-        $this->setTitle('自动回复');
-        $params = input('get.');
+        $params = input('');
         $where = [
             ['status', '>=', 0],
             ['shopid', '=', $this->shopid]
         ];
         if (isset($params['keyword']) && !empty($params['keyword'])) $where[] = ['keyword', 'like', '%' . $params['keyword'] . '%'];
         $page = max(1, isset($params['page']) ?? $params['page']);
-        $list = $this->autoReplyModel->where($where)->field('*,type as type_str,status as status_str,msg_type as msg_type_str')->order('sort', 'DESC')->page($page, 20)->paginate();
+        $list = $this->autoReplyModel
+        ->where($where)
+        ->field(
+            '*,
+            type as type_str,
+            status as status_str,
+            msg_type as msg_type_str,
+            create_time as create_time_str,
+            update_time as update_time_str'
+        )
+        ->order('sort', 'DESC')
+        ->page($page, 20)
+        ->paginate();
+
+        // ajax请求返回json数据
+        if (request()->isAjax()) {
+            return $this->success('success', $list);
+        }
+
         // 获取分页显示
         $page = $list->render();
 
         //显示页面
         View::assign('list', $list);
         View::assign('page', $page);
+        //设置页面title
+        $this->setTitle('自动回复');
         // 记录当前列表页的cookie
         cookie('__forward__', $_SERVER['REQUEST_URI']);
 
@@ -139,26 +157,31 @@ class WechatOfficial extends Admin
     {
         $aId = input('param.id', 0, 'intval');
         if (request()->isPost()) {
-            $msg_type = input('post.msg_type', 1, 'intval');
-            $data['keyword'] = input('post.keyword', '', 'text');
-            $data['text'] = input('post.text', '', 'text');
-            $data['media_id'] = input('post.media_id', '', 'text');
-            $data['remark'] = input('post.remark', '', 'text');
-            $data['sort'] = input('post.sort', 0, 'intval');
-            $data['type'] = input('post.type', 1, 'intval');
-            $data['material_json'] = input('post.material_json', '', 'text');
-            $data['status'] = input('post.status', 0, 'intval');
-            $data['shopid'] = $this->shopid;
-            $data['id'] = $aId;
-            if ($msg_type == 1) {
+            $data = input('post.');
+
+            // 兼容性处理
+            if (is_numeric($data['msg_type']) && $data['msg_type'] == 1) {
                 $data['msg_type'] = 'text';
-            } else {
-                $data['msg_type'] = input('post.material_type');
             }
+            if (is_numeric($data['msg_type']) && $data['msg_type'] == 2) {
+                $data['msg_type'] = $data['material_type'] ?? 'text';
+            }
+
+            // 验证data['type'] == 0的数据仅能有一条
+            if ($data['type'] == 1 && $this->autoReplyModel->where(['shopid' => $this->shopid, 'type' => 1, 'status' => 1])->count() > 0) {
+                return $this->error('关注公众号只能设置一条自动回复');
+            }
+
+            // $data['material_json'] 转为json
+            if (!empty($data['material_json'])) {
+                $data['material_json'] = json_encode($data['material_json']);
+            }
+            
             //验证文本唯一性
             if (!empty($data['text']) && !$this->autoReplyModel->checkUnique('text', $data['text'], $aId)) {
                 return $this->error('内容重复');
             }
+            
             $res = $this->autoReplyModel->edit($data);
             if ($res) {
                 return $this->success(($aId == 0 ? '新增' : '编辑') . '成功', '', cookie('__forward__'));
@@ -214,17 +237,18 @@ class WechatOfficial extends Admin
      */
     public function material()
     {
-        if (request()->isAjax()) {
-            $params = input('post.');
-            $page = ($params['page'] - 1) * 20;
-            $data = \app\common\facade\wechat\OfficialAccount::getMaterialList($params['type'], $page, 20);
-            if (isset($data['item'])) {
-                return  $this->success('success', $data);
-            } elseif (isset($data['errmsg'])) {
-                return $this->error($data['errmsg']);
-            }
-            return $this->error('请检查公众号配置');
+        $type = input('type', 'text', 'trim');
+        $page = input('page', 1, 'intval');
+        $pageSize = input('page_size', 20, 'intval');
+
+        $offset = ($page - 1) * $pageSize;
+        $data = \app\common\facade\wechat\OfficialAccount::getMaterialList($type, $offset, $pageSize);
+        if (isset($data['item'])) {
+            return  $this->success('success', $data);
+        } elseif (isset($data['errmsg'])) {
+            return $this->error($data['errmsg']);
         }
+        return $this->error('请检查公众号配置');
     }
 
     /**
@@ -233,7 +257,7 @@ class WechatOfficial extends Admin
      */
     public function templateMessage()
     {
-        if (request()->isAjax()) {
+        if (request()->isPost()) {
             $params = request()->post();
             $data = [
                 'switch'      => $params['switch'],

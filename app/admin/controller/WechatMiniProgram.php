@@ -55,11 +55,15 @@ class WechatMiniProgram extends Admin
             $this->MiniProgramModel->edit($data);
             return $this->success('保存成功');
         } else {
-            //查询分组数据
             //查询数据
             $config = $this->MiniProgramModel->where([
                 ['shopid', '=', $this->shopid],
             ])->find();
+
+            // ajax请求返回json数据
+            if (request()->isAjax()) {
+                return $this->success('success', $config);
+            }
 
             $builder = new AdminConfigBuilder();
             $builder->title('微信小程序配置')->suggest('基于第三方授权各项参数配置');
@@ -82,7 +86,7 @@ class WechatMiniProgram extends Admin
      */
     public function templateMessage()
     {
-        if (request()->isAjax()) {
+        if (request()->isPost()) {
             $params = request()->post();
             $data = [
                 'switch'      => $params['switch'],
@@ -97,6 +101,7 @@ class WechatMiniProgram extends Admin
             }
             return $this->error('保存失败，请稍后再试');
         }
+
         $type = 'weixin_mp'; //当前模板消息类型
         $TemplateMessageLogic = new TemplateMessage();
         $detail = $this->MiniProgramModel->where('shopid', $this->shopid)->value('tmplmsg');
@@ -106,6 +111,6 @@ class WechatMiniProgram extends Admin
             'element' => $TemplateMessageLogic->oauth_type[$type],
             'data' => $detail
         ]);
-        return \view('common/template_message');
+        return View::fetch('common/template_message');
     }
 }

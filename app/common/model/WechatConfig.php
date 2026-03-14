@@ -16,9 +16,6 @@ class WechatConfig extends Base
      * @title 根据shopid获取公众号配置
      * @param int $shopid
      * @return WechatConfig|array|\think\Model|null
-     * @throws \think\db\exception\DataNotFoundException
-     * @throws \think\db\exception\DbException
-     * @throws \think\db\exception\ModelNotFoundException
      */
     function getWechatConfigByShopId($shopid = 0)
     {
@@ -31,6 +28,25 @@ class WechatConfig extends Base
                 $config['tmplmsg'] = json_decode($config['tmplmsg'], true);
             } else {
                 $config['tmplmsg'] = [];
+            }
+
+            // 处理封面图和二维码
+            if (!empty($config['cover'])) {
+                $config['cover_url'] = get_attachment_src($config['cover']);
+            }
+            if (!empty($config['qrcode'])) {
+                $config['qrcode_url'] = get_attachment_src($config['qrcode']);
+            }
+
+            // 处理创建时间
+            if (!empty($config['create_time'])) {
+                $config['create_time_str'] = time_format($config['create_time']);
+                $config['create_time_friendly_str'] = friendly_date($config['create_time']);
+            }
+            // 处理更新时间
+            if (!empty($config['update_time'])) {
+                $config['update_time_str'] = time_format($config['update_time']);
+                $config['update_time_friendly_str'] = friendly_date($config['update_time']);
             }
         } else {
             //初始化数据
@@ -54,6 +70,7 @@ class WechatConfig extends Base
      */
     public function callbackUrl($shopid = 0)
     {
-        return url('api/wechat/callback', ['shopid' => $shopid], false, true);
+        $url = url('api/wechat/callback', ['shopid' => $shopid], false, true);
+        return (string)$url;
     }
 }
