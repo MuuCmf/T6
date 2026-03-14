@@ -1,5 +1,5 @@
 <?php
-namespace app\channel\controller;
+namespace app\index\controller;
 
 use think\facade\View;
 use app\common\controller\Common;
@@ -17,7 +17,7 @@ class Pay extends Common
     }
 
     /**
-     * 微信扫码支付
+     * PC微信扫码支付
      */
     public function weixin()
     {

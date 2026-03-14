@@ -6,17 +6,16 @@ use think\Exception;
 use think\facade\Db;
 use think\Request;
 use think\facade\Log;
-use app\channel\facade\channel\Channel as ChannelServer;
-use app\channel\facade\channel\Pay as PayServer;
+use app\common\facade\channel\Channel as ChannelServer;
+use app\common\facade\channel\Pay as PayServer;
 use app\common\controller\Api;
 use app\common\model\CapitalFlow;
 use app\common\model\MemberSync;
 use app\common\model\MemberWallet;
 use app\common\model\Orders as OrdersModel;
-use app\channel\facade\wechat\OfficialAccount;
-use app\channel\facade\wechat\MiniProgram as WeixinMiniProgramServer;
-use app\channel\facade\bytedance\MiniProgram as DouyinMiniProgramServer;
-use app\channel\facade\baidu\MiniProgram as BaiduMiniProgramServer;
+use app\common\facade\wechat\MiniProgram as WeixinMiniProgramServer;
+use app\common\facade\bytedance\MiniProgram as DouyinMiniProgramServer;
+use app\common\facade\baidu\MiniProgram as BaiduMiniProgramServer;
 
 
 class Pay extends Api
@@ -77,7 +76,7 @@ class Pay extends Api
                     $notify_url = $this->params['notify_url'];
                 } else {
                     $notify_url = request()->domain() . "/api/pay/callback";
-                    $notify_url .= "/channel/{$order_data['channel']}";
+                    $notify_url .= "/api/{$order_data['channel']}";
                     $notify_url .= "/pay_channel/{$this->params['pay_channel']}";
                     $notify_url .= "/shopid/{$order_data['shopid']}";
                     $notify_url .= "/app/{$order_data['app']}";
@@ -127,7 +126,7 @@ class Pay extends Api
                     // 初始返回url
                     $return_url = '';
                     if (isset($result_pay['code_url'])) {
-                        $return_url = url('channel/pay/weixin', ['order_no' => $order_no, 'code_url' => $result_pay['code_url']]);
+                        $return_url = url('index/pay/weixin', ['order_no' => $order_no, 'code_url' => $result_pay['code_url']]);
                     }
                 }
                 // 抖音小程序支付
