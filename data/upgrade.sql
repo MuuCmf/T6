@@ -399,7 +399,7 @@ INSERT INTO `muucmf_menu` (`id`, `title`, `pid`, `sort`, `url`, `hide`, `type`, 
 ALTER TABLE `muucmf_tominiprogram` ADD `status` TINYINT(2) NOT NULL DEFAULT '1' COMMENT '状态' AFTER `type`;
 UPDATE `muucmf_menu` SET `url` = 'admin/DouyinMiniprogram/config' WHERE `muucmf_menu`.`id` = '7472E236-A4ED-6AC7-712E-3479158D5E21';
 UPDATE `muucmf_menu` SET `url` = 'admin/DouyinMiniprogram/orders' WHERE `muucmf_menu`.`id` = '835882C7-20C1-B7B3-1373-330D0F3E9262';
-UPDATE `muucmf_menu` SET `url` = 'cadmin/DouyinMiniprogram/settle' WHERE `muucmf_menu`.`id` = 'A59BE3B9-EDD9-673E-3FAC-D7AD8FC39F38';
+UPDATE `muucmf_menu` SET `url` = 'admin/DouyinMiniprogram/settle' WHERE `muucmf_menu`.`id` = 'A59BE3B9-EDD9-673E-3FAC-D7AD8FC39F38';
 DELETE FROM muucmf_menu WHERE `muucmf_menu`.`id` = 'ED701550-6DFE-62A9-634C-6C2EFC249124';
 DELETE FROM muucmf_menu WHERE `muucmf_menu`.`id` = '812DB499-01B8-787D-7EDA-AC4A9FDCAFBC';
 DELETE FROM muucmf_menu WHERE `muucmf_menu`.`id` = '0762BC67-2FAC-2C3D-94F0-9292DF07DEDE';
