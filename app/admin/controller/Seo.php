@@ -4,29 +4,41 @@ namespace app\admin\controller;
 
 use think\facade\Db;
 use app\common\model\Module as ModuleModel;
+use app\common\model\SeoRule as SeoRuleModel;
 use app\admin\builder\AdminListBuilder;
 use app\admin\builder\AdminConfigBuilder;
 
 class Seo extends Admin
 {
+    protected $seoRuleModel;
     public function __construct()
     {
         parent::__construct();
+        $this->seoRuleModel = new SeoRuleModel();
 
     }
 
-    public function lists()
+    public function list()
     {
         //读取规则列表
-        $app = input('get.app', '', 'text');
+        $app = input('app', '', 'text');
+        $keyword = input('keyword', '', 'text');
         $map = [
             ['status', 'in', [0, 1]]
         ];
-        if (!empty($aApp)) {
+        if (!empty($app)) {
             $map[] = ['app', '=', $app];
         }
+        if (!empty($keyword)) {
+            $map[] = ['title|controller|action|seo_title|seo_keywords|seo_description', 'like', "%{$keyword}%"];
+        }
 
-        list($ruleList, $page) = $this->commonLists('SeoRule', $map, 'sort asc');
+        $ruleList = $this->seoRuleModel->getListByPage($map, 'sort asc,id desc');
+        // ajax分页
+        if (request()->isAjax()) {
+            return $this->success(lang('操作成功'), $ruleList);
+        }
+
         $page = $ruleList->render();
 
         $module = (new ModuleModel())->getAll();
@@ -36,6 +48,7 @@ class Seo extends Admin
                 $app[] = array('id' => $m['name'], 'value' => $m['alias']);
         }
         $ruleList = $ruleList->toArray()['data'];
+
         //显示页面
         $builder = new AdminListBuilder();
         $builder->setSelectPostUrl(url('lists'));
@@ -90,15 +103,15 @@ class Seo extends Admin
                 ['status', 'in', [0, 1]]
             ];
 
-            $has_rule = Db::name('SeoRule')->where($has_map)->find();
+            $has_rule = $this->seoRuleModel->where($has_map)->find();
             if ($has_rule && !$isEdit) {
                 return $this->error('已存在相同规则');
             }
 
             if ($isEdit) {
-                $result = Db::name('SeoRule')->where(['id' => $id])->update($data);
+                $result = $this->seoRuleModel->where(['id' => $id])->update($data);
             } else {
-                $result = Db::name('SeoRule')->insert($data);
+                $result = $this->seoRuleModel->insert($data);
             }
 
             //如果失败的话，显示失败消息
@@ -107,12 +120,12 @@ class Seo extends Admin
             }
 
             //显示成功信息，并返回规则列表
-            return $this->success($isEdit ? '编辑成功' : '创建成功', $result, url('lists'));
+            return $this->success($isEdit ? '编辑成功' : '创建成功', $result, url('list'));
         }
 
         //读取规则内容
         if ($isEdit) {
-            $rule = Db::name('SeoRule')->where(['id' => $id])->find();
+            $rule = $this->seoRuleModel->where(['id' => $id])->find();
         } else {
             $rule = [
                 'status' => 1,

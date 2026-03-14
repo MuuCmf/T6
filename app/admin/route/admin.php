@@ -164,21 +164,10 @@ Route::group('module', function () {
 Route::group('pc', function () {
     // 顶部通用导航
     Route::any('navbar', 'admin/Pc/navbar');
-
     // 底部快捷导航
     Route::any('footer', 'admin/Pc/footer');
-
     // 用户导航
     Route::any('user', 'admin/Pc/user');
-
-    // SEO规则列表
-    Route::get('seo/list', 'admin/Pc/seoList');
-
-    // 编辑SEO规则
-    Route::any('seo/edit', 'admin/Pc/seoEdit');
-
-    // SEO规则状态
-    Route::post('seo/status', 'admin/Pc/seoStatus');
 });
 
 Route::group('role', function () {
@@ -210,6 +199,15 @@ Route::group('score', function () {
     Route::post('type/edit', 'admin/Score/typeEdit');
     Route::post('type/status', 'admin/Score/typeStatus');
     Route::post('type/delete', 'admin/Score/typeDel');
+});
+
+Route::group('seo', function () {
+    // SEO规则列表
+    Route::get('list', 'admin/Seo/list');
+    // 编辑SEO规则
+    Route::any('edit', 'admin/Seo/edit');
+    // SEO规则状态
+    Route::post('status', 'admin/Seo/status');
 });
 
 Route::group('tominiprogram', function () {

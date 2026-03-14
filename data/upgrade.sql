@@ -382,3 +382,10 @@ UPDATE `muucmf_menu` SET `url` = 'admin/WechatOfficial/editAutoReply' WHERE `muu
 UPDATE `muucmf_menu` SET `url` = 'admin/WechatOfficial/config' WHERE `muucmf_menu`.`id` = 'A4650B98-DAD4-8194-030C-1B2AB4F35CBA';
 UPDATE `muucmf_menu` SET `url` = 'admin/WechatOfficial/templateMessage' WHERE `muucmf_menu`.`id` = 'ED701550-6DFE-62A9-634C-6C2EFC249124';
 UPDATE `muucmf_menu` SET `url` = 'admin/WechatOfficial/menu' WHERE `muucmf_menu`.`id` = 'F8C08807-1339-95ED-FDEC-8E5D853FC1D8';
+
+UPDATE `muucmf_menu` SET `url` = 'admin/Pc/navbar' WHERE `muucmf_menu`.`id` = '0CC7C474-337A-476B-8F70-6837990AA884';
+UPDATE `muucmf_menu` SET `url` = 'admin/Pc/user' WHERE `muucmf_menu`.`id` = '5C72BF11-A945-6D28-D7C2-66FE3D812DA6';
+UPDATE `muucmf_menu` SET `url` = 'admin/Pc/footer' WHERE `muucmf_menu`.`id` = 'E2D95A37-3B56-F463-C7B6-D9B1559BD46C';
+UPDATE `muucmf_menu` SET `url` = 'admin/Seo/edit' WHERE `muucmf_menu`.`id` = '25583213-2F69-FB2D-3AE0-D522569BBCD3';
+UPDATE `muucmf_menu` SET `url` = 'admin/Seo/status' WHERE `muucmf_menu`.`id` = '40EE3F01-B5B0-9821-D6E9-F327562C5D29';
+UPDATE `muucmf_menu` SET `url` = 'admin/Seo/list' WHERE `muucmf_menu`.`id` = '5962E368-3742-4699-E35A-6D268A73CA2A';
