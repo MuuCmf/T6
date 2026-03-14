@@ -3,10 +3,10 @@
 namespace app\admin\controller;
 
 use app\admin\builder\AdminConfigBuilder;
-use app\channel\logic\TemplateMessage;
-use app\channel\model\DouyinMpConfig;
-use app\channel\model\DouyinMpSettle as DouyinMpSettleModel;
-use app\channel\service\bytedance\DouyinMp as DouyinMpService;
+use app\common\logic\TemplateMessage;
+use app\common\model\DouyinMpConfig;
+use app\common\model\DouyinMpSettle as DouyinMpSettleModel;
+use app\common\service\bytedance\DouyinMp as DouyinMpService;
 use app\common\model\Orders as OrdersModel;
 use app\common\logic\Orders as OrdersLogic;
 use think\facade\View;
@@ -59,7 +59,7 @@ class DouyinMiniprogram extends Admin
             ])->find();
 
             // 设置回调地址
-            $callback_url = url('channel/douyin/callback', ['shopid' => $this->shopid], false, true);
+            $callback_url = url('api/douyin/callback', ['shopid' => $this->shopid], false, true);
             $config['callback'] = (string)$callback_url;
 
             // ajax数据返回

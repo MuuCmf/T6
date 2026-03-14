@@ -2,7 +2,7 @@
 
 namespace app\common\model;
 
-use app\channel\logic\Channel;
+use app\common\logic\Channel;
 
 /**
  * 资金流水

@@ -8,7 +8,7 @@ use think\facade\Config;
 use app\common\model\AuthGroup;
 use app\common\model\ActionLog;
 use app\common\model\ScoreType;
-use app\channel\logic\Channel;
+use app\common\logic\Channel;
 
 /**
  * 会员模型

@@ -13,6 +13,7 @@ use app\common\model\CapitalFlow;
 use app\common\model\MemberSync;
 use app\common\model\MemberWallet;
 use app\common\model\Orders as OrdersModel;
+use app\common\facade\wechat\OfficialAccount;
 use app\common\facade\wechat\MiniProgram as WeixinMiniProgramServer;
 use app\common\facade\bytedance\MiniProgram as DouyinMiniProgramServer;
 use app\common\facade\baidu\MiniProgram as BaiduMiniProgramServer;
@@ -432,7 +433,7 @@ class Pay extends Api
         // 公众号消息
         if ($channel  == 'weixin_h5') {
             // 获取配置
-            $weixin_config = (new \app\channel\model\WechatConfig())->getWechatConfigByShopId($this->shopid);
+            $weixin_config = (new \app\common\model\WechatConfig())->getWechatConfigByShopId($this->shopid);
             // 获取支付时间戳
             $paid_time = $this->OrderModel->where('order_no', $order_info['order_no'])->value('paid_time');
             //消息模板是否设置
@@ -486,7 +487,7 @@ class Pay extends Api
         // 微信小程序消息
         if ($channel == 'weixin_mp') {
             // 获取配置
-            $weixin_mp_config = (new \app\channel\model\WechatMpConfig())->getWechatMpConfigByShopId($this->shopid);
+            $weixin_mp_config = (new \app\common\model\WechatMpConfig())->getWechatMpConfigByShopId($this->shopid);
             //消息模板是否设置
             if (empty($weixin_mp_config['tmplmsg']['tmplmsg']['pay_success'])) {
                 return false;

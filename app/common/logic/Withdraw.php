@@ -2,7 +2,7 @@
 
 namespace app\common\logic;
 
-use app\channel\logic\Channel;
+use app\common\logic\Channel;
 
 /**
  * @title 提现逻辑类

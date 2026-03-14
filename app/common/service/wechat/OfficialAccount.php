@@ -38,7 +38,7 @@ class OfficialAccount extends Wechat
             'log' => $this->log(),
             'oauth' => [
                 'scopes'   => ['snsapi_userinfo'],
-                'callback' => request()->domain() . "/channel/official/oauthCallback",
+                'callback' => request()->domain() . "/api/weixin/oauthCallback",
             ],
         ];
     }

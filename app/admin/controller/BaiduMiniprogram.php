@@ -58,8 +58,8 @@ class BaiduMiniprogram extends Admin
             ])->find();
 
             // 设置回调地址
-            $callback_url = url('channel/baidu/callback', ['shopid'=>$this->shopid], false, true);
-            $config['callback'] = $callback_url;
+            $callback_url = url('api/baidu/callback', ['shopid'=>$this->shopid], false, true);
+            $config['callback'] = (string)$callback_url;
             
             $builder = new AdminConfigBuilder();
             $builder->title('百度小程序配置')->suggest('基于第三方授权各项参数配置');

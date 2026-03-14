@@ -5,7 +5,7 @@ namespace app\api\controller;
 use app\common\controller\Api;
 use app\common\logic\Orders as OrdersLogic;
 use app\common\model\Orders as OrdersModel;
-use app\channel\facade\bytedance\MiniProgram as DouyinMiniProgramServer;
+use app\common\facade\bytedance\MiniProgram as DouyinMiniProgramServer;
 use think\Exception;
 use think\facade\Db;
 use think\Request;

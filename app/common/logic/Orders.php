@@ -2,7 +2,7 @@
 
 namespace app\common\logic;
 
-use app\channel\logic\Channel;
+use app\common\logic\Channel;
 use app\common\model\Evaluate as EvaluateModel;
 
 class Orders extends Base

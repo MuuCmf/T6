@@ -23,7 +23,6 @@ use think\Exception;
 /**
  * 微信公众号服务
  * Class WechatOfficaialAccount
- * @package app\channel\controller\service
  */
 class WechatOfficialAccount extends Api
 {

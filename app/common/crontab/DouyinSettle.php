@@ -6,8 +6,8 @@ namespace app\minishop\crontab;
 
 use app\common\model\CrontabLog;
 use app\common\model\Orders as OrderModel;
-use app\channel\service\bytedance\DouyinMp as DouyinMpService;
-use app\channel\model\DouyinMpSettle as DouyinMpSettleModel;
+use app\common\service\bytedance\DouyinMp as DouyinMpService;
+use app\common\model\DouyinMpSettle as DouyinMpSettleModel;
 use think\Exception;
 use think\facade\Db;
 

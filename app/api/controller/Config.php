@@ -4,8 +4,6 @@ namespace app\api\controller;
 
 use app\common\controller\Api;
 use app\common\logic\Config as ConfigLogic;
-use app\channel\logic\OfficialAccount;
-use app\channel\model\WechatConfig;
 
 class Config extends Api
 {

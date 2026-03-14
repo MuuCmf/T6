@@ -148,10 +148,10 @@ class Common extends Base
      */
     public function initWechatConfig()
     {
-        $weixin_config_data = (new \app\channel\model\WechatConfig())->where('shopid', $this->shopid)->field('title,desc,cover,qrcode,appid,auth_login')->find();
+        $weixin_config_data = (new \app\common\model\WechatConfig())->where('shopid', $this->shopid)->field('title,desc,cover,qrcode,appid,auth_login')->find();
         if ($weixin_config_data) {
             $weixin_config_data = $weixin_config_data->toArray();
-            $weixin_config_data = (new \app\channel\logic\OfficialAccount())->formatData($weixin_config_data);
+            $weixin_config_data = (new \app\common\logic\OfficialAccount())->formatData($weixin_config_data);
         }
         View::assign('weixin_config_data', $weixin_config_data);
     }

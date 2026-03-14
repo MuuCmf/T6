@@ -19,7 +19,7 @@ var scan_qrcode = {
      */
     initWechatQrcode(elem){
         this.createSceneKey();
-        let qrCodeSrc = `${this.apiHost}/channel/official/qrcode?scene_key=${this.sceneKey}`;
+        let qrCodeSrc = `${this.apiHost}/api/weixin/qrcode?scene_key=${this.sceneKey}`;
         $(elem).attr('src', qrCodeSrc);
     },
     /**
@@ -27,7 +27,7 @@ var scan_qrcode = {
      */
     hasScan(){
         let that = this;
-        $.get( `${this.apiHost}/channel/official/hasScan`,{scene_key:this.sceneKey},function (res) {
+        $.get( `${this.apiHost}/api/weixin/hasScan`,{scene_key:this.sceneKey},function (res) {
             if (res.code == 200){
                 that.userInfo = res.data;
                 typeof that.callback == 'function' && that.callback();
@@ -44,7 +44,7 @@ var scan_qrcode = {
     login(){
         let that = this;
         
-        $.post( `${this.apiHost}/channel/official/scanLogin`,{openid:this.userInfo.openid,scene_key:this.sceneKey},function (data) {
+        $.post( `${this.apiHost}/api/weixin/scanLogin`,{openid:this.userInfo.openid,scene_key:this.sceneKey},function (data) {
             if (data.code == 200) {
                 toast.success(data.msg);
                 if (data.data) {

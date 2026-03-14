@@ -9,8 +9,8 @@ use app\common\model\CapitalFlow;
 use app\common\model\MemberWallet;
 use app\common\model\Withdraw as WithdrawModel;
 use app\common\logic\Withdraw as WithdrawLogic;
-use app\channel\facade\channel\Pay as PayServer;
-use app\channel\facade\channel\Channel as ChannelServer;
+use app\common\facade\channel\Pay as PayServer;
+use app\common\facade\channel\Channel as ChannelServer;
 
 class Withdraw extends Admin
 {
