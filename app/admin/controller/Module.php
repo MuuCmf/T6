@@ -375,6 +375,14 @@ class Module extends Admin
                 continue; //继续循环
             }
 
+            // 判断管理端是否支持SPA单页应用
+            if (file_exists(base_path() . $item['name'] . '/info/info.php')) {
+                $info = file_get_contents(base_path() . $item['name'] . '/info/info.php');
+                if(isset($info['spa']) && $info['spa'] == true){
+                    $all_module_list[$key]['spa'] = true;
+                }
+            }
+
             // 判断是否支持PC端
             if ($support == 'pc') {
                 if (!file_exists(base_path() . $item['name'] . '/controller/pc/Index.php')) {

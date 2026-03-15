@@ -18,7 +18,7 @@
         {volist name="admin_menu.main" id="menu"}
         {neq name="$menu.type" value="1"}
         <li data-id="{$menu.id}" data-url="{$menu.url}" class="{$menu.class|default=''}">
-
+          {if empty($menu.spa_url)}
           <a href="{$menu.url|url}">
             {notempty name="menu.icon"}
             <i class="fa fa-{$menu.icon}"></i>
@@ -27,7 +27,16 @@
             {/notempty}
             <span>{$menu.title}</span>
           </a>
-          
+          {else /}
+          <a href="{$menu.spa_url}">
+            {notempty name="menu.icon"}
+            <i class="fa fa-{$menu.icon}"></i>
+            {else /}
+            <i class="fa fa-circle-o"></i>
+            {/notempty}
+            <span>{$menu.title}</span>
+          </a>
+          {/if}
         </li>
         {/neq}
         {/volist}
