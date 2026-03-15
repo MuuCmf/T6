@@ -38,6 +38,8 @@ class Common extends Base
      */
     public function initialize()
     {
+        //管理后台入口
+        $this->initAdminEntry();
         //站点状态
         $this->initSiteStatus();
         //访问类型
@@ -66,6 +68,14 @@ class Common extends Base
         $this->initVersion();
     }
 
+    /**
+     * 初始化管理后台入口
+     */
+    protected function initAdminEntry()
+    {
+        $admin_entry = request()->domain() . '/static/admin/index.html';
+        View::assign('admin_entry', $admin_entry);
+    }
     /**
      * 初始化站点状态
      */
