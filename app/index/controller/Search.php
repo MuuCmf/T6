@@ -53,17 +53,22 @@ class Search extends Common
             // 查询条件
             $keyword = preg_replace('/\s+/u', ' ', $keyword); // 将所有空白字符替换为英文空格
             $keyword_arr = preg_split('/\s+/', $keyword, 10, PREG_SPLIT_NO_EMPTY); // 使用英文空格分割字符串
-            $keyword_quert_raw = '';
-            foreach ($keyword_arr as $key => $val) {
-                $keyword_quert_raw .= '`content` LIKE "%' . $val . '%"';
-                if ($key < count($keyword_arr) - 1) {
-                    $keyword_quert_raw .= ' OR ';
-                }
+            
+            // 使用闭包方式构建查询条件，更可靠地处理复杂的AND/OR逻辑
+            $query = (new SearchModel)->where('shopid', '=', $this->shopid);
+            
+            if (!empty($keyword_arr)) {
+                // 构建OR条件组
+                $query->where(function($query) use ($keyword_arr) {
+                    foreach ($keyword_arr as $val) {
+                        $query->whereOr('content', 'like', '%' . $val . '%');
+                    }
+                });
             }
             
-            $map = '`shopid` = ' . $this->shopid . ' AND (' . $keyword_quert_raw . ')';
             $fields = '*';
-            $lists = (new SearchModel)->getListByPage($map, $order, $fields, $rows);
+            // 执行查询
+            $lists = $query->order($order)->field($fields)->paginate(['list_rows' => $rows, 'query' => request()->param()], false);
             $pager = $lists->render();
             $lists = $lists->toArray();
 
