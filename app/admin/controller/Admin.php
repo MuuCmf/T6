@@ -142,7 +142,7 @@ class Admin extends Base
                 // 新版url
                 $item['spa_url'] = '';
                 if($item['type'] == 0){
-                    $item['spa_url'] = request()->domain() . '/static/admin/#/' . $item['url'];
+                    $item['spa_url'] = '/static/admin/#/' . $item['url'];
                 }
 
                 // 获取当前主菜单的子菜单项
