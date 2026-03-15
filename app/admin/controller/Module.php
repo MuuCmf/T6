@@ -45,11 +45,11 @@ class Module extends Admin
                 $map = [];
                 $this->ModuleModel->reload();
                 break;
-                // 已安装
+            // 已安装
             case 'installed':
                 $map[] = ['is_setup', '=', 1];
                 break;
-                // 未安装
+            // 未安装
             case 'uninstalled':
                 $map[] = ['is_setup', '=', 0];
                 $this->ModuleModel->reload();
@@ -105,6 +105,15 @@ class Module extends Admin
                     $item['icon_100'] = $item['icon_200'] = $item['icon_300'] = $item['icon_400'] = '/static/' . $item['name'] . '/images/icon.png';
                 }
             }
+
+            // 判断管理端是否支持SPA单页应用
+            $item['spa'] = false;
+            if (file_exists(base_path() . $item['name'] . '/info/info.php')) {
+                $info = file_get_contents(base_path() . $item['name'] . '/info/info.php');
+                if (isset($info['spa']) && $info['spa'] == true) {
+                    $item['spa'] = true;
+                }
+            }
         }
         unset($item);
         $pager = $modules->render();
@@ -113,7 +122,7 @@ class Module extends Admin
         if (request()->isAjax()) {
             return $this->success('success', $modules);
         }
-        
+
         View::assign('pager', $pager);
         View::assign('modules', $modules);
         // 记录当前列表页的cookie
@@ -267,7 +276,7 @@ class Module extends Admin
         View::assign('list', $list);
 
         // ajax请求返回数据
-        if(request()->isAjax()){
+        if (request()->isAjax()) {
             return $this->success('success', $list);
         }
 
@@ -378,7 +387,7 @@ class Module extends Admin
             // 判断管理端是否支持SPA单页应用
             if (file_exists(base_path() . $item['name'] . '/info/info.php')) {
                 $info = file_get_contents(base_path() . $item['name'] . '/info/info.php');
-                if(isset($info['spa']) && $info['spa'] == true){
+                if (isset($info['spa']) && $info['spa'] == true) {
                     $all_module_list[$key]['spa'] = true;
                 }
             }
