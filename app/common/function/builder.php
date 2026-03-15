@@ -218,7 +218,7 @@ if (!function_exists('parse_field_attr')) {
     {
         if (0 === strpos($string, ':')) {
             // 采用函数定义
-            return eval(substr($string, 1) . ';');
+            //return eval(substr($string, 1) . ';');
         }
         $array = preg_split('/[,;\r\n]+/', trim($string, ",;\r\n"));
         if (strpos($string, ':')) {

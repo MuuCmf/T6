@@ -509,8 +509,14 @@ class Module extends Base
      */
     private function getInfo($name)
     {
-        if (file_exists(APP_PATH . '/' . $name . '/info/info.php')) {
-            $module = require(APP_PATH . '/' . $name . '/info/info.php');
+        // 严格验证模块名，防止目录遍历
+        if (empty($name) || $name == '.' || $name == '..' || strpos($name, '/') !== false || strpos($name, '\\') !== false || strpos($name, '.') !== false) {
+            return [];
+        }
+        
+        $modulePath = APP_PATH . '/' . $name . '/info/info.php';
+        if (file_exists($modulePath)) {
+            $module = require($modulePath);
             return $module;
         } else {
             return [];
