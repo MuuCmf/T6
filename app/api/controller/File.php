@@ -69,7 +69,7 @@ class File extends Api
 
         if (empty($files)) {
             $return['code'] = 0;
-            $return['msg'] = 'No Avatar Image upload or server upload limit exceeded';
+            $return['msg'] = '未上传文件或文件大小超过限制';
             return json($return);
         }
 
@@ -105,7 +105,7 @@ class File extends Api
                 $files = request()->file();
                 if (empty($files)) {
                     $return['code'] = 0;
-                    $return['msg'] = 'No file upload or server upload limit exceeded';
+                    $return['msg'] = '未上传文件或文件大小超过限制';
                     return json($return);
                 }
 
@@ -119,7 +119,7 @@ class File extends Api
                 $files = input('upfile');
                 if (empty($files)) {
                     $return['code'] = 0;
-                    $return['msg'] = 'No file upload or server upload limit exceeded';
+                    $return['msg'] = '未上传文件或文件大小超过限制';
                     return json($return);
                 }
 
@@ -136,7 +136,7 @@ class File extends Api
 
                 if (empty($files)) {
                     $return['code'] = 0;
-                    $return['msg'] = 'No file upload or server upload limit exceeded';
+                    $return['msg'] = '未上传文件或文件大小超过限制';
                     return json($return);
                 }
 
@@ -159,7 +159,7 @@ class File extends Api
 
                 if (empty($files)) {
                     $return['code'] = 0;
-                    $return['msg'] = 'No file upload or server upload limit exceeded';
+                    $return['msg'] = '未上传文件或文件大小超过限制';
                     return json($return);
                 }
 

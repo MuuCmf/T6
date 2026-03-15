@@ -19,6 +19,12 @@ class Attachment extends Base
     protected $allowAudioExt = ['mp3', 'wav'];
     protected $allowVideoExt = ['mp4'];
     protected $allowFileExt = ['zip', 'rar', 'txt', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'pdf', 'pem'];
+    
+    // 文件大小限制（字节）
+    protected $maxImageSize = 2 * 1024 * 1024; // 2MB
+    protected $maxAudioSize = 10 * 1024 * 1024; // 10MB
+    protected $maxVideoSize = 100 * 1024 * 1024; // 100MB
+    protected $maxFileSize = 50 * 1024 * 1024; // 50MB
 
         // 附件驱动映射
     protected $driverMap = [
@@ -45,13 +51,13 @@ class Attachment extends Base
     public function upload($shopid, $files, $type = "file", $uid = 0, $enforce = 'auto', $filename = '')
     {
         if ($type == 'file') {
-            $result = $this->file($shopid, $files, $enforce, $filename);
+            $result = $this->file($shopid, $files, $enforce, $filename, $uid);
         }
         if ($type == 'avatar') {
             $result = $this->avatar($shopid, $files, $uid);
         }
         if ($type == 'base64') {
-            $result = $this->base64($shopid, $files);
+            $result = $this->base64($shopid, $files, $uid);
         }
 
         return $result;
@@ -59,10 +65,14 @@ class Attachment extends Base
 
     /**
      * 文件上传
+     * @param      <type>         $shopid 店铺ID
      * @param      <type>         $files  The files
+     * @param      string         $enforce 存储驱动强制选项
+     * @param      string         $filename 自定义文件名
+     * @param      int            $uid 用户ID
      * @return     array|boolean  ( description_of_the_return_value )
      */
-    public function file($shopid, $files, $enforce  = 'auto', $filename = '')
+    public function file($shopid, $files, $enforce  = 'auto', $filename = '', $uid = 0)
     {
         if (empty($files)) {
             return false;
@@ -102,40 +112,114 @@ class Attachment extends Base
                 $mime_arr = explode('/', $data['mime']);
                 $mime_type = $mime_arr[0];
 
-                switch ($mime_type) {
-                    case 'image':
-                        if (!in_array($data['ext'], $this->allowImageExt)) {
-                            return false;
-                        }
-                        $file_dir = 'images';
-                        $driver = config('extend.PICTURE_UPLOAD_DRIVER');
-                        break;
-                    case 'audio':
-                        if (!in_array($data['ext'], $this->allowAudioExt)) {
-                            return false;
-                        }
-                        $file_dir = 'audio';
-                        $driver = config('extend.FILE_UPLOAD_DRIVER');
-                        break;
-                    case 'video':
-                        if (!in_array($data['ext'], $this->allowVideoExt)) {
-                            return false;
-                        }
-                        $file_dir = 'video';
-                        $driver = config('extend.FILE_UPLOAD_DRIVER');
-                        break;
-                    default:
-                        if (!in_array($data['ext'], $this->allowFileExt)) {
-                            $false_result['code'] = 0;
-                            $false_result['msg'] = '不允许的文件类型';
-                            return $false_result;
-                        }
-                        $file_dir = 'file';
-                        $driver = config('extend.FILE_UPLOAD_DRIVER');
+                // 严格的文件内容类型检查
+                $filePath = $file->getPathname();
+                
+                // 验证图片类型
+                if ($mime_type === 'image') {
+                    if (!in_array($data['ext'], $this->allowImageExt)) {
+                        $false_result['code'] = 0;
+                        $false_result['msg'] = '不允许的图片类型';
+                        return $false_result;
+                    }
+                    // 验证图片文件的真实内容
+                    $imageInfo = getimagesize($filePath);
+                    if (!$imageInfo) {
+                        $false_result['code'] = 0;
+                        $false_result['msg'] = '无效的图片文件';
+                        return $false_result;
+                    }
+                    // 验证MIME类型
+                    if (strpos($imageInfo['mime'], 'image/') !== 0) {
+                        $false_result['code'] = 0;
+                        $false_result['msg'] = '图片类型不匹配';
+                        return $false_result;
+                    }
+                    // 验证文件大小
+                    if ($data['size'] > $this->maxImageSize) {
+                        $false_result['code'] = 0;
+                        $false_result['msg'] = '图片文件大小超过限制（最大2MB）';
+                        return $false_result;
+                    }
+                    $file_dir = 'images';
+                    $driver = config('extend.PICTURE_UPLOAD_DRIVER');
+                } 
+                // 验证音频类型
+                elseif ($mime_type === 'audio') {
+                    if (!in_array($data['ext'], $this->allowAudioExt)) {
+                        $false_result['code'] = 0;
+                        $false_result['msg'] = '不允许的音频类型';
+                        return $false_result;
+                    }
+                    // 验证音频文件的真实内容（检查文件头）
+                    $finfo = finfo_open(FILEINFO_MIME_TYPE);
+                    $realMime = finfo_file($finfo, $filePath);
+                    finfo_close($finfo);
+                    if (strpos($realMime, 'audio/') !== 0) {
+                        $false_result['code'] = 0;
+                        $false_result['msg'] = '音频类型不匹配';
+                        return $false_result;
+                    }
+                    // 验证文件大小
+                    if ($data['size'] > $this->maxAudioSize) {
+                        $false_result['code'] = 0;
+                        $false_result['msg'] = '音频文件大小超过限制（最大10MB）';
+                        return $false_result;
+                    }
+                    $file_dir = 'audio';
+                    $driver = config('extend.FILE_UPLOAD_DRIVER');
+                } 
+                // 验证视频类型
+                elseif ($mime_type === 'video') {
+                    if (!in_array($data['ext'], $this->allowVideoExt)) {
+                        $false_result['code'] = 0;
+                        $false_result['msg'] = '不允许的视频类型';
+                        return $false_result;
+                    }
+                    // 验证视频文件的真实内容（检查文件头）
+                    $finfo = finfo_open(FILEINFO_MIME_TYPE);
+                    $realMime = finfo_file($finfo, $filePath);
+                    finfo_close($finfo);
+                    if (strpos($realMime, 'video/') !== 0) {
+                        $false_result['code'] = 0;
+                        $false_result['msg'] = '视频类型不匹配';
+                        return $false_result;
+                    }
+                    // 验证文件大小
+                    if ($data['size'] > $this->maxVideoSize) {
+                        $false_result['code'] = 0;
+                        $false_result['msg'] = '视频文件大小超过限制（最大100MB）';
+                        return $false_result;
+                    }
+                    $file_dir = 'video';
+                    $driver = config('extend.FILE_UPLOAD_DRIVER');
+                } 
+                // 验证其他文件类型
+                else {
+                    if (!in_array($data['ext'], $this->allowFileExt)) {
+                        $false_result['code'] = 0;
+                        $false_result['msg'] = '不允许的文件类型';
+                        return $false_result;
+                    }
+                    // 验证文件大小
+                    if ($data['size'] > $this->maxFileSize) {
+                        $false_result['code'] = 0;
+                        $false_result['msg'] = '文件大小超过限制（最大50MB）';
+                        return $false_result;
+                    }
+                    $file_dir = 'file';
+                    $driver = config('extend.FILE_UPLOAD_DRIVER');
                 }
 
                 // 传shopid写入对应SHOPID目录
                 if (!empty($shopid)) {
+                    // 验证shopid安全性，防止路径遍历
+                    $shopid = intval($shopid);
+                    if ($shopid <= 0) {
+                        $false_result['code'] = 0;
+                        $false_result['msg'] = '无效的店铺ID';
+                        return $false_result;
+                    }
                     $file_dir = $shopid . DIRECTORY_SEPARATOR . $file_dir;
                 }
 
@@ -147,12 +231,18 @@ class Attachment extends Base
                 $data['type'] = $mime_arr[0];
                 $data['driver'] = $driver;
 
-                // 处理文件名
+                // 处理文件名 - 使用安全的哈希文件名
                 $name =  $file->hashName();
-                // 处理无扩展名问题
-                if (empty($data['ext']) && !empty($mime_arr[1])) {
-                    $name = $name . $mime_arr[1];
+                // 确保文件名包含正确的扩展名
+                $safeExt = strtolower($data['ext']);
+                if (!empty($safeExt)) {
+                    $name = substr($name, 0, strrpos($name, '.') + 1) . $safeExt;
+                } elseif (!empty($mime_arr[1])) {
+                    $name = $name . '.' . strtolower($mime_arr[1]);
                 }
+
+                // 确保目录结构安全，防止路径遍历
+                $file_dir = str_replace(['../', '..' . DIRECTORY_SEPARATOR, '/..', DIRECTORY_SEPARATOR . '..'], '', $file_dir);
 
                 $savename = Filesystem::disk('public')->putFileAs($file_dir, $file, $name);
 
@@ -213,7 +303,8 @@ class Attachment extends Base
                     }
                 }
 
-                // 写入数据库
+                // 写入数据库 - 记录上传用户
+                $data['uid'] = $uid;
                 $this->save($data);
                 // 返回数据
                 $file_res = [];
@@ -349,7 +440,8 @@ class Attachment extends Base
                     }
                 }
 
-                // 写入数据库
+                // 写入数据库 - 记录上传用户
+                $data['uid'] = $uid;
                 $this->save($data);
                 // 返回数据
                 $avatar = [];
@@ -364,11 +456,142 @@ class Attachment extends Base
     }
 
     /**
-     * [base64 description] 未完成
-     * @param  [type] $files [description]
-     * @return [type]        [description]
+     * base64上传功能
+     * @param  int $shopid 店铺ID
+     * @param  string $files base64编码的文件数据
+     * @param  int $uid 用户ID
+     * @return array|boolean 上传结果
      */
-    public function base64($files) {}
+    public function base64($shopid, $files, $uid = 0)
+    {
+        if (empty($files)) {
+            $false_result['code'] = 0;
+            $false_result['msg'] = '无文件数据';
+            return $false_result;
+        }
+
+        // 处理base64数据
+        $base64Data = $files;
+        if (preg_match('/^data:image\/(\w+);base64,/', $base64Data, $matches)) {
+            $ext = $matches[1];
+            if (!in_array($ext, ['png', 'jpg', 'jpeg'])) {
+                $false_result['code'] = 0;
+                $false_result['msg'] = '不支持的图片格式';
+                return $false_result;
+            }
+            $base64Data = substr($base64Data, strpos($base64Data, ',') + 1);
+            $base64Data = str_replace(' ', '+', $base64Data);
+            $fileData = base64_decode($base64Data);
+
+            if (!$fileData) {
+                $false_result['code'] = 0;
+                $false_result['msg'] = 'base64解码失败';
+                return $false_result;
+            }
+
+            // 验证文件大小
+            $fileSize = strlen($fileData);
+            if ($fileSize > $this->maxImageSize) {
+                $false_result['code'] = 0;
+                $false_result['msg'] = '图片文件大小超过限制（最大2MB）';
+                return $false_result;
+            }
+
+            // 创建临时文件
+            $tmpFile = tempnam(sys_get_temp_dir(), 'base64_') . '.' . $ext;
+            file_put_contents($tmpFile, $fileData);
+
+            // 验证图片文件的真实内容
+            $imageInfo = getimagesize($tmpFile);
+            if (!$imageInfo || strpos($imageInfo['mime'], 'image/') !== 0) {
+                unlink($tmpFile);
+                $false_result['code'] = 0;
+                $false_result['msg'] = '无效的图片文件';
+                return $false_result;
+            }
+
+            // 计算文件哈希值
+            $sha1 = sha1_file($tmpFile);
+            $md5 = md5_file($tmpFile);
+
+            // 检查文件是否已存在
+            $file_info = $this->where(['sha1' => $sha1])->find();
+            if (!empty($file_info)) {
+                unlink($tmpFile);
+                $data = $file_info->toArray();
+                return [
+                    'code' => 200,
+                    'filename' => $data['filename'],
+                    'type' => $data['type'],
+                    'ext' => $data['ext'],
+                    'size' => $data['size'],
+                    'attachment' => $data['attachment'],
+                    'url' => get_attachment_src($data['attachment'])
+                ];
+            }
+
+            // 构建文件目录
+            $file_dir = 'images';
+            if (!empty($shopid)) {
+                $shopid = intval($shopid);
+                if ($shopid <= 0) {
+                    unlink($tmpFile);
+                    $false_result['code'] = 0;
+                    $false_result['msg'] = '无效的店铺ID';
+                    return $false_result;
+                }
+                $file_dir = $shopid . DIRECTORY_SEPARATOR . $file_dir;
+            }
+
+            // 生成安全的文件名
+            $name = md5(uniqid()) . '.' . $ext;
+            $filePath = $file_dir . '/' . $name;
+            
+            // 上传文件 - 读取临时文件内容并写入目标位置
+            $content = file_get_contents($tmpFile);
+            $bytesWritten = Filesystem::disk('public')->put($filePath, $content);
+            unlink($tmpFile);
+
+            if (!$bytesWritten) {
+                $false_result['code'] = 0;
+                $false_result['msg'] = '文件保存失败';
+                return $false_result;
+            }
+            // 设置正确的文件路径
+            $savename = $filePath;
+
+            // 构建返回数据
+            $data = [
+                'filename' => 'base64_upload.' . $ext,
+                'ext' => $ext,
+                'md5' => $md5,
+                'sha1' => $sha1,
+                'size' => $fileSize,
+                'mime' => 'image/' . $ext,
+                'type' => 'image',
+                'attachment' => str_replace('\\', '/', $savename),
+                'driver' => config('extend.PICTURE_UPLOAD_DRIVER'),
+                'uid' => $uid
+            ];
+
+            // 写入数据库
+            $this->save($data);
+
+            return [
+                'code' => 200,
+                'filename' => $data['filename'],
+                'type' => $data['type'],
+                'ext' => $data['ext'],
+                'size' => $data['size'],
+                'attachment' => $data['attachment'],
+                'url' => get_attachment_src($data['attachment'])
+            ];
+        } else {
+            $false_result['code'] = 0;
+            $false_result['msg'] = '无效的base64格式';
+            return $false_result;
+        }
+    }
 
 
     /**
