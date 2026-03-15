@@ -107,11 +107,11 @@ class Module extends Admin
             }
 
             // 判断管理端是否支持SPA单页应用
-            $item['spa'] = false;
+            $item['entry_spa'] = false;
             if (file_exists(base_path() . $item['name'] . '/info/info.php')) {
-                $info = file_get_contents(base_path() . $item['name'] . '/info/info.php');
-                if (isset($info['spa']) && $info['spa'] == true) {
-                    $item['spa'] = true;
+                $info = require base_path() . $item['name'] . '/info/info.php';
+                if (isset($info['entry_spa']) && $info['entry_spa'] == true) {
+                    $item['entry_spa'] = true;
                 }
             }
         }
@@ -386,9 +386,10 @@ class Module extends Admin
 
             // 判断管理端是否支持SPA单页应用
             if (file_exists(base_path() . $item['name'] . '/info/info.php')) {
-                $info = file_get_contents(base_path() . $item['name'] . '/info/info.php');
-                if (isset($info['spa']) && $info['spa'] == true) {
-                    $all_module_list[$key]['spa'] = true;
+                $all_module_list[$key]['entry_spa'] = false;
+                $info = require base_path() . $item['name'] . '/info/info.php';
+                if (isset($info['entry_spa']) && $info['entry_spa'] == true) {
+                    $all_module_list[$key]['entry_spa'] = true;
                 }
             }
 
