@@ -99,7 +99,7 @@ class Admin extends Base
      */
     final public function getMenus()
     {
-        $module = input('param.module_name') ?? app('http')->getName();
+        $module = app('http')->getName();
         $controller = request()->controller();
         $action = request()->action();
         // 获取主菜单
@@ -115,7 +115,7 @@ class Admin extends Base
 
         //获取顶级菜单数据
         $nav_current_id = 0;
-        if (input('?param.module_name') && $module != 'admin') {
+        if ($module != 'admin') {
             foreach ($menus['main'] as $m) {
                 if ($m['module'] == $module) {
                     $nav_current_id = $m['id'];
@@ -125,8 +125,9 @@ class Admin extends Base
             $nav = $menuModel->getPath($current['id']);
             $nav_current_id = $nav[0]['id'];
         }
+
         if ($nav_current_id) {
-            foreach ($menus['main'] as $key => $item) {
+            foreach ($menus['main'] as $key => &$item) {
 
                 if (!is_array($item) || empty($item['title']) || empty($item['url'])) {
                     return $this->error('控制器基类{$menus}属性元素配置有误');
@@ -136,6 +137,12 @@ class Admin extends Base
                 if (!$this->isRoot && !$this->checkRule($item['url'], get_uid(), AuthRule::RULE_MAIN, null)) {
                     unset($menus['main'][$key]);
                     continue; //继续循环
+                }
+
+                // 新版url
+                $item['spa_url'] = '';
+                if($item['type'] == 0){
+                    $item['spa_url'] = request()->domain() . '/static/admin/#/' . $item['url'];
                 }
 
                 // 获取当前主菜单的子菜单项
@@ -184,82 +191,10 @@ class Admin extends Base
                     }
                 }
             }
+            unset($item);
         }
 
         return $menus;
-    }
-
-    /**
-     * 通用分页列表数据集获取方法
-     *
-     *  可以通过url参数传递where条件,例如:  userList.html?name=asdfasdfasdfddds
-     *  可以通过url空值排序字段和方式,例如: userList.html?_field=id&_order=asc
-     *  可以通过url参数r指定每页数据条数,例如: userList.html?r=5
-     *
-     * @param sting|Table  $table 模型名或模型实例
-     * @param array        $where where查询条件(优先级: $where>$_REQUEST>模型设定)
-     * @param array|string $order 排序条件,传入null时使用sql默认排序或模型属性(优先级最高);
-     *                              请求参数中如果指定了_order和_field则据此排序(优先级第二);
-     *                              否则使用$order参数(如果$order参数,且模型也没有设定过order,则取主键降序);
-     *
-     * @param array        $base 基本的查询条件
-     * @param boolean      $field 单表模型用不到该参数,要用在多表join时为field()方法指定参数
-     *
-     * @return array|false
-     * 返回数据集
-     */
-    public function commonLists($table, $where = [], $order = '', $base = [], $field = true)
-    {
-        $options = [];
-        $REQUEST = (array)input('request.');
-        if (is_string($table)) {
-            $table = Db::name($table);
-        }
-
-        $pk = $table->getPk();
-        if ($order === null) {
-            //order置空
-        } else if (isset($REQUEST['_order']) && isset($REQUEST['_field']) && in_array(strtolower($REQUEST['_order']), ['desc', 'asc'])) {
-            $options['order'] = '`' . $REQUEST['_field'] . '` ' . $REQUEST['_order'];
-        } elseif ($order === '' && empty($options['order']) && !empty($pk)) {
-            $options['order'] = $pk . ' desc';
-        } elseif ($order) {
-            $options['order'] = $order;
-        }
-        unset($REQUEST['_order'], $REQUEST['_field']);
-
-        $options['where'] = array_filter(array_merge(
-            (array)$base, /*$REQUEST,*/
-            (array)$where
-        ), function ($val) {
-
-            if ($val === null) {
-                return false;
-            } else {
-                return true;
-            }
-        });
-        if (empty($options['where'])) {
-            unset($options['where']);
-        }
-
-        //$total = $table->where($options['where'])->count();
-
-        if (input('rows') !== null) {
-            $listRows = (int)input('rows');
-        } else {
-            $listRows = 20;
-        }
-
-        //获取列表
-        $list = $table->where($options['where'])->order($options['order'])->paginate($listRows);
-        // 获取分页显示
-        $page = $list->render();
-        if(!empty($page)){
-            $page = htmlspecialchars_decode($page);
-        }
-        
-        return [$list, $page];
     }
 
     /**
