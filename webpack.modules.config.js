@@ -112,7 +112,7 @@ function getAllModules() {
     .map(dirent => dirent.name);
 
   // 核心模块列表，无论是否有 webpack.config.js 都保留
-  const coreModules = ['admin', 'common', 'channel', 'ucenter', 'index'];
+  const coreModules = ['admin', 'common', 'ucenter', 'index'];
 
   // 过滤模块：保留核心模块，其他模块只保留有 webpack.config.js 的
   return allModules.filter(moduleName => {
