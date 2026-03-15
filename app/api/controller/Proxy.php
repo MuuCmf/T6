@@ -90,9 +90,6 @@ class Proxy extends Api
         $data = curl_exec($ch);
         $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         $error = curl_error($ch);
-        curl_close($ch);
-
-        //error_log('Fetch image - URL: ' . $url . ', HTTP Code: ' . $httpCode . ', Error: ' . $error . ', Data length: ' . strlen($data));
 
         if ($error || $httpCode >= 400) {
             return false;

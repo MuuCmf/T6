@@ -54,7 +54,15 @@ class Orders extends Api
                     $appOrdersService = new $order_namespace;
                     $order_data = $appOrdersService->create($this->params);
                 } else {
-                    $order_namespace = "app\\{$this->params['app']}\\service\\Orders";
+                    // 验证app参数的安全性，防止目录遍历和任意类加载
+                    $app = preg_replace('/[^a-zA-Z0-9_]/', '', $this->params['app']);
+                    $order_namespace = "app\\{$app}\\service\\Orders";
+                    
+                    // 确保类存在且可实例化
+                    if (!class_exists($order_namespace)) {
+                        throw new Exception('订单服务类不存在');
+                    }
+                    
                     $appOrdersService = new $order_namespace;
                     $order_data = $appOrdersService->create($this->params);
                 }

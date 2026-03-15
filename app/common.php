@@ -343,12 +343,12 @@ if (!function_exists('curl_request')) {
     /**
      * 发送请求
      * @param string $url 访问的URL
-     * @param string $post post数据(不填则为GET)
+     * @param array $post post数据(不填则为GET)
      * @param string $cookie 提交的$cookies
      * @param int $returnCookie 是否返回$cookies
      * @return bool|string
      */
-    function curl_request($url, $post = '', $cookie = '', $returnCookie = 0)
+    function curl_request($url, $post = [], $cookie = '', $returnCookie = 0)
     {
         $curl = curl_init();
         curl_setopt($curl, CURLOPT_URL, $url);
@@ -613,41 +613,3 @@ if (!function_exists('get_upgrade_status')) {
         return false;
     }
 }
-
-if (!function_exists('need_authorization')){
-    /**
-     * @title 检测授权
-     * @throws HttpResponseException
-     */
-    function need_authorization($app_name = ''){
-        if(empty($app_name)){
-            $app_name = get_module_name();
-        }
-
-        $result = (new \app\admin\lib\Cloud())->needAuthorization($app_name);
-        if ($result == false || is_array($result) && $result['code'] == 0 && $result['data'] == 'tort'){
-            if(!is_array($result)){
-                $result = [
-                    'code' => 0,
-                    'msg'  => '警告！未获取授权',
-                    'data' => [],
-                    'url'  => '',
-                    'wait' => 3,
-                ];
-            }
-            
-            $type = (request()->isJson() || request()->isAjax()) ? 'json' : 'html';
-            if ($type == 'html') {
-                $response = view(app('config')->get('app.dispatch_error_tmpl'), $result);
-            } else if ($type == 'json') {
-                $response = json($result);
-            }
-            throw new \think\exception\HttpResponseException($response);
-        }
-    }
-}
-
-
-
-
-

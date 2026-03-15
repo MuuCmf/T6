@@ -77,11 +77,11 @@ class File extends Api
 
         if (is_array($arr)) {
             $return['code'] = 200;
-            $return['msg'] = 'Upload successful';
+            $return['msg'] = '上传成功';
             $return['data'] = $arr;
         } else {
             $return['code'] = 0;
-            $return['msg'] = 'Upload failed';
+            $return['msg'] = '上传失败';
         }
 
         return json($return);
@@ -109,7 +109,8 @@ class File extends Api
                     return json($return);
                 }
 
-                $res = $this->Attachment->upload($shopid, $files, 'file');
+                $uid = get_uid();
+                $res = $this->Attachment->upload($shopid, $files, 'file', $uid);
                 $res['state'] = 'SUCCESS';
 
                 return json($res);
@@ -123,7 +124,8 @@ class File extends Api
                     return json($return);
                 }
 
-                $arr = $this->Attachment->Attachment($shopid, $files, 'base64');
+                $uid = get_uid();
+                $arr = $this->Attachment->upload($shopid, $files, 'base64', $uid);
 
                 $result['state'] = 'SUCCESS';
                 $result['url'] = $arr['url'];
@@ -140,7 +142,8 @@ class File extends Api
                     return json($return);
                 }
 
-                $arr = $this->Attachment->upload($shopid, $files, 'file');
+                $uid = get_uid();
+                $arr = $this->Attachment->upload($shopid, $files, 'file', $uid);
 
                 if (is_array($arr) && $arr['code'] == 200) {
                     $result['state'] = 'SUCCESS';
@@ -148,7 +151,7 @@ class File extends Api
                     $result['original'] = $arr['filename'];
                 } else {
                     $result['state'] = 'error';
-                    $result['msg'] = 'Upload failed';
+                    $result['msg'] = '上传失败';
                 }
                 return json($result);
 
@@ -163,7 +166,8 @@ class File extends Api
                     return json($return);
                 }
 
-                $arr = $this->Attachment->upload($shopid, $files, 'file');
+                $uid = get_uid();
+                $arr = $this->Attachment->upload($shopid, $files, 'file', $uid);
 
                 if (is_array($arr) && $arr['code'] == 200) {
                     $result['state'] = 'SUCCESS';
@@ -171,7 +175,7 @@ class File extends Api
                     $result['original'] = $arr['filename'];
                 } else {
                     $result['state'] = 'error';
-                    $result['msg'] = 'Upload fail';
+                    $result['msg'] = '上传失败';
                 }
                 return json($result);
 
