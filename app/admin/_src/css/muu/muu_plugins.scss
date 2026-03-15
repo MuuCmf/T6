@@ -1,4 +1,12 @@
 .main-header {
+  .logo {
+    width: 220px;
+  }
+
+  .navbar {
+    margin-left: 220px;
+  }
+
   @media (max-width: 767px) {
     .logo {
       z-index: 1001;
@@ -26,6 +34,13 @@
   padding-top: 0;
   margin-top: 50px;
   min-height: auto;
+  width: 220px;
+  scrollbar-width: thin;
+  scrollbar-color: #a8a8a8 #383e4b !important;
+}
+
+.content-wrapper {
+  margin-left: 220px;
 }
 
 .fixed .content-wrapper {
@@ -55,25 +70,6 @@
 .skin-red-light,
 .skin-yellow-light,
 .skin-purple-light {
-
-  .main-sidebar::-webkit-scrollbar {
-    /*滚动条整体样式*/
-    width: 8px;
-    /*高宽分别对应横竖滚动条的尺寸*/
-    height: 1px;
-  }
-
-  .main-sidebar::-webkit-scrollbar-thumb {
-    /*滚动条里面小方块*/
-
-    background: rgba(0, 0, 0, 0.1);
-  }
-
-  .main-sidebar::-webkit-scrollbar-track {
-    /*滚动条里面轨道*/
-
-    background: #fff;
-  }
 
   .main-sidebar {
     background-color: #fff;
@@ -108,10 +104,6 @@
     }
 
     .sidebar-menu {
-
-      li>a,
-      li.active>a,
-      li.menu-open>a {}
 
       .menu-open {
         display: block;
@@ -159,23 +151,6 @@
 .skin-red,
 .skin-yellow,
 .skin-purple {
-
-  .main-sidebar::-webkit-scrollbar {
-    /*滚动条整体样式*/
-    width: 8px;
-    /*高宽分别对应横竖滚动条的尺寸*/
-    height: 1px;
-  }
-
-  .main-sidebar::-webkit-scrollbar-thumb {
-    /*滚动条里面小方块*/
-    background: rgba(0, 0, 0, 0.5);
-  }
-
-  .main-sidebar::-webkit-scrollbar-track {
-    /*滚动条里面轨道*/
-    background: #383e4b;
-  }
 
   .main-sidebar {
     background-color: #383e4b;
@@ -385,10 +360,8 @@
         color: #605ca8;
       }
     }
-
   }
 }
-
 
 .control-sidebar-dark::-webkit-scrollbar {
   /*滚动条整体样式*/
