@@ -18,6 +18,7 @@ if (!function_exists('is_login')) {
     function is_login()
     {
         $header = request()->header();
+        $uid = 0;
         if (isset($header['authorization'])) {
             $token = JWTAuth::getToken();
             if (!empty($token)) {
@@ -28,13 +29,11 @@ if (!function_exists('is_login')) {
                     // 如果捕获到此异常，即代表 refresh 也过期了，用户无法刷新令牌，需要重新登录。
                     $uid = 0;
                 }
-
-                request()->uid = $uid;
             }
         }
 
-        if (!empty(request()->uid)) {
-            return request()->uid;
+        if(!empty($uid)){
+            return $uid;
         }
 
         $user = session('user_auth');
