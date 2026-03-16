@@ -225,19 +225,8 @@ class Auth
         //循环规则，判断结果。
         $authList = array();   //
         foreach ($rules as $rule) {
-            if (!empty($rule['condition'])) { //根据condition进行验证
-                $user = $this->getUserInfo($uid); //获取用户信息,一维数组
-
-                $command = preg_replace('/\{(\w*?)\}/', '$user[\'\\1\']', $rule['condition']);
-                //dump($command);//debug
-                @(eval('$condition=(' . $command . ');'));
-                if ($condition) {
-                    $authList[] = strtolower($rule['name']);
-                }
-            } else {
-                //只要存在就记录
-                $authList[] = strtolower($rule['name']);
-            }
+            //只要存在就记录
+            $authList[] = strtolower($rule['name']);
         }
         $_authList[$uid . $t] = $authList;
         if ($this->_config['auth_type'] == 2) {

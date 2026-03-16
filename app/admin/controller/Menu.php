@@ -88,7 +88,7 @@ class Menu extends Admin
             }
 
             // 判断主菜单权限
-            if (!$this->isRoot && !$this->checkRule($item['url'], get_uid(), AuthRule::RULE_MAIN, null)) {
+            if (!$this->isRoot && !$this->checkRule($item['url'], get_uid(), AuthRule::RULE_URL, null)) {
                 unset($main_menu[$key]);
                 continue; //继续循环
             }
@@ -164,6 +164,8 @@ class Menu extends Admin
             }
         }
 
+        // 重新索引数组，确保返回的是连续索引的数组
+        $main_menu = array_values($main_menu);
         return $this->success('success', $main_menu);
     }
 

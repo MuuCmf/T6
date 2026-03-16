@@ -57,7 +57,11 @@ class Config extends Admin
 
             // ajax请求返回数据
             if (request()->isAjax()) {
-                return $this->success('success', $list);
+                $result = [
+                    'group' => $type,
+                    'list' => $list,
+                ];
+                return $this->success('success', $result);
             }
 
             View::assign('list', $list);

@@ -31,8 +31,8 @@ class CheckRule extends Base
             'admin/menu/tree',
             'admin/module/all',
             'admin/module/info',
-            'admin/config/group',
-            'admin/extend/group',
+            'admin/config/grouplist',
+            'admin/extend/grouplist',
         ];
 
         if (in_array($rule, $except)) {
@@ -40,16 +40,15 @@ class CheckRule extends Base
         }
         
         $Auth = new \muucmf\Auth();
-        $rule = strtolower(app('http')->getName() . '/' . $request->controller() . '/' . $request->action());
         if (!$Auth->check($rule, $uid, 1, 'url')) {
             $referer = isset($request->header()['referer']) ? $request->header()['referer'] : '';
             $type = ($request->isJson() || $request->isAjax()) ? 'json' : 'html';
-            $result = ['code' => 0, 'msg'  => '您没有操作权限，请联系管理员！', 'data' => [], 'url'  => $referer, 'wait' => 3,];
+            $result = ['code' => 401, 'msg'  => '您没有操作权限，请联系管理员！', 'data' => 'Unauthorized', 'url'  => $referer, 'wait' => 3,];
             if ($type == 'html') {
                 $response = view(config('app.dispatch_error_tmpl'), $result);
             } else if ($type == 'json') {
                 $result['url'] = '';
-                $response = json($result);
+                $response = json($result, 401);
             }
             throw new \think\exception\HttpResponseException($response);
         }
