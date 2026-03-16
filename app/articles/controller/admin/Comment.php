@@ -1,4 +1,5 @@
 <?php
+
 namespace app\articles\controller\admin;
 
 use think\facade\View;
@@ -34,7 +35,7 @@ class Comment extends Admin
         View::assign('keyword', $keyword);
         $article_id = input('article_id', 0, 'intval');
         View::assign('article_id', $article_id);
-        $status = input('status', [0,1,-1,-2]);
+        $status = input('status', [0, 1, -1, -2]);
         View::assign('status', $status);
         // 获取查询条件
         $map = $this->CommentLogic->getMap($this->shopid, $keyword, 'articles', 'articles', $article_id, $status);
@@ -42,15 +43,20 @@ class Comment extends Admin
         $lists = $this->CommentModel->getListByPage($map, 'id DESC', '*', 20);
         $pager = $lists->render();
         $lists = $lists->toArray();
-        
-        foreach($lists['data'] as &$val){
+
+        foreach ($lists['data'] as &$val) {
             $val = $this->CommentLogic->formatData($val);
             $val['article'] = $this->ArticlesModel->getDataById($val['info_id']);
         }
         unset($val);
 
-        View::assign('pager',$pager);
-        View::assign('lists',$lists);
+        // ajax请求返回数据
+        if (request()->isAjax()) {
+            return $this->success('success', $lists);
+        }
+
+        View::assign('pager', $pager);
+        View::assign('lists', $lists);
         // 记录当前列表页的cookie
         cookie('__forward__', $_SERVER['REQUEST_URI']);
         // SEO
@@ -64,9 +70,9 @@ class Comment extends Admin
      */
     public function edit()
     {
-        $id = input('id',0,'intval');
+        $id = input('id', 0, 'intval');
         $title = $id ? "编辑" : "新建";
-        View::assign('title',$title);
+        View::assign('title', $title);
 
         if (request()->isPost()) {
             $data = input();
@@ -82,9 +88,9 @@ class Comment extends Admin
 
             $res = $this->ArticlesModel->edit($data);
 
-            if($res){
+            if ($res) {
                 return $this->success($title . '成功', $res, cookie('__forward__'));
-            }else{
+            } else {
                 return $this->error($title . '失败');
             }
         }
@@ -103,13 +109,13 @@ class Comment extends Admin
         $data['status'] = 0; // 状态
         $data['reason'] = ''; // 审核拒绝原因
 
-        if(!empty($id)){
+        if (!empty($id)) {
             $data = $this->CommentModel->getDataById($id);
             $data = $this->CommentLogic->formatData($data);
         }
-        View::assign('data',$data);
+        View::assign('data', $data);
         // SEO
-        $this->setTitle($title.'评论');
+        $this->setTitle($title . '评论');
         // 输出模板
         return View::fetch();
     }
@@ -118,28 +124,28 @@ class Comment extends Admin
      * 设置状态
      */
     public function status()
-    {   
-        $ids = input('ids/a');
-        !is_array($ids)&&$ids=explode(',',$ids);
+    {
+        $ids = input('ids');
+        !is_array($ids) && $ids = explode(',', (string)$ids);
         $status = input('status', 0, 'intval');
         $title = '更新';
-        if($status == 0){
+        if ($status == 0) {
             $title = '禁用';
         }
-        if($status == 1){
+        if ($status == 1) {
             $title = '启用';
         }
-        if($status == -1){
+        if ($status == -3) {
             $title = '删除';
         }
         $data['status'] = $status;
 
         $res = $this->CommentModel->where('id', 'in', $ids)->update($data);
-        if($res){
+        if ($res) {
             return $this->success($title . '成功');
-        }else{
+        } else {
             return $this->error($title . '失败');
-        }  
+        }
     }
 
     /**
@@ -147,17 +153,17 @@ class Comment extends Admin
      */
     public function verify()
     {
-        $id = input('id',0,'intval');
-        View::assign('id',$id);
+        $id = input('id', 0, 'intval');
+        View::assign('id', $id);
 
         if (request()->isPost()) {
             $data = input();
-            
+
             $res = $this->CommentModel->edit($data);
 
-            if($res){
+            if ($res) {
                 return $this->success('操作成功', $res, cookie('__forward__'));
-            }else{
+            } else {
                 return $this->error('操作失败');
             }
         }

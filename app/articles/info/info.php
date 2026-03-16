@@ -15,5 +15,5 @@ return [
     //后台入口
     'entry' => 'articles/admin.Articles/lists',
     //是否支持spa单页应用(约定目录/static/articles/admin)
-    'entry_spa' => false,
+    'entry_spa' => true,
 ];

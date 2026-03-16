@@ -158,6 +158,25 @@ class Module extends Admin
     }
 
     /**
+     * 获取应用模块详情
+     * @return [type] [description]
+     */
+    public function info()
+    {
+        $app = input('app', '', 'text');
+        if (empty($app)) {
+            return $this->error('参数错误');
+        }
+        if (!empty($app)) {
+            $data = $this->ModuleModel->getModule($app);
+        } else {
+            return $this->error('应用不存在');
+        }
+
+        return $this->success('success', $data);
+    }
+
+    /**
      * 获取云端最新版本
      */
     public function cv()

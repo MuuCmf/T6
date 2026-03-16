@@ -72,6 +72,12 @@ class Config extends Admin
         }else{
             // 获取店铺配置数据
             $data = $this->config_data;
+
+            // ajax请求
+            if(request()->isAjax()){
+                return $this->success('success', $data);
+            }
+            
             View::assign('data',$data);
 
             // 设置页面Title

@@ -34,7 +34,7 @@ class Comment extends Base
         if (is_numeric($status)) {
             $map[] = ['status', '=', $status];
         }
-        if (is_array($status)) {
+        if (is_array($status) || empty($status)) {
             $map[] = ['status', 'in', $status];
         }
 
