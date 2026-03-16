@@ -7,7 +7,7 @@ use app\common\model\Author as AuthorModel;
 use app\common\logic\Author as AuthorLogic;
 use app\common\model\AuthorFollow as AuthorFollowModel;
 use app\common\logic\AuthorFollow as AuthorFollowLogic;
-
+use app\common\model\AuthorGroup as AuthorGroupModel;
 /**
  * 角色列表
  * todo:替代Author.php, 用于角色管理
@@ -16,6 +16,7 @@ class Role extends Api
 {
     protected $AuthorModel;
     protected $AuthorLogic;
+    protected $AuthorGroupModel;
 
     protected $middleware = [
         'app\\common\\middleware\\CheckAuth' => ['only' => ['follow', 'isfollow']],
@@ -31,6 +32,7 @@ class Role extends Api
     {
         $this->AuthorModel   = new AuthorModel();  //模型
         $this->AuthorLogic   = new AuthorLogic();  //逻辑
+        $this->AuthorGroupModel = new AuthorGroupModel(); //角色分组模型
     }
 
     /**
@@ -174,6 +176,25 @@ class Role extends Api
         }
         unset($val);
         // ajax请求返回数据
+        return $this->success('success', $lists);
+    }
+
+    /**
+     * 角色分组列表
+     */
+    public function group()
+    {
+        $map = [
+            ['status', '=', 1]
+        ];
+        $order = 'sort DESC, id ASC';
+        $order_field = input('order_field', 'id', 'text');
+        $order_type = input('order_type', 'desc', 'text');
+        $order = $order_field . ' ' . $order_type;
+
+        // 获取列表
+        $lists = $this->AuthorGroupModel->getList($map, 999, $order, '*');
+
         return $this->success('success', $lists);
     }
 }
