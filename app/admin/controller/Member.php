@@ -170,7 +170,6 @@ class Member extends Admin
                 return $this->error($check_mobile);
             }
 
-
             // 写入数据并返回UID
             $uid = $this->MemberModel->edit($member_data);
 
@@ -308,6 +307,12 @@ class Member extends Admin
         if (!is_array($member) || empty($member)) {
             return $this->error('用户数据不存在');
         }
+
+        // ajax 异步请求
+        if (request()->isAjax()) {
+            return $this->success('success', $member);
+        }
+
         View::assign('member', $member);
         // 设置页面TITLE
         $this->setTitle('用户详情');
