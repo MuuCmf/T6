@@ -6,3 +6,5 @@ public/attachment/
 log/
 runtime/
 node_modules/
+.claude/
+.github/
