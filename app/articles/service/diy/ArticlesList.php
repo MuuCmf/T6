@@ -15,7 +15,7 @@ class ArticlesList
 
     public $_title   = '文章列表';
     public $_type    = 'articles_list';
-    public $_icon    = 'group';
+    public $_icon    = 'th-list';
     public $_api = [];
     public $_teminal = [
         'mobile',
