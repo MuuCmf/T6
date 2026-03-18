@@ -262,7 +262,7 @@ class Author extends Admin
     }
 
     /**
-     * 创造者分组
+     * 分组
      */
     public function groupList()
     {
