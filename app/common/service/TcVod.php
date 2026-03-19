@@ -1,4 +1,5 @@
 <?php
+
 namespace app\common\service;
 
 use think\Exception;
@@ -10,12 +11,19 @@ class TcVod
 {
     /**
      * 获取签名
+     * @throws Exception
      */
-    public function getSignature(){
-
+    public function getSignature()
+    {
+        // 获取配置并验证
         $secretId = config('extend.VOD_TENCENT_SECRETID');
         $secretKey = config('extend.VOD_TENCENT_SECRETKEY');
         $subAppId = config('extend.VOD_TENCENT_SUBAPPID');
+
+        // 验证必要配置是否存在
+        if (empty($secretId) || empty($secretKey)) {
+            throw new Exception('腾讯云点播配置缺失：secretId 或 secretKey');
+        }
 
         // 确定签名的当前时间和失效时间
         $current = time();
@@ -24,22 +32,25 @@ class TcVod
         // 向参数列表填入参数
         $arg_list = [
             "secretId" => $secretId,
-            "currentTimeStamp" => intval($current),
-            "expireTime" => intval($expired),
-            "random" => rand(),
-            "vodSubAppId" => intval($subAppId),
-            "taskNotifyMode" => "none"
+            "currentTimeStamp" => $current,
+            "expireTime" => $expired,
+            "random" => mt_rand(), // 使用更安全的随机数生成函数
+            "vodSubAppId" => !empty($subAppId) ? intval($subAppId) : 0,
+            "oneTimeValid" => 1
         ];
         // 判断是否开启上传后转码加密任务流
         $procedure = config('extend.VOD_TENCENT_PROCEDURE');
         $procedureName = config('extend.VOD_TENCENT_PROCEDURE_NAME');
-        if($procedure == 1){
+        if ($procedure == 1 && !empty($procedureName)) {
             $arg_list['procedure'] = $procedureName; // 系统预置任务流
         }
 
+        // 字典序排序
+        ksort($arg_list);
+
         // 计算签名
         $original = http_build_query($arg_list);
-        $signature = base64_encode(hash_hmac('SHA1', $original, $secretKey, true).$original);
+        $signature = base64_encode(hash_hmac('SHA1', $original, $secretKey, true) . $original);
 
         return $signature;
     }
@@ -58,14 +69,14 @@ class TcVod
             $dir = '/' . $dir_arr[3] . '/' . $dir_arr[4] . '/';
             $t = time() + 7200;
             $t = dechex($t);
-            if($exper == 0){
+            if ($exper == 0) {
                 $sign = md5($key . $dir . $t);
                 $return_media_url = $media_url . '?t=' . $t . '&sign=' . $sign;
-            }else{
+            } else {
                 $sign = md5($key . $dir . $t . $exper);
                 $return_media_url = $media_url . '?t=' . $t . '&exper=' . $exper . '&sign=' . $sign;
             }
-            
+
             return $return_media_url;
         } catch (Exception $e) {
             return $media_url;
@@ -80,8 +91,8 @@ class TcVod
      * 具体含义和取值参见 防盗链参数 中的 exper 参数。
 
      */
-        public function getPsign($fileId, $exper = 0)
-        {
+    public function getPsign($fileId, $exper = 0)
+    {
         //[
         //     "appId" => 1500000532
         //     "fileId" => "5145403700194756531"
@@ -108,21 +119,21 @@ class TcVod
         // 判断是否开启上传后转码加密任务流
         $procedure = config('extend.VOD_TENCENT_PROCEDURE');
         $procedure_name = config('extend.VOD_TENCENT_PROCEDURE_NAME');
-        
-        if($procedure == 1){
+
+        if ($procedure == 1) {
             // 私有加密或 DRM 保护的 转自适应码流 输出。
             $audioVideoType = 'ProtectedAdaptive';
-        }else{
+        } else {
             // 上传 的原始音视频。
             $audioVideoType = 'Original';
         }
 
         $contentInfo["audioVideoType"] = $audioVideoType;
 
-        if($procedure == 1 && $procedure_name == 'SimpleAesEncryptPreset'){
+        if ($procedure == 1 && $procedure_name == 'SimpleAesEncryptPreset') {
             $contentInfo["drmAdaptiveInfo"]["privateEncryptionDefinition"] = 12;
         }
-        if($procedure == 1 && $procedure_name == 'WidevineFairPlayPreset'){
+        if ($procedure == 1 && $procedure_name == 'WidevineFairPlayPreset') {
             // 私有加密或 DRM 保护的不支持试看时间
             $exper = 0;
             $contentInfo["drmAdaptiveInfo"]["widevineDefinition"] = 13;
@@ -155,5 +166,4 @@ class TcVod
 
         return $jwt;
     }
-
 }

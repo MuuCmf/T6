@@ -11,8 +11,12 @@ class Vod extends Api
     {
         $TcVod = new TcVod();
         $signature = $TcVod->getSignature();
-
-        echo $signature;
-        echo "\n";
+        $subAppId = config('extend.VOD_TENCENT_SUBAPPID');
+        //echo $signature;
+        $result = [
+            "signature" => $signature,
+            "subAppId" => $subAppId,
+        ];
+        return $this->success('success', $result);
     }
 }

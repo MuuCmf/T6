@@ -106,7 +106,7 @@ function createArticlesConfig(isProduction = false) {
     },
     plugins: [
       new CleanWebpackPlugin({
-        cleanOnceBeforeBuildPatterns: ['**/*', '!lib/**', '!images/**', '!diy/**'],
+        cleanOnceBeforeBuildPatterns: ['**/*', '!lib/**', '!images/**', '!diy/**', '!admin/assets/**', '!admin/index.html'],
         verbose: false
       }),
       new MiniCssExtractPlugin({
