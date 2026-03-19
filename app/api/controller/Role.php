@@ -41,14 +41,27 @@ class Role extends Api
      */
     public function lists()
     {
+        $group_id = input('group_id', 0, 'intval');
         $rows = input('rows', 20, 'intval');
         $keyword = input('keyword', '', 'text');
         $order_field = input('order_field', 'id', 'text');
         $order_type = input('order_type', 'desc', 'text');
         $order = 'sort DESC,' . $order_field . ' ' . $order_type;
 
+        // 约束rows范围
+        $rows = min($rows, 100);
+
         // 查询条件
-        $map = $this->AuthorLogic->getMap($this->shopid, $keyword, 1);
+        $map[] = ['shopid', '=', $this->shopid];
+        $map[] = ['status', '=', 1];
+
+        if (!empty($group_id)) {
+            $map[] = ['group_id', '=', $group_id];
+        }
+        if (!empty($keyword)) {
+            $map[] = ['name', 'like', '%' . $keyword . '%'];
+        }
+
         $fields = '*';
         $lists = $this->AuthorModel->getListByPage($map, $order, $fields, $rows);
         $lists = $lists->toArray();
