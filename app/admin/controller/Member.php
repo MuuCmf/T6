@@ -102,7 +102,7 @@ class Member extends Admin
     public function initPass()
     {
         $ids = input('uid');
-        !is_array($ids) && $ids = explode(',', $ids);
+        !is_array($ids) && $ids = explode(',', (string)$ids);
 
         foreach ($ids as $key => $val) {
             if (!query_user($val, ['uid'])) {
@@ -130,7 +130,7 @@ class Member extends Admin
     {
         $uid = input('uid', 0, 'intval');
         if (request()->isPost()) {
-            $data = input();
+            $data = (array)input();
 
             // 初始化写入数据
             if (!empty($uid)) {
@@ -146,6 +146,7 @@ class Member extends Admin
             $member_data['mobile'] = $data['mobile'];
             $member_data['sex'] = intval($data['sex']);
             $member_data['status'] = intval($data['status']);
+            $member_data['signature'] = $data['signature'];
 
             if ($member_data['username'] == '' && $member_data['email'] == '' && $member_data['mobile'] == '') {
                 return $this->error('用户名、邮箱、手机号，至少填写一项！');
