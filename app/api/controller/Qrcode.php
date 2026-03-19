@@ -18,12 +18,12 @@ class Qrcode extends Api
         }
         
         // 解析URL检查协议和域名（可选：添加白名单验证）
-        $parsedUrl = parse_url($url);
+        // $parsedUrl = parse_url($url);
         
-        // 确保URL有协议且是http或https
-        if (!isset($parsedUrl['scheme']) || !in_array(strtolower($parsedUrl['scheme']), ['http', 'https'])) {
-            return $this->error('URL必须使用http或https协议');
-        }
+        // // 确保URL有协议且是http或https
+        // if (!isset($parsedUrl['scheme']) || !in_array(strtolower($parsedUrl['scheme']), ['http', 'https'])) {
+        //     return $this->error('URL必须使用http或https协议');
+        // }
         
         // 可选：添加域名白名单验证
         // $allowedDomains = ['example.com', 'your-domain.com'];

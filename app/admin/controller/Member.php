@@ -37,19 +37,19 @@ class Member extends Admin
      */
     public function index()
     {
-        $search = input('search', '', 'text');
-        if (!empty($search)) {
+        $keyword = input('keyword', '', 'text');
+        if (!empty($keyword)) {
             $uids = $this->MemberModel
-                ->where('uid', '=', $search)
-                ->whereOr('username', 'like', '%' . $search . '%')
-                ->whereOr('nickname', 'like', '%' . $search . '%')
-                ->whereOr('mobile', 'like', '%' . $search . '%')
-                ->whereOr('email', 'like', '%' . $search . '%')
+                ->where('uid', '=', $keyword)
+                ->whereOr('username', 'like', '%' . $keyword . '%')
+                ->whereOr('nickname', 'like', '%' . $keyword . '%')
+                ->whereOr('mobile', 'like', '%' . $keyword . '%')
+                ->whereOr('email', 'like', '%' . $keyword . '%')
                 ->column('uid');
             if (!empty($uids)) {
                 $map[] = ['uid', 'in', $uids];
             } else {
-                $map[] = ['nickname', 'like', '%' . $search . '%'];
+                $map[] = ['nickname', 'like', '%' . $keyword . '%'];
             }
         }
 

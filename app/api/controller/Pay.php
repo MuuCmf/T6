@@ -77,7 +77,7 @@ class Pay extends Api
                     $notify_url = $this->params['notify_url'];
                 } else {
                     $notify_url = request()->domain() . "/api/pay/callback";
-                    $notify_url .= "/api/{$order_data['channel']}";
+                    $notify_url .= "/channel/{$order_data['channel']}";
                     $notify_url .= "/pay_channel/{$this->params['pay_channel']}";
                     $notify_url .= "/shopid/{$order_data['shopid']}";
                     $notify_url .= "/app/{$order_data['app']}";
@@ -356,6 +356,29 @@ class Pay extends Api
             // 返回验签失败
             return BaiduMiniProgramServer::returnMsg(-1, 'checkSign fail');
         }
+    }
+
+
+    public function test()
+    {
+        $notify_data = "<xml><appid><![CDATA[wx90fcefad8616a371]]></appid>
+                <bank_type><![CDATA[OTHERS]]></bank_type>
+                <cash_fee><![CDATA[1]]></cash_fee>
+                <fee_type><![CDATA[CNY]]></fee_type>
+                <is_subscribe><![CDATA[N]]></is_subscribe>
+                <mch_id><![CDATA[1602403282]]></mch_id>
+                <nonce_str><![CDATA[69bbfed090e7f]]></nonce_str>
+                <openid><![CDATA[odDW80Xr2djHkcNTrfHO4VOAppkY]]></openid>
+                <out_trade_no><![CDATA[202603193527670141]]></out_trade_no>
+                <result_code><![CDATA[SUCCESS]]></result_code>
+                <return_code><![CDATA[SUCCESS]]></return_code>
+                <sign><![CDATA[ECD4E6CD56A12841E367CDE8D383F385]]></sign>
+                <time_end><![CDATA[20260319215246]]></time_end>
+                <total_fee>1</total_fee>
+                <trade_type><![CDATA[NATIVE]]></trade_type>
+                <transaction_id><![CDATA[4200003009202603190805100997]]></transaction_id>
+                </xml>";
+        
     }
 
     /**
