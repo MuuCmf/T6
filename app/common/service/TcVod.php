@@ -34,9 +34,9 @@ class TcVod
             "secretId" => $secretId,
             "currentTimeStamp" => $current,
             "expireTime" => $expired,
-            "random" => mt_rand(), // 使用更安全的随机数生成函数
+            "random" => rand(),
             "vodSubAppId" => !empty($subAppId) ? intval($subAppId) : 0,
-            "oneTimeValid" => 1
+            //"oneTimeValid" => 1
         ];
         // 判断是否开启上传后转码加密任务流
         $procedure = config('extend.VOD_TENCENT_PROCEDURE');
@@ -44,14 +44,11 @@ class TcVod
         if ($procedure == 1 && !empty($procedureName)) {
             $arg_list['procedure'] = $procedureName; // 系统预置任务流
         }
-
         // 字典序排序
         ksort($arg_list);
-
         // 计算签名
         $original = http_build_query($arg_list);
-        $signature = base64_encode(hash_hmac('SHA1', $original, $secretKey, true) . $original);
-
+        $signature = base64_encode(hash_hmac('sha1', $original, $secretKey, true) . $original);
         return $signature;
     }
 
