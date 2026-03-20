@@ -16,9 +16,9 @@ class TcVod
     public function getSignature()
     {
         // 获取配置并验证
-        $secretId = config('extend.VOD_TENCENT_SECRETID');
-        $secretKey = config('extend.VOD_TENCENT_SECRETKEY');
-        $subAppId = config('extend.VOD_TENCENT_SUBAPPID');
+        $secretId = trim(config('extend.VOD_TENCENT_SECRETID'));
+        $secretKey = trim(config('extend.VOD_TENCENT_SECRETKEY'));
+        $subAppId = trim(config('extend.VOD_TENCENT_SUBAPPID'));
 
         // 验证必要配置是否存在
         if (empty($secretId) || empty($secretKey)) {
@@ -36,7 +36,7 @@ class TcVod
             "expireTime" => $expired,
             "random" => rand(),
             "vodSubAppId" => !empty($subAppId) ? intval($subAppId) : 0,
-            //"oneTimeValid" => 1
+            "oneTimeValid" => 1
         ];
         // 判断是否开启上传后转码加密任务流
         $procedure = config('extend.VOD_TENCENT_PROCEDURE');
@@ -46,6 +46,7 @@ class TcVod
         }
         // 字典序排序
         ksort($arg_list);
+   
         // 计算签名
         $original = http_build_query($arg_list);
         $signature = base64_encode(hash_hmac('sha1', $original, $secretKey, true) . $original);
