@@ -1,4 +1,3 @@
-const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const path = require('path');
 
 /**
@@ -41,7 +40,12 @@ function createArticlesConfig(isProduction = false) {
         }
         return `${pathData.chunk.name}/js/main.min.js`;
       },
-      clean: false
+      clean: {
+        keep: (asset) => {
+          const p = asset.replace(/\\/g, '/');
+          return /^(lib|images|diy)\/|admin\/assets\/|admin\/index\.html$|^index\.html$/.test(p);
+        }
+      }
     },
     module: {
       rules: [
@@ -105,10 +109,6 @@ function createArticlesConfig(isProduction = false) {
       ]
     },
     plugins: [
-      new CleanWebpackPlugin({
-        cleanOnceBeforeBuildPatterns: ['**/*', '!lib/**', '!images/**', '!diy/**', '!admin/assets/**', '!admin/index.html'],
-        verbose: false
-      }),
       new MiniCssExtractPlugin({
         filename: (pathData) => {
           // diy 目录下的文件保持原始文件名,只添加 .min

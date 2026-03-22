@@ -31,7 +31,7 @@ function createStandardConfig(module, isProduction = false) {
     },
     plugins: [
       new CleanWebpackPlugin({
-        cleanOnceBeforeBuildPatterns: ['**/*', '!lib/**', '!images/**', '!diy/**', '!assets/**', '!index.html'],
+        cleanOnceBeforeBuildPatterns: ['**/*', '!lib/**', '!images/**', '!diy/**', '!assets/**', '!index.html', '!pc/**'],
         verbose: false
       }),
       ...createCommonPlugins(module)
