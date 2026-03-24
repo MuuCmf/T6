@@ -403,3 +403,11 @@ UPDATE `muucmf_menu` SET `url` = 'admin/DouyinMiniprogram/settle' WHERE `muucmf_
 DELETE FROM muucmf_menu WHERE `muucmf_menu`.`id` = 'ED701550-6DFE-62A9-634C-6C2EFC249124';
 DELETE FROM muucmf_menu WHERE `muucmf_menu`.`id` = '812DB499-01B8-787D-7EDA-AC4A9FDCAFBC';
 DELETE FROM muucmf_menu WHERE `muucmf_menu`.`id` = '0762BC67-2FAC-2C3D-94F0-9292DF07DEDE';
+
+ALTER TABLE `muucmf_member` ADD INDEX(`username`);
+ALTER TABLE `muucmf_member` ADD INDEX(`email`);
+ALTER TABLE `muucmf_member` ADD INDEX(`mobile`);
+ALTER TABLE `muucmf_user_token` ADD `expire_time` INT(11) UNSIGNED NOT NULL COMMENT '过期时间 ' AFTER `create_time`;
+ALTER TABLE `muucmf_user_token` ADD INDEX(`uid`);
+ALTER TABLE `muucmf_user_token` ADD KEY `token` (`token`(64));
+ALTER TABLE `muucmf_module` DROP INDEX `name_2`;
