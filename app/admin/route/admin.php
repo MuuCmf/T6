@@ -256,7 +256,10 @@ Route::group('wechat', function () {
     Route::post('autoreply/status', 'admin/WechatOfficial/autoReplyStatus');
     
     // 素材列表
-    Route::any('material', 'admin/WechatOfficial/material');
+    Route::any('material/list', 'admin/WechatOfficial/material');
+    
+    // 获取单个素材详情
+    Route::any('material/detail', 'admin/WechatOfficial/materialDetail');
     
     // 模板消息通知
     Route::any('message', 'admin/WechatOfficial/templateMessage');

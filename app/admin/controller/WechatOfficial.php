@@ -252,6 +252,43 @@ class WechatOfficial extends Admin
     }
 
     /**
+     * 获取单个素材详情
+     */
+    public function materialDetail()
+    {
+        $mediaId = input('media_id', '', 'trim');
+        if (empty($mediaId)) {
+            return $this->error('素材ID不能为空');
+        }
+
+        $data = \app\common\facade\wechat\OfficialAccount::getMaterial($mediaId);
+        
+        // 检查是否是错误数组
+        if (is_array($data) && isset($data['errmsg'])) {
+            return $this->error($data['errmsg']);
+        }
+        
+        // 处理StreamResponse对象（二进制素材：图片、语音、视频等）
+        if ($data instanceof \EasyWeChat\Kernel\Http\StreamResponse) {
+            // 对于二进制素材，可以返回文件信息或直接输出文件
+            // 这里返回文件的基本信息
+            $filename = $data->getHeaderLine('Content-disposition');
+            $contentType = $data->getHeaderLine('Content-type');
+            
+            return $this->success('success', [
+                'type' => 'binary',
+                'filename' => $filename,
+                'content_type' => $contentType,
+                'stream' => 'StreamResponse object',
+                'message' => 'For binary materials, please use the stream directly'
+            ]);
+        }
+        
+        // 处理数组类型（图文素材等）
+        return $this->success('success', $data);
+    }
+
+    /**
      * @title 模板消息通知
      * @return \think\response\View
      */
