@@ -250,13 +250,13 @@ Route::group('wechat', function () {
     Route::get('autoreply', 'admin/WechatOfficial/autoReply');
     
     // 添加、更新自动回复
-    Route::post('autoreply/edit', 'admin/WechatOfficial/editAutoReply');
+    Route::any('autoreply/edit', 'admin/WechatOfficial/editAutoReply');
     
     // 修改自动回复状态
     Route::post('autoreply/status', 'admin/WechatOfficial/autoReplyStatus');
     
     // 素材列表
-    Route::get('material', 'admin/WechatOfficial/material');
+    Route::any('material', 'admin/WechatOfficial/material');
     
     // 模板消息通知
     Route::any('message', 'admin/WechatOfficial/templateMessage');
