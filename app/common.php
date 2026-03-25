@@ -355,7 +355,7 @@ if (!function_exists('curl_request')) {
         curl_setopt($curl, CURLOPT_USERAGENT, 'Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.1; Trident/6.0)');
         curl_setopt($curl, CURLOPT_FOLLOWLOCATION, 1);
         curl_setopt($curl, CURLOPT_AUTOREFERER, 1);
-        curl_setopt($curl, CURLOPT_REFERER, "http://XXX");
+        curl_setopt($curl, CURLOPT_REFERER, request()->domain());
         curl_setopt($curl, CURLOPT_DNS_USE_GLOBAL_CACHE, false ); #使用DNS缓存
         curl_setopt($curl, CURLOPT_DNS_CACHE_TIMEOUT, 2 );
         curl_setopt($curl, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4 );#禁用IPV6
