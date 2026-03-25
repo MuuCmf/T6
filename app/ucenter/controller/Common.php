@@ -124,6 +124,7 @@ class Common extends Base
             if (empty($agreement)) {
                 return $this->error('请勾选用户服务协议');
             }
+
             /* 注册用户并写入数据 */
             $commonMemberModel = new CommonMember;
             $uid = $commonMemberModel->register($username, $nickname, $password, $email, $mobile, $channel);
@@ -355,59 +356,6 @@ class Common extends Base
         }
 
         return $this->success('注销成功', '', request()->domain());
-    }
-
-    /**
-     * 验证用户帐号是否符合要求接口
-     */
-    public function checkAccount()
-    {
-        $aAccount = input('post.account', '', 'text');
-        $aType = input('post.type', '', 'text');
-        if (empty($aAccount)) {
-            $this->error('账号不能为空');
-        }
-        check_username($aAccount, $email, $mobile, $aType);
-
-        $commonModel = new CommonMember;
-        switch ($aType) {
-            case 'username':
-                $length = mb_strlen($aAccount, 'utf-8'); // 当前数据长度
-                if ($length < config('system.USER_USERNAME_MIN_LENGTH') || $length > config('system.USER_USERNAME_MAX_LENGTH')) {
-                    return $this->error('用户名长度不在' . config('system.USER_USERNAME_MIN_LENGTH') . '-' . config('system.USER_USERNAME_MAX_LENGTH') . '之间');
-                }
-                $id = $commonModel->where(['username' => $aAccount])->value('uid');
-                if ($id) {
-                    return $this->error('用户名已存在');
-                }
-                preg_match("/^[a-zA-Z0-9_]{" . config('system.USER_USERNAME_MIN_LENGTH') . "," . config('system.USER-USERNAME_MAX_LENGTH') . "}$/", $aAccount, $result);
-                if (!$result) {
-                    return $this->error('用户名仅允许字母、数字和下划线');
-                }
-                break;
-            case 'email':
-                $length = mb_strlen($email, 'utf-8'); // 当前数据长度
-                preg_match("/[a-z0-9_\-\.]+@([a-z0-9_\-]+?\.)+[a-z]{2,3}/i", $email, $match_email);
-                if (!$match_email) {
-                    return $this->error('邮箱格式错误');
-                }
-                $res = $commonModel->where('email', '=', $email)->value('uid');
-                if ($res) {
-                    return $this->error('邮箱已存在');
-                }
-                break;
-            case 'mobile':
-                preg_match("/^(1[0-9])[0-9]{9}$/", $mobile, $match_mobile);
-                if (!$match_mobile) {
-                    return $this->error('手机格式错误');
-                }
-                $res = $commonModel->where('mobile', '=', $mobile)->value('uid');
-                if ($res) {
-                    return $this->error('手机号已存在');
-                }
-                break;
-        }
-        return $this->success('验证通过');
     }
 
     /**

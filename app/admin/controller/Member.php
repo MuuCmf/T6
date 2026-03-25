@@ -146,7 +146,7 @@ class Member extends Admin
             $member_data['mobile'] = $data['mobile'];
             $member_data['sex'] = intval($data['sex']);
             $member_data['status'] = intval($data['status']);
-            $member_data['signature'] = $data['signature'];
+            $member_data['signature'] = $data['signature'] ?? '';
 
             if ($member_data['username'] == '' && $member_data['email'] == '' && $member_data['mobile'] == '') {
                 return $this->error('用户名、邮箱、手机号，至少填写一项！');
