@@ -15,7 +15,6 @@ use TencentCloud\Common\Credential;
 // 导入可选配置类
 use TencentCloud\Common\Profile\ClientProfile;
 use TencentCloud\Common\Profile\HttpProfile;
-use function GuzzleHttp\json_decode;
 
 class Verify extends Model
 {
@@ -62,12 +61,21 @@ class Verify extends Model
      */
     public function checkVerify($account, $type, $verify)
     {
-
+        // 验证码有效期为15分钟
+        $expire_time = time() - 900;
+        
         $data = $this->where(['account' => $account, 'type' => $type, 'verify' => $verify])->find();
 
         if (!$data) {
             return false;
         }
+        
+        // 检查验证码是否过期
+        if ($data['create_time'] < $expire_time) {
+            $this->where(['account' => $account, 'type' => $type])->delete();
+            return false;
+        }
+        
         $this->where(['account' => $account, 'type' => $type])->delete();
         $this->where('create_time', '<=', get_some_day(1))->delete();
 
