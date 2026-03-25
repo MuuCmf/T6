@@ -411,3 +411,5 @@ ALTER TABLE `muucmf_user_token` ADD `expire_time` INT(11) UNSIGNED NOT NULL COMM
 ALTER TABLE `muucmf_user_token` ADD INDEX(`uid`);
 ALTER TABLE `muucmf_user_token` ADD KEY `token` (`token`(64));
 ALTER TABLE `muucmf_module` DROP INDEX `name_2`;
+
+DELETE FROM muucmf_extend_config WHERE `muucmf_extend_config`.`id` = 19;

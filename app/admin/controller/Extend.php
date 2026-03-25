@@ -81,7 +81,6 @@ class Extend extends Admin
                 ->keyText('SMS_TENCENT_SECRETKEY', 'SecretKEY', 'SecretKEY 是您项目的安全密钥，具有该账户完全的权限，请妥善保管.')
                 ->keyText('SMS_TENCENT_REGION', 'Region', '区域信息，格式 如：ap-beijing.')
                 ->keyText('SMS_TENCENT_APPID', 'AppID', 'SDK AppID是短信应用的唯一标识，调用短信API接口时，需要提供该参数.')
-                //->keyText('SMS_TENCENT_APPKEY', 'App KEY', 'App Key是用来校验短信发送合法性的密码，与SDK AppID对应，需要业务方高度保密，切勿把密码存储在客户端.')
                 ->keyText('SMS_TENCENT_SIGN', '短信签名', '请使用真实的已申请的签名，签名参数使用的是`签名内容`，而不是`签名ID`.')
                 ->keyText('SMS_TENCENT_TEMPLATEID', '短信模板', '短信模板ID，应严格按"模板ID"填写')
                 ->group('腾讯云短信', [
@@ -89,7 +88,6 @@ class Extend extends Admin
                     'SMS_TENCENT_SECRETKEY',
                     'SMS_TENCENT_REGION',
                     'SMS_TENCENT_APPID', 
-                    //'SMS_TENCENT_APPKEY',
                     'SMS_TENCENT_SIGN',
                     'SMS_TENCENT_TEMPLATEID'
                 ]);

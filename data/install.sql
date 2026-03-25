@@ -637,7 +637,6 @@ INSERT INTO `muucmf_extend_config` (`id`, `name`, `type`, `title`, `group`, `ext
 (16, 'COS_TENCENT_REGION', 'string', 'Region', 'tencent_cos', '', 'Bucket所在区域.', 0, 1630985517, 1, 'ap-beijing', 0),
 (17, 'COS_TENCENT_BUCKET_DOMAIN', 'string', 'Bucket域名', 'tencent_cos', '', '腾讯云支持用户自定义访问域名。注：url开头加http://或https://结尾不加 ‘/’例：http://abc.com.', 0, 0, 1, '', 0),
 (18, 'SMS_TENCENT_APPID', 'string', '腾讯云SDKAppID', 'tencent_sms', '', 'SDK AppID是短信应用的唯一标识，调用短信API接口时，需要提供该参数', 0, 0, 1, '', 0),
-(19, 'SMS_TENCENT_APPKEY', 'string', 'App KEY', 'tencent_sms', '', 'App Key是用来校验短信发送合法性的密码，与SDK AppID对应，需要业务方高度保密，切勿把密码存储在客户端', 0, 0, 1, '123', 0),
 (20, 'SMS_TENCENT_SIGN', 'string', '短信签名', 'tencent_sms', '', '请使用真实的已申请的签名，签名参数使用的是`签名内容`，而不是`签名ID`', 0, 0, 1, '', 0),
 (21, 'SMS_TENCENT_TEMPLATEID', 'string', '短信模板', 'tencent_sms', '', '短信模板ID，应严格按\"模板ID\"填写', 0, 0, 1, '', 0),
 (22, 'SMS_SEND_DRIVER', 'select', '短信发送平台', 'sms', 'aliyun:阿里云\r\ntencent:腾讯云', '请选择短信发送第三方平台', 0, 0, 1, 'tencent', 0),
