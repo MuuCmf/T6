@@ -630,7 +630,6 @@ INSERT INTO `muucmf_extend_config` (`id`, `name`, `type`, `title`, `group`, `ext
 (8, 'OSS_ALIYUN_ENDPOINT', 'string', 'Endpoint', 'aliyun_oss', '', '如：oss-cn-beijing.aliyuncs.com', 1630910253, 1630918691, 1, '', 0),
 (9, 'OSS_ALIYUN_BUCKET', 'string', 'Bucket', 'aliyun_oss', '', 'Bucket', 0, 1630918732, 1, 't6-muu', 0),
 (11, 'OSS_ALIYUN_BUCKET_DOMAIN', 'string', 'Bucket域名', 'aliyun_oss', '', 'Bucket域名', 0, 1630918755, 1, '', 0),
-(12, 'COS_TENCENT_APPID', 'string', 'APPID', 'tencent_cos', '', 'APPID 是您项目的唯一ID.', 0, 1630985350, 1, '', 0),
 (13, 'COS_TENCENT_SECRETID', 'string', 'SecretID', 'tencent_cos', '', 'SecretID 是您项目的安全密钥，具有该账户完全的权限，请妥善保管.', 0, 0, 1, '', 0),
 (14, 'COS_TENCENT_SECRETKEY', 'string', 'SecretKEY', 'tencent_cos', '', 'SecretKEY 是您项目的安全密钥，具有该账户完全的权限，请妥善保管.', 0, 0, 1, '', 0),
 (15, 'COS_TENCENT_BUCKET', 'string', 'Bucket', 'tencent_cos', '', 'Bucket.', 0, 0, 1, '', 0),

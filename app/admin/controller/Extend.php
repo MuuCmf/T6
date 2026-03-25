@@ -220,14 +220,12 @@ class Extend extends Admin
 
             // 腾讯云COS参数配置
             $builder
-                //->keyText('COS_TENCENT_APPID', 'APPID', 'APPID 是您项目的唯一ID.')
                 ->keyText('COS_TENCENT_SECRETID', 'SecretID', 'SecretID 是您项目的安全密钥，具有该账户完全的权限，请妥善保管.')
                 ->keyText('COS_TENCENT_SECRETKEY', 'SecretKEY', 'SecretKEY 是您项目的安全密钥，具有该账户完全的权限，请妥善保管.')
                 ->keyText('COS_TENCENT_BUCKET', 'Bucket', 'Bucket名称.')
                 ->keyText('COS_TENCENT_REGION', 'Region', 'Bucket所在区域，格式 如：ap-beijing.')
                 ->keyText('COS_TENCENT_BUCKET_DOMAIN', 'Bucket域名', '腾讯云支持用户自定义访问域名。注：url开头加http://或https://结尾不加 ‘/’例：http://abc.com.')
                 ->group('腾讯云COS', [
-                    //'COS_TENCENT_APPID', 
                     'COS_TENCENT_SECRETID',
                     'COS_TENCENT_SECRETKEY',
                     'COS_TENCENT_BUCKET',

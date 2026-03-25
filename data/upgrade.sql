@@ -413,3 +413,4 @@ ALTER TABLE `muucmf_user_token` ADD KEY `token` (`token`(64));
 ALTER TABLE `muucmf_module` DROP INDEX `name_2`;
 
 DELETE FROM muucmf_extend_config WHERE `muucmf_extend_config`.`id` = 19;
+DELETE FROM muucmf_extend_config WHERE `muucmf_extend_config`.`id` = 12;
