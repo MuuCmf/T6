@@ -89,7 +89,7 @@ class Verify extends Common
         $ip_count = cache($ip_key);
         if ($ip_count && $ip_count >= 5) { // 同一IP每分钟最多5次请求
             // 当请求频率较高时，要求验证图形验证码
-            $captcha = input('post.captcha', '', 'trim');
+            $captcha = input('post.send_verify_captcha', '', 'trim');
             if (empty($captcha)) {
                 return $this->error('请输入图形验证码');
             }

@@ -54,6 +54,11 @@
                                type="text">
                         <button class="captcha-code margin-bottom-10" type="button" >获取验证码</button>
                     </div>
+                    <div class="login-group captcha-img hidden" id="verify_captcha_group">
+                        <input type="text" class="login-input" placeholder="图形验证码" name="send_verify_captcha" autocomplete="off">
+                        <img class="verifyimg reloadverify" alt="刷新验证码" src="{:captcha_src()}"
+                             style="cursor:pointer;height:43px;max-width: 100%">
+                    </div>
                 </div>
             </div>
 
@@ -119,9 +124,20 @@
         $("form").submit(function (e) {
             e.preventDefault();
             toast.showLoading();
-            $('form').find('div:hidden').find(':input').attr('disabled', 'disabled');
             var self = $(this);
-            $.post(self.attr("action"), self.serialize(), success, "json");
+
+            $params = {
+                login_type: self.find('[name="login_type"]').val(),
+                account: self.find('.active [name="account"]').val(),
+                password: self.find('.active [name="password"]').val(),
+                verify: self.find('.active [name="verify"]').val(),
+                captcha: self.find('.active [name="captcha"]').val(),
+                send_verify_captcha: self.find('.active [name="send_verify_captcha"]').val(),
+                remember: $('[name="remember"]').val(),
+                channel: 'pc',
+                from: $('[name="from"]').val(),
+            }
+            $.post(self.attr("action"), $params, success, "json");
             return false;
 
             function success(data) {
@@ -176,7 +192,6 @@
         //控制密码显示/隐藏
         $(".password-group").on("click", ".iconfont", function () {
             let type = $(this).data('type');
-            console.log(type)
             if (type == 'hidden') {
                 $(this).data('type', 'show');
                 $(this).html('&#xe6b1;');
@@ -198,7 +213,14 @@
             if (!isIng){
                 var account = $(this).parents('.tab-pane').find('[name="account"]').val();
                 var type = isEmailAvailable(account) ? 'emall' : 'mobile';
-                $.post('{:url("api/verify/send")}' ,{type:type ,account:account} ,function (result) {
+                // 获取图形验证码（如果存在）
+                var send_verify_captcha = $('#verify_captcha_group').find('[name="send_verify_captcha"]').val();
+                var params = {type:type, account:account};
+                // 如果图形验证码输入框可见且有值，则添加到请求参数中
+                if (!$('#verify_captcha_group').hasClass('hidden') && send_verify_captcha) {
+                    params.send_verify_captcha = send_verify_captcha;
+                }
+                $.post('{:url("api/verify/send")}' ,params ,function (result) {
                     if (result.code == 200){
                         $(elem).addClass('ing');
                         var timer = setInterval(function () {
@@ -214,6 +236,11 @@
                         },1000)
                         toast.success(result.msg);
                     }else{
+                        if (result.msg == '请输入图形验证码'){
+                            // 显示图形验证码输入框
+                            $('#verify_captcha_group').removeClass('hidden');
+                        }
+                        
                         if (typeof result.msg == "object"){
                             toast.error(result.msg.Message);
                         }else{
