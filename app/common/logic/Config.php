@@ -12,6 +12,7 @@ class Config extends Base
         'SITE_CLOSE',
         'SITE_CLOSE_HINT',
         'SITE_ACCESS_TYPE',
+        'DEFUALT_APP',
         'WEB_SITE_NAME',
         'WEB_SITE_DESCRIPTION',
         'WEB_SITE_LOGO',
@@ -54,11 +55,18 @@ class Config extends Base
         'WITHDRAW_MIN_PRICE',
         'WITHDRAW_MAX_PRICE',
         //用户
+        'OPEN_QUICK_LOGIN',
+        'VERIFY_OPEN',
         'USER_PRIVACY',
         'USER_REG_AGREEMENT',
         'USER_REG_SWITCH',
         'USER_LOGIN_SWITCH',
         'USER_MOBILE_BIND',
+        'USER_NICKNAME_SWITCH',
+        'USER_NICKNAME_MAX_LENGTH',
+        'USER_NICKNAME_MIN_LENGTH',
+        'USER_USERNAME_MIN_LENGTH',
+        'USER_USERNAME_MAX_LENGTH',
         //播放器 SDK
         'VOD_TENCENT_LICENSE_URL',
     ];
