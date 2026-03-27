@@ -340,11 +340,10 @@ class Extend extends Admin
             $map[] = ['group', 'in', $group];
         }
         if (!empty($keyword)) {
-            $map[] = [
-                'OR',
-                ['name', 'like', '%' . $keyword . '%'],
-                ['title', 'like', '%' . $keyword . '%']
-            ];
+            $map[] = function ($query) use ($keyword) {
+                $query->where('name', 'like', "%{$keyword}%")
+                    ->whereOr('title', 'like', "%{$keyword}%");
+            };
         }
 
         if ($load == 'page') {

@@ -102,7 +102,12 @@ class Config extends Admin
             $map[] = ['group', 'in', $group];
         }
         if (!empty($keyword)) {
-            $map[] = ['title', 'like', '%' . $keyword . '%'];
+            if (!empty($keyword)) {
+                $map[] = function ($query) use ($keyword) {
+                    $query->where('name', 'like', "%{$keyword}%")
+                        ->whereOr('title', 'like', "%{$keyword}%");
+                };
+            }
         }
 
         if ($load == 'page') {
