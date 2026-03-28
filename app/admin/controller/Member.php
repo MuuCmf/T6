@@ -86,18 +86,8 @@ class Member extends Admin
         }
         unset($v);
 
-        if (request()->isAjax()) {
-            $list['data'] = $list_arr;
-            return $this->success('success', $list);
-        }
-        $this->setTitle('用户列表');
-        View::assign('title', '用户列表');
-        View::assign('pager', $pager);
-        View::assign('_list', $list_arr);
-        // 记录当前列表页的cookie
-        cookie('__forward__', $_SERVER['REQUEST_URI']);
-
-        return View::fetch();
+        $list['data'] = $list_arr;
+        return $this->success('success', $list);
     }
 
     /**
@@ -134,7 +124,7 @@ class Member extends Admin
     {
         $uid = input('uid', 0, 'intval');
         if (request()->isPost()) {
-            $data = (array)input();
+            $data = (array)input('post.', [], 'trim,htmlspecialchars,strip_tags');
 
             // 初始化写入数据
             if (!empty($uid)) {
@@ -216,49 +206,6 @@ class Member extends Admin
             /*用户组END*/
 
             return $this->success('保存成功', $uid, cookie('__forward__'));
-        } else {
-
-            // 获取启用的积分类型
-            $score_types = (new ScoreTypeModel())->getTypeList(['status' => 1]);
-
-            // 获取用户数据
-            if (empty($uid)) {
-                $member['uid'] = 0;
-                $member['nickname'] = '';
-                $member['username'] = '';
-                $member['email'] = '';
-                $member['mobile'] = '';
-                $member['sex'] = 0;
-                $member['avatar'] = 'static/images/default_avatar.jpg';
-                $member['avatar64'] = request()->domain() . '/static/common/images/default_avatar_64_64.jpg';
-                $member['avatar128'] = request()->domain() . '/static/common/images/default_avatar_128_128.jpg';
-                $member['avatar256'] = request()->domain() . '/static/common/images/default_avatar_256_256.jpg';
-                $member['avatar512'] = request()->domain() . '/static/common/images/default_avatar_512_512.jpg';
-                $member['score'] = $score_types;
-                $member['status'] = 1;
-            } else {
-                $member = query_user($uid);
-            }
-            // 用户拥有的权限组
-            $auth = Db::name('auth_group_access')->where(['uid' => $uid])->select();
-            $temp_auth_group_arr = [];
-            foreach ($auth as $key => $val) {
-                $temp_auth_group_arr[] = $val['group_id'];
-            }
-
-            // 系统设置启用的权限组
-            $auth_group = Db::name('auth_group')->where('status', '=', 1)->select()->toArray();
-            foreach ($auth_group as &$val) {
-                $val['checked'] = in_array($val['id'], $temp_auth_group_arr) ? true : false;
-            }
-            unset($val);
-
-            View::assign('member', $member);
-            View::assign('auth_group', $auth_group);
-            // 设置页面TITLE
-            $this->setTitle('用户资料管理');
-
-            return View::fetch();
         }
     }
 
@@ -313,16 +260,8 @@ class Member extends Admin
             return $this->error('用户数据不存在');
         }
 
-        // ajax 异步请求
-        if (request()->isAjax()) {
-            return $this->success('success', $member);
-        }
-
-        View::assign('member', $member);
-        // 设置页面TITLE
-        $this->setTitle('用户详情');
-        // 输出模板
-        return View::fetch();
+        // json 输出
+        return $this->success('success', $member);
     }
 
     /**
