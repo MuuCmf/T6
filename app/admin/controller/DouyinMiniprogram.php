@@ -2,15 +2,11 @@
 
 namespace app\admin\controller;
 
-use app\admin\builder\AdminConfigBuilder;
-use app\common\logic\TemplateMessage;
 use app\common\model\DouyinMpConfig;
 use app\common\model\DouyinMpSettle as DouyinMpSettleModel;
 use app\common\service\bytedance\DouyinMp as DouyinMpService;
 use app\common\model\Orders as OrdersModel;
 use app\common\logic\Orders as OrdersLogic;
-use think\facade\View;
-
 
 class DouyinMiniprogram extends Admin
 {
@@ -62,40 +58,8 @@ class DouyinMiniprogram extends Admin
             $callback_url = url('api/douyin/callback', ['shopid' => $this->shopid], false, true);
             $config['callback'] = (string)$callback_url;
 
-            // ajax数据返回
-            if (request()->isAjax()) {
-                return $this->success('success', $config);
-            }
-
-            $builder = new AdminConfigBuilder();
-            $builder->title('抖音小程序配置')->suggest('基于第三方授权各项参数配置');
-
-            $builder
-                ->keyText('title', '小程序名称', '小程序名称.')
-                ->keyText('appid', 'APPID', 'APPID是小程序的ID，请您妥善保管.')
-                ->keyText('secret', 'AppSecret', 'AppSecret是小程序的密钥，具有该账户完全的权限，请您妥善保管.')
-                ->keyTextArea('description', '小程序描述', '小程序描述')
-                ->keyText('weixin_merchant_uid', '微信支付商户号', '进件完成返回的微信支付商户号.')
-                ->keyText('alipay_merchant_uid', '支付宝商户号', '进件完成返回的支付宝商户号.')
-                ->keyText('token', 'Token', 'Token（令牌）.')
-                ->keyText('salt', 'SALT', 'SALT')
-                ->keyReadOnly('callback', 'URL(服务器地址)', '用于接收抖音异步通知消息.')
-                ->group('抖音小程序配置', [
-                    'title',
-                    'appid',
-                    'secret',
-                    'description',
-                ])
-                ->group('支付设置', [
-                    'weixin_merchant_uid',
-                    'alipay_merchant_uid',
-                    'token',
-                    'salt',
-                    'callback'
-                ]);;
-            $builder->data($config);
-            $builder->buttonSubmit();
-            $builder->display();
+            // json数据
+            return $this->success('success', $config);
         }
     }
 
@@ -105,10 +69,10 @@ class DouyinMiniprogram extends Admin
     public function settle()
     {
         $keyword = input('keyword', '', 'text');
-        View::assign('keyword', $keyword);
         $status = input('status') == null ? 'all' : input('status');
-        View::assign('status', $status);
         $rows = input('rows', 20, 'intval');
+        // rows限制
+        $rows = min($rows, 100);
 
         // 获取查询条件
         $map = [];
@@ -120,7 +84,6 @@ class DouyinMiniprogram extends Admin
 
         // 获取列表
         $lists = $this->DouyinMpSettleModel->getListByPage($map, 'id DESC', '*', $rows);
-        $pager = $lists->render();
         $lists = $lists->toArray();
 
         foreach ($lists['data'] as &$val) {
@@ -128,19 +91,8 @@ class DouyinMiniprogram extends Admin
         }
         unset($val);
 
-        // ajax请求返回数据
-        if (request()->isAjax()) {
-            return $this->success('success', $lists);
-        }
-        View::assign('pager', $pager);
-        View::assign('lists', $lists);
-
-        // 记录当前列表页的cookie
-        cookie('__forward__', $_SERVER['REQUEST_URI']);
-
-        $this->setTitle('结算列表');
-        // 输出模板
-        return View::fetch();
+        // json response
+        return $this->success('success', $lists);
     }
 
     /**
@@ -152,10 +104,10 @@ class DouyinMiniprogram extends Admin
         $OrdersLogic = new OrdersLogic();
 
         $keyword = input('keyword', '', 'text');
-        View::assign('keyword', $keyword);
         $status = input('status') == null ? 'all' : input('status');
-        View::assign('status', $status);
         $rows = input('rows', 20, 'intval');
+        // rows限制
+        $rows = min($rows, 100);
 
         // 查询条件
         $map = [
@@ -167,7 +119,6 @@ class DouyinMiniprogram extends Admin
 
         // 获取列表
         $lists = $OrdersModel->getListByPage($map, 'id DESC', '*', $rows);
-        $pager = $lists->render();
         $lists = $lists->toArray();
 
         foreach ($lists['data'] as &$val) {
@@ -187,19 +138,8 @@ class DouyinMiniprogram extends Admin
         }
         unset($val);
 
-        // ajax请求返回数据
-        if (request()->isAjax()) {
-            return $this->success('success', $lists);
-        }
-        View::assign('pager', $pager);
-        View::assign('lists', $lists);
-
-        // 记录当前列表页的cookie
-        cookie('__forward__', $_SERVER['REQUEST_URI']);
-
-        $this->setTitle('结算列表');
-        // 输出模板
-        return View::fetch();
+        // json response
+        return $this->success('success', $lists);
     }
 
     /**
@@ -292,12 +232,12 @@ class DouyinMiniprogram extends Admin
     }
 
     /**
-     * @title 模板消息通知
-     * @return \think\response\View
+     * 模板消息通知
+     * @return \think\response\Json
      */
     public function templateMessage()
     {
-        if (request()->isAjax()) {
+        if (request()->isPost()) {
             $params = request()->post();
             $data = [
                 'switch'      => $params['switch'],
@@ -312,15 +252,5 @@ class DouyinMiniprogram extends Admin
             }
             return $this->error('保存失败，请稍后再试');
         }
-        $type = 'douyin_mp'; //当前模板消息类型
-        $TemplateMessageLogic = new TemplateMessage();
-        $detail = $this->MiniProgramModel->where('shopid', $this->shopid)->value('tmplmsg');
-        $detail = $TemplateMessageLogic->formatData($detail); //格式化原始数据
-        View::assign([
-            'type' => $type,
-            'element' => $TemplateMessageLogic->oauth_type[$type],
-            'data' => $detail
-        ]);
-        return \view('admin/common/template_message');
     }
 }

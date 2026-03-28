@@ -2,11 +2,7 @@
 
 namespace app\admin\controller;
 
-use think\App;
 use think\facade\Db;
-use think\facade\View;
-use app\admin\builder\AdminConfigBuilder;
-use app\admin\builder\AdminListBuilder;
 use app\common\model\Member as MemberModel;
 use app\common\model\ScoreLog as ScoreLogModel;
 use app\common\model\ScoreType as ScoreTypeModel;
@@ -43,7 +39,9 @@ class Score extends Admin
     {
         $keyword = input('keyword', '', 'trim');
         $rows = input('rows', 20, 'intval');
-        View::assign('rows', $rows);
+        // rows限制
+        $rows = min($rows, 100);
+        // 初始化查询条件
         $where = [];
         if (!empty($keyword)) {
             $where[] = function($query) use ($keyword) {
@@ -66,7 +64,6 @@ class Score extends Admin
                 ],
             ], false);
         
-        $page = $scoreLog->render();
         // 转数组处理
         $scoreLog = $scoreLog->toArray();
         // 处理积分类型名称
@@ -89,29 +86,8 @@ class Score extends Admin
         }
         unset($v);
 
-        // ajax请求返回
-        if (request()->isAjax()){
-            return $this->success('success',$scoreLog);
-        }
-
-        $builder = new AdminListBuilder();
-        $builder->title('积分日志');
-        $builder->data($scoreLog['data']);
-        $builder->page($page);
-        $builder
-            ->keyId()
-            ->keyUid()
-            ->keyText('score_type', '积分类型')
-            ->keyText('adjust_type', '调整类型')
-            ->keyHtml('value', '积分变动')
-            ->keyText('finally_value', '积分最终值')
-            ->keyText('remark', '变动描述')
-            ->keyCreateTime();
-
-        $builder->search('搜索', 'uid', 'text', '输入UID');
-        $builder->button('清空日志', ['url' => url('clear'), 'class' => 'btn btn-danger ajax-get confirm']);
-
-        $builder->display();
+        // json result
+        return $this->success('success',$scoreLog);
     }
 
     /**
@@ -143,31 +119,8 @@ class Score extends Admin
         }
         $list = $this->scoreTypeModel->getTypeList($map);
 
-        // ajax请求返回
-        if (request()->isAjax()){
-            return $this->success('success',$list);
-        }
-
-        // 记录当前列表页的cookie
-        cookie('__forward__', $_SERVER['REQUEST_URI']);
-        //显示页面
-        $builder = new AdminListBuilder();
-        $builder
-            ->title('积分类型')
-            ->suggest('id<=4的不能删除')
-            ->buttonNew(url('typeEdit'))
-            ->setStatusUrl(url('typeStatus'))
-            ->buttonEnable()
-            ->buttonDisable()
-            ->buttonDelete(url('typeDel'), '删除')
-            ->keyId()
-            ->keyText('title', '名称')
-            ->keyText('unit', '单位')
-            ->keyStatus()
-            ->keyDoActionEdit('typeEdit?id=###')
-            ->keyDoActionDelete('typeDel?ids=###')
-            ->data($list)
-            ->display();
+        // json result
+        return $this->success('success',$list);
     }
 
     /**
@@ -193,25 +146,6 @@ class Score extends Admin
             } else {
                 return $this->error(($aId == 0 ? lang('Add') : lang('Edit')) . lang('Failed'));
             }
-        } else {
-
-            if ($aId != 0) {
-                $type = $this->scoreTypeModel->getType(['id' => $aId]);
-            } else {
-                $type = ['status' => 1, 'sort' => 0];
-            }
-
-            $builder = new AdminConfigBuilder();
-            $builder
-                ->title(($aId == 0 ? '新增' : '编辑') . '积分类型')
-                ->keyId()
-                ->keyText('title', '名称')
-                ->keyText('unit', '单位')
-                ->keySelect('status', '状态', null, array(-1 => '删除', 0 => '禁用', 1 => '启用'))
-                ->data($type)
-                ->buttonSubmit(url('typeEdit'))
-                ->buttonBack()
-                ->display();
         }
     }
 

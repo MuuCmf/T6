@@ -55,21 +55,11 @@ class Config extends Admin
                 }
             }
 
-            // ajax请求返回数据
-            if (request()->isAjax()) {
-                $result = [
-                    'group' => $type,
-                    'list' => $list,
-                ];
-                return $this->success('success', $result);
-            }
-
-            View::assign('list', $list);
-            // 设置页面Title
-            $this->setTitle($type[$group] . '设置');
-            // 记录当前列表页的cookie
-            cookie('__forward__', $_SERVER['REQUEST_URI']);
-            return View::fetch();
+            $result = [
+                'group' => $type,
+                'list' => $list,
+            ];
+            return $this->success('success', $result);
         }
     }
 
@@ -113,7 +103,6 @@ class Config extends Admin
         if ($load == 'page') {
             // 分页查询
             $list = $this->ConfigModel->getListByPage($map, 'sort asc,id desc', '*', $rows);
-            $pager = $list->render();
             $list = $list->toArray();
             foreach ($list['data'] as $key => $item) {
                 $list['data'][$key]['type_name'] = get_config_type($item['type']);
@@ -134,23 +123,10 @@ class Config extends Admin
                     $list['data'][$key]['thumb'] = thumb_group($item['value']);
                 }
             }
-            $pager = null;
         }
 
         // ajax请求返回数据
-        if (request()->isAjax()) {
-            return $this->success('success', $list);
-        }
-
-        View::assign('group_list', config('system.CONFIG_GROUP_LIST'));
-        View::assign('group_active', $group);
-        View::assign('list', $list);
-        View::assign('pager', $pager);
-        // 记录当前列表页的cookie
-        cookie('__forward__', $_SERVER['REQUEST_URI']);
-        $this->setTitle('配置管理');
-        // 输出页面
-        return View::fetch();
+        return $this->success('success', $list);
     }
 
     /**
@@ -190,21 +166,6 @@ class Config extends Admin
             } else {
                 return $this->error('操作失败');
             }
-        } else {
-            $id = input('id', 0, 'intval');
-            /* 获取数据 */
-            if ($id != 0) {
-                $info = $this->ConfigModel->find($id);
-            } else {
-                $info = [];
-            }
-
-            View::assign('type', get_config_type_list());
-            View::assign('group', config('system.CONFIG_GROUP_LIST'));
-            View::assign('info', $info);
-            $this->setTitle('编辑配置');
-            // 输出页面
-            return View::fetch();
         }
     }
 

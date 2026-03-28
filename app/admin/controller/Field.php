@@ -2,10 +2,6 @@
 
 namespace app\admin\controller;
 
-use think\facade\View;
-use app\admin\builder\AdminListBuilder;
-use app\admin\builder\AdminConfigBuilder;
-use app\admin\builder\AdminSortBuilder;
 use app\common\model\Field as FieldModel;
 use app\common\model\FieldGroup as FieldGroupModel;
 use app\common\model\FieldSetting as FieldSettingModel;
@@ -50,15 +46,8 @@ class Field extends Admin
         }
         unset($value);
 
-        // ajax请求返回数据
-        if (request()->isAjax()) {
-            return $this->success('success', $profileList);
-        }
-
-        View::assign('title', '扩展资料');
-        View::assign('list', $profileList);
-
-        return View::fetch();
+        // json response
+        return $this->success('success', $profileList);
     }
 
     /**
@@ -69,11 +58,11 @@ class Field extends Admin
      */
     public function editGroup()
     {
-        $id = input('id', 0, 'intval');
         if (request()->isPost()) {
-
+            $id = input('id', 0, 'intval');
             $profile_name = input('profile_name', '', 'text');
             $visiable = input('visiable', 1, 'intval');
+            $status = input('status', 1, 'intval');
             if (empty($profile_name)) {
                 return $this->error('分组名称不能为空！');
             }
@@ -88,9 +77,10 @@ class Field extends Admin
                 return $this->error('已经有同名分组，请使用其他分组名称！');
             }
 
+            $data['id'] = $id;
             $data['profile_name'] = $profile_name;
             $data['visiable'] = $visiable;
-            $data['status'] = 1;
+            $data['status'] = $status;
             $data['create_time'] = time();
             $res = $this->FieldGroupModel->edit($data);
 
@@ -99,50 +89,6 @@ class Field extends Admin
             } else {
                 return $this->error($id == '' ? '新增分组失败' : '编辑分组失败');
             }
-        } else {
-
-            $builder = new AdminConfigBuilder();
-            if ($id != 0) {
-                $profile = $this->FieldGroupModel->where(['id' => $id])->find();
-                $builder->title('修改分组信息');
-            } else {
-                $builder->title('添加扩展资料分组');
-                $profile = [];
-            }
-            $builder
-                ->keyReadOnly("id", 'ID')
-                ->keyText('profile_name', '分组名称')
-                ->keyBool('visiable', '是否公开');
-
-            $builder
-                ->data($profile);
-            $builder
-                ->buttonSubmit(url('editGroup'), $id == 0 ? lang('Add') : lang('Edit'))
-                ->buttonBack()
-                ->display();
-        }
-    }
-
-    /**
-     * 扩展分组排序
-     */
-    public function sortGroup($ids = null)
-    {
-        if (request()->isPost()) {
-            $builder = new AdminSortBuilder();
-            $builder->doSort('Field_group', $ids);
-        } else {
-            $map['status'] = array('egt', 0);
-            $list = $this->FieldGroupModel->where($map)->order("sort asc")->select();
-            foreach ($list as $key => $val) {
-                $list[$key]['title'] = $val['profile_name'];
-            }
-            $builder = new AdminSortBuilder();
-            $builder->title('组排序');
-            $builder->data($list);
-            $builder->buttonSubmit(url('sortProfile'))
-                ->buttonBack()
-                ->display();
         }
     }
 
@@ -181,9 +127,6 @@ class Field extends Admin
     public function list()
     {
         $group_id = input('group_id', 0, 'intval');
-        View::assign('group_id', $group_id);
-        $group = $this->FieldGroupModel->where('id', '=', $group_id)->find();
-        View::assign('group', $group);
 
         // 获取字段列表
         $map[] = ['status', '>', 0];
@@ -207,16 +150,8 @@ class Field extends Admin
         }
         unset($val);
 
-        // ajax请求返回数据
-        if (request()->isAjax()) {
-            return $this->success('success', $field_list);
-        }
-
-        View::assign('title', '扩展资料');
-        View::assign('list', $field_list);
-        // 记录当前列表页的cookie
-        cookie('__forward__', $_SERVER['REQUEST_URI']);
-        return View::fetch();
+        // json response
+        return $this->success('success', $field_list);
     }
 
     /**
@@ -270,46 +205,7 @@ class Field extends Admin
             } else {
                 return $this->error($data['id'] == '' ? '添加字段失败' : '编辑字段失败');
             }
-        } else {
-            $id = input('id');
-            $group_id = input('group_id');
-            $builder = new AdminConfigBuilder();
-            if (!empty($id)) {
-                $field_setting = $this->FieldSettingModel->where('id', '=', $id)->find();
-                $builder->title('修改字段信息');
-            } else {
-                $builder->title('添加字段' . '新增字段');
-
-                $field_setting['group_id'] = $group_id;
-                $field_setting['visiable'] = 1;
-                $field_setting['required'] = 1;
-            }
-            $type_default = array(
-                'input' => '单行文本框',
-                'textarea' => '多行文本框',
-                'radio' => '单选框',
-                'checkbox' => '多选框',
-                'select' => '下拉选择框',
-                'time' => '日期',
-            );
-
-            $builder
-                ->keyReadOnly("id", 'ID')
-                ->keyReadOnly('group_id', '分组ID')
-                ->keyText('field_name', '字段名称', '仅支持英文小写和"_"')
-                ->keyText('field_alias', '字段描述')
-                ->keySelect('form_type', '表单类型', '', $type_default)
-                ->keyTextArea('form_default_value', "表单值选项", "多个值用'|'分割开，例：男|女")
-                ->keyText('validation', '表单验证规则', "多个值用'|'分割开，例：require|max:25")
-                ->keyText('input_tips', '用户输入提示', '提示用户如何输入该字段信息')
-                ->keyBool('visiable', '是否公开')
-                ->keyBool('required', '是否必填')
-                ->data($field_setting)
-                ->buttonSubmit(url('editField'), $id == 0 ? '新增' : '修改')
-                ->buttonBack();
-
-            $builder->display();
-        }
+        } 
     }
 
     /**
@@ -318,10 +214,10 @@ class Field extends Admin
      * @param $status
      * @author dameng<59262424@qq.com>
      */
-    public function setFieldStatus($ids, $status)
+    public function setFieldStatus()
     {
         $ids = input('ids');
-        !is_array($ids) && $ids = explode(',', $ids);
+        !is_array($ids) && $ids = explode(',', (string)$ids);
         $status = input('status', 0, 'intval');
         $title = '更新';
         if ($status == 0) {

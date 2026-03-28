@@ -51,15 +51,7 @@ class WechatOfficial extends Admin
             //查询微信平台配置
             $data = $this->wechatConfigModel->getWechatConfigByShopId($this->shopid);
 
-            // ajax请求返回json数据
-            if (request()->isAjax()) {
-                return $this->success('success', $data);
-            }
-            View::assign('data', $data);
-            //设置页面title
-            $this->setTitle('公众号配置');
-
-            return View::fetch();
+            return $this->success('success', $data);
         }
     }
 
@@ -88,20 +80,13 @@ class WechatOfficial extends Admin
         }
 
         // 输出页面或json数据
-        $output = input('output', 'html', 'text');
-        if (request()->isAjax() && $output == 'json') {
-            $menu = $this->wechatConfigModel->where(['shopid' => $this->shopid])->value('menu_json');
-            if ($menu) {
-                $menu = json_decode($menu, true);
-            } else {
-                $menu = [];
-            }
-            return $this->success('success', $menu);
+        $menu = $this->wechatConfigModel->where(['shopid' => $this->shopid])->value('menu_json');
+        if ($menu) {
+            $menu = json_decode($menu, true);
+        } else {
+            $menu = [];
         }
-
-        $this->setTitle('菜单管理');
-
-        return View::fetch();
+        return $this->success('success', $menu);
     }
     
     /**
@@ -130,23 +115,8 @@ class WechatOfficial extends Admin
         ->page($page, 20)
         ->paginate();
 
-        // ajax请求返回json数据
-        if (request()->isAjax()) {
-            return $this->success('success', $list);
-        }
-
-        // 获取分页显示
-        $page = $list->render();
-
-        //显示页面
-        View::assign('list', $list);
-        View::assign('page', $page);
-        //设置页面title
-        $this->setTitle('自动回复');
-        // 记录当前列表页的cookie
-        cookie('__forward__', $_SERVER['REQUEST_URI']);
-
-        return View::fetch();
+        // json数据
+        return $this->success('success', $list);
     }
 
     /**
@@ -172,9 +142,10 @@ class WechatOfficial extends Admin
                 return $this->error('关注公众号只能设置一条自动回复');
             }
 
-            // $data['material_json'] 转为json
             if (!empty($data['material_json'])) {
                 $data['material_json'] = json_encode($data['material_json']);
+            }else{
+                $data['material_json'] = '';
             }
             
             //验证文本唯一性
@@ -188,16 +159,6 @@ class WechatOfficial extends Admin
             } else {
                 return $this->error('提交失败');
             }
-        } else {
-            $data = ['id' => $aId];
-            if ($aId > 0) {
-                $data = $this->autoReplyModel->find(['id' => input('id')]);
-            }
-            View::assign([
-                'data' => $data
-            ]);
-
-            return View::fetch();
         }
     }
 
@@ -309,18 +270,5 @@ class WechatOfficial extends Admin
             }
             return $this->error('保存失败，请稍后再试');
         }
-
-        $type = 'weixin_h5'; //当前模板消息类型
-        $TemplateMessageLogic = new TemplateMessage();
-        $detail = $this->wechatConfigModel->where('shopid', $this->shopid)->value('tmplmsg');
-        $detail = $TemplateMessageLogic->formatData($detail); //格式化原始数据
-        View::assign([
-            'type' => $type,
-            'element' => $TemplateMessageLogic->oauth_type[$type],
-            'data' => $detail
-        ]);
-        $this->setTitle('订阅通知配置');
-
-        return View::fetch('common/template_message');
     }
 }

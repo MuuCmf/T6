@@ -3,7 +3,6 @@
 namespace app\admin\controller;
 
 use think\facade\Db;
-use think\facade\View;
 use app\common\model\Member as MemberModel;
 use app\common\model\Action as ActionModel;
 use app\common\model\ActionLimit as ActionLimitModel;
@@ -42,7 +41,6 @@ class Action extends Admin
     {
         //获取列表数据
         $rows = input('rows', 20, 'intval');
-        View::assign('rows', $rows);
         $aUid = input('get.uid', 0, 'intval');
         if ($aUid) $map[] = ['uid', '=', $aUid];
 
@@ -60,8 +58,6 @@ class Action extends Admin
         $map[]    =   ['status', '>', -1];
 
         $list = $this->ActionLogModel->getListByPage($map, 'id desc create_time desc', '*', $rows);
-        // 分页按钮
-        $pager = $list->render();
         $list = $list->toArray();
 
         foreach ($list['data'] as $key => &$value) {
@@ -78,19 +74,8 @@ class Action extends Admin
         }
         unset($value);
 
-        // ajax请求返回数据
-        if (request()->isAjax()) {
-            return $this->success('success', $list);
-        }
-
-        $actionList = Db::name('Action')->select();
-        View::assign('action_list', $actionList);
-
-        View::assign('list', $list);
-        View::assign('pager', $pager);
-        $this->setTitle('日志列表');
-
-        return View::fetch();
+        // json result
+        return $this->success('success', $list);
     }
 
     /**
@@ -104,11 +89,9 @@ class Action extends Admin
         }
 
         $info = $this->ActionLogModel->find($id);
-        View::assign('info', $info);
-
-        $this->setTitle('行为日志详情');
-
-        return View::fetch();
+        
+        // json result
+        return $this->success('success', $info);
     }
 
     /**
@@ -222,25 +205,8 @@ class Action extends Admin
         }
         unset($value);
 
-        if( request()->isAjax()){
-            return $this->success('success', $list);
-        }
-
-        // 分页按钮
-        View::assign('paper', $paper);
-        View::assign('list', $list);
-
-        $modules = $this->ModuleModel->getAll([
-            ['is_setup', '=', 1]
-        ]);
-        $modules = array_merge([array('name' => '', 'alias' => '系统')], $modules);
-
-        View::assign('modules', $modules);
-        // 记录当前列表页的cookie
-        cookie('__forward__', $_SERVER['REQUEST_URI']);
-        $this->setTitle('行为日志');
-
-        return View::fetch();
+        // json result
+        return $this->success('success', $list);
     }
 
     /**
@@ -259,36 +225,6 @@ class Action extends Admin
             } else {
                 return $this->success(!empty($res['id']) ? '更新成功！' : '新增成功', $res, cookie('__forward__'));
             }
-        } else {
-            $id = input('id');
-
-            if ($id) {
-                $data = $this->ActionModel->find($id);
-                $data['rule'] = unserialize($data['rule']);
-            } else {
-                //初始默认数据
-                $data = [
-                    'name' => '',
-                    'title' => '',
-                    'log' => '',
-                    'module' => '',
-                    'remark' => '',
-                    'rule' => '',
-                    'id' => ''
-                ];
-            }
-
-            View::assign('data', $data);
-
-            $score = $this->ScoreTypeModel->getTypeList(array('status' => 1));
-            View::assign('score', $score);
-            // 获取所有应用模型列表
-            $modules = $this->ModuleModel->getAll();
-            View::assign('modules', $modules);
-
-            $this->setTitle('编辑行为规则');
-
-            return View::fetch();
         }
     }
 
@@ -344,16 +280,8 @@ class Action extends Admin
         }
         unset($val);
 
-        // ajax请求返回数据
-        if( request()->isAjax()){
-            return $this->success('success', $list);
-        }
-
-        //显示页面
-        View::assign('list', $list);
-        View::assign('page', $page);
-
-        return View::fetch();
+        // json result
+        return $this->success('success', $list);
     }
 
     /**
@@ -395,43 +323,6 @@ class Action extends Admin
             } else {
                 return $this->error('提交失败');
             }
-        } else {
-
-            // 获取所有模块
-            $modules = $this->ModuleModel->getAll();
-            foreach ($modules as $k => $v) {
-                $module[$v['name']] = $v['alias'];
-            }
-            View::assign('modules', $modules);
-
-            // 获取数据
-            if (!empty($aId)) {
-                $limit = $this->ActionLimitModel->where(['id' => $aId])->find();
-                $limit['punish'] = explode(',', $limit['punish']);
-                $limit['action_list'] = str_replace('[', '', $limit['action_list']);
-                $limit['action_list'] = str_replace(']', '', $limit['action_list']);
-                $limit['action_list'] = explode(',', $limit['action_list']);
-            } else {
-                $limit = [
-                    'status' => 1,
-                    'time_number' => 1,
-                    'time_unit' => [],
-                    'punish' => [],
-                    'message_count' => '',
-                    'action_list' => []
-                ];
-            }
-
-            // 处罚方式数组
-            $opt_punish = $this->ActionLimitModel->punish;
-            // 行为数组
-            $opt_action = $this->ActionModel->getActionOpt();
-
-            View::assign('opt_punish', $opt_punish);
-            View::assign('opt_action', $opt_action);
-            View::assign('limit', $limit);
-
-            return View::fetch();
         }
     }
 
@@ -471,5 +362,4 @@ class Action extends Admin
             return $this->error($title . '失败');
         }
     }
-
 }
