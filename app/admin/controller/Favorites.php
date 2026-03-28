@@ -4,7 +4,6 @@ namespace app\admin\controller;
 
 use app\common\model\Favorites as FavoritesModel;
 use app\common\logic\Favorites as FavoritesLogic;
-use think\facade\View;
 
 class Favorites extends Admin
 {
@@ -24,10 +23,11 @@ class Favorites extends Admin
     public function list()
     {
         $app = input('get.app', 'all');
-        $keyword = input('keyword', '');
-        View::assign('keyword', $keyword);
+        $keyword = input('keyword', '', 'text');
         $rows = input('rows', 20, 'intval');
-        View::assign('rows', $rows);
+        //rows限制
+        $rows = min($rows, 100);
+
         $map = [
             ['shopid', '=', $this->shopid],
             ['status', 'in', [0, 1]]
@@ -38,8 +38,6 @@ class Favorites extends Admin
         }
         // 获取分页列表
         $lists = $this->FavoritesModel->getListByPage($map, 'id desc create_time desc', '*', $rows);
-        // 分页按钮
-        $pager = $lists->render();
         // 格式化数据
         $lists = $lists->toArray();
         foreach ($lists['data'] as &$val) {
@@ -47,25 +45,8 @@ class Favorites extends Admin
         }
         unset($val);
 
-        // ajax请求返回数据
-        if (request()->isAjax()) {
-            return $this->success('success', $lists);
-        }
-
-        //全部应用
-        $module_map = [];
-        $all_module = (new \app\common\model\Module())->getAll($module_map);
-        unset($val);
-        View::assign([
-            'lists' =>  $lists['data'],
-            'pager' =>  $pager,
-            'all_module' => $all_module,
-            'app'   =>  $app
-        ]);
-
-        $this->setTitle('收藏记录');
-
-        return View::fetch();
+        // json response
+        return $this->success('success', $lists);
     }
 
     /**
@@ -73,8 +54,8 @@ class Favorites extends Admin
      */
     public function status()
     {
-        $ids = input('ids/a');
-        !is_array($ids) && $ids = explode(',', $ids);
+        $ids = input('ids');
+        !is_array($ids) && $ids = explode(',', (string)$ids);
         $status = input('status', 0, 'intval');
         $title = '更新';
         if ($status == -1) {

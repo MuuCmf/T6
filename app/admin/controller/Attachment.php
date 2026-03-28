@@ -2,9 +2,7 @@
 
 namespace app\admin\controller;
 
-use think\facade\View;
 use app\common\model\Attachment as AttachmentModel;
-use think\exception\ValidateException;
 
 /**
  * 附件管理控制器
@@ -30,15 +28,15 @@ class Attachment extends Admin
     {
         // 关键字
         $keyword = input('keyword', '', 'text');
-        View::assign('keyword', $keyword);
         // 驱动
         $driver = input('driver', '', 'text');
-        View::assign('driver', $driver);
         // 类型
         $type = input('type', '', 'text');
-        View::assign('type', $type);
+        // 每页数量
         $rows = input('rows', 20, 'intval');
-        View::assign('rows', $rows);
+        //rows限制
+        $rows = min($rows, 100);
+
         // 查询条件
         $map = '`shopid` = 0';
         if (!empty($keyword)) {
@@ -58,7 +56,6 @@ class Attachment extends Admin
         $fields = '*';
 
         $lists = $this->AttachmentModel->getListByPage($map, $order, $fields, $rows);
-        $pager = $lists->render();
         $lists = $lists->toArray();
 
         foreach ($lists['data'] as &$val) {
@@ -74,19 +71,8 @@ class Attachment extends Admin
         }
         unset($val);
 
-        if (request()->isAjax()) {
-            // ajax请求返回数据
-            return $this->success('success', $lists);
-        }
-        View::assign('pager', $pager);
-        View::assign('lists', $lists);
-
-        // 设置页面Title
-        $this->setTitle('附件列表');
-        // 记录当前列表页的cookie
-        cookie('__forward__', $_SERVER['REQUEST_URI']);
-        //输出页面
-        return View::fetch();
+        // json response
+        return $this->success('success', $lists);
     }
 
     /**

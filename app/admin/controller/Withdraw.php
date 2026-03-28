@@ -4,7 +4,6 @@ namespace app\admin\controller;
 
 use think\Exception;
 use think\facade\Db;
-use think\facade\View;
 use app\common\model\CapitalFlow;
 use app\common\model\MemberWallet;
 use app\common\model\Withdraw as WithdrawModel;
@@ -25,7 +24,6 @@ class Withdraw extends Admin
 
     /**
      * @title 提现列表
-     * @return \think\response\View
      */
     public function list()
     {
@@ -40,7 +38,9 @@ class Withdraw extends Admin
         }
         // 每页显示数量
         $rows = input('rows', 15, 'intval');
-        View::assign('rows', $rows);
+        // rows限制
+        $rows = min($rows, 100);
+        
         // 获取分页列表
         $lists = $this->WithdrawModel->getListByPage($map, 'id desc create_time desc', '*', $rows);
         $pager = $lists->render();
@@ -50,20 +50,8 @@ class Withdraw extends Admin
         }
         unset($item);
 
-        // ajax请求返回数据
-        if (request()->isAjax()) {
-            return $this->success('success', $lists);
-        }
-
-        View::assign([
-            'order_no'  =>  $order_no,
-            'lists'     =>  $lists,
-            'pager'     =>  $pager,
-        ]);
-
-        $this->setTitle('提现列表');
-
-        return View::fetch();
+        // json response
+        return $this->success('success', $lists);
     }
 
     /**
@@ -79,16 +67,8 @@ class Withdraw extends Admin
             $data = $this->WithdrawModel->getDataById($id);
             $data = $this->WithdrawLogic->formatData($data);
         }
-
-        // ajax请求返回数据
-        if (request()->isAjax()) {
-            return $this->success('success', $data);
-        }
-        
-        View::assign('data', $data);
-
-        //输出页面
-        return View::fetch();
+        // json response
+        return $this->success('success', $data);
     }
 
     /**
@@ -140,13 +120,6 @@ class Withdraw extends Admin
                 return $this->error($e->getMessage());
             }
         }
-
-        $data = $this->WithdrawModel->getDataById($id);
-        $data = $this->WithdrawLogic->formatData($data);
-        View::assign('data', $data);
-        
-        //输出页面
-        return View::fetch();
     }
 
     /**
