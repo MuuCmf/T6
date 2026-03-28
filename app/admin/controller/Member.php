@@ -55,6 +55,10 @@ class Member extends Admin
 
         //排序
         $order = input('order', 'create_time', 'text');
+        // $order参数限制
+        $order = in_array($order, ['uid', 'create_time', 'last_login_time', 'login']) ? $order : 'create_time';
+
+        // 排序类型
         $order_type = '';
         if ($order == 'uid') {
             $order_type = 'uid desc';
