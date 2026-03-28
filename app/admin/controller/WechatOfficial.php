@@ -2,10 +2,8 @@
 
 namespace app\admin\controller;
 
-use think\facade\View;
 use think\Exception;
 use think\exception\ValidateException;
-use app\common\logic\TemplateMessage;
 use app\common\model\WechatAutoReply;
 use app\common\model\WechatConfig;
 use app\admin\validate\Account as AccountValidate;
@@ -251,7 +249,7 @@ class WechatOfficial extends Admin
 
     /**
      * @title 模板消息通知
-     * @return \think\response\View
+     * @return json
      */
     public function templateMessage()
     {

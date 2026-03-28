@@ -32,13 +32,11 @@ class Feedback extends Admin
     public function list()
     {
         $type = input('type', '', 'trim');
-        View::assign('type', $type);
         $status = input('status', 'all', 'text');
-        View::assign('status', $status);
         $keyword = input('keyword', '', 'trim');
-        View::assign('keyword', $keyword);
         $rows = input('rows', 20, 'intval');
-        View::assign('rows', $rows);
+        //rows限制
+        $rows = min($rows, 100);
 
         $map = [];
         if (!empty($type)) {
@@ -63,17 +61,8 @@ class Feedback extends Admin
         }
         unset($val);
 
-        // ajax请求返回数据
-        if (request()->isAjax()) {
-            return $this->success('success', $lists);
-        }
-
-        View::assign('pager', $pager);
-        View::assign('lists', $lists);
-
-        $this->setTitle('用户反馈');
-        // 显示页面
-        return View::fetch();
+        // json response
+        return $this->success('success', $lists);
     }
 
     /**

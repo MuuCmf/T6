@@ -2,7 +2,6 @@
 
 namespace app\admin\controller;
 
-use think\facade\View;
 use think\exception\ValidateException;
 use app\common\validate\Author as AuthorValidate;
 use app\admin\builder\AdminConfigBuilder;
@@ -26,7 +25,7 @@ class Role extends Admin
     }
 
     /**
-     * 作者列表
+     * 角色用户列表
      */
     public function list()
     {
@@ -35,7 +34,6 @@ class Role extends Admin
         if (!empty($keyword)) {
             $map[] = ['name', 'like', '%' . $keyword . '%'];
         }
-        View::assign('keyword', $keyword);
 
         $status = input('status', 'all');
         if ($status === 'all') {
@@ -57,20 +55,15 @@ class Role extends Admin
                 $map[] = ['status', '=', -3];
             }
         }
-        View::assign('status', $status);
 
         $rows = input('rows', 20, 'intval');
-        View::assign('rows', $rows);
         $order_field = input('order_field', 'id', 'text');
         $order_type = input('order_type', 'desc', 'text');
         $order = 'sort DESC,' . $order_field . ' ' . $order_type;
 
         // 获取分页列表
         $lists = $this->AuthorModel->getListByPage($map, $order, '*', $rows);
-        // 分页按钮
-        $pager = $lists->render();
-        View::assign('pager', $pager);
-
+        
         // 格式化数据
         $lists = $lists->toArray();
         foreach ($lists['data'] as &$val) {
@@ -78,22 +71,8 @@ class Role extends Admin
         }
         unset($val);
 
-        // ajax返回
-        if (request()->isAjax()) {
-            return $this->success('success', $lists);
-        }
-        View::assign('lists', $lists);
-
-        // 获取未审核数量
-        $unverify = $this->AuthorModel->where('status', -1)->count();
-        View::assign('unverify', $unverify);
-
-        // 记录当前列表页的cookie
-        cookie('__forward__', $_SERVER['REQUEST_URI']);
-        // 设置页面title
-        $this->setTitle('角色用户列表');
-        // 输出模板
-        return View::fetch();
+        // json response
+        return $this->success('success', $lists);
     }
 
     /**
@@ -103,7 +82,6 @@ class Role extends Admin
     {
         $id = input('id', 0, 'intval');
         $title = $id ? "编辑" : "新建";
-        View::assign('title', $title);
 
         if (request()->isPost()) {
             $data = input();
@@ -121,38 +99,6 @@ class Role extends Admin
             } else {
                 return $this->success($title . '失败');
             }
-        } else {
-            // 初始化数据结构
-            $data = [];
-            $data['id'] = 0;
-            $data['uid'] = 0;
-            $data['group_id'] = 0;
-            $data['name'] = '';
-            $data['description'] = '';
-            $data['cover'] = '';
-            $data['avatar_card'] = '';
-            $data['certificate'] = '';
-            $data['content'] = '';
-            $data['professional'] = '';
-            $data['sort'] = 0;
-            $data['status'] = 0;
-            $data['reason'] = '';
-            $data['user_info'] = [];
-            if (!empty($id)) {
-                $data = $this->AuthorModel->getDataById($id);
-                $data = $this->AuthorLogic->formatData($data);
-            }
-            View::assign('data', $data);
-            // 获取角色分组
-            $group_map = [
-                ['status', '=', 1]
-            ];
-            $group = $this->AuthorGroupModel->getList($group_map, 999);
-            View::assign('group', $group);
-            // 设置页面Title
-            $this->setTitle($title . '角色用户');
-            // 输出模板
-            return View::fetch();
         }
     }
 
@@ -161,7 +107,7 @@ class Role extends Admin
      */
     public function status()
     {
-        $ids = input('ids/a');
+        $ids = input('ids');
         if (empty($ids)) {
             return $this->error('请选择要操作的数据');
         }
@@ -232,7 +178,6 @@ class Role extends Admin
     public function verify()
     {
         $id = input('id', 0, 'intval');
-        View::assign('id', $id);
         if (request()->isPost()) {
             $status = input('status', -1, 'intval');
             $reason = input('reason', '', 'text');
@@ -247,15 +192,6 @@ class Role extends Admin
                 return $this->error('操作失败');
             }
         }
-
-        if (!empty($id)) {
-            $data = $this->AuthorModel->getDataById($id);
-            $data = $this->AuthorLogic->formatData($data);
-        }
-        View::assign('data', $data);
-
-        // 输出模板
-        return View::fetch();
     }
 
     /**
@@ -264,41 +200,15 @@ class Role extends Admin
     public function group()
     {
         $rows = input('rows', 20, 'intval');
-        View::assign('rows', $rows);
         $order_field = input('order_field', 'id', 'text');
         $order_type = input('order_type', 'desc', 'text');
         $order = $order_field . ' ' . $order_type;
         //读取数据
         $map[] = ['status', '>', -1];
         $list = $this->AuthorGroupModel->getListByPage($map, $order, '*', $rows);
-        // 分页按钮
-        $pager = $list->render();
 
-        // ajax返回
-        if (request()->isAjax()) {
-            return $this->success('success', $list);
-        }
-        
-        // 记录当前列表页的cookie
-        cookie('__forward__', $_SERVER['REQUEST_URI']);
-        //显示页面
-        $builder = new AdminListBuilder();
-        $builder
-            ->title('角色类型')
-            ->suggest('')
-            ->buttonNew(url('groupEdit'))
-            ->setStatusUrl(url('groupStatus'))
-            ->buttonEnable()
-            ->buttonDisable()
-            ->buttonDelete(url('groupStatus'), '删除')
-            ->keyId()
-            ->keyText('title', '名称')
-            ->keyStatus()
-            ->keyDoActionEdit('groupEdit?id=###')
-            ->keyDoActionDelete('groupStatus?ids=###&status=-1')
-            ->data($list)
-            ->page($pager)
-            ->display();
+        // json response
+        return $this->success('success', $list);
     }
 
     /**
@@ -322,26 +232,6 @@ class Role extends Admin
             } else {
                 return $this->error(empty($id) ? '新增分组失败' : '编辑分组失败');
             }
-        } else {
-
-            $builder = new AdminConfigBuilder();
-            if ($id != 0) {
-                $profile = $this->AuthorGroupModel->where(['id' => $id])->find();
-                $builder->title('修改角色类型');
-            } else {
-                $builder->title('添加角色类型');
-                $profile = [];
-            }
-
-            $builder
-                ->keyReadOnly("id", 'ID')
-                ->keyText('title', '名称')
-                ->keyStatus('status', '状态')
-                ->data($profile);
-            $builder
-                ->buttonSubmit(url('groupEdit'), $id == 0 ? lang('Add') : lang('Edit'))
-                ->buttonBack()
-                ->display();
         }
     }
 

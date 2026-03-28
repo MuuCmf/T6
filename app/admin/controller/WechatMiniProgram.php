@@ -60,24 +60,8 @@ class WechatMiniProgram extends Admin
                 ['shopid', '=', $this->shopid],
             ])->find();
 
-            // ajax请求返回json数据
-            if (request()->isAjax()) {
-                return $this->success('success', $config);
-            }
-
-            $builder = new AdminConfigBuilder();
-            $builder->title('微信小程序配置')->suggest('基于第三方授权各项参数配置');
-
-            $builder
-                ->keyText('title', '小程序名称', '小程序名称.')
-                ->keyText('appid', 'APPID', 'APPID是小程序的ID，请您妥善保管.')
-                ->keyText('secret', 'AppSecret', 'AppSecret是小程序的密钥，具有该账户完全的权限，请您妥善保管.')
-                ->keyText('originalid', '原始ID', '小程序原始ID')
-                ->keyTextArea('description', '小程序描述', '小程序描述');
-
-            $builder->data($config);
-            $builder->buttonSubmit();
-            $builder->display();
+            // json response
+            return $this->success('success', $config);
         }
     }
     /**
@@ -102,15 +86,11 @@ class WechatMiniProgram extends Admin
             return $this->error('保存失败，请稍后再试');
         }
 
-        $type = 'weixin_mp'; //当前模板消息类型
         $TemplateMessageLogic = new TemplateMessage();
         $detail = $this->MiniProgramModel->where('shopid', $this->shopid)->value('tmplmsg');
         $detail = $TemplateMessageLogic->formatData($detail); //格式化原始数据
-        View::assign([
-            'type' => $type,
-            'element' => $TemplateMessageLogic->oauth_type[$type],
-            'data' => $detail
-        ]);
-        return View::fetch('common/template_message');
+        
+        // json response
+        return $this->success('success', $detail);
     }
 }
