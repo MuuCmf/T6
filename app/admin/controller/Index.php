@@ -14,12 +14,6 @@ class Index extends Admin
     public function __construct()
     {
         parent::__construct();
-        //应用入口
-        View::assign('all_module_list', $this->allModuleList());
-        //数据库版本号
-        $mysql = Db::query("select version() as v;");
-        $mysql_version = $mysql[0]['v'];
-        View::assign('mysql_version', $mysql_version);
     }
 
     /**
@@ -40,19 +34,8 @@ class Index extends Admin
             'system_info' => $systemInfo,
         ];
 
-        // 异步请求
-        if( request()->isAjax()){
-            return $this->success('success', $result);
-        }
- 
-        View::assign('count', $count);
-        View::assign('regMember', $regMember);
-        View::assign('actionLog', $actionLog);
-        View::assign('systemInfo', $systemInfo);
-        
-        $this->setTitle('控制台');
-        // 模板输出
-        return View::fetch('index');
+        // json response
+        return $this->success('success', $result);
     }
 
     /**

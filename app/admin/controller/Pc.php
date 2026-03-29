@@ -22,7 +22,7 @@ class Pc extends Admin
     {
         parent::__construct();
         $this->channelModel = new ChannelModel();
-        $this->seoRuleModel = new SeoRuleModel();   
+        $this->seoRuleModel = new SeoRuleModel();
         $this->userNavModel = new UserNavModel();
     }
 
@@ -34,7 +34,7 @@ class Pc extends Admin
 
         if (request()->isPost()) {
 
-            $nav = input('post.nav', [], 'trim');
+            $nav = (array)input('post.nav', [], 'trim,text');
 
             // 启动事务
             Db::startTrans();
@@ -91,7 +91,7 @@ class Pc extends Admin
     {
         if (request()->isPost()) {
 
-            $nav = input('post.nav');
+            $nav = (array)input('post.nav', [], 'trim,text');
             // 启动事务
             Db::startTrans();
             try {
@@ -126,7 +126,7 @@ class Pc extends Admin
                 Db::rollback();
                 return $this->error($e->getMessage());
             }
-        } 
+        }
 
         /* 获取频道列表 */
         $map[] = ['status', '>', -1];
@@ -144,7 +144,7 @@ class Pc extends Admin
     public function user()
     {
         if (request()->isPost()) {
-            $nav = input('post.nav');
+            $nav = (array)input('post.nav', [], 'trim,text');
             // 启动事务
             Db::startTrans();
             try {
