@@ -5,9 +5,6 @@ namespace app\admin\controller;
 use think\Exception;
 use think\facade\Cache;
 use think\facade\Db;
-use think\facade\View;
-use app\common\model\Module as ModuleModel;
-use app\common\model\AuthRule as AuthRuleModel;
 
 class Index extends Admin
 {
@@ -220,27 +217,5 @@ class Index extends Admin
         } catch (Exception $e) {
             return false;
         }
-    }
-
-    /**
-     * 已安装应用模块列表
-     */
-    protected function allModuleList()
-    {
-        $all_module_list = (new ModuleModel())->getAll([
-            ['is_setup', '=', 1],
-            ['name', '<>', 'ucenter'],
-            ['name', '<>', 'channel']
-        ]);
-        // 应用权限
-        foreach ($all_module_list as $key => $item) {
-            // 判断主菜单权限
-            if (!$this->isRoot && !$this->checkRule(strtolower($item['entry']), get_uid(), AuthRuleModel::RULE_MAIN, null)) {
-                unset($all_module_list[$key]);
-                continue; //继续循环
-            }
-        }
-
-        return $all_module_list;
     }
 }
