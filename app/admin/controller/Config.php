@@ -91,15 +91,14 @@ class Config extends Admin
         if (!empty($group)) {
             $map[] = ['group', 'in', $group];
         }
+        
         if (!empty($keyword)) {
-            if (!empty($keyword)) {
-                $map[] = function ($query) use ($keyword) {
-                    $query->where('name', 'like', "%{$keyword}%")
-                        ->whereOr('title', 'like', "%{$keyword}%");
-                };
-            }
+            $map[] = function ($query) use ($keyword) {
+                $query->where('name', 'like', "%{$keyword}%")
+                    ->whereOr('title', 'like', "%{$keyword}%");
+            };
         }
-
+        
         if ($load == 'page') {
             // 分页查询
             $list = $this->ConfigModel->getListByPage($map, 'sort asc,id desc', '*', $rows);

@@ -38,17 +38,25 @@ class Attachment extends Admin
         $rows = min($rows, 100);
 
         // 查询条件
-        $map = '`shopid` = 0';
-        if (!empty($keyword)) {
-            $map .= ' and (`filename` like "%' . $keyword . '%" or `attachment` like "%' . $keyword . '%")';
-        }
+        $map[] = ['shopid', '=', 0];
+        
         if (!empty($driver)) {
-            $map .= ' and (`driver`="' . $driver . '")';
+            $map[] = ['driver', '=', $driver];
         }
         if (!empty($type)) {
-            $map .= ' and (`type`="' . $type . '")';
+            if ($type == 'video' || $type == 'image' || $type == 'application' || $type == 'audio') {
+                $map[] = ['type', '=', $type];
+            }else{
+                $map[] = ['type', 'not in', ['video', 'image', 'application', 'audio']];
+            }
         }
-        
+
+        if (!empty($keyword)) {
+            $map[] = function ($query) use ($keyword) {
+                $query->where('filename', 'like', "%{$keyword}%");
+            };
+        }
+
         // 排序
         $order_field = input('order_field', 'id', 'text');
         $order_type = input('order_type', 'desc', 'text');
@@ -107,7 +115,7 @@ class Attachment extends Admin
         if (empty($data)) {
             return $this->error('数据不存在');
         }
-        
+
         // 删除附件数据
         $res = $this->AttachmentModel->where('id', '=', $id)->delete();
         if ($res) {
