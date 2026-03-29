@@ -3,7 +3,6 @@
 namespace app\admin\controller;
 
 use think\facade\Db;
-use think\facade\View;
 use app\common\model\Crontab as CrontabModel;
 use app\common\logic\Crontab as CrontabLogic;
 use app\common\model\CrontabLog as CrontabLogModel;
@@ -33,30 +32,20 @@ class Crontab extends Admin
         ];
 
         $rows = input('rows', 20, 'intval');
-        View::assign('rows', $rows);
         $list = $this->CrontabModel->getListByPage($map, 'id DESC', 'id,title,description,execute,cycle,day,hour,minute,status,update_time', $rows);
-        $pager = $list->render();
         $list = $list->toArray();
         foreach ($list['data'] as &$item) {
             $item = $this->CrontabLogic->formatData($item);
         }
         unset($item);
 
-        // ajax请求返回数据
-        if (request()->isAjax()) {
-            return $this->success('success', $list);
-        }
-
-        View::assign([
-            'pager' => $pager,
-            'list' => $list['data']
-        ]);
-
-        $this->setTitle('计划任务');
-
-        return View::fetch();
+        // json response
+        return $this->success('success', $list);
     }
 
+    /**
+     * 编辑任务
+     */
     public function edit()
     {
         if (request()->isPost()) {
@@ -87,12 +76,13 @@ class Crontab extends Admin
                 $data = $data->toArray();
             }
         }
-        View::assign([
-            'data' => $data
-        ]);
-        return View::fetch();
+
+        return $this->success('success', $data);
     }
 
+    /**
+     * 任务日志
+     */
     public function log()
     {
         $cid = input('cid', 0);
@@ -107,17 +97,8 @@ class Crontab extends Admin
         $list = $list->toArray();
         unset($item);
 
-        // ajax请求返回数据
-        if (request()->isAjax()) {
-            return $this->success('success', $list);
-        }
-
-        View::assign([
-            'pager' => $pager,
-            'list'  => $list['data'],
-            'cid'   => $cid
-        ]);
-        return View::fetch();
+        // json response
+        return $this->success('success', $list);
     }
 
     /**

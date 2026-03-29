@@ -1,7 +1,6 @@
 <?php
 namespace app\admin\controller;
 
-use think\facade\View;
 use think\paginator\driver\Bootstrap;
 
 /**
@@ -34,7 +33,6 @@ class Queue extends Admin {
         $key = '{queues:' .config('queue.connections.redis.queue'). '}';
         $page = input('page', 1, 'intval');
         $rows = input('rows', 20, 'intval');
-        View::assign('rows', $rows);
         $page_size = $rows;
         
         // 起始索引
@@ -59,23 +57,8 @@ class Queue extends Admin {
             'data'=> $page_list
         ];
 
-        // ajax请求返回数据
-        if (request()->isAjax()) {
-            return $this->success('success', $page_list);
-        }
-
-        // 分页
-        $pager = (new Bootstrap($page_list, (int)$page_size, (int)$page, $count, false, [
-            'path' => '/admin/queue/list',
-            'var_page' => 'page'
-        ]))->render();
-        
-        $this->setTitle('消息队列');
-        View::assign('pager', $pager);
-        View::assign('lists', $lists);
-
-        // 输出模板
-        return View::fetch();
+        // json response
+        return $this->success('success', $lists);
     }
 
     /**
@@ -87,6 +70,11 @@ class Queue extends Admin {
         $config = config('queue.connections.redis');
         $func   = $config['persistent'] ? 'pconnect' : 'connect';
 
+        // 判断redis是否支持连接池
+        if (!class_exists('Redis')) {
+            throw new \Exception('Redis扩展未加载');
+        }
+        
         $client = new \Redis;
         $client->$func($config['host'], $config['port'], $config['timeout']);
 
@@ -100,5 +88,4 @@ class Queue extends Admin {
 
         return $client;
     }
-
 }

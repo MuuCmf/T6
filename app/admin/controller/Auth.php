@@ -3,7 +3,6 @@
 namespace app\admin\controller;
 
 use think\facade\Db;
-use think\facade\View;
 use app\common\model\Member as MemberModel;
 use app\common\model\AuthRule;
 use app\common\model\AuthGroup;
@@ -68,19 +67,8 @@ class Auth extends Admin
             $pager = '';
         }
 
-        // 处理ajax请求
-        if(request()->isAjax()){
-            return $this->success('success!', $list);
-        }
-
-        View::assign('_list', $list);
-        View::assign('_pager', $pager);
-
-        // 记录当前列表页的cookie
-        cookie('__forward__', $_SERVER['REQUEST_URI']);
-        $this->setTitle('用户组管理');
-        // 输出模板
-        return View::fetch();
+        // json response
+        return $this->success('success!', $list);
     }
 
     /**
@@ -110,10 +98,7 @@ class Auth extends Admin
         } else {
             $auth_group = $this->AuthGroupModel->where(['module' => 'admin', 'type' => AuthGroup::TYPE_ADMIN])->find((int)$id);
 
-            View::assign('auth_group', $auth_group);
-            $this->setTitle('编辑用户组');
-
-            return View::fetch();
+            return $this->success('success!', $auth_group);
         }
     }
 
@@ -189,11 +174,9 @@ class Auth extends Admin
         if (empty($group_id)) {
             return $this->error('参数错误');
         }
-        View::assign('group_id', $group_id);
 
         // 搜索关键词 支持昵称/手机号/uid
         $keyword = input('keyword', '', 'text');
-        View::assign('keyword', $keyword);
 
         $l_table = AuthGroup::MEMBER;
         $r_table = AuthGroup::AUTH_GROUP_ACCESS;
@@ -220,24 +203,15 @@ class Auth extends Admin
                 'query' => request()->param(),
             ], false);
 
-        // 处理分页信息
-        $pager = $list->render();
-        View::assign('pager', $pager);
         // 转数组
         $list = $list->toArray();
         foreach ($list['data'] as &$v) {
             $v = $this->MemberModel->info($v['uid'], '*');
         }
         unset($v);
-        View::assign('list', $list);
 
-        // 处理ajax请求
-        if( request()->isAjax()){
-            return $this->success('success!', $list);
-        }
-
-        $this->setTitle('用户授权');
-        return View::fetch();
+        // json response
+        return $this->success('success!', $list);
     }
 
     /**
@@ -270,7 +244,6 @@ class Auth extends Admin
     public function access()
     {
         $group_id = input('group_id', 0, 'intval');
-        View::assign('group_id', $group_id);
         // post请求
         if (request()->isPost()) {
             $data = input();
@@ -311,16 +284,9 @@ class Auth extends Admin
             'node_tree' => $node_tree,
             'group_rules' => $rules,
         ];
-        View::assign('result', $result);
 
-        // 异步请求返回json数据
-        if(request()->isAjax()){
-            return $this->success('success!', $result);
-        }
-
-        $this->setTitle('管理权限');
-
-        return View::fetch();
+        // json response
+        return $this->success('success!', $result);
     }
 
     /**

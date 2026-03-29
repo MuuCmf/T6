@@ -4,7 +4,6 @@ namespace app\admin\controller;
 
 use think\facade\Db;
 use think\Exception;
-use think\facade\View;
 use app\common\model\Member as MemberModel;
 use app\common\model\MemberAuthentication as AuthenticationModel;
 
@@ -33,22 +32,20 @@ class Authentication extends Admin
     {
         $map = [];
         $keyword = input('keyword', '', 'text');
-        View::assign('keyword', $keyword);
         $status = input('status', 'all');
-        if($status === 'all'){
+        if ($status === 'all') {
             $map[] = ['a.status', 'in', [-1, 0, 1, 2]];
         }
-        if(intval($status) == 2){
+        if (intval($status) == 2) {
             $map[] = ['a.status', '=', 2];
         }
-        if(intval($status) == 1){
+        if (intval($status) == 1) {
             $map[] = ['a.status', '=', 1];
         }
-        if(intval($status) == -1){
+        if (intval($status) == -1) {
             $map[] = ['a.status', '=', -1];
         }
-        View::assign('status', $status);
-        
+
         if (!empty($keyword)) {
             $uids = $this->MemberModel
                 ->where('uid', '=', $keyword)
@@ -67,15 +64,14 @@ class Authentication extends Admin
         // 每页显示数量
         $rows = input('rows', 15, 'intval');
         $list = $this->AuthenticationModel->alias('a')
-        ->join('member m', 'a.uid = m.uid')
-        ->where($map)
-        ->field('a.*, m.username, m.nickname, m.email, m.mobile, m.avatar, m.authentication')
-        ->order('a.uid', 'desc')
-        ->paginate($rows);
+            ->join('member m', 'a.uid = m.uid')
+            ->where($map)
+            ->field('a.*, m.username, m.nickname, m.email, m.mobile, m.avatar, m.authentication')
+            ->order('a.uid', 'desc')
+            ->paginate($rows);
 
-        $pager = $list->render();
         $list = $list->toArray();
-        
+
         foreach ($list['data'] as &$v) {
             // 头像
             if (empty($v['avatar'])) {
@@ -90,25 +86,8 @@ class Authentication extends Admin
             $v = $this->AuthenticationModel->handle($v);
         }
         unset($v);
-        View::assign('pager', $pager);
-        View::assign('list', $list);
 
-        if (request()->isAjax()) {
-            return $this->success('success', $list);
-        }
-
-        // 获取未审核的认证数量
-        $unverify = $this->AuthenticationModel->where('status', '=', 1)->count();
-        View::assign('unverify', $unverify);
-        // 获取未通过审核的认证数量
-        $false_verify = $this->AuthenticationModel->where('status', '=', -1)->count();
-        View::assign('false_verify', $false_verify);
-
-        $this->setTitle('实名认证列表');
-        // 记录当前列表页的cookie
-        cookie('__forward__', $_SERVER['REQUEST_URI']);
-
-        return View::fetch();
+        return $this->success('success', $list);
     }
 
     /**
@@ -157,21 +136,6 @@ class Authentication extends Admin
             Db::commit();
             //返回提示
             return $this->success('提交成功！', $res);
-        } else {
-            // 查询用户认证数据
-            $map = [
-                ['shopid', '=', $this->shopid],
-                ['uid', '=', $uid]
-            ];
-
-            $data = $this->AuthenticationModel->where($map)->find();
-            if (!empty($data)) {
-                $data = $this->AuthenticationModel->handle($data);
-                View::assign('data', $data);
-            }
-
-            return View::fetch();
         }
     }
-
 }

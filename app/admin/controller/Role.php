@@ -4,8 +4,6 @@ namespace app\admin\controller;
 
 use think\exception\ValidateException;
 use app\common\validate\Author as AuthorValidate;
-use app\admin\builder\AdminConfigBuilder;
-use app\admin\builder\AdminListBuilder;
 use app\common\model\Author as AuthorModel;
 use app\common\logic\Author as AuthorLogic;
 use app\common\model\AuthorGroup as AuthorGroupModel;

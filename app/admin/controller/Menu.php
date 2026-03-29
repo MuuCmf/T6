@@ -2,11 +2,9 @@
 
 namespace app\admin\controller;
 
-use think\facade\View;
 use app\common\model\AuthRule;
 use app\common\model\Menu as MenuModel;
 use app\common\model\Module as ModuleModel;
-use app\common\service\Tree;
 
 /**
  * 后台管理菜单控制器
@@ -55,17 +53,7 @@ class Menu extends Admin
         // 转树结构
         $list = list_to_tree($result_list, 'id', 'pid', '_child', '0');
 
-        // ajax请求返回数据
-        if (request()->isAjax()) {
-            return $this->success('success', $list);
-        }
-
-        View::assign('list', $list);
-        // 记录当前列表页的cookie
-        cookie('__forward__', $_SERVER['REQUEST_URI']);
-        $this->setTitle('后台菜单管理');
-
-        return View::fetch();
+        return $this->success('success', $list);
     }
 
     /**
@@ -217,8 +205,7 @@ class Menu extends Admin
             }
         } else {
             $id = input('id', '0', 'text');
-            $pid = input('pid', '0', 'text');
-            View::assign('pid', $pid);
+
             $info = [];
             /* 获取数据 */
             $info = $this->MenuModel->where(['id' => $id])->find();
@@ -228,22 +215,8 @@ class Menu extends Admin
                 $info = $this->MenuModel->where($map)->field('module,pid,hide,type')->find();
                 $info['pid'] = input('pid', '0', 'text');
             }
-            View::assign('info', $info);
 
-            // 获取菜单
-            $menus = $this->MenuModel->where('type', 0)->order('sort asc,id asc')->select()->toArray();
-            $tree = new Tree();
-            $menus = $tree->toFormatTree($menus, 'title', 'id', 'pid', '0');
-            $menus = array_merge([
-                0 => ['id' => '0', 'title_show' => '顶级菜单']
-            ], $menus);
-
-            View::assign('Menus', $menus);
-            View::assign('Modules', $this->ModuleModel->getAll());
-
-            $this->setTitle('菜单编辑');
-            // 输出页面
-            return View::fetch();
+            return $this->success('success', $info);
         }
     }
 
@@ -304,14 +277,6 @@ class Menu extends Admin
                 }
                 return $this->success('导入成功', '', url('index', ['pid' => $pid]));
             }
-        } else {
-            $this->setTitle('菜单导入');
-            $pid = (string)input('get.pid');
-            View::assign('pid', $pid);
-            $data = $this->MenuModel->where('id', '=', $pid)->find();
-
-            View::assign('data', $data);
-            return View::fetch();
         }
     }
 
@@ -336,10 +301,7 @@ class Menu extends Admin
             $map[] = ['type', '=', 0];
             $list = $this->MenuModel->where($map)->field('id,title')->order('sort asc')->select();
 
-            View::assign('list', $list);
-            $this->setTitle('菜单排序');
-            // 输出页面
-            return View::fetch();
+            return $this->success('success', $list);
         }
     }
 

@@ -3,7 +3,6 @@
 namespace app\admin\controller;
 
 use think\facade\Db;
-use think\facade\View;
 use think\Exception;
 use app\common\model\Module as ModuleModel;
 use app\common\model\UserNav as UserNavModel;
@@ -82,29 +81,7 @@ class Pc extends Admin
         $map[] = ['block', '=', 'navbar'];
         $list = $this->channelModel->where($map)->order('sort asc')->select()->toArray();
         // 返回JSON数据
-        if (request()->isAjax() && $output == 'json') {
-            return $this->success('获取成功', $list);
-        }
-        View::assign('list', $list);
-
-        // 获取应用模块列表
-        $moduleModel = new ModuleModel();
-        $module_list = $moduleModel->getAll(['is_setup' => 1]);
-        // 移除不支持PC端首页的应用
-        foreach ($module_list as $k => $v) {
-            if (!file_exists(base_path() . $v['name'] . '/controller/pc/Index.php')) {
-                unset($module_list[$k]);
-            }
-        };
-        View::assign('module_list', $module_list);
-        $keys = array_keys($module_list);
-        $first_key = array_shift($keys);
-        View::assign('first_key', $first_key);
-
-        $this->setTitle('导航管理');
-
-        return View::fetch();
-        
+        return $this->success('获取成功', $list);
     }
 
     /**
@@ -151,37 +128,12 @@ class Pc extends Admin
             }
         } 
 
-        // 输出类型
-        $output = input('output', 'html');
         /* 获取频道列表 */
         $map[] = ['status', '>', -1];
         $map[] = ['block', '=', 'footer'];
         $list = $this->channelModel->where($map)->order('sort asc')->select()->toArray();
         // 返回JSON数据
-        if (request()->isAjax() && $output == 'json') {
-            return $this->success('获取成功', $list);
-        }
-
-        View::assign('list', $list);
-        // 获取应用模块列表
-        $moduleModel = new ModuleModel();
-        $module_list = $moduleModel->getAll(['is_setup' => 1]);
-        // 移除不支持PC端首页的应用
-        foreach ($module_list as $k => $v) {
-            if (!file_exists(base_path() . $v['name'] . '/controller/pc/Index.php')) {
-                unset($module_list[$k]);
-            }
-        };
-        
-        View::assign('module_list', $module_list);
-        $keys = array_keys($module_list);
-        $first_key = array_shift($keys);
-        View::assign('first_key', $first_key);
-
-        $this->setTitle('导航管理');
-
-        return View::fetch();
-        
+        return $this->success('获取成功', $list);
     }
 
 
@@ -226,25 +178,12 @@ class Pc extends Admin
                 return $this->error($e->getMessage());
             }
         } else {
-            // 输出类型
-            $output = input('output', 'html');
             /* 获取频道列表 */
             $map[] = ['status', '>', -1];
             $list = Db::name('UserNav')->where($map)->order('sort asc,id asc')->select()->toArray();
 
             // 返回JSON数据
-            if (request()->isAjax() && $output == 'json') {
-                return $this->success('获取成功', $list);
-            }
-            View::assign('list', $list);
-            // 获取应用模块列表
-            $moduleModel = new ModuleModel();
-            $module_list = $moduleModel->getAll(['is_setup' => 1]);
-            View::assign('module_list', $module_list);
-
-            $this->setTitle('导航管理');
-
-            return View::fetch();
+            return $this->success('获取成功', $list);
         }
     }
 }

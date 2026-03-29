@@ -1,7 +1,7 @@
 <?php
+
 namespace app\admin\controller;
 
-use think\facade\View;
 use app\common\model\AuthGroup;
 use app\common\model\MessageContent as MessageContentModel;
 use app\common\model\MessageType as MessageTypeModel;
@@ -46,21 +46,13 @@ class Message extends Admin
         $map[] = ['shopid', '=', 0];
         $map[] = ['status', '>', -1];
         $list = $this->MessageTypeModel->getList($map);
-        foreach($list as &$val){
+        foreach ($list as &$val) {
             $val = $this->MessageTypeModel->formatData($val);
         }
         unset($val);
 
-        // ajax请求返回数据
-        if (request()->isAjax()) {
-            return $this->success('success', $list);
-        }
 
-        View::assign('list', $list);
-        // 记录当前列表页的cookie
-        cookie('__forward__', $_SERVER['REQUEST_URI']);
-        // 输出模板
-        return View::fetch();
+        return $this->success('success', $list);
     }
 
     /**
@@ -70,7 +62,6 @@ class Message extends Admin
     {
         $id = input('id', 0, 'intval');
         $title = $id ? "编辑" : "新建";
-        View::assign('title',$title);
 
         if (request()->isPost()) {
             $data = input();
@@ -87,17 +78,16 @@ class Message extends Admin
                 return $this->error($e->getError());
             }
             $res = $this->MessageTypeModel->edit($data);
-            
-            if ($res) {
-                return $this->success($title.'成功', $res, cookie('__forward__'));
-            } else {
-                return $this->error($title.'失败');
-            }
 
-        }else{
-            if(!empty($id)){
+            if ($res) {
+                return $this->success($title . '成功', $res, cookie('__forward__'));
+            } else {
+                return $this->error($title . '失败');
+            }
+        } else {
+            if (!empty($id)) {
                 $data = $this->MessageTypeModel->getDataById($id);
-            }else{
+            } else {
                 // 初始化数据
                 $data = [];
                 $data['id'] = 0;
@@ -106,10 +96,8 @@ class Message extends Admin
                 $data['icon'] = '';
                 $data['status'] = 1;
             }
-            
-            View::assign('data', $data);
-            // 输出模板
-            return View::fetch();
+
+            return $this->success('success', $data);
         }
     }
 
@@ -119,7 +107,9 @@ class Message extends Admin
     public function send()
     {
         if (request()->isPost()) {
-            $data = input();
+            $data = input('post.', [], 'trim,htmlspecialchars');
+            $data['shopid'] = $this->shopid;
+
             // 数据验证
             try {
                 validate(Common::class)->scene('message')->check($data);
@@ -130,59 +120,22 @@ class Message extends Admin
             // 处理发送的类型
             $send_type = $data['send_type'];
             // 处理接收用户
-            if(!empty($data['to_uid'])){
+            if (!empty($data['to_uid'])) {
                 $to_uids = intval($data['to_uid']);
                 // 发送消息
                 $res = $this->MessageModel->sendMessageToUid(0, 0, $to_uids, $data['title'], $data['description'], $data['content'], $data['type_id'], $send_type);
-
-            }else{
+            } else {
                 // 发送至用户组
                 $to_group_ids = $data['user_group'];
                 // 发送消息
                 $res = $this->MessageModel->sendMessageToGroup(0, 0, $to_group_ids, $data['title'], $data['description'], $data['content'], $data['type_id'], $send_type);
             }
-            
+
             if ($res) {
                 return $this->success('消息发送成功', $res);
             } else {
                 return $this->error('消息发送失败');
             }
-
-        }else{
-            
-            // 消息类型ID
-            $type_id = input('type_id', 0, 'intval');
-            View::assign('type_id', $type_id);
-            // 发送至用户
-            $to_uid = input('to_uid', 0,'intval');
-            View::assign('to_uid', $to_uid);
-            if(!empty($to_uid)){
-                $to_user = query_user($to_uid);
-                View::assign('to_user', $to_user);
-            }
-            // 获取用户组数据
-            if (empty($to_uid)) {
-                $group = (new AuthGroup)->getGroups();
-                $groups = array();
-                foreach ($group as $v) {
-                    array_push($groups, array('id' => $v['id'], 'value' => $v['title']));
-                }
-                View::assign('groups', $groups);
-            }
-            
-            // 获取消息类型
-            $map[] = ['shopid', '=', 0];
-            $map[] = ['status', '=', 1];
-            $type = $this->MessageTypeModel->getList($map);
-            foreach($type as &$val){
-                $val = $this->MessageTypeModel->formatData($val);
-            }
-            unset($val);
-            View::assign('type', $type);
-            
-
-            // 输出模板
-            return View::fetch();
         }
     }
 
@@ -197,36 +150,25 @@ class Message extends Admin
 
         // 搜索关键字
         $keyword = input('keyword', '', 'text');
-        View::assign('keyword',$keyword);
-        if(!empty($keyword)){
+        if (!empty($keyword)) {
             $map[] = ['title', 'like', '%' . $keyword . '%'];
         }
 
         $fields = '*';
         $rows = input('rows', 20, 'intval');
-        View::assign('rows',$rows);
+        // rows限制
+        $rows = min($rows, 100);
+
         $lists = $this->MessageModel->getListByPage($map, 'id desc,create_time desc', $fields, $rows);
         $pager = $lists->render();
         $lists = $lists->toArray();
 
-        foreach($lists['data'] as &$val){
+        foreach ($lists['data'] as &$val) {
             $val = $this->MessageModel->formatData($val);
         }
         unset($val);
 
-        // ajax请求返回
-        if (request()->isAjax()){
-            return $this->success('success',$lists);
-        }
-
-        View::assign('pager',$pager);
-        View::assign('lists',$lists);
-
-        // 记录当前列表页的cookie
-        cookie('__forward__', $_SERVER['REQUEST_URI']);
-        $this->setTitle('消息发送记录');
-        // 输出模板
-        return View::fetch('list');
+        return $this->success('success', $lists);
     }
 
     /**
@@ -235,26 +177,26 @@ class Message extends Admin
     public function messageStatus()
     {
         $ids = input('ids/a');
-        !is_array($ids) && $ids = explode(',',$ids);
+        !is_array($ids) && $ids = explode(',', (string)$ids);
         $status = input('status', 0, 'intval');
         $title = '更新';
-        if($status == 0){
+        if ($status == 0) {
             $title = '禁用';
         }
-        if($status == 1){
+        if ($status == 1) {
             $title = '启用';
         }
-        if($status == -1){
+        if ($status == -1) {
             $title = '删除';
         }
         $data['status'] = $status;
 
         $res = $this->MessageModel->where('id', 'in', $ids)->update($data);
-        if($res){
+        if ($res) {
             return $this->success($title . '成功');
-        }else{
+        } else {
             return $this->error($title . '失败');
-        }  
+        }
     }
 
 
@@ -264,26 +206,26 @@ class Message extends Admin
     public function typeStatus()
     {
         $ids = input('ids/a');
-        !is_array($ids)&&$ids=explode(',',$ids);
+        !is_array($ids) && $ids = explode(',', (string)$ids);
         $status = input('status', 0, 'intval');
         $title = '更新';
-        if($status == 0){
+        if ($status == 0) {
             $title = '禁用';
         }
-        if($status == 1){
+        if ($status == 1) {
             $title = '启用';
         }
-        if($status == -1){
+        if ($status == -1) {
             $title = '删除';
         }
         $data['status'] = $status;
 
         $res = $this->MessageTypeModel->where('id', 'in', $ids)->update($data);
-        if($res){
+        if ($res) {
             return $this->success($title . '成功');
-        }else{
+        } else {
             return $this->error($title . '失败');
-        }  
+        }
     }
 
     /**
@@ -297,35 +239,25 @@ class Message extends Admin
 
         // 搜索关键字
         $keyword = input('keyword', '', 'text');
-        View::assign('keyword',$keyword);
-        if(!empty($keyword)){
+        if (!empty($keyword)) {
             $map[] = ['title', 'like', '%' . $keyword . '%'];
         }
-
+        
         $fields = '*';
         $rows = input('rows', 20, 'intval');
+        // rows限制
+        $rows = min($rows, 100);
+        
         $lists = $this->MessageContentModel->getListByPage($map, 'id desc,create_time desc', $fields, $rows);
         $pager = $lists->render();
         $lists = $lists->toArray();
-        
-        foreach($lists['data'] as &$val){
+
+        foreach ($lists['data'] as &$val) {
             $val = $this->MessageContentModel->formatData($val);
         }
         unset($val);
 
-        // ajax请求返回
-        if (request()->isAjax()){
-            return $this->success('success',$lists);
-        }
-
-        View::assign('pager',$pager);
-        View::assign('lists',$lists);
-
-        // 记录当前列表页的cookie
-        cookie('__forward__', $_SERVER['REQUEST_URI']);
-        
-        // 输出模板
-        return View::fetch('content');
+        return $this->success('success', $lists);
     }
 
     /**
@@ -335,7 +267,6 @@ class Message extends Admin
     {
         $id = input('id', 0, 'intval');
         $title = $id ? "编辑" : "新建";
-        View::assign('title',$title);
 
         if (request()->isPost()) {
             $data = input();
@@ -351,17 +282,16 @@ class Message extends Admin
                 return $this->error($e->getError());
             }
             $res = $this->MessageContentModel->edit($data);
-            
-            if ($res) {
-                return $this->success($title.'成功', $res, cookie('__forward__'));
-            } else {
-                return $this->error($title.'失败');
-            }
 
-        }else{
-            if(!empty($id)){
+            if ($res) {
+                return $this->success($title . '成功', $res, cookie('__forward__'));
+            } else {
+                return $this->error($title . '失败');
+            }
+        } else {
+            if (!empty($id)) {
                 $data = $this->MessageContentModel->getDataById($id);
-            }else{
+            } else {
                 // 初始化数据结构
                 $data['id'] = 0;
                 $data['title'] = '';
@@ -369,10 +299,8 @@ class Message extends Admin
                 $data['content'] = '';
                 $data['status'] = 1;
             }
-            View::assign('data', $data);
 
-            // 输出模板
-            return View::fetch();
+            return $this->success('success', $data);
         }
     }
 
@@ -382,27 +310,25 @@ class Message extends Admin
     public function contentStatus()
     {
         $ids = input('ids/a');
-        !is_array($ids) && $ids = explode(',',$ids);
+        !is_array($ids) && $ids = explode(',', (string)$ids);
         $status = input('status', 0, 'intval');
         $title = '更新';
-        if($status == 0){
+        if ($status == 0) {
             $title = '禁用';
         }
-        if($status == 1){
+        if ($status == 1) {
             $title = '启用';
         }
-        if($status == -1){
+        if ($status == -1) {
             $title = '删除';
         }
         $data['status'] = $status;
 
         $res = $this->MessageContentModel->where('id', 'in', $ids)->update($data);
-        if($res){
+        if ($res) {
             return $this->success($title . '成功');
-        }else{
+        } else {
             return $this->error($title . '失败');
-        }  
+        }
     }
-
-
 }
