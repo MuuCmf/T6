@@ -133,7 +133,7 @@
                 verify: self.find('.active [name="verify"]').val(),
                 captcha: self.find('.active [name="captcha"]').val(),
                 send_verify_captcha: self.find('.active [name="send_verify_captcha"]').val(),
-                remember: $('[name="remember"]').val(),
+                remember: $('[name="remember"]:checked').val(),
                 channel: 'pc',
                 from: $('[name="from"]').val(),
             }

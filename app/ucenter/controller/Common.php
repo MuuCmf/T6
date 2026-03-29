@@ -210,9 +210,10 @@ class Common extends Base
                     $uid = $commonMemberModel->randMember('', '', '', $email, $mobile, $channel);
                 }
             }
-
+            
             //登录
             $res = $commonMemberModel->login($this->shopid, $uid, $remember);
+            
             if ($res) {
                 $token = JWTAuth::builder(['uid' => $uid]);
                 $token = 'Bearer ' . $token;

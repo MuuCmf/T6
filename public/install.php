@@ -254,12 +254,14 @@ $html_footer = <<<EOF
 EOF;
 
 //判断是否安装过程序
-if (is_file('../data/install.lock') && $_GET['step'] != 3) {
+if (is_file('../data/install.lock')) {
+  $setp = $_GET['step'] ?? 0;
+  if ($setp != 3) {
     @header("Content-type: text/html; charset=UTF-8");
     echo "系统已经安装过了，如果要重新安装，请删除data目录下的install.lock文件";
     exit;
+  }
 }
-
 
 if (!isset($_GET['step'])) {
     $_GET['step'] = 0;
@@ -1107,15 +1109,6 @@ function function_check(&$func_items)
             $func_items[$key]['status'] = function_exists($item['name']) ? 1 : 0;
         }
     }
-
-}
-
-
-function show_msg($msg)
-{
-    global $html_title, $html_header, $html_footer;
-    include 'step_msg.php';
-    exit();
 }
 
 //make rand
