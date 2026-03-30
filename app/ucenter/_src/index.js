@@ -8,8 +8,3 @@ import './css/orders.scss'
 import './css/score.scss'
 import './css/uploadavatar.scss'
 import './css/vip.scss'
-
-// 导入所有 JS 文件
-import './js/evaluate_star.js';
-
-

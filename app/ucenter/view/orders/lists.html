@@ -14,7 +14,8 @@
             <div id="center" class="orders-lists">
                 <h4 class="lists-title">我的订单</h4>
                 <ul class="nav nav-tabs clearfix">
-                    <li class="{if $status==='all'}active{/if}"><a href="{:url('lists', ['status' => 'all'])}">所有</a></li>
+                    <li class="{if $status==='all'}active{/if}"><a href="{:url('lists', ['status' => 'all'])}">所有</a>
+                    </li>
                     <li class="{if $status==='1'}active{/if}"><a href="{:url('lists', ['status'=>1])}">待付款</a></li>
                     <li class="{if $status==='2'}active{/if}"><a href="{:url('lists', ['status'=>2])}">待发货</a></li>
                     <li class="{if $status==='3'}active{/if}"><a href="{:url('lists', ['status'=>3])}">待收货</a></li>
@@ -42,7 +43,7 @@
 
                             <span class="pull-right text-right status">
                                 {if $v['refund'] > 0}
-                                    {$v['refund_str']}
+                                {$v['refund_str']}
                                 {else}
                                 {$v['status_str']}
                                 {/if}
@@ -58,7 +59,7 @@
                                     <th width=100>操作</th>
                                 </tr>
                             </thead>
-    
+
                             <tbody>
                                 <tr>
                                     <td>
@@ -68,10 +69,11 @@
                                             </div>
                                             <div class="info">
                                                 <div class="title text-ellipsis">{$v['products']['title']}</div>
-                                                <div class="description text-ellipsis">{$v['products']['description']}</div>
+                                                <div class="description text-ellipsis">{$v['products']['description']}
+                                                </div>
                                             </div>
                                         </div>
-                                        
+
                                     </td>
                                     <td>
                                         {if ($v.app == 'minishop' || $v.app == 'scoreshop')}
@@ -124,79 +126,99 @@
                                     <td class="action">
 
                                         {if $v['status'] == 1}
-                                        <button type="button" class="btn btn-success btn-sm" data-order-no="{$v.order_no}" data-role="pay">
+                                        <button type="button" class="btn btn-success btn-sm"
+                                            data-order-no="{$v.order_no}" data-role="pay">
                                             立即支付
                                         </button>
-                                        <a href="{:url($v.app . '/api.orders/cancel')}" class="btn btn-danger btn-sm ajax-post" target-form="action-form-{$v.id}" data-confirm="确认执行取消操作？">
+                                        <a href="{:url($v.app . '/api.orders/cancel')}"
+                                            class="btn btn-danger btn-sm ajax-post" target-form="action-form-{$v.id}"
+                                            data-confirm="确认执行取消操作？">
                                             取消订单
                                         </a>
                                         {/if}
-    
+
                                         {if $v['status'] == 2 && 0 >= $v['refund']}
                                         {if $v.app == 'minishop'}
-                                            <a href="{:url($v.app . '/api.orders/refund')}" class="btn btn-default btn-sm ajax-post" target-form="action-form-{$v.id}" data-confirm="确认申请退款操作？">
-                                                申请退款
-                                            </a>
+                                        <a href="{:url($v.app . '/api.orders/refund')}"
+                                            class="btn btn-default btn-sm ajax-post" target-form="action-form-{$v.id}"
+                                            data-confirm="确认申请退款操作？">
+                                            申请退款
+                                        </a>
                                         {/if}
                                         {/if}
-    
+
                                         {if $v['status'] == 3 && ($v.app == 'minishop' || $v.app == 'scoreshop')}
-                                            {if $v['products']['express'] == 1}
-                                            <a data-url="{:url($v.app.'/api.Orders/logistic',['id'=>$v['id']])}" data-toggle="modal" data-target="#logisticModal" class="btn btn-primary btn-sm">
-                                                物流查询
-                                            </a>
-                                            {/if}
-
-                                            {if $v['products']['express'] == 0}
-                                            <a data-url="{:url('detail',['id'=>$v['id']])}" data-toggle="modal" data-target="#sendOutModal" class="btn btn-primary btn-sm">
-                                                发货信息
-                                            </a>
-                                            {/if}
-
-                                            {if $v.app == 'minishop'}
-                                            <a href="{:url($v.app . '/api.orders/refund')}" class="btn btn-default btn-sm ajax-post" target-form="action-form-{$v.id}" data-confirm="确认申请退款操作？">
-                                                申请退款
-                                            </a>
-                                            {/if}
-    
-                                            {if 1 > $v['refund']}
-                                            <a href="{:url('status',['id'=>$v['id'],'status'=>4])}" class="btn btn-danger btn-sm confirm ajax-post" data-confirm="确认执行确认收货操作！">
-                                                确认收货
-                                            </a>
-                                            {/if}
+                                        {if $v['products']['express'] == 1}
+                                        <a data-url="{:url($v.app.'/api.Orders/logistic',['id'=>$v['id']])}"
+                                            data-toggle="modal" data-target="#logisticModal"
+                                            class="btn btn-primary btn-sm">
+                                            物流查询
+                                        </a>
                                         {/if}
-    
+
+                                        {if $v['products']['express'] == 0}
+                                        <a data-url="{:url('detail',['id'=>$v['id']])}" data-toggle="modal"
+                                            data-target="#sendOutModal" class="btn btn-primary btn-sm">
+                                            发货信息
+                                        </a>
+                                        {/if}
+
+                                        {if $v.app == 'minishop'}
+                                        <a href="{:url($v.app . '/api.orders/refund')}"
+                                            class="btn btn-default btn-sm ajax-post" target-form="action-form-{$v.id}"
+                                            data-confirm="确认申请退款操作？">
+                                            申请退款
+                                        </a>
+                                        {/if}
+
+                                        {if 1 > $v['refund']}
+                                        <a href="{:url('status',['id'=>$v['id'],'status'=>4])}"
+                                            class="btn btn-danger btn-sm confirm ajax-post" data-confirm="确认执行确认收货操作！">
+                                            确认收货
+                                        </a>
+                                        {/if}
+                                        {/if}
+
                                         {if $v['status'] == 4}
-                                        <a data-toggle="modal" class="btn btn-warning btn-sm" data-target="#evaluateModal" data-toggle="modal" data-order-no="{$v.order_no}" data-type="{$v.order_info_type}" data-type-id="{$v.order_info_id}">
+                                        <a data-toggle="modal" class="btn btn-warning btn-sm"
+                                            data-target="#evaluateModal" data-toggle="modal"
+                                            data-order-no="{$v.order_no}" data-type="{$v.order_info_type}"
+                                            data-type-id="{$v.order_info_id}">
                                             立即评价
                                         </a>
                                         {if ($v.app == 'minishop' || $v.app == 'scoreshop')}
-                                        <a data-url="{:url($v.app.'/api.Orders/logistic',['id'=>$v['id']])}" data-toggle="modal" data-target="#logisticModal" class="btn btn-primary btn-sm">
+                                        <a data-url="{:url($v.app.'/api.Orders/logistic',['id'=>$v['id']])}"
+                                            data-toggle="modal" data-target="#logisticModal"
+                                            class="btn btn-primary btn-sm">
                                             物流查询
                                         </a>
                                         {/if}
                                         {/if}
-    
+
                                         {if $v['refund'] > 0}
-                                        <a data-url="{:url('refund', ['id'=>$v['id']])}" data-refund="{$v['refund']}" data-toggle="modal" data-target="#refundModal" class="btn btn-default btn-sm disabled" disabled>
+                                        <a data-url="{:url('refund', ['id'=>$v['id']])}" data-refund="{$v['refund']}"
+                                            data-toggle="modal" data-target="#refundModal"
+                                            class="btn btn-default btn-sm disabled" disabled>
                                             {if $v['refund'] == 1}
-                                                退款申请中
+                                            退款申请中
                                             {/if}
                                             {if $v['refund'] == 2}
-                                                退货中
+                                            退货中
                                             {/if}
                                             {if $v['refund'] == 3}
-                                                已退货
+                                            已退货
                                             {/if}
                                             {if $v['refund'] == 4}
-                                                退款完成
+                                            退款完成
                                             {/if}
                                         </a>
                                         {/if}
-    
+
                                         {if $v['status'] == 0}
                                         <a disabled href="#" class="btn btn-sm disabled">已取消</a>
-                                        <a href="{:url($v.app . '/api.Orders/delete')}" class="btn btn-danger btn-sm ajax-post" target-form="action-form-{$v.id}" data-confirm="确认执行删除操作？">
+                                        <a href="{:url($v.app . '/api.Orders/delete')}"
+                                            class="btn btn-danger btn-sm ajax-post" target-form="action-form-{$v.id}"
+                                            data-confirm="确认执行删除操作？">
                                             删除
                                         </a>
                                         {/if}
@@ -230,64 +252,67 @@
 
 <!--物流查询模态框-->
 <div class="modal fade" id="logisticModal">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
-				<h3 class="modal-title">物流查询</h3>
-			</div>
-			<div class="modal-body we7-form form-horizontal">
-				<div class="kdniao_delivery_main">
-					<div class="base_info">
-					</div>
-					<div class="api_info">
-						<p>【订 单 号】：<span class="kdniao_OrderCode"></span></p>
-						<p>【快递公司】：<span class="kdniao_shipperName"></span><span class="kdniao_shipperCode"></span></p>
-						<p>【运单号码】：<span class="kdniao_logisticCode"></span></p>
-						<div class="kdniao_delivery_info">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">×</span></button>
+                <h3 class="modal-title">物流查询</h3>
+            </div>
+            <div class="modal-body we7-form form-horizontal">
+                <div class="kdniao_delivery_main">
+                    <div class="base_info">
+                    </div>
+                    <div class="api_info">
+                        <p>【订 单 号】：<span class="kdniao_OrderCode"></span></p>
+                        <p>【快递公司】：<span class="kdniao_shipperName"></span><span class="kdniao_shipperCode"></span></p>
+                        <p>【运单号码】：<span class="kdniao_logisticCode"></span></p>
+                        <div class="kdniao_delivery_info">
 
-						</div>
-					</div>
-				</div>
-			</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-			<div class="modal-footer">
-				<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-			</div>
-		</div>
-	</div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+            </div>
+        </div>
+    </div>
 </div>
 
 <!--虚拟商品发货信息查询模态框-->
 <div class="modal fade" id="sendOutModal">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
-				<h3 class="modal-title">发货信息查询</h3>
-			</div>
-			<div class="modal-body form-horizontal">
-				<div class="delivery_info">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">×</span></button>
+                <h3 class="modal-title">发货信息查询</h3>
+            </div>
+            <div class="modal-body form-horizontal">
+                <div class="delivery_info">
 
-				</div>
-			</div>
+                </div>
+            </div>
 
-			<div class="modal-footer">
-				<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-			</div>
-		</div>
-	</div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+            </div>
+        </div>
+    </div>
 </div>
 
 <div class="modal fade" id="evaluateModal">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
-				<h3 class="modal-title">订单评价</h3>
-			</div>
-			<div class="modal-body">
-				<div class="evaluate-section">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">×</span></button>
+                <h3 class="modal-title">订单评价</h3>
+            </div>
+            <div class="modal-body">
+                <div class="evaluate-section">
                     <form action="{:url('api/evaluate/edit')}" method="post" class="form ajax-form">
                         <input type="hidden" name="order_no" value="" />
                         <input type="hidden" name="type" value="" />
@@ -296,23 +321,23 @@
                             <label for="exampleInputAccount1">请输入评价内容</label>
                             <textarea class="form-control" name="content" row=3 placeholder="请输入评价内容"></textarea>
                         </div>
-                        
+
                         <div class="form-group">
-                            <div class="start-item clearfix" >
+                            <div class="start-item clearfix">
                                 <div class="star_score"></div>
                                 <p>您的评分：<span class="fenshu">5</span> 分</p>
                                 <div class="attitude"></div>
-                                <input type="hidden" name="value" value="5"/>
+                                <input type="hidden" name="value" value="5" />
                             </div>
-                        </div> 
+                        </div>
                         <div class="submit">
-                            <button type="submit" class="btn btn-block btn-lg btn-warning" >确认</button>
+                            <button type="submit" class="btn btn-block btn-lg btn-warning">确认</button>
                         </div>
                     </form>
-				</div>
-			</div>
-		</div>
-	</div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 {/block}
@@ -323,9 +348,88 @@
     $(function () {
         // 设置当前高亮菜单
         $("#{$tab}").addClass('active');
-        
+
     });
-    $(function(){
+    $(function () {
+        function scoreFun(object, opts) {
+            "use strict";
+            var defaults = {
+                fen_d: 24.5,
+                ScoreGrade: 10,
+                types: [
+                    "很不满意",
+                    "差得太离谱，与卖家描述的严重不符，非常不满",
+                    "不满意, 与卖家描述的不符，不满意",
+                    "非常一般",
+                    "一般",
+                    "没有卖家描述的那么好",
+                    "满意",
+                    "很满意，与卖家描述的基本一致，还是挺满意的",
+                    "非常满意",
+                    "非常好，与卖家描述的完全一致，非常满意"
+                ],
+                nameScore: ".fenshu",
+                parent: ".star_score",
+                attitude: ".attitude"
+            };
+            var options = $.extend({}, defaults, opts);
+            var countScore = object.find(options.nameScore);
+            var startParent = object.find(options.parent);
+            var atti = object.find(options.attitude);
+            var now_cli;
+            var fen_cli;
+            var atu;
+            var fen_d = options.fen_d;
+            var len = options.ScoreGrade;
+            startParent.width(fen_d * len);
+            var preA = (5 / len);
+            for (var i = 0; i < len; i++) {
+                var newSpan = $("<a href='javascript:void(0)'></a>");
+                newSpan.css({
+                    "left": 0,
+                    "width": fen_d * (i + 1),
+                    "z-index": len - i
+                });
+                newSpan.appendTo(startParent)
+            }
+            startParent.find("a").each(function (index, element) {
+                $(this).click(function () {
+                    now_cli = index;
+                    show(index, $(this));
+
+                });
+            });
+
+            function show(num, obj) {
+                var n = parseInt(num) + 1;
+                var lefta = num * fen_d;
+                var ww = fen_d * n;
+                var scor = preA * n;
+                var atu = options.types[parseInt(num)];
+                object.find("a").removeClass("clibg");
+                obj.addClass("clibg");
+                obj.css({
+                    "width": ww,
+                    "left": "0"
+                });
+                countScore.text(scor);
+                atti.text(atu)
+                $('[name="value"]').val(scor);
+            }
+        };
+
+        /**
+         * 显示评价计分
+         * @param  {[type]} ele [description]
+         * @return {[type]}     [description]
+         */
+        function showScoreFun(ele) {
+            //显示分数
+            var num = $(ele).attr("tip");
+            var w = num * 2 * 24.5;//
+            $(ele).css("width", w);
+            $(ele).parent(".atar_show").siblings("span").text(num + "分");
+        }
         scoreFun($('.start-item'));
         //默认选择5分
         $('.star_score>a:last').click();
@@ -333,25 +437,25 @@
         showScoreFun('.show_star');
     });
 
-    $(function (){
+    $(function () {
         // 立即支付
-        $('[data-role="pay"]').click(function(){
+        $('[data-role="pay"]').click(function () {
             var order_no = $(this).data('order-no');
             pay(order_no);
             // 请求支付
-            function pay(order_no){
+            function pay(order_no) {
                 var url = "{:url('api/pay/pay')}";
                 var data = {
-                    order_no : order_no,
+                    order_no: order_no,
                     pay_channel: 'weixin',
                     channel: 'pc'
                 };
                 $.post(url, data, function (ret) {
-                    if(ret.code == 0){
+                    if (ret.code == 0) {
                         modal_confirm(ret.msg);
                         return false;
                     }
-                    if(ret.code == 200){
+                    if (ret.code == 200) {
                         //至支付页面
                         toast.show('操作成功,即将进入支付页面', {
                             type: 'default',
@@ -366,47 +470,48 @@
         });
     });
 
-    $(function(){
-		//物流查询模态框处理
-		$('[data-target="#logisticModal"]').click(function(){
-			var _this = $(this);
-			var url = _this.data('url');
-			var id = _this.data('id');
-			var data = {
-				id : id
-			};
-			$.post(url,data,function (ret) {
-				//console.log(ret);
-				if(ret.code){
-					$('.kdniao_OrderCode').text(ret.data.OrderCode);
-					$('.kdniao_shipperName').text(ret.data.ShipperName);
-					$('.kdniao_shipperCode').text(ret.data.ShipperCode);
-					$('.kdniao_logisticCode').text(ret.data.LogisticCode);
+    $(function () {
+        //物流查询模态框处理
+        $('[data-target="#logisticModal"]').click(function () {
+            var _this = $(this);
+            var url = _this.data('url');
+            var id = _this.data('id');
+            var data = {
+                id: id
+            };
+            $.post(url, data, function (ret) {
+                //console.log(ret);
+                if (ret.code) {
+                    $('.kdniao_OrderCode').text(ret.data.OrderCode);
+                    $('.kdniao_shipperName').text(ret.data.ShipperName);
+                    $('.kdniao_shipperCode').text(ret.data.ShipperCode);
+                    $('.kdniao_logisticCode').text(ret.data.LogisticCode);
 
-					if(ret.data.Traces) {
-						var _html = '<ul class="list-group">';
-						$.each(ret.data.Traces,function(index,value){
-							_html += '<li class="list-group-item">'+
-									'<span class="text-info">'+ value.AcceptTime + '</span>' +
-									'<span>'+ value.AcceptStation + '</span>' +
-									'<span class="text-danger">'+ value.Remark + '</span>' +
-									'</li>';
-						});
-						_html += '</ul>';
-						$('.kdniao_delivery_main .kdniao_delivery_info').html(_html);
+                    if (ret.data.Traces) {
+                        var _html = '<ul class="list-group">';
+                        $.each(ret.data.Traces, function (index, value) {
+                            _html += '<li class="list-group-item">' +
+                                '<span class="text-info">' + value.AcceptTime + '</span>' +
+                                '<span>' + value.AcceptStation + '</span>' +
+                                '<span class="text-danger">' + value.Remark + '</span>' +
+                                '</li>';
+                        });
+                        _html += '</ul>';
+                        $('.kdniao_delivery_main .kdniao_delivery_info').html(_html);
 
-					}else{
-						$('.kdniao_delivery_main .kdniao_delivery_info').text('未查询到物流数据');
-					}				}else{
-					$('.kdniao_delivery_main .kdniao_delivery_info').text(ret.msg);
-				}
-			})
-		});
+                    } else {
+                        $('.kdniao_delivery_main .kdniao_delivery_info').text('未查询到物流数据');
+                    }
+                } else {
+                    $('.kdniao_delivery_main .kdniao_delivery_info').text(ret.msg);
+                }
+            })
+        });
     });
 
-    $(function(){
+    $(function () {
         // 评价数据处理
-        $('[data-target="#evaluateModal"]').click(function(){
+        $('[data-target="#evaluateModal"]').click(function () {
             var order_no = $(this).data('order-no');
             var type = $(this).data('type');
             var type_id = $(this).data('type-id');
