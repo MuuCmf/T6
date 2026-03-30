@@ -8,3 +8,4 @@ runtime/
 node_modules/
 .claude/
 .github/
+.trae

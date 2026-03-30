@@ -40,6 +40,8 @@ class Vip extends Base
         $uid = get_uid();
         $app = input('app', '', 'text');
         $rows = input('rows', 20, 'intval');
+        // rows限制在1-100之间
+        $rows = min($rows, 100);
         $order_field = input('order_field', 'id', 'text');
         $order_type = input('order_type', 'desc', 'text');
         // 定义允许排序的字段白名单
@@ -55,7 +57,7 @@ class Vip extends Base
         // 初始化查询条件
         $map = [];
         if (!empty($app)) {
-            $map[] = ['app', '=', $app];
+            $map[] = ['category_ids', 'like', '%' . $app . '%'];
         }
 
         $map[] = ['status', '=', 1];

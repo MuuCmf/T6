@@ -32,6 +32,8 @@ class Orders extends Base
     {
         $uid = get_uid();
         $rows = input('rows', 15, 'intval');
+        // rows限制在1-100之间
+        $rows = min($rows, 100);
         $status = input('status', 'all');
         View::assign('status', $status);
         $map = [

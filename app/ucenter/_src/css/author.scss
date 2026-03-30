@@ -1,171 +1,415 @@
-
-.author-lists-section {
-    width: 1200px;
-    margin: 0 auto;
-
-    .list{
-        padding: 0;
-        border: 0;
-        margin: 0 -5px;
-
-        .item {
-            box-sizing: border-box;
-            background:#fff;
-            padding:5px;
-            width: 25%;
-            float: left;
-            margin-bottom: 10px;
-
-            .image {
-
-                position: relative;
-                overflow: hidden;
-                img {
-                    width:100%;
-                    border-radius:5px;
-                    transition:transform 0.5s;
-                }
-
-                .type-container {
-                    position:absolute;
-                    bottom:5px;
-                    right:5px;
-                    background-color:rgba(0,0,0,.5);
-                    color:#fff;
-                    padding:2px 5px;
-                    border-radius:5px;
-                }
-
-                a {
-                    &:hover {
-                        text-decoration: none;
-                        transform: translateY(-2px);
-                        box-shadow: 0 12px 20px 0 rgba(95,101,105,.1);
-                        background-color: #fff;
-                        img {
-                            transform: scale(1.1);
-                            -ms-transform: scale(1.1);
-                        }
-                    }
-                }
-            }
-            .content {
-                
-                padding:0;
-                min-height: 60px!important;
-                .title {
-                    padding:10px 0;
-                    a {
-                        font-size:15px;
-                        font-weight: 600;
-                        display: block;
-                    }
-                }
-                .description {
-                    color:#999;
-                    height: 42px;
-                }
-
-            }
-        }
-    }
+:root {
+    --primary-color: #6366f1;
+    --primary-light: #818cf8;
+    --primary-dark: #4f46e5;
+    --secondary-color: #10b981;
+    --text-primary: #1f2937;
+    --text-secondary: #6b7280;
+    --text-muted: #9ca3af;
+    --bg-primary: #ffffff;
+    --bg-secondary: #f9fafb;
+    --bg-tertiary: #f3f4f6;
+    --border-color: #e5e7eb;
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
 }
 
-/*风格价格色系样式*/
+.author-banner.Green {
+    --banner-gradient: linear-gradient(135deg, #00ce74 0%, #059669 50%, #4ade80 100%);
+}
+
+.author-banner.Blue {
+    --banner-gradient: linear-gradient(135deg, #03b8cf 0%, #0891b2 50%, #22d3ee 100%);
+}
+
+.author-banner.LightRed {
+    --banner-gradient: linear-gradient(135deg, #ea644a 0%, #dc2626 50%, #f87171 100%);
+}
+
+.author-banner.Orange {
+    --banner-gradient: linear-gradient(135deg, #ff9900 0%, #d97706 50%, #fbbf24 100%);
+}
+
+.author-banner.LightPink {
+    --banner-gradient: linear-gradient(135deg, #FFB6C1 0%, #ec4899 50%, #f9a8d4 100%);
+}
+
+.author-banner.Magenta {
+    --banner-gradient: linear-gradient(135deg, #8666b8 0%, #7c3aed 50%, #a78bfa 100%);
+}
+
 .author-lists-section.Green {
-	.item {
-        .content {
-            .title {
-                a {
-                    &:hover {
-                        color: #00ce74;
-                    }
-                }
-            }
-        }
-    }
+    --theme-color: #00ce74;
+    --theme-light: #4ade80;
+    --theme-dark: #059669;
+    --theme-gradient: linear-gradient(135deg, #00ce74 0%, #4ade80 100%);
+    --theme-gradient-hover: linear-gradient(135deg, #059669 0%, #00ce74 100%);
 }
 
 .author-lists-section.Blue {
-    .item {
-        .content {
-            .title {
-                a {
-                    &:hover {
-                        color: #03b8cf;
-                    }
-                }
-            }
-        }
-    }
+    --theme-color: #03b8cf;
+    --theme-light: #22d3ee;
+    --theme-dark: #0891b2;
+    --theme-gradient: linear-gradient(135deg, #03b8cf 0%, #22d3ee 100%);
+    --theme-gradient-hover: linear-gradient(135deg, #0891b2 0%, #03b8cf 100%);
 }
 
 .author-lists-section.LightRed {
-    .item {
-        .content {
-            .title {
-                a {
-                    &:hover {
-                        color: #ea644a;
-                    }
-                }
-            }
-        }
-    }
+    --theme-color: #ea644a;
+    --theme-light: #f87171;
+    --theme-dark: #dc2626;
+    --theme-gradient: linear-gradient(135deg, #ea644a 0%, #f87171 100%);
+    --theme-gradient-hover: linear-gradient(135deg, #dc2626 0%, #ea644a 100%);
 }
 
 .author-lists-section.Orange {
-    .item {
-        .content {
-            .title {
-                a {
-                    &:hover {
-                        color: #ff9900;
-                    }
-                }
-            }
-        }
-    }
+    --theme-color: #ff9900;
+    --theme-light: #fbbf24;
+    --theme-dark: #d97706;
+    --theme-gradient: linear-gradient(135deg, #ff9900 0%, #fbbf24 100%);
+    --theme-gradient-hover: linear-gradient(135deg, #d97706 0%, #ff9900 100%);
 }
 
 .author-lists-section.LightPink {
-    .item {
-        .content {
-            .title {
-                a {
-                    &:hover {
-                        color: #FFB6C1;
-                    }
-                }
-            }
-        }
-    }
+    --theme-color: #FFB6C1;
+    --theme-light: #f9a8d4;
+    --theme-dark: #ec4899;
+    --theme-gradient: linear-gradient(135deg, #FFB6C1 0%, #f9a8d4 100%);
+    --theme-gradient-hover: linear-gradient(135deg, #ec4899 0%, #FFB6C1 100%);
 }
 
 .author-lists-section.Magenta {
-    .item {
-        .content {
-            .title {
-                a {
-                    &:hover {
-                        color: #8666b8;
-                    }
-                }
-            }
-        }
+    --theme-color: #8666b8;
+    --theme-light: #a78bfa;
+    --theme-dark: #7c3aed;
+    --theme-gradient: linear-gradient(135deg, #8666b8 0%, #a78bfa 100%);
+    --theme-gradient-hover: linear-gradient(135deg, #7c3aed 0%, #8666b8 100%);
+}
+
+body {
+    background-color: var(--bg-secondary);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+}
+
+.author-banner {
+    width: 100%;
+    background: var(--banner-gradient, linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%));
+    color: #fff;
+    text-align: center;
+    padding: 84px 32px;
+    margin-bottom: 0;
+    box-shadow: var(--shadow-md);
+    position: relative;
+    overflow: hidden;
+}
+
+.author-banner::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at 20% 50%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 80% 50%, rgba(255, 255, 255, 0.08) 0%, transparent 50%);
+    pointer-events: none;
+}
+
+.author-banner::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.3) 50%, transparent 100%);
+}
+
+.author-banner-text {
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: 4px;
+    line-height: 1.4;
+    text-transform: uppercase;
+    max-width: 1400px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.author-banner-text span {
+    display: inline-block;
+    position: relative;
+}
+
+.author-banner-text span:first-child {
+    font-size: 36px;
+    font-weight: 800;
+    letter-spacing: 6px;
+    background: linear-gradient(180deg, #ffffff 0%, rgba(255, 255, 255, 0.85) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.author-banner-text span:last-child {
+    font-size: 30px;
+    font-weight: 600;
+    letter-spacing: 3px;
+    opacity: 0.95;
+}
+
+.author-banner-text span::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: -12px;
+    width: 8px;
+    height: 8px;
+    background: rgba(255, 255, 255, 0.4);
+    border-radius: 50%;
+    transform: translateY(-50%);
+}
+
+.author-banner-text span:first-child::before {
+    display: none;
+}
+
+.author-banner-text span:last-child::after {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.5) 50%, transparent 100%);
+}
+
+.author-lists-section {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 32px;
+}
+
+.author-lists-section .list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 32px;
+    margin: 0;
+    padding: 0;
+}
+
+.author-lists-section .item {
+    background: var(--bg-primary);
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 1px solid var(--border-color);
+    cursor: pointer;
+}
+
+.author-lists-section .item:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+    border-color: var(--theme-light, var(--primary-light));
+}
+
+.author-lists-section .item .image {
+    position: relative;
+    overflow: hidden;
+    aspect-ratio: 16/10;
+    background: var(--bg-tertiary);
+}
+
+.author-lists-section .item .image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.author-lists-section .item:hover .image img {
+    transform: scale(1.05);
+}
+
+.author-lists-section .item .content {
+    padding: 24px;
+}
+
+.author-lists-section .item .content .title {
+    margin: 0 0 16px;
+    padding: 0;
+}
+
+.author-lists-section .item .content .title a {
+    display: block;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text-primary);
+    text-decoration: none;
+    line-height: 1.3;
+    transition: color 0.2s ease;
+    cursor: pointer;
+}
+
+.author-lists-section .item .content .title a:hover {
+    color: var(--theme-color, var(--primary-color));
+}
+
+.author-lists-section .item .content .professional {
+    display: inline-block;
+    background: var(--theme-gradient, linear-gradient(135deg, var(--secondary-color) 0%, #34d399 100%));
+    color: #fff;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 6px 16px;
+    border-radius: 24px;
+    margin-bottom: 16px;
+    letter-spacing: 0.75px;
+    text-transform: uppercase;
+}
+
+.author-lists-section .item .content .description {
+    color: var(--text-secondary);
+    font-size: 15px;
+    line-height: 1.7;
+    min-height: 51px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.author-lists-section .page-section {
+    margin-top: 48px;
+    text-align: center;
+}
+
+.author-lists-section .page-section .pagination {
+    display: inline-flex;
+    gap: 12px;
+    align-items: center;
+}
+
+.author-lists-section .page-section .pagination a,
+.author-lists-section .page-section .pagination span {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 44px;
+    height: 44px;
+    padding: 0 20px;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: all 0.2s ease;
+    border: 1px solid var(--border-color);
+    background: var(--bg-primary);
+    cursor: pointer;
+}
+
+.author-lists-section .page-section .pagination a:hover,
+.author-lists-section .page-section .pagination span:hover {
+    background: var(--theme-color, var(--primary-color));
+    color: #fff;
+    border-color: var(--theme-color, var(--primary-color));
+    transform: translateY(-2px);
+}
+
+.author-lists-section .page-section .pagination .current {
+    background: var(--theme-color, var(--primary-color));
+    color: #fff;
+    border-color: var(--theme-color, var(--primary-color));
+}
+
+.empty-content {
+    text-align: center;
+    padding: 100px 32px;
+    background: var(--bg-primary);
+    border-radius: 16px;
+    box-shadow: var(--shadow-sm);
+}
+
+.empty-content img {
+    max-width: 220px;
+    margin-bottom: 24px;
+    opacity: 0.5;
+}
+
+.empty-content p {
+    color: var(--text-muted);
+    font-size: 17px;
+    margin: 0;
+    font-weight: 500;
+}
+
+@media (max-width: 768px) {
+    .author-banner {
+        padding: 48px 24px;
+    }
+
+    .author-banner-text {
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .author-banner-text span:first-child {
+        font-size: 22px;
+        letter-spacing: 4px;
+    }
+
+    .author-banner-text span:last-child {
+        font-size: 16px;
+        letter-spacing: 2px;
+    }
+
+    .author-banner-text span::before {
+        left: -8px;
+        width: 6px;
+        height: 6px;
+    }
+
+    .author-lists-section {
+        padding: 20px;
+    }
+
+    .author-lists-section .list {
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 20px;
+    }
+
+    .author-lists-section .item .content {
+        padding: 20px;
+    }
+
+    .author-lists-section .item .content .title a {
+        font-size: 18px;
     }
 }
+
 
 .author-detail-section {
 
     .author-header {
         background: url('../images/author_bg.jpg');
         background-position: center;
+
         .bg-mask {
             width: 100%;
             height: 480px;
-            background: rgba(0,0,0,.1);
+            background: rgba(0, 0, 0, .1);
         }
+
         .author-box {
             width: 968px;
             position: relative;
@@ -173,10 +417,12 @@
             padding-top: 10px;
             text-align: center;
             z-index: 2;
+
             .avatar {
                 width: 120px;
                 height: 120px;
                 margin: 60px auto 20px auto;
+
                 img {
                     width: 120px;
                     height: 120px;
@@ -185,10 +431,12 @@
                     overflow: hidden;
                 }
             }
+
             .name {
                 color: #fff;
                 text-align: center;
             }
+
             .follow-btn {
                 margin: 24px 0 36px;
                 padding: 0;
@@ -198,21 +446,24 @@
                 font-size: 12px;
                 line-height: 36px;
                 color: #fff;
-                border: 1px solid rgba(255,255,255,.6);
+                border: 1px solid rgba(255, 255, 255, .6);
             }
+
             .description {
-                color: rgba(255,255,255,.6);
+                color: rgba(255, 255, 255, .6);
             }
         }
-        
+
     }
 
     .author-content {
         min-height: 480px;
         padding-top: 60px;
+
         .content {
             width: 1200px;
             margin: 0 auto;
+
             p {
                 font-size: 16px;
             }
