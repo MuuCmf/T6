@@ -414,3 +414,5 @@ ALTER TABLE `muucmf_module` DROP INDEX `name_2`;
 
 DELETE FROM muucmf_extend_config WHERE `muucmf_extend_config`.`id` = 19;
 DELETE FROM muucmf_extend_config WHERE `muucmf_extend_config`.`id` = 12;
+
+ALTER TABLE `muucmf_keywords` ADD `ip` VARCHAR(255) NOT NULL DEFAULT '' COMMENT 'ip' AFTER `recommend`;

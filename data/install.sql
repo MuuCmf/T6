@@ -845,6 +845,7 @@ CREATE TABLE IF NOT EXISTS `muucmf_keywords` (
   `keyword` varchar(90) NOT NULL COMMENT '关键词',
   `sort` int(11) UNSIGNED NOT NULL DEFAULT '0' COMMENT '排序',
   `recommend` tinyint(2) NOT NULL DEFAULT '0' COMMENT '是否推荐',
+  `ip` VARCHAR(255) NOT NULL DEFAULT '' COMMENT 'ip',
   `status` tinyint(2) NOT NULL COMMENT '状态',
   `create_time` int(11) UNSIGNED NOT NULL COMMENT '创建时间',
   `update_time` int(11) UNSIGNED NOT NULL COMMENT '更新时间',
