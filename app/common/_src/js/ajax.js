@@ -297,6 +297,7 @@
 
     window.handleAjax = handle_ajax;//兼容写法
     window.handle_ajax = handle_ajax;
+    window.modalConfirm = modal_confirm;
     window.modal_confirm = modal_confirm;
 
 }(jQuery, window, undefined));
