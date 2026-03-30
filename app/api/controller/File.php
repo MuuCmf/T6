@@ -49,7 +49,7 @@ class File extends Api
             return $this->result(200, '上传成功', $result);
         } else {
             $err_msg = '上传失败';
-            if(!empty($result['msg'])){
+            if (!empty($result['msg'])) {
                 $err_msg = $result['msg'];
             }
             return $this->result(0, $err_msg);
@@ -207,41 +207,48 @@ class File extends Api
     public function lists()
     {
         // 关键字
-        $keyword = input('keyword','','text');
+        $keyword = input('keyword', '', 'text');
         // 驱动
-        $driver = input('driver','','text');
+        $driver = input('driver', '', 'text');
         // 类型
-        $type = input('type','','text');
-        $rows = input('rows',20, 'intval');
+        $type = input('type', '', 'text');
+        $rows = input('rows', 20, 'intval');
         // 查询条件
         $map = [
             ['shopid', '=', 0],
         ];
         $uid = get_uid();
-        if($uid != 1 && !empty($uid)){
+        if ($uid != 1 && !empty($uid)) {
             $map[] = ['uid', '=', $uid];
         }
-        if(!empty($keyword)){
-            $map[] = ['filename', 'like', '%'.$keyword.'%'];
+        if (!empty($keyword)) {
+            $map[] = ['filename', 'like', '%' . $keyword . '%'];
         }
-        if(!empty($driver)){
+        if (!empty($driver)) {
             $map[] = ['driver', '=', $driver];
         }
-        if(!empty($type)){
+        if (!empty($type)) {
             $map[] = ['type', '=', $type];
         }
         // 排序
         $order_field = input('order_field', 'id', 'text');
         $order_type = input('order_type', 'desc', 'text');
-        $order = $order_field . ' ' . $order_type;
+        // 定义允许排序的字段白名单
+        $allowed_fields = ['id', 'create_time', 'update_time'];
+        $allowed_types = ['asc', 'desc'];
+        // 白名单验证
+        $order_field = in_array($order_field, $allowed_fields) ? $order_field : 'create_time';
+        $order_type = in_array($order_type, $allowed_types) ? $order_type : 'desc';
+        // 排序
+        $order =  $order_field . ' ' . $order_type;
         $fields = '*';
         $lists = $this->Attachment->getListByPage($map, $order, $fields, $rows);
         $lists = $lists->toArray();
-        
-        foreach($lists['data'] as &$val){
-            if($val['driver'] == 'tcvod'){
+
+        foreach ($lists['data'] as &$val) {
+            if ($val['driver'] == 'tcvod') {
                 $data = $this->Attachment->vodMediaHandle($val['file_id'], $val['attachment']);
-                if(!empty($data)) {
+                if (!empty($data)) {
                     $val['psign'] = $data['psign'];
                     $val['all_media_url'] = $data['all_media_url'];
                 }
@@ -260,7 +267,7 @@ class File extends Api
     {
         $data = input('post.');
         $data['uid'] = get_uid();
-        
+
         $res = $this->Attachment->edit($data);
         if ($res) {
             return $this->success('success');
@@ -273,7 +280,5 @@ class File extends Api
      * 删除附件数据风险较大，仅可删除自身上传数据
      * （前台暂不提供）
      */
-    public function delete()
-    {
-    }
+    public function delete() {}
 }

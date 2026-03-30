@@ -1,4 +1,5 @@
 <?php
+
 namespace app\ucenter\controller;
 
 use think\facade\View;
@@ -8,7 +9,7 @@ use app\common\model\AuthorFollow as AuthorFollowModel;
 use app\common\logic\AuthorFollow as AuthorFollowLogic;
 
 class Author extends Base
-{   
+{
     protected $AuthorModel;
     protected $AuthorLogic;
 
@@ -30,25 +31,32 @@ class Author extends Base
      */
     public function lists()
     {
-        $rows = input('rows',20, 'intval');
-        $keyword = input('keyword','','text');
+        $rows = input('rows', 20, 'intval');
+        $keyword = input('keyword', '', 'text');
         $order_field = input('order_field', 'id', 'text');
         $order_type = input('order_type', 'desc', 'text');
-        $order = $order_field . ' ' . $order_type;
+        // 定义允许排序的字段白名单
+        $allowed_fields = ['id', 'create_time', 'update_time'];
+        $allowed_types = ['asc', 'desc'];
+        // 白名单验证
+        $order_field = in_array($order_field, $allowed_fields) ? $order_field : 'create_time';
+        $order_type = in_array($order_type, $allowed_types) ? $order_type : 'desc';
+        // 拼接排序字段
+        $order = 'sort DESC,' . $order_field . ' ' . $order_type;
 
         // 查询条件
         $map = $this->AuthorLogic->getMap($this->shopid, $keyword, 1);
         $fields = '*';
-        $lists = $this->AuthorModel->getListByPage($map,$order,$fields, $rows);
+        $lists = $this->AuthorModel->getListByPage($map, $order, $fields, $rows);
         $pager = $lists->render();
         $lists = $lists->toArray();
-        foreach($lists['data'] as &$val){
+        foreach ($lists['data'] as &$val) {
             $val = $this->AuthorLogic->formatData($val);
         }
         unset($val);
-        View::assign('pager',$pager);
-        View::assign('lists',$lists);
-        
+        View::assign('pager', $pager);
+        View::assign('lists', $lists);
+
         // 设置页面TITLE
         $this->setTitle('创作者列表');
         // 输出模板
@@ -63,10 +71,10 @@ class Author extends Base
      */
     public function detail()
     {
-        $id = input('id',0,'intval');
+        $id = input('id', 0, 'intval');
 
         $data = [];
-        if(!empty($id)){
+        if (!empty($id)) {
             $data = $this->AuthorModel->getDataById($id);
             $data = $this->AuthorLogic->formatData($data);
         }
@@ -82,7 +90,7 @@ class Author extends Base
         ];
         $res = (new AuthorFollowModel())->where($map)->find();
         $has_follow = false;
-        if($res){
+        if ($res) {
             $has_follow = true;
         }
         View::assign('has_follow', $has_follow);
@@ -92,5 +100,4 @@ class Author extends Base
         // 输出页面
         return View::fetch();
     }
-
 }

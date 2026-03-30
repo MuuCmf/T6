@@ -39,6 +39,12 @@ class Author extends Api
         $keyword = input('keyword', '', 'text');
         $order_field = input('order_field', 'id', 'text');
         $order_type = input('order_type', 'desc', 'text');
+        // 定义允许排序的字段白名单
+        $allowed_fields = ['id', 'create_time', 'update_time'];
+        $allowed_types = ['asc', 'desc'];
+        // 白名单验证
+        $order_field = in_array($order_field, $allowed_fields) ? $order_field : 'create_time';
+        $order_type = in_array($order_type, $allowed_types) ? $order_type : 'desc';
         $order = 'sort DESC,' . $order_field . ' ' . $order_type;
 
         // 查询条件
@@ -154,7 +160,14 @@ class Author extends Api
         $rows = input('rows', 20, 'intval');
         $order_field = input('order_field', 'id', 'text');
         $order_type = input('order_type', 'desc', 'text');
-        $order = $order_field . ' ' . $order_type;
+        // 定义允许排序的字段白名单
+        $allowed_fields = ['id', 'create_time', 'update_time'];
+        $allowed_types = ['asc', 'desc'];
+        // 白名单验证
+        $order_field = in_array($order_field, $allowed_fields) ? $order_field : 'create_time';
+        $order_type = in_array($order_type, $allowed_types) ? $order_type : 'desc';
+        // 排序
+        $order =  $order_field . ' ' . $order_type;
 
         // 查询条件
         $map = [

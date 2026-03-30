@@ -43,6 +43,13 @@ class Share extends Api
         $rows = 15;
         $order_field = input('order_field', 'id', 'text');
         $order_type = input('order_type', 'desc', 'text');
+        // 定义允许排序的字段白名单
+        $allowed_fields = ['id', 'create_time', 'update_time'];
+        $allowed_types = ['asc', 'desc'];
+        // 白名单验证
+        $order_field = in_array($order_field, $allowed_fields) ? $order_field : 'create_time';
+        $order_type = in_array($order_type, $allowed_types) ? $order_type : 'desc';
+        // 拼接排序字段
         $order =  $order_field . ' ' . $order_type;
         $fields = '*';
         $lists = $this->ShareModel->getListByPage($map, $order, $fields, $rows);

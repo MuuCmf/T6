@@ -57,12 +57,12 @@ class Orders extends Api
                     // 验证app参数的安全性，防止目录遍历和任意类加载
                     $app = preg_replace('/[^a-zA-Z0-9_]/', '', $this->params['app']);
                     $order_namespace = "app\\{$app}\\service\\Orders";
-                    
+
                     // 确保类存在且可实例化
                     if (!class_exists($order_namespace)) {
                         throw new Exception('订单服务类不存在');
                     }
-                    
+
                     $appOrdersService = new $order_namespace;
                     $order_data = $appOrdersService->create($this->params);
                 }
@@ -131,7 +131,15 @@ class Orders extends Api
 
         $order_field = input('order_field', 'id', 'text');
         $order_type = input('order_type', 'desc', 'text');
+        // 定义允许排序的字段白名单
+        $allowed_fields = ['id', 'create_time', 'update_time'];
+        $allowed_types = ['asc', 'desc'];
+        // 白名单验证
+        $order_field = in_array($order_field, $allowed_fields) ? $order_field : 'create_time';
+        $order_type = in_array($order_type, $allowed_types) ? $order_type : 'desc';
+        // 排序
         $order =  $order_field . ' ' . $order_type;
+        
         $fields = '*';
         $lists = $this->OrdersModel->getListByPage($map, $order, $fields, $rows);
         $lists = $lists->toArray();
@@ -152,7 +160,7 @@ class Orders extends Api
         $order_no = $this->params['order_no'];
         $order_data = $this->OrdersModel->getDataByOrderNo($order_no);
         $order_data = $this->OrdersLogic->formatData($order_data);
-        if($uid != $order_data['uid']) {
+        if ($uid != $order_data['uid']) {
             return $this->error('非法操作');
         }
 
@@ -180,11 +188,11 @@ class Orders extends Api
                 $order_no = input('order_no', '', 'text');
 
                 // 获取订单信息
-                if($id) {
+                if ($id) {
                     $order = $this->OrdersModel->getDataById($id);
                 }
 
-                if($order_no) {
+                if ($order_no) {
                     $order = $this->OrdersModel->getDataByOrderNo($order_no);
                 }
 
@@ -246,11 +254,11 @@ class Orders extends Api
                 $order_no = input('order_no', '', 'text');
 
                 // 获取订单信息
-                if($id) {
+                if ($id) {
                     $order = $this->OrdersModel->getDataById($id);
                 }
 
-                if($order_no) {
+                if ($order_no) {
                     $order = $this->OrdersModel->getDataByOrderNo($order_no);
                 }
 

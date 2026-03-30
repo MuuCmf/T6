@@ -39,14 +39,14 @@ class Attachment extends Admin
 
         // 查询条件
         $map[] = ['shopid', '=', 0];
-        
+
         if (!empty($driver)) {
             $map[] = ['driver', '=', $driver];
         }
         if (!empty($type)) {
             if ($type == 'video' || $type == 'image' || $type == 'application' || $type == 'audio') {
                 $map[] = ['type', '=', $type];
-            }else{
+            } else {
                 $map[] = ['type', 'not in', ['video', 'image', 'application', 'audio']];
             }
         }
@@ -60,6 +60,13 @@ class Attachment extends Admin
         // 排序
         $order_field = input('order_field', 'id', 'text');
         $order_type = input('order_type', 'desc', 'text');
+        // 定义允许排序的字段白名单
+        $allowed_fields = ['id', 'create_time', 'update_time'];
+        $allowed_types = ['asc', 'desc'];
+        // 白名单验证
+        $order_field = in_array($order_field, $allowed_fields) ? $order_field : 'create_time';
+        $order_type = in_array($order_type, $allowed_types) ? $order_type : 'desc';
+        // 排序字段
         $order = $order_field . ' ' . $order_type;
         $fields = '*';
 

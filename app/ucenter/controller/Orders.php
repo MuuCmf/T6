@@ -1,4 +1,5 @@
 <?php
+
 namespace app\ucenter\controller;
 
 use think\Exception;
@@ -15,8 +16,8 @@ class Orders extends Base
         'app\\common\\middleware\\CheckAuth',
     ];
 
-    private $OrdersModel;//订单模型
-    private $OrdersLogic;//订单逻辑
+    private $OrdersModel; //订单模型
+    private $OrdersLogic; //订单逻辑
     function __construct()
     {
         parent::__construct();
@@ -34,24 +35,31 @@ class Orders extends Base
         $status = input('status', 'all');
         View::assign('status', $status);
         $map = [
-            ['shopid','=',$this->shopid],
-            ['uid','=',$uid],
+            ['shopid', '=', $this->shopid],
+            ['uid', '=', $uid],
         ];
 
-        if ($status  == 'all'){
-            $map[] = ['status' ,'between' ,[0,9]];
-        }else{
-            $map[] = ['status' ,'=' ,$status];
+        if ($status  == 'all') {
+            $map[] = ['status', 'between', [0, 9]];
+        } else {
+            $map[] = ['status', '=', $status];
         }
 
         $order_field = input('order_field', 'id', 'text');
         $order_type = input('order_type', 'desc', 'text');
+        // 定义允许排序的字段白名单
+        $allowed_fields = ['id', 'create_time', 'update_time'];
+        $allowed_types = ['asc', 'desc'];
+        // 白名单验证
+        $order_field = in_array($order_field, $allowed_fields) ? $order_field : 'create_time';
+        $order_type = in_array($order_type, $allowed_types) ? $order_type : 'desc';
+        // 拼接排序字段
         $order =  $order_field . ' ' . $order_type;
         $fields = '*';
         $lists = $this->OrdersModel->getListByPage($map, $order, $fields, $rows);
         $pager = $lists->render();
         $lists = $lists->toArray();
-        foreach($lists['data'] as &$val){
+        foreach ($lists['data'] as &$val) {
             $val = $this->OrdersLogic->formatData($val);
         }
         unset($val);
@@ -63,7 +71,6 @@ class Orders extends Base
         $this->setTitle('我的订单');
         // 输出模板
         return View::fetch();
-        
     }
 
     /**
@@ -83,5 +90,4 @@ class Orders extends Base
         // 输出模板
         return View::fetch();
     }
-
 }

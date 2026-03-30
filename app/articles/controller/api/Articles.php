@@ -1,4 +1,5 @@
 <?php
+
 namespace app\articles\controller\api;
 
 use app\common\model\History;
@@ -28,6 +29,13 @@ class Articles extends Base
         $rows = min($rows, 100);
         $order_field = input('order_field', 'id', 'text');
         $order_type = input('order_type', 'desc', 'text');
+        // 定义允许排序的字段白名单
+        $allowed_fields = ['id', 'create_time', 'update_time'];
+        $allowed_types = ['asc', 'desc'];
+        // 白名单验证
+        $order_field = in_array($order_field, $allowed_fields) ? $order_field : 'create_time';
+        $order_type = in_array($order_type, $allowed_types) ? $order_type : 'desc';
+        // 拼接排序字段
         $order = 'sort DESC,' . $order_field . ' ' . $order_type;
 
         // 获取查询条件
@@ -35,8 +43,8 @@ class Articles extends Base
         // 获取列表
         $lists = $this->ArticlesModel->getListByPage($map, $order, '*', $rows);
         $lists = $lists->toArray();
-        
-        foreach($lists['data'] as &$val){
+
+        foreach ($lists['data'] as &$val) {
             $val = $this->ArticlesLogic->formatData($val);
         }
         unset($val);
@@ -51,14 +59,14 @@ class Articles extends Base
     {
         $id = input('id', 0, 'intval');
         $uid = get_uid();
-        if(!empty($id)){
+        if (!empty($id)) {
             $data = $this->ArticlesModel->getDataById($id);
             $data = $this->ArticlesLogic->formatData($data);
-            if(!empty($data)){
+            if (!empty($data)) {
                 //增加浏览数
                 $this->ArticlesModel->setStep($id, 'view', 1);
                 //写入浏览记录
-                if(!empty($uid)){
+                if (!empty($uid)) {
                     $products = [
                         'title' =>  $data['title'],
                         'desc'  =>  $data['description'],
@@ -68,9 +76,9 @@ class Articles extends Base
                     ];
                     (new History())->addLog($this->shopid, get_module_name(), $uid, $id, 'articles', $products);
                 }
-                
-                return $this->success('success',$data);
-            }else{
+
+                return $this->success('success', $data);
+            } else {
                 return $this->error('error');
             }
         }
