@@ -97,7 +97,9 @@ class Articles extends Base
             $uid = get_uid();
             
             $id = $data['id'];
-            $data = $this->setCoverAttr($data, '4:3');
+            if(!empty($data['cover'])){
+                $data = $this->setCoverAttr($data, '4:3');
+            }
 
             // 获取分类数据
             if(!empty($data['category_id'])){
@@ -105,7 +107,9 @@ class Articles extends Base
                 $data['category'] = $this->CategoryLogic->formatData($category);
             }
 
-            $data['content'] = htmlspecialchars_decode($data['content']);
+            if(!empty($data['content'])){
+                $data['content'] = htmlspecialchars_decode($data['content']);
+            }
             
             //判断是否收藏
             if($uid > 0 && $this->FavoritesModel->yesFavorites($shopid, 'articles', $uid, $id, 'Articles')){
@@ -127,8 +131,10 @@ class Articles extends Base
                 $data['author'] = (new AuthorLogic)->formatData($author);
             }
             
-            $data['status_str'] = $this->_status[$data['status']];
-
+            if(isset($data['status'])){
+                $data['status_str'] = $this->_status[$data['status']];
+            }
+            
             if(!empty($data['create_time'])){
                 $data['create_time_str'] = time_format($data['create_time']);
                 $data['create_time_friendly_str'] = friendly_date($data['create_time']);

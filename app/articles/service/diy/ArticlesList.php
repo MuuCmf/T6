@@ -1,4 +1,5 @@
 <?php
+
 namespace app\articles\service\diy;
 
 use think\facade\Cache;
@@ -6,7 +7,7 @@ use app\articles\model\ArticlesConfig as ConfigModel;
 use app\articles\logic\Config as ConfigLogic;
 use app\articles\model\ArticlesArticles as ArticlesModel;
 use app\articles\logic\Articles as ArticlesLogic;
-use app\articles\model\ArticlesCategory AS ArticlesCategoryModel;
+use app\articles\model\ArticlesCategory as ArticlesCategoryModel;
 
 class ArticlesList
 {
@@ -31,7 +32,7 @@ class ArticlesList
             'view' => APP_PATH . 'articles/view/diy/pc/articles_list/view.html',
         ]
     ];
-    
+
     public $_static = [
         'mobile' => [
             'css' => PUBLIC_PATH . '/static/articles/diy/mobile/articles_list.min.css',
@@ -57,7 +58,7 @@ class ArticlesList
     {
         return [
             // 列表接口
-            'list' => url('articles/api.Articles/lists'), 
+            'list' => url('articles/api.Articles/lists'),
             // 分类接口
             'category' => url('articles/api.Category/tree')
         ];
@@ -70,7 +71,7 @@ class ArticlesList
     {
         // 获取应用配置数据
         $config_data = Cache::get(request()->host() . '_MUUCMF_Articles_CONFIG_DATA_' . $shopid);
-        if (empty($config_data)){
+        if (empty($config_data)) {
             $config_data = (new ConfigModel)->getDataByMap(['shopid' => $shopid]);
             $config_data = (new ConfigLogic)->formatData($config_data);
             Cache::set(request()->host() . '_MUUCMF_ARTICLES_CONFIG_DATA_' . $shopid, $config_data);
@@ -93,19 +94,22 @@ class ArticlesList
      * 微页约定获取列表数据处理方法
      */
     public function handle($shopid = 0, $data = [])
-    {    
-        if(!isset($data['rank'])){
+    {
+        if (!isset($data['rank'])) {
             $data['rank'] = 1;
+        }
+        if (!isset($data['style'])) {
+            $data['style'] = 0;
         }
         $category_id = intval($data['category_id']);
         $map = $this->ArticlesLogic->getMap(0, '', $category_id, 1);
         $rows = $data['rows'];
-        $order = $data['order_field'].' '.$data['order_type'];
-        $list = $this->ArticlesModel->getList($map, $rows, $order);
-        if(!empty($list)){
+        $order = $data['order_field'] . ' ' . $data['order_type'];
+        $list = $this->ArticlesModel->getList($map, $rows, $order, 'id,shopid,category_id,title,description,cover,view,f_view,favorites,f_favorites,comment,support,f_support,sort,author_id,create_time,update_time');
+        if (!empty($list)) {
             $list = $list->toArray();
-            
-            foreach($list as &$v){
+
+            foreach ($list as &$v) {
                 $v = $this->ArticlesLogic->formatData($v);
             }
             unset($v);
@@ -114,7 +118,7 @@ class ArticlesList
 
         $data['category_tree'] = $this->getCategoryTree($shopid);
         $data['config'] = $this->getAppConfig($shopid);
-
+        
         return $data;
     }
 }
