@@ -144,6 +144,8 @@ Route::group('module', function () {
     // 获取应用模块详情
     Route::get('info', 'admin/Module/info');
     
+    // 获取云端应用版本更新列表
+    Route::get('cvlist', 'admin/Module/cvList');
     // 获取云端最新版本
     Route::get('cv', 'admin/Module/cv');
     

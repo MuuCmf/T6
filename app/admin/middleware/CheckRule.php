@@ -31,6 +31,8 @@ class CheckRule extends Base
             'admin/menu/tree',
             'admin/module/all',
             'admin/module/info',
+            'admin/module/cv',
+            'admin/module/cvlist',
             'admin/config/grouplist',
             'admin/extend/grouplist',
         ];

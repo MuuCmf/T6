@@ -177,6 +177,31 @@ class Module extends Admin
     }
 
     /**
+     * 获取云端应用版本更新列表
+     */
+    public function cvList()
+    {
+        $name = input('name', '', 'text');
+        $module = $this->ModuleModel->getModule($name, 'name, version, is_setup, source');
+        if (!empty($module)) {
+            $upgradeServer = new UpgradeServer();
+            
+            if ($module['source'] == 'cloud') {
+                //获取云端版本更新列表
+                $result = $upgradeServer->cloudVersionList(['app_name' => $module['name']]);
+            }
+
+            if($result['code'] != 200){
+                return $this->error($result['data']);
+            }
+
+            return $this->success('success', $result['data']);
+        } else {
+            return $this->error('应用不存在');
+        }
+    }
+
+    /**
      * 获取云端最新版本
      */
     public function cv()

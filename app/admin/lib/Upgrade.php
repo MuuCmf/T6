@@ -190,6 +190,29 @@ class Upgrade
         return $result;
     }
 
+    public function cloudVersionList($params = [])
+    {
+        $api = $this->api . 'app/version_list';
+        $domain = request()->host();
+        $ip   = request()->ip();
+        $params['domain'] = $domain;
+        $params['ip'] = $ip;
+        $params['frame'] = 't6';
+        $output = curl_request($api, $params);
+        // 初始化返回数据
+        $result = [
+            'code' => 0,
+            'data' => [
+                'version' => '服务器错误',
+                'remark' => '服务器错误'
+            ]
+        ];
+        if (is_json($output)) {
+            $result = json_decode($output, true); //转换为数组格式
+        }
+        return $result;
+    }
+
     /**
      * @title 执行升级sql
      * @param $sql_path
