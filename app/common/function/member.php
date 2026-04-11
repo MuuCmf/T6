@@ -172,14 +172,14 @@ if (!function_exists('check_account_type')) {
      */
     function check_account_type($account = '')
     {
-        $check_email = preg_match("/[a-z0-9_\-\.]+@([a-z0-9_\-]+?\.)+[a-z]{2,3}/i", $account, $match_email);
-        $check_mobile = preg_match("/^(1[0-9])[0-9]{9}$/", $account, $match_mobile);
+        $check_email = preg_match("/[a-z0-9_\-\.]+@([a-z0-9_\-]+?\.)+[a-z]{2,3}/i", $account);
+        // 这个宽松验证可以覆盖全球绝大多数国家的手机号格式
+        $check_mobile = preg_match("/^\d{6,15}$/", $account);
         if ($check_email) {
             $type = 'email';
         } elseif ($check_mobile) {
             $type = 'mobile';
         } else {
-            $username = $account;
             $type = 'username';
         }
 
@@ -198,7 +198,6 @@ if (!function_exists('check_username')) {
      */
     function check_username(&$username, &$email, &$mobile, &$type = 'username')
     {
-
         if ($type) {
             switch ($type) {
                 case 'email':
@@ -221,8 +220,9 @@ if (!function_exists('check_username')) {
                     break;
             }
         } else {
-            $check_email = preg_match("/[a-z0-9_\-\.]+@([a-z0-9_\-]+?\.)+[a-z]{2,3}/i", $username, $match_email);
-            $check_mobile = preg_match("/^(1[0-9])[0-9]{9}$/", $username, $match_mobile);
+            $check_email = preg_match("/[a-z0-9_\-\.]+@([a-z0-9_\-]+?\.)+[a-z]{2,3}/i", $username);
+            // 这个宽松验证可以覆盖全球绝大多数国家的手机号格式
+            $check_mobile = preg_match("/^\d{6,15}$/", $username);
             if ($check_email) {
                 $email = $username;
                 $username = '';

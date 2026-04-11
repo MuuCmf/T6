@@ -69,14 +69,17 @@ class Common extends Base
                 $nickname = input('post.nickname', '', 'text');
             }
 
-            //判断注册类型
-            $check_email = preg_match("/[a-z0-9_\-\.]+@([a-z0-9_\-]+?\.)+[a-z]{2,3}/i", $account, $match_email);
-            $check_mobile = preg_match("/^(1[0-9])[0-9]{9}$/", $account, $match_mobile);
-            if ($check_email) {
+            // 自动获取注册类型
+            $type = check_account_type($account);
+            // 判断注册类型是否启用
+            if (check_reg_type($type) == false) {
+                return $this->error('未启用的注册类型或输入格式错误！');
+            }
+            if ($type == 'email') {
                 $email = $account;
                 $username = '';
                 $mobile = '';
-            } elseif ($check_mobile) {
+            } elseif ($type == 'mobile') {
                 $mobile = $account;
                 $username = '';
                 $email = '';
@@ -85,12 +88,7 @@ class Common extends Base
                 $mobile = '';
                 $email = '';
             }
-            // 自动获取注册类型
-            $type = check_account_type($account);
-            // 判断注册类型是否启用
-            if (check_reg_type($type) == false) {
-                return $this->error('未启用的注册类型或输入格式错误！');
-            }
+            
             // 验证
             try {
                 validate(Member::class)->check([

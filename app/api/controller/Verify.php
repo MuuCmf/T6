@@ -73,7 +73,7 @@ class Verify extends Common
         }
         // 判断格式类型
         $check_email = preg_match("/[a-z0-9_\-\.]+@([a-z0-9_\-]+?\.)+[a-z]{2,3}/i", $account);
-        $check_mobile = preg_match("/^(1[0-9])[0-9]{9}$/", $account);
+        $check_mobile = preg_match("/^\d{6,15}$/", $account);
         if ($type == 'email' && !$check_email) {
             return $this->error('邮箱格式错误');
         }
