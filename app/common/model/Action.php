@@ -12,7 +12,6 @@ class Action extends Base
      */
     public function editAction($data)
     {
-
         if (empty($data)) {
             return false;
         }

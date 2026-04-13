@@ -181,7 +181,7 @@ class Action extends Admin
     /**
      * 用户行为列表
      */
-    public function action()
+    public function list()
     {
         //获取列表数据
         $map[] = ['status', 'in', [1, 0]];

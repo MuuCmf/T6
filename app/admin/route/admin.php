@@ -15,7 +15,7 @@ Route::group('action', function () {
     Route::any('log/csv', 'admin/Action/csv'); // 导出CSV
     
     // 行为管理相关
-    Route::get('action', 'admin/Action/action'); // 用户行为、积分规则列表
+    Route::get('list', 'admin/Action/list'); // 用户行为、积分规则列表
     Route::any('edit', 'admin/Action/edit'); // 新增、编辑行为
     Route::post('status', 'admin/Action/setStatus'); // 设置行为状态
     
