@@ -27,7 +27,7 @@ CREATE TABLE IF NOT EXISTS `muucmf_action` (
 INSERT INTO `muucmf_action` (`id`, `name`, `title`, `remark`, `rule`, `log`, `type`, `status`, `create_time`, `update_time`, `module`) VALUES
 (1, 'reg', '用户注册', '用户注册', '', '', 1, 1, 0, 1426070545, ''),
 (2, 'input_password', '输入密码', '记录输入密码的次数。', '', '', 1, 1, 0, 1426122119, ''),
-(3, 'user_login', '用户登录', '积分+10，每天一次', 'a:1:{i:0;a:5:{s:5:\"table\";s:6:\"member\";s:5:\"field\";s:1:\"1\";s:4:\"rule\";s:2:\"10\";s:5:\"cycle\";s:2:\"24\";s:3:\"max\";s:1:\"1\";}}', '[user|get_nickname]在[time|time_format]登录了账号', 1, 1, 0, 1428397656, ''),
+(3, 'user_login', '用户登录', '积分+10，每天一次', '[{"table":"member","field":"1","rule":"10","cycle":"24","max":"1"}]', '[user|get_nickname]在[time|time_format]登录了账号', 1, 1, 0, 1428397656, ''),
 (4, 'update_config', '更新配置', '新增或修改或删除配置', '', '', 1, 1, 0, 1383294988, ''),
 (7, 'update_channel', '更新导航', '新增或修改或删除导航', '', '', 1, 1, 0, 1383296301, ''),
 (8, 'update_menu', '更新菜单', '新增或修改或删除菜单', '', '', 1, 1, 0, 1383296392, '');

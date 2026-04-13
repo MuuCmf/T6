@@ -35,7 +35,7 @@ class Action extends Base
         if (empty($data['rule'])) {
             $data['rule'] = '';
         } else {
-            $data['rule'] = serialize($data['rule']);
+            $data['rule'] = json_encode($data['rule']);
         }
 
         unset($data['action_rule']);
@@ -129,7 +129,7 @@ class Action extends Base
 
 
         //解析规则:table:$table|field:$field|condition:$condition|rule:$rule[|cycle:$cycle|max:$max][;......]
-        $rules = unserialize($info['rule']);
+        $rules = json_decode($info['rule'], true);
 
         foreach ($rules as $key => &$rule) {
             foreach ($rule as $k => &$v) {

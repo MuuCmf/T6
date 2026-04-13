@@ -417,3 +417,4 @@ DELETE FROM muucmf_extend_config WHERE `muucmf_extend_config`.`id` = 12;
 
 ALTER TABLE `muucmf_keywords` ADD `ip` VARCHAR(255) NOT NULL DEFAULT '' COMMENT 'ip' AFTER `recommend`;
 UPDATE `muucmf_menu` SET `url` = 'admin/Action/list' WHERE `muucmf_menu`.`id` = '4B50BE30-7560-B98B-EA20-7EDBD8E18806';
+UPDATE `muucmf_action` SET `rule` = '[{\"table\":\"member\",\"field\":\"1\",\"rule\":\"10\",\"cycle\":\"24\",\"max\":\"1\"}]' WHERE `muucmf_action`.`id` = 3;

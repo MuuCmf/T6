@@ -200,7 +200,7 @@ class Action extends Admin
             }else{
                 $value['module_alias'] = $alias_set[$value['module']];
             }
-            $value['rule'] = unserialize($value['rule']);
+            $value['rule'] = json_decode($value['rule'], true);
             $value['status_str'] = $value['status'] == 1 ? '启用' : '禁用';
         }
         unset($value);
