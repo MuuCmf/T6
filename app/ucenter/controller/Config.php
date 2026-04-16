@@ -13,7 +13,6 @@ use app\common\model\Verify;
 use app\common\model\Member;
 use app\common\model\ScoreType;
 use app\common\model\ScoreLog;
-use app\common\model\Action;
 use app\common\model\MemberAuthentication;
 use app\common\validate\Authentication as AuthenticationValidate;
 

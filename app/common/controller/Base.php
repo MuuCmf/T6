@@ -4,6 +4,7 @@ namespace app\common\controller;
 
 use think\exception\HttpResponseException;
 use think\facade\Env;
+use think\facade\App;
 use think\Response;
 use app\common\model\Module;
 use app\common\model\Member;
