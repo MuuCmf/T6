@@ -104,7 +104,7 @@
                                         <div class="col-xs-10">
                                             {$user.email|default='未设置'}
                                             <a class=" lh32"
-                                                data-remote="{:url('ucenter/config/account',array('tag'=>'email'))}"
+                                                data-remote="{:url('ucenter/config/bind',array('tag'=>'email'))}"
                                                 data-toggle="modal">去修改<i
                                                     class="iconfont">&#xe661;</i></a>
                                         </div>
@@ -116,7 +116,7 @@
                                         <div class="col-xs-10">
                                             {$user.mobile|default='未设置'}
                                             <a class=" lh32 "
-                                                data-remote="{:url('ucenter/config/account',array('tag'=>'mobile'))}"
+                                                data-remote="{:url('ucenter/config/bind',array('tag'=>'mobile'))}"
                                                 data-toggle="modal">去修改<i
                                                     class="iconfont">&#xe661;</i>
                                             </a>
@@ -127,7 +127,7 @@
                             <div class="row">
                                 <div class="col-xs-8">
                                     <form class="form-horizontal center_info ajax-form" role="form"
-                                        action="{:url('ucenter/config/index')}" method="post">
+                                        action="{:url('api/member/edit')}" method="post">
                                         <div class="form-group">
                                             <label for="nickname"
                                                 class="col-xs-2 control-label">昵称</label>

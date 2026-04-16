@@ -4,12 +4,22 @@ namespace app\api\controller;
 
 use app\common\controller\Api;
 use app\common\model\ScoreLog;
+use app\common\model\ScoreType;
 
 /**
  * 积分相关接口
  */
 class Score extends Api
 {
+    protected $middleware = [
+        'app\\common\\middleware\\CheckAuth', 
+    ];
+
+    function __construct()
+    {
+        parent::__construct();
+    }
+
     /**
      * 积分日志
      */
@@ -40,5 +50,15 @@ class Score extends Api
         unset($val);
 
         return $this->success('success', $lists);
+    }
+
+    /**
+     * 积分等级
+     */
+    public function estate()
+    {
+        $level = config('system.USER_LEVEL');
+        
+        return $this->success('success', $level);
     }
 }

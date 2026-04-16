@@ -35,44 +35,16 @@ class Config extends Base
      */
     public function index()
     {
-        if (request()->isPost()) {
-            $aNickname = input('post.nickname', '', 'text');
-            $aSex = input('post.sex', 0, 'intval');
-            $aSignature = input('post.signature', '', 'text');
-            // $birthday = input('post.birthday', 0, 'intval');
-            // $birthday_format = date_parse_from_format('Y年m月d日', $birthday);
-            // $birthday = mktime(0,0,0,$birthday_format['month'], $birthday_format['day'], $birthday_format['year']);
-            // $birthday = date('Y-m-d',$birthday);
+        //调用基本信息
+        $user = query_user(is_login(), ['username', 'nickname', 'signature', 'email', 'mobile', 'avatar', 'sex', 'birthday']);
 
-            $uid = intval(get_uid());
-            $commonMemberModel = new Member();
-            $check = $commonMemberModel->checkNickname($aNickname, $uid);
-            if ($check !== true) {
-                return $this->error($check);
-            }
-            $user['nickname'] = $aNickname;
-            $user['sex'] = $aSex;
-            $user['signature'] = $aSignature;
-            //$user['birthday']  =  $birthday;
-            $res = Db::name('Member')->where('uid', $uid)->update($user);
+        //显示页面
+        View::assign('user', $user);
+        // 当前方法赋值变量
+        View::assign('tab', 'base');
+        $this->setTitle('基本信息');
 
-            if ($res) {
-                return $this->success('设置成功');
-            } else {
-                return $this->error('设置失败');
-            }
-        } else {
-            //调用基本信息
-            $user = query_user(is_login(), ['username', 'nickname', 'signature', 'email', 'mobile', 'avatar', 'sex', 'birthday']);
-
-            //显示页面
-            View::assign('user', $user);
-            // 当前方法赋值变量
-            View::assign('tab', 'base');
-            $this->setTitle('基本信息');
-
-            return View::fetch();
-        }
+        return View::fetch();
     }
 
     /**
@@ -100,14 +72,38 @@ class Config extends Base
     /**
      * 绑定用户手机或邮箱
      */
+    public function bind()
+    {
+        $aTag = input('tag', '', 'text');
+        $aTag = $aTag == 'mobile' ? 'mobile' : 'email';
+        View::assign('cName', $aTag == 'mobile' ? '手机号' : '邮箱');
+        View::assign('type', $aTag);
+
+        return View::fetch();
+    }
+
+    /**
+     * 绑定用户手机或邮箱(即将废弃)
+     */
     public function account()
     {
         if (request()->isPost()) {
-            $account = input('account', '', 'text');
-            $type = input('type', '', 'text');
+            $account = input('account', '', 'text'); //账号
+            $type = input('type', '', 'text'); //账号类型
             $verify = input('verify', '', 'text');
-            $type = $type == 'mobile' ? 'mobile' : 'email';
             $type_str = $type == 'mobile' ? '手机号' : 'email';
+
+            if (empty($account)) {
+                return $this->error($type_str . '不能为空');
+            }
+
+            if (empty($verify)) {
+                return $this->error('验证码不能为空');
+            }
+
+            if (!in_array($type, ['mobile', 'email'])) {
+                return $this->error('账号类型错误');
+            }
 
             // 验证手机号码唯一性
             $has_map = [
@@ -119,8 +115,7 @@ class Config extends Base
             if ($type == 'email') {
                 $has_map[] = ['email', '=', $account];
             }
-            $commonMemberModel = new Member();
-            $has_account = $commonMemberModel->where($has_map)->find();
+            $has_account = Db::name('Member')->where($has_map)->find();
 
             if ($has_account) {
                 return $this->error($type_str . '已绑定其他用户');
@@ -150,13 +145,6 @@ class Config extends Base
             } else {
                 return $this->error('保存失败');
             }
-        } else {
-            $aTag = input('tag', '', 'text');
-            $aTag = $aTag == 'mobile' ? 'mobile' : 'email';
-            View::assign('cName', $aTag == 'mobile' ? '手机号' : '邮箱');
-            View::assign('type', $aTag);
-
-            return View::fetch();
         }
     }
 
