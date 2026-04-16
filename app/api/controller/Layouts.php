@@ -32,6 +32,6 @@ class Layouts extends Api
         ];
         
         // 返回JSON格式
-        return $this->success($data, 'success');
+        return $this->success('success', $data);
     }
 }
