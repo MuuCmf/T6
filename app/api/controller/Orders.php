@@ -15,7 +15,6 @@ use think\exception\ValidateException;
 class Orders extends Api
 {
     protected $middleware = [
-        'app\\common\\middleware\\CheckParam',
         'app\\common\\middleware\\CheckAuth',
     ];
 
