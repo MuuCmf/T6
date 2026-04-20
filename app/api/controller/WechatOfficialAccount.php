@@ -181,8 +181,12 @@ class WechatOfficialAccount extends Api
      * @param $scene_key
      * @return \think\response\Json
      */
-    public static function qrcode($scene_key)
+    public function qrcode()
     {
+        $scene_key = input('scene_key');
+        if (!$scene_key) {
+            return $this->error('参数错误');
+        }
         $event_key = "islogin=scan_login";
         $event_key .= "&scene_key=" . $scene_key;
         $result = OfficialAccount::createQrcode($event_key, 60 * 60);

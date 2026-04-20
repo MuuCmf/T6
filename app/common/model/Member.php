@@ -508,6 +508,13 @@ class Member extends Base
                 $wallet = (new MemberWallet())->getWallet($uid);
                 $member['wallet'] = $wallet;
 
+                //是否绑定微信
+                $bind_map = [];
+                $bind_map[] = ['uid', '=',  $uid];
+                $bind_map[] = ['type', '=',  'weixin_h5'];
+                $has_bind = (new MemberSync())->where($bind_map)->field('id,uid,openid,unionid,type')->find();
+                $member['wechat'] = $has_bind;
+
                 return $member;
             } else {
                 return -1; //用户不存在或已删除
