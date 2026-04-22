@@ -125,7 +125,7 @@ Route::group('message', function () {
     // 消息发送管理
     Route::post('send', 'admin/Message/send');
     Route::get('list', 'admin/Message/list');
-    Route::post('status', 'admin/Message/status');
+    Route::post('status', 'admin/Message/messageStatus');
     
     // 消息内容管理
     Route::get('content', 'admin/Message/content');
