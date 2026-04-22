@@ -7,5 +7,6 @@ return [
     'commands' => [
         'crontab' => 'app\common\command\Crontab',
         'gateway:im' => 'app\im\command\GatewayWorker',
+        'queue:monitor' => 'app\common\command\QueueMonitor',
     ],
 ];

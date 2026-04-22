@@ -50,6 +50,8 @@ class Message extends Base
         ], 0, $queue_name);
 
         if ($isPushed !== false) {
+            // 更新心跳
+            $this->updateHeartbeat();
             return true;
         }
 
@@ -82,10 +84,43 @@ class Message extends Base
         ], 0, $queue_name);
 
         if ($isPushed !== false) {
+            // 更新心跳
+            $this->updateHeartbeat();
             return true;
         }
 
         return false;
+    }
+
+    /**
+     * 更新队列心跳
+     */
+    protected function updateHeartbeat($queueName = null)
+    {
+        try {
+            $queueName = $queueName ?: config('queue.connections.redis.queue');
+            $config = config('queue.connections.redis');
+
+            $func = $config['persistent'] ? 'pconnect' : 'connect';
+            $redis = new \Redis;
+            $redis->$func($config['host'], $config['port'], $config['timeout']);
+
+            if ('' != $config['password']) {
+                $redis->auth($config['password']);
+            }
+
+            if (0 != $config['select']) {
+                $redis->select($config['select']);
+            }
+
+            $heartbeatKey = 'queue:heartbeat:' . $queueName;
+            $redis->set($heartbeatKey, time());
+            $redis->expire($heartbeatKey, 600); // 10分钟过期
+
+            $redis->close();
+        } catch (\Exception $e) {
+            // 心跳更新失败不影响任务执行
+        }
     }
 
     /**

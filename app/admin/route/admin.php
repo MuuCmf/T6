@@ -179,6 +179,16 @@ Route::group('pc', function () {
     Route::any('user', 'admin/Pc/user');
 });
 
+// 消息队列管理
+Route::group('queue', function () {
+    // 消息队列状态
+    Route::get('status', 'admin/Queue/status');
+    // 消息队列列表
+    Route::get('list', 'admin/Queue/list');
+    // 消息队列详情
+    Route::get('detail', 'admin/Queue/detail');
+});
+
 Route::group('role', function () {
     // 角色管理
     Route::get('list', 'admin/Role/list');
