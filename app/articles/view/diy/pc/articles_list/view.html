@@ -3,8 +3,8 @@
 	<div class="object-drag articles-list">
         <div class="articles-list-preview">
             <div class="title clearfix">
-				<h2>{$vars['data']['title']}</h2>
-				<span class="sub-title">{$vars['data']['sub_title']}</span>
+				<h2>{$vars['data']['title']|default=''}</h2>
+				<span class="sub-title">{$vars['data']['sub_title']|default=''}</span>
             	<small class="more">
 					{if $vars['dev'] == true}
 					查看更多
@@ -29,7 +29,7 @@
                     <div class="content">
                         <div class="title h3 text-ellipsis-2">{$article_data['title']}</div>
                         <div class="info clearfix">
-                            <div class="a-category">{$article_data['category']['title']}</div>
+                            <div class="a-category">{$article_data['category']['title']|default=''}</div>
                         </div>
                     </div>
 					{if $vars['dev'] == false}
@@ -44,10 +44,10 @@
 					{/if}
                     <div class="content" style="background-image: url({$article_data['cover_400']});">
                         <div class="bg"></div>
-                        <div class="title h3 text-ellipsis-2">{$article_data['title']}</div>
+                        <div class="title h3 text-ellipsis-2">{$article_data['title']|default=''}</div>
                         
                         <div class="info clearfix">
-                            <div class="a-category">{$article_data['category']['title']}</div>
+                            <div class="a-category">{$article_data['category']['title']|default=''}</div>
                         </div>
                     </div>
 					{if $vars['dev'] == false}
@@ -60,9 +60,9 @@
 					{if $vars['dev'] == false}
 					<a href="{:url('/articles/detail', ['id'=>$article_data['id']])}">
 					{/if}
-						<div class="title h3 text-ellipsis">{$article_data['title']}</div>
+						<div class="title h3 text-ellipsis">{$article_data['title']|default=''}</div>
 						<div class="create-time">
-							{$article_data['create_time_str']}
+							{$article_data['create_time_str']|default=''}
 						</div>
 					{if $vars['dev'] == false}
 					</a>
