@@ -1,1 +1,0 @@
-import{_ as s}from"./index.js";import{B as o,E as r,z as t}from"./vue-vendor.js";import"./element-plus.js";import"./lodash.js";import"./vendor.js";import"./dayjs.js";import"./fontawesome.js";import"./axios.js";import"./nprogress.js";const e=s({},[["render",function(s,e){return t(),o("div",null,[...e[0]||(e[0]=[r("h1",null,"文章列表",-1)])])}]]);export{e as default};
