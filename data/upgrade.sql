@@ -420,3 +420,18 @@ UPDATE `muucmf_menu` SET `url` = 'admin/Action/list' WHERE `muucmf_menu`.`id` = 
 UPDATE `muucmf_action` SET `rule` = '[{\"table\":\"member\",\"field\":\"1\",\"rule\":\"10\",\"cycle\":\"24\",\"max\":\"1\"}]' WHERE `muucmf_action`.`id` = 3;
 
 UPDATE `muucmf_extend_config` SET `type` = 'select', `value` = 'v3',  `extra` = 'v2:企业付款到零钱v2\r\nv3:商家转账到零钱v3' WHERE `muucmf_extend_config`.`id` = 50;
+
+DELETE FROM muucmf_menu WHERE `muucmf_menu`.`id` = 'D8BE4559-1E66-2C78-E87B-A707E8C1CF7E';
+DELETE FROM muucmf_menu WHERE `muucmf_menu`.`id` = 'D225B61F-B50D-97F4-B331-7259015713FC';
+DELETE FROM muucmf_menu WHERE `muucmf_menu`.`id` = 'B2B58A3F-7DE2-FFC1-C8CC-92667421754E';
+DELETE FROM muucmf_menu WHERE `muucmf_menu`.`id` = 'B0798577-F1CB-669D-6DE8-BD04145FFDE9';
+DELETE FROM muucmf_menu WHERE `muucmf_menu`.`id` = 'A996C9AD-FF89-E8C9-55FB-2F682AC473EA';
+DELETE FROM muucmf_menu WHERE `muucmf_menu`.`id` = '522792D6-A201-8A8A-ADA2-BCFC57263904';
+DELETE FROM muucmf_menu WHERE `muucmf_menu`.`id` = '4B50BE30-7560-B98B-EA20-7EDBD8E18806';
+DELETE FROM muucmf_menu WHERE `muucmf_menu`.`id` = '3AEDD7F6-0783-715A-9DBB-8C1E8758D616';
+DELETE FROM muucmf_menu WHERE `muucmf_menu`.`id` = '113D646E-6D67-CF09-8C2C-4B10D57A6902';
+DELETE FROM muucmf_menu WHERE `muucmf_menu`.`id` = '0F3D6CB1-0C7E-4292-CF19-6E32FC9D2F8D';
+DELETE FROM muucmf_menu WHERE `muucmf_menu`.`id` = '05929499-FF7F-7615-C021-EDECADD02115';
+
+UPDATE `muucmf_menu` SET `pid` = '8F5C83E0-3753-C731-4EEF-5D004137B11D', `sort` = '50' WHERE `muucmf_menu`.`id` = 'AABA580B-E97E-69C3-BA9B-34694408DDBA';
+UPDATE `muucmf_menu` SET `pid` = '8F5C83E0-3753-C731-4EEF-5D004137B11D', `sort` = '51' WHERE `muucmf_menu`.`id` = 'A53BEFBB-17F7-56CD-ADF9-3D6754061E70';
