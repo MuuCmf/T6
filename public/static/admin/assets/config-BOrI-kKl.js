@@ -1,1 +1,0 @@
-const l=[{label:"数字",value:"num"},{label:"文本",value:"string"},{label:"多行文本",value:"textarea"},{label:"密码",value:"password"},{label:"枚举",value:"entity"},{label:"下拉框",value:"select"},{label:"单选",value:"radio"},{label:"多选",value:"checkbox"},{label:"图片",value:"pic"},{label:"文件",value:"file"},{label:"富文本",value:"editor"}];export{l as t};
