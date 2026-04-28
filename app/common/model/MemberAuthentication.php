@@ -10,7 +10,7 @@ class MemberAuthentication extends Base
         1 => '护照',
     ];
     
-    protected $_status  = [
+    public $_status  = [
         -1 => '审核未通过',
         0  => '未认证',
         1  => '待审核',

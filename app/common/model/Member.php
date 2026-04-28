@@ -9,6 +9,7 @@ use app\common\model\AuthGroup;
 use app\common\model\ActionLog;
 use app\common\model\ScoreType;
 use app\common\logic\Channel;
+use app\common\model\MemberAuthentication;
 
 /**
  * 会员模型
@@ -455,9 +456,14 @@ class Member extends Base
                 unset($val);
 
                 //实名认证状态
-                $member['authentication_text'] = '未知';
-                if (isset($member['authentication'])) {
-                    $member['authentication_text'] = $this->_authentication[$member['authentication']];
+                $member['authentication_text'] = '未认证';
+                $member['authentication'] = 0;
+                $authModel = new MemberAuthentication();
+                $authInfo = $authModel->where('uid', $member['uid'])->find();
+                
+                if ($authInfo) {
+                    $member['authentication'] = $authInfo['status'];
+                    $member['authentication_text'] = $authModel->_status[$authInfo['status']] ?? '未认证';
                 }
 
                 //用户状态

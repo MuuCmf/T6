@@ -66,7 +66,7 @@ class Authentication extends Admin
         $list = $this->AuthenticationModel->alias('a')
             ->join('member m', 'a.uid = m.uid')
             ->where($map)
-            ->field('a.*, m.username, m.nickname, m.email, m.mobile, m.avatar, m.authentication')
+            ->field('a.*, m.username, m.nickname, m.email, m.mobile, m.avatar')
             ->order('a.uid', 'desc')
             ->paginate($rows);
 
@@ -120,12 +120,6 @@ class Authentication extends Admin
                     throw new Exception('数据写入失败');
                 }
 
-                // 更改用户表认证状态值
-                $res = $this->MemberModel->edit([
-                    'shopid' => $this->shopid,
-                    'uid' => $uid,
-                    'authentication' => $status
-                ]);
                 if (!$res) {
                     throw new Exception('数据写入失败');
                 }

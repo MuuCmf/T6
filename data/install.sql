@@ -880,7 +880,6 @@ CREATE TABLE IF NOT EXISTS `muucmf_member` (
   `reg_channel` VARCHAR(32) NULL DEFAULT '' COMMENT '注册渠道',
   `last_login_time` int(11) NOT NULL DEFAULT '0' COMMENT '最后登录时间',
   `last_login_ip` varchar(128) NOT NULL DEFAULT '0' COMMENT '最后登录IP',
-  `authentication` TINYINT(2) NOT NULL DEFAULT '0' COMMENT '是否认证',
   `create_time` int(11) UNSIGNED NOT NULL COMMENT '注册创建时间',
   `update_time` int(11) UNSIGNED NOT NULL COMMENT '更新时间',
   PRIMARY KEY (`uid`),

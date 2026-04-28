@@ -123,8 +123,6 @@ ALTER TABLE `muucmf_vip_card` ADD `year_two_price` INT(11) UNSIGNED NOT NULL COM
 ALTER TABLE `muucmf_vip_card` ADD `year_three_price` INT(11) UNSIGNED NOT NULL COMMENT '三年价格 单位：分' AFTER `year_two_price`;
 ALTER TABLE `muucmf_vip_card` ADD `year_five_price` INT(11) UNSIGNED NOT NULL COMMENT '五年价格 单位：分' AFTER `year_three_price`;
 
-ALTER TABLE `muucmf_member` ADD `authentication` TINYINT(2) NOT NULL DEFAULT '0' COMMENT '是否认证' AFTER `last_login_ip`;
-
 CREATE TABLE IF NOT EXISTS `muucmf_member_authentication` (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键ID',
   `shopid` int(11) UNSIGNED NOT NULL COMMENT '店铺ID',
@@ -435,3 +433,6 @@ DELETE FROM muucmf_menu WHERE `muucmf_menu`.`id` = '05929499-FF7F-7615-C021-EDEC
 
 UPDATE `muucmf_menu` SET `pid` = '8F5C83E0-3753-C731-4EEF-5D004137B11D', `sort` = '50' WHERE `muucmf_menu`.`id` = 'AABA580B-E97E-69C3-BA9B-34694408DDBA';
 UPDATE `muucmf_menu` SET `pid` = '8F5C83E0-3753-C731-4EEF-5D004137B11D', `sort` = '51' WHERE `muucmf_menu`.`id` = 'A53BEFBB-17F7-56CD-ADF9-3D6754061E70';
+
+ALTER TABLE `muucmf_member` DROP COLUMN `authentication`;
+
