@@ -41,7 +41,7 @@ class Keywords extends Admin
         // 搜索关键字
         $keyword = input('keyword', '', 'text');
         if (!empty($keyword)) {
-            $map[] = ['title', 'like', '%' . $keyword . '%'];
+            $map[] = ['keyword', 'like', '%' . $keyword . '%'];
         }
 
         $fields = '*';

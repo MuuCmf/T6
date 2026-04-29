@@ -43,7 +43,7 @@ class Score extends Admin
         $rows = min($rows, 100);
         // 初始化查询条件
         $where = [];
-        if (!empty($keyword)) {
+        if (!empty($keyword) && $keyword != 'undefined') {
             $where[] = function($query) use ($keyword) {
                 $query->where('m.nickname', 'like', '%' . $keyword . '%')
                       ->whereOr('m.mobile', 'like', '%' . $keyword . '%')
