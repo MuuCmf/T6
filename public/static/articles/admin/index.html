@@ -5,21 +5,158 @@
     <link rel="icon" href="/favicon.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>加载中...</title>
-    <script type="module" crossorigin src="./assets/index-CHlaIJOT.js"></script>
-    <link rel="modulepreload" crossorigin href="./assets/fontawesome-BKRDeDZZ.js">
-    <link rel="modulepreload" crossorigin href="./assets/vendor-CbgBQEUg.js">
-    <link rel="modulepreload" crossorigin href="./assets/vue-vendor-lI6TGHHu.js">
-    <link rel="modulepreload" crossorigin href="./assets/lodash-BUZqvddD.js">
-    <link rel="modulepreload" crossorigin href="./assets/dayjs-Bn4Yt3NB.js">
-    <link rel="modulepreload" crossorigin href="./assets/element-plus-D1WtjnEc.js">
-    <link rel="modulepreload" crossorigin href="./assets/axios-CBzGoDAh.js">
-    <link rel="modulepreload" crossorigin href="./assets/nprogress-zevEHsVw.js">
-    <link rel="stylesheet" crossorigin href="./assets/vendor-BHtaHxM4.css">
-    <link rel="stylesheet" crossorigin href="./assets/element-plus-G0r39rF2.css">
-    <link rel="stylesheet" crossorigin href="./assets/nprogress-BgDCIyLK.css">
-    <link rel="stylesheet" crossorigin href="./assets/index-d2PDaEzw.css">
+    <style>
+      /* 首屏加载动画 - 简约优雅风格 */
+      .app-loading {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        background: #f8f9fa;
+        z-index: 9999;
+        font-family:
+          'Inter',
+          -apple-system,
+          BlinkMacSystemFont,
+          sans-serif;
+      }
+      .app-loading .loader-wrapper {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      .app-loading .logo-mark {
+        width: 48px;
+        height: 48px;
+        margin-bottom: 32px;
+        position: relative;
+      }
+      .app-loading .logo-mark::before {
+        content: '';
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        border: 2px solid #e5e7eb;
+        border-radius: 12px;
+      }
+      .app-loading .logo-mark::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border: 2px solid transparent;
+        border-top-color: #03b8cf;
+        border-radius: 12px;
+        animation: logo-spin 0.8s cubic-bezier(0.5, 0, 0.2, 1) infinite;
+      }
+      .app-loading .logo-mark .logo-text {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 20px;
+        font-weight: 600;
+        color: #03b8cf;
+        margin-left: 3px;
+        z-index: 1;
+      }
+      .app-loading .loading-text {
+        font-size: 14px;
+        font-weight: 500;
+        color: #03b8cf;
+        letter-spacing: 0.5px;
+        margin-bottom: 24px;
+      }
+      .app-loading .progress-wrapper {
+        width: 180px;
+        height: 2px;
+        background: #e5e7eb;
+        border-radius: 1px;
+        overflow: hidden;
+      }
+      .app-loading .progress-bar {
+        height: 100%;
+        background: #03b8cf;
+        border-radius: 1px;
+        animation: progress 1.2s ease-in-out infinite;
+      }
+      .app-loading .loading-hint {
+        margin-top: 48px;
+        font-size: 12px;
+        color: #9ca3af;
+        font-weight: 400;
+      }
+      @keyframes logo-spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+      @keyframes progress {
+        0% {
+          width: 0%;
+          margin-left: 0;
+        }
+        50% {
+          width: 60%;
+          margin-left: 20%;
+        }
+        100% {
+          width: 0%;
+          margin-left: 100%;
+        }
+      }
+    </style>
+    <script type="module" crossorigin src="./assets/index-BRu-609b.js"></script>
+    <link rel="modulepreload" crossorigin href="./assets/rolldown-runtime-Bz75xTsQ.js">
+    <link rel="modulepreload" crossorigin href="./assets/axios-DVg4cpe8.js">
+    <link rel="modulepreload" crossorigin href="./assets/dayjs-KV54BAYG.js">
+    <link rel="modulepreload" crossorigin href="./assets/element-plus-ftkceq_8.js">
+    <link rel="modulepreload" crossorigin href="./assets/fontawesome-neovmjJ0.js">
+    <link rel="modulepreload" crossorigin href="./assets/vendor-CjOaRvmn.js">
+    <link rel="modulepreload" crossorigin href="./assets/vue-vendor-BLsUVnbu.js">
+    <link rel="modulepreload" crossorigin href="./assets/nprogress-B2iAWXEF.js">
+    <link rel="stylesheet" crossorigin href="./assets/element-plus-CI06ChcP.css">
+    <link rel="stylesheet" crossorigin href="./assets/vendor-yLExsQHM.css">
+    <link rel="stylesheet" crossorigin href="./assets/nprogress-CH-8wlT8.css">
+    <link rel="stylesheet" crossorigin href="./assets/index-9wXhfJNx.css">
   </head>
   <body>
-    <div id="app"></div>
+    <div id="app">
+      <!-- 首屏立即显示的加载状态 -->
+      <div class="app-loading">
+        <div class="loader-wrapper">
+          <div class="logo-mark">
+            <span class="logo-text">M</span>
+          </div>
+          <span class="loading-text">应用加载中</span>
+          <div class="progress-wrapper">
+            <div class="progress-bar"></div>
+          </div>
+          <span class="loading-hint">请稍候...</span>
+        </div>
+      </div>
+    </div>
+    <script>
+      // Vue 挂载后隐藏首屏加载动画
+      document.addEventListener('DOMContentLoaded', () => {
+        const appLoading = document.querySelector('.app-loading');
+        if (appLoading) {
+          appLoading.style.transition = 'opacity 0.3s';
+          appLoading.style.opacity = '0';
+          setTimeout(() => appLoading.remove(), 300);
+        }
+      });
+    </script>
   </body>
 </html>
+...
