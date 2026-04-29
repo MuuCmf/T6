@@ -435,4 +435,5 @@ UPDATE `muucmf_menu` SET `pid` = '8F5C83E0-3753-C731-4EEF-5D004137B11D', `sort` 
 UPDATE `muucmf_menu` SET `pid` = '8F5C83E0-3753-C731-4EEF-5D004137B11D', `sort` = '51' WHERE `muucmf_menu`.`id` = 'A53BEFBB-17F7-56CD-ADF9-3D6754061E70';
 
 ALTER TABLE `muucmf_member` DROP COLUMN `authentication`;
+DELETE FROM muucmf_menu WHERE `muucmf_menu`.`id` = 'C51CEC8C-4E4C-B606-F397-3C0D3ED8C0E0';
 
