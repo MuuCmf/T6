@@ -8,29 +8,30 @@ class Favorites extends Base
 {
     public function formatData($data)
     {
-        // 约定各应用内容交由应用内部处理
-        // 约定类名 Favorites 约定方法formatData
-        $class_namespace = "\\app\\{$data['app']}\\logic\\Favorites";
-        if (class_exists($class_namespace)) {
-            $appLogic = new $class_namespace;
-            $data = $appLogic->formatData($data);
-        }
-
-        if (empty($data['products'])) {
-            $data['metadata'] = $data['products'] = json_decode($data['metadata'], true);
-            $data['products'] = $this->setImgAttr($data['products'], '1:1');
-            if (isset($data['products']['price'])) {
-                $data['products']['price'] = sprintf("%.2f", $data['products']['price'] / 100);
-            }
-        }
-
-        $data['info_id'] = (string)$data['info_id'];
-        // 获取应用名
-        $data['module_name'] =  $data['app'] == 'system' ? '系统' : Module::where('name', $data['app'])->value('alias');
         // 获取应用信息
         $data['app_info'] = (new Module())->getModule($data['app']);
+
+        // 解析metadata
+        $data['metadata'] = json_decode($data['metadata'], true);
+
+        $data['products'] = $data['metadata'];
+        if(isset($data['products']['cover'])){
+            $data['products']['cover'] = $data['products']['cover'];
+            $data['products']['cover_100'] = get_thumb_image($data['metadata']['cover'], 100, 100);
+            $data['products']['cover_200'] = get_thumb_image($data['metadata']['cover'], 200, 200);
+            $data['products']['cover_300'] = get_thumb_image($data['metadata']['cover'], 300, 300);
+            $data['products']['cover_400'] = get_thumb_image($data['metadata']['cover'], 400, 400);
+            $data['products']['cover_800'] = get_thumb_image($data['metadata']['cover'], 800, 800);
+        }
+
+        if (isset($data['metadata']['price'])) {
+            $data['products']['price'] = sprintf("%.2f", $data['metadata']['price'] / 100);
+        }
+        
+        $data['info_id'] = (string)$data['info_id'];
+        
         // 获取用户信息
-        $data['user_info'] = query_user($data['uid'], ['nickname', 'avatar']); 
+        $data['user_info'] = query_user($data['uid'], ['nickname', 'username', 'avatar']); 
 
         $data = $this->setTimeAttr($data);
 
