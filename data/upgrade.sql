@@ -437,3 +437,8 @@ UPDATE `muucmf_menu` SET `pid` = '8F5C83E0-3753-C731-4EEF-5D004137B11D', `sort` 
 ALTER TABLE `muucmf_member` DROP COLUMN `authentication`;
 DELETE FROM muucmf_menu WHERE `muucmf_menu`.`id` = 'C51CEC8C-4E4C-B606-F397-3C0D3ED8C0E0';
 
+UPDATE `muucmf_menu` SET `url` = 'admin/menu/list' WHERE `muucmf_menu`.`id` = '6E7257F5-44DA-009D-548F-47B895DDC1CB';
+UPDATE `muucmf_menu` SET `url` = 'admin/Module/list' WHERE `muucmf_menu`.`id` = '7BE5FA0B-7009-AB46-FE7B-A9364ACAF687';
+UPDATE `muucmf_menu` SET `url` = 'admin/Module/list' WHERE `muucmf_menu`.`id` = '20216DCF-1138-09A3-346A-C92E08E33677';
+UPDATE `muucmf_menu` SET `url` = 'admin/member/list' WHERE `muucmf_menu`.`id` = 'DA4333DF-D814-819B-D657-401FE5153AB4';
+UPDATE `muucmf_menu` SET `url` = 'admin/member/list' WHERE `muucmf_menu`.`id` = 'D18841ED-C034-2E7A-D0B2-92D0AC647179';

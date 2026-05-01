@@ -11,8 +11,8 @@ use app\common\model\Module as ModuleModel;
  */
 class Menu extends Admin
 {
-    protected $MenuModel;
-    protected $ModuleModel;
+    protected MenuModel $MenuModel;
+    protected ModuleModel $ModuleModel;
 
     /**
      * 构造方法
@@ -29,9 +29,9 @@ class Menu extends Admin
 
     /**
      * 后台权限菜单列表
-     * @return none
+     * @return array
      */
-    public function index()
+    public function list()
     {
         $title = input('title', '', 'text');
 
@@ -40,6 +40,7 @@ class Menu extends Admin
             $list_map[] = ['title', 'like', '%' . $title . '%'];
         }
         $list_map[] = ['type', '=', '0'];
+        $list_map[] = ['module', '=', 'admin'];
 
         $result_list = $this->MenuModel->where($list_map)->order('sort asc')->select();
         if (!empty($result_list)) {
@@ -158,36 +159,12 @@ class Menu extends Admin
     }
 
     /**
-     * 后台权限菜单接口列表
-     * @return none
-     */
-    public function list()
-    {
-        $title = input('title', '', 'text');
-        $pid  = input('pid', '0', 'text');
-        $module = input('module', '', 'text');
-
-        if ($title) {
-            $map['title'] = ['like', '%' . $title . '%'];
-        }
-        if ($module) {
-            $map['module'] = $module;
-        }
-        $map['pid'] =   $pid;
-        $list       =   $this->MenuModel->where($map)->order('sort asc,id asc')->select();
-
-        //输出
-        return $this->result(200, 'SUCCESS', $list);
-    }
-
-    /**
      * 新增/编辑配置
      */
     public function edit()
     {
-
         if (request()->isPost()) {
-            $data = input('');
+            $data = (array)input('');
             if ($data['title'] == '') {
                 return $this->error('菜单标题不能为空');
             }
@@ -204,16 +181,17 @@ class Menu extends Admin
                 return $this->error('保存失败');
             }
         } else {
-            $id = input('id', '0', 'text');
+            $id = (string)input('id', '0', 'text');
+            $pid = (string)input('pid', '0', 'text');
 
             $info = [];
             /* 获取数据 */
             $info = $this->MenuModel->where(['id' => $id])->find();
 
             if (empty($info)) {
-                $map['id'] = input('pid');
+                $map['id'] = $pid;
                 $info = $this->MenuModel->where($map)->field('module,pid,hide,type')->find();
-                $info['pid'] = input('pid', '0', 'text');
+                $info['pid'] = $pid;
             }
 
             return $this->success('success', $info);
@@ -239,7 +217,7 @@ class Menu extends Admin
         //开始移除菜单
         if ($this->MenuModel->where('id', 'in', $id)->delete()) {
             //记录行为
-            action_log('update_menu', 'Menu', $id, is_login());
+            // action_log('update_menu', 'Menu', $id, is_login());
             return $this->success('删除成功');
         } else {
             return $this->error('删除失败');
@@ -303,13 +281,5 @@ class Menu extends Admin
 
             return $this->success('success', $list);
         }
-    }
-
-    public function sidebar()
-    {
-        //当前管理菜单
-        $admin_menu = $this->getMenus();
-
-        return $this->success('SUCCESS', $admin_menu);
     }
 }

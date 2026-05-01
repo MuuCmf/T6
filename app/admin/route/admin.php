@@ -116,6 +116,13 @@ Route::group('field', function () {
     Route::post('status', 'admin/Field/setFieldStatus');
 });
 
+Route::group('menu', function () {
+    // 权限菜单列表
+    Route::get('list', 'admin/Menu/list');
+    // 权限菜单树
+    Route::get('tree', 'admin/Menu/tree');
+});
+
 Route::group('message', function () {
     // 消息类型管理
     Route::get('type', 'admin/Message/type');
@@ -137,6 +144,9 @@ Route::group('message', function () {
 Route::group('module', function () {
     // 模块列表
     Route::get('index', 'admin/Module/index');
+
+    // 模块列表
+    Route::get('list', 'admin/Module/list');
     
     // 编辑模块数据
     Route::post('edit', 'admin/Module/edit');

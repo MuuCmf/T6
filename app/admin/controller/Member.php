@@ -35,7 +35,7 @@ class Member extends Admin
     /**
      * 用户管理首页
      */
-    public function index()
+    public function list()
     {
         $keyword = input('keyword', '', 'text');
         if (!empty($keyword)) {
