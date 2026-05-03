@@ -2,7 +2,6 @@
 
 namespace app\admin\controller;
 
-use think\facade\View;
 use think\facade\Cache;
 use think\exception\ValidateException;
 use app\common\model\Config as MuuConfigModel;
@@ -42,10 +41,8 @@ class Config extends Admin
             return $this->success('保存成功', $config, cookie('__forward__'));
         } else {
             $group = input('group', 1, 'intval');
-            View::assign('group', $group);
             // 配置分组
             $type = config('system.CONFIG_GROUP_LIST');
-            View::assign('type', $type);
             // 配置项列表
             $list = $this->ConfigModel->where(['status' => 1, 'group' => $group])->field('id,name,title,extra,value,group,remark,type')->order('sort asc')->select()->toArray();
             foreach ($list as $key => $value) {
@@ -83,7 +80,6 @@ class Config extends Admin
         $keyword = input('keyword', '', 'trim');
         $group = input('group', 0, 'intval');
         $rows = input('rows', 20, 'intval');
-        View::assign('rows', $rows);
 
         /* 查询条件初始化 */
         $map = [];

@@ -2,7 +2,6 @@
 
 namespace app\admin\controller;
 
-use think\facade\View;
 use app\common\model\Module as ModuleModel;
 use app\common\model\Announce as AnnounceModel;
 use app\common\logic\Announce as AnnounceLogic;
@@ -43,14 +42,12 @@ class Announce extends Admin
         ];
         // 搜索关键字
         $keyword = input('keyword', '', 'text');
-        View::assign('keyword', $keyword);
         if (!empty($keyword)) {
             $map[] = ['title', 'like', '%' . $keyword . '%'];
         }
 
         $fields = '*';
         $rows = input('rows', 20, 'intval');
-        View::assign('rows', $rows);
         $lists = $this->AnnounceModel->getListByPage($map, 'sort desc,create_time desc', $fields, $rows);
         $pager = $lists->render();
         $lists = $lists->toArray();
@@ -60,19 +57,8 @@ class Announce extends Admin
         }
         unset($val);
 
-        // ajax请求返回数据
-        if (request()->isAjax()) {
-            return $this->success('success', $lists);
-        }
-
-        View::assign('pager', $pager);
-        View::assign('lists', $lists);
-        // 记录当前列表页的cookie
-        cookie('__forward__', $_SERVER['REQUEST_URI']);
-        // 设置页面title
-        $this->setTitle('公告管理');
-        // 输出模板
-        return View::fetch();
+        // 返回数据
+        return $this->success('success', $lists);
     }
 
     /**
@@ -82,15 +68,13 @@ class Announce extends Admin
     {
         $id = input('id', 0, 'intval');
         $title = $id ? "编辑" : "新建";
-        View::assign('title', $title);
         $teminal = input('teminal', 'mobile', 'text');
-        View::assign('teminal', $teminal);
 
         if (request()->isPost()) {
             return $this->handleEdit((int)$id, $title);
         }
         
-        return $this->showEditForm((int)$id, (string)$teminal);
+        // return $this->showEditForm((int)$id, (string)$teminal);
     }
     
     /**
@@ -174,17 +158,12 @@ class Announce extends Admin
             $data = $this->getDefaultData($teminal);
         }
         
-        View::assign('data', $data);
-        
         // 获取Micro应用是否安装
         $microIsSetup = $this->ModuleModel->checkInstalled('micro');
-        View::assign('micro_is_setup', $microIsSetup);
-        
+
         if ($microIsSetup) {
             $this->loadMicroLinks($teminal);
         }
-        
-        return View::fetch();
     }
     
     /**
@@ -215,10 +194,7 @@ class Announce extends Admin
     {
         bind('micro\\LinksSevice', 'app\\micro\\service\\Link');
         $links = app('micro\\LinksSevice')->getAllLinks($teminal);
-        View::assign('links', $links);
-        
         $linkStaticTmpl = app('micro\\LinksSevice')->getStaticTmpl($teminal);
-        View::assign('link_static_tmpl', $linkStaticTmpl);
     }
 
     /**

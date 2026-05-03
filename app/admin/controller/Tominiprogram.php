@@ -2,7 +2,6 @@
 
 namespace app\admin\controller;
 
-use think\facade\View;
 use app\common\logic\Tominiprogram as TominiprogramLogic;
 use app\common\model\Tominiprogram as TominiprogramModel;
 
@@ -41,19 +40,8 @@ class Tominiprogram extends Admin
         }
         unset($val);
 
-        // ajax 返回数据
-        if (request()->isAjax()) {
-            return $this->success('', $lists);
-        }
-
-        View::assign([
-            'pager' => $pager,
-            'lists' => $lists['data'],
-            'type'  => $this->type
-        ]);
-        View::assign('lists', $lists['data']);
-        $this->setTitle('跳转小程序');
-        return view();
+        // 返回数据
+        return $this->success('', $lists);
     }
 
     /**
@@ -84,22 +72,6 @@ class Tominiprogram extends Admin
             }
             return $this->error('保存失败');
         }
-
-        $id = input('id', 0);
-        $data = $this->TominiprogramModel->where('id', $id)->where('shopid', $this->shopid)->find();
-        if ($data) {
-            $data = $data->toArray();
-            $data = $this->TominiprogramLogic->formatData($data);
-        } else {
-            $data = [];
-        }
-        View::assign([
-            'data' => $data,
-            'type' => input('type', 'weixin_app')
-        ]);
-        $this->setTitle('编辑跳转小程序');
-
-        return View::fetch();
     }
 
     /**

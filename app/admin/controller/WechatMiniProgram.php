@@ -2,7 +2,6 @@
 
 namespace app\admin\controller;
 
-use think\facade\View;
 use think\exception\ValidateException;
 use app\admin\builder\AdminConfigBuilder;
 use app\common\logic\TemplateMessage;
@@ -66,7 +65,6 @@ class WechatMiniProgram extends Admin
     }
     /**
      * @title 模板消息通知
-     * @return \think\response\View
      */
     public function templateMessage()
     {

@@ -2,7 +2,6 @@
 
 namespace app\admin\controller;
 
-use think\facade\View;
 use think\exception\ValidateException;
 use app\common\model\WechatWorkConfig;
 use app\admin\validate\WechatWork as WechatWorkValidate;

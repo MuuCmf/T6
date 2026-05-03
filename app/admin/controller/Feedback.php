@@ -2,7 +2,6 @@
 
 namespace app\admin\controller;
 
-use think\facade\View;
 use app\common\model\Feedback as FeedbackModel;
 use app\common\logic\Feedback as FeedbackLogic;
 

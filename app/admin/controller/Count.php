@@ -93,8 +93,4 @@ class Count extends Admin
 
         return $this->success('success',$res);
     }
-
-
-
-
 }

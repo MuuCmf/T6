@@ -2,7 +2,6 @@
 namespace app\admin\controller;
 
 use think\facade\Db;
-use think\facade\View;
 use think\facade\Cache;
 use app\admin\builder\AdminConfigBuilder;
 use app\common\model\ExtendConfig as MuuExtendConfigModel;
@@ -133,9 +132,7 @@ class Extend extends Admin
         // 配置分组 多个分组用,号隔开
         $group = input('group', '', 'text');
         $keyword = input('keyword', '', 'trim');
-        View::assign('keyword', $keyword);
         $rows = input('rows', 20, 'intval');
-        View::assign('rows', $rows);
 
         /* 查询条件初始化 */
         $map = [];
