@@ -16,7 +16,6 @@ function createArticlesConfig(isProduction = false) {
   const distPath = path.resolve(__dirname, '../../public/static/articles');
 
   const entry = {
-    'admin': path.join(srcPath, 'admin/index.js'),
     'pc': path.join(srcPath, 'pc/index.js'),
     'diy/pc/articles_list': path.join(srcPath, 'diy/pc/index.js'),
     'diy/mobile/articles_list': path.join(srcPath, 'diy/mobile/index.js'),

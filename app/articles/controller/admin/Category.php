@@ -1,7 +1,6 @@
 <?php
 namespace app\articles\controller\admin;
 
-use think\facade\View;
 use app\articles\model\ArticlesCategory as CategoryModel;
 use app\articles\logic\Category as CategoryLogic;
 
@@ -24,15 +23,7 @@ class Category extends Admin
     public function lists()
     {
         $category_tree = $this->CategoryModel->tree($this->shopid, [0,1]);
-        if(request()->isAjax()){
-            return $this->success('success', $category_tree);
-        }
-        
-        View::assign('category_tree',$category_tree);
-
-        $this->setTitle('分类列表');
-        //输出页面
-    	return View::fetch();
+        return $this->success('success', $category_tree);
     }
 
     /**
@@ -54,15 +45,11 @@ class Category extends Admin
         $id = input('id', 0, 'intval');
         $pid = input('pid', 0, 'intval');
         if(!empty($pid)){
-            View::assign('pid', $pid);
             // 获取父级分类数据
             $parent = $this->CategoryModel->getDataById($pid);
-            View::assign('parent', $parent);
         }
         
-
         $title = $id ? "编辑":"添加";
-        View::assign('title', $title);
 
         if (request()->isPost()) {
             $data = input();
@@ -83,7 +70,6 @@ class Category extends Admin
         } else {
             // 获取顶级分类树
             $category= $this->CategoryModel->tree($this->shopid, 1);
-            View::assign('category',$category);
 
             // 初始化数据结构
             $category_data = [
@@ -97,11 +83,8 @@ class Category extends Admin
             if (!empty($id)) {
                 $category_data = $this->CategoryModel->getDataById($id);
             }
-            View::assign('category_data',$category_data);
 
-            $this->setTitle($title.'分类');
-            // 输出页面
-            return View::fetch();
+            return $this->success('success', $category_data);
         }
     }
 

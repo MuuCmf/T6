@@ -2,7 +2,6 @@
 
 namespace app\articles\controller\admin;
 
-use think\facade\View;
 use app\common\model\Comment as CommentModel;
 use app\common\logic\Comment as CommentLogic;
 use app\articles\model\ArticlesArticles as ArticlesModel;
@@ -32,11 +31,9 @@ class Comment extends Admin
     public function lists()
     {
         $keyword = input('keyword', '', 'text');
-        View::assign('keyword', $keyword);
         $article_id = input('article_id', 0, 'intval');
-        View::assign('article_id', $article_id);
         $status = input('status', [0, 1, -1, -2]);
-        View::assign('status', $status);
+
         // 获取查询条件
         $map = $this->CommentLogic->getMap($this->shopid, $keyword, 'articles', 'articles', $article_id, $status);
         // 获取列表
@@ -51,18 +48,7 @@ class Comment extends Admin
         unset($val);
 
         // ajax请求返回数据
-        if (request()->isAjax()) {
-            return $this->success('success', $lists);
-        }
-
-        View::assign('pager', $pager);
-        View::assign('lists', $lists);
-        // 记录当前列表页的cookie
-        cookie('__forward__', $_SERVER['REQUEST_URI']);
-        // SEO
-        $this->setTitle('评论列表');
-        // 输出模板
-        return View::fetch();
+        return $this->success('success', $lists);
     }
 
     /**
@@ -72,7 +58,6 @@ class Comment extends Admin
     {
         $id = input('id', 0, 'intval');
         $title = $id ? "编辑" : "新建";
-        View::assign('title', $title);
 
         if (request()->isPost()) {
             $data = input();
@@ -113,11 +98,8 @@ class Comment extends Admin
             $data = $this->CommentModel->getDataById($id);
             $data = $this->CommentLogic->formatData($data);
         }
-        View::assign('data', $data);
-        // SEO
-        $this->setTitle($title . '评论');
-        // 输出模板
-        return View::fetch();
+
+        return $this->success('success', $data);
     }
 
     /**
@@ -154,7 +136,6 @@ class Comment extends Admin
     public function verify()
     {
         $id = input('id', 0, 'intval');
-        View::assign('id', $id);
 
         if (request()->isPost()) {
             $data = input();
@@ -167,7 +148,5 @@ class Comment extends Admin
                 return $this->error('操作失败');
             }
         }
-
-        return View::fetch();
     }
 }

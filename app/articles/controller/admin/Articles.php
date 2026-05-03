@@ -1,7 +1,6 @@
 <?php
 namespace app\articles\controller\admin;
 
-use think\facade\View;
 use app\common\model\Search as SearchModel;
 use app\articles\model\ArticlesCategory as CategoryModel;
 use app\articles\logic\Category as CategoryLogic;
@@ -32,11 +31,8 @@ class Articles extends Admin
     public function lists()
     {
         $keyword = input('keyword', '', 'text');
-        View::assign('keyword', $keyword);
         $category_id = input('category_id', 0, 'intval');
-        View::assign('category_id', $category_id);
         $status = input('status', [0,1,-1,-2]);
-        View::assign('status', $status);
         $rows = input('rows', 20, 'intval');
 
         // 获取查询条件
@@ -56,23 +52,7 @@ class Articles extends Admin
         }
         unset($val);
 
-        // ajax请求返回数据
-        if(request()->isAjax()){
-            return $this->success('success', $lists);
-        }
-        View::assign('pager',$pager);
-        View::assign('lists',$lists);
-
-        // 获取分类树
-        $category_tree = (new CategoryModel())->tree($this->shopid, 1);
-        View::assign('category_tree', $category_tree);
-        
-        // 记录当前列表页的cookie
-        cookie('__forward__', $_SERVER['REQUEST_URI']);
-
-        $this->setTitle('文章列表');
-        // 输出模板
-        return View::fetch();
+        return $this->success('success', $lists);
     }
 
     /**
@@ -82,7 +62,6 @@ class Articles extends Admin
     {
         $id = input('id',0,'intval');
         $title = $id ? "编辑" : "新建";
-        View::assign('title',$title);
 
         if (request()->isPost()) {
             $data = input();
@@ -129,15 +108,8 @@ class Articles extends Admin
             $data = $this->ArticlesModel->getDataById($id);
             $data = $this->ArticlesLogic->formatData($data);
         }
-        View::assign('data',$data);
 
-        // 获取分类树
-        $category_tree = $this->CategoryModel->tree($this->shopid, 1);
-        View::assign('category_tree', $category_tree);
-
-        $this->setTitle($title.'文章');
-        // 输出模板
-        return View::fetch();
+        return $this->success('success', $data);
     }
 
     /**
@@ -189,13 +161,10 @@ class Articles extends Admin
             }
         }
 
-        if(!empty($id)){
-            $data = $this->ArticlesModel->getDataById($id);
-            $data = $this->ArticlesLogic->formatData($data);
-        }
-        View::assign('data',$data);
 
-        // 输出模板
-        return View::fetch();
+        $data = $this->ArticlesModel->getDataById($id);
+        $data = $this->ArticlesLogic->formatData($data);
+        
+        return $this->success('success', $data);
     }
 }

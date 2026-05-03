@@ -1,7 +1,6 @@
 <?php
 namespace app\articles\controller\admin;
 
-use think\facade\View;
 use think\facade\Cache;
 use app\articles\model\ArticlesConfig as ConfigModel;
 
@@ -73,17 +72,8 @@ class Config extends Admin
             // 获取店铺配置数据
             $data = $this->config_data;
 
-            // ajax请求
-            if(request()->isAjax()){
-                return $this->success('success', $data);
-            }
-            
-            View::assign('data',$data);
-
-            // 设置页面Title
-            $this->setTitle('基础配置');
-            // 输出模板
-            return View::fetch();
+            // 返回数据
+            return $this->success('success', $data);
         }
     }
 
