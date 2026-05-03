@@ -51,7 +51,7 @@ Route::group('message', function () {
 
 // 用户中心配置
 Route::group('config', function () {
-    Route::get('index', 'ucenter/Config/index')->name('ucenter/Config/index');
+    Route::get('/', 'ucenter/Config/index')->name('ucenter/Config/index');
     Route::get('user_info', 'ucenter/Config/userInfo')->name('ucenter/Config/userInfo');
     Route::get('account', 'ucenter/Config/account')->name('ucenter/Config/account');
     Route::post('account', 'ucenter/Config/account')->name('ucenter/Config/account');

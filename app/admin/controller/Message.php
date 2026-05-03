@@ -146,12 +146,24 @@ class Message extends Admin
     {
         // 查询条件
         $map[] = ['shopid', '=', 0];
-        $map[] = ['status', '>', -1];
+        $map[] = ['status', 'in', [0, 1]];
 
         // 搜索关键字
         $keyword = input('keyword', '', 'text');
         if (!empty($keyword)) {
             $map[] = ['title', 'like', '%' . $keyword . '%'];
+        }
+
+        // 消息类型
+        $type_id = input('type_id', 0, 'intval');
+        if (!empty($type_id)) {
+            $map[] = ['type_id', '=', $type_id];
+        }
+
+        // 已读未读
+        $is_read = input('is_read', '', 'intval');
+        if (isset($is_read)) {
+            $map[] = ['is_read', '=', $is_read];
         }
 
         $fields = '*';
